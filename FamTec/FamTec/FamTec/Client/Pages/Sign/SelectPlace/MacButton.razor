@@ -1,0 +1,15 @@
+﻿
+
+<button class="mac-btn" @onclick=@OnClick>
+    @Name
+</button>
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task onClickBtn()
+    {
+        await OnClick.InvokeAsync();
+    }
+}

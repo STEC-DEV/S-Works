@@ -1,0 +1,29 @@
+﻿.textfield{
+    display : flex;
+    gap : var(--half-pd);
+    flex-direction : column;
+    background-color : var(--default-color);
+}
+
+.label{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+
+    white-space : nowrap;
+}
+
+.content{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--content-back-color);
+    padding : var(--half-pd);
+}
+
+.text{
+    font-size : var(--normal-size);
+    font-weight : var(--normal-wt);
+    color : #333;
+
+}

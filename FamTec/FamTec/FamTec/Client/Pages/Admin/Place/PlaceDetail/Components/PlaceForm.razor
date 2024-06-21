@@ -1,0 +1,45 @@
+﻿@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Server.DTO.Place
+
+
+
+<div class="placeform-container">
+    <div class="placeform-title">
+        <span class="title">
+            사업장 정보
+        </span>
+    </div>
+    <div class="placeform-info">
+        <InputField Label="사업장 코드" 
+            Value="@placeInfo.PlaceCd" 
+            EditMode=@EditMode />
+        <InputField Label="사업장명" 
+            Value="@placeInfo.Name" 
+            EditMode=@EditMode />
+        <InputField Label="전화번호" 
+            Value="@placeInfo.Tel" 
+            EditMode=@EditMode />
+        <InputField Label="계약번호" 
+            Value="@placeInfo.ContractNum" 
+            EditMode=@EditMode />
+        <InputField Label="계약일자" 
+            InputType="date" 
+            Value="@placeInfo.ContractDt?.ToString("yyyy-MM-dd")" 
+            EditMode=@EditMode />
+        <InputField Label="해약일자" 
+            InputType="date" 
+            Value="@placeInfo.CancelDt?.ToString("yyyy-MM-dd")" 
+            EditMode=@EditMode />
+        @* <InputField Label="계약상태" Value="@placeInfo.Status"/> *@
+        <InputField Label="비고" 
+            Value="@placeInfo.Note"
+            EditMode=@EditMode
+        />
+    </div>
+</div>
+
+@code {
+    [Parameter] public PlaceInfo placeInfo { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+
+}

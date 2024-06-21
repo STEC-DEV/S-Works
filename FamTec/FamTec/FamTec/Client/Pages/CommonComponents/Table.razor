@@ -1,0 +1,115 @@
+﻿@typeparam T
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager Navigation
+
+<table class="table-container">
+    <thead class="table-head">
+        <tr class="thead-tr">
+            @foreach (var property in typeof(T).GetProperties())
+            {
+                var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+                if (displayAttribute?.Name == null)
+                {
+                    
+                }
+                else
+                {
+                    <th class="table-th">@displayAttribute?.Name</th>
+                }
+                
+            }
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        @if (DataList == null)
+        {
+            <p>Loading ....</p>
+        }
+        else
+        {
+            @foreach (var item in DataList)
+            {
+                <tr class="tbody-tr">
+                    @foreach (var property in typeof(T).GetProperties())
+                    {
+                        if (property.Name != "IsSelect" && property.Name != "Id")
+                        {
+                            if(property.Name == "Name" && Detail)
+                            {
+                                var idValue = item.GetType().GetProperty("Id").GetValue(item);
+                                var link = $"{Navigation.Uri}/{idValue}";
+                                <td class="table-td">
+                                    <NavLink class="table-td-link" href=@link>
+                                        @property.GetValue(item)
+                                    </NavLink>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="table-td">@property.GetValue(item)</td>
+                            }
+                        }
+                        else if (property.Name == "Id")
+                        {
+
+                        }
+                        else
+                        {
+                            var idValue = (int)item.GetType().GetProperty("Id").GetValue(item);
+                            bool isChecked = CheckedItems.Contains(idValue);
+
+                            <td class="table-td">
+                                <input type="checkbox"
+                                       value="@idValue"
+                                       checked="@isChecked"
+                                       @onchange="e=> InVokeCheckboxSelect(e,idValue, item)" />
+                            </td>
+                        }
+
+                    }
+                </tr>
+            }
+        }
+        
+        
+        
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<T> DataList { get; set; }
+    [Parameter] public EventCallback<(bool, int)> Select { get; set; }
+    [Parameter] public EventCallback<(bool, object)> SelectItem { get; set; }
+    [Parameter] public string Url { get; set; }
+    [Parameter] public bool Detail { get; set; }
+    [Parameter] public string ReturnType { get; set; }
+
+    private HashSet<int> CheckedItems = new HashSet<int>();
+
+    private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id,T item)
+    {
+        bool isChecked = (bool)(e.Value ?? false);
+        Console.WriteLine("체크 index값 : "+ id);
+        if (isChecked)
+        {
+            CheckedItems.Add(id);
+        }
+        else
+        {
+            CheckedItems.Remove(id);
+        }
+
+        if (ReturnType == "object")
+        {
+            await SelectItem.InvokeAsync((isChecked, item));
+        }
+        else
+        {
+            await Select.InvokeAsync((isChecked, id));
+        }
+    }
+
+    
+
+}

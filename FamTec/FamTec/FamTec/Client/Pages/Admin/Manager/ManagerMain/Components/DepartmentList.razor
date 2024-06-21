@@ -1,0 +1,45 @@
+﻿@using FamTec.Shared.Client.DTO
+
+<ul class="depart-list">
+    @if(DataList == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        @foreach (var item in DataList)
+        {
+            <li class="depart-item">
+                @if (Edit)
+                {
+                    <input class="depart-select"
+                           type="checkbox"
+                           value="@item.Id"
+                           @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" />
+                }
+                <NavLink>
+                    <span class="item-title">
+                        @item.Name
+                    </span>
+
+                </NavLink>
+                
+            </li>
+        }
+    }
+    
+</ul>
+@code {
+    [Parameter] public List<DepartmentDTO> DataList { get; set; }
+    [Parameter] public bool Edit { get; set; }
+    [Parameter] public EventCallback<(bool ,int)> Select { get; set; }
+
+
+    private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
+    {
+        bool isChecked = (bool)(e.Value ?? false);
+        await Select.InvokeAsync((isChecked, id));
+    }
+
+
+}

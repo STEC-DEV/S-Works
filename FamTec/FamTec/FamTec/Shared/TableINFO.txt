@@ -1,0 +1,528 @@
+﻿/* 사업장 테이블 */
+CREATE TABLE PLACES_TB
+(
+	[ID] INT IDENTITY(1,1) NOT NULL, /* 자동 증가값 */
+	[PLACE_CD] VARCHAR(25) PRIMARY KEY NOT NULL, /* 사업장 코드 */
+	[NAME] VARCHAR(255) NOT NULL, /* 사업장 명 */
+	[CONTRACT_NUM] VARCHAR(45) NOT NULL, /* 계약번호 */
+	[NOTE] VARCHAR(20), /* 비고 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+)
+
+/* 사용자 테이블 */
+CREATE TABLE USERS_TB
+(
+	[ID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY, /* 자동 증가값 */
+	[USER_ID] VARCHAR(15)  NOT NULL, /* 사용자 ID */
+	[PASSWORD] VARCHAR(30) NOT NULL, /* 비밀번호 */
+	[NAME] VARCHAR(15) NOT NULL, /* 사용자이름 */
+	[EMAIL] VARCHAR(30), /* 이메일 */
+	[PHONE] VARCHAR(20), /* 전화번호 */
+	
+	[PERM_BUILDING] INT DEFAULT(0) NOT NULL, /* 건물정보 관리 권한*/
+	[PERM_EQUIPMENT] INT DEFAULT(0) NOT NULL, /* 장비관리 권한*/
+	[PERM_MATERIAL] INT DEFAULT(0) NOT NULL, /* 자재관리 권한*/
+	[PERM_ENERGY] INT DEFAULT(0) NOT NULL, /* 에너지관리 권한*/
+	[PERM_OFFICE] INT DEFAULT(0) NOT NULL, /* 행정관리 권한*/
+	[PERM_COMP] INT DEFAULT(0) NOT NULL, /* 업체관리 권한*/
+	[PERM_CONST] INT DEFAULT(0) NOT NULL, /* 공사관리 권한*/
+	[PERM_CLAIM] INT DEFAULT(0) NOT NULL, /* 민원관리 권한*/
+	[PERM_SYS] INT DEFAULT(0) NOT NULL, /* 시스템연동 관리 권한*/
+	[PERM_EMPLOYEE] INT DEFAULT(0) NOT NULL, /* 입퇴직 관리 권한*/
+	[PERM_LAW_CK] INT DEFAULT(0) NOT NULL, /* 법정점검 권한*/
+	[PERM_LAW_EDU] INT DEFAULT(0) NOT NULL, /* 법정교육 권한*/
+	
+	[ADMIN_YN] BIT DEFAULT(0), /* 관리자 여부 */
+	[ALARM_YN] BIT DEFAULT(0), /* 알람 수신 여부 */
+	[STATUS] BIT DEFAULT(1), /* 입-재직 여부 0 : 퇴직, 1 : 재직 */
+	
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+	
+	[PLACECODE_CD] VARCHAR(25) FOREIGN KEY REFERENCES PLACES_TB([PLACE_CD])
+)
+
+/* 건물 테이블 */
+CREATE TABLE BUILDINGS_TB
+(
+	[BUILDING_CD] VARCHAR(25) PRIMARY KEY NOT NULL, /* 건물코드 */
+	[NAME] VARCHAR(255) NOT NULL, /* 건물명 */
+	[ADDRESS] VARCHAR(255), /* 건물 주소 */
+	[TEL] VARCHAR(20), /* 전화번호 */
+	[USAGE] VARCHAR(20), /* 건물용도 */
+	[CONST_COMP] VARCHAR(20), /* 시공업체 */
+	[COMPLETION_DATE] DATETIME, /* 준공년월 */
+	[BUILDING_STRUCT] VARCHAR(30), /* 건물구조 */
+	[ROOF_STRUCT] VARCHAR(30), /* 지붕구조 */
+	
+	[GROSS_FLOOR_AREA] FLOAT, /* 연먼적 */
+	[LAND_AREA] FLOAT, /* 대지면적 */
+	[BUILDING_AREA] FLOAT, /* 건축면적 */
+	
+	[FLOOR_NUM] INT, /* 건물층수 */
+	[GROUND_FLOOR_NUM] INT, /* 지상 층 */
+	[BASEMENT_FLOOR_NUM] INT, /* 지하 층 */
+	
+	[BUILDING_HEIGHT] FLOAT, /* 건물높이 */
+	[GROUND_HEIGHT] FLOAT, /* 지상 건물 높이 */
+	[BASEMENT_HEIGHT] FLOAT, /* 지하 깊이 */
+	
+	[PACKING_NUM] INT, /* 주차 대수 */
+	[INNER_PACKING_NUM] INT, /* 옥내 대수 */
+	[OUTER_PACKING_NUM] INT, /* 옥외 대수 */
+	
+	[ELEC_CAPACITY] FLOAT, /* 전기용량 */
+	[FAUCET_CAPACITY] FLOAT, /* 수전용량 */
+	[GENERATION_CAPACITY] FLOAT, /* 발전용량 */
+	
+	[WATER_CAPACITY] FLOAT, /* 급수용량 */
+	[ELEV_WATER_TANK] FLOAT, /* 고가 수조 */
+	[WATER_TANK] FLOAT, /* 저수조 */
+	
+	[GAS_CAPACITY] FLOAT, /* 가스용량 */
+	[BOILER] FLOAT, /* 보일러 */
+	[WATER_DISPENSER] FLOAT, /* 냉온수기 */
+	
+	[LIFT_NUM] INT, /* 승강대수 */
+	[PEOPLE_LIFT_NUM] INT, /* 인승용 */
+	[CARGO_LIFT_NUM] INT, /* 화물용 */
+	
+	[COOL_HEAT_CAPACITY] FLOAT, /* 냉 난방용량 */
+	[HEAT_CAPACITY] FLOAT, /* 난방용량 */
+	[COOL_CAPACITY] FLOAT, /* 냉방용량 */
+	
+	[LANDSCAPE_AREA] FLOAT, /* 조경면적 */
+	[GROUND_AREA] FLOAT, /* 지상 면적 */
+	[ROOFTOP_AREA] FLOAT, /* 옥상 면적 */
+
+	[TOILET_NUM] INT, /* 화장실 개 */
+	[MEN_TOILET_NUM] INT, /* 남자화장실 */
+	[WOMEN_TOILET_NUM] INT, /* 여자화장실 */
+
+	[FIRE_RATING] VARCHAR(10), /* 소방 등급 */
+	
+	[SEPTIC_TANK_CAPACITY] FLOAT, /* 정화조 용량 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[PLACECODE_CD] VARCHAR(25) FOREIGN KEY REFERENCES PLACES_TB([PLACE_CD])
+)
+
+/* 층 정보 */
+CREATE TABLE FLOORS_TB
+(
+	[ID] INT PRIMARY KEY IDENTITY(1,1) NOT NULL, /* 자동 증가값 */
+	[NAME] VARCHAR(10) NOT NULL, /* 층 명칭 */
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+	
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB([BUILDING_CD])
+)
+
+/* 공간 테이블 */
+CREATE TABLE ROOMS_TB
+(
+	[ID] INT PRIMARY KEY IDENTITY(1,1) NOT NULL, /* 자동 증가값 */
+	[NAME] VARCHAR(35) NOT NULL, /* 공간 명칭 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[FLOOR_ID] INT FOREIGN KEY REFERENCES FLOORS_TB([ID])
+)
+
+/* 민원 정보 */
+CREATE TABLE VOC_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[TITLE] VARCHAR(30) NOT NULL, /* 민원 제목 */
+	[CONTENT] VARCHAR(MAX) NOT NULL, /* 민원 내용 */
+
+	[STATUS] INT DEFAULT(0), /* 상태 0 : 미처리, 1 : 처리중, 2 : 처리완료 */
+	[PHONE] VARCHAR(20), /* 요청자 휴대폰번호 */
+	[REPLY_YN] BIT DEFAULT(0), /* n : 처리상태 안받음, 1 : 처리상태 받음 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	/* 외래키로 건물 코드 */
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB ([BUILDING_CD])
+)
+
+/* 알람_처리내용 테이블 */
+CREATE TABLE VOC_COMMENTS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[CONTENT] VARCHAR(255), /* 처리 내용 */
+	[STATUS] INT DEFAULT(0), /* 상태 0 : 미처리, 1 : 처리중, 2 : 처리완료 */
+	
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[VOC_ID] INT FOREIGN KEY REFERENCES VOC_TB ([ID]),
+	[USERS_ID] int FOREIGN KEY REFERENCES USERS_TB ([ID])
+)
+
+CREATE TABLE SOCKET_ROOMS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[ROOM_CD] VARCHAR(30) NOT NULL, /* 룸이름 - SIGNALR CONTEXT ID값 (랜덤생성됨) */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+)
+
+
+/* 알람 테이블 */
+CREATE TABLE ALARMS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[CONTENT] VARCHAR(100), /* 알람의 내용 */
+	[STATUS] INT DEFAULT(0), /* 0 : 읽음, 1 : 안읽음 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[VOC_ID] INT FOREIGN KEY REFERENCES VOC_TB ([ID]),
+	[USERS_ID] int FOREIGN KEY REFERENCES USERS_TB ([ID]),
+	[SOCKET_ROOMS_ID] INT FOREIGN KEY REFERENCES SOCKET_ROOMS_TB ([ID])
+)
+
+/* 설비정보 테이블 */
+CREATE TABLE FACILITYS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[NAME] VARCHAR(255) NOT NULL, /* 시설의 명칭 */
+	[CATEGORY] VARCHAR(10) NOT NULL, /* 설비 구분 */
+	[TYPE] VARCHAR(30), /* 형식 */
+	[STANDARD_CAPACITY] FLOAT, /* 규격 용량 */
+	[STANDARD_CAPACITY_UNIT] VARCHAR(10), /* 규격용량 - 단위 */
+	[FAC_CREATE_DT] DATETIME DEFAULT(getdate()), /* 설치 년월 */
+	[LIFESPAN] VARCHAR(10), /* 내용 년수 */
+	[FAC_UPDATE_DT] DATETIME, /* 교체 년월 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[ROOMS_ID] INT FOREIGN KEY REFERENCES ROOMS_TB (ID)
+)
+
+/* 자재관리 테이블 */
+CREATE TABLE MATERIALS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[CATEGORY] VARCHAR(10) NOT NULL, /* 자재 구분 */
+	[TYPE] VARCHAR(30) NOT NULL, /* 타입 */
+	[NAME] VARCHAR(100) NOT NULL, /* 자재명 */
+	[UNIT] VARCHAR(10), /* 단위 */
+	[STANDARD] VARCHAR(10), /* 규격 */
+	[MANUFACTURING_COMP] VARCHAR(25), /* 제조사 */
+	
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+)
+
+/* 건물 전체 자재 */
+CREATE TABLE TOTAL_INVENTORYS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[INCOMING_NUM] INT NOT NULL DEFAULT(0), /* 입고수량 */
+	[PRICE] INT NOT NULL DEFAULT(0), /* 단가 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[MATERIAL_ID] INT FOREIGN KEY REFERENCES MATERIALS_TB([ID]),
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB ([BUILDING_CD])
+)
+
+
+/* 서브 테이블 */
+CREATE TABLE SUB_ITEMS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[NAME] VARCHAR(25) NOT NULL, /* 컬럼 명 */
+	[VALUE] VARCHAR(255), /* 값 */
+	[UNIT] VARCHAR(10), /* 단위 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB ([BUILDING_CD]),
+	[FACILITY_ID] INT FOREIGN KEY REFERENCES FACILITYS_TB([ID])
+)
+
+
+/* 공간 자재 재고 */
+CREATE TABLE ROOM_INVENTORYS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[ROOM_MATERIAL_NUM] INT DEFAULT(0) NOT NULL, /* 공간 수량 */
+	
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+	[ROOMS_ID] INT FOREIGN KEY REFERENCES ROOMS_TB (ID),
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB ([BUILDING_CD])
+)
+
+/* 카카오톡 로그 테이블 */
+CREATE TABLE KAKAO_LOGS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[RESULT] VARCHAR(255) NOT NULL, /* 결과 값 */
+	[RECEIVER] VARCHAR(20), /* 수신자 */
+	[SENDER] VARCHAR(20), /* 발신자 */
+	[CONTENT] VARCHAR(200),
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+)
+
+/* 검침기 테이블 */
+CREATE TABLE METER_READERS_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[CATEGORY] VARCHAR(10) NOT NULL, /* 구분 */
+	[TYPE] VARCHAR(30) NOT NULL,
+	[METER_ITEM] VARCHAR(30), /* 검침 항목 */ 
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+	[BUILDING_CD] VARCHAR(25) FOREIGN KEY REFERENCES BUILDINGS_TB ([BUILDING_CD])
+)
+
+CREATE TABLE ENERGY_USAGES_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[USAGE] FLOAT NULL, /* 사용량 */
+	[METER_DT] DATETIME,
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+)
+
+/* 단가 테이블 */
+CREATE TABLE UNIT_PRICE_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[PRICE] FLOAT,
+	[METER_READER_ID] INT FOREIGN KEY REFERENCES METER_READERS_TB([ID]),
+	[ENVERY_USAGE_ID] INT FOREIGN KEY REFERENCES ENERGY_USAGES_TB([ID])
+)
+
+/* 단위 테이블 */
+CREATE TABLE UNIT_TB
+(
+	ID INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	UNIT VARCHAR(10) NOT NULL, /* 단위명 */
+
+	[CREATE_DT] DATETIME DEFAULT(GETDATE()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 생성한 사람 */
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0 : 삭제안함 1 : 삭제함 */
+	[PLACECODE_CD] VARCHAR(25) FOREIGN KEY REFERENCES PLACES_TB([PLACE_CD])
+)
+
+/* 월별 사용량 통계 테이블 */
+CREATE TABLE ENERGY_MONTH_USAGE_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[JAN] FLOAT DEFAULT(0), /* 1월 */
+	[FEB] FLOAT DEFAULT(0), /* 2월 */
+	[MAR] FLOAT DEFAULT(0),	/* 3월 */
+	[APR] FLOAT DEFAULT(0),	/* 4월 */
+	[MAY] FLOAT DEFAULT(0),	/* 5월 */
+	[JUN] FLOAT DEFAULT(0),	/* 6월 */
+	[JUL] FLOAT DEFAULT(0),	/* 7월 */
+	[AUG] FLOAT DEFAULT(0),	/* 8월 */
+	[SEP] FLOAT DEFAULT(0),	/* 9월 */
+	[OCT] FLOAT DEFAULT(0),	/* 10월 */
+	[NOV] FLOAT DEFAULT(0),	/* 11월 */
+	[DEC] FLOAT DEFAULT(0),	/* 12월 */
+
+	[CREATE_DT] DATETIME DEFAULT(GETDATE()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 생성한 사람 */
+	[UPDATE_DT] DATETIME, /* 수정한시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0 : 삭제함, 1: 삭제안함 */
+
+	[METER_READER_ID] INT FOREIGN KEY REFERENCES METER_READERS_TB([ID])
+)
+
+/* 관리자 테이블 */
+CREATE TABLE ADMINS_TB
+(
+	[USER_ID] int PRIMARY KEY NOT NULL, /* 사용자ID */
+	[PASSWORD] VARCHAR(30) NOT NULL, /* 비밀번호 */
+	[NAME] VARCHAR(15) NOT NULL, /* 사용자이름 */
+	[EMAIL] VARCHAR(30), /* 이메일 */
+
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[CREATE_USER] VARCHAR(15), /* 만든 사람 */
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[UPDATE_USER] VARCHAR(15), /* 수정한 사람 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_USER] VARCHAR(15), /* 삭제한 사람 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+
+)
+
+CREATE TABLE ADMIN_PLACES_TB
+(
+	[ID] INT IDENTITY(1,1) PRIMARY KEY NOT NULL, /* 자동 증가값 */
+	[CREATE_DT] DATETIME DEFAULT(getdate()), /* 생성시간 */
+	[UPDATE_DT] DATETIME, /* 수정시간 */
+	[DEL_DT] DATETIME, /* 삭제시간 */
+	[DEL_YN] BIT DEFAULT(0), /* 0: 삭제안함 1: 삭제 */
+	[USER_ID] int FOREIGN KEY REFERENCES USERS_TB ([ID]),
+	[PLACECODE_CD] VARCHAR(25) FOREIGN KEY REFERENCES PLACES_TB([PLACE_CD])
+)
+
+DROP TABLE ALARMINFO;
+DROP TABLE ALARMTALKLOG
+DROP TABLE BUILDINGINFO
+DROP TABLE ENERGYINFO
+DROP TABLE ENERGYMONTHINFO
+DROP TABLE FACILITYINFO
+DROP TABLE FLOORINFO
+DROP TABLE MATERIALINFO
+DROP TABLE PLACEINFO
+DROP TABLE ROOM_INVENTORY
+DROP TABLE ROOMINFO
+DROP TABLE SOCKETROOMINFO
+DROP TABLE SUBITEM
+DROP TABLE TOTAL_INVENTORY
+DROP TABLE USERINFO
+DROP TABLE VOCINFO
+DROP TABLE VOCINFO_COMMENT
+
+
+
+
+SCAFFOLD-DBCONTEXT  "DATA SOURCE=123.2.156.122,1002;DATABASE=FMS;USER ID=STEC;PASSWORD=STECDEV1234!;TRUSTSERVERCERTIFICATE=TRUE;" MICROSOFT.ENTITYFRAMEWORKCORE.SQLSERVER
+SCAFFOLD-DBCONTEXT  "DATA SOURCE=123.2.156.122,1002;DATABASE=FMS;USER ID=STEC;PASSWORD=STECDEV1234!;TRUSTSERVERCERTIFICATE=TRUE;" MICROSOFT.ENTITYFRAMEWORKCORE.SQLSERVER -O UPDATE
+
+
+
+
+Scaffold-DbContext "Server=123.2.156.122,1002;Database=FMS;User Id=stec;Password=stecdev1234!;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer -outputDir Model -DataAnnotations
+https://www.entityframeworktutorial.net/efcore/pmc-commands-for-ef-core-migration.aspx
+
+
+Scaffold-DbContext  "Data Source=123.2.156.122,1002;Database=FMS;User Id=stec;Password=stecdev1234!;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer
+Scaffold-DbContext  "Data Source=123.2.156.122,1002;Database=FMS;User Id=stec;Password=stecdev1234!;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer -o update
+
+
+** 참고자료
+https://stackoverflow.com/questions/39176018/cannot-update-identity-column-in-entity-framework-core
+
+Scaffold-DbContext "Server=123.2.156.122,3306;Database=Works;User Id=root;Password=stecdev1234!;" Pomelo.EntityFrameworkCore.MySql -outputDir Model -DataAnnotations

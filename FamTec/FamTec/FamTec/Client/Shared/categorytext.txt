@@ -1,0 +1,67 @@
+/*
+ * 일반모드 Drawer Category
+ */
+List<Category> CategoryList = new List<Category>
+    {
+        new Category
+        {
+            Name="사업장",
+            Url = "/place",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg"
+        },
+        new Category
+        {
+            Name="건물정보",
+            Url = "/building",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg"
+        },
+         new Category
+        {
+            Name = "설비유지관리",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg",
+            SubCategory = new List<Category>
+            {
+            new Category{Name="건축", Url="/equipment/construct"},
+                new Category{Name="통신", Url="/equipment/communication"},
+                new Category{Name="미화", Url="/equipment/beautification"},
+                new Category{Name="보안", Url="/equipment/security"},
+            }
+
+        },
+         new Category
+        {
+            Name = "자재관리",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg",
+            SubCategory = new List<Category>
+            {
+                new Category{Name="자재목록", Url="/material/list"},
+                new Category{Name="자재입출고관리", Url="/material/warehousing"},
+            }
+
+        },
+        new Category
+        {
+            Name = "에너지관리",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg",
+            SubCategory = new List<Category>
+            {
+                new Category{Name="전기", Url="/energy/electronic"},
+                new Category{Name="가스", Url="/energy/gas"},
+                new Category{Name="상하수", Url="/energy/water"},
+                new Category{Name="지역난방", Url="/energy/heating"},
+                new Category{Name="경유", Url="/energy/diesel"},
+            }
+
+        },
+        new Category
+        {
+            Name = "사용자관리",
+            SvgImgUrl = "Client/wwwroot/img/drawer/building.svg",
+            SubCategory = new List<Category>
+            {
+                new Category{Name="목록", Url="/user/current"},
+                new Category{Name="사용자정보", Url="/user/purpose"},
+            }
+
+        }
+    };

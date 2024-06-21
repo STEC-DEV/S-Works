@@ -1,0 +1,18 @@
+﻿@page "/test"
+@layout MainLayout2
+@inject HttpClient httpClient;
+
+<h3>Test</h3>
+
+<image src="@image"></image>
+
+@code {
+
+    string image { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        var response = await httpClient.GetStringAsync("http://123.2.156.148:5245/api/Hub/Temp");
+        image = "data:image/png;base64,"+response;
+        StateHasChanged();
+    }
+}

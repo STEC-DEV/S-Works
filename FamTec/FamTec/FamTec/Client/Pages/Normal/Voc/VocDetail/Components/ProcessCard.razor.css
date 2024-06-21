@@ -1,0 +1,31 @@
+﻿.processcard {
+    width : 100%;
+    display : flex;
+    gap : var(--default-pd);
+    padding : var(--default-pd);
+
+    border : var(--default-bd);
+    border-radius : var(--default-rd);
+
+    box-shadow : 0 0 7px 2px #b5b5b5;
+    
+}
+
+.processcard .status{
+    display : flex;
+    align-items : center;
+    padding-right : var(--default-pd);
+    border-right : var(--default-bd);
+
+    white-space :nowrap;
+
+    
+}
+.processcard .content {
+
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+    width:100%;
+    background-color : #ffffff;
+}

@@ -1,0 +1,120 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Manager
+@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Server.DTO
+@inject HttpClient HttpClient
+
+<div class="form-container">
+    <div class="form-title">
+        <span class="title">매니저 정보</span>
+    </div>
+    <div class="form-input">
+            <InputField 
+                InputType="text" 
+                Placeholder="Name"
+                Label="이름"
+                Value="@Manager.Name"
+                EditMode=EditMode
+            />
+            <InputField 
+                InputType="text" 
+                Placeholder="Id"
+                Label="아이디"
+                Value="@Manager.UserId"
+                EditMode=EditMode
+                />
+            <InputField 
+                InputType="password" 
+                Placeholder="Password"
+                Label="비밀번호"
+                Value="@Manager.Password"
+                EditMode=EditMode
+                />
+        
+            <InputField 
+                InputType="text" 
+                Placeholder="Phone"
+                Label="전화번호"
+                Value="@Manager.Phone"
+                EditMode=EditMode
+                />
+            <InputField 
+                InputType="text" 
+                Placeholder="Email"
+                Label="이메일"
+                Value="@Manager.Email"
+                EditMode=EditMode
+                />
+            <InputField 
+                InputType="text"
+                Placeholder="Type"
+                Label="계정 유형" 
+                Value="@Manager.Type"
+                EditMode=EditMode
+                />
+
+            @if (EditMode)
+            {
+                <InputSelectField 
+                    Label="부서"
+                    SelectData="DepartmentList"
+                />
+            }
+            else
+            {
+                <InputField 
+                    InputType="text"
+                    Placeholder="Type"
+                    Value="@Manager.Department"
+                    Label="부서" 
+
+                    />
+            }
+        
+    </div>
+    
+</div>
+
+@code {
+        [Parameter] public int Id { get; set; }
+        [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
+        [Parameter] public bool EditMode { get; set; }
+
+        DManagerDTO Manager = new DManagerDTO();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await OnLoadDetailManager();
+    }
+
+    // private void HandleSelectedValueChange(int value)
+    // {
+    //     Manager.DepartmentId = value;
+
+    // }
+
+    /*
+     * 매니저 상세 정보 조회
+     */
+    private async Task OnLoadDetailManager()
+    {
+        try
+        {
+            ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/GetManagerInfo?adminId={Id}");
+            if (object.ReferenceEquals(null, resDetailManager) || resDetailManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 상세 정보 조회 실패");
+                return;
+            }
+            Manager = resDetailManager.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패\n" + ex);
+            await JS.InvokeVoidAsync("alert", "[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패");
+        }
+    }
+    
+}
+

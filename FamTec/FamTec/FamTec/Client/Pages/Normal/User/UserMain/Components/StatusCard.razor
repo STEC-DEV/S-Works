@@ -1,0 +1,19 @@
+﻿
+
+<span class="status @StatusClass">
+    @StatusText
+</span>
+
+
+
+@code {
+    [Parameter] public string Status { get; set; }
+    public string StatusClass => $"status-{Status}";
+     public string StatusText => Status switch
+    {
+        "0" => "퇴직",
+        "1" => "재직",
+        "2" => "휴직",
+        _ => "Unknown"
+    };
+}

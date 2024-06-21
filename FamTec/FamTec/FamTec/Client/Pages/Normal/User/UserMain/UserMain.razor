@@ -1,0 +1,59 @@
+﻿@page "/users"
+@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Client.Pages.Normal.User.UserMain.Components
+@using FamTec.Shared.Server.DTO
+@inject NavigationManager Navigation
+
+<div class="user-container yappear">
+    <div class="user-wrap">
+        <div class="user-title">
+            <span class="title">
+                사용자 목록
+            </span>
+            <div class="user-options">
+                <Input Placeholder="search" Type="text"/>
+                <Button Name="추가" Width=true OnClick=AddUser />
+                <Button Name="삭제" Width=true Type=true/>
+            </div>
+        </div>
+        <div class="user-content">
+            <UserTable Data=@usersData/>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<ListUser> usersData = new List<ListUser>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadTsetData();
+    }
+
+
+    /*
+    * 사용자 추가화면 이동
+    */
+    private void AddUser()
+    {
+        Navigation.NavigateTo("/users/add");
+    }
+
+
+    private async Task OnLoadTsetData()
+    {
+        ResponseList<ListUser> resUsers = await apiManager.GetListAsync<ListUser>("user/sign/GetPlaceUsers");
+        if(object.ReferenceEquals(null,resUsers) || resUsers.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "사용자 목록 조회 실패");
+            return;
+        }
+        usersData = resUsers.data;
+
+        // ResponseList<ListUser> resUsers = await HttpClient.GetFromJsonAsync<ResponseList<ListUser>>("http://123.2.156.148:5245/api/User/GetPlaceUsers?placeid=123");
+
+      
+    }
+
+}

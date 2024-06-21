@@ -1,0 +1,46 @@
+﻿.place-container{
+    padding : var(--default-pd);
+    height:100%;
+    width:100%;
+}
+
+.place-wrap {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--comp-bd);
+    overflow: hidden;
+    box-shadow : var(--default-bs);
+}
+
+.place-container .place-header {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    padding: var(--three-q-pd);
+    border-bottom: var(--default-bd);
+}
+
+.place-container .table-header-option{
+    display : flex;
+    gap : var(--half-pd);
+}
+
+
+.place-container .place-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.place-container .place-table{
+    overflow:auto;
+    height:100%;
+}

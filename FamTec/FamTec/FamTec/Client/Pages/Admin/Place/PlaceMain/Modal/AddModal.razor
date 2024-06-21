@@ -1,0 +1,241 @@
+@using FamTec.Shared.Client.DTO
+@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+@inject HttpClient HttpClient
+
+<div class="placemodal-backgroud appear">
+    <div class="placemodal-container yappear ">
+        <div class="placemodal-wrap ">
+            <div class="placemodal-title">
+                @Title
+            </div>
+            @* OnValidSubmit="OnAdd" *@
+            <EditForm Model="placeInfo" >
+                <div class="placemodal-content">
+                    <div class="placemodal-form">
+                            <div class="placeInfo-input">
+                                <InputField Label="코드"
+                                            InputType="text"
+                                            Placeholder="사업장 코드"
+                                            @bind-Value="@placeInfo.PlaceCd" 
+                                            EditMode=EditMode
+                                            />
+                                <InputField Label="사업장명"
+                                            InputType="text"
+                                            Placeholder="사업장명"
+                                            @bind-Value="@placeInfo.Name" 
+                                            EditMode=EditMode
+                                            />
+
+                                <InputField Label="전화번호"
+                                            InputType="text"
+                                            Placeholder="전화번호"
+                                            @bind-Value="@placeInfo.Tel" 
+                                            EditMode=EditMode
+                                            />
+                                <InputField Label="주소"
+                                            InputType="text"
+                                            Placeholder="주소"
+                                            @bind-Value="@placeInfo.Address" 
+                                            EditMode=EditMode
+                                            />
+                                <InputField Label="계약번호"
+                                            InputType="text"
+                                            Placeholder="계약번호"
+                                            @bind-Value="@placeInfo.ContractNum" 
+                                            EditMode=EditMode
+                                            />
+                                <InputField Label="계약일자"
+                                            InputType="date"
+                                            Placeholder="계약일자"
+                                            @bind-Value="@placeInfo.ContractDt" 
+                                            EditMode=EditMode
+                                            />
+                            </div>
+                            <div class="placemodal-toggle">
+                                <Toggle Title="기계설비 권한" @bind-Value="@placeInfo.PermMachine" EditMode=EditMode />
+                                <Toggle Title="승강설비 권한" @bind-Value="@placeInfo.PermLift" EditMode=EditMode />
+                                <Toggle Title="소방설비 권한" @bind-Value="@placeInfo.PermFire" EditMode=EditMode />
+                                <Toggle Title="건축설비 권한" @bind-Value="@placeInfo.PermConstruct" EditMode=EditMode />
+                                <Toggle Title="통신설비 권한" @bind-Value="@placeInfo.PermNetwork" EditMode=EditMode />
+                                <Toggle Title="미화설비 권한" @bind-Value="@placeInfo.PermBeauty" EditMode=EditMode />
+                                <Toggle Title="보안설비 권한" @bind-Value="@placeInfo.PermSecurity" EditMode=EditMode />
+                                <Toggle Title="자재 권한" @bind-Value="@placeInfo.PermMaterial"EditMode=EditMode/>
+                                <Toggle Title="에너지 권한" @bind-Value="@placeInfo.PermEnergy" EditMode=EditMode />
+                                <Toggle Title="민원관리 권한" @bind-Value="@placeInfo.PermVoc" EditMode=EditMode />
+                            </div>
+                        
+                        
+                    
+                    </div>
+                    <div class="placemodal-manager">
+                        <div class="placemodal-m-header">
+                            <span class="placemodal-m-title">관리 매니저</span>
+                            <div>
+                                <Button 
+                                    Name="추가" 
+                                    Width="true"
+                                    OnClick=OnAddModal
+                                    />
+                                <Button 
+                                    Name="삭제" 
+                                    Width="true"
+                                    Type=true
+                                    OnClick="OnDeleteManager"
+                                    />
+                            </div>
+                        </div>
+                        <div class="placemodal-m-list">
+                            <Table 
+                                DataList="ManagerList" 
+                                Select="OnSelected"
+                                />
+                        </div>
+                    
+                    </div>
+                
+
+                </div>
+                <div class="placemodal-btns">
+                    <Button Name="등록"  OnClick="OnAdd"/>
+                    <Button Name="닫기" OnClick="ModalClose" />
+                </div>
+            </EditForm>
+            
+        </div>
+        @if (isAddModal)
+        {
+            <SearchManagerModal 
+                OnClose="OnCloseModal" 
+                AddManagerList=ManagerList
+                OnAddManagerListChanged=OnAddManagerListChanged
+                />
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Content { get; set; }
+    [Parameter] public EventCallback<bool> OnClose { get; set; }
+    [Parameter] public EventCallback LoadPlace { get; set; }
+
+    List<int> selectedManagerIds = new List<int>();
+    List<ManagerDTO> ManagerList = new List<ManagerDTO>();
+    bool EditMode = true;
+
+
+    AddPlaceDTO placeInfo = new AddPlaceDTO();
+    AddPlaceManagerDTO<ManagerDTO> placeManager = new AddPlaceManagerDTO<ManagerDTO>();
+
+    bool isAddModal = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // ResponseObj<ManagerDTO> res = await 
+    }
+
+    private void OnAddModal()
+    {
+        Console.WriteLine("매니저 추가");
+        isAddModal = true;
+    }
+
+    private void OnCloseModal()
+    {
+        isAddModal = false;
+        StateHasChanged();
+    }
+
+    private Task ModalClose()
+    {
+        return OnClose.InvokeAsync(false);
+    }
+
+    /*
+    * 등록 버튼 눌렀을 시
+    */
+    private async void OnAdd()
+    {
+        /*
+        * 1. 입력된 데이터 확인 
+        * 2. 추가 삭제 후 동기화 확인
+        * 3. POST
+        * 4. 모달 닫기
+        */
+        ResponseUnit<int?> resPlace = await apiManager.PostAsync<int?>("AdminPlace/sign/AddWorks", placeInfo);
+        if(resPlace.code != 200 || resPlace.data == null)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장 등록 실패");
+            /*
+             * 롤백 요청 코드 추가 예정
+             */
+            await ModalClose();
+            return;
+        }
+        if(resPlace.data == null)
+        {
+            await ModalClose();
+            return;
+        }
+        placeManager.PlaceId = resPlace.data;
+
+        ResponseUnit<bool> resManager = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", placeManager);
+        if(resManager.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "매니저 등록실패");
+            return;
+        }
+        await JS.InvokeVoidAsync("alert", "매니저 등록 성공");
+        await LoadPlace.InvokeAsync();
+        await ModalClose();
+        return;
+    }
+
+    /*
+    * 매니저 추가 로드
+    */
+    private void OnAddManagerListChanged(List<ManagerDTO> updatedManagerList)
+    {
+        ManagerList = updatedManagerList;
+
+        placeManager.PlaceManager = ManagerList;
+        StateHasChanged();
+    }
+
+    /*
+    * 매니저 체크 
+    */
+    public void OnSelected((bool isCheck, int id) selection)
+    {
+
+        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        if (!selection.isCheck)
+        {
+            selectedManagerIds.Remove(selection.id);
+        }
+        else
+        {
+            Console.WriteLine("추가함");
+            selectedManagerIds.Add(selection.id);
+        }
+
+    }
+
+    /*
+    * 매니저 삭제
+    */
+    private void OnDeleteManager()
+    {
+        ManagerList = ManagerList.Where(m => !selectedManagerIds.Contains(m.Id)).ToList();
+        selectedManagerIds.Clear();
+        StateHasChanged();
+    }
+
+}
+
+

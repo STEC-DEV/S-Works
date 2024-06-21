@@ -1,0 +1,41 @@
+﻿.vocdetail-container {
+    display : flex;
+    flex-direction : column;
+    width : 100%;
+    height : 100%;
+
+    gap : var(--default-pd);
+}
+
+.vocdetail-container .vocdetail-wrap{
+    display: flex;
+    gap: var(--wide-pd);
+    height: 100%;
+    flex: 1;
+    overflow: hidden;
+    padding : var(--default-pd);
+}
+
+.vocdetail-container .vocdetail-info {
+    flex: 1;
+    width: 100%;
+    box-shadow: var(--default-bs);
+}
+
+.vocdetail-container .vocdetail-comment{
+    flex:2;
+    width:100%;
+
+     box-shadow : var(--default-bs);
+}
+
+
+/*
+    버튼 영역
+*/
+/*.managerdetail-container .managerdetail-btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--half-pd);
+    padding: var(--default-pd);
+}*/

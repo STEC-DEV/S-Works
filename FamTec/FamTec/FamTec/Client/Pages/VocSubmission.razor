@@ -1,0 +1,184 @@
+﻿@layout MainLayout2
+
+@page "/VocSubmit/{buildingid?}" 
+@using Microsoft.Net.Http.Headers
+
+@using System.Text
+@using System.Text.Json
+@using Tewr.Blazor.FileReader
+@using FamTec.Shared.Client.DTO
+@using static System.Net.Mime.MediaTypeNames
+@inject HttpClient httpClient
+
+@inject IFileReaderService fileReader
+@inject IJSRuntime JS;
+
+<style>
+    table, th, td{
+        border: 1px solid black;
+    }
+</style>
+
+<h1>민원 접수</h1>
+
+<div style="display:flex; flex-direction:column; align-items:start; justify-content: space-between;">
+    <div style="display:flex">
+        <p>민원종류</p>
+        <InputSelect @bind-Value=dto.Type>
+            <option value="1">기계</option>
+            <option value="2">전기</option>
+            <option value="3">승강</option>
+            <option value="4">소방</option>
+            <option value="5">건축</option>
+            <option value="6">통신</option>
+            <option value="7">미화</option>
+            <option value="8">보안</option>
+            <option value="9">기타</option>
+        </InputSelect>
+    </div>
+
+    <div style="display:flex; padding:10px">
+        <p>성함: </p>
+        <input type="text" @bind=dto.Name placeholder="문자만 입력"/>
+        <p>휴대폰 번호: </p>
+        <input type="text" @bind=dto.PhoneNumber placeholder="숫자만 입력"/>
+    </div>
+
+    <div>
+        <p><b>※연락처를 남겨주시면 민원처리결과를 받아보실 수 있습니다.</b></p>
+    </div>
+
+    <div style="padding:10px">
+        <p>제목</p>
+        <input type="text" @bind=dto.Title placeholder="제목을 입력하세요."/>
+    </div>
+
+    <div style="padding:10px">
+        <p>내용</p>
+        <textarea rows="5" cols="70" @bind=dto.Contents></textarea>
+    </div>
+
+    <div style="padding:10px">
+        <div style="display:flex">
+            <p>첨부파일</p>
+            
+            <InputFile OnChange="@LoadFiles" multiple/>
+
+            @*
+            <input type="file" @ref="inputReference" @onchange="async () => await btnUpload()" multiple />
+            *@
+            @*
+            <InputFile OnChange="btnUpload" multiple/>
+            *@
+            @*<input type=" @onclick="btnUpload" value="첨부파일 추가"/>*@
+        </div>
+        <table style="border-collapse: collapse">
+            <thead>
+                <tr>
+                    <th style="width:450px">파일명</th>
+                    <th style="width:100px">용량</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (FileInfos is [_, ..])
+                {
+                    @foreach (var item in FileInfos)
+                    {
+                        <tr>
+                            <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Name</td>
+                            <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Size</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<input type="button" @onclick="async() => await btnSubmit()" value="등록"/>
+
+@code {
+    [Parameter]
+    public string PlaceId{ get; set; }
+
+    [Parameter]
+    public string buildingid{ get; set; }
+
+    private VocDTO? dto;
+
+    private List<FileInfo> FileInfos = new();
+    private int maxAllowedFiles = int.MaxValue;
+    private long maxFileSize = long.MaxValue;
+    string[] allowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg" };
+
+    MultipartFormDataContent? content = new MultipartFormDataContent();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        dto = new VocDTO();
+        dto.buildingidx = Int32.Parse(buildingid); // 해당 빌딩 INDEX -- QR로 넘어옴
+        dto.PlaceIdx = Int32.Parse(PlaceId); // 해당 빌딩이 속해있는 PlaceID
+    }
+
+    protected async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        content = new MultipartFormDataContent();
+        FileInfos = new();
+
+        foreach(var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            if (!allowedExtensions.Contains(Path.GetExtension(file.Name)))
+            {
+                FileInfos.Clear();
+
+                await JS.InvokeVoidAsync("alert", "지원되지 않는 타입입니다.");
+                break;
+            }
+            else
+            {
+                FileInfos.Add(new FileInfo()
+                {
+                    Name = file.Name,
+                    Size = $"{file.Size}b"
+                });
+                content.Add(content: fileContent, name: "\"files\"", fileName: file.Name);
+            }
+        }
+    }
+
+    protected async Task btnSubmit()
+    {
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new VocDTO
+            {
+                Type = dto.Type, // 미화?
+                Name = dto.Name, // 이름
+                Title = dto.Title, // 제목
+                Contents = dto.Contents, // 내용
+                PhoneNumber = dto.PhoneNumber, // 전화번호
+                buildingidx = dto.buildingidx, // 건물인덱스
+            }), System.Text.Encoding.UTF8, "application/json");
+
+        content.Add(jsonContent);
+
+        var response = await httpClient.PostAsync("http://123.2.156.148:5245/api/Hub/Files", content);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            await JS.InvokeVoidAsync("alert", "민원이 등록되었습니다.");
+        }
+
+        FileInfos.Clear();
+        
+        content.Dispose();
+        content = new MultipartFormDataContent();
+    }
+
+    class FileInfo
+    {
+        public string? Name { get; set; }
+        public string? Size{ get; set; }
+    }
+}

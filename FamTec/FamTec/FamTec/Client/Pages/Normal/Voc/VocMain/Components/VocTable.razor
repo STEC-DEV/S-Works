@@ -1,0 +1,103 @@
+﻿@using FamTec.Client.Pages.Normal.Voc.Components
+@typeparam T
+@inject NavigationManager NavigationManager
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    위치
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    구분
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    작성자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    제목
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    발생 일시
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    처리 일시
+                </span>
+            </th>
+
+            <th class="th">
+                <span>
+                    소요 시간
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    상태
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData == null)
+        {
+            <p>...Loading</p>
+        }
+        else
+        {
+            @foreach(var row in ListData)
+            {
+                var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+                int id = int.Parse(sid);
+
+
+                <tr class="tbody-tr" @onclick="() => OnDeatail(id)">
+                    <td class="td">
+                        @typeof(T).GetProperty("Location")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Writer")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Title")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Occur_DT")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Compelete_DT")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Total_DT")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<T> ListData { get; set; }
+
+    private void OnDeatail(int Id)
+    {
+        NavigationManager.NavigateTo($"/voc/{Id}");
+    }
+}

@@ -1,0 +1,113 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using FamTec.Shared.Client.DTO
+
+
+<div class="table-container">
+    <div class="table-body">
+        <table class="table">
+            <thead class="thead">
+                <tr class="thead-tr tr">
+                    @foreach (var property in typeof(ManagerDTO).GetProperties())
+                    {
+                        var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+                        var headerText = displayAttribute?.Name;
+                        Console.WriteLine(headerText==null);
+                        if (headerText == null)
+                        {
+                            Console.WriteLine("id 필드 걸러짐");
+                        }
+                        else
+                        {
+                            <th class="thead-th">@headerText</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            
+            <tbody class="tbody">
+                @foreach (var row in DataList)
+                {
+                    Console.WriteLine("동작");
+                    <tr class="tbody-tr tr">
+                        @foreach (var property in typeof(ManagerDTO).GetProperties())
+                        {
+                            Console.WriteLine(property.Name);
+                            if (property.Name != "IsSelect" && property.Name !="Id")
+                            {
+                                <td class="tbody-td">
+                                    @property.GetValue(row)
+                                </td>
+                            }
+                            else if (property.Name == "Id")
+                            {
+                                Console.WriteLine("td 예외 데이터"+property.Name);
+                            }
+                            else
+                            {
+                                <td class="tbody-td">
+                                    <input type="checkbox" value="@row" @onchange="()=>InvokeCheckboxSelect(row)" />
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+            
+            
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public List<ManagerDTO>? DataList { get; set; }
+    [Parameter] public List<string>? Properties { get; set; }
+    [Parameter] public EventCallback<object> Select { get; set; }
+    [Parameter] public EventCallback<object> UnSelect { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach(var i in DataList)
+        {
+            Console.WriteLine(i.Name);
+        }
+        return;
+    }
+
+    private void OnClicked(object row)
+    {
+        Console.WriteLine(row);
+    }
+
+
+    private async Task InvokeCheckboxSelect(object row)
+    {
+        try
+        {
+            var property = row.GetType().GetProperty("IsSelect");
+            if (property != null)
+            {
+                bool currentValue = (bool)property.GetValue(row);
+                property.SetValue(row, !currentValue);
+
+                if ((bool)row.GetType().GetProperty("IsSelect").GetValue(row))
+                {
+                    Console.WriteLine("선택됨");
+                    //transfer Object to Paraent
+                    await Select.InvokeAsync(row);
+                }
+                else
+                {
+                    Console.WriteLine("해제됨");
+                    await UnSelect.InvokeAsync(row);
+                }
+            }
+        }catch(Exception e)
+        {
+            Console.WriteLine($"[table][{Title}] InvokeCheckboxSelect 함수 에러  \n" + e);
+        }
+        
+    }
+}

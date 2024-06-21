@@ -1,0 +1,54 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@typeparam T
+
+<table class="table">
+    <thead class="thead">
+        <tr class="tr">
+            @foreach(var property in typeof(T).GetProperties())
+            {
+                var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+                if (displayAttribute?.Name != null)
+                {
+                    <th class="table-th">@displayAttribute?.Name</th>
+                }
+                
+            }
+            @if (EditMode)
+            {
+                <th class="th table-select"></th>
+            }
+        </tr>
+    </thead>
+    <tbody class="tbody">
+            @if(Data == null)
+            {
+                <p>...Loading</p>
+            }
+            else
+            {
+                @foreach (var row in Data)
+                {
+                <tr class="tbody=tr">
+                    @foreach (var property in typeof(T).GetProperties())
+                    {
+                        <td class="table-td">@property.GetValue(row)</td>
+                    }
+                        @if (EditMode)
+                        {
+                            <td class="td">
+                                <input type="checkbox" />
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public List<T>? Data { get; set; }
+
+}

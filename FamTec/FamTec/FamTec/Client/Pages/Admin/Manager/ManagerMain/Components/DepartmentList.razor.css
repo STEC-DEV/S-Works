@@ -1,0 +1,30 @@
+﻿.depart-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+}
+
+.depart-list .depart-item {
+    display: flex;
+    /*justify-content:space-between;*/ /* 선택버튼*/
+    gap : var(--default-pd);
+    width:100%;
+    padding: var(--default-pd)  var(--half-pd);
+    border-radius: var(--default-rd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+}
+
+.depart-list .depart-item:hover {
+    transition: all ease-in-out 0.2s;
+    background-color: var(--main-color);
+}
+
+.depart-list .depart-item:hover ::deep .item-title {
+    transition: all ease-in-out 0.2s;
+    color: var(--default-color);
+}
+
+.depart-list .depart-item ::deep .item-title{
+    color : var(--main-color);
+}

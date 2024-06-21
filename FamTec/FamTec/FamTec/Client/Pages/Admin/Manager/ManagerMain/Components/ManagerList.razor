@@ -1,0 +1,134 @@
+﻿@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Admin.Place
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject HttpClient HttpClient
+
+<div class="managerlist-container">
+    <div class="managerlist-wrap">
+        <div class="managerlist-header">
+            <span class="title">
+                매니저 목록
+            </span>
+            @if (UserType != "매니저")
+            {
+                <div class="managerlist-btns">
+                    <Button Name="등록" OnClick="@OnSignUp" />
+                    <Button Name="삭제" Type=true OnClick="@OnDeleteManager" />
+                </div>
+            }
+            
+            
+        </div>
+        <div class="managerlist-list">
+            <Table DataList="@managerList" Select="OnSelected" Detail="true" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? UserType { get; set; }
+
+    List<ManagerDTO>? managerList;
+    List<int>? deleteManagerList = new List<int>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await OnLoadManagers();
+    }
+
+    private async Task OnLoadManagers()
+    {
+        try
+        {
+            // ResponseList<ManagerDTO>? resManager = await HttpClient.GetFromJsonAsync<ResponseList<ManagerDTO>>("http://123.2.156.148:5245/api/AdminPlace/sign/GetAllManagerList");
+            ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
+            if(resManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
+                return;
+            }
+            managerList = resManager.data;
+            return;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
+        }
+
+    }
+
+
+
+    private async Task ReloadManagers()
+    {
+        await OnLoadManagers();
+    }
+
+
+    /*
+    * 부서 선택
+    */
+    public void OnSelected((bool isCheck, int id) selection)
+    {
+
+        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        if (!selection.isCheck)
+        {
+            deleteManagerList.Remove(selection.id);
+        }
+        else
+        {
+            Console.WriteLine("추가함");
+            deleteManagerList.Add(selection.id);
+        }
+
+    }
+
+
+    private async Task OnDeleteManager()
+    {
+        try
+        {
+            if(deleteManagerList == null)
+            {
+                Console.WriteLine("선택 매니저 없음");
+            }
+            else
+            {
+                var resDeleteManager = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/AdminUser/DeleteManager", deleteManagerList);
+                if (resDeleteManager.IsSuccessStatusCode)
+                {
+                    ResponseUnit<int> resDeleteManagerData = await resDeleteManager.Content.ReadFromJsonAsync<ResponseUnit<int>>();
+                    deleteManagerList.Clear();
+                    Console.WriteLine("매니저 삭제 성공");
+                    await OnLoadManagers();
+                }
+                else
+                {
+                    deleteManagerList.Clear();
+                    Console.WriteLine("매니저 삭제 실패");
+                    await OnLoadManagers();
+                }
+            }
+
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 클라이언트  매니저 삭제 에러");
+        }
+    }
+
+    
+
+    
+
+    private void OnSignUp()
+    {
+        Navigation.NavigateTo("/admin/manager/signup");
+    }
+
+}

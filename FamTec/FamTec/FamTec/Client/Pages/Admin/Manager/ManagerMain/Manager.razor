@@ -1,0 +1,37 @@
+﻿@page "/admin/manager"
+
+@using FamTec.Client.Pages.Admin.Manager.ManagerMain.Components
+@using FamTec.Shared.Client.DTO;
+@using FamTec.Shared.Model
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+@inject HttpClient HttpClient
+
+
+<div class="manager-container yappear">
+    <div class="depart">
+        <Department UserType=@_userType />
+    </div>
+    <div class="managerlist">
+        <ManagerList UserType=@_userType />
+    </div>
+</div>
+
+@code {
+    public string _userType;
+    public int LoginMode;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSession();
+    }
+
+
+    private async Task LoadSession()
+    {
+        var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+        _userType = await SessionService.GetClaimValue(session, "UserType");
+        LoginMode = await sessionStorage.GetItemAsync<int>("LoginMode");
+    }
+}

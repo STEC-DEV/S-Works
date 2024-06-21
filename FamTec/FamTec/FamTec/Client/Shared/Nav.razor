@@ -1,0 +1,129 @@
+﻿@using FamTec.Client.Middleware
+@using Microsoft.AspNetCore.SignalR.Client
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject SessionService SessionService
+@inject NavigationManager NavigationManager
+
+<div class="nav-container">
+    <div class="nav-logo">
+        <NavLink href="@(LoginMode==1 ? "/admin/place" : "/user")" class="nav-wrap-img">
+            <img src="img/Stec_Logo.png" />
+        </NavLink>
+    </div>
+    <div class="nav-tab">
+        @* 로그인 여부 *@
+        <ul class="nav-tab-wrap">
+            <!-- 알림 -->
+
+            @* <li class="nav-tab-item">
+                <button disabled="@(!IsConnected)">@MessageCount</button>
+            </li> *@
+            @if(_userType != null)
+            {
+                <li class="nav-tab-item">
+                    <span class="nav-usertype">@_userType</span>
+                    <span class="nav-divider">|</span>
+                    <span class="nav-username">@_userName</span>
+                </li>
+                @* <li class="nav-tab-item">
+                    
+                </li> *@
+            }
+            else
+            {
+                
+            }
+            <li class="nav-tab-item">
+                <NavLink class="nav-tab-link" @onclick="OnLogOut">Logout</NavLink>
+            </li>
+            <li class="nav-tab-item">
+                <NavLink class="nav-tab-link">About</NavLink>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? UserName { get; set; }
+    [Parameter] public string? UserType  { get; set; }
+    private int MessageCount { get; set; }
+    private string? _userType;
+    private string? _userName;
+    private int LoginMode;
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoginMode = await sessionStorage.GetItemAsync<int>("LoginMode");
+        var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+        _userType = await SessionService.GetClaimValue(session, "UserType");
+        _userName = await SessionService.GetClaimValue(session, "Name");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            #region SIGNAL R 메시지 받는곳
+            HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
+            {
+                Console.WriteLine(message);
+            });
+            #endregion
+            
+            // 다시재연결 필요하면 이거 쓰면될듯
+            /*
+            HubObject.hubConnection!.Closed += async (exception) =>
+            {
+                await HubObject.hubConnection.StartAsync(); // 다시재연결
+            };
+            */
+        
+
+        }
+    }
+    
+
+    private async Task OnLogOut()
+    {
+        Console.WriteLine("로그아웃 동작");
+        await sessionStorage.RemoveItemAsync("SWORKSSESSION");
+        await sessionStorage.RemoveItemAsync("LoginMode");
+        await sessionStorage.RemoveItemAsync("IsLogin");
+        StateHasChanged();
+
+        NavigationManager.NavigateTo("/");
+    }
+
+
+    private void CallLoadData()
+    {
+        Task.Run(async () =>
+        {
+            await OnLoadData();
+        });
+    }
+
+    protected async Task OnLoadData()
+    {
+        // api 요청 날리는것
+        // DB SELECT --> 모델로 반환
+
+
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// SignalR 연결여부
+    /// </summary>
+    // public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
+
+
+
+}

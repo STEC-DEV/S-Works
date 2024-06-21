@@ -1,0 +1,105 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Voc
+<div class="vochistory-container">
+    <div class="vochistory-wrap">
+        <div class="vochistory-title">
+            <span class="title">
+                민원 내역
+            </span>
+        </div>
+        <div class="vochistory-slider">
+            <DateSlider CreateDate="createdate" />
+        </div>
+        <div class="vochistory-content">
+            <VocTable ListData=@listvoc />
+        </div>
+    </div>
+</div>
+
+@code {
+    public DateTime createdate = new DateTime(2023, 11, 4, 12, 0, 0, 0, 0);
+    List<ListVoc> listvoc = new List<ListVoc>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await OnLoadVocList();
+    }
+
+    private async Task OnLoadVocList()
+    {
+        listvoc = new List<ListVoc>
+        {
+            new ListVoc
+            {
+                Id =1,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 0,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =2,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 0,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =3,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 1,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =4,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 2,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =5,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 1,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =6,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 0,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+            new ListVoc
+            {
+                Id =7,
+                Location = "A건물",
+                Type = 1,
+                Writer = "김권후",
+                Title = "3층 화장실 타일",
+                Status = 0,
+                Occur_DT = new DateTime(2024,5,11),
+            },
+        };
+    }
+
+
+}

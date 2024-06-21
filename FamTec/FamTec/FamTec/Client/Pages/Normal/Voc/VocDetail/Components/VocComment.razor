@@ -1,0 +1,38 @@
+﻿@using FamTec.Client.Pages.Admin.CommonComponents
+
+
+<div class="voccomment-container">
+    <div class="voccomment-title">
+        <span class="title">
+            처리 내역
+        </span>
+        <div class="option">
+            @*    @if (EditMode)
+            {
+                <Button Name="저장" Width=true />
+                <Button Name="취소" Width=true Type=true OnClick="@OnChangeEditMode" />
+            }
+            else
+            {
+                <Button Name="추가" Width=true OnClick="@OnChangeEditMode" />
+            } *@
+        </div>
+    </div>
+    <div class="voccomment-content">
+        <div class="voccomment-overflow">
+            <ProcessCard />
+            <ProcessCard />
+            <ProcessCard />
+            <ProcessCard />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool EditMode { get; set; } = false;
+
+    private void OnChangeEditMode()
+    {
+        EditMode = !EditMode;
+    }
+}

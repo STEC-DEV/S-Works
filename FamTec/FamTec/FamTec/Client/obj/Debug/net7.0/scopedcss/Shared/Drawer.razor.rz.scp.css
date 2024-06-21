@@ -1,0 +1,99 @@
+/*.drawer-container {
+    min-width: min-content;
+    width: 20%;
+    border-right: 1px solid #d3d3d3;
+}*/
+
+.drawer-container .drawer-wrap[b-rriyx9tl3w] {
+    display: flex;
+    flex-direction: column;
+    padding: var(--three-q-pd);
+}
+
+
+.drawer-container .drawer-item[b-rriyx9tl3w] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.drawer-container[b-rriyx9tl3w]  .drawer-link {
+    display: flex;
+    width: auto;
+    height: 100%;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: var(--default-pd);
+}
+
+.drawer-container[b-rriyx9tl3w]  .drawer-link  .category-title {
+    width: max-content;
+    color : var(--main-color);
+    font-weight : var(--bold-wt);
+}
+
+.drawer-container[b-rriyx9tl3w]  .drawer-link:hover {
+    transition: all ease-in-out 0.2s;
+    border-radius: var(--default-rd);
+    background-color: var(--main-color);
+}
+
+.drawer-container[b-rriyx9tl3w]  .drawer-link:hover .category-title {
+    transition: all ease-in-out 0.2s;
+    color: var(--default-color);
+}
+
+.drawer-container .arrow[b-rriyx9tl3w] {
+    width: min-content;
+}
+
+.drawer-container .title[b-rriyx9tl3w] {
+    flex-grow: 1;
+}
+
+/*하위 메뉴*/
+
+/*.drawer-container .drawer-sub-wrap {
+    background-color : var(--content-back-color);
+    display: flex;
+    flex-direction : column;
+
+    padding : var(--half-pd);
+
+    border-radius : var(--default-rd);
+    border : var(--comp-bd);
+
+    transition: all .2s ease-in-out;
+    
+}
+
+
+
+.drawer-container .active {
+    transition: all .2s ease-in-out;
+}
+*/
+
+.drawer-container .drawer-sub-wrap[b-rriyx9tl3w] {
+    background-color: var(--content-back-color);
+    visibility : hidden;
+    padding: 0 var(--half-pd);
+    border-radius: var(--default-rd);
+    border: var(--comp-bd);
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.2s ease;
+    
+}
+
+.drawer-container .drawer-sub-wrap.active[b-rriyx9tl3w] {
+    display: flex;
+    visibility : visible;
+    flex-direction: column;
+    padding: var(--half-pd);
+    max-height:1000px;
+    transition: all 0.2s ease;
+    opacity: 1;
+    margin-top : var(--half-pd);
+}

@@ -1,0 +1,49 @@
+﻿
+.managerlist-container{
+    background-color: var(--back-default-color);
+    border: var(--comp-bd);
+    border-radius:var(--default-rd);
+    height:100%;
+
+    overflow : hidden;
+    box-shadow: var(--default-bs);
+}
+
+
+.managerlist-container .managerlist-wrap{
+    display:flex;
+    flex-direction:column;
+    gap : var(--default-pd);
+
+    height: 100%;
+    padding : var(--default-pd);
+
+}
+
+.managerlist-container .managerlist-header{
+    display :flex;
+    justify-content : space-between;
+    align-items:center;
+
+    padding : var(--default-pd);
+    border-bottom : var(--default-bd);
+
+}
+
+.managerlist-container .managerlist-btns{
+    display : flex;
+    gap : var(--half-pd);
+    
+}
+
+.managerlist-container .title {
+    white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.managerlist-container .managerlist-list{
+    overflow : auto;
+
+}

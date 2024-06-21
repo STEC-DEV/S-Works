@@ -1,0 +1,15 @@
+﻿@using FamTec.Client.Pages.Normal.Voc.Components
+
+<div class="processcard">
+    <div class="status">
+        <StatusCard  Status="1"/>
+    </div>
+    <div class="content">
+        <TextField Label="처리 일시" Context="@DateTime.Now.ToString()"/>
+        <TextField Label="처리 내용" Context="해당 타일 교체 완료"/>
+    </div>
+</div>
+
+@code {
+
+}

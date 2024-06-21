@@ -1,0 +1,77 @@
+﻿@page "/buildinglist"
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Building
+
+@inject HttpClient httpClient
+@inject IJSRuntime JS
+
+<style>
+    table, th, td{
+        border: 1px solid black;
+    }
+</style>
+
+<h3>건물관리</h3>
+
+
+<table style="border-collapse: collapse">
+    <thead>
+        <tr>
+            <th style="width:50px">선택</th>
+            <th style="width:100px">ID</th>
+            <th style="width:200px">건물이름</th>
+            <th style="width:250px">건물주소</th>
+            <th style="width:150px">건물층수</th>
+            <th style="width:150px">준공년월</th>
+            <th style="width:150px">등록일자</th>
+            <th style="width:300px">민원QR</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (buildinglist is [_, ..])
+        {
+            @foreach (var item in buildinglist)
+            {
+                <tr>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                        <input type="checkbox" />
+                    </td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.ID</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Name</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Address</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.FloorNum</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.CompletionDT</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.CreateDT</td>
+                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                        <div @onclick="()=> QRDownload(item)">
+                            <img src="download.svg" style="width:30px" />
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div id="qrcodes" style="width:100px; height:100px; margin:auto; margin-top:15px; display:none;"/>
+<script src="js/voc.js"></script>
+<script src="js/qrcode.js"></script>
+
+@code {
+    private List<BuildinglistDTO>? buildinglist;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ResponseList<BuildinglistDTO>? response = await httpClient.GetFromJsonAsync<ResponseList<BuildinglistDTO>>("http://123.2.156.148:5245/api/Building/sign/MyBuildings");
+        buildinglist = response?.data;
+    }
+
+    private async Task QRDownload(BuildinglistDTO dto)
+    {
+        // qr생성데이터
+        // 사업장인덱스, 건물인덱스
+        // 파일명 : 건물이름
+        await JS.InvokeVoidAsync("qrcreate", $"http://123.2.156.148:5245/VocSubmit/{dto.PlaceID}/{dto.ID}", dto.Name);
+
+    }
+}

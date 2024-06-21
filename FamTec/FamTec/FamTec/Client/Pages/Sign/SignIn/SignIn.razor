@@ -1,0 +1,123 @@
+﻿@page "/login"
+@using FamTec.Client.Pages.Sign.CommonComponents
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Login
+@using System.Text.Json
+@using Microsoft.AspNetCore.SignalR.Client
+@using Newtonsoft.Json.Linq
+@using System.Security.Claims
+@inject IJSRuntime IJSRuntime
+@inject HttpClient HttpClient
+
+
+
+
+<div class="signup-container">
+    <div class="signup-wrap">
+        <div class="signup-title">
+            <span class="title">
+                Login
+            </span>
+            <Toggle Title="관리자모드"
+                    EditMode=true
+                    @bind-Value="@LoginMode" />
+        </div>
+        <div class="signup-form">
+            <InputField Label="ID"
+                        EditMode=true
+                        Placeholder="ID"
+                        @bind-Value="@user.UserID" />
+            <InputField Label="PW"
+                        InputType="Password"
+                        EditMode=true
+                        Placeholder="Password"
+                        @bind-Value="@user.UserPassword" />
+        </div>
+        <Button Name="Login" OnClick="OnSignUp" />
+    </div>
+</div>
+
+@code {
+    LoginDTO user = new LoginDTO();
+    sbyte? LoginMode=0;
+
+    protected override void OnInitialized()
+    {
+        /*
+         *   await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "MachineRoom"); // 기계 Voc 권한
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "ElectricityRoom"); // 전기 Voc 권한
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "LiftRoom"); // 승강 Voc 권한
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "VocFireRoom"); // 소방 Voc 권한
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "ConstructRoom"); // 건축
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "NetworkRoom"); // 통신
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "SanitationRoom"); // 미화
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "SecurityRoom"); // 보안
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "DefaultRoom"); // 기타
+         *
+         */
+    }
+
+
+
+    private async Task OnSignUp()
+    {
+        try
+        {
+            // 아이디 비밀번호 공백 처리
+            if (string.IsNullOrWhiteSpace(user.UserID) || string.IsNullOrWhiteSpace(user.UserPassword))
+            {
+                await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 공백입니다.");
+                user = new LoginDTO();
+                return;
+            }
+
+            //관리자 모드 로그인 선택 유무
+            string endpoint = (LoginMode == 1) ? "Login/SettingLogin" : "Login/Login";
+
+            //로그인 요청
+            ResponseUnit<string> response = await apiManager.PostLoginAsync<string>(endpoint, user);
+
+            if (response.code == 404)
+            {
+                await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 일치하지 않습니다.");
+                user = new LoginDTO();
+                return;
+            }
+            if(response.code == 500)
+            {
+                await IJSRuntime.InvokeVoidAsync("alert", "로그인 에러");
+                user = new LoginDTO();
+                return;
+            }
+            string? token = response.data;
+            await sessionStorage.SetItemAsStringAsync("SWORKSSESSION", token);
+            await sessionStorage.SetItemAsync("LoginMode", LoginMode);
+
+            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            if(response.code == 201)
+            {
+                Navigation.NavigateTo("/select");
+                return;
+            }
+
+            if (response.code == 200)
+            {
+                // 인증 상태 업데이트
+                customStateProvider.NotifyUserAuthentication(token);
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+
+           
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
+        }
+        Console.WriteLine(user.UserID);
+        Console.WriteLine(user.UserPassword);
+    }
+}
+

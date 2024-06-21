@@ -1,0 +1,124 @@
+﻿@page "/signalr"
+
+@using FamTec.Shared.Server.DTO
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+@inject NavigationManager Navigation
+
+<div class="room-list">
+    
+    <button @onclick="JoinSanitationRoom">미화방</button>
+    <button @onclick="JoinSecurityRoom">보안방</button>
+    <button @onclick="JoinFacility">시설방</button>
+
+    <button @onclick="RemoveSanitationRoom">미화방 해제</button>
+    <button @onclick="RemoveSecurityRoom">보안방 해제</button>
+    <button @onclick="RemoveFacility">시설방 해제</button>
+</div>
+
+
+
+
+<div class="chat">
+
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+
+    <input type="text" @bind-value="messageInput">
+    <button @onclick="Send">Send</button>
+</div>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
+
+    private string type{ get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(Navigation.ToAbsoluteUri("/broadcastHub"))
+        .Build();
+
+        await hubConnection.StartAsync();
+
+        hubConnection.On<string>("ReceiveVoc", (message) =>
+        {
+            messages.Add(message);
+            StateHasChanged();
+        });
+        
+
+    }   
+
+    // 미화방 JOIN
+    private async Task JoinSanitationRoom()
+    {
+        type = "SanitationRoom";
+        await hubConnection.InvokeAsync("JoinRoomAsync", "SanitationRoom");
+    }
+
+    // 미화방 REMOVE
+    private async Task RemoveSanitationRoom()
+    {
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "SanitationRoom");
+    }
+
+    // 보안방 JOIN
+    private async Task JoinSecurityRoom()
+    {
+        type = "SecurityRoom";
+        await hubConnection.InvokeAsync("JoinRoomAsync", "SecurityRoom");
+    }
+
+    // 보안방 REMOVE
+    private async Task RemoveSecurityRoom()
+    {
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "SecurityRoom");
+    }
+
+    // 시설방 JOIN
+    private async Task JoinFacility()
+    {
+        type = "FacilityRoom";
+        await hubConnection.InvokeAsync("JoinRoomAsync", "FacilityRoom");
+    }
+  
+    // 시설방 REMOVE
+    private async Task RemoveFacility()
+    {
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "FacilityRoom");
+    }
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(messageInput))
+        {
+            await hubConnection.InvokeAsync("SendMessageAsync", messageInput, type);
+            messages.Add($"You: {messageInput}");
+            messageInput = "";
+            StateHasChanged();
+        }
+    }
+
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+
+}

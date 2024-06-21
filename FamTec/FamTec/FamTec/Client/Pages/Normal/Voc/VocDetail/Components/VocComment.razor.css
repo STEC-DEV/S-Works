@@ -1,0 +1,42 @@
+﻿.voccomment-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--back-default-color);
+    padding: var(--default-pd);
+}
+
+
+.voccomment-container .voccomment-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+
+.voccomment-container .title{
+    display:flex;
+    align-items:center;
+    height:35px;
+    color:var(--main-color);
+}
+
+.voccomment-container .voccomment-content{
+   overflow : hidden;
+}
+
+.voccomment-overflow{
+    display: flex;
+    flex-direction: column;
+    /*justify-content: space-evenly;*/
+    gap: var(--default-pd);
+    height: 100%;
+    padding: var(--default-pd);
+
+    overflow :auto;
+}

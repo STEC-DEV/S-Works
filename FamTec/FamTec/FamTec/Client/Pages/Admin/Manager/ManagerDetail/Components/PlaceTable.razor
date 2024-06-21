@@ -1,0 +1,108 @@
+﻿@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Shared.Client.DTO
+﻿
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+
+@inject HttpClient HttpClient
+
+<div class="placetable-container">
+    <div class="placetable-title">
+        <span class="title">
+            사업장 목록
+        </span>
+        <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
+    </div>
+    <div class="placetable-table">
+        <Table DataList="FilterPlaceList" Select="OnSelected"/>
+    </div>
+    <div class="placetable-count">
+        <span>
+            선택 : @SelectCount
+        </span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddManagerPlaceDTO NewManagerPlace { get; set; }
+    [Parameter] public int Id { get; set; }
+    List<PlaceTableDTO> PlaceList;
+    int SelectCount = 0;
+
+    //검색 변수
+    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
+    string searchText = string.Empty;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await OnLoadManagerPlace();
+    }
+
+    /*
+     * 매니저 사업장 조회
+     */
+    private async Task OnLoadManagerPlace()
+    {
+        try
+        {
+            ResponseList<PlaceTableDTO> resManagerPlace = await apiManager.GetListAsync<PlaceTableDTO>($"AdminPlace/sign/MyWorks/?adminid={Id}");
+            if (resManagerPlace.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert","매니저 사업장 조회 실패");
+                //이전페이지로 되돌릴지 말지 선택
+                return;
+            }
+            PlaceList = resManagerPlace.data;
+            PlaceList.RemoveAll(place => place.Status == 0);
+            FilterPlaceList = PlaceList;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
+            Console.WriteLine("[Admin][Manager] 매니저 사업장 조회 실패 \n" + ex);
+            return;
+        }
+    }
+
+    /*
+    * 사업장 선택
+    */
+    public void OnSelected((bool isCheck, int id) selection)
+    {
+        if (NewManagerPlace == null)
+        {
+            Console.WriteLine("dd");
+        }
+        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        if (!selection.isCheck)
+        {
+            NewManagerPlace.PlaceList.Remove(selection.id);
+            SelectCount--;
+        }
+        else
+        {
+            Console.WriteLine("추가함");
+            NewManagerPlace.PlaceList.Add(selection.id);
+            SelectCount++;
+        }
+        
+    }
+
+      /*
+     * 검색 데이터 필터링
+    */
+    private void OnSearchTextChanged(string text)
+    {
+        // searchText = e.Value.ToString();
+        searchText = text;
+        FilterPlaceList = string.IsNullOrEmpty(searchText)
+            ? PlaceList
+            : PlaceList.Where(p => p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   p.PlaceCd.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   p.ContractNum.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+    }
+
+}

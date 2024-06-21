@@ -1,0 +1,93 @@
+﻿@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.Admin.Manager.ManagerMain.Modal
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+
+
+@inject HttpClient HttpClient
+
+<div class="depart-container">
+    <div class="depart-wrap">
+        <div class="depart-title">
+            <span class="title">
+                부서관리
+            </span>
+        </div>
+        <div class="depart-content">
+            <DepartmentList DataList="departmentList" />
+        </div>
+        <div class="depart-btns">
+            @if(UserType != "매니저")
+            {
+                <Button Name="편집" OnClick="@OnEdit" />
+            }
+            
+        </div>
+        @if (is_openModal == true)
+        {
+            <ModalBackground >
+                <ChildComponent>
+                    <ModalDepartment OnClose="@OnModalClose" OnListSync="ReloadDepartments" />
+                </ChildComponent>
+            </ModalBackground>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? UserType{ get; set; }
+
+    List<DepartmentDTO>? departmentList = new List<DepartmentDTO>();
+    private bool is_openModal = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("부서관리 컴포넌트 활성화");
+        await LoadDepartments();
+
+    }
+
+    private async Task LoadDepartments()
+    {
+        try
+        {
+            ResponseList<DepartmentDTO> resDepartment = await apiManager.GetListAsync<DepartmentDTO>("Department/sign/GetDepartmentList");
+            if (resDepartment.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "부서 조회 실패"); 
+                return;
+            }
+
+            departmentList = resDepartment.data;
+            
+        }catch(Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 클라이언트 부서 조회 에러");
+        }
+
+    }
+
+    private async Task ReloadDepartments()
+    {
+        await LoadDepartments();
+    }
+
+
+    /*
+    * click add
+    */
+    private void OnEdit()
+    {
+        Console.WriteLine("모달");
+        is_openModal = true;
+    }
+
+    private void OnModalClose()
+    {
+        is_openModal = false;
+        StateHasChanged();
+    }
+}
+

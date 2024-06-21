@@ -1,0 +1,28 @@
+﻿@page "/admin/manager/{Id:int}"
+@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.Admin.Manager.ManagerDetail.Components
+@using FamTec.Shared.Client.DTO.Manager
+
+
+<div class="managerdetail-container yappear">
+    <div class="managerdetail-wrap">
+        <div class="managerdetail-info">
+            <SignForm Id="Id"/>
+        </div>
+        <div class="managerdetail-place">
+            <PlaceTable Id=Id/>
+        </div>
+    </div>
+    <div class="managerdetail-btns">
+        <Button Name="편집" Width=true/>
+        <Button Name="뒤로" Width=true Type=true/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

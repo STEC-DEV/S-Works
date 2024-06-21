@@ -1,0 +1,21 @@
+﻿.status {
+    display: inline-block;
+    padding: var(--one-q-pd) var(--half-pd);
+    /*padding : .2em .6em .3em;*/
+    font-size: var(--normal-size);
+    font-weight: 500;
+    color: var(--default-color);
+    border-radius: .25em;
+}
+
+.status-0 {
+    background-color: var(--status-0);
+}
+
+.status-1 {
+    background-color: var(--status-1);
+}
+
+.status-2 {
+    background-color: var(--status-2);
+}

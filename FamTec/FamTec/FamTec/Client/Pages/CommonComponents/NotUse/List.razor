@@ -1,0 +1,31 @@
+﻿
+<ul class="list-container">
+    @foreach (var item in DataList)
+    {
+        <li class="list-item">
+                <div class="item-img">
+                    <img alt="이미지" />
+                </div>
+                <div class="item-info">
+                    <div class="item-name">
+                        <span>아이디</span>
+                        <span>이름</span>
+                    </div>
+                    <span>
+                        부서
+                    </span>
+                </div>
+                <input class="item-checkbox" type="checkbox"/>
+            
+            
+        </li>
+    }
+    
+</ul>
+
+
+@code {
+    [Parameter] public List<object>? DataList { get; set; }
+
+
+}

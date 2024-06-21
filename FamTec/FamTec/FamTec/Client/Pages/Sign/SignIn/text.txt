@@ -1,0 +1,46 @@
+                // if (LoginMode == 1)
+                // {
+                //      resLogin = await HttpClient.PostAsJsonAsync("http://123.2.156.148:5245/api/AdminUser/Login", user);
+
+                // }
+                // else
+                // {
+                //     resLogin = await HttpClient.PostAsJsonAsync("http://123.2.156.148:5245/api/Login/UserLogin", user);
+                // }
+                
+                
+                // if (resLogin.IsSuccessStatusCode)
+                // {
+
+                //     /*
+                //     * 세션 스토리지 저장
+                //     * 메인페이지 이동
+                //     */
+                //     var token = await resLogin.Content.ReadAsStringAsync();
+                //     Console.WriteLine(token);
+                //     var res = JsonSerializer.Deserialize<ResponseUnit<string>>(token);
+                //     if (res.code != 200)
+                //     {
+                //         await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 일치하지 않습니다.");
+                //         user = new LoginDTO();
+                //         return;
+                //     }
+                //     await sessionStorage.SetItemAsStringAsync("SWORKSSESSION", res.data);
+                //     await sessionStorage.SetItemAsync("LoginMode", Convert.ToInt32(LoginMode));
+
+                    
+                //     HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", res.data);
+
+
+                //     //var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+
+
+                //     //string temp = await tokenconvert.GetClaimValue(session, "SWORKSSESSION");
+
+
+                    
+               
+
+                //     NavigationManager.NavigateTo("/");
+
+                // }

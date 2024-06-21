@@ -1,0 +1,28 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Client.Pages.Normal.Voc.Components
+
+<div class="vocinfo-container">
+    <div class="vocinfo-wrap">
+        <div class="vocinfo-title">
+            <span class="title">
+                민원 내용
+            </span>
+            <StatusCard Status=@Data.Status.ToString()/>
+        </div>
+        <div class="vocinfo-content">
+            <TextField Label="위치" Context=@Data.Location/>
+            @* <TextField Label="구분" Context=@Data.Type /> *@
+            <TextField Label="작성자" Context=@Data.Writer />
+            <TextField Label="전화번호" Context=@Data.Tel />
+            <TextField Label="제목" Context=@Data.Title/>
+            <TextField Label="내용" Context=@Data.Context />
+            <TextField Label="발생 시각" Context=@Data.Occur_DT.ToString()/>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public ListVoc Data { get; set; }
+
+    string context = "지금 A건물 3층 화장실을 사용했는데 바닥에 타일이 깨져있더라구요 순간적으로 발을 삐끗해서 이거 사람들이 다칠수 있을것같아요 빠른조치 부탁드립니다.";
+}

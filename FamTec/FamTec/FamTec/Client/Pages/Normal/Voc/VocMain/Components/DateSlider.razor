@@ -1,0 +1,71 @@
+﻿@* @inject IJSRuntime JS *@
+
+
+<div class="dateslider-container">
+    <div class="dateslider-btn" @onclick = "@OnBeforeDate">
+        before
+    </div>
+    <div class="dateslider-display">
+        <span class="year">@DisplayYear.</span>
+        <span class="month">@DisplayMonth</span>
+    </div>
+    <div class="dateslider-btn" @onclick="@OnAfterDate">
+        <span class="arrowR">after</span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime CreateDate { get; set; }
+
+    private DateTime CurrentDate = DateTime.Now;
+    private string currentDate;
+    private string createDate;
+
+    private string DisplayYear;
+    private string DisplayMonth;
+    private string DisplayDate;
+
+    protected override void OnInitialized()
+    {
+        currentDate = CurrentDate.ToString("yyyyMM");
+        createDate = CreateDate.ToString("yyyyMM");
+        DisplayYear = CreateDate.ToString("yyyy");
+        DisplayMonth = CreateDate.ToString("MM");
+        DisplayDate = createDate; // 초기화
+    }
+
+    private void OnUpdateDisplayDate()
+    {
+        DisplayDate = DisplayYear + DisplayMonth;
+    }
+
+    private void OnBeforeDate()
+    {
+        if (int.Parse(DisplayDate) > int.Parse(createDate))
+        {
+            DisplayMonth = DisplayMonth == "01" ? "12" : (int.Parse(DisplayMonth) - 1).ToString("00");
+            DisplayYear = DisplayMonth == "12" ? (int.Parse(DisplayYear) - 1).ToString() : DisplayYear;
+            
+            OnUpdateDisplayDate();
+        }
+        else
+        {
+            JS.InvokeVoidAsync("alert", "이전 내용이 존재하지 않습니다.");
+        }
+    }
+
+    private void OnAfterDate()
+    {
+        if (int.Parse(DisplayDate) < int.Parse(currentDate))
+        {
+            DisplayMonth = DisplayMonth == "12" ? "01" : (int.Parse(DisplayMonth) + 1).ToString("00");
+            DisplayYear = DisplayMonth == "01" ? (int.Parse(DisplayYear) + 1).ToString() : DisplayYear;
+
+            OnUpdateDisplayDate();
+        }
+        else
+        {
+            JS.InvokeVoidAsync("alert", "이후 내용이 존재하지 않습니다.");
+        }
+    }
+}

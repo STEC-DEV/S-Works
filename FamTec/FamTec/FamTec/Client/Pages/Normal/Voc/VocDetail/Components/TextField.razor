@@ -1,0 +1,16 @@
+﻿
+<div class="textfield">
+    <label class="label">
+        @Label
+    </label>
+    <div class="content">
+        <p class="text">
+            @Context
+        </p>
+    </div>
+</div>
+
+@code{
+    [Parameter] public string? Label {get; set;}
+    [Parameter] public string? Context { get; set; }
+}

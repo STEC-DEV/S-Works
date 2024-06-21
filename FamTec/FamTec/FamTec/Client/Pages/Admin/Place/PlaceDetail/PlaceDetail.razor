@@ -1,0 +1,82 @@
+﻿@page "/admin/place/{Id:int}"
+@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.Admin.Place.PlaceDetail.Components
+
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Admin.Place
+@using FamTec.Shared.Server.DTO.Place
+@inject HttpClient HttpClient
+
+<div class="placedetail-container yappear">
+    <div class="placedetail-wrap">
+        <div class="placedetail-info">
+            <PlaceForm placeInfo="PlaceInfo" EditMode=PlaceEdit />
+        </div>
+        <div class="placedetail-option">
+            <div class="placedetail-toggle">
+                <PlaceToggle placePerm=PlacePerm EditMode=PlaceEdit />
+            </div>
+            <div class="placedetail-manager">
+                <PlaceTable DataList="ManagerList" EditMode=PlaceEdit />
+            </div>
+        </div>
+    </div>
+    <div class="placedetail-btns">
+        @if(PlaceEdit){
+            <Button Name="저장" Width="true" />
+            <Button Name="취소" Width="true" OnClick="DetailMode" />
+        }else{
+            <Button Name="편집" Width="true" OnClick="EditMode" />
+            <Button Name="나가기" Width="true" Type=true/>
+        }
+        
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+
+    List<ManagerListDTO> ManagerList;
+    PlaceInfo PlaceInfo = new PlaceInfo();
+    PlacePerm PlacePerm = new PlacePerm();
+    PlaceDetailDTO resPlaceDetail;
+
+    bool PlaceEdit = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //ResponseObj<PlaceDetail2DTO> res = await HttpClient.GetFromJsonAsync<ResponseObj<PlaceDetail2DTO>>($"http://127.0.0.1:5245/api/place/detail/?Id={Id}");
+        await LoadPlaceDetailInfo();
+
+        // Console.WriteLine(res);
+    }
+
+    private async Task LoadPlaceDetailInfo()
+    {
+        // ResponseUnit<PlaceDetailDTO> res = await HttpClient.GetFromJsonAsync<ResponseUnit<PlaceDetailDTO>>($"http://123.2.156.148:5245/api/AdminPlace/DetailWorks/?placeid={Id}");
+        ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
+
+
+        ManagerList = res.data.ManagerList;
+        PlaceInfo = res.data.PlaceInfo;
+        PlacePerm = res.data.PlacePerm;
+    }
+
+
+    private void EditMode()
+    {
+        PlaceEdit = true;
+        StateHasChanged();
+    }
+
+    private void DetailMode()
+    {
+        PlaceEdit = false;
+        StateHasChanged();
+    }
+}
+    

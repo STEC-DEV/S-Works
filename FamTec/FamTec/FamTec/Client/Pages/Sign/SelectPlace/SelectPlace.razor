@@ -1,0 +1,65 @@
+﻿@page "/select"
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.CommonComponents
+
+<div class="selectplace-container">
+    <div class="selectplace-wrap">
+        <div class="selectplace-title">
+            <div class="selectplace-btns">
+                <CircleButton color="0"/>
+                <CircleButton color="1" />
+                <CircleButton color="2" />
+            </div>
+            <span class="title">
+                사업장 목록
+            </span>
+            <MacButton Name="Enter" OnClick="@EnterPlace" />
+        </div>
+        <div class="selectplace-list">
+            <PlaceList ListData="@placeData" OnSelected="@HandlePlaceSelected" />
+        </div>
+        <div class="selectplace-btns">
+            
+        </div>
+    </div>
+    
+</div>
+
+
+@code {
+    List<PlaceTableDTO> placeData = new List<PlaceTableDTO>();
+    int SelectPlaceId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadPlaceList();
+    }
+
+    private async Task OnLoadPlaceList()
+    {
+        ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("Login/sign/AdminPlaceList");
+        if (res.code == 200) placeData = res.data;
+    }
+
+    private void HandlePlaceSelected(int selectedId)
+    {
+        SelectPlaceId = selectedId;
+        Console.WriteLine($"Selected place ID: {SelectPlaceId}");
+    }
+
+    private async void EnterPlace()
+    {
+        Console.WriteLine(SelectPlaceId);
+        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
+
+        if(res.code == 200)
+        {
+            customStateProvider.UpdateTokenAsync(res.data);
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        Console.WriteLine(res.data);
+    }
+}

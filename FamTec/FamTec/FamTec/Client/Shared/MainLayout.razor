@@ -1,0 +1,86 @@
+﻿@using FamTec.Client.Middleware
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject SessionService SessionService
+@inherits LayoutComponentBase
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager
+
+
+<div class="page">
+    @{
+        if (user?.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="nav">
+                <Nav />
+            </div>
+
+            <main>
+                <div class="drawer">
+                    <Drawer IsUser=LoginMode />
+                </div>
+
+                <article class="content">
+                    @Body
+                </article>
+            </main>
+        }
+        else
+        {
+            <main>
+                @Body
+            </main>
+        }
+    }
+</div>
+@code {
+    private AuthenticationState authenticationState;
+    private ClaimsPrincipal user;
+    private int LoginMode;
+    private bool IsLogin = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("[메인 레이아웃]");
+        Console.WriteLine("[이니셜]");
+        // 비동기로 인증 상태를 가져오기 위해 AuthenticationStateProvider를 사용합니다.
+
+        authenticationState = await customStateProvider.GetAuthenticationStateAsync();
+        user = authenticationState.User;
+        if (!(authenticationState?.User?.Identity?.IsAuthenticated ?? false))
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            await LoadsessionData();
+            if (LoginMode == 1 && !IsLogin)
+            {
+                await sessionStorage.SetItemAsync("IsLogin", true);
+                Navigation.NavigateTo("/admin/place");
+                return;
+            }
+            else if (LoginMode == 0 && !IsLogin)
+            {
+                await sessionStorage.SetItemAsync("IsLogin", true);
+                Navigation.NavigateTo("/user");
+                return;
+            }
+
+        }
+
+    }
+
+    private async Task LoadsessionData()
+    {
+        LoginMode = int.Parse(await sessionStorage.GetItemAsStringAsync("LoginMode"));
+        IsLogin = await sessionStorage.GetItemAsync<bool>("IsLogin");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+    }
+}
+
+

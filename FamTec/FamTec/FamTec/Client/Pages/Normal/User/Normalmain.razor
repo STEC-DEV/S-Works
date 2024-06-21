@@ -1,0 +1,27 @@
+﻿@page "/user"
+
+<h3>Usermain</h3>
+<p>@_userName</p>
+<p>@_userJob</p>
+<div class="user">
+    @sessionData
+</div>
+
+
+@code {
+    private string _userJob{ get; set; }
+    private string _userName { get; set; }
+    string sessionData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSession();
+    }
+
+    private async Task LoadSession()
+    {
+        sessionData = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+        _userJob = await SessionService.GetClaimValue(sessionData, "Job");
+        _userName = await SessionService.GetClaimValue(sessionData, "Name");
+    }
+}

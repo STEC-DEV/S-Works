@@ -1,0 +1,101 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@typeparam T
+
+<table class="table">
+    <thead class="thead">
+        <tr class="tr">
+            <th class="th">
+                <span>
+                    User
+                </span>
+            </th>
+            <th class="th text-center">
+                <span>
+                    Type
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Email
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Created
+                </span>
+            </th>
+            <th class="th text-center">
+                <span>
+                    Status
+                </span>
+            </th>
+
+            @if (EditMode)
+            {
+                <th class="th table-select"></th>
+            }
+        </tr>
+    </thead>
+    <tbody class="tbody">
+            @if(Data == null)
+            {
+                <p>...Loading</p>
+            }
+            else
+            {
+                @foreach (var row in Data)
+                {
+                <tr class="tbody-tr">
+                    <td class="td userinfo">
+                        <img class="table-img" alt=""/>
+                        <div class="title-wrap">
+                            <a class="maintitle">
+                                @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()
+                            </a>
+                            <span class="subtitle italic">
+                                @typeof(T).GetProperty("UserId")?.GetValue(row)?.ToString()
+                            </span>
+                        </div>
+                        
+                    </td>
+                    <td class="td text-center">
+                        <span class="subtitle">
+                            @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
+                        </span>
+                    </td>
+                    <td class="td">
+                        <span class="subtitle">
+                            @typeof(T).GetProperty("Email")?.GetValue(row)?.ToString()
+                        </span>
+                    </td>
+                    <td class="td">
+                        <span class="subtitle">
+                            @typeof(T).GetProperty("Created")?.GetValue(row)?.ToString()
+                        </span>
+                    </td>
+                    <td class="td text-center">
+                        <span class="subtitle">
+                            <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
+                           
+                            
+                        </span>
+                    </td>
+                    @if (EditMode)
+                    {
+                        <td class="td">
+                            <input type="checkbox" />
+                        </td>
+                    }
+                 </tr>
+                }
+            }
+        
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public List<T>? Data { get; set; }
+
+}
