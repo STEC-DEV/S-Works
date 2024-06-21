@@ -67,7 +67,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     for (int i = 0; i < modellist.Count(); i++)
                     {
-                        modellist[i].DelYn = 1;
+                        modellist[i].DelYn = true;
                         modellist[i].DelDt = DateTime.Now;
 
                         context.AdminPlaceTbs.Update(modellist[i]);
@@ -98,7 +98,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(adminid is not null)
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != 1).ToListAsync();
+                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
 
                     if(adminplacetb is [_, ..])
                         return adminplacetb;
@@ -128,7 +128,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(adminid is not null)
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != 1).ToListAsync();
+                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
 
                     if(adminplacetb is [_, ..])
                     {
@@ -139,8 +139,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             List<AdminPlaceDTO>? result = (from admin in adminplacetb
                                                    join place in placetb
                                                    on admin.PlaceId equals place.Id
-                                                   where place.DelYn != 1
-                                                   select new AdminPlaceDTO
+                                                   where place.DelYn != true
+                                                           select new AdminPlaceDTO
                                                    {
                                                       Id = place.Id,
                                                       PlaceCd = place.PlaceCd,
@@ -193,15 +193,15 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if (adminidx is not null)
                 {
-                    AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != 1);
+                    AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != true);
 
                     if (admintb is not null)
                     {
-                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != 1);
+                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != true);
 
                         if (departmenttb is not null)
                         {
-                            UserTb? usertb = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != 1);
+                            UserTb? usertb = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
 
                             if (usertb is not null)
                             {
@@ -260,10 +260,10 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 if(model is [_, ..])
                 {
                     List<PlaceTb>? result =  (from adminplacetb in model
-                                            join placetb in context.PlaceTbs.Where(m => m.DelYn != 1)
+                                            join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
                                             on adminplacetb.PlaceId equals placetb.Id
-                                            where adminplacetb.DelYn != 1 && placetb.DelYn != 1
-                                            select new PlaceTb
+                                            where adminplacetb.DelYn != true && placetb.DelYn != true
+                                              select new PlaceTb
                                             {
                                                 Id = placetb.Id,
                                                 PlaceCd = placetb.PlaceCd,
@@ -322,7 +322,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if (placeid is not null)
                 {
-                    PlaceTb? place = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != 1);
+                    PlaceTb? place = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != true);
 
                     if (place is not null)
                     {
@@ -334,7 +334,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                             on admintb.UserTbId equals usertb.Id
                                                             join departmenttb in context.DepartmentTbs.ToList()
                                                             on admintb.DepartmentTbId equals departmenttb.Id
-                                                            where (admintb.DelYn != 1 && adminplacetb.DelYn != 1)
+                                                            where (admintb.DelYn != true && adminplacetb.DelYn != true)
                                                             select new ManagerListDTO
                                                             {
                                                                 Id = admintb.Id,
@@ -406,7 +406,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(placeid is not null)
                 {
-                    AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != 1 && m.PlaceId == placeid);
+                    AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceId == placeid);
 
                     if(adminplacetb is not null)
                     {

@@ -85,7 +85,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 if (usertbid is not null)
                 {
-                    AdminTb? model = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != 1);
+                    AdminTb? model = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true);
                     if (model is not null)
                     {
                         return model;
@@ -118,7 +118,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 List<ManagerListDTO>? model = await context.AdminTbs
-                    .Where(m => m.DelYn != 1)
+                    .Where(m => m.DelYn != true)
                     .Include(m => m.UserTb)
                     .Include(m => m.DepartmentTb)
                     .Select(m => new ManagerListDTO

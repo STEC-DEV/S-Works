@@ -500,7 +500,7 @@ namespace FamTec.Server.Services.Admin.Place
                 {
                     // 모델조회
                     PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeidx[i]);
-                    placetb!.DelYn = 1;
+                    placetb!.DelYn = true;
                     placetb!.DelDt = DateTime.Now;
                     placetb!.DelUser = deleter;
 

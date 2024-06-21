@@ -319,8 +319,8 @@ public partial class BuildingTb
     /// <summary>
     /// 삭제여부
     /// </summary>
-    [Column("DEL_YN", TypeName = "tinyint(4)")]
-    public sbyte? DelYn { get; set; }
+    [Column("DEL_YN")]
+    public bool? DelYn { get; set; }
 
     /// <summary>
     /// 삭제일
@@ -343,6 +343,9 @@ public partial class BuildingTb
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<FloorTb> FloorTbs { get; set; } = new List<FloorTb>();
+
+    [InverseProperty("BuildingTb")]
+    public virtual ICollection<MaterialTb> MaterialTbs { get; set; } = new List<MaterialTb>();
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<MeterReaderTb> MeterReaderTbs { get; set; } = new List<MeterReaderTb>();

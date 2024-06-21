@@ -14,11 +14,6 @@ namespace FamTec.Shared.Server.DTO.Material
         public int ID { get; set; }
 
         /// <summary>
-        /// 자재(품목) CODE
-        /// </summary>
-        public string? MaterialCode { get; set; }
-        
-        /// <summary>
         /// 자재(품목)명
         /// </summary>
         public string? Name { get; set; }

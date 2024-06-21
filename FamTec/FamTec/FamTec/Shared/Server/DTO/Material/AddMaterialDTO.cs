@@ -9,21 +9,6 @@ namespace FamTec.Shared.Server.DTO.Material
     public class AddMaterialDTO
     {
         /// <summary>
-        /// 자재(품목) INDEX
-        /// </summary>
-        public int ID { get; set; }
-
-        /// <summary>
-        /// 입출고 구분 I:IN / O:OUT
-        /// </summary>
-        public string? Category { get; set; }
-
-        /// <summary>
-        /// 자재코드
-        /// </summary>
-        public string? MaterialCode { get; set; }
-
-        /// <summary>
         /// 자재명
         /// </summary>
         public string? Name { get; set; }
@@ -32,6 +17,11 @@ namespace FamTec.Shared.Server.DTO.Material
         /// 단위
         /// </summary>
         public string? Unit { get; set; }
+
+        /// <summary>
+        /// 자재위치
+        /// </summary>
+        public string? Default_Location { get; set; }
 
         /// <summary>
         /// 규격
@@ -44,15 +34,14 @@ namespace FamTec.Shared.Server.DTO.Material
         public string? Mfr { get; set; }
 
         /// <summary>
-        /// 안전재고
+        /// 안전재고 수량
         /// </summary>
         public int? SafeNum { get; set; }
 
         /// <summary>
-        /// 재고위치
+        /// 건물인덱스
         /// </summary>
-        public int? RoomIdx { get; set; }
-
+        public int? BuildingId { get; set; }
 
     }
 }

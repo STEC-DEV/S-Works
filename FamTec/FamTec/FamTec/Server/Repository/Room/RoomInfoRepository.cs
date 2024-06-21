@@ -58,7 +58,7 @@ namespace FamTec.Server.Repository.Room
             {
                 if (flooridx is not null)
                 {
-                    List<RoomTb>? model = await context.RoomTbs.Where(m => m.DelYn != 1 && m.FloorTbId == flooridx).ToListAsync();
+                    List<RoomTb>? model = await context.RoomTbs.Where(m => m.DelYn != true && m.FloorTbId == flooridx).ToListAsync();
 
                     if (model is [_, ..])
                         return model;

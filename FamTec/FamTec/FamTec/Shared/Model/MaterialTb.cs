@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("material_tb")]
+[Index("BuildingTbId", Name = "BuildingTbId_202406211648")]
+[Index("PlaceTbId", Name = "PlaceTbId_202406211648")]
 public partial class MaterialTb
 {
     /// <summary>
@@ -86,8 +88,8 @@ public partial class MaterialTb
     /// <summary>
     /// 삭제여부
     /// </summary>
-    [Column("DEL_YN", TypeName = "tinyint(4)")]
-    public sbyte? DelYn { get; set; }
+    [Column("DEL_YN")]
+    public bool? DelYn { get; set; }
 
     /// <summary>
     /// 삭제일
@@ -96,11 +98,31 @@ public partial class MaterialTb
     public DateTime? DelDt { get; set; }
 
     /// <summary>
-    /// 삭제자
+    /// 삭제여부
     /// </summary>
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
+
+    /// <summary>
+    /// (외래키) 사업장 아이디
+    /// </summary>
+    [Column("PLACE_TB_ID", TypeName = "int(11)")]
+    public int? PlaceTbId { get; set; }
+
+    /// <summary>
+    /// (외래키) 건물 아이디
+    /// </summary>
+    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
+    public int? BuildingTbId { get; set; }
+
+    [ForeignKey("BuildingTbId")]
+    [InverseProperty("MaterialTbs")]
+    public virtual BuildingTb? BuildingTb { get; set; }
+
+    [ForeignKey("PlaceTbId")]
+    [InverseProperty("MaterialTbs")]
+    public virtual PlaceTb? PlaceTb { get; set; }
 
     [InverseProperty("MaterialTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();

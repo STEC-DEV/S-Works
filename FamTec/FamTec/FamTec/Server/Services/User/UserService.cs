@@ -98,7 +98,6 @@ namespace FamTec.Server.Services.User
                             }
 
 
-                            
                             JObject items = new JObject();
 
                             /* 메뉴 접근권한 */

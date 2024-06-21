@@ -56,15 +56,15 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 {
                     for (int i = 0; i < selList.Count; i++)
                     {
-                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == selList[i] && m.DelYn != 1);
+                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == selList[i] && m.DelYn != true);
                         
                         if (departmenttb is not null)
                         {
-                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.DepartmentTbId == departmenttb.Id && m.DelYn != 1);
+                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.DepartmentTbId == departmenttb.Id && m.DelYn != true);
                             
                             if(admintb is null)
                             {
-                                departmenttb.DelYn = 1;
+                                departmenttb.DelYn = true;
                                 departmenttb.DelDt = DateTime.Now;
                                 
                                 context.DepartmentTbs.Update(departmenttb);
@@ -132,7 +132,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         {
             try
             {
-                List<DepartmentTb>? model = await context.DepartmentTbs.Where(m => m.DelYn != 1).ToListAsync();
+                List<DepartmentTb>? model = await context.DepartmentTbs.Where(m => m.DelYn != true).ToListAsync();
 
                 if (model is [_, ..])
                     return model;
@@ -160,7 +160,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
 
                     DepartmentTb? model = await context.DepartmentTbs
                         .FirstOrDefaultAsync(m => m.Id.Equals(Id) &&
-                        m.DelYn != 1);
+                        m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -193,7 +193,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 {
                     DepartmentTb? model = await context.DepartmentTbs
                         .FirstOrDefaultAsync(m => m.Name.Equals(Name)
-                        && m.DelYn != 1);
+                        && m.DelYn != true);
 
                     if (model is not null)
                         return model;

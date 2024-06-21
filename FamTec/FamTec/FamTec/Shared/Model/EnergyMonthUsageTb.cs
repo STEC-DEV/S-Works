@@ -89,6 +89,30 @@ public partial class EnergyMonthUsageTb
     [Column("DEV")]
     public float? Dev { get; set; }
 
+    [Column("CREATE_DT", TypeName = "datetime")]
+    public DateTime? CreateDt { get; set; }
+
+    [Column("CREATE_USER")]
+    [StringLength(255)]
+    public string? CreateUser { get; set; }
+
+    [Column("UPDATE_DT", TypeName = "datetime")]
+    public DateTime? UpdateDt { get; set; }
+
+    [Column("UPDATE_USER")]
+    [StringLength(255)]
+    public string? UpdateUser { get; set; }
+
+    [Column("DEL_YN")]
+    public bool? DelYn { get; set; }
+
+    [Column("DEL_DT", TypeName = "datetime")]
+    public DateTime? DelDt { get; set; }
+
+    [Column("DEL_USER")]
+    [StringLength(255)]
+    public string? DelUser { get; set; }
+
     /// <summary>
     /// (외래키)검침기 인덱스
     /// </summary>

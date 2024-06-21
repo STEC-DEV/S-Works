@@ -33,7 +33,7 @@ namespace FamTec.Server.Controllers.ClientController
             {
                 Console.WriteLine("매니저 전체조회");
                 List<ManagerDTO> res = await _workContext.AdminTbs
-                    .Where(a => a.DelYn == 0)
+                    .Where(a => a.DelYn != true)
                     .Include(a => a.UserTb)
                     .Include(a => a.DepartmentTb)
                     .Select(a => new ManagerDTO
@@ -156,7 +156,7 @@ namespace FamTec.Server.Controllers.ClientController
             {
                 Console.WriteLine("부서 전체 조회");
                 List<DepartmentTb> res = await _workContext.DepartmentTbs
-                    .Where(d => d.DelYn == 0)
+                    .Where(d => d.DelYn != true)
                     .ToListAsync();
                 List<DepartmentDTO> departmentList = res.Select(departTb => new DepartmentDTO
                 {
@@ -239,7 +239,7 @@ namespace FamTec.Server.Controllers.ClientController
                 }
                 foreach (var department in departments)
                 {
-                    department.DelYn = 1;
+                    department.DelYn = true;
                 }
 
                 await _workContext.SaveChangesAsync();

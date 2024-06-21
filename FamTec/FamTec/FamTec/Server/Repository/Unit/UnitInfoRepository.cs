@@ -55,7 +55,7 @@ namespace FamTec.Server.Repository.Unit
             {
                 if(placeid is not null)
                 {
-                    List<UnitTb>? model = await context.UnitTbs.Where(m => m.PlaceTbId == null || m.PlaceTbId == placeid && m.DelYn != 1).ToListAsync();
+                    List<UnitTb>? model = await context.UnitTbs.Where(m => m.PlaceTbId == null || m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -86,7 +86,7 @@ namespace FamTec.Server.Repository.Unit
             {
                 if(UnitIdx is not null)
                 {
-                    UnitTb? model = await context.UnitTbs.FirstOrDefaultAsync(m => m.Id == UnitIdx && m.DelYn != 1);
+                    UnitTb? model = await context.UnitTbs.FirstOrDefaultAsync(m => m.Id == UnitIdx && m.DelYn != true);
 
                     if (model is not null)
                         return model;

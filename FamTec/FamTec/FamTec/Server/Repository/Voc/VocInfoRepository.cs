@@ -57,8 +57,8 @@ namespace FamTec.Server.Repository.Voc
                     List<ListVoc>? model =  (from bulidtbs in buildinglist
                                           join voctbs in context.VocTbs.Where(m => EF.Functions.Like(m.CreateDt, $"{date}%"))
                                           on bulidtbs.Id equals voctbs.BuildingTbId
-                                          where bulidtbs.DelYn != 1 && voctbs.DelYn != 1
-                                          select new ListVoc
+                                          where bulidtbs.DelYn != true && voctbs.DelYn != true
+                                        select new ListVoc
                                           {
                                              Id = voctbs.Id,
                                              Writer =voctbs.Name,

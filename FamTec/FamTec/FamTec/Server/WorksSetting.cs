@@ -40,18 +40,18 @@ namespace FamTec.Server
             department.CreateUser = LevelCode.시스템관리자.ToString();
             department.UpdateDt = DateTime.Now;
             department.UpdateUser = LevelCode.시스템관리자.ToString();
-            department.DelYn = 0;
+            department.DelYn = false;
 
             DepartmentTb? selectDepartment = await context.DepartmentTbs
                 .FirstOrDefaultAsync(m =>
                 m.Name!.Equals("에스텍시스템") && 
-                m.DelYn != 1);
+                m.DelYn != true);
 
             if(selectDepartment is null)
             {
                 context.DepartmentTbs.Add(department);
                 await context.SaveChangesAsync();
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != 1);
+                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
             else
             {
@@ -71,7 +71,7 @@ namespace FamTec.Server
                 context.DepartmentTbs.Update(selectDepartment);
                 await context.SaveChangesAsync();
 
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != 1);
+                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
 
             UserTb? user = new UserTb();
@@ -101,7 +101,7 @@ namespace FamTec.Server
             user.CreateUser = LevelCode.시스템관리자.ToString();
             user.UpdateDt = DateTime.Now;
             user.UpdateUser = LevelCode.시스템관리자.ToString();
-            user.DelYn = 0;
+            user.DelYn = false;
             user.Job = LevelCode.시스템관리자.ToString();
 
             

@@ -225,7 +225,7 @@ namespace FamTec.Server.Services.Building
                         
                         if (model is not null)
                         {
-                            model.DelYn = 1;
+                            model.DelYn = true;
                             model.DelDt = DateTime.Now;
                             model.DelUser = session.Name;
 
