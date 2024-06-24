@@ -554,12 +554,44 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.User.UserController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/User/sign/DeleteUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "delIdx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.User.UserController",
     "Method": "GetUserList",
     "RelativePath": "api/User/sign/GetPlaceUsers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.User.UserController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/User/sign/UpdateUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.User.UpdateUserDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

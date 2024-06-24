@@ -1,6 +1,6 @@
 ﻿@layout MainLayout2
 
-@page "/VocSubmit/{buildingid?}" 
+@page "/VocSubmit/{placeid?}/{buildingid?}" 
 @using Microsoft.Net.Http.Headers
 
 @using System.Text
@@ -19,6 +19,8 @@
     }
 </style>
 
+<p>확인용 PLACEID</p>
+<p>@PlaceId</p>
 <h1>민원 접수</h1>
 
 <div style="display:flex; flex-direction:column; align-items:start; justify-content: space-between;">
@@ -112,7 +114,6 @@
 
     MultipartFormDataContent? content = new MultipartFormDataContent();
 
-
     protected override async Task OnInitializedAsync()
     {
         dto = new VocDTO();
@@ -159,6 +160,7 @@
                 Contents = dto.Contents, // 내용
                 PhoneNumber = dto.PhoneNumber, // 전화번호
                 buildingidx = dto.buildingidx, // 건물인덱스
+                PlaceIdx = dto.PlaceIdx
             }), System.Text.Encoding.UTF8, "application/json");
 
         content.Add(jsonContent);

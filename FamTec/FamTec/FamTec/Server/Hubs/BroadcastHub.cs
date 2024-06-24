@@ -11,7 +11,6 @@ namespace FamTec.Server.Hubs
         /// <param name="userid"></param>
         /// <param name="roomName"></param>
         /// <returns></returns>
-        [AllowAnonymous]
         public async Task JoinRoomAsync(string roomName)
         {
             /*
@@ -30,7 +29,6 @@ namespace FamTec.Server.Hubs
         /// <param name="userid"></param>
         /// <param name="roomName"></param>
         /// <returns></returns>
-        [AllowAnonymous]
         public async Task RemoveRoomAsync(string roomName)
         {
             Console.WriteLine(Context.ConnectionId);
@@ -41,7 +39,7 @@ namespace FamTec.Server.Hubs
         // 이건 안쓸듯.
         public async Task SendMessageAsync(string message, string roomName)
         {
-            await Clients.Group(roomName).SendAsync("ReceiveVoc", $"{message}");
+            await Clients.Group("35_BeautyRoom").SendAsync("ReceiveVoc", $"{message}");
         }
 
       

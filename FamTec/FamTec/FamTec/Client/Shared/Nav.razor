@@ -62,6 +62,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Console.WriteLine("설마안타?");
         if (firstRender)
         {
             #region SIGNAL R 메시지 받는곳
@@ -69,18 +70,15 @@
             {
                 Console.WriteLine(message);
             });
-            #endregion
-            
-            // 다시재연결 필요하면 이거 쓰면될듯
-            /*
-            HubObject.hubConnection!.Closed += async (exception) =>
-            {
-                await HubObject.hubConnection.StartAsync(); // 다시재연결
-            };
-            */
-        
-
         }
+        #endregion
+            
+        // 다시재연결 필요하면 이거 쓰면될듯
+      
+        HubObject.hubConnection!.Closed += async (exception) =>
+        {
+            await HubObject.hubConnection.StartAsync(); // 다시재연결
+        };
     }
     
 

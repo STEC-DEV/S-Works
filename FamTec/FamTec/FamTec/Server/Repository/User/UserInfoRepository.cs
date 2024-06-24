@@ -595,6 +595,71 @@ namespace FamTec.Server.Repository.User
             }
         }
 
+        /// <summary>
+        /// 사용자 데이터 삭제
+        /// </summary>
+        /// <param name="Useridx"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public async ValueTask<int?> DeleteUserList(List<int>? Useridx,string? Name)
+        {
+            try
+            {
+                int count = 0;
 
+                if (Useridx is [_, ..])
+                {
+                    List<UserTb>? UserList = context.UserTbs.Where(m => Useridx.Contains(m.Id)).ToList();
+                    foreach(var Users in UserList)
+                    {
+                        Users.DelYn = true;
+                        Users.DelDt = DateTime.Now;
+                        Users.DelUser = Name;
+
+                        context.Update(Users);
+                        count++;
+                    }
+                    
+                    await context.SaveChangesAsync();
+                    return count;
+                }
+                else
+                {
+                    return count;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사용자 데이터 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<UserTb?> UpdateUserInfo(UserTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.Update(model);
+                    await context.SaveChangesAsync();
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }
