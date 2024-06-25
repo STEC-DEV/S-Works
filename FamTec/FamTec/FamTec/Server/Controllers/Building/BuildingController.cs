@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace FamTec.Server.Controllers
+namespace FamTec.Server.Controllers.Building
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,11 +25,11 @@ namespace FamTec.Server.Controllers
         public BuildingController(IBuildingService _buildingservice,
             IFloorService _floorservice)
         {
-            this.BuildingService = _buildingservice;
-            this.FloorService = _floorservice;
+            BuildingService = _buildingservice;
+            FloorService = _floorservice;
 
 
-            this.session = new SessionInfo();
+            session = new SessionInfo();
         }
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace FamTec.Server.Controllers
         public async ValueTask<IActionResult> SelectMyBuilding()
         {
             ResponseList<BuildinglistDTO>? model = await BuildingService.GetBuilidngListService(HttpContext);
-            
-            if(model is not null)
+
+            if (model is not null)
             {
                 if (model.code == 200)
                 {
@@ -68,13 +68,13 @@ namespace FamTec.Server.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> InsertBuilding([FromBody]BuildingsDTO dto)
+        public async ValueTask<IActionResult> InsertBuilding([FromBody] BuildingsDTO dto)
         {
             ResponseUnit<bool> model = await BuildingService.AddBuildingService(HttpContext, dto);
 
-            if(model is not null)
+            if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }
@@ -89,38 +89,9 @@ namespace FamTec.Server.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/GetFloorList")]
-        public async ValueTask<IActionResult> GetFloorList([FromQuery]int buildingid)
-        {
-            ResponseList<FloorDTO>? model = await FloorService.GetFloorListService(buildingid);
-            if(model is not null)
-            {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+       
 
-        [HttpPost]
-        [Route("DeleteFloor")]
-        public async ValueTask<IActionResult> DeleteFloor([FromBody] List<int> idx)
-        {
-            ResponseModel<string>? model = await FloorService.DeleteFloorService(idx, session);
-            return Ok(model);
-        }
 
-    
 
     }
 }

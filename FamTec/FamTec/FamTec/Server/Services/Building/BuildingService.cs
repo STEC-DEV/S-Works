@@ -38,10 +38,6 @@ namespace FamTec.Server.Services.Building
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 if (dto is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                if(dto.FloorNum == 0)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                if (dto.GroundFloorNum + dto.BasementFloorNum != dto.FloorNum)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                     
                 int? placeidx = Int32.Parse(context.Items["PlaceIdx"]!.ToString());
 
@@ -99,43 +95,6 @@ namespace FamTec.Server.Services.Building
                     
                     if(buildingtb is not null)
                     {
-                        for(int i = 1; i <= dto.GroundFloorNum; i++) // 지상층 자동생성
-                        {
-                            FloorTb floortb = new FloorTb()
-                            {
-                                Name = $"{i}층",
-                               CreateDt = DateTime.Now,
-                               CreateUser = context.Items["Name"].ToString(),
-                               UpdateDt = DateTime.Now,
-                               UpdateUser = context.Items["Name"].ToString(),
-                               BuildingTbId = buildingtb.Id
-                            };
-
-                            FloorTb? result = await FloorInfoRepository.AddAsync(floortb);
-                            if(result is null)
-                            {
-                                return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 203 };
-                            }
-                        }
-                        for(int i = 1; i <= dto.BasementFloorNum; i++) // 지하층 자동생성
-                        {
-
-                            FloorTb floortb = new FloorTb()
-                            {
-                                Name = $"지하{i}층",
-                                CreateDt = DateTime.Now,
-                                CreateUser = context.Items["Name"].ToString(),
-                                UpdateDt = DateTime.Now,
-                                UpdateUser = context.Items["Name"].ToString(),
-                                BuildingTbId = buildingtb.Id
-                            };
-
-                            FloorTb? result = await FloorInfoRepository.AddAsync(floortb);
-                            if (result is null)
-                            {
-                                return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 203 };
-                            }
-                        }
                         return new ResponseUnit<bool>() { message = "요청이 정상적으로 처리되었습니다.", data = true, code = 200 };
                     }
                     else

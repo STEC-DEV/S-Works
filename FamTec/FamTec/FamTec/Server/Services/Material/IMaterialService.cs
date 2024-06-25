@@ -13,7 +13,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> AddMaterialService(HttpContext? context, AddMaterialDTO? dto);
+        public ValueTask<ResponseUnit<AddMaterialDTO>?> AddMaterialService(HttpContext? context, AddMaterialDTO? dto);
 
         /// <summary>
         /// 사업장의 전체 자재리스트 반환

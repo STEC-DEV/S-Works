@@ -317,6 +317,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn)
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
+            entity.Property(e => e.Ea)
+                .HasDefaultValueSql("'0'")
+                .HasComment("수량");
             entity.Property(e => e.FacCreateDt).HasComment("설치년월");
             entity.Property(e => e.FacUpdateDt).HasComment("교체년월");
             entity.Property(e => e.Lifespan).HasComment("내용연수");

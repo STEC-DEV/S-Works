@@ -29,6 +29,10 @@ using FamTec.Server.Services.Voc;
 using FamTec.Server.Repository.Voc;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Facility;
+using FamTec.Server.Services.Facility;
+using FamTec.Server.Repository.Material;
+using FamTec.Server.Services.Material;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +52,8 @@ builder.Services.AddTransient<IRoomInfoRepository, RoomInfoRepository>();
 builder.Services.AddTransient<IUnitInfoRepository, UnitInfoRepository>();
 builder.Services.AddTransient<IVocInfoRpeository, VocInfoRepository>();
 builder.Services.AddTransient<IAlarmInfoRepository, AlarmInfoRepository>();
+builder.Services.AddTransient<IFacilityInfoRepository, FacilityInfoRepository>();
+builder.Services.AddTransient<IMaterialInfoRepository, MaterialInfoRepository>();
 
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -60,6 +66,8 @@ builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUnitService, UnitService>();
 builder.Services.AddTransient<IVocService, VocService>();
 builder.Services.AddTransient<ILogService, LogService>();
+builder.Services.AddTransient<IFacilityService, FacilityService>();
+builder.Services.AddTransient<IMaterialService, MaterialService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
@@ -164,6 +172,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 #region MiddleWare
+
 // [설정] AdminUser 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminUser/sign"), appBuilder =>
 {
@@ -217,7 +226,23 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/User/sign")
     appBuilder.UseMiddleware<UserMiddleware>();
 });
 
+// Floor 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
 
+// Facility 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Facility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Material 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
 
 #endregion
 

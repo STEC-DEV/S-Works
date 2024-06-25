@@ -32,6 +32,12 @@ public partial class FacilityTb
     public string? Name { get; set; }
 
     /// <summary>
+    /// 수량
+    /// </summary>
+    [Column("EA", TypeName = "int(11)")]
+    public int? Ea { get; set; }
+
+    /// <summary>
     /// 형식
     /// </summary>
     [Column("TYPE")]
@@ -53,9 +59,8 @@ public partial class FacilityTb
     /// <summary>
     /// 내용연수
     /// </summary>
-    [Column("LIFESPAN")]
-    [StringLength(255)]
-    public string? Lifespan { get; set; }
+    [Column("LIFESPAN", TypeName = "int(11)")]
+    public int? Lifespan { get; set; }
 
     /// <summary>
     /// 규격용량단위

@@ -8,6 +8,7 @@ namespace FamTec.Shared.Server.DTO.Material
 {
     public class AddMaterialDTO
     {
+
         /// <summary>
         /// 자재명
         /// </summary>
