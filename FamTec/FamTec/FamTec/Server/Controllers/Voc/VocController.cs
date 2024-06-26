@@ -1,11 +1,8 @@
 ﻿using FamTec.Server.Services.Voc;
-using FamTec.Server.Tokens;
-using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Controllers.Voc
 {
@@ -20,11 +17,8 @@ namespace FamTec.Server.Controllers.Voc
             this.VocService = _vocservice;
         }
 
-     
-
-
         // placeidx
-        // date = 2024
+        // date = 2024-04
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
@@ -32,7 +26,7 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                ResponseList<ListVoc>? model = await VocService.GetVocList(HttpContext, date);
+                ResponseList<VocDTO>? model = await VocService.GetVocList(HttpContext, date);
 
                 if (model is not null)
                 {
@@ -55,6 +49,7 @@ namespace FamTec.Server.Controllers.Voc
                 return BadRequest(StatusCodes.Status500InternalServerError);
             }
         }
+
 
     }
 }

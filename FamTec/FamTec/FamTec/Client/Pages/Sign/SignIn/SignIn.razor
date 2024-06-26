@@ -13,8 +13,6 @@
 @inject HttpClient HttpClient
 
 
-
-
 <div class="signup-container">
     <div class="signup-wrap">
         <div class="signup-title">
@@ -111,8 +109,8 @@
 
             JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
             string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
-
-            if (Int32.Parse(UserVoc) > 0)
+            
+            if (Int32.Parse(UserVoc) > 0 && jobj["PlacePerms"] is not null)
             {
                 JObject? VocPerms = new JObject(JObject.Parse(jobj["VocPerms"]!.ToString()));
                 JObject? Place = new JObject(JObject.Parse(jobj["PlacePerms"]!.ToString()));

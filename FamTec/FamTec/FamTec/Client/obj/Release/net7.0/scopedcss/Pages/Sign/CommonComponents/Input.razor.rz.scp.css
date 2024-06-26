@@ -1,0 +1,16 @@
+
+.input-container[b-y0sepht4lx] {
+    outline: none;
+    width: auto;
+    border: var(--default-bd);
+    border-radius: var(--default-rd);
+    padding: var(--half-pd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    background-color:var(--main-light);
+}
+
+[b-y0sepht4lx]::placeholder {
+    color: var(--main-color);
+}

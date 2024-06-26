@@ -1,6 +1,8 @@
 ﻿@layout MainLayout2
 
 @page "/VocSubmit/{placeid?}/{buildingid?}" 
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Voc
 @using Microsoft.Net.Http.Headers
 
 @using System.Text
@@ -105,7 +107,7 @@
     [Parameter]
     public string buildingid{ get; set; }
 
-    private VocDTO? dto;
+    private AddVocDTO? dto;
 
     private List<FileInfo> FileInfos = new();
     private int maxAllowedFiles = int.MaxValue;
@@ -116,7 +118,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        dto = new VocDTO();
+        dto = new AddVocDTO();
         dto.buildingidx = Int32.Parse(buildingid); // 해당 빌딩 INDEX -- QR로 넘어옴
         dto.PlaceIdx = Int32.Parse(PlaceId); // 해당 빌딩이 속해있는 PlaceID
     }
@@ -152,7 +154,7 @@
 
     protected async Task btnSubmit()
     {
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new VocDTO
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new AddVocDTO
             {
                 Type = dto.Type, // 미화?
                 Name = dto.Name, // 이름

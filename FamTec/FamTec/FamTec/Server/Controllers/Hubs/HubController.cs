@@ -57,7 +57,7 @@ namespace FamTec.Server.Controllers.Hubs
 
             ResponseUnit<string>? model = await VocService.AddVocService(obj, files);
             string? title = Convert.ToString(jobj["Title"]);
-
+            
             if (model is not null)
             {
                 if (model.code == 200)
@@ -117,6 +117,7 @@ namespace FamTec.Server.Controllers.Hubs
             {
                 return BadRequest();
             }
+           
             
         }
 

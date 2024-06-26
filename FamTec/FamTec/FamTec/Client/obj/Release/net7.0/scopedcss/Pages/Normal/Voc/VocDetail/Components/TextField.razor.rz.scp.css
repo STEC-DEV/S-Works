@@ -1,0 +1,29 @@
+.textfield[b-e5d0ioy9t2]{
+    display : flex;
+    gap : var(--half-pd);
+    flex-direction : column;
+    background-color : var(--default-color);
+}
+
+.label[b-e5d0ioy9t2]{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+
+    white-space : nowrap;
+}
+
+.content[b-e5d0ioy9t2]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--content-back-color);
+    padding : var(--half-pd);
+}
+
+.text[b-e5d0ioy9t2]{
+    font-size : var(--normal-size);
+    font-weight : var(--normal-wt);
+    color : #333;
+
+}
