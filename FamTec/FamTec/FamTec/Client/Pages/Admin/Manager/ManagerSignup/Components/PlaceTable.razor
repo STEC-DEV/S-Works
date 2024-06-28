@@ -58,6 +58,7 @@
 
 @code {
     [Parameter] public List<T> ListData { get; set; }
+    [Parameter] public EventCallback<List<T>> SelectObject { get; set; }
     [Parameter] public HashSet<int> SelectedList { get; set; }
 
 
