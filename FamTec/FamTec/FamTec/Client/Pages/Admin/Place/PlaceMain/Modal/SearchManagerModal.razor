@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server
 @using FamTec.Shared.Server.DTO
@@ -14,7 +14,7 @@
             <Table DataList="FilterManagerList" ReturnType="object" SelectItem="OnSelectedItem" />
         </div>
         <div class="addmanager-modal-btns">
-            <Button Name="확인" OnClick="OnConfirm" />
+            <Button Name="확인" Type=0 OnClick="OnConfirm" />
         </div>
 
     </div>

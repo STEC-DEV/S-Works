@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Admin.Place
@@ -16,8 +16,8 @@
             @if (UserType != "매니저")
             {
                 <div class="managerlist-btns">
-                    <Button Name="등록" OnClick="@OnSignUp" />
-                    <Button Name="삭제" Type=true OnClick="@OnDeleteManager" />
+                    <Button Name="등록" Type=0 OnClick="@OnSignUp" />
+                    <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
                 </div>
             }
             

@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerSignup.Modal
 @using FamTec.Shared.Client.DTO
 ﻿
@@ -15,8 +15,8 @@
         </span>
         <div class="place-table-option">
             <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
-            <Button Name="추가" Width=true OnClick="OnOpenModal" />
-            <Button Name="삭제" Width=true Type=true />
+            <Button Name="추가" Width=true OnClick="OnOpenModal" Type=0 />
+            <Button Name="삭제" Width=true Type=1/>
         </div>
     </div>
     <div class="placetable-table">

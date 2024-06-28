@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO
 @typeparam T
 
@@ -10,8 +10,8 @@
         <div class="placetable-btns">
             @if (EditMode)
             {
-                <Button Name="추가" Width="true"/>
-                <Button Name="삭제" Width="true" Type="true" />
+                <Button Name="추가" Width="true" Type=0 />
+                <Button Name="삭제" Width="true" Type=1 />
             }
             
         </div>

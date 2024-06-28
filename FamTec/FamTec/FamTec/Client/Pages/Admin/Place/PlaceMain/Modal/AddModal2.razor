@@ -1,5 +1,5 @@
 ﻿@using FamTec.Shared.Client.DTO
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 
 <div class="placemodal-backgroud appear">
     <div class="placemodal-container yappear ">
@@ -59,11 +59,13 @@
                             <Button 
                                 Name="추가" 
                                 Width="true"
+                                Type=0
                                 OnClick=OnAddModal
                                 />
                             <Button 
                                 Name="삭제" 
                                 Width="true"
+                                Type=1
                                 OnClick="OnDeleteManager"
                                 />
                         </div>
@@ -78,10 +80,13 @@
             </div>
             <div class="placemodal-btns">
                 <Button Name="등록"
-                        @* Type="sub" *@
+                        Type=0
                         />
-                <Button Name="닫기"
-                OnClick="ModalClose" />
+                <Button 
+                    Name="닫기"
+                    OnClick="ModalClose"
+                    Type=1
+                />
             </div>
          
             

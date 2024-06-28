@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xeutH+k1l4nkYIeGE+uvxX0RqCPXgrrJBYu+zttL4+rg8JHnIA2Mxx5Sa1DZQNcV//hYi9A3XRkxR2RZ/BvNWQ==",
+  "dgSpecHash": "JdSibn3GV+ZfRUyScUeMhDt5dyt24bpj+ZYptgjCi7TlbzU+Dj1CncTgtyYmPou0eEAp+91Hcmfaec7dHJ0gMQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\stec\\Desktop\\FamTec\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
+  "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
@@ -115,10 +115,10 @@
     "C:\\Users\\stec\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\tewr.blazor.filereader\\3.3.2.23201\\tewr.blazor.filereader.3.3.2.23201.nupkg.sha512",
-    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
-    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.16\\microsoft.netcore.app.runtime.mono.browser-wasm.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.16\\microsoft.windowsdesktop.app.ref.7.0.16.nupkg.sha512",
-    "C:\\Users\\stec\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.16\\microsoft.aspnetcore.app.ref.7.0.16.nupkg.sha512"
+    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
+    "C:\\Users\\stec\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.16\\microsoft.aspnetcore.app.ref.7.0.16.nupkg.sha512",
+    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\7.0.16\\microsoft.netcore.app.runtime.mono.browser-wasm.7.0.16.nupkg.sha512"
   ],
   "logs": []
 }

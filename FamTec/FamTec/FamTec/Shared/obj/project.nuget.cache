@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "i6xdgDnkRmgAc9rhIsIv0FFJPaLqw21sSbQs6x9vJBzNa3hhlZisQIX0uA9S9LFbZRdSud7Dcmo2rvdBiasXJw==",
+  "dgSpecHash": "ter847RoWoqkt1qhZmhNP2B2jirVEvV5n4FLF9aoiHnMmlkfRQQo2D7KlgWKQ5nVkX9DVdLuQLmja+eAylSPSw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\stec\\Desktop\\FamTec\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
+  "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
@@ -74,8 +74,8 @@
     "C:\\Users\\stec\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.16\\microsoft.windowsdesktop.app.ref.7.0.16.nupkg.sha512",
+    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.16\\microsoft.aspnetcore.app.ref.7.0.16.nupkg.sha512"
   ],
   "logs": []

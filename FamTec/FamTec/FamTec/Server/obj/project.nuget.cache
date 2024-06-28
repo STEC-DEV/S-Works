@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rnUYOMmgusgnUowRwggE/UfAcAZEKz/inlaEi3GH1jcD9sK/SLXK95qjIK9S3tQ9/xpAtPm/tVkDk834z8/Lug==",
+  "dgSpecHash": "h3HN/6lw4ywhJymhn0mdtLjIinJmVU02lvR6gmllzGuQiswqsE7USSMjkBGMXhF8Kbo+n5yLn0uJNSWExv/sXg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\stec\\Desktop\\FamTec\\FamTec\\FamTec\\FamTec\\Server\\FamTec.Server.csproj",
+  "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\FamTec.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
@@ -105,8 +105,8 @@
     "C:\\Users\\stec\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\tewr.blazor.filereader\\3.3.2.23201\\tewr.blazor.filereader.3.3.2.23201.nupkg.sha512",
-    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.16\\microsoft.windowsdesktop.app.ref.7.0.16.nupkg.sha512",
+    "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.16\\microsoft.aspnetcore.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.16\\microsoft.netcore.app.host.win-x64.7.0.16.nupkg.sha512"
   ],

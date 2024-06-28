@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerMain.Modal
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server
@@ -20,7 +20,7 @@
         <div class="depart-btns">
             @if(UserType != "매니저")
             {
-                <Button Name="편집" OnClick="@OnEdit" />
+                <Button Name="편집" OnClick="@OnEdit" Type=0/>
             }
             
         </div>
