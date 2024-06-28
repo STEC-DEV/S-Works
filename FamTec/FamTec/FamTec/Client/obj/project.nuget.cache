@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JdSibn3GV+ZfRUyScUeMhDt5dyt24bpj+ZYptgjCi7TlbzU+Dj1CncTgtyYmPou0eEAp+91Hcmfaec7dHJ0gMQ==",
+  "dgSpecHash": "eoh4HG44oUXJd1pV22WBJQj+jAfxWMCbkIMyhXAbCdTa7jRnhZTkStVfiGKGCSV2UrlXnoRY+9EpKNbmcZsgmQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
+  "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
