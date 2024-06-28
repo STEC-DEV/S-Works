@@ -1,4 +1,7 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@using FamTec.Client.Pages.Admin.Manager.ManagerSignup.Components
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
 
 <div class="placemodal-container yappear">
     <div class="placemodal-wrap">
@@ -7,11 +10,9 @@
                 사업장 조회
             </span>
         </div>
-        <Input 
-            Placeholder="search" 
-            />
+        <Input Placeholder="search" ValueChanged="@OnSearchTextChanged" />
         <div class="placemodal-content">
-            @* <Table /> *@
+            <PlaceTable ListData="@FilterPlaceList" SelectedList="@SelectedIds" />
         </div>
         <div class="placemodal-count">
             <span class="count">
@@ -19,24 +20,71 @@
             </span>
         </div>
         <div class="placemodal-btns">
-            <Button Name="추가" Type=0/>
+            <Button Name="추가" Type=0 />
+            <Button Name="닫기" Type=2 OnClick=OnModalClose />
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public EventCallback OnClose { get; set; }
-    int SelectCount = 0;
+    [Parameter] public EventCallback<bool> OnClose { get; set; }
 
-    private async Task LoadPlace()
+    
+    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>();
+    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
+    HashSet<int> SelectedIds = new HashSet<int>(); //선택 아이템 리스트
+    int SelectCount = 0;
+    string searchText = string.Empty; // 검색어 변수
+
+
+    protected async override Task OnInitializedAsync()
     {
+        await OnLoadPlace();
+    }
+
+
+    private async Task OnLoadPlace()
+    {
+
         try
         {
+            Console.WriteLine("[관리자 모드][사업장 조회]");
             // ResponseList<PlaceTableDTO> res = await HttpClient.GetFromJsonAsync<ResponseList<PlaceTableDTO>>("http://123.2.156.148:5245/api/AdminPlace/GetAllWorksList");
+            ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("AdminPlace/sign/GetAllWorksList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+                return;
+            }
+            PlaceList = res.data;
+            FilterPlaceList = PlaceList;
         }
         catch(Exception ex)
         {
+            await JS.InvokeVoidAsync("alert", "[관리자 모드][사업장 조회] 실패\n" + ex);
             Console.WriteLine("[Manager][Add][PlaceModal] 사업장 조회 애러"+ ex);
+            throw ex;
         }
+    }
+
+
+    /*
+    * 검색 데이터 필터링
+    */
+    private void OnSearchTextChanged(string text)
+    {
+        // searchText = e.Value.ToString();
+        searchText = text;
+        FilterPlaceList = string.IsNullOrEmpty(searchText)
+            ? PlaceList
+            : PlaceList.Where(p => p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   p.PlaceCd.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                                   p.ContractNum.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+    }
+
+    private Task OnModalClose()
+    {
+        return OnClose.InvokeAsync(false);
     }
 }

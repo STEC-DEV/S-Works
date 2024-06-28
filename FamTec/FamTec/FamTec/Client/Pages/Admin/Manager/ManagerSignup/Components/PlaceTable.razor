@@ -1,0 +1,79 @@
+﻿@typeparam T
+
+<table class="table">
+    <thead class="thead">
+        <tr class="<thead-tr">
+            <th class="th">
+                <span>
+                    사업장 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    사업장명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약번호
+                </span>
+            </th>
+            <th class="th">
+                
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            <p>...Lodaing</p>
+        }
+        else
+        {
+             @foreach(var row in ListData)
+            {
+                var stringId = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+                int Id = int.Parse(stringId);
+                bool isChecked = SelectedList.Contains(Id);
+
+                <tr class="tbody-tr">
+                    <td class="td">
+                        @typeof(T).GetProperty("PlaceCd")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        @typeof(T).GetProperty("ContractNum")?.GetValue(row)?.ToString()
+                    </td>
+                    <td class="td">
+                        <input type="checkbox" checked="@isChecked" @onchange=" e => onCheckItem(Id, e.Value)" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter] public List<T> ListData { get; set; }
+    [Parameter] public HashSet<int> SelectedList { get; set; }
+
+
+    private void onCheckItem(int id, object isChecked)
+    {
+        bool isCheckedBool = (bool)isChecked;
+        if (isCheckedBool)
+        {
+            if (!SelectedList.Contains(id))
+                SelectedList.Add(id);
+        }
+        else
+        {
+            if (SelectedList.Contains(id))
+                SelectedList.Remove(id);
+        }
+        Console.WriteLine("선택 값 : "+ id); ;
+    }
+}

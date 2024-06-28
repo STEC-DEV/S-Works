@@ -6,7 +6,7 @@
     justify-content: center;
     align-items: center;
     max-width: 40%;
-    /*height: 700px;*/
+    height : 80%;
     background-color: var(--default-color);
     border-radius: var(--default-rd);
     border: var(--comp-bd);
@@ -34,6 +34,9 @@
 .placemodal-container .placemodal-title {
     font-size: var(--title-size);
     font-weight: var(--bold-wt);
+}
+
+.placemodal-container .title{
     color: var(--main-color);
 }
  
@@ -53,6 +56,8 @@
 }
 
 .placemodal-container .placemodal-btns {
+    display : flex;
+    gap : var(--default-pd);
     width: 100%;
     border-radius: var(--default-rd);
 }
