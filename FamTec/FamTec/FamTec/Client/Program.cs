@@ -52,7 +52,7 @@ HubObject.hubConnection = new HubConnectionBuilder()
 HubObject.hubConnection.KeepAliveInterval = System.TimeSpan.FromSeconds(15); //최소 설정가능한 값5초.
 HubObject.hubConnection.ServerTimeout = System.TimeSpan.FromSeconds(30); // 서버로부터 30초 안에 메시지를 수신 못하면 클라이언트가 끊음
 
-await HubObject.hubConnection.StartAsync();
+//await HubObject.hubConnection.StartAsync();
 
 await builder.Build().RunAsync();
 
