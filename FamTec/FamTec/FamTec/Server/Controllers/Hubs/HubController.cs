@@ -41,7 +41,7 @@ namespace FamTec.Server.Controllers.Hubs
 
         [HttpPost]
         [Route("Excel")]
-        public async Task<IActionResult> UploadFile([FromForm] IEnumerable<IFormFile> file)
+        public async Task<IActionResult> UploadFile([FromForm]List<IFormFile> file)
         {
             Console.WriteLine(file.Count());
 
