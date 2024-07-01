@@ -1,4 +1,5 @@
 ﻿@using FamTec.Shared.Client.DTO
+@using FamTec.Client.Pages.CommonComponents
 
 <ul class="depart-list">
     @if(DataList == null)
@@ -7,23 +8,56 @@
     }
     else
     {
+        @if (Edit)
+        {
+            <li class="@(AddMode ? "cancle" : "depart-add ")" @onclick=@OnAdd>
+                <span class="add-title">
+                    @(AddMode ? "부서 추가 취소" : "부서 추가")
+                </span>
+                
+            </li>
+        }
+        @if (AddMode)
+        {
+            <li class="depart-add-form">
+                <Input Type="text" Placeholder="부서명" />
+                <Button Name="추가" />
+            </li>
+        }
+
         @foreach (var item in DataList)
         {
-            <li class="depart-item">
-                @if (Edit)
-                {
-                    <input class="depart-select"
-                           type="checkbox"
-                           value="@item.Id"
-                           @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" />
-                }
-                <NavLink>
-                    <span class="item-title">
-                        @item.Name
-                    </span>
 
-                </NavLink>
-                
+            <li class="depart-item @(InputEdit ? "edit": "" ) ">
+                @if (!Edit)
+                {
+                    <NavLink>
+                        <span class="item-title">
+                            @item.Name
+                        </span>
+                    </NavLink>
+                }
+                else
+                {
+                    <input class="item-title item-input " type="text" @bind-value="@item.Name" disabled="@(InputEdit ? "false" : "true")" />
+                    <div class="item-option">
+                        @if (InputEdit)
+                        {
+                            <button class="edit-btn btn-submit" @onclick=OnSubmitEdit />
+
+                        }
+                        else
+                        {
+                            <button class="edit-btn" @onclick=OnInputEdit />
+
+                        }
+
+                        <input class="depart-select"
+                               type="checkbox"
+                               value="@item.Id"
+                               @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" />
+                    </div>
+                }
             </li>
         }
     }
@@ -33,6 +67,8 @@
     [Parameter] public List<DepartmentDTO> DataList { get; set; }
     [Parameter] public bool Edit { get; set; }
     [Parameter] public EventCallback<(bool ,int)> Select { get; set; }
+    public bool AddMode { get; set; } = false;
+    public bool InputEdit { get; set; } = false;
 
 
     private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
@@ -41,5 +77,18 @@
         await Select.InvokeAsync((isChecked, id));
     }
 
+    private void OnInputEdit()
+    {
+        InputEdit = true;
+    }
 
+    private void OnSubmitEdit()
+    {
+        InputEdit = false;
+    }
+
+    private void OnAdd()
+    {
+        AddMode = !AddMode;
+    }
 }

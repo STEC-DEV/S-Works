@@ -12,6 +12,9 @@
             <span>
                 부서 편집
             </span>
+            <div class="modaldepart-btns">
+                <Button Name="삭제" OnClick="DeleteDepartment" Type=1 Width=true />
+            </div>
         </div>
         <div class="modaldepart-body">
             <div class="modaldepart-list">
@@ -21,10 +24,7 @@
                     Select="OnSelected"
                     />
             </div>
-            <div class="modaldepart-btns">
-                <Button Name="수정" Type=0 />
-                <Button Name="삭제" OnClick="DeleteDepartment" Type=1/>
-            </div>
+            
         </div>
         <div class="modaldepart-add">
             <span>부서 추가</span>

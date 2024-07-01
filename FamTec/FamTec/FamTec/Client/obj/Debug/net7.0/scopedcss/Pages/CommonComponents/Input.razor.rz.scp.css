@@ -14,3 +14,7 @@
 [b-hbi683jxzz]::placeholder {
     color: var(--main-color);
 }
+
+.width[b-hbi683jxzz] {
+    width:100%;
+}

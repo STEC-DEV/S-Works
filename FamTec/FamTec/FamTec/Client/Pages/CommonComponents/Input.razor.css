@@ -14,3 +14,7 @@
 ::placeholder {
     color: var(--main-color);
 }
+
+.width {
+    width:100%;
+}
