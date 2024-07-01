@@ -440,6 +440,22 @@
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "UploadFile",
+    "RelativePath": "api/Hub/Excel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "UploadFile",
     "RelativePath": "api/Hub/Files",
     "HttpMethod": "POST",
     "IsController": true,

@@ -1,14 +1,9 @@
 ﻿using FamTec.Server.Databases;
-using FamTec.Server.Repository.Place;
 using FamTec.Server.Services;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
-using FamTec.Shared.Server.DTO.User;
-using Microsoft.AspNetCore.Http.Connections.Client;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 

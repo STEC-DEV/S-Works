@@ -108,14 +108,6 @@ namespace FamTec.Server.Services.Floor
                 return new ResponseList<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<FloorDTO>(), code = 500 };
             }
         }
-
-        
-
-       
-
-        
-
-   
     }
 }
 

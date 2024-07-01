@@ -1,13 +1,9 @@
 ﻿using FamTec.Server.Hubs;
 using FamTec.Server.Services.Voc;
-using FamTec.Shared.Client.DTO;
-using FamTec.Shared.Server;
 using FamTec.Shared.Server.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
-using System.Net;
 
 namespace FamTec.Server.Controllers.Hubs
 {
@@ -34,7 +30,6 @@ namespace FamTec.Server.Controllers.Hubs
         [Route("Temp")]
         public async ValueTask<IActionResult> FileDownload()
         {
-            
             string filepath = "C:\\Users\\kyw\\Pictures\\Screenshots\\"; //파일경로
             string filename = "스크린샷 2024-02-26 091117.png";
             string path = filepath + filename;
@@ -42,17 +37,43 @@ namespace FamTec.Server.Controllers.Hubs
             byte[] bytes = System.IO.File.ReadAllBytes(path);
 
             return Ok(bytes);
-          
+        }
+
+        [HttpPost]
+        [Route("Excel")]
+        public async Task<IActionResult> UploadFile([FromForm] IEnumerable<IFormFile> file)
+        {
+            Console.WriteLine(file.Count());
+
+            /*
+            if (file != null && file.Length > 0)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+                        var firstRowUsed = worksheet.FirstRowUsed();
+                        var row = firstRowUsed.RowUsed();
+
+                        // 엑셀 데이터 읽기
+                        var data = new List<string>();
+                        foreach (var cell in row.CellsUsed())
+                        {
+                            data.Add(cell.GetValue<string>());
+                        }
+
+                    }
+                }
+            }*/
+            return Ok();
         }
 
         [HttpPost]
         [Route("Files")]
         public async Task<IActionResult> UploadFile([FromForm]string obj, [FromForm]List<IFormFile> files)
         {
-            //await HubContext.Clients.Group("35_BeautyRoom").SendAsync("ReceiveVoc", "보냄");
-            //return Ok("asdasd");
-
-            
             JObject? jobj = JObject.Parse(obj);
 
             ResponseUnit<string>? model = await VocService.AddVocService(obj, files);
@@ -117,9 +138,6 @@ namespace FamTec.Server.Controllers.Hubs
             {
                 return BadRequest();
             }
-           
-            
         }
-
     }
 }
