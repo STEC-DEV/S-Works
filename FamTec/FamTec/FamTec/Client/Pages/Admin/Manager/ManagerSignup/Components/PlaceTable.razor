@@ -34,7 +34,8 @@
             {
                 var stringId = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
                 int Id = int.Parse(stringId);
-                bool isChecked = SelectedList.Contains(Id);
+                bool isChecked = SelectItems.Any(item => (int)typeof(T).GetProperty("Id")?.GetValue(row) == Id);
+                @* bool isChecked = SelectedList.Contains(Id); *@
 
                 <tr class="tbody-tr">
                     <td class="td">
@@ -47,7 +48,7 @@
                         @typeof(T).GetProperty("ContractNum")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
-                        <input type="checkbox" checked="@isChecked" @onchange=" e => onCheckItem(Id, e.Value)" />
+                        <input type="checkbox" checked="@isChecked" @onchange=" e => onCheckItem(Id, (bool)((ChangeEventArgs)e).Value, row)" />
                     </td>
                 </tr>
             }
@@ -58,23 +59,34 @@
 
 @code {
     [Parameter] public List<T> ListData { get; set; }
+    [Parameter] public List<T> SelectItems { get; set; }
     [Parameter] public EventCallback<List<T>> SelectObject { get; set; }
     [Parameter] public HashSet<int> SelectedList { get; set; }
 
 
-    private void onCheckItem(int id, object isChecked)
+    private void onCheckItem(int id, bool isChecked, T row)
     {
-        bool isCheckedBool = (bool)isChecked;
-        if (isCheckedBool)
+        if (isChecked)
         {
-            if (!SelectedList.Contains(id))
-                SelectedList.Add(id);
+            if (!SelectItems.Contains(row))
+            {
+                SelectItems.Add(row);
+            }
         }
         else
         {
-            if (SelectedList.Contains(id))
-                SelectedList.Remove(id);
+            var itemToRemove = SelectItems.FirstOrDefault(item => (int)typeof(T).GetProperty("Id")?.GetValue(item) == id);
+            if (itemToRemove != null)
+            {
+                SelectItems.Remove(itemToRemove);
+            }
         }
+        SelectObject.InvokeAsync(SelectItems);
         Console.WriteLine("선택 값 : "+ id); ;
+    }
+
+    private void OnAdd()
+    {
+        
     }
 }

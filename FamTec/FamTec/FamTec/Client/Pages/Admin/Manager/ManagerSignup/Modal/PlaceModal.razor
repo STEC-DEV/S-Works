@@ -28,6 +28,7 @@
 
 @code {
     [Parameter] public EventCallback<bool> OnClose { get; set; }
+    [Parameter] public List<PlaceTableDTO>? SelectItems { get; set; }
 
     
     List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>();
