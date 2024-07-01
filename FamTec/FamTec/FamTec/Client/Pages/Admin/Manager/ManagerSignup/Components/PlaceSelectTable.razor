@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerSignup.Modal
 @using FamTec.Shared.Client.DTO
 ﻿
@@ -15,8 +15,8 @@
         </span>
         <div class="place-table-option">
             <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
-            <Button Name="추가" Width=true OnClick="OnOpenModal" />
-            <Button Name="삭제" Width=true Type=true />
+            <Button Name="추가" Width=true OnClick="OnOpenModal" Type=0 />
+            <Button Name="삭제" Width=true Type=1/>
         </div>
     </div>
     <div class="placetable-table">
@@ -31,7 +31,7 @@
         {
             <ModalBackground >
                 <ChildComponent>
-                    <PlaceModal OnClose="OnCloseModal" />
+                <PlaceModal OnClose="OnCloseModal" SelectItems="@AddPlaceList" />
                 </ChildComponent>
             </ModalBackground>
         }
@@ -40,6 +40,7 @@
 @code {
     [Parameter] public AddManagerPlaceDTO NewManagerPlace { get; set; }
     List<PlaceTableDTO> PlaceList;
+    List<PlaceTableDTO> AddPlaceList = new List<PlaceTableDTO>();
     int SelectCount = 0;
     bool isOpen = false;
 

@@ -1,4 +1,4 @@
-﻿@using FamTec.Client.Pages.Admin.CommonComponents
+﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerMain.Components
 @using FamTec.Shared.Client.DTO
 ﻿@using FamTec.Shared.Server
@@ -22,8 +22,8 @@
                     />
             </div>
             <div class="modaldepart-btns">
-                <Button Name="수정" />
-                <Button Name="삭제" OnClick="DeleteDepartment" Type=true/>
+                <Button Name="수정" Type=0 />
+                <Button Name="삭제" OnClick="DeleteDepartment" Type=1/>
             </div>
         </div>
         <div class="modaldepart-add">
@@ -32,11 +32,11 @@
                 <div class="modaldepart-input">
 
                         <Input Type="text" Placeholder="부서명" @bind-Value="newDepartment.Name"/>
-                        <Button Name="추가" />
+                        <Button Name="추가" Type=0 />
                 </div>
             </EditForm>
         </div>
-        <Button Name="확인" OnClick="@ModalClose" />
+        <Button Name="확인" OnClick="@ModalClose" Type=0 />
     </div>
 
 </div>

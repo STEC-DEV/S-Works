@@ -1,5 +1,5 @@
 ﻿@page "/users"
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.Normal.User.UserMain.Components
 @using FamTec.Shared.Server.DTO
@@ -13,8 +13,8 @@
             </span>
             <div class="user-options">
                 <Input Placeholder="search" Type="text"/>
-                <Button Name="추가" Width=true OnClick=AddUser />
-                <Button Name="삭제" Width=true Type=true/>
+                <Button Name="추가" Width=true OnClick=AddUser Type=1 />
+                <Button Name="삭제" Width=true Type=1 />
             </div>
         </div>
         <div class="user-content">

@@ -1,5 +1,5 @@
 @using FamTec.Shared.Client.DTO
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server
 @using FamTec.Shared.Server.DTO
@@ -77,12 +77,13 @@
                                 <Button 
                                     Name="추가" 
                                     Width="true"
+                                    Type=0
                                     OnClick=OnAddModal
                                     />
                                 <Button 
                                     Name="삭제" 
                                     Width="true"
-                                    Type=true
+                                    Type=1
                                     OnClick="OnDeleteManager"
                                     />
                             </div>
@@ -100,7 +101,7 @@
                 </div>
                 <div class="placemodal-btns">
                     <Button Name="등록"  OnClick="OnAdd"/>
-                    <Button Name="닫기" OnClick="ModalClose" />
+                    <Button Name="닫기" Type=2 OnClick="ModalClose" />
                 </div>
             </EditForm>
             

@@ -41,10 +41,4 @@
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Pages\Admin\CommonComponents\SortTable.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
-
 </Project>

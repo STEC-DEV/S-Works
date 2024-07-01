@@ -1,5 +1,5 @@
 ﻿@page "/admin/manager/{Id:int}"
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerDetail.Components
 @using FamTec.Shared.Client.DTO.Manager
 
@@ -14,8 +14,8 @@
         </div>
     </div>
     <div class="managerdetail-btns">
-        <Button Name="편집" Width=true/>
-        <Button Name="뒤로" Width=true Type=true/>
+        <Button Name="편집" Width=true Type=0 />
+        <Button Name="뒤로" Width=true Type=1/>
     </div>
 </div>
 

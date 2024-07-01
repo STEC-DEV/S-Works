@@ -3268,11 +3268,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
       "projectName": "FamTec.Shared",
       "projectPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
       "packagesPath": "C:\\Users\\kyw\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\obj\\",
+=======
+      "projectUniqueName": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
+      "projectName": "FamTec.Shared",
+      "projectPath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
+      "packagesPath": "C:\\Users\\stec\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\obj\\",
+>>>>>>> origin/Front
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",

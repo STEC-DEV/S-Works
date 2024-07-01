@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@using FamTec.Client.Pages.Sign.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Login
 @using System.Text.Json
@@ -34,7 +34,7 @@
                         Placeholder="Password"
                         @bind-Value="@user.UserPassword" />
         </div>
-        <Button Name="Login" OnClick="OnSignUp" />
+        <Button Name="Login" OnClick="OnSignUp" Type=0/>
     </div>
 </div>
 

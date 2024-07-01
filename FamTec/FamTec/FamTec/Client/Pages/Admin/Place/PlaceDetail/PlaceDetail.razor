@@ -1,7 +1,6 @@
 ﻿@page "/admin/place/{Id:int}"
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Place.PlaceDetail.Components
-
 @using FamTec.Shared.Server
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Admin.Place
@@ -24,11 +23,11 @@
     </div>
     <div class="placedetail-btns">
         @if(PlaceEdit){
-            <Button Name="저장" Width="true" />
-            <Button Name="취소" Width="true" OnClick="DetailMode" />
+            <Button Name="저장" Width="true" Type=0 />
+            <Button Name="취소" Width="true" Type=1 OnClick ="DetailMode" />
         }else{
-            <Button Name="편집" Width="true" OnClick="EditMode" />
-            <Button Name="나가기" Width="true" Type=true/>
+            <Button Name="편집" Width="true" Type=0 OnClick ="EditMode" />
+            <Button Name="나가기" Width="true" Type=1/>
         }
         
     </div>

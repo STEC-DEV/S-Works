@@ -1,6 +1,6 @@
 ﻿@page "/admin/manager/signup"
 
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerSignup.Components
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Place
@@ -26,8 +26,8 @@
 
     </div>
     <div class="btns">
-        <Button Name="등록" Width="true" OnClick="Submit" />
-        <Button Name="취소" Width="true" Type="true" />
+        <Button Name="등록" Width="true" Type=0 OnClick ="Submit" />
+        <Button Name="취소" Width="true" Type=1 />
     </div>
     
 </div>

@@ -7,7 +7,7 @@
 @using Newtonsoft.Json
 @using System.Reflection
 @using System.ComponentModel.DataAnnotations
-@using FamTec.Client.Pages.Admin.CommonComponents
+@using FamTec.Client.Pages.CommonComponents
 @inject HttpClient HttpClient
 
 <div class="place-container yappear">
@@ -23,10 +23,11 @@
                 {
                     <Button Name="등록"
                             Width="true"
+                            Type=0
                             OnClick="@onAddPlace" />
                     <Button Name="삭제"
                             Width="true"
-                            Type="true"
+                            Type=1
                             OnClick="@OnDeletePlace" />
                 }
 
