@@ -86,6 +86,7 @@
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             /* SIGNAL R */
+            /*
             var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
             var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -109,7 +110,7 @@
 
             JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
             string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
-            
+
             if (Int32.Parse(UserVoc) > 0 && jobj["PlacePerms"] is not null)
             {
                 JObject? VocPerms = new JObject(JObject.Parse(jobj["VocPerms"]!.ToString()));
@@ -166,7 +167,7 @@
                 if (!String.IsNullOrWhiteSpace(UserPerm_Default) && Int32.Parse(UserPerm_Default) > 0)
                     await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_DefaultRoom");
             }
-           
+           */
             if(response.code == 201)
             {
                 Navigation.NavigateTo("/select");

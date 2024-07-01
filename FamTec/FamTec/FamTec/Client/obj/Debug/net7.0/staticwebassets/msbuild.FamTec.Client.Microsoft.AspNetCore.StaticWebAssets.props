@@ -585,11 +585,7 @@
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>
       <AssetRole>Alternative</AssetRole>
-<<<<<<< HEAD
       <RelatedAsset>C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net7.0\wwwroot\_framework\blazor.webassembly.js</RelatedAsset>
-=======
-      <RelatedAsset>C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net7.0\wwwroot\_framework\blazor.webassembly.js</RelatedAsset>
->>>>>>> origin/Front
       <AssetTraitName>Content-Encoding</AssetTraitName>
       <AssetTraitValue>gzip</AssetTraitValue>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

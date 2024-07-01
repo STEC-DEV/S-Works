@@ -8,10 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows,browser
 build_property.RootNamespace = FamTec.Shared
-<<<<<<< HEAD
 build_property.ProjectDir = C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\
-=======
-build_property.ProjectDir = C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Shared\
->>>>>>> origin/Front
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
