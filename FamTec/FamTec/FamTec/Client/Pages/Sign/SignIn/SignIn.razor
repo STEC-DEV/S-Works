@@ -4,12 +4,13 @@
 @using FamTec.Shared.Server.DTO.Login
 @using System.Text.Json
 @using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.IdentityModel.Tokens
 @using Newtonsoft.Json.Linq
 @using System.Security.Claims
+@using System.Text
+@using System.IdentityModel.Tokens.Jwt
 @inject IJSRuntime IJSRuntime
 @inject HttpClient HttpClient
-
-
 
 
 <div class="signup-container">
@@ -41,23 +42,10 @@
     LoginDTO user = new LoginDTO();
     sbyte? LoginMode=0;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        /*
-         *   await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "MachineRoom"); // 기계 Voc 권한
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "ElectricityRoom"); // 전기 Voc 권한
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "LiftRoom"); // 승강 Voc 권한
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "VocFireRoom"); // 소방 Voc 권한
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "ConstructRoom"); // 건축
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "NetworkRoom"); // 통신
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "SanitationRoom"); // 미화
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "SecurityRoom"); // 보안
-                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "DefaultRoom"); // 기타
-         *
-         */
+
     }
-
-
 
     private async Task OnSignUp()
     {
@@ -70,6 +58,8 @@
                 user = new LoginDTO();
                 return;
             }
+
+
 
             //관리자 모드 로그인 선택 유무
             string endpoint = (LoginMode == 1) ? "Login/SettingLogin" : "Login/Login";
@@ -95,6 +85,88 @@
 
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+            /* SIGNAL R */
+            var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+            int split = validatedToken.ToString()!.IndexOf('.') + 1;
+
+            string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
+            JObject? jobj = JObject.Parse(payload.ToString());
+
+
+
+            // 권한 JOIN
+
+            JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
+            string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
+            
+            if (Int32.Parse(UserVoc) > 0 && jobj["PlacePerms"] is not null)
+            {
+                JObject? VocPerms = new JObject(JObject.Parse(jobj["VocPerms"]!.ToString()));
+                JObject? Place = new JObject(JObject.Parse(jobj["PlacePerms"]!.ToString()));
+
+                string? PlaceIdx = Place["PlaceIdx"].ToString();
+
+                // 기계 Voc 권한
+                string? UserPerm_Machine = Convert.ToString(VocPerms["VocMachine"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Machine) && Int32.Parse(UserPerm_Machine) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_MachineRoom");
+
+                // 전기 Voc 권한
+                string? UserPerm_Elec = Convert.ToString(VocPerms["VocElec"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Elec) && Int32.Parse(UserPerm_Elec) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_ElectricityRoom");
+
+                // 승강 Voc 권한
+                string? UserPerm_Lift = Convert.ToString(VocPerms["VocLift"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Lift) && Int32.Parse(UserPerm_Lift) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_LiftRoom");
+
+                // 소방 Voc 권한
+                string? UserPerm_Fire = Convert.ToString(VocPerms["VocFire"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Fire) && Int32.Parse(UserPerm_Fire) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_FireRoom");
+
+                // 건축 Voc 권한
+                string? UserPerm_Construct = Convert.ToString(VocPerms["VocConstruct"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Construct) && Int32.Parse(UserPerm_Construct) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_ConstructRoom");
+
+                // 통신 Voc 권한
+                string? UserPerm_Network = Convert.ToString(VocPerms["VocNetwork"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Network) && Int32.Parse(UserPerm_Network) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_NetworkRoom");
+
+                // 미화 Voc 권한
+                string? UserPerm_Beauty = Convert.ToString(VocPerms["VocBeauty"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Beauty) && Int32.Parse(UserPerm_Beauty) > 0){
+                    //string room = $"{PlaceIdx}_BeautyRoom";
+
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_BeautyRoom");
+                    Console.WriteLine("미화방 가입");
+                }
+
+                // 보안 Voc 권한
+                string? UserPerm_Security = Convert.ToString(VocPerms["VocSecurity"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Security) && Int32.Parse(UserPerm_Security) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_SecurityRoom");
+
+                // 기타 Voc 권한
+                string? UserPerm_Default = Convert.ToString(VocPerms["VocDefault"]!);
+                if (!String.IsNullOrWhiteSpace(UserPerm_Default) && Int32.Parse(UserPerm_Default) > 0)
+                    await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_DefaultRoom");
+            }
+           
             if(response.code == 201)
             {
                 Navigation.NavigateTo("/select");
@@ -108,9 +180,6 @@
                 Navigation.NavigateTo("/");
                 return;
             }
-
-
-           
         }
         catch (Exception ex)
         {

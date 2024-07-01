@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Voc;
 
 namespace FamTec.Server.Repository.Voc
 {
@@ -18,6 +19,6 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<ListVoc>?> GetVocList(List<BuildingTb>? buildinglist, string? date);
+        ValueTask<List<VocTb>?> GetVocList(List<BuildingTb>? buildinglist, string? date);
     }
 }

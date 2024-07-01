@@ -81,7 +81,7 @@ namespace FamTec.Server.Repository.Floor
             {
                 if(flooridx is not null)
                 {
-                    FloorTb? model = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != 1);
+                    FloorTb? model = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -113,7 +113,7 @@ namespace FamTec.Server.Repository.Floor
             {
                 if(buildingtbid is not null)
                 {
-                    List<FloorTb>? model = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtbid && m.DelYn != 1).ToListAsync();
+                    List<FloorTb>? model = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtbid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -144,14 +144,14 @@ namespace FamTec.Server.Repository.Floor
             {
                 if(model is [_, ..])
                 {
-                    List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != 1).ToListAsync();
+                    List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != true).ToListAsync();
 
                     if (floor is [_, ..])
                     {
                         List<FloorTb>? result = (from bdtb in model
                                                  join floortb in floor
                                                  on bdtb.Id equals floortb.BuildingTbId
-                                                 where floortb.DelYn != 1 && bdtb.DelYn != 1
+                                                 where floortb.DelYn != true && bdtb.DelYn != true
                                                  select new FloorTb
                                                  {
                                                      Id = floortb.Id,

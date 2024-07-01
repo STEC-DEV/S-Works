@@ -4,12 +4,10 @@ using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
-using FamTec.Shared.Client.DTO;
-using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
-using Microsoft.AspNetCore.Http.Features;
+using FamTec.Shared.Server.DTO.Voc;
 using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Services.Voc
@@ -42,426 +40,397 @@ namespace FamTec.Server.Services.Voc
             this.LogService = _logservice;
         }
 
-        public async ValueTask<ResponseList<ListVoc>?> GetVocList(HttpContext? context, string? date)
+        /// <summary>
+        /// 해당 사업장의 선택된 일자의 VOC LIST 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<VocDTO>?> GetVocList(HttpContext? context, string? date)
         {
-            if (context is null)
-                return null;
-            if (date is null)
-                return null;
-
-            string? UserType = context.Items["UserType"].ToString();
-
-            if (UserType is null)
+            try
             {
-                return new ResponseList<ListVoc>()
-                {
-                    message = "잘못된 요청입니다.",
-                    data = new List<ListVoc>(),
-                    code = 401
-                };
-            }
+                if (context is null)
+                    return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+                if (date is null)
+                    return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
 
-            // 관리자 일때
-            if(UserType.Equals("ADMIN"))
-            {
-                int? AdminIdx = Int32.Parse(context.Items["AdminIdx"].ToString());
+                string? UserType = Convert.ToString(context.Items["UserType"]);
+                if (String.IsNullOrWhiteSpace(UserType))
+                    return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
 
-                if(AdminIdx is null)
+                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(PlaceIdx))
+                    return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                // 관리자 일때
+                if (UserType.Equals("ADMIN"))
                 {
-                    return new ResponseList<ListVoc>()
+                    // 관리자테이블 인덱스 가져와야함.
+                    string? AdminIdx = Convert.ToString(context.Items["AdminIdx"]);
+                    if (String.IsNullOrWhiteSpace(AdminIdx))
+                        return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // 받아온 AdminIdx의 사업장 리스트를 받아온다.
+                    List<AdminPlaceTb>? placelist = await AdminPlaceInfoRepository.GetMyWorksList(Int32.Parse(AdminIdx));
+
+                    // 해당 관리자가 사업장을 관리하는지 여부
+                    if (placelist is not [_, ..])
+                        return new ResponseList<VocDTO>() { message = "해당 관리자의 사업장이 존재하지 않습니다.", data = new List<VocDTO>(), code = 200 };
+
+                    // 그 사업장이 로그인한 관리자가 관리하는 곳인지?
+                    AdminPlaceTb? adminplace = placelist.FirstOrDefault(m => m.PlaceId == Int32.Parse(PlaceIdx));
+                    if (adminplace is null)
+                        return new ResponseList<VocDTO>() { message = "해당 관리자는 해당 사업장의 권한이 없습니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // 사업장의 정보를 받아옴.
+                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(adminplace.PlaceId);
+                    if (placetb is null)
+                        return new ResponseList<VocDTO>() { message = "실제 존재하지 않는 사업장입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(placetb.Id);
+
+                    // 건물 테이블을 조회해서 --> 건물테이블의 placeid가 매개변수 placeid인 list들을 반환
+                    if (buildinglist is [_, ..])
                     {
-                        message = "잘못된 요청입니다.",
-                        data = new List<ListVoc>(),
-                        code = 401
-                    };
-                }
+                        // Voc테이블에 위의 건물테이블의 list들을 던진다.
+                        List<VocTb>? voclist = await VocInfoRepository.GetVocList(buildinglist, date);
 
-                List<AdminPlaceTb>? placelist = await AdminPlaceInfoRepository.GetMyWorksList(AdminIdx);
-
-                if(placelist is [_, ..])
-                {
-                    
-                    AdminPlaceTb? adminplace = placelist.FirstOrDefault(m => m.PlaceId == Int32.Parse(context.Items["PlaceIdx"].ToString()));
-
-                    if(adminplace is not null)
-                    {
-                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(adminplace.PlaceId);
-
-                        if(placetb is not null) // 사업장이 있다 -- 실제로직
+                        if(voclist is [_, ..])
                         {
-                            List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(placetb.Id);
-                            
-                            // 건물 테이블을 조회해서 --> 건물테이블의 placeid가 매개변수 placeid인 list들을 반환
-                            if (buildinglist is [_, ..])
-                            {
-                                // Voc테이블에 위의 건물테이블의 list들을 던진다.
-                                List<ListVoc>? voctb = await VocInfoRepository.GetVocList(buildinglist,date);
-                                // VocTb가 왔음.
-
-                                if(voctb is [_, ..])
-                                {
-                                    return new ResponseList<ListVoc>()
-                                    {
-                                        message = "요청이 정상 처리되었습니다.",
-                                        data = voctb,
-                                        code = 200
-                                    };
-                                }
-                                else
-                                {
-                                    return new ResponseList<ListVoc>()
-                                    {
-                                        message = "요청이 정상 처리되었습니다.",
-                                        data = voctb,
-                                        code = 200
-                                    };
-                                }
-                            }
+                            List<VocDTO> dto = (from bd in buildinglist
+                                                join voc in voclist
+                                                on bd.Id equals voc.BuildingTbId
+                                                select new VocDTO
+                                                {
+                                                    Id = voc.Id, // VOC ID
+                                                    Location = bd.Name, // 위치
+                                                    Type = voc.Type, // VOC 유형
+                                                    Writer = voc.Name, // 작성자
+                                                    Status = voc.Status, // VOC 처리상태
+                                                    Tel = voc.Phone, // 전화번호
+                                                    Title = voc.Title,
+                                                    Content = voc.Content,
+                                                    CreateDT = voc.CreateDt,
+                                                    CompleteDT = voc.CompleteTime,
+                                                    TotalDT = voc.TotalTime
+                                                }).ToList();
+                            // VOC 리스트 반환
+                            if (dto is [_, ..])
+                                return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                             else
-                            {
-                                return new ResponseList<ListVoc>()
-                                {
-                                    message = "요청이 정상 처리되었습니다.",
-                                    data = new List<ListVoc>(),
-                                    code = 200
-                                };
-                            }
+                                return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                         }
                         else
                         {
-                            return new ResponseList<ListVoc>()
-                            {
-                                message = "잘못된 요청입니다.",
-                                data = new List<ListVoc>(),
-                                code = 401
-                            };
+                            return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<VocDTO>(), code = 200 };
                         }
                     }
                     else
                     {
-                        return new ResponseList<ListVoc>()
-                        {
-                            message = "잘못된 요청입니다.",
-                            data = new List<ListVoc>(),
-                            code = 401
-                        };
+                        return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<VocDTO>(), code = 200 };
                     }
                 }
-                else
+                else // 일반 유저일때
                 {
-                    return new ResponseList<ListVoc>()
+                    // USERIDX 토큰 검색
+                    string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                    if (String.IsNullOrWhiteSpace(UserIdx))
+                        return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // USER_VOCPERM 토큰 검색
+                    string? VocPerm = Convert.ToString(context.Items["UserPerm_Voc"]);
+                    if (String.IsNullOrWhiteSpace(VocPerm))
+                        return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // VOC 권한 검사
+                    if (Int32.Parse(VocPerm) == 0)
+                        return new ResponseList<VocDTO>() { message = "VOC 권한이 없습니다.", data = new List<VocDTO>(), code = 200 };
+
+                    // 해당 USERIDX 로 유저테이블 검색
+                    UserTb? usermodel = await UserInfoRepository.GetUserIndexInfo(Int32.Parse(UserIdx));
+                    if (usermodel is null)
+                        return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    if (usermodel.PermVoc == 0)
+                        return new ResponseList<VocDTO>() { message = "VOC 권한이 없습니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // 해당 유저의 사업장 검색
+                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usermodel.PlaceTbId);
+                    if (placetb is null)
+                        return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
+
+                    // 해당 사업장에 포함되어있는 건물 리스트 출력
+                    List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(placetb.Id);
+                    if (buildinglist is not [_, ..]) // 해당 사업장에 포함된 건물이 없으면
+                        return new ResponseList<VocDTO>() { message = "해당 사업장에 속한 건물이 없습니다.", data = new List<VocDTO>(), code = 200 };
+
+                    // VOC LIST 검색
+                    List<VocTb>? voclist = await VocInfoRepository.GetVocList(buildinglist, date);
+
+                    if (voclist is [_, ..])
                     {
-                        message = "잘못된 요청입니다.",
-                        data = new List<ListVoc>(),
-                        code = 401
-                    };
-                }
-            }
-            else // 일반 유저일때
-            {
-                int? UserIdx = Int32.Parse(context.Items["UserIdx"].ToString());
-
-                
-                int? VocPerm = Int32.Parse(context.Items["User_PermVoc"].ToString());
-                
-
-                if (UserIdx is null)
-                {
-                    return new ResponseList<ListVoc>()
-                    {
-                        message = "잘못된 요청입니다.",
-                        data = new List<ListVoc>(),
-                        code = 401
-                    };
-                }
-
-                // 토큰의 User_PermVoc 0이 아닌거 Check
-                if (VocPerm != 0 && VocPerm is not null)
-                {
-                    UserTb? usermodel = await UserInfoRepository.GetUserIndexInfo(UserIdx);
-
-                    if (usermodel is not null)
-                    {
-                        if (usermodel.PermVoc != 0) // 실제 디비에 권한이 있는사람
-                        {
-                            PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usermodel.PlaceTbId);
-
-                            if(placetb is not null) // 실제 해당 사업장이 있는지 검사
-                            {
-                                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(placetb.Id);
-
-                                if(buildinglist is [_, ..]) // 해당사업장의 건물 LIST 출력
-                                {
-                                    List<ListVoc>? voctb = await VocInfoRepository.GetVocList(buildinglist, date);
-                                    
-                                    if (voctb is [_, ..])
-                                    {
-                                        return new ResponseList<ListVoc>()
-                                        {
-                                            message = "요청이 정상 처리되었습니다.",
-                                            data = voctb,
-                                            code = 200
-                                        };
-                                    }
-                                    else
-                                    {
-                                        return new ResponseList<ListVoc>()
-                                        {
-                                            message = "요청이 정상 처리되었습니다.",
-                                            data = voctb,
-                                            code = 200
-                                        };
-                                    }
-                                }
-                                else
-                                {
-                                    return new ResponseList<ListVoc>()
-                                    {
-                                        message = "요청이 정상 처리되었습니다.",
-                                        data = new List<ListVoc>(),
-                                        code = 200
-                                    };
-                                }
-                            }
-                            else
-                            {
-                                return new ResponseList<ListVoc>()
-                                {
-                                    message = "잘못된 요청입니다.",
-                                    data = new List<ListVoc>(),
-                                    code = 401
-                                };
-                            }
-                        }
+                        List<VocDTO> dto = (from bd in buildinglist
+                                            join voc in voclist
+                                            on bd.Id equals voc.BuildingTbId
+                                            select new VocDTO
+                                            {
+                                                Id = voc.Id, // VOC ID
+                                                Location = bd.Name, // 위치
+                                                Type = voc.Type, // VOC 유형
+                                                Writer = voc.Name, // 작성자
+                                                Status = voc.Status, // VOC 처리상태
+                                                Tel = voc.Phone, // 전화번호
+                                                Title = voc.Title,
+                                                Content = voc.Content,
+                                                CreateDT = voc.CreateDt,
+                                                CompleteDT = voc.CompleteTime,
+                                                TotalDT = voc.TotalTime
+                                            }).ToList();
+                        // VOC 리스트 반환
+                        if (dto is [_, ..])
+                            return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                         else
-                        {
-                            return new ResponseList<ListVoc>()
-                            {
-                                message = "권한이 없습니다",
-                                data = new List<ListVoc>(),
-                                code = 401
-                            };
-                        }
+                            return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
                     else
                     {
-                        return new ResponseList<ListVoc>()
-                        {
-                            message = "잘못된 요청입니다.",
-                            data = new List<ListVoc>(),
-                            code = 401
-                        };
+                        return new ResponseList<VocDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<VocDTO>(), code = 200 };
                     }
                 }
-                else
-                {
-                    return new ResponseList<ListVoc>()
-                    {
-                        message = "권한이 없습니다",
-                        data = new List<ListVoc>(),
-                        code = 401
-                    };
-                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<VocDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocDTO>(), code = 500 };
             }
         }
 
-
-
+        /// <summary>
+        /// 민원 추가
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseUnit<string>?> AddVocService(string obj, List<IFormFile> image)
         {
-            JObject? jobj = JObject.Parse(obj);
-            int Voctype = Int32.Parse(jobj["Type"]!.ToString()); // 종류
-            string VocName = jobj["Name"]!.ToString(); // 이름
-            string VocPhoneNumber = jobj["PhoneNumber"]!.ToString(); // 전화번호
-            string VocTitle = jobj["Title"]!.ToString(); // 제목
-            string VocContents = jobj["Contents"]!.ToString(); // 내용
-            int Vocbuildingidx = Int32.Parse(jobj["buildingidx"]!.ToString()); // 건물 인덱스
-
-            BuildingTb? buildingck = await BuildingInfoRepository.GetBuildingInfo(Vocbuildingidx); // 넘어온 해당 건물이 있는지 먼저 CHECK / 해당 건물이 속해있는 사업장 INDEX 반환
-
-            VocTb? model = new VocTb()
+            try
             {
-                Type = Voctype, // 종류
-                Name = VocName, // 이름
-                Phone = VocPhoneNumber, // 전화번호
-                Title = VocTitle, // 제목
-                Content = VocContents, // 내용
-                BuildingTbId = Vocbuildingidx
-            };
+                JObject? jobj = JObject.Parse(obj);
 
-            if (image is [_, ..])
-            {
-                // 확장자 검사
-                for (int i = 0; i < image.Count(); i++)
+                string? Voctype = Convert.ToString(jobj["Type"]);
+                if(String.IsNullOrWhiteSpace(Voctype))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? VocName = Convert.ToString(jobj["Name"]);
+                if(String.IsNullOrWhiteSpace(VocName))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? VocPhoneNumber = Convert.ToString(jobj["PhoneNumber"]);
+                if(String.IsNullOrWhiteSpace(VocPhoneNumber))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? VocTitle = Convert.ToString(jobj["Title"]);
+                if(String.IsNullOrWhiteSpace(VocTitle))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? VocContents = Convert.ToString(jobj["Contents"]);
+                if(String.IsNullOrWhiteSpace(VocContents))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? Vocbuildingidx = Convert.ToString(jobj["buildingidx"]);
+                if(String.IsNullOrWhiteSpace(Vocbuildingidx))
+                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                BuildingTb? buildingck = await BuildingInfoRepository.GetBuildingInfo(Int32.Parse(Vocbuildingidx)); // 넘어온 해당 건물이 있는지 먼저 CHECK / 해당 건물이 속해있는 사업장 INDEX 반환
+
+                VocTb? model = new VocTb();
+                model.Type = Int32.Parse(Voctype); // 종류
+                model.Name = VocName; // 이름
+                model.Phone = VocPhoneNumber; // 전화번호
+                model.Title = VocTitle; // 제목
+                model.Content = VocContents; // 내용
+                model.BuildingTbId = Int32.Parse(Vocbuildingidx); // 건물 인덱스
+                    
+                if (image is [_, ..])
                 {
-                    string tempName = image[i].FileName;
-                    string tempextenstion = Path.GetExtension(tempName);
-
-                    string[] allowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg" };
-
-                    if (!allowedExtensions.Contains(tempextenstion))
-                        return new ResponseUnit<string>() { message = "파일 형식이 잘못되었습니다.", data = null, code = 200 };
-                }
-            }
-            
-            if(buildingck is not null)
-            {
-                for (int i = 0; i < image.Count(); i++)
-                {
-                    string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(image[i].FileName)}";
-                    string filePath = Path.Combine(CommPath.VocFileImages, newFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    // 확장자 검사
+                    for (int i = 0; i < image.Count(); i++)
                     {
-                        await image[i].CopyToAsync(fileStream);
+                        string tempName = image[i].FileName;
+                        string tempextenstion = Path.GetExtension(tempName);
 
-                        if (i == 0)
-                            model.Image1 = newFileName;
-                        if (i == 1)
-                            model.Image2 = newFileName;
-                        if (i == 2)
-                            model.Image3 = newFileName;
+                        string[] allowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg" };
+
+                        if (!allowedExtensions.Contains(tempextenstion))
+                            return new ResponseUnit<string>() { message = "파일 형식이 잘못되었습니다.", data = null, code = 200 };
                     }
                 }
 
-                VocTb? result = await VocInfoRepository.AddAsync(model);
-
-                if (result is not null)
+                if (buildingck is not null)
                 {
-                    List<UserTb>? userlist;
-                    // 알람 발생시키는곳
-                    switch (Voctype)
+                    for (int i = 0; i < image.Count(); i++)
                     {
-                        case 1: // 기계
-                            userlist = await UserInfoRepository.GetVocMachineList(buildingck.PlaceTbId);
+                        string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(image[i].FileName)}";
+                        string filePath = Path.Combine(CommPath.VocFileImages, newFileName);
 
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if(!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                        {
+                            await image[i].CopyToAsync(fileStream);
 
-                        case 2: // 전기
-                            userlist = await UserInfoRepository.GetVocElecList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-
-                        case 3: // 승강
-                            userlist = await UserInfoRepository.GetVocLiftList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-
-                        case 4: // 소방
-                            userlist = await UserInfoRepository.GetVocFireList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-
-                        case 5: // 건축
-                            userlist = await UserInfoRepository.GetVocConstructList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-
-                        case 6: // 통신
-                            userlist = await UserInfoRepository.GetVocNetWorkList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-
-                        case 7: // 미화
-                            userlist = await UserInfoRepository.GetVocBeautyList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                        case 8: // 보안
-                            userlist = await UserInfoRepository.GetVocSecurityList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                        case 9: //기타
-                            userlist = await UserInfoRepository.GetVocDefaultList(buildingck.PlaceTbId);
-
-                            if (userlist is [_, ..])
-                            {
-                                bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
-                                if (!AlarmResult)
-                                {
-                                    return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
-                                }
-                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                            }
-                            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
-                        default: // 잘못된거
-                            return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = VocTitle, code = 404 };
+                            if (i == 0)
+                                model.Image1 = newFileName;
+                            if (i == 1)
+                                model.Image2 = newFileName;
+                            if (i == 2)
+                                model.Image3 = newFileName;
+                        }
                     }
+                    
+                    VocTb? result = await VocInfoRepository.AddAsync(model);
+                    
+                    if (result is not null)
+                    {
+                        List<UserTb>? userlist;
+                        // 알람 발생시키는곳
+                        switch (Int32.Parse(Voctype))
+                        {
+                            case 1: // 기계
+                                userlist = await UserInfoRepository.GetVocMachineList(buildingck.PlaceTbId);
 
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 2: // 전기
+                                userlist = await UserInfoRepository.GetVocElecList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 3: // 승강
+                                userlist = await UserInfoRepository.GetVocLiftList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 4: // 소방
+                                userlist = await UserInfoRepository.GetVocFireList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 5: // 건축
+                                userlist = await UserInfoRepository.GetVocConstructList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 6: // 통신
+                                userlist = await UserInfoRepository.GetVocNetWorkList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+
+                            case 7: // 미화
+                                userlist = await UserInfoRepository.GetVocBeautyList(buildingck.PlaceTbId);
+                             
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                            case 8: // 보안
+                                userlist = await UserInfoRepository.GetVocSecurityList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                            case 9: //기타
+                                userlist = await UserInfoRepository.GetVocDefaultList(buildingck.PlaceTbId);
+
+                                if (userlist is [_, ..])
+                                {
+                                    bool AlarmResult = await SetMessage(userlist, VocName, result.Id);
+                                    if (!AlarmResult)
+                                    {
+                                        return new ResponseUnit<string>() { message = "요청이 처리되지 않았습니다.", data = VocTitle, code = 200 };
+                                    }
+                                    return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                                }
+                                return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = VocTitle, code = 200 };
+                            default: // 잘못된거
+                                return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = VocTitle, code = 404 };
+                        }
+
+                    }
                 }
+                return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = VocTitle, code = 404 };
             }
-            return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = VocTitle, code = 404 };
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
         }
 
 

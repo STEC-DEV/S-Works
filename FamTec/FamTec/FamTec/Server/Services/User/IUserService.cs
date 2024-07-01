@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Client.DTO.Normal.Users;
+﻿using Azure;
+using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.DTO;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -40,5 +41,20 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext? context, UsersDTO? dto);
 
+        /// <summary>
+        /// 사용자 삭제 서비스
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool>> DeleteUserService(HttpContext? context, List<int> del);
+
+        /// <summary>
+        /// 사용자 데이터 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto);
     }
 }

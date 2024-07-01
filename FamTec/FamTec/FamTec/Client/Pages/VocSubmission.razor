@@ -1,6 +1,8 @@
 ﻿@layout MainLayout2
 
-@page "/VocSubmit/{buildingid?}" 
+@page "/VocSubmit/{placeid?}/{buildingid?}" 
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Voc
 @using Microsoft.Net.Http.Headers
 
 @using System.Text
@@ -19,6 +21,8 @@
     }
 </style>
 
+<p>확인용 PLACEID</p>
+<p>@PlaceId</p>
 <h1>민원 접수</h1>
 
 <div style="display:flex; flex-direction:column; align-items:start; justify-content: space-between;">
@@ -103,7 +107,7 @@
     [Parameter]
     public string buildingid{ get; set; }
 
-    private VocDTO? dto;
+    private AddVocDTO? dto;
 
     private List<FileInfo> FileInfos = new();
     private int maxAllowedFiles = int.MaxValue;
@@ -112,10 +116,9 @@
 
     MultipartFormDataContent? content = new MultipartFormDataContent();
 
-
     protected override async Task OnInitializedAsync()
     {
-        dto = new VocDTO();
+        dto = new AddVocDTO();
         dto.buildingidx = Int32.Parse(buildingid); // 해당 빌딩 INDEX -- QR로 넘어옴
         dto.PlaceIdx = Int32.Parse(PlaceId); // 해당 빌딩이 속해있는 PlaceID
     }
@@ -151,7 +154,7 @@
 
     protected async Task btnSubmit()
     {
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new VocDTO
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new AddVocDTO
             {
                 Type = dto.Type, // 미화?
                 Name = dto.Name, // 이름
@@ -159,6 +162,7 @@
                 Contents = dto.Contents, // 내용
                 PhoneNumber = dto.PhoneNumber, // 전화번호
                 buildingidx = dto.buildingidx, // 건물인덱스
+                PlaceIdx = dto.PlaceIdx
             }), System.Text.Encoding.UTF8, "application/json");
 
         content.Add(jsonContent);

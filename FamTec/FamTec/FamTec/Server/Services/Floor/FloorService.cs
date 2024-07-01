@@ -1,10 +1,12 @@
-﻿using FamTec.Server.Repository.Floor;
+﻿using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Place;
 using FamTec.Shared;
 using FamTec.Shared.DTO;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Floor;
+using Microsoft.IdentityModel.Abstractions;
 using System.Collections.Generic;
 
 namespace FamTec.Server.Services.Floor
@@ -12,18 +14,56 @@ namespace FamTec.Server.Services.Floor
     public class FloorService : IFloorService
     {
         private readonly IFloorInfoRepository FloorInfoRepository;
+        private readonly IBuildingInfoRepository BuildingInfoRepository;
 
 
-        ResponseOBJ<string> strResponse;
-        Func<string, string, int, ResponseModel<string>> FuncResponseSTR;
-
-        public FloorService(IFloorInfoRepository _floorinforepository)
+        public FloorService(IFloorInfoRepository _floorinforepository, IBuildingInfoRepository _buildinginforepository)
         {
             this.FloorInfoRepository = _floorinforepository;
+            this.BuildingInfoRepository = _buildinginforepository;
+        }
 
-            strResponse = new ResponseOBJ<string>();
-            FuncResponseSTR = strResponse.RESPMessage;
+        /// <summary>
+        /// 층 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<FloorDTO>?> AddFloorService(HttpContext? context, FloorDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
+                BuildingTb? tokenck = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID);
+                if (tokenck is null)
+                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+
+                string? creator = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creator))
+                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+
+
+                FloorTb? model = new FloorTb()
+                {
+                    Name = dto.Name,
+                    CreateDt = DateTime.Now,
+                    CreateUser = creator,
+                    BuildingTbId = dto.BuildingTBID
+                };
+
+                FloorTb? result = await FloorInfoRepository.AddAsync(model);
+                if (result is not null)
+                    return new ResponseUnit<FloorDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                else
+                    return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
+            }
+            catch(Exception ex)
+            {
+                return new ResponseUnit<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FloorDTO(), code = 500 };
+            }
         }
 
         /// <summary>
@@ -66,51 +106,6 @@ namespace FamTec.Server.Services.Floor
             catch(Exception ex)
             {
                 return new ResponseList<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<FloorDTO>(), code = 500 };
-            }
-        }
-
-        /// <summary>
-        /// 층삭제
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="session"></param>
-        /// <returns></returns>
-        public async ValueTask<ResponseModel<string>?> DeleteFloorService(List<int>? index, SessionInfo? session)
-        {
-            try
-            {
-                if(index is [_, ..])
-                {
-                    int count = 0;
-
-                    for (int i = 0; i < index.Count; i++)
-                    {
-                        FloorTb? model = await FloorInfoRepository.GetFloorInfo(index[i]);
-
-                        if(model is not null)
-                        {
-                            model.DelYn = 1;
-                            model.DelDt = DateTime.Now;
-                            model.DelUser = session.Name;
-
-                            bool? result = await FloorInfoRepository.DeleteFloorInfo(model);
-
-                            if(result == true)
-                            {
-                                count++;
-                            }
-                        }
-                    }
-                    return FuncResponseSTR("데이터 삭제 완료", count.ToString(), 200);
-                }
-                else
-                {
-                    return FuncResponseSTR("잘못된 요청 입니다.", null, 404);
-                }
-            }
-            catch(Exception ex)
-            {
-                return FuncResponseSTR("서버에서 요청을 처리하지 못하였습니다.", null, 500);
             }
         }
     }

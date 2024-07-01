@@ -58,8 +58,8 @@ public partial class EnergyUsageTb
     /// <summary>
     /// 삭제여부
     /// </summary>
-    [Column("DEL_YN", TypeName = "tinyint(4)")]
-    public sbyte? DelYn { get; set; }
+    [Column("DEL_YN")]
+    public bool? DelYn { get; set; }
 
     /// <summary>
     /// 삭제일

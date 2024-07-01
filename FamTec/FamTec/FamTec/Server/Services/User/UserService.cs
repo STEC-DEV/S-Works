@@ -9,6 +9,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.User;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop.Infrastructure;
 using Newtonsoft.Json;
@@ -98,7 +99,6 @@ namespace FamTec.Server.Services.User
                             }
 
 
-                            
                             JObject items = new JObject();
 
                             /* 메뉴 접근권한 */
@@ -650,5 +650,121 @@ namespace FamTec.Server.Services.User
             }
         }
 
+        /// <summary>
+        /// 사용자 데이터 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool>> DeleteUserService(HttpContext? context, List<int>? del)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if (del is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if (del.Count == 0)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                string? Name = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(Name))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                int? model = await UserInfoRepository.DeleteUserList(del, Name);
+                if (model > 0)
+                {
+                    return new ResponseUnit<bool>() { message = $"요청이 {model}건 처리되었습니다.", data = true, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                }
+            }catch(Exception ex)
+            {
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 404 };
+            }
+        }
+
+        /// <summary>
+        /// 사용자 데이터 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto)
+        {
+            try
+            {
+                if(context is null)
+                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                if(dto is null)
+                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                
+                string? Name = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(Name))
+                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+
+                UserTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID);
+                if (model is not null)
+                {
+                    model.UserId = dto.USERID;
+                    model.Password = dto.PASSWORD;
+                    model.Name = dto.NAME;
+                    model.Email = dto.EMAIL;
+                    model.Phone = dto.PHONE;
+                    model.Job = dto.JOB;
+                    /* 메뉴권한 */
+                    model.PermBasic = dto.PERM_BASIC;
+                    model.PermMachine = dto.PERM_MACHINE;
+                    model.PermElec = dto.PERM_ELEC;
+                    model.PermLift = dto.PERM_LIFT;
+                    model.PermFire = dto.PERM_FIRE;
+                    model.PermConstruct = dto.PERM_CONSTRUCT;
+                    model.PermNetwork = dto.PERM_NETWORK;
+                    model.PermBeauty = dto.PERM_BEAUTY;
+                    model.PermSecurity = dto.PERM_SECURITY;
+                    model.PermMaterial = dto.PERM_MATERIAL;
+                    model.PermEnergy = dto.PERM_ENERGY;
+                    model.PermUser = dto.PERM_USER;
+                    model.PermVoc = dto.PERM_VOC;
+                    /* VOC권한 */
+                    model.VocMachine = dto.VOC_MACHINE;
+                    model.VocElec = dto.VOC_ELEC;
+                    model.VocLift = dto.VOC_LIFT;
+                    model.VocFire = dto.VOC_FIRE;
+                    model.VocConstruct = dto.VOC_CONSTRUCT;
+                    model.VocNetwork = dto.VOC_NETWORK;
+                    model.VocBeauty = dto.VOC_BEAUTY;
+                    model.VocSecurity = dto.VOC_SECURITY;
+                    model.VocDefault = dto.VOC_DEFAULT;
+                    model.AlramYn = dto.ALRAM_YN;
+                    model.Status = dto.STATUS;
+
+                    model.UpdateDt = DateTime.Now;
+                    model.UpdateUser = Name;
+
+                    UserTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
+                    if (updatemodel is not null)
+                    {
+                        return new ResponseUnit<UpdateUserDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<UpdateUserDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
+                    }
+                }
+                else
+                {
+                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                return new ResponseUnit<UpdateUserDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateUserDTO(), code = 404 };
+            }
+        }
     }
 }

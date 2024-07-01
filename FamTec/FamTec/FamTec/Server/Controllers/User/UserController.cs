@@ -1,17 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Server.DTO.User;
 using FamTec.Server.Services.User;
-using FamTec.Shared;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using FamTec.Server.Tokens;
-using Newtonsoft.Json.Linq;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using Microsoft.AspNetCore.Authorization;
-using FamTec.Server.Repository.User;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -20,13 +12,10 @@ namespace FamTec.Server.Controllers.User
     public class UserController : ControllerBase
     {
         private IUserService UserService;
-        private ITokenComm TokenComm;
 
-
-        public UserController(IUserService _userservice, ITokenComm _tokencomm)
+        public UserController(IUserService _userservice)
         {
             UserService = _userservice;
-            TokenComm = _tokencomm;
         }
 
         /// <summary>
@@ -80,6 +69,55 @@ namespace FamTec.Server.Controllers.User
             {
                 return BadRequest();
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DeleteUser")]
+        public async ValueTask<IActionResult> DeleteUser([FromQuery]List<int> delIdx)
+        {
+            ResponseUnit<bool>? model = await UserService.DeleteUserService(HttpContext, delIdx);
+
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/UpdateUser")]
+        public async ValueTask<IActionResult> UpdateUser([FromBody]UpdateUserDTO dto)
+        {
+            ResponseUnit<UpdateUserDTO>? model = await UserService.UpdateUserService(HttpContext, dto);
+
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+
         }
 
     }

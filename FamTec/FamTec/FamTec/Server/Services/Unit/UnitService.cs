@@ -137,7 +137,7 @@ namespace FamTec.Server.Services.Unit
 
                     if(model is not null)
                     {
-                        model.DelYn = 1;
+                        model.DelYn = true;
                         model.DelDt = DateTime.Now;
                         model.DelUser = sessioninfo.Name;
 

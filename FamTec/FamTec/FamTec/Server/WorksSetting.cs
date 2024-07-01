@@ -7,23 +7,46 @@ namespace FamTec.Server
     public class WorksSetting : DbContext
     {
         private readonly WorksContext context;
-
-
-
-        enum LevelCode : ushort
-        {
-            시스템관리자 = 100,
-            마스터 = 200,
-            매니저 = 300,
-        }
+        private List<string> defaultUnit;
 
         public WorksSetting()
         {
             this.context = new WorksContext();
+            this.defaultUnit = new List<string>()
+            {
+                "㎀","㎁","㎂","㎃","KB", "MB", "GB", "㎈", "㎉", "㎊", "㎋", "㎌", "㎍", "㎎",
+                "㎏", "㎐", "㎑", "㎒", "㎒", "㎓", "㎔", "㎙", "㎚", "㎛", "㎜", "㎝", "㎞", "㎟", "㎠", "㎡", "㎢", "㎣", "㎤",
+                "㎥", "㎦", "㎨", "㎩", "㎪", "㎫", "㎬", "㏂", "㏘", "㎭", "㎮", "㎯", "㎰", "㎱", "㎲", "㎳", "㎕", "㎖", "㎗",
+                "ℓ", "㎘", "㎴", "㎵", "㎶", "㎷", "㎸", "㎹", "㎺", "㎻", "㎼", "㎽", "㎾", "㎿", "Ω", "㏀", "㏁", "㏃", "㏄",
+                "㏅", "㏆", "㏇", "㏈", "㏉", "㏊", "㏋", "㏌", "㏍", "㏎", "㏏", "㏐", "㏑", "㏒", "㏓", "㏔", "㏕", "㏖", "㏗",
+                "㏙", "㏚", "㏛", "㏜", "㏝", "㏞", "㏟", "㍱", "㍲", "㍳", "㍴", "㍵", "㍶", "℉", "K" ,"µ"
+            };
         }
 
         public async ValueTask DefaultSetting()
         {
+            List<string?> unittb = await context.UnitTbs
+                .Where(m => 
+                m.DelYn != true 
+                && m.PlaceTbId == null).Select(m => m.Unit).ToListAsync();
+
+            List<string?> compare = defaultUnit.Except(unittb).ToList();
+
+            for(int i = 0; i < compare.Count; i++)
+            {
+                UnitTb? model = new UnitTb();
+                model.Unit = compare[i];
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = "시스템개발파트";
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = "시스템개발파트";
+                model.DelYn = false;
+
+                context.UnitTbs.Add(model);
+            }
+            await context.SaveChangesAsync();
+
+
             // 파일서버 경로
             DirectoryInfo di = new DirectoryInfo(CommPath.FileServer);
             if(!di.Exists) di.Create();
@@ -33,25 +56,24 @@ namespace FamTec.Server
             if (!di.Exists)di.Create();
             
 
-
             DepartmentTb? department = new DepartmentTb();
             department.Name = "에스텍시스템";
             department.CreateDt = DateTime.Now;
-            department.CreateUser = LevelCode.시스템관리자.ToString();
+            department.CreateUser = "시스템관리자";
             department.UpdateDt = DateTime.Now;
-            department.UpdateUser = LevelCode.시스템관리자.ToString();
-            department.DelYn = 0;
+            department.UpdateUser = "시스템관리자";
+            department.DelYn = false;
 
             DepartmentTb? selectDepartment = await context.DepartmentTbs
                 .FirstOrDefaultAsync(m =>
                 m.Name!.Equals("에스텍시스템") && 
-                m.DelYn != 1);
+                m.DelYn != true);
 
             if(selectDepartment is null)
             {
                 context.DepartmentTbs.Add(department);
                 await context.SaveChangesAsync();
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != 1);
+                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
             else
             {
@@ -59,60 +81,66 @@ namespace FamTec.Server
                 {
                     selectDepartment.Name = department.Name;
                     selectDepartment.UpdateDt = DateTime.Now;
-                    selectDepartment.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectDepartment.UpdateUser = "시스템관리자";
                 }
                 if (department.DelYn != selectDepartment.DelYn)
                 {
                     selectDepartment.DelYn = department.DelYn;
                     selectDepartment.UpdateDt = DateTime.Now;
-                    selectDepartment.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectDepartment.UpdateUser = "시스템관리자";
                 }
 
                 context.DepartmentTbs.Update(selectDepartment);
                 await context.SaveChangesAsync();
 
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != 1);
+                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
 
-            UserTb? user = new UserTb();
-            user.UserId = "Admin";
-            user.Password = "stecdev1234!";
-            user.Name = "시스템개발파트";
-            user.Email = "stecdev@s-tec.co.kr";
-            user.Phone = "010-0000-0000";
-            user.PermBasic = 2; // 기본정보등록 권한 (수정권한)
-            user.PermMachine = 2; // 설비권한 (수정권한)
-            user.PermLift = 2; // 승강권한 (수정권한)
-            user.PermFire = 2; // 소방권한
-            user.PermConstruct = 2; // 건축권한
-            user.PermNetwork = 2; // 통신권한
-            user.PermBeauty = 2; // 미화권한
-            user.PermSecurity = 2; // 보안권한
-            user.PermMaterial = 2; // 자재권한
-            user.PermEnergy = 2; // 에너지권한
-            user.PermUser = 2; // 사용자 설정 권한
-            user.PermVoc = 2; // VOC권한
-
-            user.AdminYn = 1;
-            user.AlramYn = 1;
-            user.Status = 1; // 0 : 퇴직 / 1 : 재직
-
-            user.CreateDt = DateTime.Now;
-            user.CreateUser = LevelCode.시스템관리자.ToString();
-            user.UpdateDt = DateTime.Now;
-            user.UpdateUser = LevelCode.시스템관리자.ToString();
-            user.DelYn = 0;
-            user.Job = LevelCode.시스템관리자.ToString();
-
+            UserTb? user = new UserTb()
+            {
+                UserId = "Admin",
+                Password = "stecdev1234!",
+                Name = "시스템개발파트",
+                Email = "stecdev@s-tec.co.kr",
+                Phone = "1577-0722",
+                PermBasic = 2, // 기본정보관리메뉴 권한
+                PermMachine = 2, // 기계메뉴 권한
+                PermElec = 2, // 전기메뉴 권한
+                PermLift = 2, // 승강메뉴 권한
+                PermFire = 2, // 소방메뉴 권한
+                PermConstruct = 2, // 건축메뉴 권한
+                PermNetwork = 2, // 통신메뉴 권한
+                PermBeauty = 2, // 미화메뉴 권한
+                PermSecurity = 2, // 보안메뉴 권한
+                PermMaterial = 2, // 자재관리메뉴 권한
+                PermEnergy = 2, // 에너지관리메뉴 권한
+                PermUser = 2, // 사용자관리메뉴 권한
+                PermVoc = 2, // 민원관리메뉴 권한
+                VocMachine = 2, // 기계민원 처리권한
+                VocElec = 2, // 전기민원 처리권한
+                VocLift = 2, // 승강민원 처리권한
+                VocFire = 2, // 소방민원 처리권한
+                VocConstruct = 2, // 건축민원 처리권한
+                VocNetwork = 2, // 통신민원 처리권한
+                VocBeauty = 2, // 미화민원 처리권한
+                VocSecurity = 2, // 보안민원 처리권한
+                VocDefault = 2, // 기타민원 처리권한
+                AdminYn = 1, // 관리자유무
+                AlramYn = 1, // 알람유무
+                Status = 1, // 재직유무
+                CreateDt = DateTime.Now,
+                CreateUser = "시스템관리자",
+                UpdateDt = DateTime.Now,
+                UpdateUser = "시스템관리자",
+                DelYn = false,
+                Job = "시스템관리자"
+            };
             
-
             UserTb? selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
             if(selectUser is null)
             {
-                
                 context.UserTbs.Add(user);
                 await context.SaveChangesAsync();
-                
                 selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
             }
             else
@@ -121,122 +149,122 @@ namespace FamTec.Server
                 {
                     selectUser.UserId = user.UserId;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if (user.Name != selectUser.Name) // 이름
                 {
                     selectUser.Name = user.Name;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.Email != selectUser.Email) // 이메일
                 {
                     selectUser.Email = user.Email;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.Phone != selectUser.Phone) // 전화번호
                 {
                     selectUser.Phone = user.Phone;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermBasic != selectUser.PermBasic) // 기본정보등록 권한
                 {
                     selectUser.PermBasic = user.PermBasic;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermMachine != selectUser.PermMachine) // 설비 권한
                 {
                     selectUser.PermMachine = user.PermMachine;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermLift != selectUser.PermLift) // 승강 권한
                 {
                     selectUser.PermLift = user.PermLift;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermFire != selectUser.PermFire) // 소방권한
                 {
                     selectUser.PermFire = user.PermFire;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermConstruct != selectUser.PermConstruct) // 건축권한
                 {
                     selectUser.PermConstruct = user.PermConstruct;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermNetwork != selectUser.PermNetwork) // 통신권한
                 {
                     selectUser.PermNetwork = user.PermNetwork;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermBeauty != selectUser.PermBeauty) // 미화권한
                 {
                     selectUser.PermBeauty = user.PermBeauty;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermSecurity != selectUser.PermSecurity) // 보안권한
                 {
                     selectUser.PermSecurity = user.PermSecurity;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermMaterial != selectUser.PermMaterial) // 자재권한
                 {
                     selectUser.PermMaterial = user.PermMaterial;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermEnergy != selectUser.PermEnergy) // 에너지권한
                 {
                     selectUser.PermEnergy = user.PermEnergy;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermUser != selectUser.PermUser) // 사용자 설정 권한
                 {
                     selectUser.PermUser = user.PermUser;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.PermVoc != selectUser.PermVoc) // VOC 권한
                 {
                     selectUser.PermVoc = user.PermVoc;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
 
                 if(user.AdminYn != selectUser.AdminYn)
                 {
                     selectUser.AdminYn = user.AdminYn;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.AlramYn != selectUser.AlramYn)
                 {
                     selectUser.AlramYn = user.AlramYn;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.DelYn != selectUser.DelYn)
                 {
                     selectUser.DelYn = user.DelYn;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
                 if(user.Job != selectUser.Job)
                 {
                     selectUser.Job = user.Job;
                     selectUser.UpdateDt = DateTime.Now;
-                    selectUser.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectUser.UpdateUser = "시스템관리자";
                 }
 
                 context.UserTbs.Update(selectUser);
@@ -246,11 +274,11 @@ namespace FamTec.Server
             }
 
             AdminTb? admin = new AdminTb();
-            admin.Type = LevelCode.시스템관리자.ToString();
+            admin.Type = "시스템관리자";
             admin.CreateDt = DateTime.Now;
-            admin.CreateUser = LevelCode.시스템관리자.ToString();
+            admin.CreateUser = "시스템관리자";
             admin.UpdateDt = DateTime.Now;
-            admin.UpdateUser = LevelCode.시스템관리자.ToString();
+            admin.UpdateUser = "시스템관리자";
             admin.UserTbId = selectUser!.Id;
 
             admin.DepartmentTbId = selectDepartment!.Id;
@@ -268,141 +296,24 @@ namespace FamTec.Server
                 {
                     selectAdmin.Type = admin.Type;
                     selectAdmin.UpdateDt = DateTime.Now;
-                    selectAdmin.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectAdmin.UpdateUser = "시스템관리자";
                 }
                 if(selectAdmin.UserTbId != selectUser.Id)
                 {
                     selectAdmin.UserTbId = selectUser.Id;
                     selectAdmin.UpdateDt = DateTime.Now;
-                    selectAdmin.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectAdmin.UpdateUser = "시스템관리자";
                 }
                 if(selectAdmin.DepartmentTbId != selectDepartment.Id)
                 {
                     selectAdmin.DepartmentTbId = selectDepartment.Id;
                     selectAdmin.UpdateDt = DateTime.Now;
-                    selectAdmin.UpdateUser = LevelCode.시스템관리자.ToString();
+                    selectAdmin.UpdateUser = "시스템관리자";
                 }
 
                 context.UserTbs.Update(selectUser);
                 await context.SaveChangesAsync();
-
             }
-
-
-
-
         }
     }
 }
-
-/*
- INSERT INTO unit_tb(ID, UNIT, CREATE_DT, CREATE_USER, UPDATE_DT, UPDATE_USER, DEL_YN, DEL_DT, DEL_USER, PLACE_TB_ID)
-VALUES(null,'㎀',Now(),'시스템관리자',NOW(),'시스템관리자',NULL,NULL,NULL,NULL)
-(null,'㎁', NOW(),'시스템관리자', NOW(),'시스템관리자', NULL, NULL, NULL, NULL),
-(null, '㎂', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(null, '㎃', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(null, '㎄', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'KB', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'MB', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'GB', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎈', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎉', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎊', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎋', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎌', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎍', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎎', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎏', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎐', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎑', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎒', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎒', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎓', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎔', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎙', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎚', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎛', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎜', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎝', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎞', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎟', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎠', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎡', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎢', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎣', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎤', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎤', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎥', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎦', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎨', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎩', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎪', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎫', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎬', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏂', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏘', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎭', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎮', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎯', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎰', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎱', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎲', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎳', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎕', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎖', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎗', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'ℓ', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎘', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎴', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎵', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎶', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎷', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎸', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎹', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎺', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎻', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎼', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎽', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎾', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㎿', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'Ω', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏀', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏁', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏃', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏄', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏅', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏆', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏇', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏈', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏉', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏊', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏋', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏌', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏍', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏎', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏏', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏐', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏑', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏒', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏓', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏔', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏕', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏖', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏗', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏙', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏚', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏛', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏜', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏝', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏞', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㏟', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍱', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍲', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍳', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍴', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍵', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '㍶', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, '℉', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'K', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL),
-(NULL, 'µ', NOW(), '시스템관리자', NOW(), '시스템관리자', NULL, NULL, NULL, NULL);
- */

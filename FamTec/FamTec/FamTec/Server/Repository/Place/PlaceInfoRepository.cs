@@ -59,7 +59,7 @@ namespace FamTec.Server.Repository.Place
         {
             try
             {
-                List<PlaceTb>? model = await context.PlaceTbs.Where(m => m.DelYn == 0).ToListAsync();
+                List<PlaceTb>? model = await context.PlaceTbs.Where(m => m.DelYn != true).ToListAsync();
 
                 if (model is [_, ..])
                     return model;
@@ -87,7 +87,7 @@ namespace FamTec.Server.Repository.Place
                 {
                     PlaceTb? model = await context.PlaceTbs
                         .FirstOrDefaultAsync(m => m.PlaceCd.Equals(placecd) 
-                        && m.DelYn != 1);
+                        && m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -120,7 +120,7 @@ namespace FamTec.Server.Repository.Place
                 {
                     PlaceTb? model = await context.PlaceTbs
                         .FirstOrDefaultAsync(m => m.Id.Equals(id) &&
-                        m.DelYn != 1);
+                        m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -245,12 +245,12 @@ namespace FamTec.Server.Repository.Place
                         {
                             adminplace.DelDt = DateTime.Now;
                             adminplace.DelUser = Name;
-                            adminplace.DelYn = 1;
+                            adminplace.DelYn = true;
                             context.AdminPlaceTbs.Update(adminplace);
                         }
                         item.DelDt = DateTime.Now;
                         item.DelUser = Name;
-                        item.DelYn = 1;
+                        item.DelYn = true;
                         context.PlaceTbs.Update(item);
                     }
                     

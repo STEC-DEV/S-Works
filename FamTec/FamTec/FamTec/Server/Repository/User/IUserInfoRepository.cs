@@ -19,6 +19,13 @@ namespace FamTec.Server.Repository.User
         ValueTask<UserTb?> GetUserIndexInfo(int? useridx);
 
         /// <summary>
+        /// 삭제 쿼리
+        /// </summary>
+        /// <param name="Useridx"></param>
+        /// <returns></returns>
+        ValueTask<int?> DeleteUserList(List<int>? Useridx, string? Name);
+
+        /// <summary>
         /// USERID + PASSWORD에 해당하는 모델반환
         /// </summary>
         /// <param name="userid"></param>
@@ -39,6 +46,13 @@ namespace FamTec.Server.Repository.User
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<bool?> DeleteUserInfo(UserTb? model);
+
+        /// <summary>
+        /// 유저 테이블 내용 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<UserTb?> UpdateUserInfo(UserTb? model);
 
         /// <summary>
         /// 해당 사업장의 사용자 리스트 반환

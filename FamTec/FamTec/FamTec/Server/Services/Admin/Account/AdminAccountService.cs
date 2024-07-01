@@ -217,7 +217,7 @@ namespace FamTec.Server.Services.Admin.Account
                     adminmodel.CreateUser = creater;
                     adminmodel.UpdateDt = DateTime.Now;
                     adminmodel.UpdateUser = creater;
-                    adminmodel.DelYn = 0;
+                    adminmodel.DelYn = false;
                     adminmodel.UserTbId = userresult.Id;
                     adminmodel.DepartmentTbId = dto.DepartmentId;
 
@@ -259,7 +259,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                         if (admintb is not null)
                         {
-                            admintb.DelYn = 1;
+                            admintb.DelYn = true;
                             admintb.DelDt = DateTime.Now;
 
                             bool? deleteresult = await AdminUserInfoRepository.DeleteAdminInfo(admintb);
@@ -270,7 +270,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                                 if (usertb is not null)
                                 {
-                                    usertb.DelYn = 1;
+                                    usertb.DelYn = true;
                                     usertb.DelDt = DateTime.Now;
 
                                     bool? delresult = await UserInfoRepository.DeleteUserInfo(usertb);

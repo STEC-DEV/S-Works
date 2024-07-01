@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 
@@ -22,6 +23,6 @@ namespace FamTec.Server.Services.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<ListVoc>?> GetVocList(HttpContext context, string? date);
+        public ValueTask<ResponseList<VocDTO>?> GetVocList(HttpContext context, string? date);
     }
 }

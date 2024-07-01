@@ -67,7 +67,7 @@ namespace FamTec.Server.Repository.User
             {
                 if(useridx is not null)
                 {
-                    UserTb? model = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != 1);
+                    UserTb? model = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != true);
                     
                     if(model is not null)
                         return model;
@@ -202,7 +202,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocMachine == 1).ToListAsync();
 
                     if (model is not null)
@@ -235,7 +235,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m => 
                     m.PlaceTbId == placeidx &&
                     m.AdminYn != 1 &&
-                    m.DelYn != 1).ToListAsync();
+                    m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -276,7 +276,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocElec == 1).ToListAsync();
 
                     if (model is not null)
@@ -318,7 +318,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocLift == 1).ToListAsync();
 
                     if (model is not null)
@@ -361,7 +361,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocFire == 1).ToListAsync();
 
                     if (model is not null)
@@ -405,7 +405,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocConstruct == 1).ToListAsync();
 
                     if (model is not null)
@@ -447,7 +447,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocNetwork == 1).ToListAsync();
 
                     if (model is not null)
@@ -490,7 +490,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocBeauty == 1).ToListAsync();
 
                     if (model is not null)
@@ -533,7 +533,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocSecurity == 1).ToListAsync();
 
                     if (model is not null)
@@ -575,7 +575,7 @@ namespace FamTec.Server.Repository.User
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
                     m.AlramYn == 1 &&
-                    m.DelYn != 1 &&
+                    m.DelYn != true &&
                     m.VocDefault == 1).ToListAsync();
 
                     if (model is not null)
@@ -595,6 +595,71 @@ namespace FamTec.Server.Repository.User
             }
         }
 
+        /// <summary>
+        /// 사용자 데이터 삭제
+        /// </summary>
+        /// <param name="Useridx"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public async ValueTask<int?> DeleteUserList(List<int>? Useridx,string? Name)
+        {
+            try
+            {
+                int count = 0;
 
+                if (Useridx is [_, ..])
+                {
+                    List<UserTb>? UserList = context.UserTbs.Where(m => Useridx.Contains(m.Id)).ToList();
+                    foreach(var Users in UserList)
+                    {
+                        Users.DelYn = true;
+                        Users.DelDt = DateTime.Now;
+                        Users.DelUser = Name;
+
+                        context.Update(Users);
+                        count++;
+                    }
+                    
+                    await context.SaveChangesAsync();
+                    return count;
+                }
+                else
+                {
+                    return count;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사용자 데이터 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<UserTb?> UpdateUserInfo(UserTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.Update(model);
+                    await context.SaveChangesAsync();
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

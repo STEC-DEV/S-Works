@@ -1,0 +1,9 @@
+.modal-background[b-8e53f4qy8l] {
+    z-index : 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    background: #a9a9a9b2
+}

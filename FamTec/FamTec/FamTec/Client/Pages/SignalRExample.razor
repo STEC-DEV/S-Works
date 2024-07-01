@@ -62,7 +62,7 @@
     private async Task JoinSanitationRoom()
     {
         type = "SanitationRoom";
-        await hubConnection.InvokeAsync("JoinRoomAsync", "SanitationRoom");
+        await hubConnection.InvokeAsync("JoinRoomAsync", "35_BeautyRoom");
     }
 
     // 미화방 REMOVE
@@ -102,6 +102,7 @@
         if (!string.IsNullOrEmpty(messageInput))
         {
             await hubConnection.InvokeAsync("SendMessageAsync", messageInput, type);
+            //await HubContext.Clients.Group($"35_DefaultRoom").SendAsync("ReceiveVoc", model.code);
             messages.Add($"You: {messageInput}");
             messageInput = "";
             StateHasChanged();

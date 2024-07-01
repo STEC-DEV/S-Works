@@ -99,8 +99,8 @@ public partial class VocTb
     /// <summary>
     /// 삭제여부
     /// </summary>
-    [Column("DEL_YN", TypeName = "tinyint(4)")]
-    public sbyte? DelYn { get; set; }
+    [Column("DEL_YN")]
+    public bool? DelYn { get; set; }
 
     /// <summary>
     /// 첨부파일_1

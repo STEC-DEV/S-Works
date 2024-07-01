@@ -29,6 +29,10 @@ using FamTec.Server.Services.Voc;
 using FamTec.Server.Repository.Voc;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Facility;
+using FamTec.Server.Services.Facility;
+using FamTec.Server.Repository.Material;
+using FamTec.Server.Services.Material;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +52,9 @@ builder.Services.AddTransient<IRoomInfoRepository, RoomInfoRepository>();
 builder.Services.AddTransient<IUnitInfoRepository, UnitInfoRepository>();
 builder.Services.AddTransient<IVocInfoRpeository, VocInfoRepository>();
 builder.Services.AddTransient<IAlarmInfoRepository, AlarmInfoRepository>();
+builder.Services.AddTransient<IFacilityInfoRepository, FacilityInfoRepository>();
+builder.Services.AddTransient<IMaterialInfoRepository, MaterialInfoRepository>();
+builder.Services.AddTransient<IVocCommentRepository, VocCommentRepository>();
 
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -60,10 +67,11 @@ builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUnitService, UnitService>();
 builder.Services.AddTransient<IVocService, VocService>();
 builder.Services.AddTransient<ILogService, LogService>();
+builder.Services.AddTransient<IFacilityService, FacilityService>();
+builder.Services.AddTransient<IMaterialService, MaterialService>();
+builder.Services.AddTransient<IVocCommentService, VocCommentService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
-
-
 
 
 builder.Services.AddControllersWithViews();
@@ -91,6 +99,7 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
+string? HostUrl = builder.Configuration["Kestrel:Endpoints:MyHttpEndpoint:Url"];
 
 #region DB연결 정보
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -108,13 +117,26 @@ builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 #endregion
 
 #region SIGNAL R CORS 등록
-
-
+// 배포용
+/*
 builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:7114","http://localhost:5245","https://localhost:8888","http://123.2.156.148:5245")
+        policy.WithOrigins(HostUrl)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((host) => true);
+    });
+});
+*/
+// 개인용
+builder.Services.AddCors(opts =>
+{
+    opts.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7114","http://localhost:5245","https://localhost:8888","http://123.2.156.148:5245", "http://123.2.156.28:5245", HostUrl)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
@@ -153,10 +175,10 @@ else
 {
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
@@ -164,6 +186,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 #region MiddleWare
+
 // [설정] AdminUser 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminUser/sign"), appBuilder =>
 {
@@ -217,7 +240,29 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/User/sign")
     appBuilder.UseMiddleware<UserMiddleware>();
 });
 
+// Floor 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
 
+// Facility 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Facility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Material 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// VocComment 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/VocComment/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
 
 #endregion
 
@@ -228,6 +273,7 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
+//Console.WriteLine($"{AppDomain.CurrentDomain.BaseDirectory} : 기본경로");
 /*
 app.Use(async (context, next) =>
 {

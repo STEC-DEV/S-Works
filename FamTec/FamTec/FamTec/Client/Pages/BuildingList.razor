@@ -62,8 +62,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ResponseList<BuildinglistDTO>? response = await httpClient.GetFromJsonAsync<ResponseList<BuildinglistDTO>>("http://123.2.156.148:5245/api/Building/sign/MyBuildings");
-        buildinglist = response?.data;
+        ResponseList<BuildinglistDTO> res = await apiManager.GetListAsync<BuildinglistDTO>("Building/sign/MyBuildings");
+        buildinglist = res?.data;
+
+       
     }
 
     private async Task QRDownload(BuildinglistDTO dto)
