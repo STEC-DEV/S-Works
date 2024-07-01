@@ -661,5 +661,26 @@ namespace FamTec.Server.Repository.User
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 테이블 전체 리스트 반환
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask<List<UserTb>?> GetAllUserList()
+        {
+            try
+            {
+                List<UserTb>? UserList = await context.UserTbs.Where(m => m.DelYn != true).ToListAsync();
+                if (UserList is [_, ..])
+                    return UserList;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

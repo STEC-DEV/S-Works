@@ -4,6 +4,7 @@ using FamTec.Server.Services.User;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using Microsoft.AspNetCore.Authorization;
+using ClosedXML.Excel;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -17,6 +18,8 @@ namespace FamTec.Server.Controllers.User
         {
             UserService = _userservice;
         }
+
+
 
         /// <summary>
         /// 로그인한 사업장의 모든 사용자 반환
@@ -118,6 +121,29 @@ namespace FamTec.Server.Controllers.User
                 return BadRequest();
             }
 
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportUser")]
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        {
+            ResponseUnit<string>? model = await UserService.ImportUserService(HttpContext, file);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
     }

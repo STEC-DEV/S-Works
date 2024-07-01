@@ -67,8 +67,6 @@ namespace FamTec.Server.Controllers.ClientController
 
                 //사용자 테이블 생성
                 //생성 id를 포함한 데이터로 관리자db 생성
-
-
                 Console.WriteLine("매니저 추가");
                 UserTb userTb = new()
                 {
@@ -110,7 +108,6 @@ namespace FamTec.Server.Controllers.ClientController
 
                 await _workContext.SaveChangesAsync();
                 await transaction.CommitAsync();
-
 
 
                 return Ok(new ResponseObj<AddManagerDTO> { message = "매니저 등록 완료", code = 200 });

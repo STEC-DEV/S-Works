@@ -317,5 +317,8 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 return BadRequest();
             }
         }
+
+        
+
     }
 }

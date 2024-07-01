@@ -56,5 +56,13 @@ namespace FamTec.Server.Services.User
         /// <param name="dto"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto);
+
+        /// <summary>
+        /// 사용자 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<string>> ImportUserService(HttpContext? context, IFormFile file);
     }
 }

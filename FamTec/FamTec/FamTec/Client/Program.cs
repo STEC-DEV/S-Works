@@ -35,8 +35,7 @@ builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 
 
 // 연결 -- 아래 코드 (게시용)
-//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
-string HubUrl = "http://123.2.156.28/5245/VocHub";
+string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 HubObject.hubConnection = new HubConnectionBuilder()
     .WithUrl(HubUrl, transports: Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling) // 뒤에 붙는 url은 상관없이 같기만 하면 되는지 check
     .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결

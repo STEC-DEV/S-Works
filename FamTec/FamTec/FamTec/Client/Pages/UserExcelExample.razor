@@ -1,0 +1,80 @@
+﻿@layout MainLayout2
+
+@page "/userexcel"
+@using ClosedXML.Excel
+@using System.Text
+@using System.Text.Json
+@using System.Drawing
+
+@using Tewr.Blazor.FileReader
+@using Microsoft.Net.Http.Headers
+@using static System.Net.Mime.MediaTypeNames
+@inject IFileReaderService fileReader
+@inject HttpClient httpClient
+<h3>사용자 엑셀 예시</h3>
+
+<input type="button" value="사용자 등록 엑셀양식 다운로드" @onclick="(() =>  btnClick())"/>
+
+
+<script src="js/excel.js"></script>
+
+@code {
+    protected async Task btnClick()
+    {
+        // 엑셀 파일 만듬
+        var workbook = new XLWorkbook();
+
+        var worksheet = workbook.Worksheets.Add("사용자등록");
+
+        List<string> Title = new List<string>()
+        {
+            "아이디",
+            "비밀번호",
+            "이름",
+            "이메일",
+            "전화번호"
+        };
+
+        worksheet = CreateCell(worksheet, Title.Count(), Title);
+
+        MemoryStream XLSStream = new();
+        workbook.SaveAs(XLSStream, false);
+        byte[] byteData = XLSStream.ToArray();
+
+        await JS.InvokeAsync<object>("saveAsFile", "사용자정보.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+    }
+
+    private IXLWorksheet CreateCell(IXLWorksheet sheet, int colNum, List<string>title)
+    {
+        for (int i = 0; i < colNum; i++)
+        {
+            sheet.Cell(1, i + 1).Value = title[i].ToString();
+            sheet.Column(i + 1).Width = 15; // 너비
+            sheet.Row(1).Height = 15; // 높이
+
+            var cell = sheet.Cell(1, i + 1); // A1,A2,A3 .. 셀 선택
+            cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // Vertial 중앙정렬
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Double;
+            cell.Style.Border.OutsideBorderColor = XLColor.White;
+        }
+
+        var range = sheet.Range(sheet.Cell("A1"), sheet.Cell("E1"));
+        
+        // 범위 내의 모든 셀의 배경색을 에스텍색으로 설정
+        Color color = Color.FromArgb(2241348);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.White;
+
+        var mergerange = sheet.Range(sheet.Cell("H1"), sheet.Cell("N7"));
+        mergerange.Merge(); // Merge ()에서 범위의 셀을 결합하는
+
+        mergerange.Value = $"*[해당내용은 참고사항입니다]\r\n업로드 후 생성된 아이디로 로그인하셔서 정보수정 바랍니다.";
+        mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+        return sheet;
+    }
+}

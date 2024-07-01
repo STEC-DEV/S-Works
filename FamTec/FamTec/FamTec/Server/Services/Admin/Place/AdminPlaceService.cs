@@ -380,7 +380,7 @@ namespace FamTec.Server.Services.Admin.Place
                 }
                 else
                 {
-                    return new ResponseUnit<bool> { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool> { message = "요청이 정상 처리되었습니다.", data = false, code = 200 };
                 }
             }
             catch(Exception ex)

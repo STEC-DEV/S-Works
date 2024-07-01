@@ -1,9 +1,12 @@
-﻿using FamTec.Server.Hubs;
+﻿using ClosedXML.Excel;
+using FamTec.Server.Hubs;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace FamTec.Server.Controllers.Hubs
 {
@@ -39,36 +42,7 @@ namespace FamTec.Server.Controllers.Hubs
             return Ok(bytes);
         }
 
-        [HttpPost]
-        [Route("Excel")]
-        public async Task<IActionResult> UploadFile([FromForm]List<IFormFile> file)
-        {
-            Console.WriteLine(file.Count());
-
-            /*
-            if (file != null && file.Length > 0)
-            {
-                using (var stream = new MemoryStream())
-                {
-                    await file.CopyToAsync(stream);
-                    using (var workbook = new XLWorkbook(stream))
-                    {
-                        var worksheet = workbook.Worksheet(1);
-                        var firstRowUsed = worksheet.FirstRowUsed();
-                        var row = firstRowUsed.RowUsed();
-
-                        // 엑셀 데이터 읽기
-                        var data = new List<string>();
-                        foreach (var cell in row.CellsUsed())
-                        {
-                            data.Add(cell.GetValue<string>());
-                        }
-
-                    }
-                }
-            }*/
-            return Ok();
-        }
+       
 
         [HttpPost]
         [Route("Files")]

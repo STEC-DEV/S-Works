@@ -33,6 +33,9 @@ using FamTec.Server.Repository.Facility;
 using FamTec.Server.Services.Facility;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Services.Material;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using FamTec.Client;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -117,8 +120,22 @@ builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 #endregion
 
 #region SIGNAL R CORS 등록
+
+#if DEBUG
+// 개인용
+builder.Services.AddCors(opts =>
+{
+    opts.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7114", "http://localhost:5245", "https://localhost:8888", "http://123.2.156.148:5245", "http://123.2.156.229:5245", "http://123.2.156.28:5245", HostUrl)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((host) => true);
+    });
+});
+#else
 // 배포용
-/*
 builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
@@ -130,19 +147,7 @@ builder.Services.AddCors(opts =>
         .SetIsOriginAllowed((host) => true);
     });
 });
-*/
-// 개인용
-builder.Services.AddCors(opts =>
-{
-    opts.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("https://localhost:7114","http://localhost:5245","https://localhost:8888","http://123.2.156.148:5245","http://123.2.156.229:5245" ,"http://123.2.156.28:5245", HostUrl)
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .SetIsOriginAllowed((host) => true);
-    });
-});
+#endif
 
 builder.Services.AddResponseCompression(opts =>
 {
@@ -155,6 +160,7 @@ builder.Services.AddResponseCompression(opts =>
 
 
 var app = builder.Build();
+
 
 #region CORS 사용
 app.UseCors();

@@ -124,5 +124,11 @@ namespace FamTec.Server.Repository.User
         /// <returns></returns>
         ValueTask<List<UserTb>?> GetVocDefaultList(int? placeidx);
 
+        /// <summary>
+        /// 테이블 전체 사용자 반환
+        /// </summary>
+        /// <returns></returns>
+        ValueTask<List<UserTb>?> GetAllUserList();
+
     }
 }

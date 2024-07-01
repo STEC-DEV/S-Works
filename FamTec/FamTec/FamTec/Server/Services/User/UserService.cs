@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using ClosedXML.Excel;
+using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.Place;
@@ -9,6 +10,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.User;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop.Infrastructure;
@@ -763,7 +765,237 @@ namespace FamTec.Server.Services.User
             }
             catch(Exception ex)
             {
-                return new ResponseUnit<UpdateUserDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateUserDTO(), code = 404 };
+                return new ResponseUnit<UpdateUserDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateUserDTO(), code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 사용자 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<string>> ImportUserService(HttpContext? context, IFormFile? file)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (file is null)
+                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (file.Length == 0)
+                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<ExcelUserInfo> userlist = new List<ExcelUserInfo>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+
+                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
+                       
+
+                        for (int i = 2; i <= total; i++)
+                        {
+                            var Data = new ExcelUserInfo();
+
+                            Data.ID = Convert.ToString(worksheet.Cell("A" + i).GetValue<string>().Trim());
+                            
+                            if(String.IsNullOrWhiteSpace(Data.ID))// 공백 또는 Null이면 대체값이라도 들어가게
+                            {
+                                Data.ID = Guid.NewGuid().ToString();
+                            }
+
+                            Data.PassWord = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.PassWord)) // 공백 또는 Null이면 대체값이라도 들어가게
+                            {
+                                Data.PassWord = Guid.NewGuid().ToString();
+                            }
+
+                            Data.Name = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Name)) // 공백 또는 Null이면 대체값이라도 들어가게
+                            {
+                                Data.Name = Guid.NewGuid().ToString();
+                            }
+
+                            Data.Email = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Email))
+                            {
+                                Data.Email = Guid.NewGuid().ToString();
+                            }
+
+                            Data.PhoneNumber = Convert.ToString(worksheet.Cell("E" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.PhoneNumber))
+                            {
+                                Data.PhoneNumber = Guid.NewGuid().ToString();
+                            }
+
+                            userlist.Add(Data);
+                        }
+
+                        var duple = userlist.GroupBy(x => x.ID).Where(p => p.Count() > 1).ToList();
+                        if (duple.Count() > 0) // 엑셀에 중복된 데이터를 기입했는지 검사
+                        {
+                            return new ResponseUnit<string>
+                            {
+                                message = $"시트에 {duple.Count}개의 중복이 있습니다. 중복 제거후 다시 시도하세요.",
+                                data = duple.Count.ToString(),
+                                code = 200
+                            };
+                        }
+                        else
+                        {
+                            // DB에 중복된 ID가 있는지 검사
+                            List<UserTb>? placeusers = await UserInfoRepository.GetAllUserList();
+
+                            if (placeusers is not null && placeusers.Count() > 0)
+                            {
+                                var result = placeusers.IntersectBy(userlist.Select(x => x.ID), x => x.UserId);
+
+                                if (result.Count() > 0)
+                                {
+                                    // DB에 중복된 데이터가 하나 이상 있음. -- 해결하고 넣어야함.
+                                    return new ResponseUnit<string>() { message = $"이미 사용중인 아이디가 {result.Count()}개 있습니다.", data = result.Count().ToString(), code = 200 };
+                                }
+                                else
+                                {
+                                    // 중복된 데이터가 없음
+                                    // 모델 클래스로 변환해서 디비에 넣어야함.
+                                    List<UserTb> model = userlist.Select(m => new UserTb
+                                    {
+                                        UserId = m.ID,
+                                        Password = m.PassWord,
+                                        Phone = m.PhoneNumber,
+                                        Email = m.Email,
+                                        Name = m.Name,
+                                        PermBasic = 2, // 기본정보관리 필수사용
+                                        PermMachine = 0,
+                                        PermElec = 0,
+                                        PermLift = 0,
+                                        PermFire = 0,
+                                        PermConstruct = 0,
+                                        PermNetwork = 0,
+                                        PermBeauty = 0,
+                                        PermSecurity = 0,
+                                        PermMaterial = 0,
+                                        PermEnergy = 0,
+                                        PermUser = 2, // 사용자관리 필수사용
+                                        PermVoc = 0,
+                                        VocMachine = 0,
+                                        VocElec = 0,
+                                        VocLift = 0,
+                                        VocFire = 0,
+                                        VocConstruct = 0,
+                                        VocNetwork = 0,
+                                        VocBeauty = 0,
+                                        VocSecurity = 0,
+                                        VocDefault = 0,
+                                        Status = 1,
+                                        CreateDt = DateTime.Now,
+                                        CreateUser = creater,
+                                        UpdateDt = DateTime.Now,
+                                        UpdateUser = creater,
+                                        Job = null,
+                                        PlaceTbId = Int32.Parse(placeidx)
+                                    }).ToList();
+
+                                    for (int i = 0; i < model.Count; i++)
+                                    {
+                                        UserTb? insert = await UserInfoRepository.AddAsync(model[i]);
+
+                                        if (insert is null)
+                                        {
+                                            return new ResponseUnit<string>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
+                                        }
+                                    }
+
+                                    return new ResponseUnit<string>
+                                    {
+                                        message = "요청이 정상 처리되었습니다.",
+                                        data = $"{total - 1}",
+                                        code = 200
+                                    };
+                                }
+                            }
+                            else // USERTB에 데이터가 아무것도 없을때
+                            {
+                                // 모델 클래스로 변환해서 디비에 넣어야함.
+                                List<UserTb> model = userlist.Select(m => new UserTb
+                                {
+                                    UserId = m.ID,
+                                    Password = m.PassWord,
+                                    Phone = m.PhoneNumber,
+                                    Email = m.Email,
+                                    Name = m.Name,
+                                    PermBasic = 2, // 기본정보관리 필수사용
+                                    PermMachine = 0,
+                                    PermElec = 0,
+                                    PermLift = 0,
+                                    PermFire = 0,
+                                    PermConstruct = 0,
+                                    PermNetwork = 0,
+                                    PermBeauty = 0,
+                                    PermSecurity = 0,
+                                    PermMaterial = 0,
+                                    PermEnergy = 0,
+                                    PermUser = 2, // 사용자관리 필수사용
+                                    PermVoc = 0,
+                                    VocMachine = 0,
+                                    VocElec = 0,
+                                    VocLift = 0,
+                                    VocFire = 0,
+                                    VocConstruct = 0,
+                                    VocNetwork = 0,
+                                    VocBeauty = 0,
+                                    VocSecurity = 0,
+                                    VocDefault = 0,
+                                    Status = 1,
+                                    CreateDt = DateTime.Now,
+                                    CreateUser = creater,
+                                    UpdateDt = DateTime.Now,
+                                    UpdateUser = creater,
+                                    Job = null,
+                                    PlaceTbId = Int32.Parse(placeidx)
+                                }).ToList();
+
+                                for (int i = 0; i < model.Count; i++)
+                                {
+                                    UserTb? insert = await UserInfoRepository.AddAsync(model[i]);
+
+                                    if (insert is null)
+                                    {
+                                        return new ResponseUnit<string>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
+                                    }
+                                }
+
+                                return new ResponseUnit<string>
+                                {
+                                    message = "요청이 정상 처리되었습니다.",
+                                    data = $"{total - 1}",
+                                    code = 200
+                                };
+                            }
+
+
+                        }
+                    }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

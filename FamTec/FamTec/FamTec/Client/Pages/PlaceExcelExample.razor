@@ -1,0 +1,90 @@
+﻿@layout MainLayout2
+
+@page "/placeexcel"
+@using ClosedXML.Excel
+@using System.Drawing
+
+<h3>사업장 엑셀 예시</h3>
+
+<input type="button" value="사업장 등록 엑셀양식 다운로드" @onclick="(() => btnClick())" />
+
+<script src="js/excel.js"></script>
+
+@code {
+
+
+    protected async Task btnClick()
+    {
+        // 엑셀 파일 만듬
+        var workbook = new XLWorkbook();
+
+        var worksheet = workbook.Worksheets.Add("사업장등록");
+
+        List<string> Title = new List<string>()
+        {
+            "사업장코드",
+            "계약번호",
+            "사업장명",
+            "전화번호",
+            "비고",
+            "주소",
+            "계약일자",
+            "해약일자",
+            "기계메뉴권한",
+            "승강메뉴권한",
+            "소방메뉴권한",
+            "건축메뉴권한",
+            "통신메뉴권한",
+            "미화메뉴권한",
+            "보안메뉴권한",
+            "자재메뉴권한",
+            "에너지메뉴권한",
+            "민원권한",
+            "계약상태"
+        };
+
+        worksheet = CreateCell(worksheet, Title.Count(), Title);
+
+        MemoryStream XLSStream = new();
+        workbook.SaveAs(XLSStream, false);
+        byte[] byteData = XLSStream.ToArray();
+
+
+        await JS.InvokeAsync<object>("saveAsFile", "사업장정보.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+    }
+
+    private IXLWorksheet CreateCell(IXLWorksheet sheet, int colNum, List<string> title)
+    {
+        // 반복문은 돌려쓰면됨.
+        for (int i = 0; i < colNum; i++)
+        {
+            sheet.Cell(1, i + 1).Value = title[i].ToString();
+            sheet.Column(i + 1).Width = 15; // 너비
+            sheet.Row(1).Height = 15; // 높이
+
+            var cell = sheet.Cell(1, i + 1); // A1,A2,A3 .. 셀 선택
+            cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // Vertial 중앙정렬
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Double;
+            cell.Style.Border.OutsideBorderColor = XLColor.White;
+        }
+
+        // 여기부터는 계산해서 넣어야할듯.
+        var range = sheet.Range(sheet.Cell("A1"), sheet.Cell("S1"));
+        // 범위 내의 모든 셀의 배경색을 에스텍색으로 설정
+        Color color = Color.FromArgb(2241348);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.White;
+
+        var mergerange = sheet.Range(sheet.Cell("U1"), sheet.Cell("Z5"));
+        mergerange.Merge(); // Merge ()에서 범위의 셀을 결합하는
+
+        mergerange.Value = $"*[해당내용은 참고사항입니다]\r\n 권한 0:없음 / 1:보기권한 / 2:수정권한 \r\n 날짜입력포맷 [숫자만입력] \r\n 계약상태 0:해약 1:계약";
+        mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+        return sheet;
+    }
+}
