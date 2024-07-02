@@ -25,11 +25,19 @@ namespace FamTec.Server.Repository.Building
         /// <returns></returns>
         ValueTask<BuildingTb?> GetBuildingInfo(int? buildingId);
 
+
         /// <summary>
-        /// 해당사업장의 건물삭제
+        /// 건물정보 수정
         /// </summary>
-        /// <param name="buildingCD"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
+        ValueTask<bool?> UpdateBuildingInfo(BuildingTb? model);
+
+        ValueTask<List<BuildingTb>?> GetDeleteList(List<int>? buildingId);
+
+        ValueTask<List<BuildingTb>?> GetBuildings(List<int>? buildingid);
+
+
         ValueTask<bool?> DeleteBuildingInfo(BuildingTb? model);
 
     }

@@ -281,12 +281,54 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "DeleteBuilding",
+    "RelativePath": "api/Building/sign/DeleteBuilding",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "DetailBuilding",
+    "RelativePath": "api/Building/sign/DetailBuilding",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buildingid",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "SelectMyBuilding",
     "RelativePath": "api/Building/sign/MyBuildings",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "UpdateBuilding",
+    "RelativePath": "api/Building/sign/UpdateBuilding",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.DetailBuildingDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

@@ -1,14 +1,8 @@
 ﻿using FamTec.Server.Services.Building;
-using FamTec.Server.Services.Floor;
-using FamTec.Shared;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
-using FamTec.Shared.Server.DTO.Floor;
-using FamTec.Shared.Server.DTO.Room;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace FamTec.Server.Controllers.Building
 {
@@ -17,19 +11,11 @@ namespace FamTec.Server.Controllers.Building
     public class BuildingController : ControllerBase
     {
         private IBuildingService BuildingService;
-        private IFloorService FloorService;
+    
 
-
-        private SessionInfo session;
-
-        public BuildingController(IBuildingService _buildingservice,
-            IFloorService _floorservice)
+        public BuildingController(IBuildingService _buildingservice)
         {
             BuildingService = _buildingservice;
-            FloorService = _floorservice;
-
-
-            session = new SessionInfo();
         }
 
         /// <summary>
@@ -89,9 +75,81 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
-       
+        // 건물 디테일
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DetailBuilding")]
+        public async ValueTask<IActionResult> DetailBuilding([FromQuery]int? buildingid)
+        {
+            ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
 
+            if(model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
+        // 건물수정
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/UpdateBuilding")]
+        public async ValueTask<IActionResult> UpdateBuilding([FromBody]DetailBuildingDTO dto)
+        {
+            ResponseUnit<DetailBuildingDTO>? model = await BuildingService.UpdateBuildingService(HttpContext, dto);
+            
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        // 건물 삭제
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DeleteBuilding")]
+        public async ValueTask<IActionResult> DeleteBuilding()
+        {
+            List<int> temp = new List<int>() { 4, 5 };
+
+            ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, temp);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
     }
 }
