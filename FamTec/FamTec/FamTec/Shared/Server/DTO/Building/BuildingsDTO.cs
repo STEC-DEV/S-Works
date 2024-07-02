@@ -238,10 +238,11 @@ namespace FamTec.Shared.Server.DTO.Building
         /// </summary>
         public DateTime? CreateDT { get; set; }
 
+       
         /// <summary>
-        /// 건물코드 - 외래키 참조
+        /// 추가항목
         /// </summary>
-        public int? PlaceIdx { get; set; }
+        public List<BuildingSubItemDTO>? subitem { get; set; } = new List<BuildingSubItemDTO>();
 
     }
 }

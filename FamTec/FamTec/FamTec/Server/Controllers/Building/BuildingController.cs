@@ -48,10 +48,11 @@ namespace FamTec.Server.Controllers.Building
 
 
         /// <summary>
-        /// 사업장에 건물 추가 [수정완료]
+        /// 사업장에 건물 추가
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuilding")]
         public async ValueTask<IActionResult> InsertBuilding([FromBody] BuildingsDTO dto)
@@ -75,15 +76,19 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
-        // 건물 디테일
+        /// <summary>
+        /// 건물 상세정보 조회
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBuilding")]
-        public async ValueTask<IActionResult> DetailBuilding([FromQuery]int? buildingid)
+        public async ValueTask<IActionResult> DetailBuilding([FromQuery] int? buildingid)
         {
             ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
 
-            if(model is not null)
+            if (model is not null)
             {
                 if (model.code == 200)
                 {
@@ -104,13 +109,15 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateBuilding")]
-        public async ValueTask<IActionResult> UpdateBuilding([FromBody]DetailBuildingDTO dto)
+        public async ValueTask<IActionResult> UpdateBuilding([FromBody] DetailBuildingDTO dto)
         {
+
+
             ResponseUnit<DetailBuildingDTO>? model = await BuildingService.UpdateBuildingService(HttpContext, dto);
-            
-            if(model is not null)
+
+            if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }
@@ -127,16 +134,14 @@ namespace FamTec.Server.Controllers.Building
 
         // 건물 삭제
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/DeleteBuilding")]
-        public async ValueTask<IActionResult> DeleteBuilding()
+        public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
-            List<int> temp = new List<int>() { 4, 5 };
-
-            ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, temp);
-            if(model is not null)
+            ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
+            if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }

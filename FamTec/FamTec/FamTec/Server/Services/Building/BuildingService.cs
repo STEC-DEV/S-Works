@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Building.SubItem;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
@@ -8,13 +9,17 @@ namespace FamTec.Server.Services.Building
     public class BuildingService : IBuildingService
     {
         private readonly IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IBuildingSubItemInfoRepository BuildingSubItemInfoRepository;
+
         private ILogService LogService;
 
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
+            IBuildingSubItemInfoRepository _buildingsubiteminforepository,
             ILogService _logservice)
         {
             this.BuildingInfoRepository = _buildinginforepository;
+            this.BuildingSubItemInfoRepository = _buildingsubiteminforepository;
             this.LogService = _logservice;
         }
 
@@ -95,8 +100,43 @@ namespace FamTec.Server.Services.Building
                 };
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model);
-                    
-                if(buildingtb is not null)
+                
+                if(buildingtb is null)
+                    return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+
+                if (dto.subitem!.Count() > 0)
+                {
+                    List<BuildingSubitemTb> subitem = new List<BuildingSubitemTb>();
+
+                    for (int i = 0; i < dto.subitem!.Count(); i++)
+                    {
+                        subitem.Add(new BuildingSubitemTb
+                        {
+                            Itemname = dto.subitem[i].ItemName,
+                            Unit = dto.subitem[i].Unit,
+                            Value = dto.subitem[i].Value,
+                            CreateDt = DateTime.Now,
+                            CreateUser = Creater,
+                            UpdateDt = DateTime.Now,
+                            UpdateUser = Creater,
+                            BuildingTbId = buildingtb.Id
+                        });
+                    }
+
+                    // SubItem에 ADD
+                    for (int i = 0; i < subitem.Count; i++) 
+                    {
+                        BuildingSubitemTb? submodel = await BuildingSubItemInfoRepository.AddAsync(subitem[i]);
+
+                        if (submodel is null)
+                            return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                    }
+                    // 성공 처리
+                    return new ResponseUnit<bool>() { message = "요청이 정상적으로 처리되었습니다.", data = true, code = 200 };
+                }
+                
+                // 성공 처리
+                if (buildingtb is not null)
                     return new ResponseUnit<bool>() { message = "요청이 정상적으로 처리되었습니다.", data = true, code = 200 };
                 else
                     return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
@@ -189,54 +229,68 @@ namespace FamTec.Server.Services.Building
 
                 if (model is not null)
                 {
-                    DetailBuildingDTO dto = new DetailBuildingDTO
+
+                    DetailBuildingDTO dto = new DetailBuildingDTO();
+                    dto.Id = model.Id;
+                    dto.BuildingCD = model.BuildingCd;
+                    dto.Name = model.Name;
+                    dto.Address = model.Address;
+                    dto.Tel = model.Tel;
+                    dto.Usage = model.Usage;
+                    dto.ConstComp = model.ConstComp;
+                    dto.CompletionDT = model.CompletionDt;
+                    dto.BuildingStruct = model.BuildingStruct;
+                    dto.RoofStruct = model.RoofStruct;
+                    dto.GrossFloorArea = model.GrossFloorArea;
+                    dto.LandArea = model.LandArea;
+                    dto.BuildingArea = model.BuildingArea;
+                    dto.FloorNum = model.FloorNum;
+                    dto.GroundFloorNum = model.GroundFloorNum;
+                    dto.BasementFloorNum = model.BasementFloorNum;
+                    dto.BuildingHeight = model.BuildingHeight;
+                    dto.GroundHeight = model.GroundHeight;
+                    dto.BasementHeight = model.BasementHeight;
+                    dto.ParkingNum = model.ParkingNum;
+                    dto.InnerPackingNum = model.InnerParkingNum;
+                    dto.OuterPackingNum = model.OuterParkingNum;
+                    dto.ElecCapacity = model.ElecCapacity;
+                    dto.FaucetCapacity = model.FaucetCapacity;
+                    dto.GenerationCapacity = model.GenerationCapacity;
+                    dto.WaterCapacity = model.WaterCapacity;
+                    dto.ElevWaterCapacity = model.ElevWaterCapacity;
+                    dto.WaterTank = model.WaterTank;
+                    dto.GasCapacity = model.GasCapacity;
+                    dto.Boiler = model.Boiler;
+                    dto.WaterDispenser = model.WaterDispenser;
+                    dto.LiftNum = model.LiftNum;
+                    dto.PeopleLiftNum = model.PeopleLiftNum;
+                    dto.CargoLiftNum = model.CargoLiftNum;
+                    dto.CoolHeatCapacity = model.CoolHeatCapacity;
+                    dto.HeatCapacity = model.HeatCapacity;
+                    dto.CoolCapacity = model.CoolCapacity;
+                    dto.LandSacpeArea = model.LandscapeArea;
+                    dto.GroundArea = model.GroundArea;
+                    dto.RooftopArea = model.RooftopArea;
+                    dto.ToiletNum = model.ToiletNum;
+                    dto.MenToiletNum = model.MenToiletNum;
+                    dto.WomenToiletNum = model.WomenToiletNum;
+                    dto.FireRating = model.FireRating;
+                    dto.SepticTankCapacity = model.SepticTankCapacity;
+
+                    List<BuildingSubitemTb>? submodel = await BuildingSubItemInfoRepository.GetAllBuildingSubItemList(buildingId);
+                    if(submodel is [_, ..])
                     {
-                        Id = model.Id,
-                        BuildingCD = model.BuildingCd,
-                        Name = model.Name,
-                        Address = model.Address,
-                        Tel = model.Tel,
-                        Usage = model.Usage,
-                        ConstComp = model.ConstComp,
-                        CompletionDT = model.CompletionDt,
-                        BuildingStruct = model.BuildingStruct,
-                        RoofStruct = model.RoofStruct,
-                        GrossFloorArea = model.GrossFloorArea,
-                        LandArea = model.LandArea,
-                        BuildingArea = model.BuildingArea,
-                        FloorNum = model.FloorNum,
-                        GroundFloorNum = model.GroundFloorNum,
-                        BasementFloorNum = model.BasementFloorNum,
-                        BuildingHeight = model.BuildingHeight,
-                        GroundHeight = model.GroundHeight,
-                        BasementHeight = model.BasementHeight,
-                        ParkingNum = model.ParkingNum,
-                        InnerPackingNum = model.InnerParkingNum,
-                        OuterPackingNum = model.OuterParkingNum,
-                        ElecCapacity = model.ElecCapacity,
-                        FaucetCapacity = model.FaucetCapacity,
-                        GenerationCapacity = model.GenerationCapacity,
-                        WaterCapacity = model.WaterCapacity,
-                        ElevWaterCapacity = model.ElevWaterCapacity,
-                        WaterTank = model.WaterTank,
-                        GasCapacity = model.GasCapacity,
-                        Boiler = model.Boiler,
-                        WaterDispenser = model.WaterDispenser,
-                        LiftNum = model.LiftNum,
-                        PeopleLiftNum = model.PeopleLiftNum,
-                        CargoLiftNum = model.CargoLiftNum,
-                        CoolHeatCapacity = model.CoolHeatCapacity,
-                        HeatCapacity = model.HeatCapacity,
-                        CoolCapacity = model.CoolCapacity,
-                        LandSacpeArea = model.LandscapeArea,
-                        GroundArea = model.GroundArea,
-                        RooftopArea = model.RooftopArea,
-                        ToiletNum = model.ToiletNum,
-                        MenToiletNum = model.MenToiletNum,
-                        WomenToiletNum = model.WomenToiletNum,
-                        FireRating = model.FireRating,
-                        SepticTankCapacity = model.SepticTankCapacity
-                    };
+                        for (int i = 0; i < submodel.Count(); i++)
+                        {
+                            dto.subitem.Add(new DetailBuildingSubItemDTO
+                            {
+                                Id = submodel[i].Id,
+                                ItemName = submodel[i].Itemname,
+                                Unit = submodel[i].Unit,
+                                Value = submodel[i].Value
+                            });
+                        }
+                    }
 
                     return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
 
@@ -339,6 +393,34 @@ namespace FamTec.Server.Services.Building
                     bool? result = await BuildingInfoRepository.UpdateBuildingInfo(updatemodel);
                     if (result == true)
                     {
+                        // 추가일떄만 업데이트 하면될듯
+                        if (dto.subitem.Count() > 0)
+                        {
+
+                            for (int i = 0; i < dto.subitem.Count(); i++)
+                            {
+                                BuildingSubitemTb? submodel = await BuildingSubItemInfoRepository.GetBuildingSubItemInfo(dto.subitem[i].Id);
+                                if (submodel is not null)
+                                {
+                                    submodel.Itemname = dto.subitem[i].ItemName;
+                                    submodel.Unit = dto.subitem[i].Unit;
+                                    submodel.Value = dto.subitem[i].Value;
+                                    submodel.UpdateDt = DateTime.Now;
+                                    submodel.UpdateUser = creater;
+
+                                    // Update 하면됨.
+                                    bool? subresult = await BuildingSubItemInfoRepository.UpdateBuildingSubItemInfo(submodel);
+                                    
+                                    if(subresult != true)
+                                        return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
+                                }
+                                else
+                                {
+                                    return new ResponseUnit<DetailBuildingDTO>() { message = "잘못된 요청입니다.", data = dto, code = 404 };
+                                }
+                            }
+                        }
+
                         return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
                     else if (result == false)
@@ -409,10 +491,19 @@ namespace FamTec.Server.Services.Building
                         target[i].DelUser = creater;
                         bool? result = await BuildingInfoRepository.DeleteBuildingInfo(target[i]);
 
-                        if (result != true)
+                        if (result == true)
                         {
-                            // 못넣음.
-                            return new ResponseUnit<int?>() { message = $"데이터가 {i}건 삭제되었습니다.", data = i, code = 200 };
+                            bool? subresult = await BuildingSubItemInfoRepository.DeleteBuildingSubItemInfo(target[i].Id, creater);
+
+                            if(subresult != true)
+                            {
+                                return new ResponseUnit<int?>() { message = $"데이터가 {i + 1}건 삭제되었습니다.", data = i, code = 200 };
+                            }
+                        }
+                        else
+                        {
+                            // Main 삭제하다 실패.
+                            return new ResponseUnit<int?>() { message = $"데이터가 {i+1}건 삭제되었습니다.", data = i, code = 200 };
                         }
                     }
 

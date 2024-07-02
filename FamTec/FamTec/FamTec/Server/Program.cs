@@ -36,6 +36,7 @@ using FamTec.Server.Services.Material;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using FamTec.Client;
+using FamTec.Server.Repository.Building.SubItem;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +47,8 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
+builder.Services.AddTransient<IBuildingSubItemInfoRepository, BuildingSubItemInfoRepository>();
+
 builder.Services.AddTransient<IUserInfoRepository, UserInfoRepository>();
 builder.Services.AddTransient<IAdminUserInfoRepository, AdminUserInfoRepository>();
 builder.Services.AddTransient<IAdminPlacesInfoRepository, AdminPlaceInfoRepository>();
@@ -59,10 +62,13 @@ builder.Services.AddTransient<IFacilityInfoRepository, FacilityInfoRepository>()
 builder.Services.AddTransient<IMaterialInfoRepository, MaterialInfoRepository>();
 builder.Services.AddTransient<IVocCommentRepository, VocCommentRepository>();
 
+
+
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
 builder.Services.AddTransient<IAdminPlaceService, AdminPlaceService>();
 builder.Services.AddTransient<IBuildingService, BuildingService>();
+
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IDepartmentService, DepartmentService>();
 builder.Services.AddTransient<IFloorService, FloorService>();

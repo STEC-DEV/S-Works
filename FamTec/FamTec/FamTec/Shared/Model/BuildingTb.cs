@@ -342,6 +342,9 @@ public partial class BuildingTb
     public int? PlaceTbId { get; set; }
 
     [InverseProperty("BuildingTb")]
+    public virtual ICollection<BuildingSubitemTb> BuildingSubitemTbs { get; set; } = new List<BuildingSubitemTb>();
+
+    [InverseProperty("BuildingTb")]
     public virtual ICollection<FloorTb> FloorTbs { get; set; } = new List<FloorTb>();
 
     [InverseProperty("BuildingTb")]

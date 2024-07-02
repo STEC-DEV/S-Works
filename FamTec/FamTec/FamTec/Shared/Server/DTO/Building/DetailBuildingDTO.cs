@@ -236,8 +236,10 @@ namespace FamTec.Shared.Server.DTO.Building
         /// </summary>
         public float? SepticTankCapacity { get; set; }
 
-
-        /* 추가항목 ++ */
+        /// <summary>
+        /// 추가항목
+        /// </summary>
+        public List<DetailBuildingSubItemDTO> subitem { get; set; } = new List<DetailBuildingSubItemDTO>();
 
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FamTec.Shared.Model;
+﻿using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;
@@ -21,6 +19,8 @@ public partial class WorksContext : DbContext
     public virtual DbSet<AdminTb> AdminTbs { get; set; }
 
     public virtual DbSet<AlarmTb> AlarmTbs { get; set; }
+
+    public virtual DbSet<BuildingSubitemTb> BuildingSubitemTbs { get; set; }
 
     public virtual DbSet<BuildingTb> BuildingTbs { get; set; }
 
@@ -138,6 +138,16 @@ public partial class WorksContext : DbContext
             entity.HasOne(d => d.UserTb).WithMany(p => p.AlarmTbs).HasConstraintName("FK_USER_202406141623");
 
             entity.HasOne(d => d.VocTb).WithMany(p => p.AlarmTbs).HasConstraintName("FK_VOC_202406141624");
+        });
+
+        modelBuilder.Entity<BuildingSubitemTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.BuildingSubitemTbs).HasConstraintName("FK_BULDING_202407021451");
         });
 
         modelBuilder.Entity<BuildingTb>(entity =>
