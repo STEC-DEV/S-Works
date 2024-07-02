@@ -1,10 +1,7 @@
 ﻿using FamTec.Server.Services.Unit;
-using FamTec.Shared;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.Unit;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers
@@ -14,13 +11,10 @@ namespace FamTec.Server.Controllers
     public class UnitController : ControllerBase
     {
         private IUnitService UnitService;
-        private SessionInfo sessioninfo;
 
         public UnitController(IUnitService _unitservice)
         {
             this.UnitService = _unitservice;
-
-            this.sessioninfo = new SessionInfo();
         }
 
         /// <summary>
@@ -79,12 +73,51 @@ namespace FamTec.Server.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
-        [Route("DeleteUnitInfo")]
-        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody]UnitsDTO dto)
+        [Route("sign/DeleteUnitInfo")]
+        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody]int unitid)
         {
-            ResponseModel<string>? model = await UnitService.DeleteUnitService(dto, sessioninfo);
-            return Ok(model);
+            ResponseUnit<string?> model = await UnitService.DeleteUnitService(HttpContext, unitid);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/UpdateUnitInfo")]
+        public async ValueTask<IActionResult> UpdateUnitInfo([FromBody]UnitsDTO dto)
+        {
+            ResponseUnit<UnitsDTO?> model = await UnitService.UpdateUnitService(HttpContext, dto);
+            if (model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
 

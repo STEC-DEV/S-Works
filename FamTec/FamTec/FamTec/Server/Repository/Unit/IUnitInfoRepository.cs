@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.Unit;
 
 namespace FamTec.Server.Repository.Unit
 {
@@ -32,7 +33,12 @@ namespace FamTec.Server.Repository.Unit
         /// <returns></returns>
         ValueTask<bool?> DeleteUnitInfo(UnitTb? model);
 
-        
+        /// <summary>
+        /// 단위정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<bool?> UpdateUnitInfo(UnitTb? model);
 
     }
 }

@@ -299,7 +299,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if(placeid is null)
                     return new ResponseUnit<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = new PlaceDetailDTO(), code = 404 };
 
-              
+                
                 PlaceDetailDTO? model = await AdminPlaceInfoRepository.GetWorksInfo(placeid);
 
                 if (model is not null)

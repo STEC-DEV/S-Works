@@ -132,7 +132,30 @@ namespace FamTec.Server.Repository.Unit
             }
         }
 
-
- 
+        /// <summary>
+        /// 단위정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateUnitInfo(UnitTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.UnitTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

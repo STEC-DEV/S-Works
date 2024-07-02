@@ -22,7 +22,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
 
         public AdminPlaceController(IAdminPlaceService _adminplaceservice,
-            IPlaceInfoRepository _placeinforepository,
             ILogService _logservice)
         {
             this.AdminPlaceService = _adminplaceservice;

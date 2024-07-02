@@ -28,7 +28,15 @@ namespace FamTec.Server.Services.Unit
         /// <param name="dto"></param>
         /// <param name="sessioninfo"></param>
         /// <returns></returns>
-        public ValueTask<ResponseModel<string>?> DeleteUnitService(UnitsDTO? dto, SessionInfo? sessioninfo);
+        public ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext? context, int? unitid);
+
+        /// <summary>
+        /// 단위정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<UnitsDTO?>> UpdateUnitService(HttpContext? context, UnitsDTO? dto);
 
     }
 }
