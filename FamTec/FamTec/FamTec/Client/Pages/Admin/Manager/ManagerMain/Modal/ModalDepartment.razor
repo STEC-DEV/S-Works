@@ -13,6 +13,12 @@
                 부서 편집
             </span>
             <div class="modaldepart-btns">
+                <Button 
+                    Name="@(AddMode ? "취소" : "추가")" 
+                    OnClick="OnAdd" 
+                    Type=0 
+                    Width=true
+                    />
                 <Button Name="삭제" OnClick="DeleteDepartment" Type=1 Width=true />
             </div>
         </div>
@@ -22,19 +28,12 @@
                     DataList="departmentList" 
                     Edit=true 
                     Select="OnSelected"
+                    OnListSync="@OnListSync"
+                    OnLoadDepartments="@OnLoadDepartments" 
+                    AddMode=@AddMode
                     />
             </div>
             
-        </div>
-        <div class="modaldepart-add">
-            <span>부서 추가</span>
-            <EditForm Model="newDepartment" OnValidSubmit="AddDepartment">
-                <div class="modaldepart-input">
-
-                        <Input Type="text" Placeholder="부서명" @bind-Value="newDepartment.Name"/>
-                        <Button Name="추가" Type=0 />
-                </div>
-            </EditForm>
         </div>
         <Button Name="확인" OnClick="@ModalClose" Type=0 />
     </div>
@@ -44,7 +43,7 @@
 @code {
     [Parameter] public EventCallback<bool> OnClose { get; set; }
     [Parameter] public EventCallback OnListSync{ get; set; }
-
+    public bool AddMode { get; set; } = false;
 
 
     // HttpClient httpClient = new HttpClient();
@@ -55,14 +54,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDepartments();
+        await OnLoadDepartments();
 
     }
 
     /*
     * (GET) 부서 전체 조회
     */
-    private async Task LoadDepartments()
+    private async Task OnLoadDepartments()
     {
         try
         {
@@ -104,7 +103,7 @@
                 * res.code 별 예외 처리예정ㅊ
                  */
 
-                await LoadDepartments();
+                await OnLoadDepartments();
                 await OnListSync.InvokeAsync();
                 deleteDepartment.Clear();
                 newDepartment = new AddDepartmentDTO();
@@ -123,38 +122,38 @@
         }
     }
 
-    /*
-    * (POST)부서 추가
-    */
-    private async Task AddDepartment()
-    {
-        try
-        {
-            Console.WriteLine(newDepartment.Name == null);
-            if (string.IsNullOrEmpty(newDepartment.Name))
-            {
-                await JS.InvokeVoidAsync("alert", "부서명을 입력해 주세요.");
-                Console.WriteLine("입력된 값이 없습니다.");
-                return;
-            }
-            ResponseUnit<AddDepartmentDTO> resDepartment = await apiManager.PostAsync<AddDepartmentDTO>("Department/sign/AddDepartment", newDepartment);
-            // var resAdd = await HttpClient.PostAsJsonAsync("http://123.2.156.148:5245/api/Department/AddDepartment", newDepartment);
-            if (resDepartment.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "부서 추가 실패.");
-                return;
-            }
+    // /*
+    // * (POST)부서 추가
+    // */
+    // private async Task AddDepartment()
+    // {
+    //     try
+    //     {
+    //         Console.WriteLine(newDepartment.Name == null);
+    //         if (string.IsNullOrEmpty(newDepartment.Name))
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "부서명을 입력해 주세요.");
+    //             Console.WriteLine("입력된 값이 없습니다.");
+    //             return;
+    //         }
+    //         ResponseUnit<AddDepartmentDTO> resDepartment = await apiManager.PostAsync<AddDepartmentDTO>("Department/sign/AddDepartment", newDepartment);
+    //         // var resAdd = await HttpClient.PostAsJsonAsync("http://123.2.156.148:5245/api/Department/AddDepartment", newDepartment);
+    //         if (resDepartment.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "부서 추가 실패.");
+    //             return;
+    //         }
 
-            await LoadDepartments();
-            await OnListSync.InvokeAsync();
-            newDepartment = new AddDepartmentDTO();
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
-        }
+    //         await OnLoadDepartments();
+    //         await OnListSync.InvokeAsync();
+    //         newDepartment = new AddDepartmentDTO();
+    //     }
+    //     catch(Exception ex)
+    //     {
+    //         Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
+    //     }
         
-    }
+    // }
 
     /*
     * 모달 닫기
@@ -179,6 +178,14 @@
             deleteDepartment.Add(selection.id);
             
         }
+    }
+
+    /*
+     * 부서추가 활성화 비활성화
+     */
+    private void OnAdd()
+    {
+        AddMode = !AddMode;
     }
 
 }

@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 40%;
+    width: 40%;
     /*height: 700px;*/
     background-color: var(--default-color);
     border-radius: var(--default-rd);

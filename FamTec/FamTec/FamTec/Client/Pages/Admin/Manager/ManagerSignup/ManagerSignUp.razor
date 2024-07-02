@@ -34,22 +34,14 @@
 
 @code {
     AddManagerDTO newManager = new AddManagerDTO();
-    AddManagerPlaceDTO managerPlace = new AddManagerPlaceDTO();
+    AddManagerPlaceDTO managerPlace = new AddManagerPlaceDTO(); // 추가할 사업장 목록(선택 리스트)
     List<DepartmentDTO> departmetnList = new List<DepartmentDTO>();
     bool EditMode = true;
     string session;
     protected async override Task OnInitializedAsync()
     {
-        await LoadSession();
         await OnLoadDepartments();
         newManager = new();
-    }
-
-    private async Task LoadSession()
-    {
-        string token = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-        session = "Bearer " + token;
-        HttpClient.DefaultRequestHeaders.Add("Authorization", session);
     }
 
     /*

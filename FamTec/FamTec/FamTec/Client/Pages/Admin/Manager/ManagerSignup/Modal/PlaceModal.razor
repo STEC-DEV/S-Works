@@ -12,7 +12,11 @@
         </div>
         <Input Placeholder="search" ValueChanged="@OnSearchTextChanged" />
         <div class="placemodal-content">
-            <PlaceTable ListData="@FilterPlaceList" SelectedList="@SelectedIds" />
+            <PlaceTable 
+                ListData="@FilterPlaceList" 
+                SelectedItems=@SelectedItems 
+                SelectItems="@SelectItems"
+                Count="@OnCount" />
         </div>
         <div class="placemodal-count">
             <span class="count">
@@ -20,7 +24,7 @@
             </span>
         </div>
         <div class="placemodal-btns">
-            <Button Name="추가" Type=0 />
+            <Button Name="추가" Type=0 OnClick=OnAddList />
             <Button Name="닫기" Type=2 OnClick=OnModalClose />
         </div>
     </div>
@@ -28,11 +32,12 @@
 
 @code {
     [Parameter] public EventCallback<bool> OnClose { get; set; }
-    [Parameter] public List<PlaceTableDTO>? SelectItems { get; set; }
+    [Parameter] public List<PlaceTableDTO>? SelectedItems { get; set; }
+    [Parameter] public EventCallback<List<PlaceTableDTO>> OnAdd { get; set; }
 
-    
-    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>();
-    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
+    List<PlaceTableDTO> SelectItems = new List<PlaceTableDTO>(); // 모달 내에서 선택한 리스트
+    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>(); // DB 전체 사업장 리스트 변수
+    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>(); // 검색 리스트
     HashSet<int> SelectedIds = new HashSet<int>(); //선택 아이템 리스트
     int SelectCount = 0;
     string searchText = string.Empty; // 검색어 변수
@@ -40,6 +45,7 @@
 
     protected async override Task OnInitializedAsync()
     {
+        SelectCount = SelectedItems.Count;
         await OnLoadPlace();
     }
 
@@ -50,7 +56,6 @@
         try
         {
             Console.WriteLine("[관리자 모드][사업장 조회]");
-            // ResponseList<PlaceTableDTO> res = await HttpClient.GetFromJsonAsync<ResponseList<PlaceTableDTO>>("http://123.2.156.148:5245/api/AdminPlace/GetAllWorksList");
             ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("AdminPlace/sign/GetAllWorksList");
             if (res.code != 200)
             {
@@ -76,6 +81,7 @@
     {
         // searchText = e.Value.ToString();
         searchText = text;
+
         FilterPlaceList = string.IsNullOrEmpty(searchText)
             ? PlaceList
             : PlaceList.Where(p => p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
@@ -84,8 +90,23 @@
                         .ToList();
     }
 
+    private async void OnAddList()
+    {
+        SelectedItems = SelectItems.ToList();
+
+        SelectItems.Clear();
+        await OnAdd.InvokeAsync(SelectedItems);
+    }
+
+    private async void OnCount(int count)
+    {
+        SelectCount += count;
+        StateHasChanged();
+    }
+
     private Task OnModalClose()
     {
+        SelectItems.Clear();
         return OnClose.InvokeAsync(false);
     }
 }

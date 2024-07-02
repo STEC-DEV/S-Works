@@ -24,7 +24,12 @@
     <tbody class="table-body">
         @if (DataList == null)
         {
-            <p>Loading ....</p>
+            <tr>
+                <td colspan="@(typeof(T).GetProperties().Length)">
+                    Loading ....
+                </td>
+            </tr>
+
         }
         else
         {

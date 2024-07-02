@@ -1,5 +1,6 @@
 ﻿@page "/admin/place"
 
+@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
 @using FamTec.Client.Pages.Admin.Place.PlaceMain.Modal
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server
@@ -34,9 +35,10 @@
             </div>
         </div>
         <div class="place-table">
-            <Table DataList="FilterPlaceList"
+            @* <Table DataList="FilterPlaceList"
                    Select="OnSelected"
-                   Detail="true" />
+                   Detail="true" /> *@
+            <PlaceTable ListData="FilterPlaceList" Select="@OnSelected" CheckedItems="@CheckedItems" />
         </div>
         @if (is_openModal)
         {
@@ -55,6 +57,7 @@
     List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
     // DeleteDTO DeletePlace = new DeleteDTO();
     List<int> DeletePlace = new List<int>();
+    HashSet<int> CheckedItems = new HashSet<int>();
 
     string searchText = string.Empty;
     private string? _userType;
@@ -131,22 +134,21 @@
     }
 
     /*
-    * 매니저 체크
+    * 사업장 체크
     */
     public void OnSelected((bool isCheck, int id) selection)
     {
-
-        Console.WriteLine("부서 체크 여부" + selection.isCheck);
         if (!selection.isCheck)
         {
-            // DeletePlace.Id.Remove(selection.id);
-            DeletePlace.Remove(selection.id);
+            CheckedItems.Remove(selection.id);
         }
         else
         {
-            Console.WriteLine("추가함");
-            // DeletePlace.Id.Add(selection.id);
-            DeletePlace.Add(selection.id);
+            CheckedItems.Add(selection.id);
+        }
+        foreach(var i in CheckedItems)
+        {
+            Console.WriteLine("check"+i);
         }
 
     }
@@ -159,28 +161,28 @@
     {
         try
         {
-            if(DeletePlace == null)
+            if (CheckedItems == null)
             {
                 Console.WriteLine("삭제 데이터 없음");
             }
             else
             {
-                ResponseUnit<bool> a = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeletePlaceList", DeletePlace);
+                ResponseUnit<bool> resDel = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeletePlaceList", CheckedItems);
                 // var resDeletePlace = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/AdminPlace/DeleteWorks", DeletePlace);
                 // ResponseUnit<bool> resDeletePlaceData = await resDeletePlace.Content.ReadFromJsonAsync<ResponseUnit<bool>>();
-                // if (resDeletePlaceData.code == 200)
-                // {
+                if (resDel.code == 200)
+                {
                     
-                //     Console.WriteLine(resDeletePlaceData.message);
-                //     DeletePlace.Clear();
-                //     await LoadPlace();
-                // }
-                // else
-                // {
-                //     Console.WriteLine(resDeletePlaceData.message);
-                //     DeletePlace.Clear();
-                //     await LoadPlace();
-                // }
+                    Console.WriteLine(resDel.message);
+                    CheckedItems.Clear();
+                    await LoadPlace();
+                }
+                else
+                {
+                    Console.WriteLine(resDel.message);
+                    CheckedItems.Clear();
+                    await LoadPlace();
+                }
                 
             }
         }
@@ -209,56 +211,7 @@
         StateHasChanged();
     }
 
-    //  /*
-    // * 체크
-    // * Add to List<PlaceDTO>SelectList when able Checkbox
-    // */
-    // public void OnSelected(object row)
-    // {
-    //     /*
-    //     * To Do
-    //     * 동일 row 중복 처리
-    //     */
-    //     Console.WriteLine(row);
-
-    //     if (row is PlaceTableDTO palceRow)
-    //     {
-    //         if (!SelecList.Contains(row))
-    //         {
-    //             Console.WriteLine("추가");
-    //             SelecList.Add(palceRow);
-    //         }
-
-    //     }
-
-
-
-    //     Console.WriteLine(SelecList);
-    // }
-
-    // /*
-    // * 체크 해제
-    // * Remove to List<PlaceDTO>SelectList when disable Checkbox
-    // */
-    // public void UnSelected(object row)
-    // {
-    //     if (row is PlaceTableDTO palceRow)
-    //     {
-    //         Console.WriteLine("삭제 전");
-    //         foreach (PlaceTableDTO a in SelecList)
-    //         {
-
-    //             Console.WriteLine(a.PlaceCd);
-    //         }
-    //         SelecList.Remove(palceRow);
-    //         Console.WriteLine("삭제 후");
-    //         foreach (PlaceTableDTO a in SelecList)
-    //         {
-
-    //             Console.WriteLine(a.PlaceCd);
-    //         }
-    //     }
-    // }
+   
 }
 
 

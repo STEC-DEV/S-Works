@@ -14,7 +14,7 @@
         </div>
         <div class="placedetail-option">
             <div class="placedetail-toggle">
-                <PlaceToggle placePerm=PlacePerm EditMode=PlaceEdit />
+                <PlaceToggle placePerm=@PlacePerm EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
                 <PlaceTable DataList="ManagerList" EditMode=PlaceEdit />
@@ -39,8 +39,8 @@
 
 
     List<ManagerListDTO> ManagerList;
-    PlaceInfo PlaceInfo = new PlaceInfo();
-    PlacePerm PlacePerm = new PlacePerm();
+    PlaceInfo PlaceInfo;
+    PlacePerm PlacePerm;
     PlaceDetailDTO resPlaceDetail;
 
     bool PlaceEdit = false;
@@ -48,21 +48,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //ResponseObj<PlaceDetail2DTO> res = await HttpClient.GetFromJsonAsync<ResponseObj<PlaceDetail2DTO>>($"http://127.0.0.1:5245/api/place/detail/?Id={Id}");
         await LoadPlaceDetailInfo();
 
-        // Console.WriteLine(res);
     }
 
     private async Task LoadPlaceDetailInfo()
     {
-        // ResponseUnit<PlaceDetailDTO> res = await HttpClient.GetFromJsonAsync<ResponseUnit<PlaceDetailDTO>>($"http://123.2.156.148:5245/api/AdminPlace/DetailWorks/?placeid={Id}");
         ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
 
 
         ManagerList = res.data.ManagerList;
         PlaceInfo = res.data.PlaceInfo;
         PlacePerm = res.data.PlacePerm;
+        StateHasChanged();
     }
 
 

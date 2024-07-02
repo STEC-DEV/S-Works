@@ -818,7 +818,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 40%;
+    max-width: 30%;
     height : 80%;
     background-color: var(--default-color);
     border-radius: var(--default-rd);
@@ -1119,6 +1119,109 @@
     font-weight:bold;
     color : #200d69;
 }
+/* /Pages/Admin/Place/PlaceMain/Components/PlaceTable.razor.rz.scp.css */
+.table[b-curlvrtg5q] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    /*height: 100%;*/
+}
+
+.table .thead[b-curlvrtg5q]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-curlvrtg5q]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-curlvrtg5q] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-curlvrtg5q] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-curlvrtg5q]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-curlvrtg5q]{
+    text-align : center;
+}
+
+.table th>span[b-curlvrtg5q]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-curlvrtg5q]{
+    overflow:auto;
+}
+
+.table .tbody-tr[b-curlvrtg5q]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tbody-tr:hover td[b-curlvrtg5q]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-curlvrtg5q]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-curlvrtg5q]  .table-td-link {
+    color : var(--main-color);
+}
+/* /Pages/Admin/Place/PlaceMain/Components/StatusCard.razor.rz.scp.css */
+.status[b-bwxf2o4x4c] {
+    display: inline-block;
+    padding: var(--one-q-pd) var(--half-pd);
+    /*padding : .2em .6em .3em;*/
+    font-size: var(--normal-size);
+    font-weight: 500;
+    color: var(--default-color);
+    border-radius: .25em;
+}
+
+.status-0[b-bwxf2o4x4c] {
+    background-color: var(--status-0);
+}
+
+.status-1[b-bwxf2o4x4c] {
+    background-color: var(--status-1);
+}
+
+.status-2[b-bwxf2o4x4c] {
+    background-color: var(--status-2);
+}
 /* /Pages/Admin/Place/PlaceMain/Modal/AddModal.razor.rz.scp.css */
 
 .placemodal-backgroud[b-2iazqe303y] {
@@ -1134,7 +1237,7 @@
 .placemodal-backgroud .placemodal-container[b-2iazqe303y] {
     display: flex;
     justify-content: center;
-    max-width : 70%;
+    width : 60%;
     height:80%;
     
     border-radius:var(--default-rd);
@@ -1146,8 +1249,7 @@
     flex-direction: column;
     justify-content: center;
     gap: var(--default-pd);
-    width: auto;
-    max-width:50%;
+    width: 60%;
     height: 100%;
     max-height : 100%;
     padding: var(--default-pd);
@@ -1387,7 +1489,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 40%;
+    width: 40%;
     /*height: 700px;*/
     background-color: var(--default-color);
     border-radius: var(--default-rd);
@@ -1882,7 +1984,7 @@
 /* /Pages/CommonComponents/Table.razor.rz.scp.css */
 .table-container[b-huwn4yuky4]{
     width:100%;
-    table-layout : fixed;
+    /*table-layout : fixed;*/
     padding : var(--three-q-pd);
 }
 
