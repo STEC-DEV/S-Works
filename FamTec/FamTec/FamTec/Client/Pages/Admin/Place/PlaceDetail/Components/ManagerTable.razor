@@ -1,0 +1,49 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceDetail.Modals
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@typeparam T
+
+<div class="placetable-container">
+    <div class="placetable-title">
+        <span>
+            사업장 매니저
+        </span>
+        <div class="placetable-btns">
+            @if (EditMode)
+            {
+                <Button Name="추가" Width="true" Type=0 OnClick="OnOpen" />
+                <Button Name="삭제" Width="true" Type=1 />
+            }
+            
+        </div>
+    </div>
+    <div class="placetable-table">
+        <Table DataList="DataList"/>
+    </div>
+    @if (isOpen)
+    {
+        <ModalBackground >
+            <ChildComponent>
+                <ManagerModal OnClose="OnOpen" />
+            </ChildComponent>
+        </ModalBackground>
+
+    }
+</div>
+
+@code {
+    [Parameter] public List<T> DataList { get; set; }
+    [Parameter] public bool EditMode{ get; set; }
+    bool isOpen = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine("하위컴포넌트");
+        return base.OnInitializedAsync();
+    }
+
+    private void OnOpen()
+    {
+        isOpen = !isOpen;
+    }
+}

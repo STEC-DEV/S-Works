@@ -60,12 +60,23 @@
     }    
 }
 
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .yappear{
-    animation : YsmoothAppear 1s;
+    animation : YsmoothAppear 0.5s;
 }
 
 .ydisapper{
-    animation : YsmoothDisappear 1s;
+    animation : YsmoothDisappear 0.5s;
 }
 
 .appear {
@@ -73,6 +84,10 @@
 }
 .slider{
     animation : slide 1s;
+}
+
+.slide-down {
+    animation: slideDown 0.5s ease-out forwards;
 }
 
 /*

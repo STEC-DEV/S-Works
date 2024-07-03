@@ -1,0 +1,31 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="manager-modal yappear">
+    <div class="manager-title">
+        <span class="title">
+            매니저 조회
+        </span>
+    </div>
+    <div class="manager-content">
+
+    </div>
+    <div class="manager-count">
+        <span class="count">
+            선택 : 
+        </span>
+    </div>
+    <div class="manager-btns">
+        <Button Name="추가" Type="0"  />
+        <Button Name="닫기" Type="2" OnClick="OnCloseModal"/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+
+
+    private void OnCloseModal()
+    {
+        OnClose.InvokeAsync();
+    }
+}

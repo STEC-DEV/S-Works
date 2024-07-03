@@ -17,7 +17,7 @@
                 <PlaceToggle placePerm=@PlacePerm EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
-                <PlaceTable DataList="ManagerList" EditMode=PlaceEdit />
+                <ManagerTable DataList="ManagerList" EditMode=PlaceEdit />
             </div>
         </div>
     </div>
@@ -27,11 +27,18 @@
             <Button Name="취소" Width="true" Type=1 OnClick ="DetailMode" />
         }else{
             <Button Name="편집" Width="true" Type=0 OnClick ="EditMode" />
-            <Button Name="나가기" Width="true" Type=1/>
+            <Button Name="나가기" Width="true" Type=1 OnClick="OnIsCancleModal" />
         }
         
     </div>
-    
+    @if (isCancleModal)
+    {
+        <ModalBackground >
+            <ChildComponent>
+                <CancleModal IsOpen="OnIsCancleModal" />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
@@ -44,7 +51,7 @@
     PlaceDetailDTO resPlaceDetail;
 
     bool PlaceEdit = false;
-
+    bool isCancleModal = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,6 +81,11 @@
     {
         PlaceEdit = false;
         StateHasChanged();
+    }
+
+    private void OnIsCancleModal()
+    {
+        isCancleModal = !isCancleModal;
     }
 }
     

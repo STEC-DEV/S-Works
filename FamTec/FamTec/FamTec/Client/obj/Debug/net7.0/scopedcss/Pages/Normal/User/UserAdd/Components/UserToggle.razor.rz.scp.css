@@ -1,0 +1,33 @@
+.placetoggle-container[b-o6efs51at7] {
+    display: flex;
+    flex-direction: column;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    padding: var(--default-pd);
+    height: 100%;
+}
+
+
+.placetoggle-container .placetoggle-title[b-o6efs51at7]{
+    font-size:var(--title-size);
+    font-weight:var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+.placetoggle-container .placetoggle-title>span[b-o6efs51at7]{
+    color:var(--main-color);
+}
+
+.placetoggle-container .placetoggle-toggle[b-o6efs51at7]{
+    padding :var(--default-pd);
+    /*display : flex;
+    flex-wrap : wrap;
+    gap : var(--half-pd);*/
+    display : grid;
+    grid-template-columns : repeat(3, 1fr);
+    gap:var(--default-pd);
+    padding : var(--default-pd);
+    grid-auto-flow:row;
+
+}

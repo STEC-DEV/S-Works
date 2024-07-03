@@ -1,8 +1,8 @@
 ﻿@using FamTec.Client.Pages.Normal.Voc.Components
 
-<div class="processcard">
-    <div class="status">
-        <StatusCard  Status="1"/>
+<div class="processcard ">
+    <div class="status ">
+        <StatusCard Status="@Status" />
     </div>
     <div class="content">
         <TextField Label="처리 일시" Context="@DateTime.Now.ToString()"/>
@@ -11,5 +11,5 @@
 </div>
 
 @code {
-
+    [Parameter] public string Status { get; set; }
 }

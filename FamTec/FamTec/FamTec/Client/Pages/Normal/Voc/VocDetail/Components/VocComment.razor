@@ -7,32 +7,46 @@
             처리 내역
         </span>
         <div class="option">
-            @*    @if (EditMode)
+            @if (AddComment)
             {
-                <Button Name="저장" Width=true />
-                <Button Name="취소" Width=true Type=true OnClick="@OnChangeEditMode" />
+                <Button Name="저장" Width=true  Type=0/>
+                <Button Name="취소" Width=true Type=1 OnClick="@OnAddComment" />
             }
             else
             {
-                <Button Name="추가" Width=true OnClick="@OnChangeEditMode" />
-            } *@
+                <Button Name="추가" Width=true Type=0 OnClick="@OnAddComment" />
+            }
         </div>
     </div>
     <div class="voccomment-content">
         <div class="voccomment-overflow">
-            <ProcessCard />
-            <ProcessCard />
-            <ProcessCard />
-            <ProcessCard />
+            @if(AddComment)
+            {
+                <div class="yappear">
+                    <ProcessCard  />
+                </div>
+                
+            }
+            <ProcessCard Status="0" />
+            <ProcessCard Status="1" />
+            <ProcessCard Status="1" />
+            
         </div>
     </div>
 </div>
 
 @code {
     [Parameter] public bool EditMode { get; set; } = false;
+    bool AddComment = false;
+   
 
     private void OnChangeEditMode()
     {
         EditMode = !EditMode;
+    }
+
+    private void OnAddComment()
+    {
+        AddComment = !AddComment;
     }
 }

@@ -1,0 +1,42 @@
+﻿@using FamTec.Client.Pages.Normal.User.UserAdd.Components
+
+<div class="permtoggle">
+    <input type="checkbox" @onchange="(e) => OnActive(e)" />
+    <UserPermToggle 
+        Title="@Title" 
+        EditMode="@IsActive" 
+        ValueChanged="@OnToggleValue"
+        />
+</div>
+
+@code {
+    [Parameter] public string Title{ get; set; }
+    bool IsActive = false;
+    sbyte PermValue = 0;
+    sbyte? ToggleValue = 0;
+
+     /*
+     * 권한 사용 1 / 미사용 0
+    */
+    private void OnActive(ChangeEventArgs e)
+    {
+        IsActive = !IsActive;
+        if (IsActive && Convert.ToBoolean(e.Value))
+        {
+            PermValue = 1;
+        }
+        else
+        {
+            PermValue = 0;
+        }
+        Console.WriteLine("권한 value :" + PermValue);
+    }
+
+     /*
+     * 
+    */
+    private void OnToggleValue(sbyte? value)
+    {
+        Console.WriteLine(PermValue+value);
+    }
+}
