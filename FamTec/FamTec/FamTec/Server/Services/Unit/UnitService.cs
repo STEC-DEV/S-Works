@@ -219,7 +219,7 @@ namespace FamTec.Server.Services.Unit
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 404 };
+                return new ResponseUnit<UnitsDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
 
         }

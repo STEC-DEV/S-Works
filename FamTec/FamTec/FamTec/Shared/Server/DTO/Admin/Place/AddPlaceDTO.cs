@@ -91,5 +91,16 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// VOC 권한
         /// </summary>
         public sbyte? PermVoc { get; set; } = 0;
+
+        /// <summary>
+        /// 비고
+        /// </summary>
+        public string? Note { get; set; }
+
+        /// <summary>
+        /// 계약상태
+        /// </summary>
+        public bool? Status { get; set; } = true;
+
     }
 }

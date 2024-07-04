@@ -1,8 +1,8 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using DocumentFormat.OpenXml.Office2013.Excel;
+using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
-using FamTec.Server.Tokens;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
@@ -170,7 +170,7 @@ namespace FamTec.Server.Services.Admin.Account
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string? UserType = Convert.ToString(context.Items["UserType"]);
+                string? UserType = Convert.ToString(context.Items["Role"]);
                 if (String.IsNullOrWhiteSpace(UserType))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -245,67 +245,74 @@ namespace FamTec.Server.Services.Admin.Account
             }
         }
 
-        public async ValueTask<ResponseUnit<int>> DeleteAdminService(List<int> adminid)
+        /// <summary>
+        /// 관리자 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="useridx"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context,List<int>? adminidx)
         {
-            int count = 0;
+            int delcount = 0;
             
             try
             {
-                if(adminid is [_, ..])
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                if (adminidx is null)
+                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+
+                for (int i=0;i< adminidx.Count();i++)
                 {
-                    for (int i=0;i<adminid.Count;i++)
+                    AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx[i]);
+
+                    if (admintb is null)
+                        return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    
+                    admintb.DelYn = true;
+                    admintb.DelDt = DateTime.Now;
+                    admintb.DelUser = creater;
+
+                    bool? deladmintb = await AdminUserInfoRepository.DeleteAdminInfo(admintb);
+                    if(deladmintb != true)
+                        return new ResponseUnit<int?>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
+
+                    UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                    usertb!.DelYn = true;
+                    usertb!.DelDt = DateTime.Now;
+                    usertb.DelUser = creater;
+
+                    bool? delusertb = await UserInfoRepository.DeleteUserInfo(usertb);
+
+                    if (delusertb == true)
                     {
-                        AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(adminid[i]);
-
-                        if (admintb is not null)
-                        {
-                            admintb.DelYn = true;
-                            admintb.DelDt = DateTime.Now;
-
-                            bool? deleteresult = await AdminUserInfoRepository.DeleteAdminInfo(admintb);
-                            
-                            if (deleteresult == true)
-                            {
-                                UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
-
-                                if (usertb is not null)
-                                {
-                                    usertb.DelYn = true;
-                                    usertb.DelDt = DateTime.Now;
-
-                                    bool? delresult = await UserInfoRepository.DeleteUserInfo(usertb);
-
-                                    if (delresult == true)
-                                    {
-                                        count++; // 삭제개수 카운팅
-
-                                        List<AdminPlaceTb>? adminplacetb = await AdminPlaceInfoRepository.GetMyWorksList(admintb.Id);
+                        List<AdminPlaceTb>? adminplacetb = await AdminPlaceInfoRepository.GetMyWorksList(admintb.Id);
                                         
-                                        if (adminplacetb is [_, ..])
-                                        {
-                                            bool? result = await AdminPlaceInfoRepository.DeleteMyWorks(adminplacetb);
-                                        }
-                                    }
-                                }
+                        if (adminplacetb is [_, ..])
+                        {
+                            for (int j = 0; j < adminplacetb.Count(); j++)
+                            {
+                                adminplacetb[j].DelYn = true;
+                                adminplacetb[j].DelDt = DateTime.Now;
+                                adminplacetb[j].DelUser = creater;
+
+                                bool? result = await AdminPlaceInfoRepository.DeleteMyWorks(adminplacetb[j]);
                             }
                         }
-                        else
-                        {
-                            return new ResponseUnit<int> { message = "요청이 처리되지 않았습니다.", data = count, code = 404 };
-                        }
+                        delcount++;
                     }
-
-                    return new ResponseUnit<int> { message = $"요청이 {count}건 정상 처리되었습니다.", data = count, code = 200 };
                 }
-                else
-                {
-                    return new ResponseUnit<int> { message = "잘못된 요청입니다.", data = count, code = 404 };
-                }
+                return new ResponseUnit<int?> { message = $"요청이 {delcount}건 정상 처리되었습니다.", data = delcount, code = 200 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int> { message = "서버에서 요청을 처리하지 못하였습니다.", data = count, code = 500 };
+                return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -336,5 +343,165 @@ namespace FamTec.Server.Services.Admin.Account
                 return new ResponseUnit<DManagerDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DManagerDTO(), code = 500 };
             }
         }
+
+        /// <summary>
+        /// 아이디 중복검사
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> UserIdCheckService(string? userid)
+        {
+            try
+            {
+                if (userid is not null)
+                {
+                    UserTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid);
+                    if (UserIdCheck is not null)
+                    {
+                        // 이미 사용중인 아이디
+                        return new ResponseUnit<bool?>() { message = "이미 사용중인 아이디입니다.", data = false, code = 200 };
+                    }
+                    else
+                    {
+                        // 가능
+                        return new ResponseUnit<bool?>() { message = "사용가능한 아이디입니다..", data = true, code = 200 };
+                    }
+                }
+                else
+                {
+                    // 잘못된 요청입니다.
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 매니저 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto)
+        {
+            try
+            {
+                int updatecount = 0;
+
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex);
+                if(admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 계정정보 변경을 위해 UserTB 조회
+                UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                if(usertb is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                UserTb? UserIdcheck = await UserInfoRepository.UserIdCheck(dto.UserId);
+                if (UserIdcheck is not null)
+                    return new ResponseUnit<int?>() { message = "이미 사용중인 아이디입니다.", data = null, code = 200 };
+
+
+                usertb.Name = dto.Name; // 이름
+                usertb.Phone = dto.Phone; // 전화번호
+                usertb.Email = dto.Email; // 이메일
+                usertb.UserId = dto.UserId; // 로그인 ID
+                usertb.Password = dto.Password; // 비밀번호
+                
+                // 사용자 정보 수정
+                UserTb? updateusertb = await UserInfoRepository.UpdateUserInfo(usertb);
+                if (updateusertb is null)
+                {
+                    // 사용자 테이블 업데이트 실패했을 경우
+                    return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 200 };
+                }
+
+                admintb.DepartmentTbId = dto.DepartmentId; // 부서
+                // 관리자 정보 수정
+                AdminTb? updateadmintb = await AdminUserInfoRepository.UpdateAdminInfo(admintb);
+                if (updateadmintb is null)
+                {
+                    // 관리자 테이블 업데이트 실패했을 경우
+                    return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 200 };
+                }
+
+                updatecount++;
+
+                List<int?> placeidx =  dto.PlaceList.Select(m => m.Id).ToList();
+
+                // 수정 - 삭제 튜플반환
+                (List<int?>? insert, List<int?>? delete)? temp = await AdminPlaceInfoRepository.DisassembleUpdateAdminInfo(admintb.Id, placeidx);
+                
+                // 튜플 분해
+                List<int?>? insertidx = (((List<int?>?,List<int?>?))temp).Item1;
+                List<int?>? deleteidx = (((List<int?>?, List<int?>?))temp).Item2;
+
+                // insert 할것이 있으면
+                if (insertidx is [_, ..])
+                {
+                    for (int i = 0; i < insertidx.Count; i++)
+                    {
+                        AdminPlaceTb inserttb = new AdminPlaceTb()
+                        {
+                            AdminTbId = dto.AdminIndex,
+                            CreateDt = DateTime.Now,
+                            CreateUser = creater,
+                            UpdateDt = DateTime.Now,
+                            UpdateUser = creater,
+                            PlaceId = insertidx[i]
+                        };
+
+                        AdminPlaceTb? insertresult = await AdminPlaceInfoRepository.AddAdminPlaceInfo(inserttb);
+                        if(insertresult is not null)
+                        {
+                            updatecount++;
+                        }
+                    }
+                }
+
+                // delete 할것이 있으면
+                if (deleteidx is [_, ..])
+                {
+                    // delete 할것
+                    for (int i = 0; i < deleteidx.Count; i++)
+                    {
+                        AdminPlaceTb? deletetb = await AdminPlaceInfoRepository.GetPlaceAdminInfo(admintb.Id, deleteidx[i]);
+                        if(deletetb is not null) // 모델이 있으면 삭제
+                        {
+                            bool? deleteresult = await AdminPlaceInfoRepository.DeleteAdminPlaceInfo(deletetb);
+                            if(deleteresult == true)
+                            {
+                                updatecount++;
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseUnit<int?>() { message = "이미 처리된 요청입니다.", data = null, code = 200 };
+                        }
+                    }
+                }
+
+                return new ResponseUnit<int?>() { message = $"요청을 {updatecount}건 처리하였습니다.", data = updatecount, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 }

@@ -31,13 +31,27 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <returns></returns>
         ValueTask<DepartmentTb?> GetDepartmentInfo(string? Name);
 
+        /// <summary>
+        /// 선택한 부서의 관리자 반환
+        /// </summary>
+        /// <param name="departmentidx"></param>
+        /// <returns></returns>
+        ValueTask<List<AdminTb>?> SelectDepartmentAdminList(List<int>? departmentidx);
+
+        /// <summary>
+        /// 삭제할 부서 인덱스 조회 - 동시다발 삭제때문에 DelYN 적용안함
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ValueTask<DepartmentTb?> GetDeleteDepartmentInfo(int? id);
+
 
         /// <summary>
         /// 부서삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteDepartmentInfo(List<int?> selList);
+        ValueTask<bool?> DeleteDepartment(DepartmentTb? model);
 
         /// <summary>
         /// 부서수정

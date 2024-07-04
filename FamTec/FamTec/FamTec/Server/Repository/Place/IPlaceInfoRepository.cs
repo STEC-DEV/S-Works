@@ -27,11 +27,11 @@ namespace FamTec.Server.Repository.Place
         ValueTask<PlaceTb?> GetByPlaceInfo(int? id);
 
         /// <summary>
-        /// 사업장코드로 사업장 정보 조회
+        /// 삭제할 사업장 인덱스 조회 - 동시다발 삭제때문에 DelYN 적용안함.
         /// </summary>
-        /// <param name="placecd"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<PlaceTb?> GetByPlaceInfo(string? placecd);
+        ValueTask<PlaceTb?> GetDeletePlaceInfo(int? id);
 
         /// <summary>
         /// 수정
@@ -46,7 +46,7 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeletePlaceInfo(PlaceTb? model);
+        ValueTask<bool?> DeletePlace(PlaceTb? model);
 
 
     }

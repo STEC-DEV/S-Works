@@ -73,40 +73,6 @@ namespace FamTec.Server.Repository.Place
             }
         }
 
-
-        /// <summary>
-        /// 사업장코드로 사업장 조회
-        /// </summary>
-        /// <param name="placecd"></param>
-        /// <returns></returns>
-        public async ValueTask<PlaceTb?> GetByPlaceInfo(string? placecd)
-        {
-            try
-            {
-                if (!String.IsNullOrWhiteSpace(placecd))
-                {
-                    PlaceTb? model = await context.PlaceTbs
-                        .FirstOrDefaultAsync(m => m.PlaceCd.Equals(placecd) 
-                        && m.DelYn != true);
-
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-
-        }
-
         /// <summary>
         /// 사업장인덱스로 사업장 조회
         /// </summary>
@@ -139,6 +105,36 @@ namespace FamTec.Server.Repository.Place
             }
         }
 
+        /// <summary>
+        /// 삭제할 사업장 인덱스 조회 - 동시다발 삭제때문에 DelYN 적용안함.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async ValueTask<PlaceTb?> GetDeletePlaceInfo(int? id)
+        {
+            try
+            {
+                if (id is not null)
+                {
+                    PlaceTb? model = await context.PlaceTbs
+                        .FirstOrDefaultAsync(m => m.Id.Equals(id));
+
+                    if (model is not null)
+                        return model;
+                    else
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
         /// <summary>
         /// 삭제
@@ -146,7 +142,7 @@ namespace FamTec.Server.Repository.Place
         /// <param name="placecd"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeletePlaceInfo(PlaceTb? model)
+        public async ValueTask<bool?> DeletePlace(PlaceTb? model)
         {
             try
             {
@@ -295,6 +291,6 @@ namespace FamTec.Server.Repository.Place
             }
         }
 
-   
+     
     }
 }

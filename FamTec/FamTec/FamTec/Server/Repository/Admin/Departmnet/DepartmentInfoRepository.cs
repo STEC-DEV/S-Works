@@ -43,58 +43,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             }
         }
 
-        /// <summary>
-        /// 부서삭제
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public async ValueTask<bool?> DeleteDepartmentInfo(List<int?> selList)
-        {
-            try
-            {
-                if(selList is [_, ..])
-                {
-                    for (int i = 0; i < selList.Count; i++)
-                    {
-                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == selList[i] && m.DelYn != true);
-                        
-                        if (departmenttb is not null)
-                        {
-                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.DepartmentTbId == departmenttb.Id && m.DelYn != true);
-                            
-                            if(admintb is null)
-                            {
-                                departmenttb.DelYn = true;
-                                departmenttb.DelDt = DateTime.Now;
-                                
-                                context.DepartmentTbs.Update(departmenttb);
-                            }
-                            else
-                            {
-                                // 할당된 사용자가 있음
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            // 부서가 없음
-                            return null;
-                        }
-                    }
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    // 조건이 잘못됨
-                    return null;
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
+      
 
         /// <summary>
         /// 부서수정
@@ -212,6 +161,92 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             }
         }
 
-     
+        /// <summary>
+        /// 선택한 부서에 관리자 반환
+        /// </summary>
+        /// <param name="departmentidx"></param>
+        /// <returns></returns>
+        public async ValueTask<List<AdminTb>?> SelectDepartmentAdminList(List<int>? departmentidx)
+        {
+            try
+            {
+                if(departmentidx is [_, ..])
+                {
+                    List<AdminTb>? model = await context.AdminTbs.Where(m => departmentidx.Contains(Convert.ToInt32(m.DepartmentTbId)) && m.DelYn != true).ToListAsync();
+
+                    if (model is [_, ..])
+                        return model;
+                    else
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 삭제할 부서 인덱스 조회 - 동시다발 삭제때문에 DelYN 적용안함
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async ValueTask<DepartmentTb?> GetDeleteDepartmentInfo(int? id)
+        {
+            try
+            {
+                if(id is not null)
+                {
+                    DepartmentTb? model = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id.Equals(id));
+
+                    if (model is not null)
+                        return model;
+                    else
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 부서삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteDepartment(DepartmentTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.DepartmentTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

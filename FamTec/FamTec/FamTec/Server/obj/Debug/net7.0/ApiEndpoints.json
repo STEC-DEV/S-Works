@@ -117,8 +117,24 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
-    "Method": "DeletePlace",
-    "RelativePath": "api/AdminPlace/sign/DeletePlaceList",
+    "Method": "DeleteWorks",
+    "RelativePath": "api/AdminPlace/sign/DeletePlaceManager",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Place.AddPlaceManagerDTO\u00601[[FamTec.Shared.Server.DTO.Admin.Place.ManagerListDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
+    "Method": "DeleteWorks",
+    "RelativePath": "api/AdminPlace/sign/DeleteWorks",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -184,38 +200,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
-    "Method": "DeleteWorks",
-    "RelativePath": "api/AdminPlace/sing/DeleteWorks",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "DeletePlace",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
-    "Method": "DeleteManager",
-    "RelativePath": "api/AdminUser/DeleteManager",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "adminidx",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "AddManager",
     "RelativePath": "api/AdminUser/sign/AddManager",
@@ -249,18 +233,44 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
+    "Method": "DeleteManager",
+    "RelativePath": "api/AdminUser/sign/DeleteManager",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminidx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "GetManagerInfo",
-    "RelativePath": "api/AdminUser/sign/GetManagerInfo",
+    "RelativePath": "api/AdminUser/sign/DetailManagerInfo",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "adminId",
+        "Name": "adminid",
         "Type": "System.Int32",
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
+    "Method": "UpdateManager",
+    "RelativePath": "api/AdminUser/sign/UpdateManager",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -283,10 +293,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "DeleteBuilding",
     "RelativePath": "api/Building/sign/DeleteBuilding",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "buildingidx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -333,22 +349,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.Department.DepartmentController",
-    "Method": "DeleteDepartmentList",
-    "RelativePath": "api/Department/DeleteDepartmentList",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "selList",
-        "Type": "System.Collections.Generic.List\u00601[[System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Admin.Department.DepartmentController",
     "Method": "AddDepartment",
     "RelativePath": "api/Department/sign/AddDepartment",
     "HttpMethod": "POST",
@@ -358,6 +358,22 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Admin.AddDepartmentDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.Department.DepartmentController",
+    "Method": "DeleteDepartmentList",
+    "RelativePath": "api/Department/sign/DeleteDepartment",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "departmentidx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": true
       }
     ],
@@ -622,22 +638,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.UnitController",
-    "Method": "DeleteUnitInfo",
-    "RelativePath": "api/Unit/DeleteUnitInfo",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.Unit.UnitsDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.UnitController",
     "Method": "AddUnitInfo",
     "RelativePath": "api/Unit/sign/AddUnitInfo",
     "HttpMethod": "POST",
@@ -654,12 +654,44 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "Method": "DeleteUnitInfo",
+    "RelativePath": "api/Unit/sign/DeleteUnitInfo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "unitid",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.UnitController",
     "Method": "GetUnitList",
     "RelativePath": "api/Unit/sign/SelectUnitList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "Method": "UpdateUnitInfo",
+    "RelativePath": "api/Unit/sign/UpdateUnitInfo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.Unit.UnitsDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

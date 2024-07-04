@@ -1,5 +1,6 @@
 ﻿using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Place;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -14,17 +15,21 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
+        private readonly IBuildingInfoRepository BuildingInfoRepository;
         private ILogService LogService;
 
   
         public AdminPlaceService(IAdminPlacesInfoRepository _adminplaceinforepository,
             IPlaceInfoRepository _placeinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
+            IBuildingInfoRepository _buildinginforepository,
             ILogService _logservice)
         {
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
             this.PlaceInfoRepository = _placeinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
+            this.BuildingInfoRepository = _buildinginforepository;
+
             this.LogService = _logservice;
         }
     
@@ -263,7 +268,9 @@ namespace FamTec.Server.Services.Admin.Place
                     CreateDt = DateTime.Now,
                     CreateUser = Creater,
                     UpdateDt = DateTime.Now,
-                    UpdateUser = Creater
+                    UpdateUser = Creater,
+                    Status = dto.Status,  
+                    Note = dto.Note
                 };
 
                 PlaceTb? place_result = await PlaceInfoRepository.AddPlaceInfo(place);
@@ -467,63 +474,61 @@ namespace FamTec.Server.Services.Admin.Place
         }
 
         /// <summary>
-        /// 사업장 완전삭제
+        /// 해당 사업장에 관리자 삭제
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> DeleteManagerPlaceService(HttpContext? context,List<int>? placeidx)
+        public async ValueTask<ResponseUnit<int?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto)
         {
             try
             {
-                if(placeidx is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                if (placeidx.Count == 0)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                int delCount = 0;
+
+                if(dto is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                
-                string? deleter = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(deleter))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                for (int i = 0; i < placeidx.Count(); i++)
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                for (int i = 0; i < dto.PlaceManager.Count(); i++) 
                 {
-                    AdminPlaceTb? chktb = await AdminPlaceInfoRepository.GetWorksModelInfo(placeidx[i]);
-
-                    if(chktb is not null)
+                    AdminPlaceTb? model = await AdminPlaceInfoRepository.GetPlaceAdminInfo(dto.PlaceManager[i].Id, dto.PlaceId); // adminpalceid + placeid
+                    if(model is not null)
                     {
-                        return new ResponseUnit<bool>() { message = "할당된 사업장이 존재합니다.", data = false, code = 200 };
+                        model.DelDt = DateTime.Now;
+                        model.DelYn = true;
+                        model.DelUser = creater;
+
+                        bool? result = await AdminPlaceInfoRepository.DeleteAdminPlaceManager(model);
+                        if(result == true)
+                        {
+                            delCount++;
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseUnit<int?>() { message = "존재하지 않는 관리자입니다.", data = null, code = 200 };
                     }
                 }
 
-                for (int i = 0; i < placeidx.Count(); i++) 
-                {
-                    // 모델조회
-                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeidx[i]);
-                    placetb!.DelYn = true;
-                    placetb!.DelDt = DateTime.Now;
-                    placetb!.DelUser = deleter;
-
-                    // 삭제
-                    bool? result = await PlaceInfoRepository.DeletePlaceInfo(placetb);
-                    if (result != true)
-                    {
-                        return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                    }
-                }
-
-                return new ResponseUnit<bool>() { message = "삭제완료.", data = true, code = 200 };
+                return new ResponseUnit<int?>() { message = $"{delCount}건 삭제되었습니다", data = delCount, code =  200};
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
 
         }
 
+        // 사업장 삭제 시 할당된 매니저 가 있으면 삭제가안되고
+        // 건물이 할당되어있으면 삭제안되도록 해야할듯.
+
         /// <summary>
-        /// 여기가 맞나
+        /// 사업장 자체를 삭제
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
@@ -531,6 +536,8 @@ namespace FamTec.Server.Services.Admin.Place
         {
             try
             {
+                int delCount = 0;
+
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -540,24 +547,45 @@ namespace FamTec.Server.Services.Admin.Place
                 if (placeidx.Count == 0)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                string? Name = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(Name))
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                bool? result = await PlaceInfoRepository.DeletePlaceList(Name, placeidx);
+                // 해당 사업장인덱스와 AdminPlaceTb의 PlaceTbID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
+                List<AdminPlaceTb>? adminplaceetb = await AdminPlaceInfoRepository.SelectPlaceAdminList(placeidx);
+                if(adminplaceetb is not null)
+                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
 
-                if (result == true)
+                // 해당 사업장인덱스와 BuildingTb의 PlaceId 외래키로 검색해서 있는지 검사 - 삭제조건 [2]
+                List<BuildingTb>? buildingtb = await BuildingInfoRepository.SelectPlaceBuildingList(placeidx);
+                if(buildingtb is not null)
+                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 200 };
+
+                // PlaceTb 삭제
+                for (int i = 0; i < placeidx.Count(); i++)
                 {
-                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    PlaceTb? placetb = await PlaceInfoRepository.GetDeletePlaceInfo(placeidx[i]);
+
+                    if(placetb is not null)
+                    {
+                        placetb.DelDt = DateTime.Now;
+                        placetb.DelUser = creater;
+                        placetb.DelYn = true;
+
+                        bool? result = await PlaceInfoRepository.DeletePlace(placetb);
+
+                        if(result == true)
+                        {
+                            delCount++;
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseUnit<bool>() { message = "존재하지 않는 사업장입니다.", data = false, code = 200 };
+                    }
                 }
-                else if (result == false)
-                {
-                    return new ResponseUnit<bool>() { message = "할당된 사업장이 존재합니다.", data = true, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = true, code = 404 };
-                }
+
+                return new ResponseUnit<bool>() { message = $"삭제가 {delCount}건 완료되었습니다.", data = true, code = 200 };
             }
             catch(Exception ex)
             {

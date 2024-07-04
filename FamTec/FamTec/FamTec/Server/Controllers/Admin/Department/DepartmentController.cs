@@ -9,7 +9,8 @@ namespace FamTec.Server.Controllers.Admin.Department
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentController : ControllerBase
-    {private IDepartmentService DepartmentService;
+    {
+        private IDepartmentService DepartmentService;
 
         public DepartmentController(IDepartmentService _departmentservice)
         {
@@ -46,7 +47,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         }
 
         /// <summary>
-        /// 부서 전체조회 [수정완료]
+        /// 부서 전체조회
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles ="SystemManager, Master, Manager")]
@@ -73,15 +74,16 @@ namespace FamTec.Server.Controllers.Admin.Department
         }
 
         /// <summary>
-        /// 부서삭제 [수정완료]
+        /// 부서삭제
         /// </summary>
         /// <param name="selList"></param>
         /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
-        [Route("DeleteDepartmentList")]
-        public async ValueTask<IActionResult> DeleteDepartmentList([FromBody]List<int?> selList)
+        [Route("sign/DeleteDepartment")]
+        public async ValueTask<IActionResult> DeleteDepartmentList([FromBody]List<int> departmentidx)
         {
-            ResponseUnit<bool>? model = await DepartmentService.DeleteDepartmentService(selList);
+            ResponseUnit<bool>? model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
 
             if(model is not null)
             {

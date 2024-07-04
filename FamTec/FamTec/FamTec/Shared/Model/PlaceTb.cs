@@ -133,8 +133,8 @@ public partial class PlaceTb
     /// <summary>
     /// 계약상태
     /// </summary>
-    [Column("STATUS", TypeName = "tinyint(4)")]
-    public sbyte? Status { get; set; }
+    [Column("STATUS")]
+    public bool? Status { get; set; }
 
     /// <summary>
     /// 생성일

@@ -1,8 +1,4 @@
-﻿using FamTec.Server.Tokens;
-using FamTec.Shared;
-using FamTec.Shared.DTO;
-using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO;
+﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Login;
@@ -19,7 +15,7 @@ namespace FamTec.Server.Services.Admin.Account
         public ValueTask<ResponseUnit<string>> AdminLoginService(LoginDTO? dto);
 
         /// <summary>
-        /// 관리자 아이디 생성 서비스
+        /// 관리자 계정 생성
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="session"></param>
@@ -27,12 +23,11 @@ namespace FamTec.Server.Services.Admin.Account
         public ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext? context, AddManagerDTO? dto);
 
         /// <summary>
-        /// 매니저 삭제
+        /// 관리자 계정 삭제
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int>> DeleteAdminService(List<int> adminid);
-
+        public ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context, List<int>? adminidx);
        
 
         /// <summary>
@@ -42,5 +37,18 @@ namespace FamTec.Server.Services.Admin.Account
         /// <returns></returns>
         public ValueTask<ResponseUnit<DManagerDTO>> DetailAdminService(int? adminidx);
 
+        /// <summary>
+        /// 매니저 정보 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto);
+
+        /// <summary>
+        /// 아이디 중복검사
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> UserIdCheckService(string? userid);
     }
 }

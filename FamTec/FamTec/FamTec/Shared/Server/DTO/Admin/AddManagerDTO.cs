@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Admin
+﻿namespace FamTec.Shared.Server.DTO.Admin
 {
     public class AddManagerDTO
     {
@@ -33,10 +27,6 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// </summary>
         public string? Email { get; set; }
         
-        /// <summary>
-        /// 계정유형
-        /// </summary>
-        public string? Type { get; set; }
 
         /// <summary>
         /// 부서INDEX

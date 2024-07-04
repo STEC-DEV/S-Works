@@ -14,11 +14,18 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         ValueTask<AdminTb?> AddAdminUserInfo(AdminTb? model);
 
         /// <summary>
-        /// 매개변수의 관리자ID에 해당하는 관리자모델 리스트 조회
+        /// 매개변수의 USERID에 해당하는 관리자모델 조회
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
         ValueTask<AdminTb?> GetAdminUserInfo(int? usertbid);
+
+        /// <summary>
+        /// 매개변수의 ADMINID에 해당하는 관리자모델 조회
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        ValueTask<AdminTb?> GetAdminIdInfo(int? adminid);
 
         /// <summary>
         /// 관리자리스트 
@@ -34,6 +41,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         ValueTask<bool?> DeleteAdminInfo(AdminTb? model);
 
+        /// <summary>
+        /// 관리자 정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<AdminTb?> UpdateAdminInfo(AdminTb? model);
         
 
     }

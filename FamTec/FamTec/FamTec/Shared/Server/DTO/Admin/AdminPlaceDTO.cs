@@ -12,7 +12,7 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// PlaceID
         /// </summary>
-        public int Id { get; set; }
+        public int? Id { get; set; }
         
         /// <summary>
         /// PlaceCode
@@ -42,7 +42,7 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// 계약상태
         /// </summary>
-        public sbyte? Status { get; set; }
+        public bool? Status { get; set; }
 
     }
 }

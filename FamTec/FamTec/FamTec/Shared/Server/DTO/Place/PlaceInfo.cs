@@ -30,7 +30,7 @@ namespace FamTec.Shared.Server.DTO.Place
         public DateTime? CancelDt { get; set; }
 
         [Display(Name = "계약상태")]
-        public sbyte? Status { get; set; }
+        public bool? Status { get; set; }
 
         [Display(Name = "비고")]
         public string? Note { get; set; }

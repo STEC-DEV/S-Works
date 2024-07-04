@@ -235,9 +235,41 @@ namespace FamTec.Server.Repository.Building
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
-
-            
-            
         }
+
+        /// <summary>
+        /// 선택된 사업장에 포함되어있는 건물리스트 반환
+        /// </summary>
+        /// <param name="placeidx"></param>
+        /// <returns></returns>
+        public async ValueTask<List<BuildingTb>?> SelectPlaceBuildingList(List<int>? placeidx)
+        {
+            try
+            {
+                if(placeidx is [_, ..])
+                {
+                    List<BuildingTb>? buildingtb = await context.BuildingTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true).ToListAsync();
+
+                    if(buildingtb is [_, ..])
+                    {
+                        return buildingtb;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

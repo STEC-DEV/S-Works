@@ -25,7 +25,7 @@ namespace FamTec.Server.Controllers.Admin
 
 
         /// <summary>
-        /// 관리자추가 [수정완료]
+        /// 관리자아이디 생성
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -61,10 +61,10 @@ namespace FamTec.Server.Controllers.Admin
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
-        [Route("sign/GetManagerInfo")]
-        public async ValueTask<IActionResult> GetManagerInfo([FromQuery]int adminId)
+        [Route("sign/DetailManagerInfo")]
+        public async ValueTask<IActionResult> GetManagerInfo([FromQuery]int adminid)
         {
-            ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminId);
+            ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid);
 
             if(model is not null)
             {
@@ -117,11 +117,12 @@ namespace FamTec.Server.Controllers.Admin
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
-        [Route("DeleteManager")]
-        public async ValueTask<IActionResult> DeleteManager([FromBody] List<int> adminidx)
+        [Route("sign/DeleteManager")]
+        public async ValueTask<IActionResult> DeleteManager(List<int> adminidx)
         {
-            ResponseUnit<int>? model = await AdminAccountService.DeleteAdminService(adminidx);
+            ResponseUnit<int?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
 
             if(model is not null)
             {
@@ -140,8 +141,61 @@ namespace FamTec.Server.Controllers.Admin
             }
         }
 
+        /// <summary>
+        /// 관리자 정보 수정
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPut]
+        [Route("sign/UpdateManager")]
+        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
+        {
+            ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
-      
+        /// <summary>
+        /// 아이디 중복검사
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPost]
+        [Route("sign/UserIdCheck")]
+        public async ValueTask<IActionResult> UserIdCheck([FromBody] string userid)
+        {
+            ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid);
+            if (model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
 
     }
 }

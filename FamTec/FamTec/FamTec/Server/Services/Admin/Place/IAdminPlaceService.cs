@@ -65,11 +65,11 @@ namespace FamTec.Server.Services.Admin.Place
         public ValueTask<ResponseUnit<bool>> AddManagerPlaceSerivce(HttpContext? context, AddManagerPlaceDTO? dto);
 
         /// <summary>
-        /// 사업장 완전 삭제
+        /// 사업장에 할당된 관리자 삭제
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> DeleteManagerPlaceService(HttpContext? context, List<int>? placeidx);
+        public ValueTask<ResponseUnit<int?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto);
 
 
         /// <summary>

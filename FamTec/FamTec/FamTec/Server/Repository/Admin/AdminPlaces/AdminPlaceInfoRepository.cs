@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 
 namespace FamTec.Server.Repository.Admin.AdminPlaces
@@ -49,38 +50,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             }
         }
 
-        /// <summary>
-        /// 해당 사업장 삭제
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <returns></returns>
-        public async ValueTask<bool?> DeleteMyWorks(List<AdminPlaceTb>? modellist)
-        {
-            try
-            {
-                if (modellist is [_, ..])
-                {
-                    for (int i = 0; i < modellist.Count(); i++)
-                    {
-                        modellist[i].DelYn = true;
-                        modellist[i].DelDt = DateTime.Now;
-
-                        context.AdminPlaceTbs.Update(modellist[i]);
-                    }
-
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
 
         /// <summary>
         /// 관리자에 해당하는 사업장리스트 반환
@@ -240,7 +209,32 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             }
         }
 
-      
+        /// <summary>
+        /// AdminPlaceTb 사업장 삭제 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async ValueTask<bool?> DeleteMyWorks(AdminPlaceTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.AdminPlaceTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
 
         /// <summary>
@@ -424,6 +418,210 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             }
         }
 
-     
+        /// <summary>
+        /// 해당 사업장에 할당된 관리자 삭제 - DelYN 삭제함.
+        /// </summary>
+        /// <param name="admintbid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<AdminPlaceTb?> GetPlaceAdminInfo(int? admintbid, int? placeid)
+        {
+            try
+            {
+                if(admintbid is not null && placeid is not null)
+                {
+                    AdminPlaceTb? model = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceId == placeid);
+
+                    if (model is not null)
+                        return model;
+                    else
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 해당 사업장의 관리자 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<bool?> DeleteAdminPlaceManager(AdminPlaceTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.AdminPlaceTbs.Remove(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 선택된 사업장에 포함되어있는 AdminPlaceTB 리스트 반환 
+        /// </summary>
+        /// <param name="placeidx"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<List<AdminPlaceTb>?> SelectPlaceAdminList(List<int>? placeidx)
+        {
+            try
+            {
+                if(placeidx is [_, ..])
+                {
+                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceId)) && m.DelYn != true).ToListAsync();
+                    if (adminplacetb is [_, ..])
+                    {
+                        return adminplacetb;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 관리자 정보 수정
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <param name="placeidx"></param>
+        /// <returns></returns>
+        public async ValueTask<(List<int?>? insert, List<int?>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int?> placeidx)
+        {
+            try
+            {
+                List<int?>? selectplaceidx = null;
+                List<int?>? insertplaceidx = null;
+                List<int?>? deleteplaceidx = null;
+                
+                if (adminid is null)
+                    return null;
+
+                List<int?> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceId).ToListAsync();
+
+                if (placeidx is [_, ..])
+                {
+                    // AdminID에 해당하는 사업장 전체출력
+                    if (allplaceidx is [_, ..])
+                    {
+                        // 넘어온 PlaceID중에서 내가 갖고 있는것.
+                        selectplaceidx = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceId)) && m.DelYn != true && m.AdminTbId == adminid).Select(m => m.PlaceId).ToListAsync();
+                        if (selectplaceidx is [_, ..]) // 가지고 있는게 있으면
+                        {
+                            // 추가사업장 구하기
+                            insertplaceidx = placeidx.Except(selectplaceidx).ToList();
+
+                            // 빠진 사업장 allplacetb - selectplacetb = "빠진사업장"
+                            deleteplaceidx = allplaceidx.Except(selectplaceidx).ToList();
+                        }
+                        // 검색후 내것중 가진게 없으면
+                        else
+                        {
+                            insertplaceidx = placeidx;
+                            deleteplaceidx = allplaceidx;
+                        }
+                    }
+                    else // 가지고있는 사업장이 아에 없을때
+                    {
+                        insertplaceidx = placeidx;
+                        deleteplaceidx = null;
+                    }
+                }
+                else
+                {
+                    deleteplaceidx = allplaceidx;
+                }
+
+                return (insertplaceidx, deleteplaceidx);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 관리자 사업장 단일모델 저장
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<AdminPlaceTb?> AddAdminPlaceInfo(AdminPlaceTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.AdminPlaceTbs.Add(model);
+                    await context.SaveChangesAsync();
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 관리자 사업장 단일모델 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteAdminPlaceInfo(AdminPlaceTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.AdminPlaceTbs.Remove(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

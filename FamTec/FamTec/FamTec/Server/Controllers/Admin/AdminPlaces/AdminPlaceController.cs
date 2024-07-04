@@ -1,8 +1,5 @@
-﻿using FamTec.Server.Databases;
-using FamTec.Server.Repository.Place;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
-using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
@@ -140,7 +137,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 해당사업장을 관리하는 관리자 LIST 반환 * [수정완료]
+        /// 사업장 상세정보
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
@@ -177,7 +174,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 사업장 생성시 관리자할당
+        /// 사업장 생성
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -214,7 +211,35 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 사업장에 매니저 추가 [수정완료]
+        /// 사업장 삭제
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPut]
+        [Route("sign/DeleteWorks")]
+        public async ValueTask<IActionResult> DeleteWorks([FromBody]List<int> placeidx)
+        {
+            ResponseUnit<bool>? model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
+
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// 사업장에 매니저 할당
         /// </summary>
         /// <param name="placemanager"></param>
         /// <returns></returns>
@@ -253,19 +278,21 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
         }
 
+
+
         /// <summary>
-        /// 사업장 삭제 [수정완료]
+        /// 사업장에서 관리자 삭제
         /// </summary>
         /// <param name="DeletePlace"></param>
         /// <returns></returns>
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
-        [Route("sing/DeleteWorks")]
-        public async ValueTask<IActionResult> DeleteWorks([FromBody]List<int> DeletePlace)
+        [Route("sign/DeletePlaceManager")]
+        public async ValueTask<IActionResult> DeleteWorks([FromBody] AddPlaceManagerDTO<ManagerListDTO> dto)
         {
             try
             {
-                ResponseUnit<bool>? model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, DeletePlace);
+                ResponseUnit<int?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto);
 
                 if (model is not null)
                 {
@@ -289,33 +316,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
         }
 
-        /// <summary>
-        /// 사업장 삭제 테스트
-        /// </summary>
-        /// <param name="placeidx"></param>
-        /// <returns></returns>
-        [Authorize(Roles ="SystemManager, Master, Manager")]
-        [HttpPut]
-        [Route("sign/DeletePlaceList")]
-        public async ValueTask<IActionResult> DeletePlace([FromBody] List<int> placeidx)
-        {
-            ResponseUnit<bool>? model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+      
 
         
 

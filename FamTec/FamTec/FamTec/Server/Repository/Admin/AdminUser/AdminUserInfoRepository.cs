@@ -49,7 +49,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> DeleteAdminInfo(AdminTb? model)
         {
             try
@@ -71,10 +70,35 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             }
         }
 
-        
+        /// <summary>
+        /// 매개변수의 ADMINID에 해당하는 관리자모델 조회
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        public async ValueTask<AdminTb?> GetAdminIdInfo(int? adminid)
+        {
+            if (adminid is not null)
+            {
+                AdminTb? model = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true);
+                if (model is not null)
+                {
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
 
         /// <summary>
-        /// 매개변수의 관리자ID에 해당하는 관리자모델 모델 조회
+        /// 매개변수의 USERID에 해당하는 관리자모델 모델 조회
         /// </summary>
         /// <param name="adminuseridx"></param>
         /// <returns></returns>
@@ -141,6 +165,32 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             }
         }
 
- 
+        /// <summary>
+        /// 관리자 정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<AdminTb?> UpdateAdminInfo(AdminTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.AdminTbs.Update(model);
+                    await context.SaveChangesAsync();
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

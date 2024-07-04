@@ -37,6 +37,12 @@ namespace FamTec.Server.Repository.Building
 
         ValueTask<List<BuildingTb>?> GetBuildings(List<int>? buildingid);
 
+        /// <summary>
+        /// 선택된 사업장에 포함되어있는 건물리스트 반환
+        /// </summary>
+        /// <param name="placeidx"></param>
+        /// <returns></returns>
+        ValueTask<List<BuildingTb>?> SelectPlaceBuildingList(List<int>? placeidx);
 
         ValueTask<bool?> DeleteBuildingInfo(BuildingTb? model);
 
