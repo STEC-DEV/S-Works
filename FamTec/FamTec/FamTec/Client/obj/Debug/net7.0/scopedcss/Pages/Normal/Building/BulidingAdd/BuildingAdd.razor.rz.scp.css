@@ -1,0 +1,11 @@
+.buildingadd-container[b-37r0e6eic7]{
+    width :100%;
+    height : 100%;
+    padding : var(--default-pd);
+    background-color :#d3d3d3;
+}
+
+
+.buildingadd-container .buildingadd-info[b-37r0e6eic7]{
+    height :100%;
+}

@@ -1,0 +1,18 @@
+﻿<div class="groupfield">
+    <div class="groupfield-title">
+        <span class="title">
+            @Title
+        </span>
+    </div>
+    
+    <div class="groupfield-item">
+        <InputFieldSmall Label="연면적" EditMode=EditMode />
+        <InputFieldSmall Label="대지면적" EditMode=EditMode />
+        <InputFieldSmall Label="건축면적" EditMode=EditMode />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    bool EditMode = true;
+}

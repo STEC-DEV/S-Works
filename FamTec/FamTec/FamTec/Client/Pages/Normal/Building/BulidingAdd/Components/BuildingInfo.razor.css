@@ -1,0 +1,57 @@
+﻿.buildinginfo {
+    display : flex;
+    flex-direction : column;
+    gap :var(--default-pd);
+    width : 100%;
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    min-height : 40%;
+    background-color : var(--default-color);
+    box-shadow : var(--default-bs);
+}
+
+.buildinginfo .buildinginfo-title{
+    padding : var(--default-pd);
+    border-bottom : var(--default-bd);
+}
+
+.buildinginfo .title{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.buildinginfo .buildinginfo-contents{
+    display : flex;
+    gap : var(--wide-pd);
+    width : 100%;
+    height : 100%;
+    
+}
+
+.buildinginfo .building-img{
+    min-width : 350px;
+    height : 250px;
+    border : var(--default-bd);
+    background-color : #f3f3f3;
+}
+
+.buildinginfo .infosection-1{
+    display : grid;
+    grid-template-columns : repeat(2,1fr);
+    grid-column-gap  : var(--wide-pd);
+    /*display : flex;
+    flex-direction : column;
+    justify-content : space-between;*/
+    width : 100%;
+    background-color : var(--default-color);
+}
+
+.buildinginfo .infosection-2{
+    display :grid;
+    grid-template-columns : repeat(5, 1fr);
+    gap : var(--default-pd);
+}

@@ -47,6 +47,7 @@
         public string? SvgImgUrl { get; set; }
     }
 
+
     protected async override Task OnInitializedAsync()
     {
         await LoadCategory();
@@ -61,8 +62,8 @@
     }
 
     /*
-     * 관리자 모드 카테고리
-     */
+    * 관리자 모드 카테고리
+    */
     private List<Category> GetAdminCategories()
     {
         return new List<Category>
@@ -81,8 +82,8 @@
     }
 
     /*
-     * 일반 모드 카테고리
-     */
+    * 일반 모드 카테고리
+    */
     private List<Category> GetUserCategories()
     {
         return new List<Category>
@@ -93,15 +94,16 @@
                 Url = "/basic",
                 SubCategory = new List<Category>
                 {
-                    new Category { Name = "건물 정보", Url = "/basic/buildings" },
-                    new Category { Name = "위치 관리", Url = "/basic/locations" },
-                    new Category { Name = "단위 관리", Url = "/basic/units" }
+                    new Category { Name = "건물 정보", Url = "/buildings" },
+                    new Category { Name = "위치 관리", Url = "/locations" },
+                    new Category { Name = "단위 관리", Url = "/units"  },
+
                 }
             },
             new Category
             {
                 Name = "사용자 관리",
-                Url = "/users"
+                Url = "/users",
             },
             new Category
             {

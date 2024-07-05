@@ -1,0 +1,30 @@
+﻿@page "/basic/buildings"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Building.BuildingMain.Components
+
+<div class="building-container yappear">
+    <div class="building-wrap">
+        <div class="building-header">
+            <span class="title">
+                건물 목록
+            </span>
+            <div class="btns">
+                <Button Name="추가" Width=true Type=0 OnClick="@OnMoveAdd" />
+                <Button Name="삭제" Width=true Type=1 />
+            </div>
+        </div>
+        <div class="building-contents">
+            <BuildingTable />
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+
+    private void OnMoveAdd()
+    {
+        Navigation.NavigateTo("/basic/buildings/add");
+    }
+}

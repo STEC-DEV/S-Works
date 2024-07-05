@@ -1,0 +1,26 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Location
+
+
+<table class="location-table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                @Location.Id
+            </th>
+            <th class="th">
+                @Location.Name
+            </th>
+            <th class="th">
+                @Location.
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public LocationDTO Location {get; set;}
+
+}

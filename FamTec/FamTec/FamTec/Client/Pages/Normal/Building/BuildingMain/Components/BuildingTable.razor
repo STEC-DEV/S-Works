@@ -1,0 +1,83 @@
+﻿
+
+<table class="building-table">
+    <thead class="thead">
+
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    건물
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    건물 주소
+                </span>
+                
+            </th>
+            <th class="th text-center">
+                <span>전화번호</span>
+            </th>
+            <th class="th text-center">
+                <span>
+                    건물층
+                </span>
+                
+            </th>
+            
+            <th class="th">
+                <span>준공년월</span>
+                
+            </th>
+            <th class="th">
+                <span>등록일자</span>
+                
+            </th>
+            <th class="th">
+                <span>민원 QR</span>
+                
+            </th>
+            <th class="th">
+                
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @for (int i = 0; i < 15; i++)
+        {
+            <tr class="tbody-tr">
+                <td class="td">
+                    <div class="td-wrap">
+                        <span class="name">강남우체국</span>
+                        <span class="code">B001</span>
+                    </div>
+                </td>
+                <td class="td">
+                    서울특별시 강남우체국 개포로 619
+                </td>
+                <td class="td text-center">
+                    02-244-2151
+                </td>
+                <td class="td text-center">
+                    8
+                </td>
+                <td class="td">
+                    @currentDateTime
+                </td>
+                <td class="td">
+                    @currentDateTime
+                </td>
+                <td class="td">
+                </td>
+                <td class="td text-right">
+                    <input type="checkbox"/>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
+@code {
+    private DateTime currentDateTime = DateTime.Now;
+}

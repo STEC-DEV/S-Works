@@ -1,0 +1,45 @@
+﻿<div class="buildinginfo">
+    <div class="buildinginfo-title">
+        <span class="title">
+            건물 정보
+        </span>
+    </div>
+    <div class="buildinginfo-contents">
+        <div class="building-img">
+            
+        </div>
+        <div class="infosection-1">
+            <InputFieldSmall InputType="text" Label="건물이름" EditMode=EditMode />
+            <InputFieldSmall InputType="text" Label="건물주소" EditMode=EditMode />
+            <InputFieldSmall InputType="text" Label="대표전화" EditMode=EditMode/>
+            <InputFieldSmall InputType="text" Label="건물구조" EditMode=EditMode/>
+            <InputFieldSmall InputType="text" Label="건물용도" EditMode=EditMode/>
+            <InputFieldSmall InputType="text" Label="시공업체" EditMode=EditMode/>
+            <InputFieldSmall InputType="text" Label="준공년월" EditMode=EditMode/>
+            <InputFieldSmall InputType="text" Label="지붕구조" EditMode=EditMode/>
+        </div>
+    </div>
+    <div class="infosection-2">
+        @for(int i = 0; i < 9; i++)
+        {
+            <GroupField Title="면적" />
+        }
+
+    </div>
+</div>
+
+@code {
+    bool EditMode= true;
+
+    public class BuildingItemGroup
+    {
+        public string Title { get; set; }
+        public List<BuildingItem> items {get;set;}
+    }
+    public  class BuildingItem
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+        public string Unit { get; set; }
+    }
+}

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FamTec.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef6997867ddad00e366414c61a5f0b78b8e4d064")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+359f2b7edd13cd017dd4aa9b90d4cb5f7573bb56")]
 [assembly: System.Reflection.AssemblyProductAttribute("FamTec.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FamTec.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
