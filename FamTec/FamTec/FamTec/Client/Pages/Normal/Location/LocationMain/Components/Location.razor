@@ -1,0 +1,51 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Location
+
+<div class="location-container">
+    <div class="location-wrap">
+        <div class="location-header">
+            <span class="title">
+                위치 목록
+            </span>
+            <div class="location=options">
+                <Button 
+                    Name="@(isAddingRow ?"취소" :  "추가")" 
+                    Width=true
+                    OnClick="@OnAddMode"
+                    Type="0"
+                    />
+                <Button Name="삭제" Width=true Type="1"/>
+            </div>
+        </div>
+        <div class="location-contents">
+            <LocationTable Locations="@Locations" isAddingRow=@isAddingRow AddMode="@OnAddMode"/>
+        </div>
+    </div>
+</div>
+@code {
+    private bool isAddingRow = false;
+    private List<LocationDTO> Locations = new List<LocationDTO>
+    {
+        new LocationDTO{ Id = 1, Name = "전기실", BuildingName ="강남우체국", Floor = "지하 1층"},
+        new LocationDTO{ Id = 2, Name = "개발실", BuildingName ="강남우체국", Floor = "2"},
+        new LocationDTO{ Id = 3, Name = "창고A", BuildingName ="강남우체국", Floor = "5"},
+        new LocationDTO{ Id = 4, Name = "창고B", BuildingName ="강남우체국", Floor = "1"},
+    };
+
+
+    private void OnAddMode()
+    {
+        isAddingRow = !isAddingRow;
+    }
+
+    private void CancelAddRow()
+    {
+        isAddingRow = false;
+    }
+
+    private void RemoveRow(LocationDTO data)
+    {
+        Locations.Remove(data);
+    }
+}

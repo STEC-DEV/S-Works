@@ -1,0 +1,101 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location
+
+
+<table class="location-table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th text-left">
+                <span>
+                    No.
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    위치명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    건물명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    층
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (isAddingRow)
+        {
+            <tr class="tbody-tr">
+                <td class="td text-left">
+                    @(@Locations.Count +1)
+                </td>
+                <td class="td">
+                    <input type="text" @bind="@newLocation.Name"/>
+                </td> 
+                <td class="td">
+                    <input type="text" @bind="@newLocation.BuildingName"/>
+                </td> 
+                <td class="td">
+                    <input type="text" @bind="@newLocation.Floor"/>
+                </td>
+                <td class="td text-right">
+                    <Button Name="등록" Width=true OnClick="@SaveRow" />
+                </td>
+            </tr>
+        }
+        @foreach (var location in Locations.Select((value, idx) => (value, idx)))
+        {
+            <tr class="tbody-tr">
+                <td class="td text-left">@(location.idx+1)</td>
+                <td class="td">@location.value.Name</td>
+                <td class="td">@location.value.BuildingName</td>
+                <td class="td">@location.value.Floor</td>
+                <td class="td text-right">
+                    <input type="checkbox" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<LocationDTO> Locations {get; set;}
+    [Parameter] public bool isAddingRow { get; set; }
+    [Parameter] public EventCallback AddMode { get; set; }
+
+    private LocationDTO newLocation = new LocationDTO();
+
+
+    private void OnAddRow()
+    {
+        isAddingRow = true;
+        newLocation = new LocationDTO { Id = Locations.Count + 1 };
+    }
+
+    private void SaveRow()
+    {
+        if (string.IsNullOrWhiteSpace(newLocation.Name) ||
+            string.IsNullOrWhiteSpace(newLocation.BuildingName) ||
+            string.IsNullOrWhiteSpace(newLocation.Floor))
+        {
+            JS.InvokeVoidAsync("alert","값이 비어있습니다.");
+        }
+        else
+        {
+            Locations.Add(newLocation);
+        }
+        newLocation = new LocationDTO();
+        AddMode.InvokeAsync();
+    }
+    
+}

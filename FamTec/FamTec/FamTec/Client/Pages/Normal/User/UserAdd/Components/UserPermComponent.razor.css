@@ -1,6 +1,7 @@
 ﻿.placetoggle-container {
     display: flex;
     flex-direction: column;
+    gap : var(--default-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--default-color);
@@ -16,18 +17,20 @@
     border-bottom: var(--default-bd);
 }
 .placetoggle-container .placetoggle-title>span{
-    color:var(--main-color);
+    display: flex;
+    align-items: center;
+    height: 35px;
+    color: var(--main-color);
 }
 
 .placetoggle-container .placetoggle-toggle{
-    padding :var(--default-pd);
     /*display : flex;
     flex-wrap : wrap;
     gap : var(--half-pd);*/
-    display : grid;
-    grid-template-columns : repeat(3, 1fr);
-    gap:var(--default-pd);
-    padding : var(--default-pd);
-    grid-auto-flow:row;
+    /*display : grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--default-pd);
+    padding: var(--default-pd);*/
+    grid-auto-flow: row;
 
 }

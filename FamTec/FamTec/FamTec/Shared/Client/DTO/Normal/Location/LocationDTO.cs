@@ -10,7 +10,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Location
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int BuildingId { get; set; }
-        public int Floor { get; set; }
+        public string BuildingName { get; set; }
+        public string Floor { get; set; }
     }
 }

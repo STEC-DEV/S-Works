@@ -8,18 +8,29 @@
         <div class="useradd-info">
             <SignForm User="@user" EditMode=@EditMode />
         </div>
-        <div class="useradd-perm-wrap">
+        @* <div class="useradd-perm-wrap">
             <div class="useradd-perm" @onclick=@OnVocPer>
-                <UserToggle />
+                <UserPermComponent UserPerm="@userPerm" />
             </div>
-            @if (isVocPerm)
+            @if (userPerm.VocPerm != 0)
             {
                 <div class="useradd-perm sub yappear">
-                    <UserToggle />
+                    <UserPermComponent/>
                 </div>
             }
+        </div> *@
+        <div class="useradd-perm" @onclick=@OnVocPer>
+            <UserPermComponent UserPerm="@userPerm" />
         </div>
-        
+        @* @if (userPerm.VocPerm != 0)
+        {
+            <div class="useradd-perm sub yappear">
+                <UserPermComponent />
+            </div>
+        } *@
+        <div class="useradd-perm sub yappear">
+            <UserPermComponent />
+        </div>
     </div>
     <div class="useradd-btns">
         <Button Name="등록"Width=true Type=0/>

@@ -1,0 +1,51 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location
+
+
+<div class="floor">
+    <div class="floor-wrap">
+        <div class="floor-title">
+            <span class="title">
+                층 목록
+            </span>
+        </div>
+        <div class="floor-contents">
+            <FloorList Buildings=@Buildings />
+        </div>
+        <div class="floor-btns">
+            <Button Name="편집" Type="0"/>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<BuildingDTO> Buildings = new List<BuildingDTO>
+    {
+        new BuildingDTO
+        {
+            Id = 1,
+            Name = "강남우체국",
+            Floors = new List<FloorDTO>
+            {
+                new FloorDTO {Id = 1, Name = "1층"},
+                new FloorDTO {Id = 2, Name = "2층"},
+                new FloorDTO {Id = 3, Name = "3층"},
+                new FloorDTO {Id = 4, Name = "4층"},
+            }
+        },
+        new BuildingDTO
+        {
+            Id = 2,
+            Name = "SH 서울주택공사",
+            Floors = new List<FloorDTO>
+            {
+                new FloorDTO {Id = 1, Name = "1층"},
+                new FloorDTO {Id = 2, Name = "2층"},
+                new FloorDTO {Id = 3, Name = "3층"},
+                new FloorDTO {Id = 4, Name = "4층"},
+                new FloorDTO {Id = 5, Name = "5층"},
+                new FloorDTO {Id = 6, Name = "6층"},
+            }
+        },
+    };
+}

@@ -1149,7 +1149,6 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\CancleModal.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\SignForm.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\UserAdd.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\UserToggle.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\PermToggle.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\UserPermToggle.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Building\BuildingMain\BuildingMain.razor.rz.scp.css
@@ -1158,3 +1157,10 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Building\BulidingAdd\Components\BuildingInfo.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Building\BulidingAdd\Components\InputFieldSmall.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Building\BulidingAdd\Components\GroupField.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\LocationTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Location\LocationMain\LocationMain.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\Location.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\Floor.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\FloorList.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\UserPermComponent.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\User\UserAdd\Components\UserPermTable.razor.rz.scp.css

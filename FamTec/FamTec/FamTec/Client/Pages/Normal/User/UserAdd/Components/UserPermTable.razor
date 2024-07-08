@@ -1,0 +1,81 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Users
+@using System.ComponentModel.DataAnnotations
+<table class="table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    Items
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Read
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Write
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var property in typeof(UserPermDTO).GetProperties())
+        {
+            var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(property, typeof(DisplayAttribute));
+            var value = (sbyte)property.GetValue(UserPerm);
+
+            <tr class="tr">
+                <td class="td">
+                    @displayAttribute.Name
+                </td>
+                <td class="td">
+                    <input type="checkbox" @onchange="(e) => UpdateFirstCheckbox(property.Name, e, value)" />
+                </td>
+                <td class="td">
+                    <input type="checkbox" disabled="@(!IsFirstCheckboxChecked(value))" @onchange="(e) => UpdateSecondCheckbox(property.Name, e, value)" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public UserPermDTO UserPerm { get; set; }
+
+
+
+
+
+
+    private bool IsFirstCheckboxChecked(sbyte value)
+    {
+        return value > 0;
+    }
+
+    private bool IsSecondCheckboxChecked(sbyte value)
+    {
+        return value == 2;
+    }
+
+    private void UpdateFirstCheckbox(string propertyName, ChangeEventArgs e, sbyte currentValue)
+    {
+        bool isChecked = (bool)e.Value;
+        sbyte newValue = isChecked ? (sbyte)(currentValue + 1) : (sbyte)0; 
+        typeof(UserPermDTO).GetProperty(propertyName)?.SetValue(UserPerm, newValue);
+
+        Console.WriteLine(propertyName + newValue);
+        StateHasChanged();
+    }
+
+    private void UpdateSecondCheckbox(string propertyName, ChangeEventArgs e, sbyte currentValue)
+    {
+        bool isChecked = (bool)e.Value;
+        sbyte newValue = isChecked ? (sbyte)(currentValue + 1) : (sbyte)(currentValue - 1); 
+        typeof(UserPermDTO).GetProperty(propertyName)?.SetValue(UserPerm, newValue);
+        Console.WriteLine(propertyName + newValue);
+        StateHasChanged();
+    }
+
+}

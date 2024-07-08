@@ -84,6 +84,11 @@
     color : var(--main-color);
     
 }
+
+.table .text-right[b-aotreu8nqx]{
+    text-align : right;
+}
+
 .italic[b-aotreu8nqx] {
     font-style: italic;
     color : #333;

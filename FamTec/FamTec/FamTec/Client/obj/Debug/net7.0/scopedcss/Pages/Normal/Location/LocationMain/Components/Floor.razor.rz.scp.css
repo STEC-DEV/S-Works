@@ -1,0 +1,39 @@
+.floor[b-mmvc68315j]{
+    height :100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    
+    background-color :var(--default-color);
+    box-shadow : var(--default-bs);
+
+    overflow : hidden;
+}
+
+
+.floor .floor-wrap[b-mmvc68315j]{
+    height: 100%;
+    
+    display : flex;
+    flex-direction : column;
+    padding : var(--default-pd);
+    gap : var(--default-pd);
+}
+
+.floor .floor-title[b-mmvc68315j]{
+    padding : var(--default-pd);
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    border-bottom : var(--default-bd);
+}
+
+.floor .title[b-mmvc68315j]{
+    display:flex;
+    align-items:center;
+    height:33px;
+    color : var(--main-color);
+}
+
+.floor .floor-contents[b-mmvc68315j]{
+    overflow:auto;
+    height:100%;
+}

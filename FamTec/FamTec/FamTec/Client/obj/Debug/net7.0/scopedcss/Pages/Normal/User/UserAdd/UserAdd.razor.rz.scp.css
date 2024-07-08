@@ -12,28 +12,32 @@
     justify-content : center;
     gap: var(--wide-pd);
     height: 100%;
+    width:100%;
     flex: 1;
     overflow: hidden;
     padding : var(--default-pd);
 }
 
 .useradd-container .useradd-info[b-xipb2fhm38]{    
-    width: 30%;
+    width: 100%;
+    max-width : 30%;
     border-radius : var(--default-rd);
     /*border : var(--comp-bd);*/
     background-color : #f3f3f3;
     box-shadow: var(--default-bs);
 }
 
-.useradd-container .useradd-perm-wrap[b-xipb2fhm38]{
+/*.useradd-container .useradd-perm-wrap{
     display : flex;
     flex-direction : column;
     gap : var(--wide-pd);
     width: 30%;
-}
+}*/
 
 .useradd-container .useradd-perm[b-xipb2fhm38]{
-    height : 30%;
+    width: 100%;
+    max-width : 30%;
+    height : 100%;
     border-radius : var(--default-rd);
     border : var(--comp-bd);
     background-color : #f3f3f3;
@@ -45,10 +49,9 @@
    
 }
 
-
-.useradd-container .useradd-btns[b-xipb2fhm38]{
-    padding : var(--default-pd);
-    display:flex;
-    gap : var(--half-pd);
-    justify-content :flex-end;
+.useradd-container .useradd-btns[b-xipb2fhm38] {
+    padding: var(--default-pd);
+    display: flex;
+    gap: var(--half-pd);
+    justify-content: flex-end;
 }

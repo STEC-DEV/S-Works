@@ -12,28 +12,32 @@
     justify-content : center;
     gap: var(--wide-pd);
     height: 100%;
+    width:100%;
     flex: 1;
     overflow: hidden;
     padding : var(--default-pd);
 }
 
 .useradd-container .useradd-info{    
-    width: 30%;
+    width: 100%;
+    max-width : 30%;
     border-radius : var(--default-rd);
     /*border : var(--comp-bd);*/
     background-color : #f3f3f3;
     box-shadow: var(--default-bs);
 }
 
-.useradd-container .useradd-perm-wrap{
+/*.useradd-container .useradd-perm-wrap{
     display : flex;
     flex-direction : column;
     gap : var(--wide-pd);
     width: 30%;
-}
+}*/
 
 .useradd-container .useradd-perm{
-    height : 30%;
+    width: 100%;
+    max-width : 30%;
+    height : 100%;
     border-radius : var(--default-rd);
     border : var(--comp-bd);
     background-color : #f3f3f3;
@@ -45,10 +49,9 @@
    
 }
 
-
-.useradd-container .useradd-btns{
-    padding : var(--default-pd);
-    display:flex;
-    gap : var(--half-pd);
-    justify-content :flex-end;
+.useradd-container .useradd-btns {
+    padding: var(--default-pd);
+    display: flex;
+    gap: var(--half-pd);
+    justify-content: flex-end;
 }

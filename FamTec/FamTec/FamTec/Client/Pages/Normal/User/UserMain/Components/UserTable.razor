@@ -31,10 +31,8 @@
                 </span>
             </th>
 
-            @if (EditMode)
-            {
-                <th class="th table-select"></th>
-            }
+            <th class="th table-select"></th>
+
         </tr>
     </thead>
     <tbody class="tbody">
@@ -81,12 +79,10 @@
                             
                         </span>
                     </td>
-                    @if (EditMode)
-                    {
-                        <td class="td">
-                            <input type="checkbox" />
-                        </td>
-                    }
+                    <td class="td text-right">
+                        <input type="checkbox" />
+                    </td>
+
                  </tr>
                 }
             }

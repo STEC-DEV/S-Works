@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Shared.Server.DTO.Place
 
 <div class="placetoggle-container">
@@ -8,7 +9,8 @@
         </span>
     </div>
     <div class="placetoggle-toggle">
-        <PermToggle Title="기계 설비" />
+        <UserPermTable UserPerm=@UserPerm />
+        @* <PermToggle Title="기계 설비" />
         <PermToggle Title="전기 설비" />
         <PermToggle Title="승강 설비" />
         <PermToggle Title="소방 설비" />
@@ -18,12 +20,12 @@
         <PermToggle Title="보인 설비" />
         <PermToggle Title="자재 설비" />
         <PermToggle Title="에너지 설비" />
-        <PermToggle Title="민원 설비" />
+        <PermToggle Title="민원 설비" /> *@
     </div>
 </div>
 
 @code {
-    [Parameter] public PlacePerm UserPerm{ get; set; }
+    [Parameter] public UserPermDTO UserPerm{ get; set; }
     [Parameter] public bool EditMode { get; set; }
 
 
