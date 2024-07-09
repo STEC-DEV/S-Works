@@ -48,11 +48,11 @@ namespace FamTec.Server
 
 
             // 파일서버 경로
-            DirectoryInfo di = new DirectoryInfo(CommPath.FileServer);
+            DirectoryInfo di = new DirectoryInfo(Common.FileServer);
             if(!di.Exists) di.Create();
             
             // VOC 파일 이미지서버 경로
-            di = new DirectoryInfo(CommPath.VocFileImages);
+            di = new DirectoryInfo(Common.VocFileImages);
             if (!di.Exists)di.Create();
             
 

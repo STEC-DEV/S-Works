@@ -33,10 +33,9 @@ using FamTec.Server.Repository.Facility;
 using FamTec.Server.Services.Facility;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Services.Material;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using FamTec.Client;
-using FamTec.Server.Repository.Building.SubItem;
+using FamTec.Server.Repository.Building.SubItem.Group;
+using FamTec.Server.Repository.Building.SubItem.ItemKey;
+using FamTec.Server.Repository.Building.SubItem.ItemValue;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +46,9 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
-builder.Services.AddTransient<IBuildingSubItemInfoRepository, BuildingSubItemInfoRepository>();
+builder.Services.AddTransient<IGroupItemInfoRepository, GroupItemInfoRepository>();
+builder.Services.AddTransient<IItemKeyInfoRepository, ItemKeyInfoRepository>();
+builder.Services.AddTransient<IItemValueInfoRepository, ItemValueInfoRepository>();
 
 builder.Services.AddTransient<IUserInfoRepository, UserInfoRepository>();
 builder.Services.AddTransient<IAdminUserInfoRepository, AdminUserInfoRepository>();

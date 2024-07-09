@@ -267,24 +267,121 @@
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "UpdateManager",
     "RelativePath": "api/AdminUser/sign/UpdateManager",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Admin.UpdateManagerDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
+    "Method": "UserIdCheck",
+    "RelativePath": "api/AdminUser/sign/UserIdCheck",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
-    "Method": "InsertBuilding",
+    "Method": "AddBuilding",
     "RelativePath": "api/Building/sign/AddBuilding",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Building.BuildingsDTO",
-        "IsRequired": true
+        "Name": "BuildingCD",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Tel",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Usage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConstComp",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompletionDT",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingStruct",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RoofStruct",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubItem",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Building.AddGroupDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -335,16 +432,10 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "UpdateBuilding",
     "RelativePath": "api/Building/sign/UpdateBuilding",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Building.DetailBuildingDTO",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

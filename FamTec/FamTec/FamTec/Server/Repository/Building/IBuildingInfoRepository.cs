@@ -46,5 +46,7 @@ namespace FamTec.Server.Repository.Building
 
         ValueTask<bool?> DeleteBuildingInfo(BuildingTb? model);
 
+        
+
     }
 }

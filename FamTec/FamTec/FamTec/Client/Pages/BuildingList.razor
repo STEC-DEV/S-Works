@@ -39,7 +39,6 @@
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.ID</td>
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Name</td>
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Address</td>
-                    <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.FloorNum</td>
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.CompletionDT</td>
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.CreateDT</td>
                     <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
@@ -73,7 +72,7 @@
         // qr생성데이터
         // 사업장인덱스, 건물인덱스
         // 파일명 : 건물이름
-        await JS.InvokeVoidAsync("qrcreate", $"http://123.2.156.148:5245/VocSubmit/{dto.PlaceID}/{dto.ID}", dto.Name);
+        //await JS.InvokeVoidAsync("qrcreate", $"http://123.2.156.148:5245/VocSubmit/{dto.PlaceID}/{dto.ID}", dto.Name);
 
     }
 }

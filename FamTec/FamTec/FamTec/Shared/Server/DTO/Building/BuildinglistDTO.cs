@@ -1,39 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building
 {
     /// <summary>
-    /// 건물 리스트 - QR
+    /// 건물 리스트
     /// </summary>
     public class BuildinglistDTO
     {
-        // 인덱스
+        /// <summary>
+        /// 건물 ID
+        /// </summary>
         public int? ID { get; set; }
 
         /// <summary>
-        /// 사업장 인덱스
+        /// 건물 코드
         /// </summary>
-        public int? PlaceID { get; set; }
+        public string? BuildingCD { get; set; }
 
-        // 건물이름
+        /// <summary>
+        /// 건물명
+        /// </summary>
         public string? Name { get; set; }
 
-        // 주소
+        /// <summary>
+        /// 건물주소
+        /// </summary>
         public string? Address { get; set; }
 
-        // 건물층수
-        public int? FloorNum { get; set; }
-
-        // 준공년월
+        /// <summary>
+        /// 준공년월
+        /// </summary>
         public DateTime? CompletionDT { get; set; }
 
-        // 등록일자
+        /// <summary>
+        /// 등록일자
+        /// </summary>
         public DateTime? CreateDT { get; set; }
-
         
     }
 }

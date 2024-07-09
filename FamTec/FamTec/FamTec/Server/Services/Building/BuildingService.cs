@@ -1,5 +1,8 @@
 ﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Building.SubItem;
+using FamTec.Server.Repository.Building.SubItem.Group;
+using FamTec.Server.Repository.Building.SubItem.ItemKey;
+using FamTec.Server.Repository.Building.SubItem.ItemValue;
+using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
@@ -9,17 +12,35 @@ namespace FamTec.Server.Services.Building
     public class BuildingService : IBuildingService
     {
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly IBuildingSubItemInfoRepository BuildingSubItemInfoRepository;
+        private readonly IGroupItemInfoRepository GroupItemInfoRepository;
+        private readonly IItemKeyInfoRepository ItemKeyInfoRepository;
+        private readonly IItemValueInfoRepository ItemValueInfoRepository;
+        private readonly IFloorInfoRepository FloorInfoRepsitory;
 
         private ILogService LogService;
 
+        // 파일디렉토리
+        private DirectoryInfo? di;
+        private string PlaceFileFolderPath;
+
+      
+
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
-            IBuildingSubItemInfoRepository _buildingsubiteminforepository,
+            IGroupItemInfoRepository _groupiteminforepository,
+            IItemKeyInfoRepository _itemkeyinforepository,
+            IItemValueInfoRepository _itemvalueinforepository,
+            IFloorInfoRepository _floorinforepository,
             ILogService _logservice)
         {
             this.BuildingInfoRepository = _buildinginforepository;
-            this.BuildingSubItemInfoRepository = _buildingsubiteminforepository;
+            this.GroupItemInfoRepository = _groupiteminforepository;
+
+            this.ItemKeyInfoRepository = _itemkeyinforepository;
+            this.ItemValueInfoRepository = _itemvalueinforepository;
+
+            this.FloorInfoRepsitory = _floorinforepository;
+
             this.LogService = _logservice;
         }
 
@@ -29,11 +50,14 @@ namespace FamTec.Server.Services.Building
         /// <param name="dto"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> AddBuildingService(HttpContext? context, BuildingsDTO? dto)
+        public async ValueTask<ResponseUnit<bool>> AddBuildingService(HttpContext? context, AddBuildingDTO? dto, IFormFile? files)
         {
             try
             {
-                if(context is null)
+                string FileName = String.Empty;
+                string FileExtenstion = String.Empty;
+
+                if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
                 if (dto is null)
@@ -47,99 +71,126 @@ namespace FamTec.Server.Services.Building
                 if(String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                BuildingTb? model = new BuildingTb
+
+               // 사업장 관련한 폴더 없으면 만들기
+                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeidx.ToString()); // 사업장
+
+               di = new DirectoryInfo(PlaceFileFolderPath);
+               if (!di.Exists) di.Create();
+
+
+                BuildingTb? model = new BuildingTb();
+                model.BuildingCd = dto.BuildingCD;
+                model.Name = dto.Name;
+                model.Address = dto.Address;
+                model.Tel = dto.Tel;
+                model.Usage = dto.Usage;
+                model.ConstComp = dto.ConstComp;
+                model.CompletionDt = dto.CompletionDT;
+                model.BuildingStruct = dto.BuildingStruct;
+                model.RoofStruct = dto.RoofStruct;
+
+              
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = Creater;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = Creater;
+                model.PlaceTbId = Int32.Parse(placeidx);
+
+                if (files is not null)
                 {
-                    BuildingCd = dto.BuildingCode,
-                    Name = dto.Name,
-                    Address = dto.Address,
-                    Tel = dto.Tel,
-                    Usage = dto.Usage,
-                    ConstComp = dto.ConstComp,
-                    CompletionDt = dto.CompletionDt,
-                    BuildingStruct = dto.BuildingStruct,
-                    RoofStruct = dto.RoofStruct,
-                    GrossFloorArea = dto.GrossFloorArea,
-                    LandArea = dto.LandArea,
-                    BuildingArea = dto.BuildingArea,
-                    FloorNum = dto.FloorNum,
-                    GroundFloorNum = dto.GroundFloorNum,
-                    BasementFloorNum = dto.BasementFloorNum,
-                    BuildingHeight = dto.BuildingHeight,
-                    GroundHeight = dto.GroundHeight,
-                    BasementHeight = dto.BasementHeight,
-                    ParkingNum = dto.PackingNum,
-                    InnerParkingNum = dto.InnerPackingNum,
-                    OuterParkingNum = dto.OuterPackingNum,
-                    ElecCapacity = dto.ElecCapacity,
-                    FaucetCapacity = dto.FaucetCapacity,
-                    GenerationCapacity = dto.GenerationCapacity,
-                    WaterCapacity = dto.WaterCapacity,
-                    ElevWaterCapacity = dto.ElevWaterCapacity,
-                    WaterTank = dto.WaterTank,
-                    GasCapacity = dto.GasCapacity,
-                    Boiler = dto.Boiler,
-                    WaterDispenser = dto.WaterDispenser,
-                    LiftNum = dto.LiftNum,
-                    PeopleLiftNum = dto.PeopleLiftNum,
-                    CargoLiftNum = dto.CargoLiftNum,
-                    HeatCapacity = dto.HeatCapacity,
-                    CoolCapacity = dto.CoolCapacity,
-                    LandscapeArea = dto.LandScapeArea,
-                    GroundArea = dto.GroundArea,
-                    RooftopArea = dto.RooftopArea,
-                    ToiletNum = dto.ToiletNum,
-                    MenToiletNum = dto.MenToiletNum,
-                    WomenToiletNum = dto.WomenToiletNum,
-                    FireRating = dto.FireRating,
-                    SepticTankCapacity = dto.SepticTankCapacity,
-                    CreateDt = DateTime.Now,
-                    CreateUser = Creater,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = Creater,
-                    PlaceTbId = Int32.Parse(placeidx)
-                };
+                    FileName = files.FileName;
+                    FileExtenstion = Path.GetExtension(FileName);
+
+                    if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                    {
+                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    }
+                    else
+                    {
+                        // 이미지경로
+                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}"; // 암호화된 파일명
+
+                        string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
+
+                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+                        {
+                            await files.CopyToAsync(fileStream);
+                            model.Image = newFileName;
+                        }
+                    }
+                }
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model);
                 
                 if(buildingtb is null)
                     return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
-
-                if (dto.subitem!.Count() > 0)
-                {
-                    List<BuildingSubitemTb> subitem = new List<BuildingSubitemTb>();
-
-                    for (int i = 0; i < dto.subitem!.Count(); i++)
-                    {
-                        subitem.Add(new BuildingSubitemTb
-                        {
-                            Itemname = dto.subitem[i].ItemName,
-                            Unit = dto.subitem[i].Unit,
-                            Value = dto.subitem[i].Value,
-                            CreateDt = DateTime.Now,
-                            CreateUser = Creater,
-                            UpdateDt = DateTime.Now,
-                            UpdateUser = Creater,
-                            BuildingTbId = buildingtb.Id
-                        });
-                    }
-
-                    // SubItem에 ADD
-                    for (int i = 0; i < subitem.Count; i++) 
-                    {
-                        BuildingSubitemTb? submodel = await BuildingSubItemInfoRepository.AddAsync(subitem[i]);
-
-                        if (submodel is null)
-                            return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
-                    }
-                    // 성공 처리
-                    return new ResponseUnit<bool>() { message = "요청이 정상적으로 처리되었습니다.", data = true, code = 200 };
-                }
                 
-                // 성공 처리
-                if (buildingtb is not null)
-                    return new ResponseUnit<bool>() { message = "요청이 정상적으로 처리되었습니다.", data = true, code = 200 };
-                else
-                    return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                if(dto.SubItem is not null)
+                {
+                    foreach(var item in dto.SubItem)
+                    {
+                        AddGroupDTO? groupdto = item;
+
+                        if (groupdto is not null)
+                        {
+                            // GROUP 추가
+                            GroupitemTb group = new GroupitemTb();
+                            group.Name = groupdto.Name!;
+                            group.Type = 0; // 건물
+                            group.CreateDt = DateTime.Now;
+                            group.CreateUser = Creater;
+                            group.UpdateDt = DateTime.Now;
+                            group.UpdateUser = Creater;
+                            group.BuildingId = buildingtb.Id;
+
+                            GroupitemTb? GroupItemResult = await GroupItemInfoRepository.AddAsync(group);
+                            if(GroupItemResult is null)
+                                return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+
+                            // KEY 추가
+                            foreach (var itemkey in groupdto.AddGroupKey)
+                            {
+                                ItemkeyTb key = new ItemkeyTb();
+                                key.Itemkey = itemkey.Name!;
+                                key.CreateDt = DateTime.Now;
+                                key.CreateUser = Creater;
+                                key.UpdateDt = DateTime.Now;
+                                key.UpdateUser = Creater;
+                                key.GroupItemId = GroupItemResult.Id;
+                                
+                                ItemkeyTb? ItemKeyResult = await ItemKeyInfoRepository.AddAsync(key);
+                                
+                                if (ItemKeyResult is null)
+                                    return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+
+                                foreach (var itemValue in itemkey.ItemValues!)
+                                {
+                                    ItemvalueTb value = new ItemvalueTb();
+                                    value.Itemvalue = itemValue.Values!;
+                                    value.Unit = itemValue.Unit;
+                                    value.CreateDt = DateTime.Now;
+                                    value.CreateUser = Creater;
+                                    value.UpdateDt = DateTime.Now;
+                                    value.UpdateUser = Creater;
+                                    value.ItemKeyId = ItemKeyResult.Id;
+
+                                    ItemvalueTb? result = await ItemValueInfoRepository.AddAsync(value);
+                                    if (result == null)
+                                        return new ResponseUnit<bool>() { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                                };
+
+                            }
+
+                        }
+
+                    }
+                    return new ResponseUnit<bool>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
+                }
+                return new ResponseUnit<bool>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
+
+                
             }
             catch(Exception ex)
             {
@@ -176,10 +227,9 @@ namespace FamTec.Server.Services.Building
                         data = model.Select(e => new BuildinglistDTO
                         {
                             ID = e.Id,
-                            PlaceID = e.PlaceTbId,
+                            BuildingCD = e.BuildingCd,
                             Name = e.Name,
                             Address = e.Address,
-                            FloorNum = e.FloorNum,
                             CompletionDT = e.CompletionDt,
                             CreateDT = e.CreateDt
                         }).ToList(),
@@ -216,20 +266,10 @@ namespace FamTec.Server.Services.Building
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
 
-                List<BuildingTb>? tokencheck = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeid));
-                if(tokencheck is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-
-                int? idx = tokencheck.FindIndex(item => item.Id.Equals(buildingId));
-                if(idx is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-
-
                 BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
 
                 if (model is not null)
                 {
-
                     DetailBuildingDTO dto = new DetailBuildingDTO();
                     dto.Id = model.Id;
                     dto.BuildingCD = model.BuildingCd;
@@ -241,54 +281,48 @@ namespace FamTec.Server.Services.Building
                     dto.CompletionDT = model.CompletionDt;
                     dto.BuildingStruct = model.BuildingStruct;
                     dto.RoofStruct = model.RoofStruct;
-                    dto.GrossFloorArea = model.GrossFloorArea;
-                    dto.LandArea = model.LandArea;
-                    dto.BuildingArea = model.BuildingArea;
-                    dto.FloorNum = model.FloorNum;
-                    dto.GroundFloorNum = model.GroundFloorNum;
-                    dto.BasementFloorNum = model.BasementFloorNum;
-                    dto.BuildingHeight = model.BuildingHeight;
-                    dto.GroundHeight = model.GroundHeight;
-                    dto.BasementHeight = model.BasementHeight;
-                    dto.ParkingNum = model.ParkingNum;
-                    dto.InnerPackingNum = model.InnerParkingNum;
-                    dto.OuterPackingNum = model.OuterParkingNum;
-                    dto.ElecCapacity = model.ElecCapacity;
-                    dto.FaucetCapacity = model.FaucetCapacity;
-                    dto.GenerationCapacity = model.GenerationCapacity;
-                    dto.WaterCapacity = model.WaterCapacity;
-                    dto.ElevWaterCapacity = model.ElevWaterCapacity;
-                    dto.WaterTank = model.WaterTank;
-                    dto.GasCapacity = model.GasCapacity;
-                    dto.Boiler = model.Boiler;
-                    dto.WaterDispenser = model.WaterDispenser;
-                    dto.LiftNum = model.LiftNum;
-                    dto.PeopleLiftNum = model.PeopleLiftNum;
-                    dto.CargoLiftNum = model.CargoLiftNum;
-                    dto.CoolHeatCapacity = model.CoolHeatCapacity;
-                    dto.HeatCapacity = model.HeatCapacity;
-                    dto.CoolCapacity = model.CoolCapacity;
-                    dto.LandSacpeArea = model.LandscapeArea;
-                    dto.GroundArea = model.GroundArea;
-                    dto.RooftopArea = model.RooftopArea;
-                    dto.ToiletNum = model.ToiletNum;
-                    dto.MenToiletNum = model.MenToiletNum;
-                    dto.WomenToiletNum = model.WomenToiletNum;
-                    dto.FireRating = model.FireRating;
-                    dto.SepticTankCapacity = model.SepticTankCapacity;
+                    dto.Image = model.Image;
 
-                    List<BuildingSubitemTb>? submodel = await BuildingSubItemInfoRepository.GetAllBuildingSubItemList(buildingId);
-                    if(submodel is [_, ..])
+                    List<GroupitemTb>? GROUP_TB = await GroupItemInfoRepository.GetAllGroupList(model.Id);
+
+                    dto.GroupItem = new List<GroupListDTO>(); // GROUP
+
+                    if (GROUP_TB is [_, ..])
                     {
-                        for (int i = 0; i < submodel.Count(); i++)
+                        foreach(GroupitemTb groupItem in GROUP_TB)
                         {
-                            dto.subitem.Add(new DetailBuildingSubItemDTO
+                            
+                            GroupListDTO groupdto = new GroupListDTO();
+                            groupdto.ID = groupItem.Id;
+                            groupdto.Name = groupItem.Name;
+
+                            List<ItemkeyTb>? KEY_TB = await ItemKeyInfoRepository.GetAllKeyList(groupItem.Id);
+                            if(KEY_TB is null)
                             {
-                                Id = submodel[i].Id,
-                                ItemName = submodel[i].Itemname,
-                                Unit = submodel[i].Unit,
-                                Value = submodel[i].Value
-                            });
+                                dto.GroupItem.Add(groupdto);
+                                return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                            }
+
+                            foreach(ItemkeyTb? keyItem in KEY_TB)
+                            {
+                                GroupKeyListDTO keydto = new GroupKeyListDTO();
+                                keydto.ID = keyItem.Id;
+                                keydto.ItemKey = keyItem.Itemkey;
+                                
+                                groupdto.KeyListDTO!.Add(keydto);
+                                
+                                List<ItemvalueTb>? VALUE_TB = await ItemValueInfoRepository.GetAllValueList(keyItem.Id);
+                                foreach(ItemvalueTb? valueItem in VALUE_TB)
+                                {
+                                    GroupValueListDTO valuedto = new GroupValueListDTO();
+                                    valuedto.ID = valueItem.Id;
+                                    valuedto.ItemValue = valueItem.Itemvalue;
+                                    valuedto.Unit = valueItem.Unit;
+
+                                    keydto.ValueList.Add(valuedto);
+                                }
+                            }
+                            dto.GroupItem.Add(groupdto);
                         }
                     }
 
@@ -309,138 +343,371 @@ namespace FamTec.Server.Services.Building
 
         /// <summary>
         /// 건물정보 수정
+        /// LEVEL_1 (GROUPID) --> 없다 : 아에처음
+        /// LEVEL_2 (UPDATE, INSERT)
+        /// LEVEL_3 (UPDATE, INSERT) - 2에 종속 2가 INSERT면 무조껀 INSERT
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DetailBuildingDTO>?> UpdateBuildingService(HttpContext? context, DetailBuildingDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateBuildingService(HttpContext? context, DetailBuildingDTO? dto, IFormFile? files)
         {
+            string? FileName = null;
+            string? FileExtenstion = null;
             try
             {
                 if (context is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 if (dto is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-
-                List<BuildingTb>? tokencheck = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeid));
-                if (tokencheck is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-
-                int? idx = tokencheck.FindIndex(item => item.Id.Equals(dto.Id));
-                if (idx is null)
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                // 업데이트할 모델 조회해서 가져온 후 넘겨야함. - 업데이트 적용됨
-                BuildingTb? updatemodel = await BuildingInfoRepository.GetBuildingInfo(dto.Id);
-                if (updatemodel is not null)
+
+                int ThisBuildingId = Convert.ToInt32(dto.Id);
+
+                // 해당 건물의 빌딩 검색
+                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(ThisBuildingId);
+                buildingtb.BuildingCd = dto.BuildingCD;
+                buildingtb.Name = dto.Name;
+                buildingtb.Address = dto.Address;
+                buildingtb.Tel = dto.Tel;
+                buildingtb.Usage = dto.Usage;
+                buildingtb.ConstComp = dto.ConstComp;
+                buildingtb.CompletionDt = dto.CompletionDT;
+                buildingtb.BuildingStruct = dto.BuildingStruct;
+                buildingtb.RoofStruct = dto.RoofStruct;
+                buildingtb.UpdateDt = DateTime.Now;
+                buildingtb.UpdateUser = creater;
+
+                
+                if (files is not null) // 파일이 공백이 아닌경우 - 삭제 - 업데이트 or insert
                 {
-                    updatemodel.BuildingCd = dto.BuildingCD; // 건물코드
-                    updatemodel.Name = dto.Name; // 건물명
-                    updatemodel.Address = dto.Address; // 주소
-                    updatemodel.Tel = dto.Tel; // 전화번호
-                    updatemodel.Usage = dto.Usage; // 건물용도
-                    updatemodel.ConstComp = dto.ConstComp; // 시공업체
-                    updatemodel.CompletionDt = dto.CompletionDT; // 준공년월
-                    updatemodel.BuildingStruct = dto.BuildingStruct; // 건물구조
-                    updatemodel.RoofStruct = dto.RoofStruct; // 지붕구조
-                    updatemodel.GrossFloorArea = dto.GrossFloorArea; // 연면적
-                    updatemodel.LandArea = dto.LandArea; // 대지면적
-                    updatemodel.BuildingArea = dto.BuildingArea; // 건물면적
-                    updatemodel.FloorNum = dto.FloorNum; // 건물층수
-                    updatemodel.GroundFloorNum = dto.GroundFloorNum; // 지상층수
-                    updatemodel.BasementFloorNum = dto.BasementFloorNum; // 지하층수
-                    updatemodel.BuildingHeight = dto.BuildingHeight; // 건물높이
-                    updatemodel.GroundHeight = dto.GroundHeight; // 지상 높이
-                    updatemodel.BasementHeight = dto.BasementHeight; // 지하깊이
-                    updatemodel.ParkingNum = dto.ParkingNum; // 주차대수
-                    updatemodel.InnerParkingNum = dto.InnerPackingNum; // 옥내대수
-                    updatemodel.OuterParkingNum = dto.OuterPackingNum; // 옥외대수
-                    updatemodel.ElecCapacity = dto.ElecCapacity; // 전기용량
-                    updatemodel.FaucetCapacity = dto.FaucetCapacity; // 수전용량
-                    updatemodel.GenerationCapacity = dto.GenerationCapacity; // 발전용량
-                    updatemodel.WaterCapacity = dto.WaterCapacity; // 급수용량
-                    updatemodel.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
-                    updatemodel.WaterTank = dto.WaterTank; // 저수조
-                    updatemodel.GasCapacity = dto.GasCapacity; // 가스용량
-                    updatemodel.Boiler = dto.Boiler; // 보일러
-                    updatemodel.WaterDispenser = dto.WaterDispenser; // 냉온수기
-                    updatemodel.LiftNum = dto.LiftNum; // 승강기대수
-                    updatemodel.PeopleLiftNum = dto.PeopleLiftNum; // 인승용
-                    updatemodel.CargoLiftNum = dto.CargoLiftNum; // 화물용
-                    updatemodel.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
-                    updatemodel.HeatCapacity = dto.HeatCapacity; // 난방용량
-                    updatemodel.CoolCapacity = dto.CoolCapacity; // 냉방용량
-                    updatemodel.LandscapeArea = dto.LandSacpeArea; // 조경면적
-                    updatemodel.GroundArea = dto.GroundArea; // 지상면적
-                    updatemodel.RooftopArea = dto.RooftopArea; // 옥상면적
-                    updatemodel.ToiletNum = dto.ToiletNum; // 화장실개수
-                    updatemodel.MenToiletNum = dto.MenToiletNum; // 남자화장실 개수
-                    updatemodel.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개수
-                    updatemodel.FireRating = dto.FireRating; // 소방등급
-                    updatemodel.SepticTankCapacity = dto.SepticTankCapacity; // 정화조용량
-
-                    updatemodel.UpdateDt = DateTime.Now; // 수정일
-                    updatemodel.UpdateUser = creater; // 수정자
-
-                    bool? result = await BuildingInfoRepository.UpdateBuildingInfo(updatemodel);
-                    if (result == true)
+                    FileName = files.FileName;
+                    FileExtenstion = Path.GetExtension(FileName);
+                    if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
-                        // 추가일떄만 업데이트 하면될듯
-                        if (dto.subitem.Count() > 0)
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    }
+
+                    // DB 파일 삭제
+                    string? filePath = buildingtb.Image;
+                    if (!String.IsNullOrWhiteSpace(filePath))
+                    {
+                        PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
+                        FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
+                        if (File.Exists(FileName))
                         {
+                            File.Delete(FileName);
+                        }
+                    }
 
-                            for (int i = 0; i < dto.subitem.Count(); i++)
+                    string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}"; // 암호화된 파일명
+
+                    //string SavePath = String.Format(@"{0}\\{1}", Common.FileServer, placeidx.ToString());
+                    string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
+
+                    using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+                    {
+                        await files.CopyToAsync(fileStream);
+                        buildingtb.Image = newFileName;
+                    }
+
+                }
+                else // 파일이 공백인경우 db에 해당 데이터 값이 있으면 삭제
+                {
+                    string? filePath = buildingtb.Image;
+                    if(!String.IsNullOrWhiteSpace(filePath))
+                    {
+                        PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
+                        FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
+                        if (File.Exists(FileName))
+                        {
+                            File.Delete(FileName);
+                        }
+                    }
+                }
+
+                bool? buildingupdate = await BuildingInfoRepository.UpdateBuildingInfo(buildingtb);
+                if(buildingupdate != true) 
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                if(dto.GroupItem is null)
+                    return new ResponseUnit<bool?>() { message = "수정이 완료되었습니다.", data = null, code = 200 };
+
+                // 삭제먼저 진행 -- GroupTB
+                #region 삭제 잠시
+                List<GroupitemTb>? AllGroupItemTb = await GroupItemInfoRepository.GetAllGroupList(ThisBuildingId);
+                List<int>? AllGroupIdx = AllGroupItemTb.Select(m => m.Id).ToList();
+
+                List<ItemkeyTb>? AllItemKeyTb = await ItemKeyInfoRepository.ContainsKeyList(AllGroupIdx);
+                List<int>? AllItemKeyIdx = AllItemKeyTb.Select(m => m.Id).ToList();
+
+                List<ItemvalueTb>? AllItemValueTb = await ItemValueInfoRepository.ContainsKeyList(AllItemKeyIdx);
+                List<int>? AllItemValueIdx = AllItemValueTb.Select(m => m.Id).ToList();
+
+                List<GroupListDTO> GroupListDTO = dto.GroupItem.Where(m => m.ID != null).ToList();
+                List<int>? GroupList = GroupListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                List<int>? DelGroupList = AllGroupIdx.Except(GroupList).ToList();
+
+                List<GroupKeyListDTO> KeyListDTO = GroupListDTO.SelectMany(m => m.KeyListDTO).Where(e => e.ID != null).ToList();
+                List<int>? KeyList = KeyListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                List<int>? DelKeyList = AllItemKeyIdx.Except(KeyList).ToList();
+
+                List<GroupValueListDTO> ValueListDTO = KeyListDTO.SelectMany(m => m.ValueList).Where(e => e.ID != null).ToList();
+                List<int>? ValueList = ValueListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                List<int>? DelValueList = AllItemValueIdx.Except(ValueList).ToList();
+
+
+                for (int i = 0; i < DelGroupList.Count(); i++)
+                {
+                    GroupitemTb? delGroup = await GroupItemInfoRepository.GetGroupInfo(DelGroupList[i]);
+                    if(delGroup is not null)
+                    {
+                        delGroup.DelDt = DateTime.Now;
+                        delGroup.DelUser = creater;
+                        delGroup.DelYn = true;
+
+                        bool? delGroupResult = await GroupItemInfoRepository.DeleteGroupInfo(delGroup);
+                        if(delGroupResult != true)
+                        {
+                            // 실패
+                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
+                    }
+                }
+
+                for (int i = 0; i < DelKeyList.Count(); i++)
+                {
+                    ItemkeyTb? delKey = await ItemKeyInfoRepository.GetKeyInfo(DelKeyList[i]);
+                    delKey.DelDt = DateTime.Now;
+                    delKey.DelUser = creater;
+                    delKey.DelYn = true;
+
+                    bool? delKeyResult = await ItemKeyInfoRepository.DeleteKeyInfo(delKey);
+                    if(delKeyResult != true)
+                    {
+                        // 실패
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    }
+                }
+
+                for (int i = 0; i < DelValueList.Count(); i++)
+                {
+                    ItemvalueTb? delValue = await ItemValueInfoRepository.GetValueInfo(DelValueList[i]);
+                    delValue.DelDt = DateTime.Now;
+                    delValue.DelUser = creater;
+                    delValue.DelYn = true;
+
+                    bool? delValueResult = await ItemValueInfoRepository.DeleteValueInfo(delValue);
+                    if(delValueResult != true)
+                    {
+                        // 실패
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    }
+                }
+                #endregion
+
+
+                foreach (GroupListDTO group in dto.GroupItem)
+                {
+                    int? GroupId = group.ID;
+                    
+                    if (GroupId is not null) // 넘어온 DTO의 GroupID가 Null이 아니다
+                    {
+                        // GroupTable Update
+                        GroupitemTb? GroupTB = await GroupItemInfoRepository.GetGroupInfo(GroupId);
+                        if (GroupTB is null)
+                            return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                        GroupTB.Name = group.Name;
+                        GroupTB.UpdateDt = DateTime.Now;
+                        GroupTB.UpdateUser = creater;
+
+                        bool? GroupUpdateResult = await GroupItemInfoRepository.UpdateGroupInfo(GroupTB);
+                        if(GroupUpdateResult != true)
+                        {
+                            // 업데이트 실패
+                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
+
+                        if (group.KeyListDTO is [_, ..])
+                        {
+                            foreach (var key in group.KeyListDTO)
                             {
-                                BuildingSubitemTb? submodel = await BuildingSubItemInfoRepository.GetBuildingSubItemInfo(dto.subitem[i].Id);
-                                if (submodel is not null)
-                                {
-                                    submodel.Itemname = dto.subitem[i].ItemName;
-                                    submodel.Unit = dto.subitem[i].Unit;
-                                    submodel.Value = dto.subitem[i].Value;
-                                    submodel.UpdateDt = DateTime.Now;
-                                    submodel.UpdateUser = creater;
+                                int? KeyId = key.ID;
 
-                                    // Update 하면됨.
-                                    bool? subresult = await BuildingSubItemInfoRepository.UpdateBuildingSubItemInfo(submodel);
-                                    
-                                    if(subresult != true)
-                                        return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
-                                }
-                                else
+                                if(KeyId is not null) // Key 업데이트
                                 {
-                                    return new ResponseUnit<DetailBuildingDTO>() { message = "잘못된 요청입니다.", data = dto, code = 404 };
+                                    ItemkeyTb? KeyTB = await ItemKeyInfoRepository.GetKeyInfo(KeyId);
+                                    if (KeyTB is null)
+                                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                                    KeyTB.Itemkey = key.ItemKey;
+                                    KeyTB.UpdateDt = DateTime.Now;
+                                    KeyTB.UpdateUser = creater;
+
+                                    bool? KeyUpdateResult = await ItemKeyInfoRepository.UpdateKeyInfo(KeyTB);
+                                    if(KeyUpdateResult != true)
+                                    {
+                                        // 업데이트 실패
+                                        return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                                    }
+
+
+                                    foreach(var value in key.ValueList)
+                                    {
+                                        int? ValueId = value.ID;
+                                        
+                                        if(ValueId is not null) // Key Insert
+                                        {
+                                            ItemvalueTb? ValueTB = await ItemValueInfoRepository.GetValueInfo(ValueId);
+                                            if (ValueTB is null)
+                                                return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                                            ValueTB.Itemvalue = value.ItemValue;
+                                            ValueTB.Unit = value.Unit;
+                                            ValueTB.UpdateDt = DateTime.Now;
+                                            ValueTB.UpdateUser = creater;
+
+                                            bool? ValueUpdateResult = await ItemValueInfoRepository.UpdateValueInfo(ValueTB);
+                                            if(ValueUpdateResult != true)
+                                            {
+                                                // 업데이트 실패
+                                                return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                                            }
+                                        }
+                                        else // value Insert
+                                        {
+                                            ItemvalueTb ValueTB = new ItemvalueTb();
+                                            ValueTB.Itemvalue = value.ItemValue;
+                                            ValueTB.Unit = value.Unit;
+                                            ValueTB.CreateDt = DateTime.Now;
+                                            ValueTB.CreateUser = creater;
+                                            ValueTB.UpdateDt = DateTime.Now;
+                                            ValueTB.UpdateUser = creater;
+                                            ValueTB.ItemKeyId = KeyId;
+
+                                            ItemvalueTb? InsertValueTB = await ItemValueInfoRepository.AddAsync(ValueTB);
+                                            if(InsertValueTB is null)
+                                            {
+                                                // 실패
+                                                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                            }
+                                        }
+                                    }
+
+                                }
+                                else // Key Insert
+                                {
+                                    ItemkeyTb KeyTB = new ItemkeyTb();
+                                    KeyTB.Itemkey = key.ItemKey;
+                                    KeyTB.CreateDt = DateTime.Now;
+                                    KeyTB.CreateUser = creater;
+                                    KeyTB.UpdateDt = DateTime.Now;
+                                    KeyTB.UpdateUser = creater;
+                                    KeyTB.GroupItemId = GroupId;
+
+                                    ItemkeyTb? InsertKeyTB = await ItemKeyInfoRepository.AddAsync(KeyTB);
+                                    if(InsertKeyTB is null)
+                                    {
+                                        // 실패
+                                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                    }
+
+                                    foreach(var value in key.ValueList)
+                                    {
+                                        ItemvalueTb? ValueTB = new ItemvalueTb();
+                                        ValueTB.Itemvalue = value.ItemValue;
+                                        ValueTB.Unit = value.Unit;
+                                        ValueTB.CreateDt = DateTime.Now;
+                                        ValueTB.CreateUser = creater;
+                                        ValueTB.UpdateDt = DateTime.Now;
+                                        ValueTB.UpdateUser = creater;
+                                        ValueTB.ItemKeyId = InsertKeyTB.Id;
+
+                                        ItemvalueTb? InsertValueTB = await ItemValueInfoRepository.AddAsync(ValueTB);
+                                        if (InsertValueTB is null)
+                                        {
+                                            // 실패
+                                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                        }
+                                    }
+
+
                                 }
                             }
                         }
+                    }
+                    else // 넘어온 DTO의 GroupID가 Null이다. -- 전부 INSERT
+                    {
+                        GroupitemTb InsertGroupTB = new GroupitemTb();
+                        InsertGroupTB.Name = dto.Name;
+                        InsertGroupTB.Type = 0;
+                        InsertGroupTB.CreateDt = DateTime.Now;
+                        InsertGroupTB.CreateUser = creater;
+                        InsertGroupTB.UpdateDt = DateTime.Now;
+                        InsertGroupTB.UpdateUser = creater;
+                        InsertGroupTB.BuildingId = dto.Id;
 
-                        return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                    }
-                    else if (result == false)
-                    {
-                        return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<DetailBuildingDTO>() { message = "잘못된 요청입니다.", data = dto, code = 404 };
+                        GroupitemTb? ResultGroupTB = await GroupItemInfoRepository.AddAsync(InsertGroupTB);
+                        if(ResultGroupTB is not null) // Add하고 받은값이 Null이 아니다 - 정상 INSERT
+                        {
+                            foreach(GroupKeyListDTO key in group.KeyListDTO)
+                            {
+                                ItemkeyTb InsertKeyTB = new ItemkeyTb();
+                                InsertKeyTB.Itemkey = key.ItemKey;
+                                InsertKeyTB.CreateDt = DateTime.Now;
+                                InsertKeyTB.CreateUser = creater;
+                                InsertKeyTB.UpdateDt = DateTime.Now;
+                                InsertKeyTB.UpdateUser = creater;
+                                InsertKeyTB.GroupItemId = ResultGroupTB.Id;
+
+                                ItemkeyTb? ResultKeyTB = await ItemKeyInfoRepository.AddAsync(InsertKeyTB);
+                                if(ResultKeyTB is not null) // Key를 ADD하고 받은값이 Null이 아니다 - 정상 Insert
+                                {
+                                    foreach(GroupValueListDTO value in key.ValueList)
+                                    {
+                                        ItemvalueTb InsertValueTB = new ItemvalueTb();
+                                        InsertValueTB.Itemvalue = value.ItemValue;
+                                        InsertValueTB.Unit = value.Unit;
+                                        InsertValueTB.CreateDt = DateTime.Now;
+                                        InsertValueTB.CreateUser = creater;
+                                        InsertValueTB.UpdateDt = DateTime.Now;
+                                        InsertValueTB.UpdateUser = creater;
+                                        InsertValueTB.ItemKeyId = ResultKeyTB.Id;
+
+                                        ItemvalueTb? ResultValueTB = await ItemValueInfoRepository.AddAsync(InsertValueTB);
+                                        
+                                        if(ResultValueTB is null)
+                                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                    }
+                                }
+                                else
+                                {
+                                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
+
                     }
                 }
-                else
-                {
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-                }
+
+                return new ResponseUnit<bool?>() { message = "수정이 완료되었습니다.", data = true, code = 200 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<DetailBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DetailBuildingDTO(), code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -455,6 +722,8 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
+                int delCount = 0;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (buildingid is null)
@@ -469,50 +738,85 @@ namespace FamTec.Server.Services.Building
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                // context 에서 placeidx로 위의 building이 있는지 조회
-                List<BuildingTb>? tokenchk = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
-                if (tokenchk is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                //      - 해당 사업장의 전체 building에서 선택된 buildingID의 모델을 조회
-                var contextchk = tokenchk.Where(_ => buildingid.Contains(_.Id));
-                if (contextchk.Count() != buildingid.Count()) // 조회한 모델 Count랑 선택된 buildingID의 Count랑 다르면 null - 토큰에러
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-
-                // 삭제대상 조회
-                List<BuildingTb>? target = await BuildingInfoRepository.GetDeleteList(buildingid);
-
-                if (target is [_, ..])
+                // - 층이 있으면 삭제안됨
+                // - 건물 삭제시 하위 추가내용들 전체삭제
+                for (int i = 0; i < buildingid.Count(); i++)
                 {
-                    for (int i = 0; i < target.Count(); i++)
+                    List<FloorTb>? floortb = await FloorInfoRepsitory.GetFloorList(buildingid[i]);
+
+                    if (floortb is [_, ..])
+                        return new ResponseUnit<int?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                }
+
+                for (int i = 0; i < buildingid.Count(); i++) 
+                {
+                    BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(buildingid[i]);
+                    buildingtb.DelYn = true;
+                    buildingtb.DelDt = DateTime.Now;
+                    buildingtb.DelUser = creater;
+                    bool? delBuilding  = await BuildingInfoRepository.DeleteBuildingInfo(buildingtb);
+                    if (delBuilding == true)
                     {
-                        target[i].DelDt = DateTime.Now;
-                        target[i].DelYn = true;
-                        target[i].DelUser = creater;
-                        bool? result = await BuildingInfoRepository.DeleteBuildingInfo(target[i]);
-
-                        if (result == true)
-                        {
-                            bool? subresult = await BuildingSubItemInfoRepository.DeleteBuildingSubItemInfo(target[i].Id, creater);
-
-                            if(subresult != true)
-                            {
-                                return new ResponseUnit<int?>() { message = $"데이터가 {i + 1}건 삭제되었습니다.", data = i, code = 200 };
-                            }
-                        }
-                        else
-                        {
-                            // Main 삭제하다 실패.
-                            return new ResponseUnit<int?>() { message = $"데이터가 {i+1}건 삭제되었습니다.", data = i, code = 200 };
-                        }
+                        delCount++;
                     }
 
-                    return new ResponseUnit<int?>() { message = $"데이터가 {target.Count()}건 삭제되었습니다.", data = target.Count(), code = 200 };
+                    List<GroupitemTb>? grouptb = await GroupItemInfoRepository.GetAllGroupList(buildingid[i]);
+                    if (grouptb is [_, ..])
+                    {
+                        foreach(GroupitemTb group in grouptb)
+                        {
+                            group.DelYn = true;
+                            group.DelDt = DateTime.Now;
+                            group.DelUser = creater;
+
+                            bool? delGroup = await GroupItemInfoRepository.DeleteGroupInfo(group);
+                            if(delGroup == true)
+                            {
+                                List<ItemkeyTb>? keytb = await ItemKeyInfoRepository.GetAllKeyList(group.Id);
+                                if (keytb is [_, ..])
+                                {
+                                    foreach (ItemkeyTb key in keytb)
+                                    {
+                                        key.DelYn = true;
+                                        key.DelDt = DateTime.Now;
+                                        key.DelUser = creater;
+
+                                        bool? delKey = await ItemKeyInfoRepository.DeleteKeyInfo(key);
+                                        if (delKey == true)
+                                        {
+                                            List<ItemvalueTb>? valuetb = await ItemValueInfoRepository.GetAllValueList(key.Id);
+                                            if (valuetb is [_, ..])
+                                            {
+                                                foreach (ItemvalueTb value in valuetb)
+                                                {
+                                                    value.DelYn = true;
+                                                    value.DelDt = DateTime.Now;
+                                                    value.DelUser = creater;
+
+                                                    bool? delValue = await ItemValueInfoRepository.DeleteValueInfo(value);
+                                                    if (delValue != true)
+                                                    {
+                                                        return new ResponseUnit<int?>() { message = "이미 삭제된 데이터입니다.", data = null, code = 404 };
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return new ResponseUnit<int?>() { message = "이미 삭제된 데이터입니다.", data = null, code = 404 };
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return new ResponseUnit<int?>() { message = "이미 삭제된 데이터입니다.", data = null, code = 404 };
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    return new ResponseUnit<int?>() { message = $"데이터가 {target.Count()}건 삭제되었습니다.", data = target.Count(), code = 200 };
-                }
+
+                return new ResponseUnit<int?>() { message = $"{delCount}건 삭제 성공.", data = delCount, code = 200 };
             }
             catch(Exception ex)
             {
@@ -520,5 +824,8 @@ namespace FamTec.Server.Services.Building
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+      
+
     }
 }

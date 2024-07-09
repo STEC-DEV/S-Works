@@ -272,7 +272,7 @@ namespace FamTec.Server.Services.Voc
                     for (int i = 0; i < image.Count(); i++)
                     {
                         string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(image[i].FileName)}";
-                        string filePath = Path.Combine(CommPath.VocFileImages, newFileName);
+                        string filePath = Path.Combine(Common.VocFileImages, newFileName);
 
                         using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                         {
