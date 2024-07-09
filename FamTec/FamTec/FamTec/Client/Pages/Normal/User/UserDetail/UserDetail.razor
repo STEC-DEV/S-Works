@@ -1,4 +1,4 @@
-﻿
+﻿@page "/users/{Id:int}"
 
 <div class="detail-container">
     <div class="detail-wrap">
@@ -11,5 +11,5 @@
 </div>
 
 @code {
-
+    [Parameter] public int Id { get; set; }
 }

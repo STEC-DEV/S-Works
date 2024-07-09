@@ -1,10 +1,11 @@
 ﻿@page "/basic/buildings/add"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BulidingAdd.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
 
 <div class="buildingadd-container yappear">
     <div class="buildingadd-info">
-        <BuildingInfo />
+        <BuildingInfo Building="@Building" />
     </div>
     <div class="buildingadd-item">
     </div>
@@ -15,5 +16,11 @@
 </div>
 
 @code {
+    BuildingDTO Building;
 
+    protected override Task OnInitializedAsync()
+    {
+        Building = new BuildingDTO();
+        return base.OnInitializedAsync();
+    }
 }

@@ -11,7 +11,7 @@
         <InputField 
             InputType="text" 
             Placeholder="Id"
-            @bind-Value="@User.UserId"
+            @bind-Value="@UserInfo.UserId"
             Label="아이디"
             EditMode=EditMode
             Duplication=true
@@ -19,7 +19,7 @@
         <InputField 
             InputType="password" 
             Placeholder="Password"
-            @bind-Value="@User.Password"
+            @bind-Value="@UserInfo.Password"
             Label="비밀번호"
             EditMode=EditMode
             />
@@ -32,48 +32,42 @@
         <InputField 
             InputType="text" 
             Placeholder="Name"
-            @bind-Value="@User.Name"
+            @bind-Value="@UserInfo.Name"
             Label="이름"
             EditMode=EditMode
             />
         <InputField 
             InputType="text" 
             Placeholder="Phone"
-            @bind-Value="@User.Phone"
+            @bind-Value="@UserInfo.Phone"
             Label="전화번호"
             EditMode=EditMode
             />
         <InputField 
             InputType="text" 
             Placeholder="Email"
-            @bind-Value="@User.Email"
+            @bind-Value="@UserInfo.Email"
             Label="이메일"
             EditMode=EditMode
             />
         <InputField 
             InputType="text"
-            Placeholder="Type"
-            @bind-Value="@User.Job"
-            Label="계정 유형" 
-            EditMode=EditMode
-            />
-        <InputField 
-            InputType="text"
-            Placeholder="Type"
-            @bind-Value="@User.Status"
-            Label="계정 유형" 
+            Placeholder="Job"
+            @bind-Value="@UserInfo.Job"
+            Label="직책" 
             EditMode=EditMode
             />
         <Toggle 
             Title="알람 수신"
-            @bind-Value="@User.AlarmYN"
+            @bind-Value="@UserInfo.AlarmYN"
+            EditMode=EditMode
             />
     </div>
     
 </div>
 
 @code {
-    [Parameter] public UserInfoDTO User { get; set; }
+    [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
 
 

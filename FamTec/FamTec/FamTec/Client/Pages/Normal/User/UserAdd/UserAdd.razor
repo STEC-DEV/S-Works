@@ -2,58 +2,99 @@
 @using FamTec.Client.Pages.Normal.User.UserAdd.Components
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Shared.Server.DTO
 
 <div class="useradd-container">
     <div class="useradd-wrap">
         <div class="useradd-info">
-            <SignForm User="@user" EditMode=@EditMode />
+            <SignForm UserInfo="@User.UserInfo" EditMode=@EditMode />
         </div>
-        @* <div class="useradd-perm-wrap">
-            <div class="useradd-perm" @onclick=@OnVocPer>
-                <UserPermComponent UserPerm="@userPerm" />
-            </div>
-            @if (userPerm.VocPerm != 0)
-            {
-                <div class="useradd-perm sub yappear">
-                    <UserPermComponent/>
-                </div>
-            }
-        </div> *@
-        <div class="useradd-perm" @onclick=@OnVocPer>
-            <UserPermComponent UserPerm="@userPerm" />
+        <div class="useradd-perm">
+            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive="@OnVocActive" />
         </div>
-        @* @if (userPerm.VocPerm != 0)
+        @if (isVocPerm)
         {
-            <div class="useradd-perm sub yappear">
-                <UserPermComponent />
+            <div class="useradd-sub yappear">
+                <UserVocPermComponent UserVocPerm="@User.UserVocPerm" />
             </div>
-        } *@
-        <div class="useradd-perm sub yappear">
-            <UserPermComponent />
-        </div>
+        }
     </div>
     <div class="useradd-btns">
-        <Button Name="등록"Width=true Type=0/>
-        <Button Name="취소" Width=true Type=1 />
+        <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
+        <Button Name="취소" Width=true Type=1 OnClick="@OnCancle" />
     </div>
 </div>
 
 @code {
     bool isVocPerm = false;
     bool EditMode = true;
-    UserInfoDTO user;
-    UserPermDTO userPerm;
+    UserDTO User;
+
 
     protected override Task OnInitializedAsync()
     {
-        user = new UserInfoDTO();
-        userPerm = new UserPermDTO();
+        User = new UserDTO()
+        {
+            UserInfo = new UserInfoDTO(),
+            UserPerm = new UserPermDTO(),
+            UserVocPerm = new UserVocPermDTO(),
+        };
+
         return base.OnInitializedAsync();
     }
 
 
-    private void OnVocPer()
+
+    private void OnVocActive(UserPermDTO updatedPerm)
     {
+        Console.WriteLine("ㅁㄴㅇ");
+        // User.UserPerm = updatedPerm;
         isVocPerm = !isVocPerm;
+        StateHasChanged();
+    }
+
+    private async void OnAdd()
+    {
+        // Console.WriteLine(User.UserInfo.Name);
+        // Console.WriteLine(User.UserInfo.UserId);
+        // Console.WriteLine(User.UserInfo.Phone);
+        // Console.WriteLine(User.UserInfo.Password);
+        // Console.WriteLine(User.UserInfo.Email);
+        // Console.WriteLine("1" + User.UserPerm.BasicPerm);
+        // Console.WriteLine("2" + User.UserPerm.MachinPerm);
+        // Console.WriteLine("3" + User.UserPerm.ElecPerm);
+        // Console.WriteLine("4" + User.UserPerm.LiftPerm);
+        // Console.WriteLine("5" + User.UserPerm.FirePerm);
+        // Console.WriteLine("6" + User.UserPerm.ConstructPerm);
+        // Console.WriteLine("7" + User.UserPerm.NetworkPerm);
+        // Console.WriteLine("8" + User.UserPerm.BeautyPerm);
+        // Console.WriteLine("9" + User.UserPerm.SecurityPerm);
+        // Console.WriteLine("10" + User.UserPerm.MaterialPerm);
+        // Console.WriteLine("11" + User.UserPerm.EnergyPerm);
+        // Console.WriteLine("12" + User.UserPerm.UserPerm);
+        // Console.WriteLine("13" + User.UserPerm.VocPerm);
+        // Console.WriteLine("a" + User.UserVocPerm.MachineVoc);
+        // Console.WriteLine("b" + User.UserVocPerm.ConstructVoc);
+        // Console.WriteLine("c" + User.UserVocPerm.NetworkVoc);
+        // Console.WriteLine("d" + User.UserVocPerm.SecurityVoc);
+
+        ResponseUnit<UserDTO> resAdd = await apiManager.PostAsync<UserDTO>("/user/sign/adduser", User);
+        if(resAdd.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "사용자 생성 실패");
+            User = new UserDTO();
+            return;
+        }
+
+
+
+        User = new UserDTO();
+        Navigation.NavigateTo("/users");
+    }
+
+    private async void OnCancle()
+    {
+        User = new UserDTO();
+        Navigation.NavigateTo("/users");
     }
 }

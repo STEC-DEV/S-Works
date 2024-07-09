@@ -2350,7 +2350,7 @@
     width :100%;
     height : 100%;
     padding : var(--default-pd);
-    background-color :#d3d3d3;
+    /*background-color :#d3d3d3;*/
 }
 
 
@@ -2797,12 +2797,6 @@
     display: flex;
     word-break: break-all
 }
-/* /Pages/Normal/User/UserAdd/Components/PermToggle.razor.rz.scp.css */
-
-.permtoggle[b-ikffxehb1q]{
-    display : flex;
-    gap :var(--half-pd);
-}
 /* /Pages/Normal/User/UserAdd/Components/SignForm.razor.rz.scp.css */
 .form-container[b-crn9e19eqd]{
     display : flex;
@@ -2950,69 +2944,39 @@
     color : var(--main-color);
     
 }
-/* /Pages/Normal/User/UserAdd/Components/UserPermToggle.razor.rz.scp.css */
-.toggle-container[b-4ab9o16rob] {
-    display : inline-flex;
-    align-items :center;
-    gap : var(--half-pd);
-    cursor : pointer;
-    white-space:nowrap;
+/* /Pages/Normal/User/UserAdd/Components/UserVocPermComponent.razor.rz.scp.css */
+.placetoggle-container[b-7e2o9n0b5h] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    padding: var(--default-pd);
+    box-shadow: var(--default-bs);
 }
 
-[type="checkbox"][b-4ab9o16rob]{
-    appearance:none;
-    position:relative;
-    border : max(2px, 0.1em) solid gray;
-    border-radius: 1.25rem;
-    width : 2.25em;
-    height : 1.25em;
+
+.placetoggle-container .placetoggle-title[b-7e2o9n0b5h]{
+    font-size:var(--title-size);
+    font-weight:var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
 }
-[type="checkbox"][b-4ab9o16rob]::before{
-    content:"";
-    position:absolute;
-    left:0;
-    width : 1em;
-    height: 1em;
-    border-radius:50%;
-    transform: scale(0.8);
-    background-color:gray;
-    transition:left 250ms linear;
-    
+.placetoggle-container .placetoggle-title>span[b-7e2o9n0b5h]{
+    display: flex;
+    align-items: center;
+    height: 35px;
+    color: var(--main-color);
 }
 
-[type="checkbox"]:checked[b-4ab9o16rob] {
-  background-color:var(--main-color);
-  border-color : var(--main-color);
-}
+.placetoggle-container .placetoggle-toggle[b-7e2o9n0b5h]{
+    display : grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    grid-auto-flow: row;
 
-[type="checkbox"]:checked[b-4ab9o16rob]::before {
-  background-color: var(--default-color);
-  left:1em;
-}
-
-[type="checkbox"]:disabled[b-4ab9o16rob] {
-  border-color: lightgray;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-[type="checkbox"]:disabled[b-4ab9o16rob]:before {
-  background-color: var(--main-light);
-}
-
-[type="checkbox"]:enabled:hover[b-4ab9o16rob] {
-  box-shadow: 0 0 0 max(4px, 0.2em) var(--main-light);
-}
-
-[type="checkbox"]:disabled + .toggle-title[b-4ab9o16rob] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.toggle-container span[b-4ab9o16rob] {
-    font-size : var(--normal-size);
-    font-weight : var(--bold-wt);
-    color : var(--main-color);
 }
 /* /Pages/Normal/User/UserAdd/UserAdd.razor.rz.scp.css */
 .useradd-container[b-xipb2fhm38]{
@@ -3028,7 +2992,7 @@
     display: flex;
     justify-content : center;
     gap: var(--wide-pd);
-    height: 100%;
+    /*height: 100%;*/
     width:100%;
     flex: 1;
     overflow: hidden;
@@ -3039,7 +3003,6 @@
     width: 100%;
     max-width : 30%;
     border-radius : var(--default-rd);
-    /*border : var(--comp-bd);*/
     background-color : #f3f3f3;
     box-shadow: var(--default-bs);
 }
@@ -3054,16 +3017,18 @@
 .useradd-container .useradd-perm[b-xipb2fhm38]{
     width: 100%;
     max-width : 30%;
-    height : 100%;
+    /*height : 100%;*/
     border-radius : var(--default-rd);
-    border : var(--comp-bd);
     background-color : #f3f3f3;
     box-shadow: var(--default-bs);
 }
 
-.useradd-container .sub[b-xipb2fhm38]{
-
-   
+.useradd-container .useradd-sub[b-xipb2fhm38] {
+    width: 100%;
+    max-width: 30%;
+    height : fit-content;
+    border-radius: var(--default-rd);
+    
 }
 
 .useradd-container .useradd-btns[b-xipb2fhm38] {

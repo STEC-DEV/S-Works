@@ -44,8 +44,10 @@
             {
                 @foreach (var row in Data)
                 {
+                string id = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+
                 <tr class="tbody-tr">
-                    <td class="td userinfo">
+                    <td class="td userinfo" @onclick="()=>OnDetail(id)">
                         <img class="table-img" alt=""/>
                         <div class="title-wrap">
                             <a class="maintitle">
@@ -57,22 +59,22 @@
                         </div>
                         
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Email")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Created")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
                            
@@ -80,7 +82,7 @@
                         </span>
                     </td>
                     <td class="td text-right">
-                        <input type="checkbox" />
+                        <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))"/>
                     </td>
 
                  </tr>
@@ -93,5 +95,22 @@
 @code {
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public List<T>? Data { get; set; }
+    [Parameter] public HashSet<int> Checkitem { get; set; }
+    [Parameter] public EventCallback<(bool, int)> Select { get; set; }
+    private HashSet<int> CheckItems = new HashSet<int>();
 
+    private void OnDetail(string id)
+    {
+        Navigation.NavigateTo($"/users/{id}");
+    }
+
+    private async Task OnSelect(ChangeEventArgs e, int id)
+    {
+        bool isChecked = (bool)(e.Value ?? false);
+        if (isChecked)
+        {
+            CheckItems.Add(id);
+        }
+        await Select.InvokeAsync((isChecked, id));
+    }
 }

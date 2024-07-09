@@ -31,10 +31,10 @@
                     @displayAttribute.Name
                 </td>
                 <td class="td">
-                    <input type="checkbox" @onchange="(e) => UpdateFirstCheckbox(property.Name, e, value)" />
+                    <input type="checkbox" @onchange="(e) => OnFirstCheckBox(e, property.Name)" />
                 </td>
                 <td class="td">
-                    <input type="checkbox" disabled="@(!IsFirstCheckboxChecked(value))" @onchange="(e) => UpdateSecondCheckbox(property.Name, e, value)" />
+                    <input type="checkbox" disabled="@IsFirstCheckboxChecked(value)" @onchange="(e) => OnSecondCheckbox(e, property.Name)" />
                 </td>
             </tr>
         }
@@ -43,7 +43,7 @@
 
 @code {
     [Parameter] public UserPermDTO UserPerm { get; set; }
-
+    [Parameter] public EventCallback<UserPermDTO> OnVocActive { get; set; }
 
 
 
@@ -51,31 +51,46 @@
 
     private bool IsFirstCheckboxChecked(sbyte value)
     {
-        return value > 0;
+        return !(value > 0);
     }
 
-    private bool IsSecondCheckboxChecked(sbyte value)
+
+    private void OnFirstCheckBox(ChangeEventArgs e, string propertyName)
     {
-        return value == 2;
+        //첫번째 input에 따라 0 or 1
+        sbyte permValue = (bool)e.Value ? (sbyte)1 : (sbyte)0;
+        typeof(UserPermDTO).GetProperty(propertyName).SetValue(UserPerm, permValue);
+
+        if(propertyName == "VocPerm")
+        {
+            Console.WriteLine("voc");
+            OnVocActive.InvokeAsync(UserPerm);
+        }
+        Console.WriteLine(typeof(UserPermDTO).GetProperty(propertyName).GetValue(UserPerm));
+
     }
 
-    private void UpdateFirstCheckbox(string propertyName, ChangeEventArgs e, sbyte currentValue)
+    private void OnSecondCheckbox(ChangeEventArgs e, string propertyName)
     {
-        bool isChecked = (bool)e.Value;
-        sbyte newValue = isChecked ? (sbyte)(currentValue + 1) : (sbyte)0; 
-        typeof(UserPermDTO).GetProperty(propertyName)?.SetValue(UserPerm, newValue);
+        var propertyInfo = typeof(UserPermDTO).GetProperty(propertyName);
+        sbyte currentValue = (sbyte)propertyInfo.GetValue(UserPerm);
 
-        Console.WriteLine(propertyName + newValue);
-        StateHasChanged();
+        if ((bool)e.Value)
+        {
+            propertyInfo.SetValue(UserPerm, (sbyte)2);
+        }
+        else
+        {
+            propertyInfo.SetValue(UserPerm, (sbyte)1);
+        }
+
+        
+        Console.WriteLine(currentValue);
+        Console.WriteLine(propertyInfo.GetValue(UserPerm));
+
+
+
     }
 
-    private void UpdateSecondCheckbox(string propertyName, ChangeEventArgs e, sbyte currentValue)
-    {
-        bool isChecked = (bool)e.Value;
-        sbyte newValue = isChecked ? (sbyte)(currentValue + 1) : (sbyte)(currentValue - 1); 
-        typeof(UserPermDTO).GetProperty(propertyName)?.SetValue(UserPerm, newValue);
-        Console.WriteLine(propertyName + newValue);
-        StateHasChanged();
-    }
 
 }

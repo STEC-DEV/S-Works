@@ -6,13 +6,17 @@
     </div>
     
     <div class="groupfield-item">
-        <InputFieldSmall Label="연면적" EditMode=EditMode />
-        <InputFieldSmall Label="대지면적" EditMode=EditMode />
-        <InputFieldSmall Label="건축면적" EditMode=EditMode />
+        <InputFieldSmall Label="@Sub1" EditMode=EditMode />
+        <InputFieldSmall Label="@Sub2" EditMode=EditMode />
+        <InputFieldSmall Label="@Sub3" EditMode=EditMode />
     </div>
 </div>
 
 @code {
     [Parameter] public string Title { get; set; }
+    [Parameter] public string Sub1 { get; set; }
+    [Parameter] public string Sub2 { get; set; }
+    [Parameter] public string Sub3 { get; set; }
+
     bool EditMode = true;
 }

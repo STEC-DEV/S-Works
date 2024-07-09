@@ -9,23 +9,13 @@
         </span>
     </div>
     <div class="placetoggle-toggle">
-        <UserPermTable UserPerm=@UserPerm />
-        @* <PermToggle Title="기계 설비" />
-        <PermToggle Title="전기 설비" />
-        <PermToggle Title="승강 설비" />
-        <PermToggle Title="소방 설비" />
-        <PermToggle Title="건축 설비" />
-        <PermToggle Title="통신 설비" />
-        <PermToggle Title="미화 설비" />
-        <PermToggle Title="보인 설비" />
-        <PermToggle Title="자재 설비" />
-        <PermToggle Title="에너지 설비" />
-        <PermToggle Title="민원 설비" /> *@
+        <UserPermTable UserPerm=@UserPerm OnVocActive=@OnVocActive />
     </div>
 </div>
 
 @code {
     [Parameter] public UserPermDTO UserPerm{ get; set; }
+    [Parameter] public EventCallback<UserPermDTO> OnVocActive { get; set; }
     [Parameter] public bool EditMode { get; set; }
 
 
