@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
-using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Client.DTO.Normal.Users;
@@ -9,11 +8,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.User;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Abstractions;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.JSInterop.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
@@ -73,7 +68,6 @@ namespace FamTec.Server.Services.User
                         PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid);
                         if(placetb is not null)
                         {
-                            // 토큰반환 - 다시만들어야함.
                             authClaims.Add(new Claim("UserIdx", context.Items["UserIdx"].ToString())); // USER 인덱스
                             authClaims.Add(new Claim("Name", context.Items["Name"].ToString())); // 이름
                             authClaims.Add(new Claim("jti", context.Items["jti"].ToString()));
@@ -461,123 +455,130 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public async ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext? context, UsersDTO? dto)
         {
-            if (context is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-            if (dto is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            string? Creater = Convert.ToString(context.Items["Name"]);
-            if (String.IsNullOrWhiteSpace(Creater))
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            string? CreaterPlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
-            if (String.IsNullOrWhiteSpace(CreaterPlaceIdx))
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            // context에서 UserId가 --> context의 사업장에 있는지 검사 1.
-            string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-            if(String.IsNullOrWhiteSpace(UserIdx))
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
-            if(TokenChk is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            if (TokenChk.PermUser != 2)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            UserTb model = new UserTb()
+            try
             {
-                UserId = dto.USERID, // 사용자아이디
-                Password = dto.PASSWORD, // 비밀번호
-                Name = dto.NAME, // 이름
-                Email = dto.EMAIL, // 이메일
-                Phone = dto.PHONE, // 전화번호
-                PermBasic = dto.PERM_BASIC, // 기본정보메뉴 권한
-                PermMachine = dto.PERM_MACHINE, // 기계메뉴 권한
-                PermElec = dto.PERM_ELEC, // 전기메뉴 권한
-                PermLift = dto.PERM_LIFT, // 승강메뉴 권한
-                PermFire = dto.PERM_FIRE, // 소방메뉴 권한
-                PermConstruct = dto.PERM_CONSTRUCT, // 건축메뉴 권한
-                PermNetwork = dto.PERM_NETWORK, // 통신메뉴 권한
-                PermBeauty = dto.PERM_BEAUTY, // 미화메뉴 권한
-                PermSecurity = dto.PERM_SECURITY, // 보안메뉴 권한
-                PermMaterial = dto.PERM_MATERIAL, // 자재메뉴 권한
-                PermEnergy = dto.PERM_ENERGY, // 에너지메뉴 권한
-                PermUser = dto.PERM_USER, // 사용자메뉴 권한
-                PermVoc = dto.PERM_VOC, // VOC메뉴 권한
-                AdminYn = 0, // 관리자 아님
-                AlramYn = dto.ALRAM_YN, // 알람 여부
-                Status = 1, // 재직여부
-                CreateDt = DateTime.Now,
-                CreateUser = Creater, // 생성자
-                UpdateDt = DateTime.Now,
-                UpdateUser = Creater, // 수정자
-                Job = dto.JOB,
-                VocMachine = dto.VOC_MACHINE, // VOC 기계권한
-                VocElec = dto.VOC_ELEC, // VOC 전기권한
-                VocLift = dto.VOC_LIFT, // VOC 승강권한
-                VocFire = dto.VOC_FIRE, // VOC 소방권한
-                VocConstruct = dto.VOC_CONSTRUCT, // VOC 건축권한
-                VocNetwork = dto.VOC_NETWORK, // VOC 통신권한
-                VocBeauty = dto.VOC_BEAUTY, // VOC 미화권한
-                VocSecurity = dto.VOC_SECURITY, // VOC 보안권한
-                VocDefault = dto.VOC_DEFAULT, // VOC 기타권한
-                PlaceTbId = Int32.Parse(CreaterPlaceIdx)
-            };
+                if (context is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-            UserTb? result = await UserInfoRepository.AddAsync(model);
-            if (result is not null)
-            {
-                return new ResponseUnit<UsersDTO>()
+                string? Creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(Creater))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                string? CreaterPlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(CreaterPlaceIdx))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                // context에서 UserId가 --> context의 사업장에 있는지 검사 1.
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                if (TokenChk is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                if (TokenChk.PermUser != 2)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                UserTb model = new UserTb()
                 {
-                    message = "요청이 정상 처리되었습니다.",
-                    data = new UsersDTO()
+                    UserId = dto.USERID, // 사용자아이디
+                    Password = dto.PASSWORD, // 비밀번호
+                    Name = dto.NAME, // 이름
+                    Email = dto.EMAIL, // 이메일
+                    Phone = dto.PHONE, // 전화번호
+                    PermBasic = dto.PERM_BASIC, // 기본정보메뉴 권한
+                    PermMachine = dto.PERM_MACHINE, // 기계메뉴 권한
+                    PermElec = dto.PERM_ELEC, // 전기메뉴 권한
+                    PermLift = dto.PERM_LIFT, // 승강메뉴 권한
+                    PermFire = dto.PERM_FIRE, // 소방메뉴 권한
+                    PermConstruct = dto.PERM_CONSTRUCT, // 건축메뉴 권한
+                    PermNetwork = dto.PERM_NETWORK, // 통신메뉴 권한
+                    PermBeauty = dto.PERM_BEAUTY, // 미화메뉴 권한
+                    PermSecurity = dto.PERM_SECURITY, // 보안메뉴 권한
+                    PermMaterial = dto.PERM_MATERIAL, // 자재메뉴 권한
+                    PermEnergy = dto.PERM_ENERGY, // 에너지메뉴 권한
+                    PermUser = dto.PERM_USER, // 사용자메뉴 권한
+                    PermVoc = dto.PERM_VOC, // VOC메뉴 권한
+                    AdminYn = 0, // 관리자 아님
+                    AlramYn = dto.ALRAM_YN, // 알람 여부
+                    Status = 1, // 재직여부
+                    CreateDt = DateTime.Now,
+                    CreateUser = Creater, // 생성자
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = Creater, // 수정자
+                    Job = dto.JOB,
+                    VocMachine = dto.VOC_MACHINE, // VOC 기계권한
+                    VocElec = dto.VOC_ELEC, // VOC 전기권한
+                    VocLift = dto.VOC_LIFT, // VOC 승강권한
+                    VocFire = dto.VOC_FIRE, // VOC 소방권한
+                    VocConstruct = dto.VOC_CONSTRUCT, // VOC 건축권한
+                    VocNetwork = dto.VOC_NETWORK, // VOC 통신권한
+                    VocBeauty = dto.VOC_BEAUTY, // VOC 미화권한
+                    VocSecurity = dto.VOC_SECURITY, // VOC 보안권한
+                    VocDefault = dto.VOC_DEFAULT, // VOC 기타권한
+                    PlaceTbId = Int32.Parse(CreaterPlaceIdx)
+                };
+
+                UserTb? result = await UserInfoRepository.AddAsync(model);
+                if (result is not null)
+                {
+                    return new ResponseUnit<UsersDTO>()
                     {
-                        ID = result.Id,
-                        USERID = result.UserId,
-                        PASSWORD = result.Password,
-                        NAME = result.Name,
-                        EMAIL = result.Email,
-                        PHONE = result.Phone,
-                        PERM_BASIC = result.PermBasic,
-                        PERM_MACHINE = result.PermMachine,
-                        PERM_ELEC = result.PermElec,
-                        PERM_LIFT = result.PermLift,
-                        PERM_FIRE = result.PermFire,
-                        PERM_CONSTRUCT = result.PermConstruct,
-                        PERM_NETWORK = result.PermNetwork,
-                        PERM_BEAUTY = result.PermBeauty,
-                        PERM_SECURITY = result.PermSecurity,
-                        PERM_MATERIAL = result.PermMaterial,
-                        PERM_ENERGY = result.PermEnergy,
-                        PERM_USER = result.PermUser,
-                        PERM_VOC = result.PermVoc,
-                        ADMIN_YN = result.AdminYn,
-                        ALRAM_YN = result.AlramYn,
-                        STATUS = result.Status,
-                        JOB = result.Job,
-                        VOC_MACHINE = result.VocMachine,
-                        VOC_ELEC = result.VocElec,
-                        VOC_LIFT = result.VocLift,
-                        VOC_FIRE = result.VocFire,
-                        VOC_CONSTRUCT = result.VocConstruct,
-                        VOC_NETWORK = result.VocNetwork,
-                        VOC_BEAUTY = result.VocBeauty,
-                        VOC_SECURITY = result.VocSecurity,
-                        VOC_DEFAULT = result.VocDefault
-                    },
-                    code = 200
-                };
-            }
-            else
-            {
-                return new ResponseUnit<UsersDTO>()
+                        message = "요청이 정상 처리되었습니다.",
+                        data = new UsersDTO()
+                        {
+                            ID = result.Id,
+                            USERID = result.UserId,
+                            PASSWORD = result.Password,
+                            NAME = result.Name,
+                            EMAIL = result.Email,
+                            PHONE = result.Phone,
+                            PERM_BASIC = result.PermBasic,
+                            PERM_MACHINE = result.PermMachine,
+                            PERM_ELEC = result.PermElec,
+                            PERM_LIFT = result.PermLift,
+                            PERM_FIRE = result.PermFire,
+                            PERM_CONSTRUCT = result.PermConstruct,
+                            PERM_NETWORK = result.PermNetwork,
+                            PERM_BEAUTY = result.PermBeauty,
+                            PERM_SECURITY = result.PermSecurity,
+                            PERM_MATERIAL = result.PermMaterial,
+                            PERM_ENERGY = result.PermEnergy,
+                            PERM_USER = result.PermUser,
+                            PERM_VOC = result.PermVoc,
+                            ADMIN_YN = result.AdminYn,
+                            ALRAM_YN = result.AlramYn,
+                            STATUS = result.Status,
+                            JOB = result.Job,
+                            VOC_MACHINE = result.VocMachine,
+                            VOC_ELEC = result.VocElec,
+                            VOC_LIFT = result.VocLift,
+                            VOC_FIRE = result.VocFire,
+                            VOC_CONSTRUCT = result.VocConstruct,
+                            VOC_NETWORK = result.VocNetwork,
+                            VOC_BEAUTY = result.VocBeauty,
+                            VOC_SECURITY = result.VocSecurity,
+                            VOC_DEFAULT = result.VocDefault
+                        },
+                        code = 200
+                    };
+                }
+                else
                 {
-                    message = "잘못된 요청입니다.",
-                    data = new UsersDTO(),
-                    code = 404
-                };
+                    return new ResponseUnit<UsersDTO>()
+                    {
+                        message = "잘못된 요청입니다.",
+                        data = new UsersDTO(),
+                        code = 404
+                    };
+                }
+            }catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -658,35 +659,55 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> DeleteUserService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<int?>> DeleteUserService(HttpContext? context, List<int>? del)
         {
             try
             {
+                int delCount = 0;
+
                 if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (del is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (del.Count == 0)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string? Name = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(Name))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int? model = await UserInfoRepository.DeleteUserList(del, Name);
-                if (model > 0)
+                //int? model = await UserInfoRepository.DeleteUserList(del, Name);
+                for (int i = 0; i < del.Count(); i++)
                 {
-                    return new ResponseUnit<bool>() { message = $"요청이 {model}건 처리되었습니다.", data = true, code = 200 };
+                    UserTb? Users = await UserInfoRepository.GetUserIndexInfo(del[i]);
+                    if (Users is not null)
+                    {
+                        Users.DelDt = DateTime.Now;
+                        Users.DelUser = creater;
+                        Users.DelYn = true;
+
+                        bool? DelUserResult = await UserInfoRepository.DeleteUserInfo(Users);
+                        if(DelUserResult == true)
+                        {
+                            delCount++;
+                        }
+                    }
+                }
+
+                if (delCount > 0)
+                {
+                    return new ResponseUnit<int?>() { message = $"요청이 {delCount}건 처리되었습니다.", data = delCount, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }catch(Exception ex)
             {
-                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 404 };
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -765,6 +786,7 @@ namespace FamTec.Server.Services.User
             }
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<UpdateUserDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateUserDTO(), code = 500 };
             }
         }
@@ -995,8 +1017,11 @@ namespace FamTec.Server.Services.User
             }
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+  
     }
 }

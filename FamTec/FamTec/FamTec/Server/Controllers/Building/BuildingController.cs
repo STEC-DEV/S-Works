@@ -52,66 +52,67 @@ namespace FamTec.Server.Controllers.Building
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm]IFormFile files)
+        public async ValueTask<IActionResult> AddBuilding()
+        //public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm]IFormFile files)
         {
-            //AddBuildingDTO dto = new AddBuildingDTO();
-            //dto.BuildingCD = "BCODE000004";
-            //dto.Name = "TEST건물4";
-            //dto.Address = "경기도";
-            //dto.Tel = "02-123-4567";
-            //dto.Usage = "주상복합";
-            //dto.ConstComp = "ㅂㅂ업체";
+            AddBuildingDTO dto = new AddBuildingDTO();
+            dto.BuildingCD = "BCODE000004";
+            dto.Name = "TEST건물4";
+            dto.Address = "경기도";
+            dto.Tel = "02-123-4567";
+            dto.Usage = "주상복합";
+            dto.ConstComp = "ㅂㅂ업체";
 
-            //AddGroupDTO groupdto1 = new AddGroupDTO();
-            //groupdto1.Name = "주차장";
+            AddGroupDTO groupdto1 = new AddGroupDTO();
+            groupdto1.Name = "주차장";
 
-            //AddGroupItemKeyDTO groupkey = new AddGroupItemKeyDTO();
-            //groupkey.Name = "실내";
+            AddGroupItemKeyDTO groupkey = new AddGroupItemKeyDTO();
+            groupkey.Name = "실내";
 
-            //AddGroupItemValueDTO groupValue = new AddGroupItemValueDTO();
-            //groupValue.Values = "5";
-            //groupValue.Unit = "대";
-            //groupkey.ItemValues.Add(groupValue);
+            AddGroupItemValueDTO groupValue = new AddGroupItemValueDTO();
+            groupValue.Values = "5";
+            groupValue.Unit = "대";
+            groupkey.ItemValues.Add(groupValue);
 
             
-            //groupdto1.AddGroupKey.Add(groupkey);
-            //groupkey = new AddGroupItemKeyDTO();
-            //groupkey.Name = "실외";
-            //groupValue = new AddGroupItemValueDTO();
-            //groupValue.Values = "3";
-            //groupValue.Unit = "대";
-            //groupkey.ItemValues.Add(groupValue);
-            //groupdto1.AddGroupKey.Add(groupkey);
+            groupdto1.AddGroupKey.Add(groupkey);
+            groupkey = new AddGroupItemKeyDTO();
+            groupkey.Name = "실외";
+            groupValue = new AddGroupItemValueDTO();
+            groupValue.Values = "3";
+            groupValue.Unit = "대";
+            groupkey.ItemValues.Add(groupValue);
+            groupdto1.AddGroupKey.Add(groupkey);
             
-            //// ====
+            // ====
 
-            //AddGroupDTO groupdto2 = new AddGroupDTO();
-            //groupdto2.Name = "전력량";
+            AddGroupDTO groupdto2 = new AddGroupDTO();
+            groupdto2.Name = "전력량";
 
-            //AddGroupItemKeyDTO groupkey2 = new AddGroupItemKeyDTO();
-            //groupkey2.Name = "원자력";
+            AddGroupItemKeyDTO groupkey2 = new AddGroupItemKeyDTO();
+            groupkey2.Name = "원자력";
 
-            //AddGroupItemValueDTO groupValue2 = new AddGroupItemValueDTO();
-            //groupValue2.Values = "30";
-            //groupValue2.Unit = "%";
-            //groupkey2.ItemValues.Add(groupValue2);
-
-
-            //groupdto2.AddGroupKey.Add(groupkey2);
-            //groupkey2 = new AddGroupItemKeyDTO();
-            //groupkey2.Name = "화력";
-            //groupValue2 = new AddGroupItemValueDTO();
-            //groupValue2.Values = "70";
-            //groupValue2.Unit = "%";
-            //groupkey2.ItemValues.Add(groupValue2);
-            //groupdto2.AddGroupKey.Add(groupkey2);
+            AddGroupItemValueDTO groupValue2 = new AddGroupItemValueDTO();
+            groupValue2.Values = "30";
+            groupValue2.Unit = "%";
+            groupkey2.ItemValues.Add(groupValue2);
 
 
-            //dto.SubItem.Add(groupdto1);
-            //dto.SubItem.Add(groupdto2);
-            //IFormFile files = null;
+            groupdto2.AddGroupKey.Add(groupkey2);
+            groupkey2 = new AddGroupItemKeyDTO();
+            groupkey2.Name = "화력";
+            groupValue2 = new AddGroupItemValueDTO();
+            groupValue2.Values = "70";
+            groupValue2.Unit = "%";
+            groupkey2.ItemValues.Add(groupValue2);
+            groupdto2.AddGroupKey.Add(groupkey2);
+
+
+            dto.SubItem.Add(groupdto1);
+            dto.SubItem.Add(groupdto2);
+            IFormFile files = null;
 
             ResponseUnit<bool> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
 

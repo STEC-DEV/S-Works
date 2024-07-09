@@ -4,7 +4,6 @@ using FamTec.Server.Services.User;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using Microsoft.AspNetCore.Authorization;
-using ClosedXML.Excel;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -18,8 +17,6 @@ namespace FamTec.Server.Controllers.User
         {
             UserService = _userservice;
         }
-
-
 
         /// <summary>
         /// 로그인한 사업장의 모든 사용자 반환
@@ -76,10 +73,33 @@ namespace FamTec.Server.Controllers.User
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/DeleteUser")]
-        public async ValueTask<IActionResult> DeleteUser([FromQuery]List<int> delIdx)
+        [Route("sign/DetailUser")]
+        public async ValueTask<IActionResult> DetailUser([FromQuery]int? id)
         {
-            ResponseUnit<bool>? model = await UserService.DeleteUserService(HttpContext, delIdx);
+            ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DeleteUser")]
+        public async ValueTask<IActionResult> DeleteUser([FromQuery] List<int> delIdx)
+        {
+            ResponseUnit<int?> model = await UserService.DeleteUserService(HttpContext, delIdx);
 
             if(model is not null)
             {

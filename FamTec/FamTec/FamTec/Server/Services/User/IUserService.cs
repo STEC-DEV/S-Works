@@ -33,6 +33,14 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public ValueTask<ResponseList<ListUser>> GetPlaceUserList(HttpContext? context);
 
+        /// <summary>
+        /// 사용자 상세정보 보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext? context, int? id);
+
 
         /// <summary>
         /// 사용자 추가 서비스
@@ -47,7 +55,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> DeleteUserService(HttpContext? context, List<int> del);
+        public ValueTask<ResponseUnit<int?>> DeleteUserService(HttpContext? context, List<int> del);
 
         /// <summary>
         /// 사용자 데이터 수정

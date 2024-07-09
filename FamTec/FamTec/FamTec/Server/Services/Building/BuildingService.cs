@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.Building
 
                // 사업장 관련한 폴더 없으면 만들기
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
-                PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeidx.ToString()); // 사업장
+                PlaceFileFolderPath = String.Format(@"{0}\\Building\\{1}", Common.FileServer, placeidx.ToString()); // 사업장
 
                di = new DirectoryInfo(PlaceFileFolderPath);
                if (!di.Exists) di.Create();
