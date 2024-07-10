@@ -1,10 +1,7 @@
 ﻿using FamTec.Server.Repository.Unit;
-using FamTec.Shared;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.Unit;
-using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Services.Unit
 {

@@ -153,10 +153,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext? context, AddManagerDTO? dto)
+        public async ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext? context, AddManagerDTO? dto, IFormFile? files)
         {
             try
             {
+                DirectoryInfo? di;
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
+
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if(dto is null)
@@ -174,35 +178,86 @@ namespace FamTec.Server.Services.Admin.Account
                 if (String.IsNullOrWhiteSpace(UserType))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UserTb? usermodel = new UserTb
-                {
-                    UserId = dto.UserId,
-                    Name = dto.Name,
-                    Password = dto.Password,
-                    Email = dto.Email,
-                    Phone = dto.Phone,
-                    PermBasic = 2,
-                    PermMachine = 2,
-                    PermLift = 2,
-                    PermFire = 2,
-                    PermConstruct = 2,
-                    PermNetwork = 2,
-                    PermBeauty = 2,
-                    PermSecurity = 2,
-                    PermMaterial = 2,
-                    PermEnergy = 2,
-                    PermUser = 2,
-                    PermVoc = 2,
-                    AdminYn = true,
-                    AlramYn = true,
-                    Status = true,
-                    CreateDt = DateTime.Now,
-                    CreateUser = creater,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = creater
-                };
 
-                UserTb? userresult = await UserInfoRepository.AddAsync(usermodel);
+                // 관리자 관련한 폴더가 없으면 만듬
+                string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+
+                di = new DirectoryInfo(AdminFileFolderPath);
+                if (!di.Exists) di.Create();
+
+
+
+                UserTb? model = new UserTb();
+
+                model.UserId = dto.UserId;
+                model.Name = dto.Name;
+                model.Password = dto.Password;
+                model.Email = dto.Email;
+                model.Phone = dto.Phone;
+                
+                /* 메뉴관련 권한 */
+                model.PermBasic = 2;
+                model.PermMachine = 2;
+                model.PermLift = 2;
+                model.PermFire = 2;
+                model.PermConstruct = 2;
+                model.PermNetwork = 2;
+                model.PermBeauty = 2;
+                model.PermSecurity = 2;
+                model.PermMaterial = 2;
+                model.PermEnergy = 2;
+                model.PermUser = 2;
+                model.PermVoc = 2;
+
+                /* VOC관련 권한 */
+                model.VocMachine = 2;
+                model.VocElec = 2;
+                model.VocLift = 2;
+                model.VocFire = 2;
+                model.VocConstruct = 2;
+                model.VocNetwork = 2;
+                model.VocBeauty = 2;
+                model.VocSecurity = 2;
+                model.VocDefault = 2;
+                model.VocDefault = 2;
+                model.Job = "관리자";
+
+                model.AdminYn = true;
+                model.AlramYn = true;
+                model.Status = true;
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = creater;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creater;
+                
+                if(files is not null)
+                {
+                    FileName = files.FileName;
+                    FileExtenstion = Path.GetExtension(FileName);
+
+                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                    {
+                        return new ResponseUnit<int?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 404 };
+                    }
+                    else
+                    {
+                        // 이미지경로
+                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
+                        string? newFilePath = Path.Combine(AdminFileFolderPath, newFileName);
+
+                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+                        {
+                            await files.CopyToAsync(fileStream);
+                            model.Image = newFileName;
+                        }
+                    }
+                }
+                else
+                {
+                    model.Image = null;
+                }
+
+                UserTb? userresult = await UserInfoRepository.AddAsync(model);
 
                 if (userresult is not null)
                 {
@@ -330,12 +385,67 @@ namespace FamTec.Server.Services.Admin.Account
                 if(adminidx is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
-                DManagerDTO? dto = await AdminPlaceInfoRepository.GetManagerDetails(adminidx);
-                    
-                if(dto is not null)
-                    return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx);
+                if(admintb is not null)
+                {
+                    DepartmentTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
+                    if(departmenttb is not null)
+                    {
+                        UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                        if(usertb is not null)
+                        {
+                            DManagerDTO dto = new DManagerDTO();
+                            dto.UserId = usertb.UserId;
+                            dto.Name = usertb.Name;
+                            dto.Password = usertb.Password;
+                            dto.Phone = usertb.Phone;
+                            dto.Email = usertb.Email;
+                            dto.Type = admintb.Type;
+                            dto.Department = departmenttb.Name;
+
+                            string? Image = usertb.Image;
+                            if(!String.IsNullOrWhiteSpace(Image))
+                            {
+                                string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
+                                string[] FileList = Directory.GetFiles(AdminFileName);
+
+                                if(FileList is [_, ..])
+                                {
+                                    foreach(var file in FileList)
+                                    {
+                                        if(file.Contains(Image))
+                                        {
+                                            byte[] ImageBytes = File.ReadAllBytes(file);
+                                            dto.Image = Convert.ToBase64String(ImageBytes);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    dto.Image = usertb.Image;
+                                }
+                            }
+                            else
+                            {
+                                dto.Image = usertb.Image;
+                            }
+
+                            return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                        }
+                        else
+                        {
+                            return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                    }
+                }
                 else
-                    return new ResponseUnit<DManagerDTO>() { message = "요청이 처리되지 않았습니다.", data = new DManagerDTO(), code = 200 };
+                {
+                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+                }
             }
             catch (Exception ex)
             {
@@ -386,11 +496,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto)
+        public async ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files)
         {
             try
             {
                 int updatecount = 0;
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
+                string? AdminFileFolderPath = String.Empty;
 
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -421,6 +534,53 @@ namespace FamTec.Server.Services.Admin.Account
                 usertb.UserId = dto.UserId; // 로그인 ID
                 usertb.Password = dto.Password; // 비밀번호
                 
+                if(files is not null) // 파일이 공백이 아닌경우 - 삭제 - 업데이트 or insert
+                {
+                    FileName = files.FileName;
+                    FileExtenstion = Path.GetExtension(FileName);
+
+                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                    {
+                        return new ResponseUnit<int?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                    }
+
+                    string? filePath = usertb.Image;
+                    AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+
+                    if(!String.IsNullOrWhiteSpace(filePath))
+                    {
+                        FileName = String.Format("{0}\\{1}", AdminFileFolderPath, filePath);
+                        if(File.Exists(FileName))
+                        {
+                            File.Delete(FileName);
+                        }
+                    }
+
+                    string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
+                    string? newFilePath = Path.Combine(AdminFileFolderPath, newFileName);
+
+                    using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
+                    {
+                        await files.CopyToAsync(fileStream);
+                        usertb.Image = newFileName;
+                    }
+                }
+                else // 파일이 공백인경우 db에 해당 데이터 값이 있으면 삭제
+                {
+                    string? filePath = usertb.Image;
+                    if(!String.IsNullOrWhiteSpace(filePath))
+                    {
+                        AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                        FileName = String.Format("{0}\\{1}", AdminFileFolderPath, filePath);
+                        if(File.Exists(FileName))
+                        {
+                            File.Delete(FileName);
+                            usertb.Image = null;
+                        }
+                    }
+                }
+
+
                 // 사용자 정보 수정
                 UserTb? updateusertb = await UserInfoRepository.UpdateUserInfo(usertb);
                 if (updateusertb is null)

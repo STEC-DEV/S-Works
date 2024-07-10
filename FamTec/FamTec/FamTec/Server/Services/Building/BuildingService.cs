@@ -104,7 +104,7 @@ namespace FamTec.Server.Services.Building
 
                     if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
-                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        return new ResponseUnit<bool>() { message = "올바르지 않은 파일형식입니다.", data = false, code = 404 };
                     }
                     else
                     {

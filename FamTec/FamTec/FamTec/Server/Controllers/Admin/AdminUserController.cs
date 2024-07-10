@@ -32,9 +32,9 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager,Master")]
         [HttpPost]
         [Route("sign/AddManager")]
-        public async ValueTask<IActionResult> AddManager([FromBody] AddManagerDTO dto)
+        public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto);
+            ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
 
             if (model is not null)
             {
@@ -148,9 +148,9 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManager")]
-        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
+        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO? dto, IFormFile? files)
         {
-            ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto);
+            ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
             if(model is not null)
             {
                 if(model.code == 200)

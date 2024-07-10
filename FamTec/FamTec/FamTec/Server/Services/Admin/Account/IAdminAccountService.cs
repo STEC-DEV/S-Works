@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext? context, AddManagerDTO? dto);
+        public ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext? context, AddManagerDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 관리자 계정 삭제
@@ -42,7 +42,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto);
+        public ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 아이디 중복검사

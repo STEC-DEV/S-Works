@@ -208,9 +208,64 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Admin.AddManagerDTO",
-        "IsRequired": true
+        "Name": "UserId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DepartmentId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -303,6 +358,56 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "BuildingCD",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Tel",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Usage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConstComp",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompletionDT",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingStruct",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RoofStruct",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubItem",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Building.AddGroupDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
       {
         "Name": "ContentType",
         "Type": "System.String",
