@@ -1,4 +1,6 @@
-﻿using FamTec.Shared.Model;
+﻿using System;
+using System.Collections.Generic;
+using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;
@@ -634,6 +636,7 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.Email).HasComment("이메일");
+            entity.Property(e => e.Image).HasComment("첨부파일");
             entity.Property(e => e.Job).HasComment("직급");
             entity.Property(e => e.Name).HasComment("이름");
             entity.Property(e => e.Password).HasComment("비밀번호");

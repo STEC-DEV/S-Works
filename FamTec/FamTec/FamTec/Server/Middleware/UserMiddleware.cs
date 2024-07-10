@@ -58,10 +58,11 @@ namespace FamTec.Server.Middleware
             if (jobj is null)
                 return;
 
+            bool AdminYN = Boolean.Parse(jobj["AdminYN"]!.ToString());
 
-            int AdminYN = int.Parse(jobj["AdminYN"]!.ToString());
+            //int AdminYN = int.Parse(jobj["AdminYN"]!.ToString());
 
-            if (AdminYN == 1) // 관리자
+            if (AdminYN == true) // 관리자
             {
                 context.Items.Add("UserIdx", jobj["UserIdx"]!.ToString()); // 사용자테이블 인덱스
                 context.Items.Add("Name", jobj["Name"]!.ToString()); // 사용자이름

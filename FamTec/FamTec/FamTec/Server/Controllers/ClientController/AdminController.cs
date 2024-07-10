@@ -87,8 +87,8 @@ namespace FamTec.Server.Controllers.ClientController
                     PermEnergy = 2,
                     PermUser = 2,
                     PermVoc = 2,
-                    AdminYn = 1,
-                    Status = 1,
+                    AdminYn = true,
+                    Status = true,
                 };
                 UserTb resUsertb = _workContext.UserTbs.Add(userTb).Entity;
                 await _workContext.SaveChangesAsync();

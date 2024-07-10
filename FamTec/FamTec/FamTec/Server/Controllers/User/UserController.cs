@@ -50,9 +50,9 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUser")]
-        public async ValueTask<IActionResult> AddUser([FromBody]UsersDTO dto)
+        public async ValueTask<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile files)
         {
-            ResponseUnit<UsersDTO>? model = await UserService.AddUserService(HttpContext, dto);
+            ResponseUnit<UsersDTO>? model = await UserService.AddUserService(HttpContext, dto, files);
 
             if(model is not null)
             {
@@ -121,9 +121,9 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateUser")]
-        public async ValueTask<IActionResult> UpdateUser([FromBody]UpdateUserDTO dto)
+        public async ValueTask<IActionResult> UpdateUser([FromForm]UpdateUserDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<UpdateUserDTO>? model = await UserService.UpdateUserService(HttpContext, dto);
+            ResponseUnit<UpdateUserDTO>? model = await UserService.UpdateUserService(HttpContext, dto, files);
 
             if(model is not null)
             {

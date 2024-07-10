@@ -46,6 +46,11 @@ namespace FamTec.Shared.Server.DTO.User
         public string? PASSWORD { get; set; }
 
         /// <summary>
+        /// 사용자 이미지
+        /// </summary>
+        public string? Image { get; set; }
+
+        /// <summary>
         /// 기본정보등록 권한
         /// </summary>
         public int? PERM_BASIC { get; set; } = 0;
@@ -113,17 +118,17 @@ namespace FamTec.Shared.Server.DTO.User
         /// <summary>
         /// 관리자유무
         /// </summary>
-        public sbyte? ADMIN_YN { get; set; } = 0;
+        public bool? ADMIN_YN { get; set; } = false;
 
         /// <summary>
         /// 알람유무
         /// </summary>
-        public sbyte? ALRAM_YN { get; set; } = 0;
+        public bool? ALRAM_YN { get; set; } = false;
 
         /// <summary>
         /// 재직여부
         /// </summary>
-        public sbyte? STATUS { get; set; }
+        public bool? STATUS { get; set; } = true;
 
         /// <summary>
         /// 기계민원 처리권한

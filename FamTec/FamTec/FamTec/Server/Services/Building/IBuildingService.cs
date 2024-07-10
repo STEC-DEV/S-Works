@@ -43,6 +43,5 @@ namespace FamTec.Server.Services.Building
         /// <returns></returns>
         public ValueTask<ResponseUnit<int?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid);
 
-        public ValueTask<ResponseUnit<string>> Temp();
     }
 }

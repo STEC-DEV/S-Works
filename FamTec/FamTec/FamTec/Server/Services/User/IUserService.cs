@@ -47,7 +47,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext? context, UsersDTO? dto);
+        public ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext? context, UsersDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 사용자 삭제 서비스
@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto);
+        public ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 사용자 엑셀 IMPORT

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.User
+﻿namespace FamTec.Shared.Server.DTO.User
 {
     public class UpdateUserDTO
     {
@@ -114,12 +108,12 @@ namespace FamTec.Shared.Server.DTO.User
         /// <summary>
         /// 알람유무
         /// </summary>
-        public sbyte? ALRAM_YN { get; set; } = 0;
+        public bool? ALRAM_YN { get; set; } = false;
 
         /// <summary>
         /// 재직여부
         /// </summary>
-        public sbyte? STATUS { get; set; }
+        public bool? STATUS { get; set; }
 
         /// <summary>
         /// 기계민원 처리권한

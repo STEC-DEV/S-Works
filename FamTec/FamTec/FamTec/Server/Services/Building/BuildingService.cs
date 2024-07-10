@@ -72,8 +72,7 @@ namespace FamTec.Server.Services.Building
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
 
-               // 사업장 관련한 폴더 없으면 만들기
-                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+               // 건물 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
 
                di = new DirectoryInfo(PlaceFileFolderPath);
@@ -120,6 +119,10 @@ namespace FamTec.Server.Services.Building
                             model.Image = newFileName;
                         }
                     }
+                }
+                else
+                {
+                    model.Image = null;
                 }
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model);
@@ -198,17 +201,6 @@ namespace FamTec.Server.Services.Building
                 return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
-
-
-        public async ValueTask<ResponseUnit<string>> Temp()
-        {
-            string imagePath = @"C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\49\Building\0efe4a83-52a8-45f5-a260-5a9c672449e1.png";
-            byte[] imageBytes = File.ReadAllBytes(imagePath);
-            string temp = Convert.ToBase64String(imageBytes);
-
-            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = temp, code = 200 };
-        }
-      
 
         /// <summary>
         /// 사업장에 등록되어있는 건물리스트 출력
@@ -306,6 +298,10 @@ namespace FamTec.Server.Services.Building
                                     dto.Image = Convert.ToBase64String(ImageBytes);
                                 }
                             }
+                        }
+                        else
+                        {
+                            dto.Image = model.Image;
                         }
                     }
                     else
@@ -424,7 +420,7 @@ namespace FamTec.Server.Services.Building
                     FileExtenstion = Path.GetExtension(FileName);
                     if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
-                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        return new ResponseUnit<bool?>() { message = "이미지의 형식이 올바르지 않습니다.", data = false, code = 404 };
                     }
 
                     // DB 파일 삭제
@@ -462,6 +458,7 @@ namespace FamTec.Server.Services.Building
                         if (File.Exists(FileName))
                         {
                             File.Delete(FileName);
+                            buildingtb.Image = null;
                         }
                     }
                 }

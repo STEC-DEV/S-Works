@@ -201,7 +201,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocMachine == 1).ToListAsync();
 
@@ -234,7 +234,7 @@ namespace FamTec.Server.Repository.User
                 {
                     List<UserTb>? model = await context.UserTbs.Where(m => 
                     m.PlaceTbId == placeidx &&
-                    m.AdminYn != 1 &&
+                    m.AdminYn != true &&
                     m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
@@ -275,7 +275,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocElec == 1).ToListAsync();
 
@@ -317,7 +317,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocLift == 1).ToListAsync();
 
@@ -360,7 +360,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocFire == 1).ToListAsync();
 
@@ -404,7 +404,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocConstruct == 1).ToListAsync();
 
@@ -446,7 +446,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocNetwork == 1).ToListAsync();
 
@@ -489,7 +489,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocBeauty == 1).ToListAsync();
 
@@ -532,7 +532,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocSecurity == 1).ToListAsync();
 
@@ -574,7 +574,7 @@ namespace FamTec.Server.Repository.User
                     List<UserTb>? model = await context.UserTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == 1 &&
+                    m.AlramYn == true &&
                     m.DelYn != true &&
                     m.VocDefault == 1).ToListAsync();
 

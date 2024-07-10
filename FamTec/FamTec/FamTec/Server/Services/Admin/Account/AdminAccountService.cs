@@ -66,7 +66,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                 if (usertb is not null)
                 {
-                    if (usertb.AdminYn == 1)
+                    if (usertb.AdminYn == true)
                     {
                         AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
 
@@ -193,9 +193,9 @@ namespace FamTec.Server.Services.Admin.Account
                     PermEnergy = 2,
                     PermUser = 2,
                     PermVoc = 2,
-                    AdminYn = 1,
-                    AlramYn = 1,
-                    Status = 1,
+                    AdminYn = true,
+                    AlramYn = true,
+                    Status = true,
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
                     UpdateDt = DateTime.Now,

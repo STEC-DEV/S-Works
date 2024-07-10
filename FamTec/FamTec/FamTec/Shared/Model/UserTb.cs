@@ -187,20 +187,20 @@ public partial class UserTb
     /// <summary>
     /// 관리자 유무
     /// </summary>
-    [Column("ADMIN_YN", TypeName = "tinyint(4)")]
-    public sbyte? AdminYn { get; set; }
+    [Column("ADMIN_YN")]
+    public bool? AdminYn { get; set; }
 
     /// <summary>
     /// 알람 유무
     /// </summary>
-    [Column("ALRAM_YN", TypeName = "tinyint(4)")]
-    public sbyte? AlramYn { get; set; }
+    [Column("ALRAM_YN")]
+    public bool? AlramYn { get; set; }
 
     /// <summary>
     /// 재직여부
     /// </summary>
-    [Column("STATUS", TypeName = "tinyint(4)")]
-    public sbyte? Status { get; set; }
+    [Column("STATUS")]
+    public bool? Status { get; set; }
 
     /// <summary>
     /// 생성일
@@ -253,6 +253,12 @@ public partial class UserTb
     [Column("JOB")]
     [StringLength(255)]
     public string? Job { get; set; }
+
+    /// <summary>
+    /// 첨부파일
+    /// </summary>
+    [StringLength(255)]
+    public string? Image { get; set; }
 
     /// <summary>
     /// (외래키) 사업장 인덱스

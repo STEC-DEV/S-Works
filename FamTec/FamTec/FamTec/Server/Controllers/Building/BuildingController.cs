@@ -213,15 +213,7 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/Temp")]
-        public async ValueTask<IActionResult> Temp()
-        {
-            ResponseUnit<string> model = await BuildingService.Temp();
-
-            return Ok(model);
-        }
+       
       
 
     }

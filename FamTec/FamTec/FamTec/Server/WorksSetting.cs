@@ -125,9 +125,9 @@ namespace FamTec.Server
                 VocBeauty = 2, // 미화민원 처리권한
                 VocSecurity = 2, // 보안민원 처리권한
                 VocDefault = 2, // 기타민원 처리권한
-                AdminYn = 1, // 관리자유무
-                AlramYn = 1, // 알람유무
-                Status = 1, // 재직유무
+                AdminYn = true, // 관리자유무
+                AlramYn = true, // 알람유무
+                Status = true, // 재직유무
                 CreateDt = DateTime.Now,
                 CreateUser = "시스템관리자",
                 UpdateDt = DateTime.Now,
