@@ -52,9 +52,9 @@ namespace FamTec.Server.Controllers.Building
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> AddBuilding()
+        public async ValueTask<IActionResult> AddBuilding([FromForm]IFormFile files)
         //public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm]IFormFile files)
         {
             AddBuildingDTO dto = new AddBuildingDTO();
@@ -112,7 +112,7 @@ namespace FamTec.Server.Controllers.Building
 
             dto.SubItem.Add(groupdto1);
             dto.SubItem.Add(groupdto2);
-            IFormFile files = null;
+            
 
             ResponseUnit<bool> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
 
@@ -213,6 +213,15 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/Temp")]
+        public async ValueTask<IActionResult> Temp()
+        {
+            ResponseUnit<string> model = await BuildingService.Temp();
+
+            return Ok(model);
+        }
       
 
     }

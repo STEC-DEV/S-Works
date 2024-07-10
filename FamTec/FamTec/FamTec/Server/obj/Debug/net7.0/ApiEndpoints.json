@@ -299,10 +299,41 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "AddBuilding",
     "RelativePath": "api/Building/sign/AddBuilding",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -341,6 +372,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "SelectMyBuilding",
     "RelativePath": "api/Building/sign/MyBuildings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "Temp",
+    "RelativePath": "api/Building/sign/Temp",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

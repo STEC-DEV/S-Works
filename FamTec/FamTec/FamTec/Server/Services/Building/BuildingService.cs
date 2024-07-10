@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.Building
 
                // 사업장 관련한 폴더 없으면 만들기
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
-                PlaceFileFolderPath = String.Format(@"{0}\\Building\\{1}", Common.FileServer, placeidx.ToString()); // 사업장
+                PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
 
                di = new DirectoryInfo(PlaceFileFolderPath);
                if (!di.Exists) di.Create();
@@ -199,6 +199,15 @@ namespace FamTec.Server.Services.Building
             }
         }
 
+
+        public async ValueTask<ResponseUnit<string>> Temp()
+        {
+            string imagePath = @"C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\49\Building\0efe4a83-52a8-45f5-a260-5a9c672449e1.png";
+            byte[] imageBytes = File.ReadAllBytes(imagePath);
+            string temp = Convert.ToBase64String(imageBytes);
+
+            return new ResponseUnit<string>() { message = "요청이 정상 처리되었습니다.", data = temp, code = 200 };
+        }
       
 
         /// <summary>
@@ -281,7 +290,29 @@ namespace FamTec.Server.Services.Building
                     dto.CompletionDT = model.CompletionDt;
                     dto.BuildingStruct = model.BuildingStruct;
                     dto.RoofStruct = model.RoofStruct;
-                    dto.Image = model.Image;
+
+                    string? Image = model.Image;
+                    if(!String.IsNullOrWhiteSpace(Image))
+                    {
+                        string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                        string[] FileList = Directory.GetFiles(PlaceFileName);
+                        if(FileList is [_, ..])
+                        {
+                            foreach(var file in FileList)
+                            {
+                                if (file.Contains(Image))
+                                {
+                                    byte[] ImageBytes = File.ReadAllBytes(file);
+                                    dto.Image = Convert.ToBase64String(ImageBytes);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        dto.Image = model.Image;
+                    }
+                    
 
                     List<GroupitemTb>? GROUP_TB = await GroupItemInfoRepository.GetAllGroupList(model.Id);
 
@@ -386,7 +417,7 @@ namespace FamTec.Server.Services.Building
                 buildingtb.UpdateDt = DateTime.Now;
                 buildingtb.UpdateUser = creater;
 
-                
+
                 if (files is not null) // 파일이 공백이 아닌경우 - 삭제 - 업데이트 or insert
                 {
                     FileName = files.FileName;
@@ -398,9 +429,10 @@ namespace FamTec.Server.Services.Building
 
                     // DB 파일 삭제
                     string? filePath = buildingtb.Image;
+                    PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString()); // 사업장
+
                     if (!String.IsNullOrWhiteSpace(filePath))
                     {
-                        PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
                         FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
                         if (File.Exists(FileName))
                         {
@@ -423,7 +455,7 @@ namespace FamTec.Server.Services.Building
                 else // 파일이 공백인경우 db에 해당 데이터 값이 있으면 삭제
                 {
                     string? filePath = buildingtb.Image;
-                    if(!String.IsNullOrWhiteSpace(filePath))
+                    if (!String.IsNullOrWhiteSpace(filePath))
                     {
                         PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
                         FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
@@ -435,34 +467,85 @@ namespace FamTec.Server.Services.Building
                 }
 
                 bool? buildingupdate = await BuildingInfoRepository.UpdateBuildingInfo(buildingtb);
-                if(buildingupdate != true) 
+                if (buildingupdate != true)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                if(dto.GroupItem is null)
+                if (dto.GroupItem is null)
                     return new ResponseUnit<bool?>() { message = "수정이 완료되었습니다.", data = null, code = 200 };
 
                 // 삭제먼저 진행 -- GroupTB
                 #region 삭제 잠시
+                // 전체 GroupTable
                 List<GroupitemTb>? AllGroupItemTb = await GroupItemInfoRepository.GetAllGroupList(ThisBuildingId);
-                List<int>? AllGroupIdx = AllGroupItemTb.Select(m => m.Id).ToList();
+                List<int>? AllGroupIdx = new List<int>();
+                if (AllGroupItemTb is [_, ..])
+                {
+                    AllGroupIdx = AllGroupItemTb.Select(m => m.Id).ToList();
+                }
 
+                // 전체 ItemTB
                 List<ItemkeyTb>? AllItemKeyTb = await ItemKeyInfoRepository.ContainsKeyList(AllGroupIdx);
-                List<int>? AllItemKeyIdx = AllItemKeyTb.Select(m => m.Id).ToList();
+                List<int>? AllItemKeyIdx = new List<int>();
+                if (AllItemKeyTb is [_, ..])
+                {
+                    AllItemKeyIdx = AllItemKeyTb.Select(m => m.Id).ToList();
+                }
 
+                // 전체 Value TB
                 List<ItemvalueTb>? AllItemValueTb = await ItemValueInfoRepository.ContainsKeyList(AllItemKeyIdx);
-                List<int>? AllItemValueIdx = AllItemValueTb.Select(m => m.Id).ToList();
+                List<int>? AllItemValueIdx = new List<int>();
+                if (AllItemValueTb is [_, ..])
+                {
+                    AllItemValueIdx = AllItemValueTb.Select(m => m.Id).ToList();
+                }
 
-                List<GroupListDTO> GroupListDTO = dto.GroupItem.Where(m => m.ID != null).ToList();
-                List<int>? GroupList = GroupListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
-                List<int>? DelGroupList = AllGroupIdx.Except(GroupList).ToList();
+                List<GroupListDTO>? GroupListDTO = dto.GroupItem.Where(m => m.ID != null).ToList();
+                List<int>? GroupList = new List<int>();
+                if (GroupListDTO is [_, ..])
+                {
+                    GroupList = GroupListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                }
+                List<int>? DelGroupList = new List<int>();
+                if (AllGroupIdx is [_, ..])
+                {
+                    DelGroupList = AllGroupIdx.Except(GroupList).ToList();
+                }
 
-                List<GroupKeyListDTO> KeyListDTO = GroupListDTO.SelectMany(m => m.KeyListDTO).Where(e => e.ID != null).ToList();
-                List<int>? KeyList = KeyListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
-                List<int>? DelKeyList = AllItemKeyIdx.Except(KeyList).ToList();
+                List<GroupKeyListDTO> KeyListDTO = new List<GroupKeyListDTO>();
+                if(GroupListDTO is [_, ..])
+                {
+                    KeyListDTO = GroupListDTO.SelectMany(m => m.KeyListDTO).Where(e => e.ID != null).ToList();
+                }
 
-                List<GroupValueListDTO> ValueListDTO = KeyListDTO.SelectMany(m => m.ValueList).Where(e => e.ID != null).ToList();
-                List<int>? ValueList = ValueListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
-                List<int>? DelValueList = AllItemValueIdx.Except(ValueList).ToList();
+                List<int>? KeyList = new List<int>();
+                if(KeyListDTO is [_, ..])
+                {
+                    KeyList = KeyListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                }
+
+                List<int>? DelKeyList = new List<int>();
+                if(AllItemKeyIdx is [_, ..])
+                {
+                    DelKeyList = AllItemKeyIdx.Except(KeyList).ToList();
+                }
+
+                List<GroupValueListDTO>? ValueListDTO = new List<GroupValueListDTO>();
+                if (KeyListDTO is [_, ..])
+                {
+                    ValueListDTO = KeyListDTO.SelectMany(m => m.ValueList).Where(e => e.ID != null).ToList();
+                }
+
+                List<int>? ValueList = new List<int>();
+                if(ValueListDTO is [_, ..])
+                {
+                    ValueList = ValueListDTO.Select(m => Convert.ToInt32(m.ID)).ToList();
+                }
+
+                List<int>? DelValueList = new List<int>();
+                if(AllItemValueIdx is [_, ..])
+                {
+                    DelValueList = AllItemValueIdx.Except(ValueList).ToList();
+                }
 
 
                 for (int i = 0; i < DelGroupList.Count(); i++)
