@@ -186,6 +186,30 @@ namespace FamTec.Server.Repository.Floor
             }
         }
 
-
+        /// <summary>
+        /// 층 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateFloorInfo(FloorTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.FloorTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

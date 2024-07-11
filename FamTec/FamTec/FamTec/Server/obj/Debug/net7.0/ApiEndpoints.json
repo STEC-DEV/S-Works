@@ -329,7 +329,12 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Admin.UpdateManagerDTO",
-        "IsRequired": true
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -718,6 +723,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Floor.FloorController",
+    "Method": "DeleteFloor",
+    "RelativePath": "api/Floor/sign/DeleteFloor",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Floor.FloorController",
     "Method": "GetFloorList",
     "RelativePath": "api/Floor/sign/GetFloorList",
     "HttpMethod": "GET",
@@ -727,6 +742,22 @@
       {
         "Name": "buildingid",
         "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Floor.FloorController",
+    "Method": "UpdateFloor",
+    "RelativePath": "api/Floor/sign/UpdateFloor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Floor.UpdateFloorDTO",
         "IsRequired": false
       }
     ],

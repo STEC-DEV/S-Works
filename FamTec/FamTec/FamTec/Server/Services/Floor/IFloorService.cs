@@ -21,5 +21,21 @@ namespace FamTec.Server.Services.Floor
         /// <returns></returns>
         public ValueTask<ResponseList<FloorDTO>?> GetFloorListService(int? buildingtbid);
 
+        /// <summary>
+        /// 층 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext? context, UpdateFloorDTO? dto);
+
+        /// <summary>
+        /// 층 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> DeleteFloorService(HttpContext? context, List<int>? del);
+
     }
 }

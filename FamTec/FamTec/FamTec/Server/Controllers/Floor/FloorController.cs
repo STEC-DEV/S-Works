@@ -63,13 +63,51 @@ namespace FamTec.Server.Controllers.Floor
             }
         }
 
-        //[HttpPost]
-        //[Route("DeleteFloor")]
-        //public async ValueTask<IActionResult> DeleteFloor([FromBody] List<int> idx)
-        //{
-        //    ResponseModel<string>? model = await FloorService.DeleteFloorService(idx, session);
-        //    return Ok(model);
-        //}
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/UpdateFloor")]
+        public async ValueTask<IActionResult> UpdateFloor([FromBody] UpdateFloorDTO? dto)
+        {
+            ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto);
+            if (model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/DeleteFloor")]
+        public async ValueTask<IActionResult> DeleteFloor([FromBody] List<int> idx)
+        {
+            ResponseUnit<int?> model = await FloorService.DeleteFloorService(HttpContext, idx);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
     }
 }
