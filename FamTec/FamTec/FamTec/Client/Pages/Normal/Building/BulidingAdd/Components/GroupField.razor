@@ -1,4 +1,7 @@
-﻿<div class="groupfield">
+﻿@using FamTec.Client.Pages.CommonComponents
+
+
+<div class="groupfield">
     <div class="groupfield-title">
         <span class="title">
             @Title
@@ -6,9 +9,9 @@
     </div>
     
     <div class="groupfield-item">
-        <InputFieldSmall Label="@Sub1" EditMode=EditMode />
-        <InputFieldSmall Label="@Sub2" EditMode=EditMode />
-        <InputFieldSmall Label="@Sub3" EditMode=EditMode />
+        <InputFieldSmall Label="@Sub1" EditMode=EditMode @bind-Value=Data1 />
+        <InputFieldSmall Label="@Sub2" EditMode=EditMode @bind-Value=Data2 />
+        <InputFieldSmall Label="@Sub3" EditMode=EditMode @bind-Value=Data3 />
     </div>
 </div>
 
@@ -17,6 +20,62 @@
     [Parameter] public string Sub1 { get; set; }
     [Parameter] public string Sub2 { get; set; }
     [Parameter] public string Sub3 { get; set; }
+    private string data1;
+    [Parameter]
+    public string Data1
+    {
+        get => data1;
+        set
+        {
+            if (data1 != value)
+            {
+                data1 = value;
+                Data1Changed.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter] public EventCallback<string> Data1Changed { get; set; }
+
+    private string data2;
+    [Parameter]
+    public string Data2
+    {
+        get => data2;
+        set
+        {
+            if (data2 != value)
+            {
+                data2 = value;
+                Data2Changed.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter] public EventCallback<string> Data2Changed { get; set; }
+
+    private string data3;
+    [Parameter]
+    public string Data3
+    {
+        get => data3;
+        set
+        {
+            if (data3 != value)
+            {
+                data3 = value;
+                Data3Changed.InvokeAsync(value);
+            }
+        }
+    }
+    [Parameter] public EventCallback<string> Data3Changed { get; set; }
 
     bool EditMode = true;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
 }

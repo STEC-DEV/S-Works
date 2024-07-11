@@ -55,7 +55,7 @@
                 return;
             }
             PlaceList = resManagerPlace.data;
-            PlaceList.RemoveAll(place => place.Status == 0);
+            PlaceList.RemoveAll(place => place.Status == false); //여기 타입바뀜
             FilterPlaceList = PlaceList;
         }
         catch (Exception ex)

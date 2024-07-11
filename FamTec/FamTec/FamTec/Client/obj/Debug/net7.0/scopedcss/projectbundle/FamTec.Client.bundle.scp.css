@@ -2348,7 +2348,7 @@
 /* /Pages/Normal/Building/BulidingAdd/BuildingAdd.razor.rz.scp.css */
 .buildingadd-container[b-37r0e6eic7]{
     width :100%;
-    height : 100%;
+    /*height : 100%;*/
     padding : var(--default-pd);
     /*background-color :#d3d3d3;*/
 }
@@ -2412,7 +2412,7 @@
 
 .buildinginfo .infosection-2[b-cmazd8ob0t]{
     display :grid;
-    grid-template-columns : repeat(5, 1fr);
+    grid-template-columns : repeat(4, 1fr);
     gap : var(--default-pd);
 }
 /* /Pages/Normal/Building/BulidingAdd/Components/GroupField.razor.rz.scp.css */
