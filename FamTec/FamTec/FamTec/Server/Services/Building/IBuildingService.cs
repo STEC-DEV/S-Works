@@ -1,5 +1,5 @@
 ﻿using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Building;
+using FamTec.Shared.Server.DTO.Building.Building;
 
 namespace FamTec.Server.Services.Building
 {
@@ -9,7 +9,7 @@ namespace FamTec.Server.Services.Building
         /// 건물추가
         /// </summary>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> AddBuildingService(HttpContext context, AddBuildingDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<AddBuildingDTO?>> AddBuildingService(HttpContext context, AddBuildingDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 로그인한 아이디의 사업장의 건물리스트 조회

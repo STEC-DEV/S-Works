@@ -1,34 +1,34 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace FamTec.Server.Repository.Building.SubItem.ItemKey
+namespace FamTec.Server.Repository.Building.SubItem.ItemValue
 {
-    public class ItemKeyInfoRepository : IItemKeyInfoRepository
+    public class BuildingItemValueInfoRepository : IBuildingItemValueInfoRepository
     {
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public ItemKeyInfoRepository(WorksContext _context, ILogService _logservice)
+        public BuildingItemValueInfoRepository(WorksContext _context, ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;
         }
 
         /// <summary>
-        /// 그룹의 KEY 추가
+        /// 아이템 KEY에 대한 Value 추가
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<ItemkeyTb?> AddAsync(ItemkeyTb? model)
+        public async ValueTask<BuildingItemvalueTb?> AddAsync(BuildingItemvalueTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.ItemkeyTbs.Add(model);
+                    context.BuildingItemvalueTbs.Add(model);
                     await context.SaveChangesAsync();
                     return model;
                 }
@@ -45,17 +45,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
-        /// 그룹의 KEY 리스트 상세검색 groupitemid로 검색
+        /// 아이템 Value 리스트 상세검색 keyid로 검색
         /// </summary>
-        /// <param name="groupitemid"></param>
+        /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<List<ItemkeyTb>?> GetAllKeyList(int? groupitemid)
+        public async ValueTask<List<BuildingItemvalueTb>?> GetAllValueList(int? keyid)
         {
             try
             {
-                if(groupitemid is not null)
+                if(keyid is not null)
                 {
-                    List<ItemkeyTb>? model = await context.ItemkeyTbs.Where(m => m.GroupItemId == groupitemid && m.DelYn != true).ToListAsync();
+                    List<BuildingItemvalueTb>? model = await context.BuildingItemvalueTbs.Where(m => m.ItemKeyId == keyid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -75,17 +75,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
-        /// 그룹 KEY 상세검색 keyid로 검색
+        /// 아이템 Value 상세검색 valueid로 검색
         /// </summary>
-        /// <param name="keyid"></param>
+        /// <param name="valueid"></param>
         /// <returns></returns>
-        public async ValueTask<ItemkeyTb?> GetKeyInfo(int? keyid)
+        public async ValueTask<BuildingItemvalueTb?> GetValueInfo(int? valueid)
         {
             try
             {
-                if(keyid is not null)
+                if(valueid is not null)
                 {
-                    ItemkeyTb? model = await context.ItemkeyTbs.FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
+                    BuildingItemvalueTb? model = await context.BuildingItemvalueTbs.FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -105,17 +105,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
-        /// 그룹 KEY 수정
+        /// 아이템 Value 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(ItemkeyTb? model)
+        public async ValueTask<bool?> UpdateValueInfo(BuildingItemvalueTb? model)
         {
             try
             {
-                if(model is not null)
+                if (model is not null)
                 {
-                    context.ItemkeyTbs.Update(model);
+                    context.BuildingItemvalueTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -131,23 +131,40 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
-        /// 그룹 KEY 삭제
+        /// 아이템 Value 삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteKeyInfo(ItemkeyTb? model)
+        public async ValueTask<bool?> DeleteValueInfo(BuildingItemvalueTb? model)
         {
             try
             {
                 if (model is not null)
                 {
-                    context.ItemkeyTbs.Update(model);
+                    context.BuildingItemvalueTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
                 {
                     return null;
                 }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        public async ValueTask<List<BuildingItemvalueTb>?> ContainsKeyList(List<int> KeyitemId)
+        {
+            try
+            {
+                List<BuildingItemvalueTb>? keytb = await context.BuildingItemvalueTbs.Where(e => KeyitemId.Contains(Convert.ToInt32(e.ItemKeyId)) && e.DelYn != true).ToListAsync();
+                if (keytb is [_, ..])
+                    return keytb;
+                else
+                    return null;
             }
             catch (Exception ex)
             {
@@ -156,38 +173,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
             }
         }
 
-        /// <summary>
-        /// 넘어온 GroupItemId에 포함되어있는 KeyTb 반환
-        /// </summary>
-        /// <param name="KeyId"></param>
-        /// <returns></returns>
-        public async ValueTask<List<ItemkeyTb>?> ContainsKeyList(List<int> GroupItemId)
+        public async ValueTask<List<BuildingItemvalueTb>?> NotContainsKeyList(List<int> KeyitemId)
         {
             try
             {
-                List<ItemkeyTb>? keytb = await context.ItemkeyTbs.Where(e => GroupItemId.Contains(Convert.ToInt32(e.GroupItemId)) && e.DelYn != true).ToListAsync();
-                if (keytb is [_, ..])
-                    return keytb;
-                else
-                    return null;
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
-
-        /// <summary>
-        /// 넘어온 GroupItemId에 포함되어있지 않은 KeyTb 반환
-        /// </summary>
-        /// <param name="KeyId"></param>
-        /// <returns></returns>
-        public async ValueTask<List<ItemkeyTb>?> NotContainsKeyList(List<int> GroupItemId)
-        {
-            try
-            {
-                List<ItemkeyTb>? keytb = await context.ItemkeyTbs.Where(e => !GroupItemId.Contains(Convert.ToInt32(e.GroupItemId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemvalueTb>? keytb = await context.BuildingItemvalueTbs.Where(e => !KeyitemId.Contains(Convert.ToInt32(e.ItemKeyId)) && e.DelYn != true).ToListAsync();
                 if (keytb is [_, ..])
                     return keytb;
                 else

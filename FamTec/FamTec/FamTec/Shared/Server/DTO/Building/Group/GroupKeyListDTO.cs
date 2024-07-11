@@ -1,4 +1,4 @@
-﻿namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building.Group
 {
     public class GroupKeyListDTO
     {

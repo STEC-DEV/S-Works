@@ -1,4 +1,4 @@
-﻿namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>
     /// 건물 리스트
@@ -28,12 +28,12 @@
         /// <summary>
         /// 준공년월
         /// </summary>
-        public DateTime? CompletionDT { get; set; }
+        public string? CompletionDT { get; set; }
 
         /// <summary>
         /// 등록일자
         /// </summary>
         public DateTime? CreateDT { get; set; }
-        
+
     }
 }

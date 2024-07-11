@@ -22,6 +22,12 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<AlarmTb> AlarmTbs { get; set; }
 
+    public virtual DbSet<BuildingGroupitemTb> BuildingGroupitemTbs { get; set; }
+
+    public virtual DbSet<BuildingItemkeyTb> BuildingItemkeyTbs { get; set; }
+
+    public virtual DbSet<BuildingItemvalueTb> BuildingItemvalueTbs { get; set; }
+
     public virtual DbSet<BuildingTb> BuildingTbs { get; set; }
 
     public virtual DbSet<CommentTb> CommentTbs { get; set; }
@@ -35,12 +41,6 @@ public partial class WorksContext : DbContext
     public virtual DbSet<FacilityTb> FacilityTbs { get; set; }
 
     public virtual DbSet<FloorTb> FloorTbs { get; set; }
-
-    public virtual DbSet<GroupitemTb> GroupitemTbs { get; set; }
-
-    public virtual DbSet<ItemkeyTb> ItemkeyTbs { get; set; }
-
-    public virtual DbSet<ItemvalueTb> ItemvalueTbs { get; set; }
 
     public virtual DbSet<MaterialTb> MaterialTbs { get; set; }
 
@@ -146,16 +146,89 @@ public partial class WorksContext : DbContext
             entity.HasOne(d => d.VocTb).WithMany(p => p.AlarmTbs).HasConstraintName("FK_VOC_202406141624");
         });
 
+        modelBuilder.Entity<BuildingGroupitemTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.Id).HasComment("그룹테이블 아이디");
+            entity.Property(e => e.BuildingId).HasComment("건물테이블아이디(외래키)");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("current_timestamp()")
+                .HasComment("생성시간");
+            entity.Property(e => e.CreateUser).HasComment("생성자");
+            entity.Property(e => e.DelDt).HasComment("삭제시간");
+            entity.Property(e => e.DelUser).HasComment("삭제자");
+            entity.Property(e => e.DelYn)
+                .HasDefaultValueSql("'0'")
+                .HasComment("삭제여부");
+            entity.Property(e => e.Name).HasComment("명칭 _주차장");
+            entity.Property(e => e.UpdateDt).HasComment("수정시간");
+            entity.Property(e => e.UpdateUser).HasComment("수정자");
+        });
+
+        modelBuilder.Entity<BuildingItemkeyTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.Id).HasComment("아이템키 테이블 아이디");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("current_timestamp()")
+                .HasComment("생성시간");
+            entity.Property(e => e.CreateUser).HasComment("생성자");
+            entity.Property(e => e.DelDt).HasComment("삭제시간");
+            entity.Property(e => e.DelUser).HasComment("삭제자");
+            entity.Property(e => e.DelYn)
+                .HasDefaultValueSql("'0'")
+                .HasComment("삭제여부");
+            entity.Property(e => e.GroupItemId).HasComment("그룹테이블 아이디");
+            entity.Property(e => e.Itemkey).HasComment("아이템 이름 _전기차");
+            entity.Property(e => e.UpdateDt).HasComment("수정시간");
+            entity.Property(e => e.UpdateUser).HasComment("수정자");
+
+            entity.HasOne(d => d.GroupItem).WithMany(p => p.BuildingItemkeyTbs).HasConstraintName("FK_GroupItem_202407041727");
+        });
+
+        modelBuilder.Entity<BuildingItemvalueTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.Id).HasComment("값 테이블 아이디");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("current_timestamp()")
+                .HasComment("생성시간");
+            entity.Property(e => e.CreateUser).HasComment("생성자");
+            entity.Property(e => e.DelDt).HasComment("삭제시간");
+            entity.Property(e => e.DelUser).HasComment("삭제자");
+            entity.Property(e => e.DelYn)
+                .HasDefaultValueSql("'0'")
+                .HasComment("삭제여부");
+            entity.Property(e => e.ItemKeyId).HasComment("키 테이블 인덱스");
+            entity.Property(e => e.Itemvalue).HasComment("아이템의 값 몇개");
+            entity.Property(e => e.Unit).HasComment("단위");
+            entity.Property(e => e.UpdateDt).HasComment("수정시간");
+            entity.Property(e => e.UpdateUser).HasComment("수정자");
+
+            entity.HasOne(d => d.ItemKey).WithMany(p => p.BuildingItemvalueTbs).HasConstraintName("FK_ItemKey_202407041727");
+        });
+
         modelBuilder.Entity<BuildingTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.Id).HasComment("건물 테이블 인덱스");
             entity.Property(e => e.Address).HasComment("주소");
+            entity.Property(e => e.Basementfloornum).HasComment("지하층수");
+            entity.Property(e => e.Basementheight).HasComment("지하깊이");
+            entity.Property(e => e.Boiler).HasComment("보일러");
             entity.Property(e => e.BuildingCd).HasComment("건물코드");
             entity.Property(e => e.BuildingStruct).HasComment("건물구조");
+            entity.Property(e => e.Buildingarea).HasComment("건축면적");
+            entity.Property(e => e.Buildingheight).HasComment("건물높이");
+            entity.Property(e => e.Cargoliftnum).HasComment("화물용 대수");
             entity.Property(e => e.CompletionDt).HasComment("준공년월");
             entity.Property(e => e.ConstComp).HasComment("시공업체");
+            entity.Property(e => e.Coolcapacity).HasComment("냉방용량");
+            entity.Property(e => e.Coolheatcapacity).HasComment("냉난방용량");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("생성일");
@@ -165,16 +238,43 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn)
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
+            entity.Property(e => e.Eleccapacity).HasComment("전기용량");
+            entity.Property(e => e.Elevwatercapacity).HasComment("고가수조");
+            entity.Property(e => e.Faucetcapacity).HasComment("수전용량");
+            entity.Property(e => e.Firerating).HasComment("소방등급");
+            entity.Property(e => e.Floornum).HasComment("건물층수");
+            entity.Property(e => e.Gascapacity).HasComment("가스용량");
+            entity.Property(e => e.Generationcapacity).HasComment("발전용량");
+            entity.Property(e => e.Grossfloorarea).HasComment("연면적");
+            entity.Property(e => e.Groundarea).HasComment("지상면적");
+            entity.Property(e => e.Groundfloornum).HasComment("지상층수");
+            entity.Property(e => e.Groundheight).HasComment("지상높이");
+            entity.Property(e => e.Heatcapacity).HasComment("난방용량");
             entity.Property(e => e.Image).HasComment("첨부파일");
+            entity.Property(e => e.Innerparkingnum).HasComment("옥내대수");
+            entity.Property(e => e.Landarea).HasComment("대지면적");
+            entity.Property(e => e.Landscapearea).HasComment("조경면적");
+            entity.Property(e => e.Liftnum).HasComment("승강기 대수");
+            entity.Property(e => e.Mentoiletnum).HasComment("남자화장실개수");
             entity.Property(e => e.Name).HasComment("건물명");
+            entity.Property(e => e.Outerparkingnum).HasComment("옥외대수");
+            entity.Property(e => e.Parkingnum).HasComment("주차대수");
+            entity.Property(e => e.Peopleliftnum).HasComment("인승용 대수");
             entity.Property(e => e.PlaceTbId).HasComment("(외래키) 사업장 인덱스");
             entity.Property(e => e.RoofStruct).HasComment("지붕구조");
+            entity.Property(e => e.Rooftoparea).HasComment("옥상면적");
+            entity.Property(e => e.Septictankcapacity).HasComment("정화조용량");
             entity.Property(e => e.Tel).HasComment("전화번호");
+            entity.Property(e => e.Toiletnum).HasComment("화장실개수");
             entity.Property(e => e.UpdateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("수정일");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
             entity.Property(e => e.Usage).HasComment("건물용도");
+            entity.Property(e => e.Watercapacity).HasComment("급수용량");
+            entity.Property(e => e.Waterdispenser).HasComment("냉온수기");
+            entity.Property(e => e.Watertank).HasComment("저수조");
+            entity.Property(e => e.Womentoiletnum).HasComment("여자화장실개수");
 
             entity.HasOne(d => d.PlaceTb).WithMany(p => p.BuildingTbs).HasConstraintName("fk_BUILDING_TB_PLACE_TB1");
         });
@@ -328,72 +428,6 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
             entity.HasOne(d => d.BuildingTb).WithMany(p => p.FloorTbs).HasConstraintName("fk_FLOOR_TB_BUILDING_TB1");
-        });
-
-        modelBuilder.Entity<GroupitemTb>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.Property(e => e.Id).HasComment("그룹테이블 아이디");
-            entity.Property(e => e.BuildingId).HasComment("건물테이블아이디(외래키)");
-            entity.Property(e => e.CreateDt)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasComment("생성시간");
-            entity.Property(e => e.CreateUser).HasComment("생성자");
-            entity.Property(e => e.DelDt).HasComment("삭제시간");
-            entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("삭제여부");
-            entity.Property(e => e.Name).HasComment("명칭 _주차장");
-            entity.Property(e => e.Type).HasComment("0,1,2 _건물,설비..");
-            entity.Property(e => e.UpdateDt).HasComment("수정시간");
-            entity.Property(e => e.UpdateUser).HasComment("수정자");
-        });
-
-        modelBuilder.Entity<ItemkeyTb>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.Property(e => e.Id).HasComment("아이템키 테이블 아이디");
-            entity.Property(e => e.CreateDt)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasComment("생성시간");
-            entity.Property(e => e.CreateUser).HasComment("생성자");
-            entity.Property(e => e.DelDt).HasComment("삭제시간");
-            entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("삭제여부");
-            entity.Property(e => e.GroupItemId).HasComment("그룹테이블 아이디");
-            entity.Property(e => e.Itemkey).HasComment("아이템 이름 _전기차");
-            entity.Property(e => e.UpdateDt).HasComment("수정시간");
-            entity.Property(e => e.UpdateUser).HasComment("수정자");
-
-            entity.HasOne(d => d.GroupItem).WithMany(p => p.ItemkeyTbs).HasConstraintName("FK_GroupItem_202407041727");
-        });
-
-        modelBuilder.Entity<ItemvalueTb>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.Property(e => e.Id).HasComment("값 테이블 아이디");
-            entity.Property(e => e.CreateDt)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasComment("생성시간");
-            entity.Property(e => e.CreateUser).HasComment("생성자");
-            entity.Property(e => e.DelDt).HasComment("삭제시간");
-            entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("삭제여부");
-            entity.Property(e => e.ItemKeyId).HasComment("키 테이블 인덱스");
-            entity.Property(e => e.Itemvalue).HasComment("아이템의 값 몇개");
-            entity.Property(e => e.Unit).HasComment("단위");
-            entity.Property(e => e.UpdateDt).HasComment("수정시간");
-            entity.Property(e => e.UpdateUser).HasComment("수정자");
-
-            entity.HasOne(d => d.ItemKey).WithMany(p => p.ItemvalueTbs).HasConstraintName("FK_ItemKey_202407041727");
         });
 
         modelBuilder.Entity<MaterialTb>(entity =>

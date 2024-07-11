@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building.Group
 {
     public class AddGroupItemValueDTO
     {
@@ -12,7 +6,7 @@ namespace FamTec.Shared.Server.DTO.Building
         /// 값
         /// </summary>
         public string? Values { get; set; }
-        
+
         /// <summary>
         /// 단위
         /// </summary>

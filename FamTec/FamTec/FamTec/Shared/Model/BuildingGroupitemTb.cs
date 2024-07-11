@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("groupitem_tb")]
-public partial class GroupitemTb
+[Table("building_groupitem_tb")]
+public partial class BuildingGroupitemTb
 {
     /// <summary>
     /// 그룹테이블 아이디
@@ -22,12 +22,6 @@ public partial class GroupitemTb
     [Column("NAME")]
     [StringLength(255)]
     public string Name { get; set; } = null!;
-
-    /// <summary>
-    /// 0,1,2 _건물,설비..
-    /// </summary>
-    [Column("TYPE", TypeName = "int(11)")]
-    public int Type { get; set; }
 
     /// <summary>
     /// 생성시간
@@ -81,5 +75,5 @@ public partial class GroupitemTb
     public int? BuildingId { get; set; }
 
     [InverseProperty("GroupItem")]
-    public virtual ICollection<ItemkeyTb> ItemkeyTbs { get; set; } = new List<ItemkeyTb>();
+    public virtual ICollection<BuildingItemkeyTb> BuildingItemkeyTbs { get; set; } = new List<BuildingItemkeyTb>();
 }

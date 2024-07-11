@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building.Group
 {
     public class AddGroupDTO
     {
+        /// <summary>
+        /// 건물인덱스
+        /// </summary>
+        public int? BuildingIdx { get; set; }
         /// <summary>
         /// 명칭 ex) 주차장
         /// </summary>

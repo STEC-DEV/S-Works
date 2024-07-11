@@ -628,100 +628,108 @@ namespace FamTec.Server.Services.User
 
         public async ValueTask<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext? context, int? id)
         {
-            if (context is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-            if (id is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-            if (String.IsNullOrWhiteSpace(UserIdx))
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-            if (String.IsNullOrWhiteSpace(placeid))
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
-            if (TokenChk is null)
-                return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-            if (TokenChk.PermUser != 2)
-                return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
-
-            UserTb? model = await UserInfoRepository.GetUserIndexInfo(id);
-            
-            // 조회내용이 있으면 반환
-            if(model is not null)
+            try
             {
-                UsersDTO dto = new UsersDTO();
-                dto.ID = model.Id;
-                dto.USERID = model.UserId;
-                dto.PASSWORD = model.Password;
-                dto.NAME = model.Name;
-                dto.EMAIL = model.Email;
-                dto.PHONE = model.Phone;
-                dto.PERM_BASIC = model.PermBasic;
-                dto.PERM_MACHINE = model.PermMachine;
-                dto.PERM_ELEC = model.PermElec;
-                dto.PERM_FIRE = model.PermFire;
-                dto.PERM_CONSTRUCT = model.PermConstruct;
-                dto.PERM_NETWORK = model.PermNetwork;
-                dto.PERM_BEAUTY = model.PermBeauty;
-                dto.PERM_SECURITY = model.PermSecurity;
-                dto.PERM_MATERIAL = model.PermMaterial;
-                dto.PERM_ENERGY = model.PermEnergy;
-                dto.PERM_USER = model.PermUser;
-                dto.PERM_VOC = model.PermVoc;
-                dto.ADMIN_YN = model.AdminYn;
-                dto.ALRAM_YN = model.AlramYn;
-                dto.STATUS = model.Status;
-                dto.JOB = model.Job;
-                dto.VOC_MACHINE = model.VocMachine;
-                dto.VOC_ELEC = model.VocElec;
-                dto.VOC_LIFT = model.VocLift;
-                dto.VOC_FIRE = model.VocFire;
-                dto.VOC_CONSTRUCT = model.VocConstruct;
-                dto.VOC_NETWORK = model.VocNetwork;
-                dto.VOC_BEAUTY = model.VocBeauty;
-                dto.VOC_SECURITY = model.VocSecurity;
-                dto.VOC_DEFAULT = model.VocDefault;
+                if (context is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                if (id is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                string? Image = model.Image;
-                if(!String.IsNullOrWhiteSpace(Image))
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                if (TokenChk is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                if (TokenChk.PermUser != 2)
+                    return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
+
+                UserTb? model = await UserInfoRepository.GetUserIndexInfo(id);
+
+                // 조회내용이 있으면 반환
+                if (model is not null)
                 {
-                    string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
-                    string[] FileList = Directory.GetFiles(PlaceFileName);
-                    if (FileList is [_, ..])
+                    UsersDTO dto = new UsersDTO();
+                    dto.ID = model.Id;
+                    dto.USERID = model.UserId;
+                    dto.PASSWORD = model.Password;
+                    dto.NAME = model.Name;
+                    dto.EMAIL = model.Email;
+                    dto.PHONE = model.Phone;
+                    dto.PERM_BASIC = model.PermBasic;
+                    dto.PERM_MACHINE = model.PermMachine;
+                    dto.PERM_ELEC = model.PermElec;
+                    dto.PERM_FIRE = model.PermFire;
+                    dto.PERM_CONSTRUCT = model.PermConstruct;
+                    dto.PERM_NETWORK = model.PermNetwork;
+                    dto.PERM_BEAUTY = model.PermBeauty;
+                    dto.PERM_SECURITY = model.PermSecurity;
+                    dto.PERM_MATERIAL = model.PermMaterial;
+                    dto.PERM_ENERGY = model.PermEnergy;
+                    dto.PERM_USER = model.PermUser;
+                    dto.PERM_VOC = model.PermVoc;
+                    dto.ADMIN_YN = model.AdminYn;
+                    dto.ALRAM_YN = model.AlramYn;
+                    dto.STATUS = model.Status;
+                    dto.JOB = model.Job;
+                    dto.VOC_MACHINE = model.VocMachine;
+                    dto.VOC_ELEC = model.VocElec;
+                    dto.VOC_LIFT = model.VocLift;
+                    dto.VOC_FIRE = model.VocFire;
+                    dto.VOC_CONSTRUCT = model.VocConstruct;
+                    dto.VOC_NETWORK = model.VocNetwork;
+                    dto.VOC_BEAUTY = model.VocBeauty;
+                    dto.VOC_SECURITY = model.VocSecurity;
+                    dto.VOC_DEFAULT = model.VocDefault;
+
+                    string? Image = model.Image;
+                    if (!String.IsNullOrWhiteSpace(Image))
                     {
-                        foreach (var file in FileList)
+                        string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                        string[] FileList = Directory.GetFiles(PlaceFileName);
+                        if (FileList is [_, ..])
                         {
-                            if (file.Contains(Image))
+                            foreach (var file in FileList)
                             {
-                                byte[] ImageBytes = File.ReadAllBytes(file);
-                                dto.Image = Convert.ToBase64String(ImageBytes);
+                                if (file.Contains(Image))
+                                {
+                                    byte[] ImageBytes = File.ReadAllBytes(file);
+                                    dto.Image = Convert.ToBase64String(ImageBytes);
+                                }
                             }
+                        }
+                        else
+                        {
+                            dto.Image = model.Image;
                         }
                     }
                     else
                     {
                         dto.Image = model.Image;
                     }
+
+                    return new ResponseUnit<UsersDTO>()
+                    {
+                        message = "요청이 정상 처리되었습니다.",
+                        data = dto,
+                        code = 200
+                    };
                 }
                 else
                 {
-                    dto.Image = model.Image;
+                    return new ResponseUnit<UsersDTO>() { message = "데이터가 존재하지 않습니다.", data = new UsersDTO(), code = 200 };
                 }
-
-                return new ResponseUnit<UsersDTO>() 
-                {
-                    message = "요청이 정상 처리되었습니다.",
-                    data = dto,
-                    code = 200 
-                };
             }
-            else
+            catch(Exception ex)
             {
-                return new ResponseUnit<UsersDTO>() { message = "데이터가 존재하지 않습니다.", data = new UsersDTO(), code = 200 };
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
 

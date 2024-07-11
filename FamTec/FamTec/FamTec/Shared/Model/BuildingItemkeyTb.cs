@@ -6,30 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("itemvalue_tb")]
-[Index("ItemKeyId", Name = "FK_ItemKey_202407041727")]
-public partial class ItemvalueTb
+[Table("building_itemkey_tb")]
+[Index("GroupItemId", Name = "FK_GroupItem_202407041727")]
+public partial class BuildingItemkeyTb
 {
     /// <summary>
-    /// 값 테이블 아이디
+    /// 아이템키 테이블 아이디
     /// </summary>
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
     /// <summary>
-    /// 아이템의 값 몇개
+    /// 아이템 이름 _전기차
     /// </summary>
-    [Column("ITEMVALUE")]
+    [Column("ITEMKEY")]
     [StringLength(255)]
-    public string Itemvalue { get; set; } = null!;
-
-    /// <summary>
-    /// 단위
-    /// </summary>
-    [Column("UNIT")]
-    [StringLength(255)]
-    public string? Unit { get; set; }
+    public string Itemkey { get; set; } = null!;
 
     /// <summary>
     /// 생성시간
@@ -77,12 +70,15 @@ public partial class ItemvalueTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 키 테이블 인덱스
+    /// 그룹테이블 아이디
     /// </summary>
     [Column(TypeName = "int(11)")]
-    public int? ItemKeyId { get; set; }
+    public int? GroupItemId { get; set; }
 
-    [ForeignKey("ItemKeyId")]
-    [InverseProperty("ItemvalueTbs")]
-    public virtual ItemkeyTb? ItemKey { get; set; }
+    [InverseProperty("ItemKey")]
+    public virtual ICollection<BuildingItemvalueTb> BuildingItemvalueTbs { get; set; } = new List<BuildingItemvalueTb>();
+
+    [ForeignKey("GroupItemId")]
+    [InverseProperty("BuildingItemkeyTbs")]
+    public virtual BuildingGroupitemTb? GroupItem { get; set; }
 }

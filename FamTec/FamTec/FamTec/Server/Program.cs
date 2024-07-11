@@ -1,8 +1,6 @@
 using FamTec.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using FamTec.Server;
-using FamTec.Server.Databases;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
@@ -36,6 +34,11 @@ using FamTec.Server.Services.Material;
 using FamTec.Server.Repository.Building.SubItem.Group;
 using FamTec.Server.Repository.Building.SubItem.ItemKey;
 using FamTec.Server.Repository.Building.SubItem.ItemValue;
+using FamTec.Server;
+using FamTec.Server.Databases;
+using FamTec.Server.Services.Building.Group;
+using FamTec.Server.Services.Building.Key;
+using FamTec.Server.Services.Building.Value;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,9 +49,9 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
-builder.Services.AddTransient<IGroupItemInfoRepository, GroupItemInfoRepository>();
-builder.Services.AddTransient<IItemKeyInfoRepository, ItemKeyInfoRepository>();
-builder.Services.AddTransient<IItemValueInfoRepository, ItemValueInfoRepository>();
+builder.Services.AddTransient<IBuildingGroupItemInfoRepository, BuildingGroupItemInfoRepository>();
+builder.Services.AddTransient<IBuildingItemKeyInfoRepository, BuildingItemKeyInfoRepository>();
+builder.Services.AddTransient<IBuildingItemValueInfoRepository, BuildingItemValueInfoRepository>();
 
 builder.Services.AddTransient<IUserInfoRepository, UserInfoRepository>();
 builder.Services.AddTransient<IAdminUserInfoRepository, AdminUserInfoRepository>();
@@ -69,6 +72,10 @@ builder.Services.AddTransient<IVocCommentRepository, VocCommentRepository>();
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
 builder.Services.AddTransient<IAdminPlaceService, AdminPlaceService>();
 builder.Services.AddTransient<IBuildingService, BuildingService>();
+builder.Services.AddTransient<IBuildingGroupService, BuildingGroupService>();
+builder.Services.AddTransient<IBuildingKeyService, BuildingKeyService>();
+builder.Services.AddTransient<IBuildingValueService, BuildingValueService>();
+
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IDepartmentService, DepartmentService>();
@@ -273,6 +280,12 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/si
 
 // VocComment 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/VocComment/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Group 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroup/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Building
+﻿namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>
-    /// 건물 상세정보 DTO
+    /// 업데이터 건물항목
     /// </summary>
-    public class DetailBuildingDTO
+    public class UpdateBuildingDTO
     {
         /// <summary>
         /// 건물 테이블 인덱스
@@ -60,16 +54,10 @@ namespace FamTec.Shared.Server.DTO.Building
         /// 지붕구조
         /// </summary>
         public string? RoofStruct { get; set; }
-        
+
         /// <summary>
         /// 첨부파일
         /// </summary>
         public string? Image { get; set; }
-
-        /// <summary>
-        /// 추가항목
-        /// </summary>
-        public List<GroupListDTO>? GroupItem { get; set; } = new List<GroupListDTO>();
-
     }
 }

@@ -364,7 +364,12 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "BuildingCD",
+        "Name": "ID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Code",
         "Type": "System.String",
         "IsRequired": false
       },
@@ -389,13 +394,13 @@
         "IsRequired": false
       },
       {
-        "Name": "ConstComp",
+        "Name": "ConstCompany",
         "Type": "System.String",
         "IsRequired": false
       },
       {
         "Name": "CompletionDT",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -409,8 +414,178 @@
         "IsRequired": false
       },
       {
-        "Name": "SubItem",
-        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Building.AddGroupDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Name": "GrossFloorArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LandArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundFloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BasementFloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BasementHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "InnerParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OuterParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ElecCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FaucetCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GenerationCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ElevWaterCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterTank",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GasCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Boiler",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterDispenser",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PeopleLiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CargoLiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CoolHeatCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "HeatCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CoolCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LandScapeArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RooftopArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MenToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WomenToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FireRating",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SeptictankCapacity",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -497,12 +672,12 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Id",
+        "Name": "ID",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
-        "Name": "BuildingCD",
+        "Name": "Code",
         "Type": "System.String",
         "IsRequired": false
       },
@@ -527,13 +702,13 @@
         "IsRequired": false
       },
       {
-        "Name": "ConstComp",
+        "Name": "ConstCompany",
         "Type": "System.String",
         "IsRequired": false
       },
       {
         "Name": "CompletionDT",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -547,13 +722,183 @@
         "IsRequired": false
       },
       {
-        "Name": "Image",
+        "Name": "GrossFloorArea",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "GroupItem",
-        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Building.GroupListDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Name": "LandArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundFloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BasementFloorNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BasementHeight",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "InnerParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OuterParkingNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ElecCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FaucetCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GenerationCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ElevWaterCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterTank",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GasCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Boiler",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WaterDispenser",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PeopleLiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CargoLiftNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CoolHeatCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "HeatCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CoolCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LandScapeArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "GroundArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RooftopArea",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MenToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "WomenToiletNum",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FireRating",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SeptictankCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -584,6 +929,70 @@
       {
         "Name": "FileName",
         "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
+    "Method": "AddBuildingGroup",
+    "RelativePath": "api/BuildingGroup/sign/AddBuildingGroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.AddGroupDTO",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
+    "Method": "DeleteBuildingGroup",
+    "RelativePath": "api/BuildingGroup/sign/DeleteGroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "groupid",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
+    "Method": "GetDetailBuilding",
+    "RelativePath": "api/BuildingGroup/sign/GetBuildingGroup",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buildingid",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
+    "Method": "UpdateBuildingGroup",
+    "RelativePath": "api/BuildingGroup/sign/UpdateGroup",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.UpdateGroupDTO",
         "IsRequired": false
       }
     ],
@@ -725,10 +1134,16 @@
     "ContainingType": "FamTec.Server.Controllers.Floor.FloorController",
     "Method": "DeleteFloor",
     "RelativePath": "api/Floor/sign/DeleteFloor",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "idx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

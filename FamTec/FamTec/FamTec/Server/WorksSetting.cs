@@ -11,8 +11,8 @@ namespace FamTec.Server
 
         public WorksSetting()
         {
-            this.context = new WorksContext();
-            this.defaultUnit = new List<string>()
+            context = new WorksContext();
+            defaultUnit = new List<string>()
             {
                 "㎀","㎁","㎂","㎃","KB", "MB", "GB", "㎈", "㎉", "㎊", "㎋", "㎌", "㎍", "㎎",
                 "㎏", "㎐", "㎑", "㎒", "㎒", "㎓", "㎔", "㎙", "㎚", "㎛", "㎜", "㎝", "㎞", "㎟", "㎠", "㎡", "㎢", "㎣", "㎤",
@@ -26,13 +26,13 @@ namespace FamTec.Server
         public async ValueTask DefaultSetting()
         {
             List<string?> unittb = await context.UnitTbs
-                .Where(m => 
-                m.DelYn != true 
+                .Where(m =>
+                m.DelYn != true
                 && m.PlaceTbId == null).Select(m => m.Unit).ToListAsync();
 
             List<string?> compare = defaultUnit.Except(unittb).ToList();
 
-            for(int i = 0; i < compare.Count; i++)
+            for (int i = 0; i < compare.Count; i++)
             {
                 UnitTb? model = new UnitTb();
                 model.Unit = compare[i];
@@ -49,12 +49,12 @@ namespace FamTec.Server
 
             // 파일서버 경로
             DirectoryInfo di = new DirectoryInfo(Common.FileServer);
-            if(!di.Exists) di.Create();
-            
+            if (!di.Exists) di.Create();
+
             // VOC 파일 이미지서버 경로
             di = new DirectoryInfo(Common.VocFileImages);
-            if (!di.Exists)di.Create();
-            
+            if (!di.Exists) di.Create();
+
 
             DepartmentTb? department = new DepartmentTb();
             department.Name = "에스텍시스템";
@@ -66,10 +66,10 @@ namespace FamTec.Server
 
             DepartmentTb? selectDepartment = await context.DepartmentTbs
                 .FirstOrDefaultAsync(m =>
-                m.Name!.Equals("에스텍시스템") && 
+                m.Name!.Equals("에스텍시스템") &&
                 m.DelYn != true);
 
-            if(selectDepartment is null)
+            if (selectDepartment is null)
             {
                 context.DepartmentTbs.Add(department);
                 await context.SaveChangesAsync();
@@ -135,9 +135,9 @@ namespace FamTec.Server
                 DelYn = false,
                 Job = "시스템관리자"
             };
-            
+
             UserTb? selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
-            if(selectUser is null)
+            if (selectUser is null)
             {
                 context.UserTbs.Add(user);
                 await context.SaveChangesAsync();
@@ -157,110 +157,110 @@ namespace FamTec.Server
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.Email != selectUser.Email) // 이메일
+                if (user.Email != selectUser.Email) // 이메일
                 {
                     selectUser.Email = user.Email;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.Phone != selectUser.Phone) // 전화번호
+                if (user.Phone != selectUser.Phone) // 전화번호
                 {
                     selectUser.Phone = user.Phone;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermBasic != selectUser.PermBasic) // 기본정보등록 권한
+                if (user.PermBasic != selectUser.PermBasic) // 기본정보등록 권한
                 {
                     selectUser.PermBasic = user.PermBasic;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermMachine != selectUser.PermMachine) // 설비 권한
+                if (user.PermMachine != selectUser.PermMachine) // 설비 권한
                 {
                     selectUser.PermMachine = user.PermMachine;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermLift != selectUser.PermLift) // 승강 권한
+                if (user.PermLift != selectUser.PermLift) // 승강 권한
                 {
                     selectUser.PermLift = user.PermLift;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermFire != selectUser.PermFire) // 소방권한
+                if (user.PermFire != selectUser.PermFire) // 소방권한
                 {
                     selectUser.PermFire = user.PermFire;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermConstruct != selectUser.PermConstruct) // 건축권한
+                if (user.PermConstruct != selectUser.PermConstruct) // 건축권한
                 {
                     selectUser.PermConstruct = user.PermConstruct;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermNetwork != selectUser.PermNetwork) // 통신권한
+                if (user.PermNetwork != selectUser.PermNetwork) // 통신권한
                 {
                     selectUser.PermNetwork = user.PermNetwork;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermBeauty != selectUser.PermBeauty) // 미화권한
+                if (user.PermBeauty != selectUser.PermBeauty) // 미화권한
                 {
                     selectUser.PermBeauty = user.PermBeauty;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermSecurity != selectUser.PermSecurity) // 보안권한
+                if (user.PermSecurity != selectUser.PermSecurity) // 보안권한
                 {
                     selectUser.PermSecurity = user.PermSecurity;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermMaterial != selectUser.PermMaterial) // 자재권한
+                if (user.PermMaterial != selectUser.PermMaterial) // 자재권한
                 {
                     selectUser.PermMaterial = user.PermMaterial;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermEnergy != selectUser.PermEnergy) // 에너지권한
+                if (user.PermEnergy != selectUser.PermEnergy) // 에너지권한
                 {
                     selectUser.PermEnergy = user.PermEnergy;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermUser != selectUser.PermUser) // 사용자 설정 권한
+                if (user.PermUser != selectUser.PermUser) // 사용자 설정 권한
                 {
                     selectUser.PermUser = user.PermUser;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.PermVoc != selectUser.PermVoc) // VOC 권한
+                if (user.PermVoc != selectUser.PermVoc) // VOC 권한
                 {
                     selectUser.PermVoc = user.PermVoc;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
 
-                if(user.AdminYn != selectUser.AdminYn)
+                if (user.AdminYn != selectUser.AdminYn)
                 {
                     selectUser.AdminYn = user.AdminYn;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.AlramYn != selectUser.AlramYn)
+                if (user.AlramYn != selectUser.AlramYn)
                 {
                     selectUser.AlramYn = user.AlramYn;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.DelYn != selectUser.DelYn)
+                if (user.DelYn != selectUser.DelYn)
                 {
                     selectUser.DelYn = user.DelYn;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if(user.Job != selectUser.Job)
+                if (user.Job != selectUser.Job)
                 {
                     selectUser.Job = user.Job;
                     selectUser.UpdateDt = DateTime.Now;
@@ -284,8 +284,8 @@ namespace FamTec.Server
             admin.DepartmentTbId = selectDepartment!.Id;
 
             AdminTb? selectAdmin = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(selectUser.Id));
-            
-            if(selectAdmin is null)
+
+            if (selectAdmin is null)
             {
                 context.AdminTbs.Add(admin);
                 await context.SaveChangesAsync();
@@ -298,13 +298,13 @@ namespace FamTec.Server
                     selectAdmin.UpdateDt = DateTime.Now;
                     selectAdmin.UpdateUser = "시스템관리자";
                 }
-                if(selectAdmin.UserTbId != selectUser.Id)
+                if (selectAdmin.UserTbId != selectUser.Id)
                 {
                     selectAdmin.UserTbId = selectUser.Id;
                     selectAdmin.UpdateDt = DateTime.Now;
                     selectAdmin.UpdateUser = "시스템관리자";
                 }
-                if(selectAdmin.DepartmentTbId != selectDepartment.Id)
+                if (selectAdmin.DepartmentTbId != selectDepartment.Id)
                 {
                     selectAdmin.DepartmentTbId = selectDepartment.Id;
                     selectAdmin.UpdateDt = DateTime.Now;

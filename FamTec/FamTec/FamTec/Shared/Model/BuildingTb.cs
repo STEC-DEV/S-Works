@@ -62,8 +62,9 @@ public partial class BuildingTb
     /// <summary>
     /// 준공년월
     /// </summary>
-    [Column("COMPLETION_DT", TypeName = "datetime")]
-    public DateTime? CompletionDt { get; set; }
+    [Column("COMPLETION_DT")]
+    [StringLength(255)]
+    public string? CompletionDt { get; set; }
 
     /// <summary>
     /// 건물구조
@@ -78,6 +79,251 @@ public partial class BuildingTb
     [Column("ROOF_STRUCT")]
     [StringLength(255)]
     public string? RoofStruct { get; set; }
+
+    /// <summary>
+    /// 연면적
+    /// </summary>
+    [Column("GROSSFLOORAREA")]
+    [StringLength(255)]
+    public string? Grossfloorarea { get; set; }
+
+    /// <summary>
+    /// 대지면적
+    /// </summary>
+    [Column("LANDAREA")]
+    [StringLength(255)]
+    public string? Landarea { get; set; }
+
+    /// <summary>
+    /// 건축면적
+    /// </summary>
+    [Column("BUILDINGAREA")]
+    [StringLength(255)]
+    public string? Buildingarea { get; set; }
+
+    /// <summary>
+    /// 건물층수
+    /// </summary>
+    [Column("FLOORNUM")]
+    [StringLength(255)]
+    public string? Floornum { get; set; }
+
+    /// <summary>
+    /// 지상층수
+    /// </summary>
+    [Column("GROUNDFLOORNUM")]
+    [StringLength(255)]
+    public string? Groundfloornum { get; set; }
+
+    /// <summary>
+    /// 지하층수
+    /// </summary>
+    [Column("BASEMENTFLOORNUM")]
+    [StringLength(255)]
+    public string? Basementfloornum { get; set; }
+
+    /// <summary>
+    /// 건물높이
+    /// </summary>
+    [Column("BUILDINGHEIGHT")]
+    [StringLength(255)]
+    public string? Buildingheight { get; set; }
+
+    /// <summary>
+    /// 지상높이
+    /// </summary>
+    [Column("GROUNDHEIGHT")]
+    [StringLength(255)]
+    public string? Groundheight { get; set; }
+
+    /// <summary>
+    /// 지하깊이
+    /// </summary>
+    [Column("BASEMENTHEIGHT")]
+    [StringLength(255)]
+    public string? Basementheight { get; set; }
+
+    /// <summary>
+    /// 주차대수
+    /// </summary>
+    [Column("PARKINGNUM")]
+    [StringLength(255)]
+    public string? Parkingnum { get; set; }
+
+    /// <summary>
+    /// 옥내대수
+    /// </summary>
+    [Column("INNERPARKINGNUM")]
+    [StringLength(255)]
+    public string? Innerparkingnum { get; set; }
+
+    /// <summary>
+    /// 옥외대수
+    /// </summary>
+    [Column("OUTERPARKINGNUM")]
+    [StringLength(255)]
+    public string? Outerparkingnum { get; set; }
+
+    /// <summary>
+    /// 전기용량
+    /// </summary>
+    [Column("ELECCAPACITY")]
+    [StringLength(255)]
+    public string? Eleccapacity { get; set; }
+
+    /// <summary>
+    /// 수전용량
+    /// </summary>
+    [Column("FAUCETCAPACITY")]
+    [StringLength(255)]
+    public string? Faucetcapacity { get; set; }
+
+    /// <summary>
+    /// 발전용량
+    /// </summary>
+    [Column("GENERATIONCAPACITY")]
+    [StringLength(255)]
+    public string? Generationcapacity { get; set; }
+
+    /// <summary>
+    /// 급수용량
+    /// </summary>
+    [Column("WATERCAPACITY")]
+    [StringLength(255)]
+    public string? Watercapacity { get; set; }
+
+    /// <summary>
+    /// 고가수조
+    /// </summary>
+    [Column("ELEVWATERCAPACITY")]
+    [StringLength(255)]
+    public string? Elevwatercapacity { get; set; }
+
+    /// <summary>
+    /// 저수조
+    /// </summary>
+    [Column("WATERTANK")]
+    [StringLength(255)]
+    public string? Watertank { get; set; }
+
+    /// <summary>
+    /// 가스용량
+    /// </summary>
+    [Column("GASCAPACITY")]
+    [StringLength(255)]
+    public string? Gascapacity { get; set; }
+
+    /// <summary>
+    /// 보일러
+    /// </summary>
+    [Column("BOILER")]
+    [StringLength(255)]
+    public string? Boiler { get; set; }
+
+    /// <summary>
+    /// 냉온수기
+    /// </summary>
+    [Column("WATERDISPENSER")]
+    [StringLength(255)]
+    public string? Waterdispenser { get; set; }
+
+    /// <summary>
+    /// 승강기 대수
+    /// </summary>
+    [Column("LIFTNUM")]
+    [StringLength(255)]
+    public string? Liftnum { get; set; }
+
+    /// <summary>
+    /// 인승용 대수
+    /// </summary>
+    [Column("PEOPLELIFTNUM")]
+    [StringLength(255)]
+    public string? Peopleliftnum { get; set; }
+
+    /// <summary>
+    /// 화물용 대수
+    /// </summary>
+    [Column("CARGOLIFTNUM")]
+    [StringLength(255)]
+    public string? Cargoliftnum { get; set; }
+
+    /// <summary>
+    /// 냉난방용량
+    /// </summary>
+    [Column("COOLHEATCAPACITY")]
+    [StringLength(255)]
+    public string? Coolheatcapacity { get; set; }
+
+    /// <summary>
+    /// 난방용량
+    /// </summary>
+    [Column("HEATCAPACITY")]
+    [StringLength(255)]
+    public string? Heatcapacity { get; set; }
+
+    /// <summary>
+    /// 냉방용량
+    /// </summary>
+    [Column("COOLCAPACITY")]
+    [StringLength(255)]
+    public string? Coolcapacity { get; set; }
+
+    /// <summary>
+    /// 조경면적
+    /// </summary>
+    [Column("LANDSCAPEAREA")]
+    [StringLength(255)]
+    public string? Landscapearea { get; set; }
+
+    /// <summary>
+    /// 지상면적
+    /// </summary>
+    [Column("GROUNDAREA")]
+    [StringLength(255)]
+    public string? Groundarea { get; set; }
+
+    /// <summary>
+    /// 옥상면적
+    /// </summary>
+    [Column("ROOFTOPAREA")]
+    [StringLength(255)]
+    public string? Rooftoparea { get; set; }
+
+    /// <summary>
+    /// 화장실개수
+    /// </summary>
+    [Column("TOILETNUM")]
+    [StringLength(255)]
+    public string? Toiletnum { get; set; }
+
+    /// <summary>
+    /// 남자화장실개수
+    /// </summary>
+    [Column("MENTOILETNUM")]
+    [StringLength(255)]
+    public string? Mentoiletnum { get; set; }
+
+    /// <summary>
+    /// 여자화장실개수
+    /// </summary>
+    [Column("WOMENTOILETNUM")]
+    [StringLength(255)]
+    public string? Womentoiletnum { get; set; }
+
+    /// <summary>
+    /// 소방등급
+    /// </summary>
+    [Column("FIRERATING")]
+    [StringLength(255)]
+    public string? Firerating { get; set; }
+
+    /// <summary>
+    /// 정화조용량
+    /// </summary>
+    [Column("SEPTICTANKCAPACITY")]
+    [StringLength(255)]
+    public string? Septictankcapacity { get; set; }
 
     /// <summary>
     /// 생성일
