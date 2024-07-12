@@ -246,7 +246,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/AddPlaceManager")]
-        
+
         public async ValueTask<IActionResult> AddPlaceManager([FromBody]AddPlaceManagerDTO<ManagerListDTO> placemanager)
         {
             try
