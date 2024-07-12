@@ -42,40 +42,40 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddGroupDTO?>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
-                BuildingGroupitemTb GroupTB = new BuildingGroupitemTb();
+                BuildingItemGroupTb GroupTB = new BuildingItemGroupTb();
                 GroupTB.Name = dto.Name; // 그룹이름
-                GroupTB.BuildingId = dto.BuildingIdx; // 빌딩인덱스
                 GroupTB.CreateDt = DateTime.Now;
                 GroupTB.CreateUser = creater;
                 GroupTB.UpdateDt = DateTime.Now;
                 GroupTB.UpdateUser = creater;
+                GroupTB.BuildingTbId = dto.BuildingIdx; // 빌딩인덱스
 
-                BuildingGroupitemTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB);
+                BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB);
                 if (AddGroupTable is not null)
                 {
                     foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
                     {
-                        BuildingItemkeyTb KeyTB = new BuildingItemkeyTb();
-                        KeyTB.Itemkey = KeyDTO.Name;
+                        BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
+                        KeyTB.Name = KeyDTO.Name;
                         KeyTB.CreateDt = DateTime.Now;
                         KeyTB.CreateUser = creater;
                         KeyTB.UpdateDt = DateTime.Now;
                         KeyTB.UpdateUser = creater;
-                        KeyTB.GroupItemId = AddGroupTable.Id;
+                        KeyTB.BuildingGroupTbId = AddGroupTable.Id;
 
-                        BuildingItemkeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB);
+                        BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB);
                         if (AddKeyTable is not null)
                         {
                             if (KeyDTO.ItemValues is [_, ..])
                             {
                                 foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
                                 {
-                                    BuildingItemvalueTb ValueTB = new BuildingItemvalueTb();
-                                    ValueTB.Itemvalue = ValueDTO.Values;
+                                    BuildingItemValueTb ValueTB = new BuildingItemValueTb();
+                                    ValueTB.ItemValue = ValueDTO.Values;
                                     ValueTB.Unit = ValueDTO.Unit;
-                                    ValueTB.ItemKeyId = AddKeyTable.Id;
+                                    ValueTB.BuildingKeyTbId = AddKeyTable.Id;
 
-                                    BuildingItemvalueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
+                                    BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
                                     if (AddValueTable is null)
                                     {
                                         return new ResponseUnit<AddGroupDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
@@ -120,25 +120,25 @@ namespace FamTec.Server.Services.Building.Group
                 List<GroupValueListDTO?> GroupValueList = new List<GroupValueListDTO?>(); // 값 [3]
 
 
-                List<BuildingGroupitemTb>? GroupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId);
+                List<BuildingItemGroupTb>? GroupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId);
                 if (GroupListTB is [_, ..])
                 {
-                    foreach (BuildingGroupitemTb Group in GroupListTB)
+                    foreach (BuildingItemGroupTb Group in GroupListTB)
                     {
-                        List<BuildingItemkeyTb>? GroupKeyTB = await BuildingItemKeyInfoRepository.GetAllKeyList(Group.Id);
+                        List<BuildingItemKeyTb>? GroupKeyTB = await BuildingItemKeyInfoRepository.GetAllKeyList(Group.Id);
                         if (GroupKeyTB is [_, ..])
                         {
-                            foreach (BuildingItemkeyTb Key in GroupKeyTB)
+                            foreach (BuildingItemKeyTb Key in GroupKeyTB)
                             {
-                                List<BuildingItemvalueTb>? GroupValueTB = await BuildingItemValueInfoRepository.GetAllValueList(Key.Id);
+                                List<BuildingItemValueTb>? GroupValueTB = await BuildingItemValueInfoRepository.GetAllValueList(Key.Id);
                                 if (GroupValueTB is [_, ..])
                                 {
-                                    foreach (BuildingItemvalueTb Value in GroupValueTB)
+                                    foreach (BuildingItemValueTb Value in GroupValueTB)
                                     {
                                         GroupValueList.Add(new GroupValueListDTO
                                         {
                                             ID = Value.Id,
-                                            ItemValue = Value.Itemvalue,
+                                            ItemValue = Value.ItemValue,
                                             Unit = Value.Unit
                                         });
                                     }
@@ -146,7 +146,7 @@ namespace FamTec.Server.Services.Building.Group
                                     GroupKeyList.Add(new GroupKeyListDTO()
                                     {
                                         ID = Key.Id,
-                                        ItemKey = Key.Itemkey,
+                                        ItemKey = Key.Name,
                                         ValueList = GroupValueList
                                     });
                                     GroupValueList = new List<GroupValueListDTO?>();
@@ -193,7 +193,7 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                BuildingGroupitemTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId);
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId);
 
                 if (GroupTb is not null)
                 {
@@ -239,7 +239,7 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                BuildingGroupitemTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(groupid);
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(groupid);
 
                 if (GroupTb is not null)
                 {
@@ -252,10 +252,10 @@ namespace FamTec.Server.Services.Building.Group
                     if (DeleteGroupResult != true)
                         return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
 
-                    List<BuildingItemkeyTb>? KeyTb = await BuildingItemKeyInfoRepository.GetAllKeyList(groupid);
+                    List<BuildingItemKeyTb>? KeyTb = await BuildingItemKeyInfoRepository.GetAllKeyList(groupid);
                     if (KeyTb is [_, ..])
                     {
-                        foreach (BuildingItemkeyTb KeyModel in KeyTb)
+                        foreach (BuildingItemKeyTb KeyModel in KeyTb)
                         {
                             KeyModel.DelDt = DateTime.Now;
                             KeyModel.DelUser = creater;
@@ -268,10 +268,10 @@ namespace FamTec.Server.Services.Building.Group
                                 return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
                             }
 
-                            List<BuildingItemvalueTb>? ValueTb = await BuildingItemValueInfoRepository.GetAllValueList(KeyModel.Id);
+                            List<BuildingItemValueTb>? ValueTb = await BuildingItemValueInfoRepository.GetAllValueList(KeyModel.Id);
                             if (ValueTb is [_, ..])
                             {
-                                foreach (BuildingItemvalueTb ValueModel in ValueTb)
+                                foreach (BuildingItemValueTb ValueModel in ValueTb)
                                 {
                                     ValueModel.DelDt = DateTime.Now;
                                     ValueModel.DelUser = creater;

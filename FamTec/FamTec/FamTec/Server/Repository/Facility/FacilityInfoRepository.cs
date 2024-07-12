@@ -56,17 +56,17 @@ namespace FamTec.Server.Repository.Facility
                                                     join roomtb in context.RoomTbs
                                                     on floortb.Id equals roomtb.FloorTbId
                                                     join facilitytb in context.FacilityTbs
-                                                    on roomtb.Id equals facilitytb.RoomTbid
+                                                    on roomtb.Id equals facilitytb.RoomTbId
                                                     where buildingtb.DelYn != true && floortb.DelYn != true && roomtb.DelYn != true && facilitytb.DelYn != true
                                                     select new FacilityListDTO
                                                     {
                                                         Id = facilitytb.Id, // 인덱스
                                                         Name = facilitytb.Name, // 설비명칭
                                                         Type = facilitytb.Type, // 형식
-                                                        Ea = facilitytb.Ea, // 개수
+                                                        Num = facilitytb.Num, // 개수
                                                         RoomName = roomtb.Name, // 위치
                                                         StandardCapacity = facilitytb.StandardCapacity, // 규격용량
-                                                        FacCreateDT = facilitytb.FacCreateDt, // 설치년월
+                                                        EquipDT = facilitytb.EquipDt, // 설치년월
                                                         LifeSpan = facilitytb.Lifespan, // 내용연수
                                                         FacUpdateDT = facilitytb.UpdateDt // 교체년월
                                                     }).ToList();
@@ -80,7 +80,6 @@ namespace FamTec.Server.Repository.Facility
                 {
                     return null;
                 }
-            
             }
             catch(Exception ex)
             {
@@ -98,7 +97,7 @@ namespace FamTec.Server.Repository.Facility
 
                     IQueryable<FacilityDetailDTO>? model = (from facilitytb in context.FacilityTbs.Where(m => m.Id == facilityId)
                                                           join roomtb in context.RoomTbs
-                                                          on facilitytb.RoomTbid equals roomtb.Id
+                                                          on facilitytb.RoomTbId equals roomtb.Id
                                                           join floortb in context.FloorTbs
                                                           on roomtb.FloorTbId equals floortb.Id
                                                           join buildingtb in context.BuildingTbs
@@ -114,14 +113,14 @@ namespace FamTec.Server.Repository.Facility
                                                               FloorName = floortb.Name,
                                                               RoomId = roomtb.Id,
                                                               RoomName = roomtb.Name,
-                                                              Ea = facilitytb.Ea,
+                                                              Num = facilitytb.Num,
                                                               Category = facilitytb.Category,
                                                               Type = facilitytb.Type,
                                                               LifeSpan = facilitytb.Lifespan,
-                                                              FacCreateDT = facilitytb.FacCreateDt,
-                                                              FacUpdateDT = facilitytb.FacUpdateDt,
+                                                              EquipDT = facilitytb.EquipDt,
+                                                              ChangeDT = facilitytb.ChangeDt,
                                                               Standard_capacity = facilitytb.StandardCapacity,
-                                                              Standard_unit = facilitytb.StandardCapacityUnit
+                                                              Standard_unit = facilitytb.Unit
                                                           });
 
                     if (model is not null)

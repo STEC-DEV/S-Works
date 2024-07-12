@@ -62,7 +62,7 @@ namespace FamTec.Server.Services.Admin.Account
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return new ResponseUnit<string>() { message = "비밀번호를 입력해주세요.", data = null, code = 200 };
 
-                UserTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword);
+                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword);
 
                 if (usertb is not null)
                 {
@@ -72,7 +72,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                         if (admintb is not null)
                         {
-                            DepartmentTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
+                            DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
                             if (departmenttb is not null)
                             {
                                 // 로그인성공
@@ -187,7 +187,7 @@ namespace FamTec.Server.Services.Admin.Account
 
 
 
-                UserTb? model = new UserTb();
+                UsersTb? model = new UsersTb();
 
                 model.UserId = dto.UserId;
                 model.Name = dto.Name;
@@ -210,21 +210,20 @@ namespace FamTec.Server.Services.Admin.Account
                 model.PermVoc = 2;
 
                 /* VOC관련 권한 */
-                model.VocMachine = 2;
-                model.VocElec = 2;
-                model.VocLift = 2;
-                model.VocFire = 2;
-                model.VocConstruct = 2;
-                model.VocNetwork = 2;
-                model.VocBeauty = 2;
-                model.VocSecurity = 2;
-                model.VocDefault = 2;
-                model.VocDefault = 2;
+                model.VocMachine = true;
+                model.VocElec = true;
+                model.VocLift = true;
+                model.VocFire = true;
+                model.VocConstruct = true;
+                model.VocNetwork = true;
+                model.VocBeauty = true;
+                model.VocSecurity = true;
+                model.VocEtc = true;
                 model.Job = "관리자";
 
                 model.AdminYn = true;
-                model.AlramYn = true;
-                model.Status = true;
+                model.AlarmYn = true;
+                model.Status = 2;
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = creater;
                 model.UpdateDt = DateTime.Now;
@@ -257,7 +256,7 @@ namespace FamTec.Server.Services.Admin.Account
                     model.Image = null;
                 }
 
-                UserTb? userresult = await UserInfoRepository.AddAsync(model);
+                UsersTb? userresult = await UserInfoRepository.AddAsync(model);
 
                 if (userresult is not null)
                 {
@@ -337,7 +336,7 @@ namespace FamTec.Server.Services.Admin.Account
                     if(deladmintb != true)
                         return new ResponseUnit<int?>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
 
-                    UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                    UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                     usertb!.DelYn = true;
                     usertb!.DelDt = DateTime.Now;
                     usertb.DelUser = creater;
@@ -388,10 +387,10 @@ namespace FamTec.Server.Services.Admin.Account
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx);
                 if(admintb is not null)
                 {
-                    DepartmentTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
+                    DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
                     if(departmenttb is not null)
                     {
-                        UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                        UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                         if(usertb is not null)
                         {
                             DManagerDTO dto = new DManagerDTO();
@@ -465,7 +464,7 @@ namespace FamTec.Server.Services.Admin.Account
             {
                 if (userid is not null)
                 {
-                    UserTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid);
+                    UsersTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid);
                     if (UserIdCheck is not null)
                     {
                         // 이미 사용중인 아이디
@@ -519,11 +518,11 @@ namespace FamTec.Server.Services.Admin.Account
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 계정정보 변경을 위해 UserTB 조회
-                UserTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                 if(usertb is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UserTb? UserIdcheck = await UserInfoRepository.UserIdCheck(dto.UserId);
+                UsersTb? UserIdcheck = await UserInfoRepository.UserIdCheck(dto.UserId);
                 if (UserIdcheck is not null)
                     return new ResponseUnit<int?>() { message = "이미 사용중인 아이디입니다.", data = null, code = 200 };
 
@@ -582,7 +581,7 @@ namespace FamTec.Server.Services.Admin.Account
 
 
                 // 사용자 정보 수정
-                UserTb? updateusertb = await UserInfoRepository.UpdateUserInfo(usertb);
+                UsersTb? updateusertb = await UserInfoRepository.UpdateUserInfo(usertb);
                 if (updateusertb is null)
                 {
                     // 사용자 테이블 업데이트 실패했을 경우
@@ -621,7 +620,7 @@ namespace FamTec.Server.Services.Admin.Account
                             CreateUser = creater,
                             UpdateDt = DateTime.Now,
                             UpdateUser = creater,
-                            PlaceId = insertidx[i]
+                            PlaceTbId = insertidx[i]
                         };
 
                         AdminPlaceTb? insertresult = await AdminPlaceInfoRepository.AddAdminPlaceInfo(inserttb);

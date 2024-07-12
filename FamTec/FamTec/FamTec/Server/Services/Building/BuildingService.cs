@@ -89,38 +89,38 @@ namespace FamTec.Server.Services.Building
                 model.CompletionDt = dto.CompletionDT; // 준공년월
                 model.BuildingStruct = dto.BuildingStruct; // 건물구조
                 model.RoofStruct = dto.RoofStruct; // 지붕구조
-                model.Grossfloorarea = dto.GrossFloorArea; // 연면적
-                model.Landarea = dto.LandArea; // 대지면적
-                model.Buildingarea = dto.BuildingArea; // 건축면적
-                model.Floornum = dto.FloorNum; // 건물층수
-                model.Groundfloornum = dto.GroundFloorNum; // 지상층수
-                model.Basementfloornum = dto.BasementFloorNum; // 지하층수
-                model.Buildingheight = dto.BuildingHeight; // 건물높이
-                model.Parkingnum = dto.ParkingNum; // 지상높이
-                model.Innerparkingnum = dto.InnerParkingNum; // 옥내대수
-                model.Outerparkingnum = dto.OuterParkingNum; // 옥외대수
-                model.Eleccapacity = dto.ElecCapacity; // 전기용량
-                model.Faucetcapacity = dto.FaucetCapacity; // 수전용량
-                model.Watercapacity = dto.WaterCapacity; // 급수용량
-                model.Elevwatercapacity = dto.ElevWaterCapacity; // 고가수조
-                model.Watertank = dto.WaterTank; // 저수조
-                model.Gascapacity = dto.GasCapacity; // 가스용량
+                model.GrossFloorArea = dto.GrossFloorArea; // 연면적
+                model.LandArea = dto.LandArea; // 대지면적
+                model.BuildingArea = dto.BuildingArea; // 건축면적
+                model.FloorNum = dto.FloorNum; // 건물층수
+                model.GroundFloorNum = dto.GroundFloorNum; // 지상층수
+                model.BasementFloorNum = dto.BasementFloorNum; // 지하층수
+                model.BuildingHeight = dto.BuildingHeight; // 건물높이
+                model.ParkingNum = dto.ParkingNum; // 지상높이
+                model.InnerParkingNum = dto.InnerParkingNum; // 옥내대수
+                model.OuterParkingNum = dto.OuterParkingNum; // 옥외대수
+                model.ElecCapacity = dto.ElecCapacity; // 전기용량
+                model.FaucetCapacity = dto.FaucetCapacity; // 수전용량
+                model.WaterCapacity = dto.WaterCapacity; // 급수용량
+                model.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
+                model.WaterTank = dto.WaterTank; // 저수조
+                model.GasCapacity = dto.GasCapacity; // 가스용량
                 model.Boiler = dto.Boiler; // 보일러
-                model.Waterdispenser = dto.WaterDispenser; // 냉온수기
-                model.Liftnum = dto.LiftNum; // 승강기대수
-                model.Peopleliftnum = dto.PeopleLiftNum; // 인승용
-                model.Cargoliftnum = dto.CargoLiftNum; // 화물용
-                model.Coolheatcapacity = dto.CoolHeatCapacity; // 냉난방용량
-                model.Heatcapacity = dto.HeatCapacity; // 난방용량
-                model.Coolcapacity = dto.CoolCapacity; // 냉방용량
-                model.Landscapearea = dto.LandScapeArea; // 조경면적
-                model.Groundarea = dto.GroundArea; // 지상면적
-                model.Rooftoparea = dto.RooftopArea; // 옥상면적
-                model.Toiletnum = dto.ToiletNum; // 화장실개수
-                model.Mentoiletnum = dto.MenToiletNum; // 남자화장실 개소
-                model.Womentoiletnum = dto.WomenToiletNum; // 여자화장실 개소
-                model.Firerating = dto.FireRating; // 소방등급
-                model.Septictankcapacity = dto.SeptictankCapacity;
+                model.WaterDispenser = dto.WaterDispenser; // 냉온수기
+                model.LiftNum = dto.LiftNum; // 승강기대수
+                model.PeopleLiftNum = dto.PeopleLiftNum; // 인승용
+                model.CargoLiftNum = dto.CargoLiftNum; // 화물용
+                model.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
+                model.HeatCapacity = dto.HeatCapacity; // 난방용량
+                model.CoolCapacity = dto.CoolCapacity; // 냉방용량
+                model.LandscapeArea = dto.LandScapeArea; // 조경면적
+                model.GroundArea = dto.GroundArea; // 지상면적
+                model.RooftopArea = dto.RooftopArea; // 옥상면적
+                model.ToiletNum = dto.ToiletNum; // 화장실개수
+                model.MenToiletNum = dto.MenToiletNum; // 남자화장실 개소
+                model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
+                model.FireRating = dto.FireRating; // 소방등급
+                model.SepticTankCapacity = dto.SeptictankCapacity;
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = Creater;
                 model.UpdateDt = DateTime.Now;
@@ -174,41 +174,41 @@ namespace FamTec.Server.Services.Building
                             CompletionDT = buildingtb.CompletionDt, // 준공년월
                             BuildingStruct = buildingtb.BuildingStruct, // 건물구조
                             RoofStruct = buildingtb.RoofStruct, // 지붕구조
-                            GrossFloorArea = buildingtb.Grossfloorarea, // 연면적
-                            LandArea = buildingtb.Landarea, // 대지면적
-                            BuildingArea = buildingtb.Buildingarea, // 건축면적
-                            FloorNum = buildingtb.Floornum, // 건물층수
-                            GroundFloorNum = buildingtb.Groundfloornum, // 지상층수
-                            BasementFloorNum = buildingtb.Basementfloornum, // 지하층수
-                            BuildingHeight = buildingtb.Buildingheight, // 건물높이
-                            GroundHeight = buildingtb.Groundheight, // 지상높이
-                            BasementHeight = buildingtb.Basementheight, // 지하깊이
-                            ParkingNum =  buildingtb.Parkingnum, // 주차장 대수
-                            InnerParkingNum = buildingtb.Innerparkingnum, // 옥내 대수
-                            OuterParkingNum = buildingtb.Outerparkingnum, // 옥외 대수
-                            ElecCapacity = buildingtb.Eleccapacity, // 전기용량
-                            FaucetCapacity = buildingtb.Faucetcapacity, // 수전용량
-                            GenerationCapacity = buildingtb.Generationcapacity, // 발전용량
-                            WaterCapacity = buildingtb.Watercapacity, // 급수용량
-                            ElevWaterCapacity = buildingtb.Elevwatercapacity, // 고가수조
-                            WaterTank = buildingtb.Watertank, // 저수조
-                            GasCapacity = buildingtb.Gascapacity, // 가스용량
+                            GrossFloorArea = buildingtb.GrossFloorArea, // 연면적
+                            LandArea = buildingtb.LandArea, // 대지면적
+                            BuildingArea = buildingtb.BuildingArea, // 건축면적
+                            FloorNum = buildingtb.FloorNum, // 건물층수
+                            GroundFloorNum = buildingtb.GroundFloorNum, // 지상층수
+                            BasementFloorNum = buildingtb.BasementFloorNum, // 지하층수
+                            BuildingHeight = buildingtb.BuildingHeight, // 건물높이
+                            GroundHeight = buildingtb.GroundHeight, // 지상높이
+                            BasementHeight = buildingtb.BasementHeight, // 지하깊이
+                            ParkingNum =  buildingtb.ParkingNum, // 주차장 대수
+                            InnerParkingNum = buildingtb.InnerParkingNum, // 옥내 대수
+                            OuterParkingNum = buildingtb.OuterParkingNum, // 옥외 대수
+                            ElecCapacity = buildingtb.ElecCapacity, // 전기용량
+                            FaucetCapacity = buildingtb.FaucetCapacity, // 수전용량
+                            GenerationCapacity = buildingtb.GenerationCapacity, // 발전용량
+                            WaterCapacity = buildingtb.WaterCapacity, // 급수용량
+                            ElevWaterCapacity = buildingtb.ElevWaterCapacity, // 고가수조
+                            WaterTank = buildingtb.WaterTank, // 저수조
+                            GasCapacity = buildingtb.GasCapacity, // 가스용량
                             Boiler = buildingtb.Boiler, // 보일러
-                            WaterDispenser = buildingtb.Waterdispenser, // 냉온수기
-                            LiftNum = buildingtb.Liftnum, // 승강기 대수
-                            PeopleLiftNum = buildingtb.Peopleliftnum, // 인승용
-                            CargoLiftNum = buildingtb.Cargoliftnum, // 화물용
-                            CoolHeatCapacity = buildingtb.Coolheatcapacity, // 냉난방용량
-                            HeatCapacity = buildingtb.Heatcapacity, // 난방용량
-                            CoolCapacity = buildingtb.Coolcapacity, // 냉방용량
-                            LandScapeArea = buildingtb.Landscapearea, // 조경면적
-                            GroundArea = buildingtb.Groundarea, // 지상면적
-                            RooftopArea = buildingtb.Rooftoparea, // 옥상면적
-                            ToiletNum = buildingtb.Toiletnum, // 화장실개소
-                            MenToiletNum = buildingtb.Mentoiletnum, // 남자화장실 개소
-                            WomenToiletNum = buildingtb.Womentoiletnum, // 여자화장실 개소
-                            FireRating = buildingtb.Firerating, // 소방등급
-                            SeptictankCapacity = buildingtb.Septictankcapacity // 정화조 용량
+                            WaterDispenser = buildingtb.WaterDispenser, // 냉온수기
+                            LiftNum = buildingtb.LiftNum, // 승강기 대수
+                            PeopleLiftNum = buildingtb.PeopleLiftNum, // 인승용
+                            CargoLiftNum = buildingtb.CargoLiftNum, // 화물용
+                            CoolHeatCapacity = buildingtb.CoolHeatCapacity, // 냉난방용량
+                            HeatCapacity = buildingtb.HeatCapacity, // 난방용량
+                            CoolCapacity = buildingtb.CoolCapacity, // 냉방용량
+                            LandScapeArea = buildingtb.LandscapeArea, // 조경면적
+                            GroundArea = buildingtb.GroundArea, // 지상면적
+                            RooftopArea = buildingtb.RooftopArea, // 옥상면적
+                            ToiletNum = buildingtb.ToiletNum, // 화장실개소
+                            MenToiletNum = buildingtb.MenToiletNum, // 남자화장실 개소
+                            WomenToiletNum = buildingtb.WomenToiletNum, // 여자화장실 개소
+                            FireRating = buildingtb.FireRating, // 소방등급
+                            SeptictankCapacity = buildingtb.SepticTankCapacity // 정화조 용량
                         },
                         code = 200
                     };
@@ -307,41 +307,41 @@ namespace FamTec.Server.Services.Building
                     dto.CompletionDT = model.CompletionDt; // 준공년월
                     dto.BuildingStruct = model.BuildingStruct; // 건물구조
                     dto.RoofStruct = model.RoofStruct; // 지붕구조
-                    dto.GrossFloorArea = model.Grossfloorarea; // 연면적
-                    dto.LandArea = model.Landarea; // 대지면적
-                    dto.BuildingArea = model.Buildingarea; // 건축면적
-                    dto.FloorNum = model.Floornum; // 건물층수
-                    dto.GroundFloorNum = model.Groundfloornum; // 지상층수
-                    dto.BasementFloorNum = model.Basementfloornum; // 지하층수
-                    dto.BuildingHeight = model.Buildingheight; // 건물높이
-                    dto.GroundHeight = model.Groundheight; // 지상높이
-                    dto.BasementHeight = model.Basementheight; // 지하깊이
-                    dto.ParkingNum = model.Parkingnum; // 주차장 대수
-                    dto.InnerParkingNum = model.Innerparkingnum; // 옥내 대수
-                    dto.OuterParkingNum = model.Outerparkingnum; // 옥외 대수
-                    dto.ElecCapacity = model.Eleccapacity; // 전기용량
-                    dto.FaucetCapacity = model.Faucetcapacity; // 수전용량
-                    dto.GenerationCapacity = model.Generationcapacity; // 발전용량
-                    dto.WaterCapacity = model.Watercapacity; // 급수용량
-                    dto.ElevWaterCapacity = model.Elevwatercapacity; // 고가수조
-                    dto.WaterTank = model.Watertank; // 저수조
-                    dto.GasCapacity = model.Gascapacity; // 가스용량
+                    dto.GrossFloorArea = model.GrossFloorArea; // 연면적
+                    dto.LandArea = model.LandArea; // 대지면적
+                    dto.BuildingArea = model.BuildingArea; // 건축면적
+                    dto.FloorNum = model.FloorNum; // 건물층수
+                    dto.GroundFloorNum = model.GroundFloorNum; // 지상층수
+                    dto.BasementFloorNum = model.BasementFloorNum; // 지하층수
+                    dto.BuildingHeight = model.BuildingHeight; // 건물높이
+                    dto.GroundHeight = model.GroundHeight; // 지상높이
+                    dto.BasementHeight = model.BasementHeight; // 지하깊이
+                    dto.ParkingNum = model.ParkingNum; // 주차장 대수
+                    dto.InnerParkingNum = model.InnerParkingNum; // 옥내 대수
+                    dto.OuterParkingNum = model.OuterParkingNum; // 옥외 대수
+                    dto.ElecCapacity = model.ElecCapacity; // 전기용량
+                    dto.FaucetCapacity = model.FaucetCapacity; // 수전용량
+                    dto.GenerationCapacity = model.GenerationCapacity; // 발전용량
+                    dto.WaterCapacity = model.WaterCapacity; // 급수용량
+                    dto.ElevWaterCapacity = model.ElevWaterCapacity; // 고가수조
+                    dto.WaterTank = model.WaterTank; // 저수조
+                    dto.GasCapacity = model.GasCapacity; // 가스용량
                     dto.Boiler = model.Boiler; // 보일러
-                    dto.WaterDispenser = model.Waterdispenser; // 냉온수기
-                    dto.LiftNum = model.Liftnum; // 승강기 대수
-                    dto.PeopleLiftNum = model.Peopleliftnum; // 인승용
-                    dto.CargoLiftNum = model.Cargoliftnum; // 화물용
-                    dto.CoolHeatCapacity = model.Coolheatcapacity; // 냉난방용량
-                    dto.HeatCapacity = model.Heatcapacity; // 난방용량
-                    dto.CoolCapacity = model.Coolcapacity; // 냉방용량
-                    dto.LandScapeArea = model.Landscapearea; // 조경면적
-                    dto.GroundArea = model.Groundarea; // 지상면적
-                    dto.RooftopArea = model.Rooftoparea; // 옥상면적
-                    dto.ToiletNum = model.Toiletnum; // 화장실개소
-                    dto.MenToiletNum = model.Mentoiletnum; // 남자화장실 개소
-                    dto.WomenToiletNum = model.Womentoiletnum; // 여자화장실 개소
-                    dto.FireRating = model.Firerating; // 소방등급
-                    dto.SeptictankCapacity = model.Septictankcapacity; // 정화조 용량
+                    dto.WaterDispenser = model.WaterDispenser; // 냉온수기
+                    dto.LiftNum = model.LiftNum; // 승강기 대수
+                    dto.PeopleLiftNum = model.PeopleLiftNum; // 인승용
+                    dto.CargoLiftNum = model.CargoLiftNum; // 화물용
+                    dto.CoolHeatCapacity = model.CoolHeatCapacity; // 냉난방용량
+                    dto.HeatCapacity = model.HeatCapacity; // 난방용량
+                    dto.CoolCapacity = model.CoolCapacity; // 냉방용량
+                    dto.LandScapeArea = model.LandscapeArea; // 조경면적
+                    dto.GroundArea = model.GroundArea; // 지상면적
+                    dto.RooftopArea = model.RooftopArea; // 옥상면적
+                    dto.ToiletNum = model.ToiletNum; // 화장실개소
+                    dto.MenToiletNum = model.MenToiletNum; // 남자화장실 개소
+                    dto.WomenToiletNum = model.WomenToiletNum; // 여자화장실 개소
+                    dto.FireRating = model.FireRating; // 소방등급
+                    dto.SeptictankCapacity = model.SepticTankCapacity; // 정화조 용량
 
                     string? Image = model.Image;
                     if (!String.IsNullOrWhiteSpace(Image))
@@ -421,41 +421,41 @@ namespace FamTec.Server.Services.Building
                     model.CompletionDt = dto.CompletionDT; // 준공년월
                     model.BuildingStruct = dto.BuildingStruct; // 건물구조
                     model.RoofStruct = dto.RoofStruct; // 지붕구조
-                    model.Grossfloorarea = dto.GrossFloorArea; // 연면적
-                    model.Landarea = dto.LandArea; // 대지면적
-                    model.Buildingarea = dto.BuildingArea; // 건축면적
-                    model.Floornum = dto.FloorNum; // 건물층수
-                    model.Groundfloornum = dto.GroundFloorNum; // 지상층수
-                    model.Basementfloornum = dto.BasementFloorNum; // 지하층수
-                    model.Buildingheight = dto.BuildingHeight; // 건물높이
-                    model.Groundheight = dto.GroundHeight; // 지상높이
-                    model.Basementheight = dto.BasementHeight; // 지하깊이
-                    model.Parkingnum = dto.ParkingNum; // 주차대수
-                    model.Innerparkingnum = dto.InnerParkingNum; // 옥내대수
-                    model.Outerparkingnum = dto.OuterParkingNum; // 옥외대수
-                    model.Eleccapacity = dto.ElecCapacity; // 전기용량
-                    model.Faucetcapacity = dto.FaucetCapacity; // 수전용량
-                    model.Generationcapacity = dto.GenerationCapacity; // 발전용량
-                    model.Watercapacity = dto.WaterCapacity; // 급수용량
-                    model.Elevwatercapacity = dto.ElevWaterCapacity; // 고가수조
-                    model.Watertank = dto.WaterTank; // 저수조
-                    model.Gascapacity = dto.GasCapacity; // 가스용량
+                    model.GrossFloorArea = dto.GrossFloorArea; // 연면적
+                    model.LandArea = dto.LandArea; // 대지면적
+                    model.BuildingArea = dto.BuildingArea; // 건축면적
+                    model.FloorNum = dto.FloorNum; // 건물층수
+                    model.GroundFloorNum = dto.GroundFloorNum; // 지상층수
+                    model.BasementFloorNum = dto.BasementFloorNum; // 지하층수
+                    model.BuildingHeight = dto.BuildingHeight; // 건물높이
+                    model.GroundHeight = dto.GroundHeight; // 지상높이
+                    model.BasementHeight = dto.BasementHeight; // 지하깊이
+                    model.ParkingNum = dto.ParkingNum; // 주차대수
+                    model.InnerParkingNum = dto.InnerParkingNum; // 옥내대수
+                    model.OuterParkingNum = dto.OuterParkingNum; // 옥외대수
+                    model.ElecCapacity = dto.ElecCapacity; // 전기용량
+                    model.FaucetCapacity = dto.FaucetCapacity; // 수전용량
+                    model.GenerationCapacity = dto.GenerationCapacity; // 발전용량
+                    model.WaterCapacity = dto.WaterCapacity; // 급수용량
+                    model.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
+                    model.WaterTank = dto.WaterTank; // 저수조
+                    model.GasCapacity = dto.GasCapacity; // 가스용량
                     model.Boiler = dto.Boiler; // 보일러
-                    model.Waterdispenser = dto.WaterDispenser; // 냉온수기
-                    model.Liftnum = dto.LiftNum; // 승강기대수
-                    model.Peopleliftnum = dto.PeopleLiftNum; // 인승용 대수
-                    model.Cargoliftnum = dto.CargoLiftNum; // 화물용 대수
-                    model.Coolheatcapacity = dto.CoolHeatCapacity; // 냉난방용량
-                    model.Heatcapacity = dto.HeatCapacity; // 난방용량
-                    model.Coolcapacity = dto.CoolCapacity; // 냉방용량
-                    model.Landscapearea = dto.LandScapeArea; // 조경면적
-                    model.Groundarea = dto.GroundArea; // 지상면적
-                    model.Rooftoparea = dto.RooftopArea; // 옥상면적
-                    model.Toiletnum = dto.ToiletNum; // 화장실개수
-                    model.Mentoiletnum = dto.MenToiletNum; // 남자화장실 개소
-                    model.Womentoiletnum = dto.WomenToiletNum; // 여자화장실 개소
-                    model.Firerating = dto.FireRating; // 소방등급
-                    model.Septictankcapacity = dto.SeptictankCapacity; // 정화조용량
+                    model.WaterDispenser = dto.WaterDispenser; // 냉온수기
+                    model.LiftNum = dto.LiftNum; // 승강기대수
+                    model.PeopleLiftNum = dto.PeopleLiftNum; // 인승용 대수
+                    model.CargoLiftNum = dto.CargoLiftNum; // 화물용 대수
+                    model.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
+                    model.HeatCapacity = dto.HeatCapacity; // 난방용량
+                    model.CoolCapacity = dto.CoolCapacity; // 냉방용량
+                    model.LandscapeArea = dto.LandScapeArea; // 조경면적
+                    model.GroundArea = dto.GroundArea; // 지상면적
+                    model.RooftopArea = dto.RooftopArea; // 옥상면적
+                    model.ToiletNum = dto.ToiletNum; // 화장실개수
+                    model.MenToiletNum = dto.MenToiletNum; // 남자화장실 개소
+                    model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
+                    model.FireRating = dto.FireRating; // 소방등급
+                    model.SepticTankCapacity = dto.SeptictankCapacity; // 정화조용량
                     model.UpdateDt = DateTime.Now; // 수정일자
                     model.UpdateUser = creater; // 수정자
 
@@ -583,10 +583,10 @@ namespace FamTec.Server.Services.Building
                             return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
                         }
 
-                        List<BuildingGroupitemTb>? GroupTBList = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingid[i]);
+                        List<BuildingItemGroupTb>? GroupTBList = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingid[i]);
                         if (GroupTBList is [_, ..])
                         {
-                            foreach(BuildingGroupitemTb GroupTB in GroupTBList)
+                            foreach(BuildingItemGroupTb GroupTB in GroupTBList)
                             {
                                 GroupTB.DelDt = DateTime.Now;
                                 GroupTB.DelUser = creater;
@@ -598,11 +598,11 @@ namespace FamTec.Server.Services.Building
                                     return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                 }
 
-                                List<BuildingItemkeyTb>? GroupKeyList = await BuildingItemKeyInfoRepository.GetAllKeyList(GroupTB.Id);
+                                List<BuildingItemKeyTb>? GroupKeyList = await BuildingItemKeyInfoRepository.GetAllKeyList(GroupTB.Id);
 
                                 if(GroupKeyList is [_, ..])
                                 {
-                                    foreach(BuildingItemkeyTb KeyTB in GroupKeyList)
+                                    foreach(BuildingItemKeyTb KeyTB in GroupKeyList)
                                     {
                                         KeyTB.DelDt = DateTime.Now;
                                         KeyTB.DelUser = creater;
@@ -614,11 +614,11 @@ namespace FamTec.Server.Services.Building
                                             return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                         }
 
-                                        List<BuildingItemvalueTb>? GroupValueList = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
+                                        List<BuildingItemValueTb>? GroupValueList = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
 
                                         if (GroupValueList is [_, ..])
                                         {
-                                            foreach (BuildingItemvalueTb ValueTB in GroupValueList)
+                                            foreach (BuildingItemValueTb ValueTB in GroupValueList)
                                             {
                                                 ValueTB.DelDt = DateTime.Now;
                                                 ValueTB.DelUser = creater;

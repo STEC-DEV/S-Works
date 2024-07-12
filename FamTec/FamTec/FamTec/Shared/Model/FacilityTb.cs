@@ -6,8 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
+/// <summary>
+/// 설비
+/// </summary>
 [Table("facility_tb")]
-[Index("RoomTbid", Name = "FK_ROOM_202406211458")]
+[Index("RoomTbId", Name = "fk_facility_tb_room_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class FacilityTb
 {
     /// <summary>
@@ -18,7 +22,7 @@ public partial class FacilityTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 카테고리(기계,전기..)
+    /// 카테고리
     /// </summary>
     [Column("CATEGORY")]
     [StringLength(255)]
@@ -32,12 +36,6 @@ public partial class FacilityTb
     public string? Name { get; set; }
 
     /// <summary>
-    /// 수량
-    /// </summary>
-    [Column("EA", TypeName = "int(11)")]
-    public int? Ea { get; set; }
-
-    /// <summary>
     /// 형식
     /// </summary>
     [Column("TYPE")]
@@ -45,38 +43,46 @@ public partial class FacilityTb
     public string? Type { get; set; }
 
     /// <summary>
-    /// 규격용량
+    /// 수량
     /// </summary>
-    [Column("STANDARD_CAPACITY")]
-    public float? StandardCapacity { get; set; }
+    [Column("NUM", TypeName = "int(11)")]
+    public int? Num { get; set; }
+
+    /// <summary>
+    /// 단위
+    /// </summary>
+    [Column("UNIT")]
+    [StringLength(255)]
+    public string? Unit { get; set; }
 
     /// <summary>
     /// 설치년월
     /// </summary>
-    [Column("FAC_CREATE_DT", TypeName = "datetime")]
-    public DateTime? FacCreateDt { get; set; }
+    [Column("EQUIP_DT", TypeName = "datetime")]
+    public DateTime? EquipDt { get; set; }
 
     /// <summary>
     /// 내용연수
     /// </summary>
-    [Column("LIFESPAN", TypeName = "int(11)")]
-    public int? Lifespan { get; set; }
+    [Column("LIFESPAN")]
+    [StringLength(255)]
+    public string? Lifespan { get; set; }
 
     /// <summary>
-    /// 규격용량단위
+    /// 규격용량
     /// </summary>
-    [Column("STANDARD_CAPACITY_UNIT")]
+    [Column("STANDARD_CAPACITY")]
     [StringLength(255)]
-    public string? StandardCapacityUnit { get; set; }
+    public string? StandardCapacity { get; set; }
 
     /// <summary>
     /// 교체년월
     /// </summary>
-    [Column("FAC_UPDATE_DT", TypeName = "datetime")]
-    public DateTime? FacUpdateDt { get; set; }
+    [Column("CHANGE_DT", TypeName = "datetime")]
+    public DateTime? ChangeDt { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -89,7 +95,7 @@ public partial class FacilityTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -108,7 +114,7 @@ public partial class FacilityTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -120,13 +126,16 @@ public partial class FacilityTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// (외래키)공간 인덱스
-    /// </summary>
-    [Column("ROOM_TBID", TypeName = "int(11)")]
-    public int? RoomTbid { get; set; }
+    [Column("ROOM_TB_ID", TypeName = "int(11)")]
+    public int? RoomTbId { get; set; }
 
-    [ForeignKey("RoomTbid")]
+    [InverseProperty("FacilityTb")]
+    public virtual ICollection<FacilityItemGroupTb> FacilityItemGroupTbs { get; set; } = new List<FacilityItemGroupTb>();
+
+    [InverseProperty("FacilityTb")]
+    public virtual ICollection<MaintenenceHistoryTb> MaintenenceHistoryTbs { get; set; } = new List<MaintenenceHistoryTb>();
+
+    [ForeignKey("RoomTbId")]
     [InverseProperty("FacilityTbs")]
     public virtual RoomTb? RoomTb { get; set; }
 }

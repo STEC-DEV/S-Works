@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Voc
                     CreateUser = Creater,
                     UpdateDt = DateTime.Now,
                     UpdateUser = Creater,
-                    VocTbid = dto.VocTbId
+                    VocTbId = dto.VocTbId
                 };
 
                 CommentTb? model = await VocCommentRepository.AddAsync(comment);
@@ -54,7 +54,7 @@ namespace FamTec.Server.Services.Voc
                     {
                         Content = model.Content,
                         Status = model.Status,
-                        VocTbId = model.VocTbid
+                        VocTbId = model.VocTbId
                     }, code = 200 };
                 }
                 else
@@ -93,7 +93,7 @@ namespace FamTec.Server.Services.Voc
                             Comment = e.Content,
                             CreateDT = e.CreateDt,
                             CreateUser = e.CreateUser,
-                            VocTbId = e.VocTbid
+                            VocTbId = e.VocTbId
                         }).ToList(),
                         code = 200
                     };

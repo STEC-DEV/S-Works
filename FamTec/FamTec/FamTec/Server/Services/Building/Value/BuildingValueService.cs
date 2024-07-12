@@ -31,10 +31,10 @@ namespace FamTec.Server.Services.Building.Value
                     return new ResponseUnit<UpdateValueDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                BuildingItemvalueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(dto.ID);
+                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(dto.ID);
                 if(ItemValueTb is not null)
                 {
-                    ItemValueTb.Itemvalue = dto.ItemValue;
+                    ItemValueTb.ItemValue = dto.ItemValue;
                     ItemValueTb.Unit = dto.Unit;
                     ItemValueTb.UpdateDt = DateTime.Now;
                     ItemValueTb.UpdateUser = creater;
@@ -75,7 +75,7 @@ namespace FamTec.Server.Services.Building.Value
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                BuildingItemvalueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(valueid);
+                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(valueid);
                 if (ItemValueTb is not null)
                 {
                     ItemValueTb.DelDt = DateTime.Now;

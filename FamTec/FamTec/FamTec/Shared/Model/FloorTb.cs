@@ -6,8 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
+/// <summary>
+/// 층
+/// </summary>
 [Table("floor_tb")]
-[Index("BuildingTbId", Name = "fk_FLOOR_TB_BUILDING_TB1_idx")]
+[Index("BuildingTbId", Name = "fk_floor_tb_building_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class FloorTb
 {
     /// <summary>
@@ -25,7 +29,7 @@ public partial class FloorTb
     public string? Name { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -38,7 +42,7 @@ public partial class FloorTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -57,7 +61,7 @@ public partial class FloorTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -69,9 +73,6 @@ public partial class FloorTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// (외래키) 건물 인덱스
-    /// </summary>
     [Column("BUILDING_TB_ID", TypeName = "int(11)")]
     public int? BuildingTbId { get; set; }
 

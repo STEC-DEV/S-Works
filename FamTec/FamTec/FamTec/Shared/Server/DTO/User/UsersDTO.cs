@@ -128,51 +128,51 @@ namespace FamTec.Shared.Server.DTO.User
         /// <summary>
         /// 재직여부
         /// </summary>
-        public bool? STATUS { get; set; } = true;
+        public int? STATUS { get; set; } = 2;
 
         /// <summary>
         /// 기계민원 처리권한
         /// </summary>
-        public int? VOC_MACHINE { get; set; } = 0;
+        public bool? VOC_MACHINE { get; set; } = false;
 
         /// <summary>
         /// 전기민원 처리권한
         /// </summary>
-        public int? VOC_ELEC { get; set; } = 0;
+        public bool? VOC_ELEC { get; set; } = false;
 
         /// <summary>
         /// 승강민원 처리권한
         /// </summary>
-        public int? VOC_LIFT { get; set; } = 0;
+        public bool? VOC_LIFT { get; set; } = false;
 
         /// <summary>
         /// 소방민원 처리권한
         /// </summary>
-        public int? VOC_FIRE { get; set; } = 0;
+        public bool? VOC_FIRE { get; set; } = false;
 
         /// <summary>
         /// 건축민원 처리권한
         /// </summary>
-        public int? VOC_CONSTRUCT { get; set; } = 0;
+        public bool? VOC_CONSTRUCT { get; set; } = false;
 
         /// <summary>
         /// 통신민원 처리권한
         /// </summary>
-        public int? VOC_NETWORK { get; set; } = 0;
+        public bool? VOC_NETWORK { get; set; } = false;
 
         /// <summary>
         /// 미화민원 처리권한
         /// </summary>
-        public int? VOC_BEAUTY { get; set; } = 0;
+        public bool? VOC_BEAUTY { get; set; } = false;
 
         /// <summary>
         /// 보안민원 처리권한
         /// </summary>
-        public int? VOC_SECURITY { get; set; } = 0;
+        public bool? VOC_SECURITY { get; set; } = false;
 
         /// <summary>
         /// 기타 처리권한
         /// </summary>
-        public int? VOC_DEFAULT { get; set; } = 0;
+        public bool? VOC_ETC { get; set; } = false;
     }
 }

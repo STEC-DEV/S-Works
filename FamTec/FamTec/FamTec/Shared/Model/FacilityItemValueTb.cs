@@ -6,40 +6,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("meter_reader_tb")]
-[Index("BuildingTbId", Name = "fk_METER_READER_TB_BUILDING_TB1_idx")]
-public partial class MeterReaderTb
+/// <summary>
+/// 설비 &gt; 그룹 &gt; 키 &gt; 값
+/// </summary>
+[Table("facility_item_value_tb")]
+[Index("FacilityItemKeyTbId", Name = "fk_facility_item_value_facility_item_key1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
+public partial class FacilityItemValueTb
 {
     /// <summary>
-    /// 자동증가 인덱스
+    /// 값 인덱스
     /// </summary>
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
     /// <summary>
-    /// 카테고리
+    /// 값
     /// </summary>
-    [Column("CATEGORY")]
-    [StringLength(45)]
-    public string? Category { get; set; }
+    [Column("ITEM_VALUE")]
+    [StringLength(255)]
+    public string? ItemValue { get; set; }
 
     /// <summary>
-    /// 계약종별
+    /// 단위
     /// </summary>
-    [Column("TYPE")]
-    [StringLength(45)]
-    public string? Type { get; set; }
+    [Column("UNIT")]
+    [StringLength(255)]
+    public string? Unit { get; set; }
 
     /// <summary>
-    /// 검침항목
-    /// </summary>
-    [Column("METER_ITEM")]
-    [StringLength(45)]
-    public string? MeterItem { get; set; }
-
-    /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -48,11 +45,11 @@ public partial class MeterReaderTb
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -61,7 +58,7 @@ public partial class MeterReaderTb
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? UpdateUser { get; set; }
 
     /// <summary>
@@ -71,7 +68,7 @@ public partial class MeterReaderTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -80,22 +77,13 @@ public partial class MeterReaderTb
     /// 삭제자
     /// </summary>
     [Column("DEL_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// (외래키)건물인덱스
-    /// </summary>
-    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
+    [Column("FACILITY_ITEM_KEY_TB_ID", TypeName = "int(11)")]
+    public int? FacilityItemKeyTbId { get; set; }
 
-    [ForeignKey("BuildingTbId")]
-    [InverseProperty("MeterReaderTbs")]
-    public virtual BuildingTb? BuildingTb { get; set; }
-
-    [InverseProperty("MeterReaderTb")]
-    public virtual ICollection<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; } = new List<EnergyMonthUsageTb>();
-
-    [InverseProperty("MeterReaderTb")]
-    public virtual ICollection<MeterItemTb> MeterItemTbs { get; set; } = new List<MeterItemTb>();
+    [ForeignKey("FacilityItemKeyTbId")]
+    [InverseProperty("FacilityItemValueTbs")]
+    public virtual FacilityItemKeyTb? FacilityItemKeyTb { get; set; }
 }

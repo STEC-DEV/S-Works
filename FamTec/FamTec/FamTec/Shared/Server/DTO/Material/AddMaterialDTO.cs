@@ -22,7 +22,7 @@ namespace FamTec.Shared.Server.DTO.Material
         /// <summary>
         /// 자재위치
         /// </summary>
-        public string? Default_Location { get; set; }
+        public int? Default_Location { get; set; }
 
         /// <summary>
         /// 규격

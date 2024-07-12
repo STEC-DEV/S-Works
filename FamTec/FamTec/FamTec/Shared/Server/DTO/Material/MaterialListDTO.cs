@@ -26,7 +26,7 @@ namespace FamTec.Shared.Server.DTO.Material
         /// <summary>
         /// 제조사
         /// </summary>
-        public string? Mfr { get; set; }
+        public string? ManufacturingCompany { get; set; }
 
         /// <summary>
         /// 단위

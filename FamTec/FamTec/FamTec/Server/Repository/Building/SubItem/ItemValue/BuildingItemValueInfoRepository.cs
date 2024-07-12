@@ -22,13 +22,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemvalueTb?> AddAsync(BuildingItemvalueTb? model)
+        public async ValueTask<BuildingItemValueTb?> AddAsync(BuildingItemValueTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.BuildingItemvalueTbs.Add(model);
+                    context.BuildingItemValueTbs.Add(model);
                     await context.SaveChangesAsync();
                     return model;
                 }
@@ -49,13 +49,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemvalueTb>?> GetAllValueList(int? keyid)
+        public async ValueTask<List<BuildingItemValueTb>?> GetAllValueList(int? keyid)
         {
             try
             {
                 if(keyid is not null)
                 {
-                    List<BuildingItemvalueTb>? model = await context.BuildingItemvalueTbs.Where(m => m.ItemKeyId == keyid && m.DelYn != true).ToListAsync();
+                    List<BuildingItemValueTb>? model = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == keyid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -79,13 +79,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemvalueTb?> GetValueInfo(int? valueid)
+        public async ValueTask<BuildingItemValueTb?> GetValueInfo(int? valueid)
         {
             try
             {
                 if(valueid is not null)
                 {
-                    BuildingItemvalueTb? model = await context.BuildingItemvalueTbs.FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
+                    BuildingItemValueTb? model = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -109,13 +109,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateValueInfo(BuildingItemvalueTb? model)
+        public async ValueTask<bool?> UpdateValueInfo(BuildingItemValueTb? model)
         {
             try
             {
                 if (model is not null)
                 {
-                    context.BuildingItemvalueTbs.Update(model);
+                    context.BuildingItemValueTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -135,13 +135,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteValueInfo(BuildingItemvalueTb? model)
+        public async ValueTask<bool?> DeleteValueInfo(BuildingItemValueTb? model)
         {
             try
             {
                 if (model is not null)
                 {
-                    context.BuildingItemvalueTbs.Update(model);
+                    context.BuildingItemValueTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -156,11 +156,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             }
         }
 
-        public async ValueTask<List<BuildingItemvalueTb>?> ContainsKeyList(List<int> KeyitemId)
+        public async ValueTask<List<BuildingItemValueTb>?> ContainsKeyList(List<int> KeyitemId)
         {
             try
             {
-                List<BuildingItemvalueTb>? keytb = await context.BuildingItemvalueTbs.Where(e => KeyitemId.Contains(Convert.ToInt32(e.ItemKeyId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs.Where(e => KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true).ToListAsync();
                 if (keytb is [_, ..])
                     return keytb;
                 else
@@ -173,11 +173,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             }
         }
 
-        public async ValueTask<List<BuildingItemvalueTb>?> NotContainsKeyList(List<int> KeyitemId)
+        public async ValueTask<List<BuildingItemValueTb>?> NotContainsKeyList(List<int> KeyitemId)
         {
             try
             {
-                List<BuildingItemvalueTb>? keytb = await context.BuildingItemvalueTbs.Where(e => !KeyitemId.Contains(Convert.ToInt32(e.ItemKeyId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs.Where(e => !KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true).ToListAsync();
                 if (keytb is [_, ..])
                     return keytb;
                 else

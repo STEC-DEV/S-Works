@@ -6,22 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
+/// <summary>
+/// 검침기 + 항목
+/// </summary>
 [Table("meter_item_tb")]
-[Index("MeterReaderTbId", Name = "fk_METER_ITEM_TB_METER_READER_TB1_idx")]
+[Index("BuildingTbId", Name = "fk_meter_item_tb_building_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MeterItemTb
 {
-    /// <summary>
-    /// 자동증가 인덱스
-    /// </summary>
     [Key]
-    [Column("ID", TypeName = "int(11)")]
-    public int Id { get; set; }
+    [Column("METER_ITEM_ID", TypeName = "int(11)")]
+    public int MeterItemId { get; set; }
 
     /// <summary>
     /// 검침항목
     /// </summary>
     [Column("METER_ITEM")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? MeterItem { get; set; }
 
     /// <summary>
@@ -31,60 +32,46 @@ public partial class MeterItemTb
     public float? AccumUsage { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 전기, 기계 ..
     /// </summary>
+    [Column("CATEGORY")]
+    [StringLength(255)]
+    public string? Category { get; set; }
+
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
 
-    /// <summary>
-    /// 생성자
-    /// </summary>
     [Column("CREATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? CreateUser { get; set; }
 
-    /// <summary>
-    /// 수정일
-    /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
 
-    /// <summary>
-    /// 수정자
-    /// </summary>
     [Column("UPDATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? UpdateUser { get; set; }
 
-    /// <summary>
-    /// 삭제여부
-    /// </summary>
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
 
-    /// <summary>
-    /// 삭제일
-    /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
 
-    /// <summary>
-    /// 삭제자
-    /// </summary>
     [Column("DEL_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// (외래키)검침기 인덱스
-    /// </summary>
-    [Column("METER_READER_TB_ID", TypeName = "int(11)")]
-    public int? MeterReaderTbId { get; set; }
+    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
+    public int? BuildingTbId { get; set; }
 
-    [InverseProperty("MeterItemTb")]
-    public virtual ICollection<EnergyUsageTb> EnergyUsageTbs { get; set; } = new List<EnergyUsageTb>();
-
-    [ForeignKey("MeterReaderTbId")]
+    [ForeignKey("BuildingTbId")]
     [InverseProperty("MeterItemTbs")]
-    public virtual MeterReaderTb? MeterReaderTb { get; set; }
+    public virtual BuildingTb? BuildingTb { get; set; }
+
+    [InverseProperty("MeterItem")]
+    public virtual ICollection<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; } = new List<EnergyMonthUsageTb>();
+
+    [InverseProperty("MeterItem")]
+    public virtual ICollection<EnergyUsageTb> EnergyUsageTbs { get; set; } = new List<EnergyUsageTb>();
 }

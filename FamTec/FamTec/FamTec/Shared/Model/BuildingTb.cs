@@ -6,12 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
+/// <summary>
+/// 건물
+/// </summary>
 [Table("building_tb")]
-[Index("PlaceTbId", Name = "fk_BUILDING_TB_PLACE_TB1_idx")]
+[Index("PlaceTbId", Name = "fk_building_tb_place_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class BuildingTb
 {
     /// <summary>
-    /// 건물 테이블 인덱스
+    /// 건물 인덱스
     /// </summary>
     [Key]
     [Column("ID", TypeName = "int(11)")]
@@ -23,6 +27,13 @@ public partial class BuildingTb
     [Column("BUILDING_CD")]
     [StringLength(255)]
     public string? BuildingCd { get; set; }
+
+    /// <summary>
+    /// 이미지
+    /// </summary>
+    [Column("IMAGE")]
+    [StringLength(255)]
+    public string? Image { get; set; }
 
     /// <summary>
     /// 건물명
@@ -83,135 +94,135 @@ public partial class BuildingTb
     /// <summary>
     /// 연면적
     /// </summary>
-    [Column("GROSSFLOORAREA")]
+    [Column("GROSS_FLOOR_AREA")]
     [StringLength(255)]
-    public string? Grossfloorarea { get; set; }
+    public string? GrossFloorArea { get; set; }
 
     /// <summary>
     /// 대지면적
     /// </summary>
-    [Column("LANDAREA")]
+    [Column("LAND_AREA")]
     [StringLength(255)]
-    public string? Landarea { get; set; }
+    public string? LandArea { get; set; }
 
     /// <summary>
-    /// 건축면적
+    /// 건물면적
     /// </summary>
-    [Column("BUILDINGAREA")]
+    [Column("BUILDING_AREA")]
     [StringLength(255)]
-    public string? Buildingarea { get; set; }
+    public string? BuildingArea { get; set; }
 
     /// <summary>
     /// 건물층수
     /// </summary>
-    [Column("FLOORNUM")]
+    [Column("FLOOR_NUM")]
     [StringLength(255)]
-    public string? Floornum { get; set; }
+    public string? FloorNum { get; set; }
 
     /// <summary>
-    /// 지상층수
+    /// 지상
     /// </summary>
-    [Column("GROUNDFLOORNUM")]
+    [Column("GROUND_FLOOR_NUM")]
     [StringLength(255)]
-    public string? Groundfloornum { get; set; }
+    public string? GroundFloorNum { get; set; }
 
     /// <summary>
-    /// 지하층수
+    /// 지하
     /// </summary>
-    [Column("BASEMENTFLOORNUM")]
+    [Column("BASEMENT_FLOOR_NUM")]
     [StringLength(255)]
-    public string? Basementfloornum { get; set; }
+    public string? BasementFloorNum { get; set; }
 
     /// <summary>
     /// 건물높이
     /// </summary>
-    [Column("BUILDINGHEIGHT")]
+    [Column("BUILDING_HEIGHT")]
     [StringLength(255)]
-    public string? Buildingheight { get; set; }
+    public string? BuildingHeight { get; set; }
 
     /// <summary>
-    /// 지상높이
+    /// 지상
     /// </summary>
-    [Column("GROUNDHEIGHT")]
+    [Column("GROUND_HEIGHT")]
     [StringLength(255)]
-    public string? Groundheight { get; set; }
+    public string? GroundHeight { get; set; }
 
     /// <summary>
-    /// 지하깊이
+    /// 지하
     /// </summary>
-    [Column("BASEMENTHEIGHT")]
+    [Column("BASEMENT_HEIGHT")]
     [StringLength(255)]
-    public string? Basementheight { get; set; }
+    public string? BasementHeight { get; set; }
 
     /// <summary>
     /// 주차대수
     /// </summary>
-    [Column("PARKINGNUM")]
+    [Column("PARKING_NUM")]
     [StringLength(255)]
-    public string? Parkingnum { get; set; }
+    public string? ParkingNum { get; set; }
 
     /// <summary>
-    /// 옥내대수
+    /// 옥내
     /// </summary>
-    [Column("INNERPARKINGNUM")]
+    [Column("INNER_PARKING_NUM")]
     [StringLength(255)]
-    public string? Innerparkingnum { get; set; }
+    public string? InnerParkingNum { get; set; }
 
     /// <summary>
-    /// 옥외대수
+    /// 옥외
     /// </summary>
-    [Column("OUTERPARKINGNUM")]
+    [Column("OUTER_PARKING_NUM")]
     [StringLength(255)]
-    public string? Outerparkingnum { get; set; }
+    public string? OuterParkingNum { get; set; }
 
     /// <summary>
     /// 전기용량
     /// </summary>
-    [Column("ELECCAPACITY")]
+    [Column("ELEC_CAPACITY")]
     [StringLength(255)]
-    public string? Eleccapacity { get; set; }
+    public string? ElecCapacity { get; set; }
 
     /// <summary>
     /// 수전용량
     /// </summary>
-    [Column("FAUCETCAPACITY")]
+    [Column("FAUCET_CAPACITY")]
     [StringLength(255)]
-    public string? Faucetcapacity { get; set; }
+    public string? FaucetCapacity { get; set; }
 
     /// <summary>
     /// 발전용량
     /// </summary>
-    [Column("GENERATIONCAPACITY")]
+    [Column("GENERATION_CAPACITY")]
     [StringLength(255)]
-    public string? Generationcapacity { get; set; }
+    public string? GenerationCapacity { get; set; }
 
     /// <summary>
     /// 급수용량
     /// </summary>
-    [Column("WATERCAPACITY")]
+    [Column("WATER_CAPACITY")]
     [StringLength(255)]
-    public string? Watercapacity { get; set; }
+    public string? WaterCapacity { get; set; }
 
     /// <summary>
     /// 고가수조
     /// </summary>
-    [Column("ELEVWATERCAPACITY")]
+    [Column("ELEV_WATER_CAPACITY")]
     [StringLength(255)]
-    public string? Elevwatercapacity { get; set; }
+    public string? ElevWaterCapacity { get; set; }
 
     /// <summary>
     /// 저수조
     /// </summary>
-    [Column("WATERTANK")]
+    [Column("WATER_TANK")]
     [StringLength(255)]
-    public string? Watertank { get; set; }
+    public string? WaterTank { get; set; }
 
     /// <summary>
     /// 가스용량
     /// </summary>
-    [Column("GASCAPACITY")]
+    [Column("GAS_CAPACITY")]
     [StringLength(255)]
-    public string? Gascapacity { get; set; }
+    public string? GasCapacity { get; set; }
 
     /// <summary>
     /// 보일러
@@ -223,110 +234,110 @@ public partial class BuildingTb
     /// <summary>
     /// 냉온수기
     /// </summary>
-    [Column("WATERDISPENSER")]
+    [Column("WATER_DISPENSER")]
     [StringLength(255)]
-    public string? Waterdispenser { get; set; }
+    public string? WaterDispenser { get; set; }
 
     /// <summary>
-    /// 승강기 대수
+    /// 승강기대수
     /// </summary>
-    [Column("LIFTNUM")]
+    [Column("LIFT_NUM")]
     [StringLength(255)]
-    public string? Liftnum { get; set; }
+    public string? LiftNum { get; set; }
 
     /// <summary>
-    /// 인승용 대수
+    /// 인승용
     /// </summary>
-    [Column("PEOPLELIFTNUM")]
+    [Column("PEOPLE_LIFT_NUM")]
     [StringLength(255)]
-    public string? Peopleliftnum { get; set; }
+    public string? PeopleLiftNum { get; set; }
 
     /// <summary>
-    /// 화물용 대수
+    /// 화물용
     /// </summary>
-    [Column("CARGOLIFTNUM")]
+    [Column("CARGO_LIFT_NUM")]
     [StringLength(255)]
-    public string? Cargoliftnum { get; set; }
+    public string? CargoLiftNum { get; set; }
 
     /// <summary>
     /// 냉난방용량
     /// </summary>
-    [Column("COOLHEATCAPACITY")]
+    [Column("COOL_HEAT_CAPACITY")]
     [StringLength(255)]
-    public string? Coolheatcapacity { get; set; }
+    public string? CoolHeatCapacity { get; set; }
 
     /// <summary>
     /// 난방용량
     /// </summary>
-    [Column("HEATCAPACITY")]
+    [Column("HEAT_CAPACITY")]
     [StringLength(255)]
-    public string? Heatcapacity { get; set; }
+    public string? HeatCapacity { get; set; }
 
     /// <summary>
     /// 냉방용량
     /// </summary>
-    [Column("COOLCAPACITY")]
+    [Column("COOL_CAPACITY")]
     [StringLength(255)]
-    public string? Coolcapacity { get; set; }
+    public string? CoolCapacity { get; set; }
 
     /// <summary>
     /// 조경면적
     /// </summary>
-    [Column("LANDSCAPEAREA")]
+    [Column("LANDSCAPE_AREA")]
     [StringLength(255)]
-    public string? Landscapearea { get; set; }
+    public string? LandscapeArea { get; set; }
 
     /// <summary>
     /// 지상면적
     /// </summary>
-    [Column("GROUNDAREA")]
+    [Column("GROUND_AREA")]
     [StringLength(255)]
-    public string? Groundarea { get; set; }
+    public string? GroundArea { get; set; }
 
     /// <summary>
-    /// 옥상면적
+    /// 옥상
     /// </summary>
-    [Column("ROOFTOPAREA")]
+    [Column("ROOFTOP_AREA")]
     [StringLength(255)]
-    public string? Rooftoparea { get; set; }
+    public string? RooftopArea { get; set; }
 
     /// <summary>
-    /// 화장실개수
+    /// 화잘실수
     /// </summary>
-    [Column("TOILETNUM")]
+    [Column("TOILET_NUM")]
     [StringLength(255)]
-    public string? Toiletnum { get; set; }
+    public string? ToiletNum { get; set; }
 
     /// <summary>
-    /// 남자화장실개수
+    /// 남자
     /// </summary>
-    [Column("MENTOILETNUM")]
+    [Column("MEN_TOILET_NUM")]
     [StringLength(255)]
-    public string? Mentoiletnum { get; set; }
+    public string? MenToiletNum { get; set; }
 
     /// <summary>
-    /// 여자화장실개수
+    /// 여자
     /// </summary>
-    [Column("WOMENTOILETNUM")]
+    [Column("WOMEN_TOILET_NUM")]
     [StringLength(255)]
-    public string? Womentoiletnum { get; set; }
+    public string? WomenToiletNum { get; set; }
 
     /// <summary>
     /// 소방등급
     /// </summary>
-    [Column("FIRERATING")]
+    [Column("FIRE_RATING")]
     [StringLength(255)]
-    public string? Firerating { get; set; }
+    public string? FireRating { get; set; }
 
     /// <summary>
     /// 정화조용량
     /// </summary>
-    [Column("SEPTICTANKCAPACITY")]
+    [Column("SEPTIC_TANK_CAPACITY")]
     [StringLength(255)]
-    public string? Septictankcapacity { get; set; }
+    public string? SepticTankCapacity { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -339,7 +350,7 @@ public partial class BuildingTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -358,7 +369,7 @@ public partial class BuildingTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -371,16 +382,13 @@ public partial class BuildingTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// 첨부파일
-    /// </summary>
-    [StringLength(255)]
-    public string? Image { get; set; }
-
-    /// <summary>
-    /// (외래키) 사업장 인덱스
+    /// 사업장 인덱스
     /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int? PlaceTbId { get; set; }
+
+    [InverseProperty("BuildingTb")]
+    public virtual ICollection<BuildingItemGroupTb> BuildingItemGroupTbs { get; set; } = new List<BuildingItemGroupTb>();
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<FloorTb> FloorTbs { get; set; } = new List<FloorTb>();
@@ -389,12 +397,9 @@ public partial class BuildingTb
     public virtual ICollection<MaterialTb> MaterialTbs { get; set; } = new List<MaterialTb>();
 
     [InverseProperty("BuildingTb")]
-    public virtual ICollection<MeterReaderTb> MeterReaderTbs { get; set; } = new List<MeterReaderTb>();
+    public virtual ICollection<MeterItemTb> MeterItemTbs { get; set; } = new List<MeterItemTb>();
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("BuildingTbs")]
     public virtual PlaceTb? PlaceTb { get; set; }
-
-    [InverseProperty("BuildingTb")]
-    public virtual ICollection<VocTb> VocTbs { get; set; } = new List<VocTb>();
 }

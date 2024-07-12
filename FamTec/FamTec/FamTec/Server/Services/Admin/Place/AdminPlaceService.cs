@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.Admin.Place
                         
                         for (int i = 0; i < adminplacetb.Count(); i++) 
                         {
-                            PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(adminplacetb[i].PlaceId);
+                            PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(adminplacetb[i].PlaceTbId);
                             if(model is not null)
                             {
                                 placetb.Add(model);
@@ -359,7 +359,7 @@ namespace FamTec.Server.Services.Admin.Place
                             CreateUser = Creater,
                             UpdateDt = DateTime.Now,
                             UpdateUser = Creater,
-                            PlaceId = placeid
+                            PlaceTbId = placeid
                         });
                     }
 
@@ -432,7 +432,7 @@ namespace FamTec.Server.Services.Admin.Place
                                 CreateUser = creater,
                                 UpdateDt = DateTime.Now,
                                 UpdateUser = creater,
-                                PlaceId = dto.PlaceList[i]
+                                PlaceTbId = dto.PlaceList[i]
                             });
                         }
                     }

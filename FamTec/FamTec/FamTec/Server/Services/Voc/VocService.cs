@@ -79,12 +79,12 @@ namespace FamTec.Server.Services.Voc
                         return new ResponseList<VocDTO>() { message = "해당 관리자의 사업장이 존재하지 않습니다.", data = new List<VocDTO>(), code = 200 };
 
                     // 그 사업장이 로그인한 관리자가 관리하는 곳인지?
-                    AdminPlaceTb? adminplace = placelist.FirstOrDefault(m => m.PlaceId == Int32.Parse(PlaceIdx));
+                    AdminPlaceTb? adminplace = placelist.FirstOrDefault(m => m.PlaceTbId == Int32.Parse(PlaceIdx));
                     if (adminplace is null)
                         return new ResponseList<VocDTO>() { message = "해당 관리자는 해당 사업장의 권한이 없습니다.", data = new List<VocDTO>(), code = 401 };
 
                     // 사업장의 정보를 받아옴.
-                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(adminplace.PlaceId);
+                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(adminplace.PlaceTbId);
                     if (placetb is null)
                         return new ResponseList<VocDTO>() { message = "실제 존재하지 않는 사업장입니다.", data = new List<VocDTO>(), code = 401 };
 
@@ -105,15 +105,15 @@ namespace FamTec.Server.Services.Voc
                                                 {
                                                     Id = voc.Id, // VOC ID
                                                     Location = bd.Name, // 위치
-                                                    Type = voc.Type, // VOC 유형
-                                                    Writer = voc.Name, // 작성자
+                                                    //Type = voc.Type, // VOC 유형
+                                                    //Writer = voc.Name, // 작성자
                                                     Status = voc.Status, // VOC 처리상태
                                                     Tel = voc.Phone, // 전화번호
                                                     Title = voc.Title,
                                                     Content = voc.Content,
                                                     CreateDT = voc.CreateDt,
-                                                    CompleteDT = voc.CompleteTime,
-                                                    TotalDT = voc.TotalTime
+                                                    //CompleteDT = voc.CompleteTime,
+                                                    //TotalDT = voc.TotalTime
                                                 }).ToList();
                             // VOC 리스트 반환
                             if (dto is [_, ..])
@@ -148,7 +148,7 @@ namespace FamTec.Server.Services.Voc
                         return new ResponseList<VocDTO>() { message = "VOC 권한이 없습니다.", data = new List<VocDTO>(), code = 200 };
 
                     // 해당 USERIDX 로 유저테이블 검색
-                    UserTb? usermodel = await UserInfoRepository.GetUserIndexInfo(Int32.Parse(UserIdx));
+                    UsersTb? usermodel = await UserInfoRepository.GetUserIndexInfo(Int32.Parse(UserIdx));
                     if (usermodel is null)
                         return new ResponseList<VocDTO>() { message = "잘못된 요청입니다.", data = new List<VocDTO>(), code = 401 };
 
@@ -177,15 +177,15 @@ namespace FamTec.Server.Services.Voc
                                             {
                                                 Id = voc.Id, // VOC ID
                                                 Location = bd.Name, // 위치
-                                                Type = voc.Type, // VOC 유형
-                                                Writer = voc.Name, // 작성자
+                                                //Type = voc.Type, // VOC 유형
+                                                //Writer = voc.Name, // 작성자
                                                 Status = voc.Status, // VOC 처리상태
                                                 Tel = voc.Phone, // 전화번호
                                                 Title = voc.Title,
                                                 Content = voc.Content,
                                                 CreateDT = voc.CreateDt,
-                                                CompleteDT = voc.CompleteTime,
-                                                TotalDT = voc.TotalTime
+                                                //CompleteDT = voc.CompleteTime,
+                                                //TotalDT = voc.TotalTime
                                             }).ToList();
                         // VOC 리스트 반환
                         if (dto is [_, ..])
@@ -245,8 +245,8 @@ namespace FamTec.Server.Services.Voc
                 BuildingTb? buildingck = await BuildingInfoRepository.GetBuildingInfo(Int32.Parse(Vocbuildingidx)); // 넘어온 해당 건물이 있는지 먼저 CHECK / 해당 건물이 속해있는 사업장 INDEX 반환
 
                 VocTb? model = new VocTb();
-                model.Type = Int32.Parse(Voctype); // 종류
-                model.Name = VocName; // 이름
+                //model.Type = Int32.Parse(Voctype); // 종류
+                //model.Name = VocName; // 이름
                 model.Phone = VocPhoneNumber; // 전화번호
                 model.Title = VocTitle; // 제목
                 model.Content = VocContents; // 내용
@@ -291,7 +291,7 @@ namespace FamTec.Server.Services.Voc
                     
                     if (result is not null)
                     {
-                        List<UserTb>? userlist;
+                        List<UsersTb>? userlist;
                         // 알람 발생시키는곳
                         switch (Int32.Parse(Voctype))
                         {
@@ -441,7 +441,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="VocName"></param>
         /// <param name="VocTableIdx"></param>
         /// <returns></returns>
-        public async ValueTask<bool> SetMessage(List<UserTb>? userlist, string VocName, int VocTableIdx)
+        public async ValueTask<bool> SetMessage(List<UsersTb>? userlist, string VocName, int VocTableIdx)
         {
             if (userlist is [_, ..])
             {
@@ -454,7 +454,7 @@ namespace FamTec.Server.Services.Voc
                         CreateUser = VocName,
                         UpdateDt = DateTime.Now,
                         UpdateUser = VocName,
-                        UserTbId = user.Id,
+                        UsersTbId = user.Id,
                         VocTbId = VocTableIdx
                     };
 

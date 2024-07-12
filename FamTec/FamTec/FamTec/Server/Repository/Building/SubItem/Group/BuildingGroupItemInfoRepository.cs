@@ -21,13 +21,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingGroupitemTb?> AddAsync(BuildingGroupitemTb? model)
+        public async ValueTask<BuildingItemGroupTb?> AddAsync(BuildingItemGroupTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.BuildingGroupitemTbs.Add(model);
+                    context.BuildingItemGroupTbs.Add(model);
                     await context.SaveChangesAsync();
                     return model;
                 }
@@ -48,13 +48,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingGroupitemTb>?> GetAllGroupList(int? buildingid)
+        public async ValueTask<List<BuildingItemGroupTb>?> GetAllGroupList(int? buildingid)
         {
             try
             {
                 if(buildingid is not null)
                 {
-                    List<BuildingGroupitemTb>? model = await context.BuildingGroupitemTbs.Where(m => m.BuildingId == buildingid && m.DelYn != true).ToListAsync();
+                    List<BuildingItemGroupTb>? model = await context.BuildingItemGroupTbs.Where(m => m.Id == buildingid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -78,13 +78,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="groupid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingGroupitemTb?> GetGroupInfo(int? groupid)
+        public async ValueTask<BuildingItemGroupTb?> GetGroupInfo(int? groupid)
         {
             try
             {
                 if (groupid is not null)
                 {
-                    BuildingGroupitemTb? model = await context.BuildingGroupitemTbs.FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
+                    BuildingItemGroupTb? model = await context.BuildingItemGroupTbs.FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
 
                     if (model is not null)
                         return model;
@@ -108,13 +108,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateGroupInfo(BuildingGroupitemTb? model)
+        public async ValueTask<bool?> UpdateGroupInfo(BuildingItemGroupTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.BuildingGroupitemTbs.Update(model);
+                    context.BuildingItemGroupTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -133,13 +133,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteGroupInfo(BuildingGroupitemTb? model)
+        public async ValueTask<bool?> DeleteGroupInfo(BuildingItemGroupTb? model)
         {
             try
             {
                 if (model is not null)
                 {
-                    context.BuildingGroupitemTbs.Update(model);
+                    context.BuildingItemGroupTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -158,15 +158,22 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingGroupitemTb>?> ContainsGroupList(List<int>? GroupId, int buildingid)
+        public async ValueTask<List<BuildingItemGroupTb>?> ContainsGroupList(List<int>? GroupId, int buildingid)
         {
             try
             {
-                List<BuildingGroupitemTb>? grouptb = await context.BuildingGroupitemTbs.Where(e => GroupId.Contains(e.Id) && e.BuildingId == buildingid && e.DelYn != true).ToListAsync();
-                if (grouptb is [_, ..])
-                    return grouptb;
+                if (GroupId is [_, ..])
+                {
+                    List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs.Where(e => GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true).ToListAsync();
+                    if (grouptb is [_, ..])
+                        return grouptb;
+                    else
+                        return null;
+                }
                 else
+                {
                     return null;
+                }
             }
             catch (Exception ex)
             {
@@ -180,16 +187,23 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// </summary>
         /// <param name="GroupId"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingGroupitemTb>?> NotContainsGroupList(List<int>? GroupId, int buildingid)
+        public async ValueTask<List<BuildingItemGroupTb>?> NotContainsGroupList(List<int>? GroupId, int buildingid)
         {
             try
             {
-                List<BuildingGroupitemTb>? grouptb = await context.BuildingGroupitemTbs
-                    .Where(e => !GroupId.Contains(e.Id) && e.BuildingId == buildingid && e.DelYn != true).ToListAsync();
-                if (grouptb is [_, ..])
-                    return grouptb;
+                if (GroupId is [_, ..])
+                {
+                    List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs
+                        .Where(e => !GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true).ToListAsync();
+                    if (grouptb is [_, ..])
+                        return grouptb;
+                    else
+                        return null;
+                }
                 else
+                {
                     return null;
+                }
             }
             catch (Exception ex)
             {

@@ -29,7 +29,7 @@ namespace FamTec.Shared.Server.DTO.Facility
         /// <summary>
         /// 개수
         /// </summary>
-        public int? Ea { get; set; }
+        public int? Num { get; set; }
 
         /// <summary>
         /// 공간 명칭
@@ -39,17 +39,17 @@ namespace FamTec.Shared.Server.DTO.Facility
         /// <summary>
         /// 규격용량
         /// </summary>
-        public float? StandardCapacity { get; set; }
+        public string? StandardCapacity { get; set; }
 
         /// <summary>
         /// 설치년월
         /// </summary>
-        public DateTime? FacCreateDT { get; set; }
+        public DateTime? EquipDT { get; set; }
 
         /// <summary>
         /// 내용연수
         /// </summary>
-        public int? LifeSpan { get; set; }
+        public string? LifeSpan { get; set; }
 
         /// <summary>
         /// 교체년월

@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("user_tb")]
-[Index("PlaceTbId", Name = "fk_USER_TB_PLACE_TB1_idx")]
-public partial class UserTb
+[Table("users_tb")]
+[Index("PlaceTbId", Name = "fk_users_tb_place_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
+public partial class UsersTb
 {
     /// <summary>
     /// 사용자 인덱스
@@ -18,7 +19,7 @@ public partial class UserTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 사용자 아이디
+    /// 사용자 아아디
     /// </summary>
     [Column("USER_ID")]
     [StringLength(255)]
@@ -53,43 +54,43 @@ public partial class UserTb
     public string? Phone { get; set; }
 
     /// <summary>
-    /// 기본정보관리 권한
+    /// 기본정보 권한
     /// </summary>
     [Column("PERM_BASIC", TypeName = "int(11)")]
     public int? PermBasic { get; set; }
 
     /// <summary>
-    /// 기계 권한
+    /// 기계관리 권한
     /// </summary>
     [Column("PERM_MACHINE", TypeName = "int(11)")]
     public int? PermMachine { get; set; }
 
     /// <summary>
-    /// 전기 권한
+    /// 전기관리 권한
     /// </summary>
     [Column("PERM_ELEC", TypeName = "int(11)")]
     public int? PermElec { get; set; }
 
     /// <summary>
-    /// 승강 권한
+    /// 승강관리 권한
     /// </summary>
     [Column("PERM_LIFT", TypeName = "int(11)")]
     public int? PermLift { get; set; }
 
     /// <summary>
-    /// 소방 권한
+    /// 소방관리 권한
     /// </summary>
     [Column("PERM_FIRE", TypeName = "int(11)")]
     public int? PermFire { get; set; }
 
     /// <summary>
-    /// 건축 권한
+    /// 건축관리 권한
     /// </summary>
     [Column("PERM_CONSTRUCT", TypeName = "int(11)")]
     public int? PermConstruct { get; set; }
 
     /// <summary>
-    /// 통신 권한
+    /// 통신연동 권한
     /// </summary>
     [Column("PERM_NETWORK", TypeName = "int(11)")]
     public int? PermNetwork { get; set; }
@@ -119,7 +120,7 @@ public partial class UserTb
     public int? PermEnergy { get; set; }
 
     /// <summary>
-    /// 사용자관리 권한
+    /// 사용자 관리 권한
     /// </summary>
     [Column("PERM_USER", TypeName = "int(11)")]
     public int? PermUser { get; set; }
@@ -130,80 +131,53 @@ public partial class UserTb
     [Column("PERM_VOC", TypeName = "int(11)")]
     public int? PermVoc { get; set; }
 
-    /// <summary>
-    /// 기계민원 처리권한
-    /// </summary>
-    [Column("VOC_MACHINE", TypeName = "int(11)")]
-    public int? VocMachine { get; set; }
+    [Column("VOC_MACHINE")]
+    public bool? VocMachine { get; set; }
+
+    [Column("VOC_ELEC")]
+    public bool? VocElec { get; set; }
+
+    [Column("VOC_LIFT")]
+    public bool? VocLift { get; set; }
+
+    [Column("VOC_FIRE")]
+    public bool? VocFire { get; set; }
+
+    [Column("VOC_CONSTRUCT")]
+    public bool? VocConstruct { get; set; }
+
+    [Column("VOC_NETWORK")]
+    public bool? VocNetwork { get; set; }
+
+    [Column("VOC_BEAUTY")]
+    public bool? VocBeauty { get; set; }
+
+    [Column("VOC_SECURITY")]
+    public bool? VocSecurity { get; set; }
+
+    [Column("VOC_ETC")]
+    public bool? VocEtc { get; set; }
 
     /// <summary>
-    /// 전기민원 처리권한
-    /// </summary>
-    [Column("VOC_ELEC", TypeName = "int(11)")]
-    public int? VocElec { get; set; }
-
-    /// <summary>
-    /// 승강민원 처리권한
-    /// </summary>
-    [Column("VOC_LIFT", TypeName = "int(11)")]
-    public int? VocLift { get; set; }
-
-    /// <summary>
-    /// 소방민원 처리권한
-    /// </summary>
-    [Column("VOC_FIRE", TypeName = "int(11)")]
-    public int? VocFire { get; set; }
-
-    /// <summary>
-    /// 건축민원 처리권한
-    /// </summary>
-    [Column("VOC_CONSTRUCT", TypeName = "int(11)")]
-    public int? VocConstruct { get; set; }
-
-    /// <summary>
-    /// 통신민원 처리권한
-    /// </summary>
-    [Column("VOC_NETWORK", TypeName = "int(11)")]
-    public int? VocNetwork { get; set; }
-
-    /// <summary>
-    /// 미화민원 처리권한
-    /// </summary>
-    [Column("VOC_BEAUTY", TypeName = "int(11)")]
-    public int? VocBeauty { get; set; }
-
-    /// <summary>
-    /// 보안민원 처리권한
-    /// </summary>
-    [Column("VOC_SECURITY", TypeName = "int(11)")]
-    public int? VocSecurity { get; set; }
-
-    /// <summary>
-    /// 기타 처리권한
-    /// </summary>
-    [Column("VOC_DEFAULT", TypeName = "int(11)")]
-    public int? VocDefault { get; set; }
-
-    /// <summary>
-    /// 관리자 유무
+    /// 관리자 여부
     /// </summary>
     [Column("ADMIN_YN")]
     public bool? AdminYn { get; set; }
 
     /// <summary>
-    /// 알람 유무
+    /// 알람여부
     /// </summary>
-    [Column("ALRAM_YN")]
-    public bool? AlramYn { get; set; }
+    [Column("ALARM_YN")]
+    public bool? AlarmYn { get; set; }
 
     /// <summary>
     /// 재직여부
     /// </summary>
-    [Column("STATUS")]
-    public bool? Status { get; set; }
+    [Column("STATUS", TypeName = "int(11)")]
+    public int? Status { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -216,7 +190,7 @@ public partial class UserTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -235,7 +209,7 @@ public partial class UserTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -248,31 +222,29 @@ public partial class UserTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// 직급
+    /// 직책\r\n
     /// </summary>
     [Column("JOB")]
     [StringLength(255)]
     public string? Job { get; set; }
 
     /// <summary>
-    /// 첨부파일
+    /// 이미지
     /// </summary>
+    [Column("IMAGE")]
     [StringLength(255)]
     public string? Image { get; set; }
 
-    /// <summary>
-    /// (외래키) 사업장 인덱스
-    /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int? PlaceTbId { get; set; }
 
     [InverseProperty("UserTb")]
     public virtual ICollection<AdminTb> AdminTbs { get; set; } = new List<AdminTb>();
 
-    [InverseProperty("UserTb")]
+    [InverseProperty("UsersTb")]
     public virtual ICollection<AlarmTb> AlarmTbs { get; set; } = new List<AlarmTb>();
 
     [ForeignKey("PlaceTbId")]
-    [InverseProperty("UserTbs")]
+    [InverseProperty("UsersTbs")]
     public virtual PlaceTb? PlaceTb { get; set; }
 }

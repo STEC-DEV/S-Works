@@ -142,6 +142,7 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
+                
                 if(buildingId is [_, ..])
                 {
                     List<BuildingTb>? buildinglist = await context.BuildingTbs.Where(m => buildingId.Contains(m.Id) && m.DelYn != true).ToListAsync();

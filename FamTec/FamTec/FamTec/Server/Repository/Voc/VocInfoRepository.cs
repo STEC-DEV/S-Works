@@ -50,49 +50,50 @@ namespace FamTec.Server.Repository.Voc
         /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<List<VocTb>?> GetVocList(List<BuildingTb>? buildinglist, string? date)
         {
-            try
-            {
-                if (String.IsNullOrWhiteSpace(date))
-                    return null;
+            return null;
+            //try
+            //{
+            //    if (String.IsNullOrWhiteSpace(date))
+            //        return null;
                 
-                if(buildinglist is [_, ..])
-                {
-                    List<VocTb>? model = (from buildingtbs in buildinglist
-                                          join voctbs in context.VocTbs.Where(m => EF.Functions.Like(m.CreateDt, $"{date}%"))
-                                          on buildingtbs.Id equals voctbs.BuildingTbId
-                                          where buildingtbs.DelYn != true && voctbs.DelYn != true
-                                          select new VocTb
-                                          {
-                                              Id = voctbs.Id,
-                                              Name = voctbs.Name,
-                                              Title = voctbs.Title,
-                                              Content = voctbs.Content,
-                                              Phone = voctbs.Content,
-                                              Status = voctbs.Status,
-                                              Type = voctbs.Type,
-                                              CreateDt = voctbs.CreateDt,
-                                              CreateUser=voctbs.CreateUser,
-                                              UpdateDt = voctbs.UpdateDt,
-                                              UpdateUser = voctbs.UpdateUser,
-                                              DelDt = voctbs.DelDt,
-                                              DelUser = voctbs.DelUser,
-                                              DelYn = voctbs.DelYn,
-                                              Image1 = voctbs.Image1,
-                                              Image2 = voctbs.Image2,
-                                              Image3 = voctbs.Image3,
-                                              CompleteTime = voctbs.CompleteTime,
-                                              TotalTime = voctbs.TotalTime,
-                                              BuildingTbId =voctbs.BuildingTbId
-                                          }).ToList();
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
-                else
-                {
-                    return null;
-                }
+            //    if(buildinglist is [_, ..])
+            //    {
+            //        List<VocTb>? model = (from buildingtbs in buildinglist
+            //                              join voctbs in context.VocTbs.Where(m => EF.Functions.Like(m.CreateDt, $"{date}%"))
+            //                              on buildingtbs.Id equals voctbs.BuildingTbId
+            //                              where buildingtbs.DelYn != true && voctbs.DelYn != true
+            //                              select new VocTb
+            //                              {
+            //                                  Id = voctbs.Id,
+            //                                  Name = voctbs.Name,
+            //                                  Title = voctbs.Title,
+            //                                  Content = voctbs.Content,
+            //                                  Phone = voctbs.Content,
+            //                                  Status = voctbs.Status,
+            //                                  Type = voctbs.Type,
+            //                                  CreateDt = voctbs.CreateDt,
+            //                                  CreateUser=voctbs.CreateUser,
+            //                                  UpdateDt = voctbs.UpdateDt,
+            //                                  UpdateUser = voctbs.UpdateUser,
+            //                                  DelDt = voctbs.DelDt,
+            //                                  DelUser = voctbs.DelUser,
+            //                                  DelYn = voctbs.DelYn,
+            //                                  Image1 = voctbs.Image1,
+            //                                  Image2 = voctbs.Image2,
+            //                                  Image3 = voctbs.Image3,
+            //                                  CompleteTime = voctbs.CompleteTime,
+            //                                  TotalTime = voctbs.TotalTime,
+            //                                  BuildingTbId =voctbs.BuildingTbId
+            //                              }).ToList();
+            //        if (model is [_, ..])
+            //            return model;
+            //        else
+            //            return null;
+            //    }
+            //    else
+            //    {
+            //        return null;
+            //    }
 
                 /*
                 if(buildinglist is [_, ..] && date is not null)
@@ -128,12 +129,12 @@ namespace FamTec.Server.Repository.Voc
                     return null;
                 }
                 */
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    LogService.LogMessage(ex.ToString());
+            //    throw new ArgumentNullException();
+            //}
         }
     }
 }

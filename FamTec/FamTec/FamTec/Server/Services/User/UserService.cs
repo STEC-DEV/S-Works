@@ -64,7 +64,7 @@ namespace FamTec.Server.Services.User
                 List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx));
                 if(adminplace is [_, ..])
                 {
-                    AdminPlaceTb? select = adminplace.FirstOrDefault(m => m.PlaceId == placeid);
+                    AdminPlaceTb? select = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
                     if (select is not null)
                     {
                         PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid);
@@ -202,7 +202,7 @@ namespace FamTec.Server.Services.User
 
                 if (!String.IsNullOrWhiteSpace(dto?.UserID) && !String.IsNullOrWhiteSpace(dto?.UserPassword))
                 {
-                    UserTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword);
+                    UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword);
                     
                     if(usertb is not null)
                     {
@@ -216,7 +216,7 @@ namespace FamTec.Server.Services.User
                                 authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // + USERID
                                 authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // + USERID
                                 authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                                authClaims.Add(new Claim("AlarmYN", usertb.AlramYn!.ToString())); // 알람 받을지 여부
+                                authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
                                 authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
                                 authClaims.Add(new Claim("UserType", "User"));
                                 authClaims.Add(new Claim("Role", "User"));
@@ -251,7 +251,7 @@ namespace FamTec.Server.Services.User
                                 items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
                                 items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
                                 items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                                items.Add("VocDefault", usertb.VocDefault.ToString()); // 기타 처리권한
+                                items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
                                 jsonConvert = JsonConvert.SerializeObject(items);
                                 authClaims.Add(new Claim("VocPerms", jsonConvert));
 
@@ -303,7 +303,7 @@ namespace FamTec.Server.Services.User
                                 authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // USER 인덱스
                                 authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // 이름
                                 authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                                authClaims.Add(new Claim("AlarmYN", usertb.AlramYn!.ToString())); // 알람 받을지 여부
+                                authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
                                 authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
                                 authClaims.Add(new Claim("UserType", "ADMIN"));
                                 authClaims.Add(new Claim("AdminIdx", admintb.Id!.ToString())); // 관리자 인덱스
@@ -353,7 +353,7 @@ namespace FamTec.Server.Services.User
                                 items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
                                 items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
                                 items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                                items.Add("VocDefault", usertb.VocDefault.ToString()); // 기타 처리권한
+                                items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
                                 jsonConvert = JsonConvert.SerializeObject(items);
                                 authClaims.Add(new Claim("VocPerms", jsonConvert));
 
@@ -411,7 +411,7 @@ namespace FamTec.Server.Services.User
 
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await UserInfoRepository.GetPlaceUserList(placeidx);
+                    List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(placeidx);
 
                     if (model is [_, ..])
                     {
@@ -484,7 +484,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
                 if (TokenChk is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
@@ -499,7 +499,7 @@ namespace FamTec.Server.Services.User
                 di = new DirectoryInfo(PlaceFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                UserTb model = new UserTb();
+                UsersTb model = new UsersTb();
 
                 model.UserId = dto.USERID; // 사용자아이디
                 model.Password = dto.PASSWORD; // 비밀번호
@@ -520,8 +520,8 @@ namespace FamTec.Server.Services.User
                 model.PermUser = dto.PERM_USER; // 사용자메뉴 권한
                 model.PermVoc = dto.PERM_VOC; // VOC메뉴 권한
                 model.AdminYn = false; // 관리자 아님
-                model.AlramYn = dto.ALRAM_YN; // 알람 여부
-                model.Status = true; // 재직여부
+                model.AlarmYn = dto.ALRAM_YN; // 알람 여부
+                model.Status = 2; // 재직여부
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = Creater; // 생성자
                 model.UpdateDt = DateTime.Now;
@@ -535,7 +535,7 @@ namespace FamTec.Server.Services.User
                 model.VocNetwork = dto.VOC_NETWORK; // VOC 통신권한
                 model.VocBeauty = dto.VOC_BEAUTY; // VOC 미화권한
                 model.VocSecurity = dto.VOC_SECURITY; // VOC 보안권한
-                model.VocDefault = dto.VOC_DEFAULT; // VOC 기타권한
+                model.VocEtc = dto.VOC_ETC; // VOC 기타권한
                 model.PlaceTbId = Int32.Parse(PlaceIdx);
                 
                 if(files is not null)
@@ -564,7 +564,7 @@ namespace FamTec.Server.Services.User
                     model.Image = null;
                 }
 
-                UserTb? result = await UserInfoRepository.AddAsync(model);
+                UsersTb? result = await UserInfoRepository.AddAsync(model);
                 if (result is not null)
                 {
                     return new ResponseUnit<UsersDTO>()
@@ -593,7 +593,7 @@ namespace FamTec.Server.Services.User
                             PERM_USER = result.PermUser,
                             PERM_VOC = result.PermVoc,
                             ADMIN_YN = result.AdminYn,
-                            ALRAM_YN = result.AlramYn,
+                            ALRAM_YN = result.AlarmYn,
                             STATUS = result.Status,
                             JOB = result.Job,
                             VOC_MACHINE = result.VocMachine,
@@ -604,7 +604,7 @@ namespace FamTec.Server.Services.User
                             VOC_NETWORK = result.VocNetwork,
                             VOC_BEAUTY = result.VocBeauty,
                             VOC_SECURITY = result.VocSecurity,
-                            VOC_DEFAULT = result.VocDefault
+                            VOC_ETC = result.VocEtc
                         },
                         code = 200
                     };
@@ -643,14 +643,14 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UserTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
                 if (TokenChk is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 if (TokenChk.PermUser != 2)
                     return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
-                UserTb? model = await UserInfoRepository.GetUserIndexInfo(id);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id);
 
                 // 조회내용이 있으면 반환
                 if (model is not null)
@@ -675,7 +675,7 @@ namespace FamTec.Server.Services.User
                     dto.PERM_USER = model.PermUser;
                     dto.PERM_VOC = model.PermVoc;
                     dto.ADMIN_YN = model.AdminYn;
-                    dto.ALRAM_YN = model.AlramYn;
+                    dto.ALRAM_YN = model.AlarmYn;
                     dto.STATUS = model.Status;
                     dto.JOB = model.Job;
                     dto.VOC_MACHINE = model.VocMachine;
@@ -686,7 +686,7 @@ namespace FamTec.Server.Services.User
                     dto.VOC_NETWORK = model.VocNetwork;
                     dto.VOC_BEAUTY = model.VocBeauty;
                     dto.VOC_SECURITY = model.VocSecurity;
-                    dto.VOC_DEFAULT = model.VocDefault;
+                    dto.VOC_ETC = model.VocEtc;
 
                     string? Image = model.Image;
                     if (!String.IsNullOrWhiteSpace(Image))
@@ -761,7 +761,7 @@ namespace FamTec.Server.Services.User
                 //int? model = await UserInfoRepository.DeleteUserList(del, Name);
                 for (int i = 0; i < del.Count(); i++)
                 {
-                    UserTb? Users = await UserInfoRepository.GetUserIndexInfo(del[i]);
+                    UsersTb? Users = await UserInfoRepository.GetUserIndexInfo(del[i]);
                     if (Users is not null)
                     {
                         Users.DelDt = DateTime.Now;
@@ -811,7 +811,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
 
-                UserTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID);
                 if (model is not null)
                 {
                     model.UserId = dto.USERID;
@@ -843,8 +843,8 @@ namespace FamTec.Server.Services.User
                     model.VocNetwork = dto.VOC_NETWORK;
                     model.VocBeauty = dto.VOC_BEAUTY;
                     model.VocSecurity = dto.VOC_SECURITY;
-                    model.VocDefault = dto.VOC_DEFAULT;
-                    model.AlramYn = dto.ALRAM_YN;
+                    model.VocEtc = dto.VOC_ETC;
+                    model.AlarmYn = dto.ALRAM_YN;
                     model.Status = dto.STATUS;
 
                     model.UpdateDt = DateTime.Now;
@@ -897,7 +897,7 @@ namespace FamTec.Server.Services.User
                         }
                     }
 
-                    UserTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
+                    UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
                     if (updatemodel is not null)
                     {
                         return new ResponseUnit<UpdateUserDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -1007,7 +1007,7 @@ namespace FamTec.Server.Services.User
                         else
                         {
                             // DB에 중복된 ID가 있는지 검사
-                            List<UserTb>? placeusers = await UserInfoRepository.GetAllUserList();
+                            List<UsersTb>? placeusers = await UserInfoRepository.GetAllUserList();
 
                             if (placeusers is not null && placeusers.Count() > 0)
                             {
@@ -1022,7 +1022,7 @@ namespace FamTec.Server.Services.User
                                 {
                                     // 중복된 데이터가 없음
                                     // 모델 클래스로 변환해서 디비에 넣어야함.
-                                    List<UserTb> model = userlist.Select(m => new UserTb
+                                    List<UsersTb> model = userlist.Select(m => new UsersTb
                                     {
                                         UserId = m.ID,
                                         Password = m.PassWord,
@@ -1042,16 +1042,16 @@ namespace FamTec.Server.Services.User
                                         PermEnergy = 0,
                                         PermUser = 2, // 사용자관리 필수사용
                                         PermVoc = 0,
-                                        VocMachine = 0,
-                                        VocElec = 0,
-                                        VocLift = 0,
-                                        VocFire = 0,
-                                        VocConstruct = 0,
-                                        VocNetwork = 0,
-                                        VocBeauty = 0,
-                                        VocSecurity = 0,
-                                        VocDefault = 0,
-                                        Status = true,
+                                        VocMachine = false,
+                                        VocElec = false,
+                                        VocLift = false,
+                                        VocFire = false,
+                                        VocConstruct = false,
+                                        VocNetwork = false,
+                                        VocBeauty = false,
+                                        VocSecurity = false,
+                                        VocEtc = false,
+                                        Status = 2,
                                         CreateDt = DateTime.Now,
                                         CreateUser = creater,
                                         UpdateDt = DateTime.Now,
@@ -1062,7 +1062,7 @@ namespace FamTec.Server.Services.User
 
                                     for (int i = 0; i < model.Count; i++)
                                     {
-                                        UserTb? insert = await UserInfoRepository.AddAsync(model[i]);
+                                        UsersTb? insert = await UserInfoRepository.AddAsync(model[i]);
 
                                         if (insert is null)
                                         {
@@ -1081,7 +1081,7 @@ namespace FamTec.Server.Services.User
                             else // USERTB에 데이터가 아무것도 없을때
                             {
                                 // 모델 클래스로 변환해서 디비에 넣어야함.
-                                List<UserTb> model = userlist.Select(m => new UserTb
+                                List<UsersTb> model = userlist.Select(m => new UsersTb
                                 {
                                     UserId = m.ID,
                                     Password = m.PassWord,
@@ -1101,16 +1101,16 @@ namespace FamTec.Server.Services.User
                                     PermEnergy = 0,
                                     PermUser = 2, // 사용자관리 필수사용
                                     PermVoc = 0,
-                                    VocMachine = 0,
-                                    VocElec = 0,
-                                    VocLift = 0,
-                                    VocFire = 0,
-                                    VocConstruct = 0,
-                                    VocNetwork = 0,
-                                    VocBeauty = 0,
-                                    VocSecurity = 0,
-                                    VocDefault = 0,
-                                    Status = true,
+                                    VocMachine = false,
+                                    VocElec = false,
+                                    VocLift = false,
+                                    VocFire = false,
+                                    VocConstruct = false,
+                                    VocNetwork = false,
+                                    VocBeauty = false,
+                                    VocSecurity = false,
+                                    VocEtc = false,
+                                    Status = 2,
                                     CreateDt = DateTime.Now,
                                     CreateUser = creater,
                                     UpdateDt = DateTime.Now,
@@ -1121,7 +1121,7 @@ namespace FamTec.Server.Services.User
 
                                 for (int i = 0; i < model.Count; i++)
                                 {
-                                    UserTb? insert = await UserInfoRepository.AddAsync(model[i]);
+                                    UsersTb? insert = await UserInfoRepository.AddAsync(model[i]);
 
                                     if (insert is null)
                                     {

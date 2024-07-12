@@ -38,11 +38,11 @@ namespace FamTec.Server.Services.Admin.Department
                 if (String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                DepartmentTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
+                DepartmentsTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
 
                 if (model is null)
                 {
-                    DepartmentTb? tb = new DepartmentTb
+                    DepartmentsTb? tb = new DepartmentsTb
                     {
                         Name = dto.Name,
                         CreateDt = DateTime.Now,
@@ -51,7 +51,7 @@ namespace FamTec.Server.Services.Admin.Department
                         UpdateUser = Creater
                     };
 
-                    DepartmentTb? result = await DepartmentInfoRepository.AddAsync(tb);
+                    DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(tb);
 
                     if (result is not null)
                     {
@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Admin.Department
         {
             try
             {
-                List<DepartmentTb>? model = await DepartmentInfoRepository.GetAllList();
+                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetAllList();
 
                 if(model is [_, ..])
                 {
@@ -148,7 +148,7 @@ namespace FamTec.Server.Services.Admin.Department
                 // 부서삭제
                 for (int i = 0; i < departmentidx.Count(); i++)
                 {
-                    DepartmentTb? departmenttb = await DepartmentInfoRepository.GetDeleteDepartmentInfo(departmentidx[i]);
+                    DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDeleteDepartmentInfo(departmentidx[i]);
 
                     if(departmenttb is not null)
                     {
@@ -197,11 +197,11 @@ namespace FamTec.Server.Services.Admin.Department
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = new DepartmentDTO(), code = 404 };
                 
-                DepartmentTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id);
+                DepartmentsTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id);
                     
                 if(model is not null)
                 {
-                    DepartmentTb? duplechk = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
+                    DepartmentsTb? duplechk = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
                         
                     if(duplechk is null)
                     {

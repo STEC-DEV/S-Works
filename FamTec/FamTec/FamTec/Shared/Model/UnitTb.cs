@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("unit_tb")]
-[Index("PlaceTbId", Name = "fk_UNIT_PLACE_TB1_idx")]
+[Index("PlaceTbId", Name = "fk_unit_tb_place_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class UnitTb
 {
     /// <summary>
@@ -18,14 +19,14 @@ public partial class UnitTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 단위명
+    /// 단위
     /// </summary>
     [Column("UNIT")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? Unit { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -34,11 +35,11 @@ public partial class UnitTb
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -47,7 +48,7 @@ public partial class UnitTb
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? UpdateUser { get; set; }
 
     /// <summary>
@@ -57,7 +58,7 @@ public partial class UnitTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -66,11 +67,11 @@ public partial class UnitTb
     /// 삭제자
     /// </summary>
     [Column("DEL_USER")]
-    [StringLength(45)]
+    [StringLength(255)]
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// (외래키) 사업장 인덱스
+    /// 사업장 인덱스
     /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int? PlaceTbId { get; set; }

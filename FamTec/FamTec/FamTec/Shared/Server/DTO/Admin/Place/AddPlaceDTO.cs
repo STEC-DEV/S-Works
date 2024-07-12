@@ -40,57 +40,57 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// <summary>
         /// 계약일자
         /// </summary>
-        public string? ContractDT { get; set; }
+        public DateTime? ContractDT { get; set; }
 
         /// <summary>
         /// 설비메뉴 권한
         /// </summary>
-        public sbyte? PermMachine { get; set; } = 0;
+        public bool? PermMachine { get; set; } = false;
 
         /// <summary>
         /// 승강메뉴 권한
         /// </summary>
-        public sbyte? PermLift { get; set; } = 0;
+        public bool? PermLift { get; set; } = false;
 
         /// <summary>
         /// 소방메뉴 권한
         /// </summary>
-        public sbyte? PermFire { get; set; } = 0;
+        public bool? PermFire { get; set; } = false;
 
         /// <summary>
         /// 건축메뉴 권한
         /// </summary>
-        public sbyte? PermConstruct { get; set; } = 0;
+        public bool? PermConstruct { get; set; } = false;
 
         /// <summary>
         /// 통신메뉴 권한
         /// </summary>
-        public sbyte? PermNetwork { get; set; } = 0;
+        public bool? PermNetwork { get; set; } = false;
 
         /// <summary>
         /// 미화 권한
         /// </summary>
-        public sbyte? PermBeauty { get; set; } = 0;
+        public bool? PermBeauty { get; set; } = false;
 
         /// <summary>
         /// 보안메뉴 권한
         /// </summary>
-        public sbyte? PermSecurity { get; set; } = 0;
+        public bool? PermSecurity { get; set; } = false;
 
         /// <summary>
         /// 자재메뉴 권한
         /// </summary>
-        public sbyte? PermMaterial { get; set; } = 0;
+        public bool? PermMaterial { get; set; } = false;
 
         /// <summary>
         /// 에너지메뉴 권한
         /// </summary>
-        public sbyte? PermEnergy { get; set; } = 0;
+        public bool? PermEnergy { get; set; } = false;
 
         /// <summary>
         /// VOC 권한
         /// </summary>
-        public sbyte? PermVoc { get; set; } = 0;
+        public bool? PermVoc { get; set; } = false;
 
         /// <summary>
         /// 비고

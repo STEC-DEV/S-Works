@@ -3,8 +3,6 @@ using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
-using FamTec.Shared.Server.DTO.Floor;
-using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Services.Facility
 {
@@ -48,17 +46,17 @@ namespace FamTec.Server.Services.Facility
                     Category = dto.Category,
                     Name = dto.Name,
                     Type = dto.Type,
-                    Ea = dto.Ea,
+                    Num = dto.Num,
                     StandardCapacity = dto.Standard_capacity,
-                    FacCreateDt = dto.FacCreateDT,
+                    EquipDt = dto.FacCreateDT,
                     Lifespan = dto.LifeSpan,
-                    StandardCapacityUnit = dto.Standard_unit,
-                    FacUpdateDt = dto.FacUpdateDT,
+                    Unit = dto.Standard_unit,
+                    ChangeDt = dto.ChangeDT,
                     CreateDt = DateTime.Now,
                     CreateUser = creator,
                     UpdateDt = DateTime.Now,
                     UpdateUser = creator,
-                    RoomTbid = dto.RoomTbId
+                    RoomTbId = dto.RoomTbId
                 };
 
                 FacilityTb? result = await FacilityInfoRepository.AddAsync(model);

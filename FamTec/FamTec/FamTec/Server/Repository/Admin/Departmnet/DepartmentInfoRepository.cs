@@ -21,13 +21,13 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<DepartmentTb?> AddAsync(DepartmentTb? model)
+        public async ValueTask<DepartmentsTb?> AddAsync(DepartmentsTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.DepartmentTbs.Add(model);
+                    context.DepartmentsTbs.Add(model);
                     await context.SaveChangesAsync();
                     return model;
                 }
@@ -50,13 +50,13 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateDepartmentInfo(DepartmentTb? model)
+        public async ValueTask<bool?> UpdateDepartmentInfo(DepartmentsTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.DepartmentTbs.Update(model);
+                    context.DepartmentsTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -77,11 +77,11 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<List<DepartmentTb>?> GetAllList()
+        public async ValueTask<List<DepartmentsTb>?> GetAllList()
         {
             try
             {
-                List<DepartmentTb>? model = await context.DepartmentTbs.Where(m => m.DelYn != true).ToListAsync();
+                List<DepartmentsTb>? model = await context.DepartmentsTbs.Where(m => m.DelYn != true).ToListAsync();
 
                 if (model is [_, ..])
                     return model;
@@ -100,14 +100,14 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="departmentidx"></param>
         /// <returns></returns>
-        public async ValueTask<DepartmentTb?> GetDepartmentInfo(int? Id)
+        public async ValueTask<DepartmentsTb?> GetDepartmentInfo(int? Id)
         {
             try
             {
                 if (Id is not null)
                 {
 
-                    DepartmentTb? model = await context.DepartmentTbs
+                    DepartmentsTb? model = await context.DepartmentsTbs
                         .FirstOrDefaultAsync(m => m.Id.Equals(Id) &&
                         m.DelYn != true);
 
@@ -134,13 +134,13 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <param name="departmentname"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<DepartmentTb?> GetDepartmentInfo(string? Name)
+        public async ValueTask<DepartmentsTb?> GetDepartmentInfo(string? Name)
         {
             try
             {
                 if (!String.IsNullOrWhiteSpace(Name))
                 {
-                    DepartmentTb? model = await context.DepartmentTbs
+                    DepartmentsTb? model = await context.DepartmentsTbs
                         .FirstOrDefaultAsync(m => m.Name.Equals(Name)
                         && m.DelYn != true);
 
@@ -197,13 +197,13 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<DepartmentTb?> GetDeleteDepartmentInfo(int? id)
+        public async ValueTask<DepartmentsTb?> GetDeleteDepartmentInfo(int? id)
         {
             try
             {
                 if(id is not null)
                 {
-                    DepartmentTb? model = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id.Equals(id));
+                    DepartmentsTb? model = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id.Equals(id));
 
                     if (model is not null)
                         return model;
@@ -227,13 +227,13 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteDepartment(DepartmentTb? model)
+        public async ValueTask<bool?> DeleteDepartment(DepartmentsTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.DepartmentTbs.Update(model);
+                    context.DepartmentsTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else

@@ -44,7 +44,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 if(vocid is not null)
                 {
-                    List<CommentTb>? model = await context.CommentTbs.Where(m => m.VocTbid == vocid && m.DelYn != true).ToListAsync();
+                    List<CommentTb>? model = await context.CommentTbs.Where(m => m.VocTbId == vocid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;

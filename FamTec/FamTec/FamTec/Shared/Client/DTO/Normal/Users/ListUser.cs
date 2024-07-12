@@ -24,6 +24,6 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         //public DateTime? Created { get; set; }
         public string Created { get; set; }
         [Display(Name = "재직 상태")]
-        public bool? Status { get; set; }
+        public int? Status { get; set; }
     }
 }

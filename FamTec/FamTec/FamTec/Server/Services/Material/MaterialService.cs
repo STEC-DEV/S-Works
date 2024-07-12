@@ -42,14 +42,14 @@ namespace FamTec.Server.Services.Material
                     Unit = dto.Unit,
                     DefaultLocation = dto.Default_Location,
                     Standard = dto.Standard,
-                    Mfr = dto.Mfr,
+                    ManufacturingComp = dto.Mfr,
                     SafeNum = dto.SafeNum,
                     CreateDt = DateTime.Now,
                     CreateUser = Creater,
                     UpdateDt = DateTime.Now,
                     UpdateUser = Creater,
                     PlaceTbId = Int32.Parse(placeidx),
-                    BuildingTbId = dto.BuildingId
+                    BuildingTbId = Convert.ToInt32(dto.BuildingId)
                 };
 
                 MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.Material
                         Default_Location = model.DefaultLocation,
                         Standard = model.Standard,
                         SafeNum = model.SafeNum,
-                        Mfr = model.Mfr,
+                        Mfr = model.ManufacturingComp,
                         BuildingId = model.BuildingTbId
                     }, code = 200 };
                 }
@@ -103,7 +103,7 @@ namespace FamTec.Server.Services.Material
                             Name = e.Name,
                             Unit = e.Unit,
                             SafeNum = e.SafeNum,
-                            Mfr = e.Mfr,
+                            ManufacturingCompany = e.ManufacturingComp,
                             Standard = e.Standard
                         }).ToList(),
                         code = 200

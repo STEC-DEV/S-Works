@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("room_tb")]
-[Index("FloorTbId", Name = "fk_ROOM_TB_FLOOR_TB1_idx")]
+[Index("FloorTbId", Name = "fk_room_tb_floor_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class RoomTb
 {
     /// <summary>
@@ -25,7 +26,7 @@ public partial class RoomTb
     public string? Name { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -38,7 +39,7 @@ public partial class RoomTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -57,7 +58,7 @@ public partial class RoomTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -69,9 +70,6 @@ public partial class RoomTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// (외래키) 층 인덱스
-    /// </summary>
     [Column("FLOOR_TB_ID", TypeName = "int(11)")]
     public int? FloorTbId { get; set; }
 

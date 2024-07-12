@@ -6,25 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("department_tb")]
-public partial class DepartmentTb
+[Table("used_material_tb")]
+[Index("MaintenenceHistoryTbId", Name = "fk_used_material_maintenence_history_tb1_idx")]
+[Index("MaterialTbId", Name = "fk_used_material_material_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
+public partial class UsedMaterialTb
 {
     /// <summary>
-    /// 부서 인덱스
+    /// 사용자재 인덱스
     /// </summary>
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
     /// <summary>
-    /// 부서명
-    /// </summary>
-    [Column("NAME")]
-    [StringLength(255)]
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// 생성일
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -36,9 +32,6 @@ public partial class DepartmentTb
     [StringLength(255)]
     public string? CreateUser { get; set; }
 
-    /// <summary>
-    /// 수정일
-    /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
 
@@ -56,7 +49,7 @@ public partial class DepartmentTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -68,6 +61,17 @@ public partial class DepartmentTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    [InverseProperty("DepartmentTb")]
-    public virtual ICollection<AdminTb> AdminTbs { get; set; } = new List<AdminTb>();
+    [Column("MAINTENENCE_HISTORY_TB_ID", TypeName = "int(11)")]
+    public int? MaintenenceHistoryTbId { get; set; }
+
+    [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
+    public int? MaterialTbId { get; set; }
+
+    [ForeignKey("MaintenenceHistoryTbId")]
+    [InverseProperty("UsedMaterialTbs")]
+    public virtual MaintenenceHistoryTb? MaintenenceHistoryTb { get; set; }
+
+    [ForeignKey("MaterialTbId")]
+    [InverseProperty("UsedMaterialTbs")]
+    public virtual MaterialTb? MaterialTb { get; set; }
 }

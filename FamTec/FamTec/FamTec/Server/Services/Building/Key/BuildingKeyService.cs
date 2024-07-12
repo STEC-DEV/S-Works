@@ -39,10 +39,10 @@ namespace FamTec.Server.Services.Building.Key
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
-                BuildingItemkeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.ID);
+                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.ID);
                 if(KeyTB is not null)
                 {
-                    KeyTB.Itemkey = dto.Itemkey;
+                    KeyTB.Name = dto.Itemkey;
                     KeyTB.UpdateDt = DateTime.Now;
                     KeyTB.UpdateUser = creater;
 
@@ -52,7 +52,7 @@ namespace FamTec.Server.Services.Building.Key
                         return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
                     }
 
-                    List<BuildingItemvalueTb>? ValueTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
+                    List<BuildingItemValueTb>? ValueTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
                     if(ValueTB is [_, ..])
                     {
                         if(ValueTB.Count() != dto.ValueList.Count())
@@ -72,10 +72,10 @@ namespace FamTec.Server.Services.Building.Key
                         {
                             foreach(GroupValueListDTO value in dto.ValueList)
                             {
-                                BuildingItemvalueTb? valuetb = await BuildingItemValueInfoRepository.GetValueInfo(value.ID);
+                                BuildingItemValueTb? valuetb = await BuildingItemValueInfoRepository.GetValueInfo(value.ID);
                                 if(valuetb is not null)
                                 {
-                                    valuetb.Itemvalue = value.ItemValue;
+                                    valuetb.ItemValue = value.ItemValue;
                                     valuetb.Unit = value.Unit;
                                     valuetb.UpdateDt = DateTime.Now;
                                     valuetb.UpdateUser = creater;
@@ -123,7 +123,7 @@ namespace FamTec.Server.Services.Building.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BuildingItemkeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(KeyId);
+                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(KeyId);
 
                 if(KeyTB is not null)
                 {
@@ -138,10 +138,10 @@ namespace FamTec.Server.Services.Building.Key
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
 
-                    List<BuildingItemvalueTb>? ItemTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyId);
+                    List<BuildingItemValueTb>? ItemTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyId);
                     if(ItemTB is [_, ..])
                     {
-                        foreach(BuildingItemvalueTb Item in ItemTB)
+                        foreach(BuildingItemValueTb Item in ItemTB)
                         {
                             Item.DelDt = DateTime.Now;
                             Item.DelUser = creater;

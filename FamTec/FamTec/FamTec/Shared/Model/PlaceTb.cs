@@ -17,18 +17,11 @@ public partial class PlaceTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 사업장코드
+    /// 사업장 코드
     /// </summary>
     [Column("PLACE_CD")]
     [StringLength(255)]
     public string? PlaceCd { get; set; }
-
-    /// <summary>
-    /// 계약번호
-    /// </summary>
-    [Column("CONTRACT_NUM")]
-    [StringLength(255)]
-    public string? ContractNum { get; set; }
 
     /// <summary>
     /// 사업장명
@@ -38,11 +31,11 @@ public partial class PlaceTb
     public string? Name { get; set; }
 
     /// <summary>
-    /// 전화번호
+    /// 계약번호
     /// </summary>
-    [Column("TEL")]
+    [Column("CONTRACT_NUM")]
     [StringLength(255)]
-    public string? Tel { get; set; }
+    public string? ContractNum { get; set; }
 
     /// <summary>
     /// 비고
@@ -52,17 +45,18 @@ public partial class PlaceTb
     public string? Note { get; set; }
 
     /// <summary>
+    /// 전화번호
+    /// </summary>
+    [Column("TEL")]
+    [StringLength(255)]
+    public string? Tel { get; set; }
+
+    /// <summary>
     /// 주소
     /// </summary>
     [Column("ADDRESS")]
     [StringLength(255)]
     public string? Address { get; set; }
-
-    /// <summary>
-    /// 계약일자
-    /// </summary>
-    [Column("CONTRACT_DT", TypeName = "datetime")]
-    public DateTime? ContractDt { get; set; }
 
     /// <summary>
     /// 해약일자
@@ -71,64 +65,10 @@ public partial class PlaceTb
     public DateTime? CancelDt { get; set; }
 
     /// <summary>
-    /// 기계메뉴 권한
+    /// 계약일자
     /// </summary>
-    [Column("PERM_MACHINE", TypeName = "tinyint(4)")]
-    public sbyte? PermMachine { get; set; }
-
-    /// <summary>
-    /// 승강메뉴 권한
-    /// </summary>
-    [Column("PERM_LIFT", TypeName = "tinyint(4)")]
-    public sbyte? PermLift { get; set; }
-
-    /// <summary>
-    /// 소방메뉴 권한
-    /// </summary>
-    [Column("PERM_FIRE", TypeName = "tinyint(4)")]
-    public sbyte? PermFire { get; set; }
-
-    /// <summary>
-    /// 건축메뉴 권한
-    /// </summary>
-    [Column("PERM_CONSTRUCT", TypeName = "tinyint(4)")]
-    public sbyte? PermConstruct { get; set; }
-
-    /// <summary>
-    /// 통신메뉴 권한
-    /// </summary>
-    [Column("PERM_NETWORK", TypeName = "tinyint(4)")]
-    public sbyte? PermNetwork { get; set; }
-
-    /// <summary>
-    /// 미화메뉴 권한
-    /// </summary>
-    [Column("PERM_BEAUTY", TypeName = "tinyint(4)")]
-    public sbyte? PermBeauty { get; set; }
-
-    /// <summary>
-    /// 보안메뉴 권한
-    /// </summary>
-    [Column("PERM_SECURITY", TypeName = "tinyint(4)")]
-    public sbyte? PermSecurity { get; set; }
-
-    /// <summary>
-    /// 자재메뉴 권한
-    /// </summary>
-    [Column("PERM_MATERIAL", TypeName = "tinyint(4)")]
-    public sbyte? PermMaterial { get; set; }
-
-    /// <summary>
-    /// 에너지메뉴 권한
-    /// </summary>
-    [Column("PERM_ENERGY", TypeName = "tinyint(4)")]
-    public sbyte? PermEnergy { get; set; }
-
-    /// <summary>
-    /// 민원 권한
-    /// </summary>
-    [Column("PERM_VOC", TypeName = "tinyint(4)")]
-    public sbyte? PermVoc { get; set; }
+    [Column("CONTRACT_DT", TypeName = "datetime")]
+    public DateTime? ContractDt { get; set; }
 
     /// <summary>
     /// 계약상태
@@ -137,7 +77,73 @@ public partial class PlaceTb
     public bool? Status { get; set; }
 
     /// <summary>
-    /// 생성일
+    /// 기게정보권한
+    /// </summary>
+    [Column("PERM_MACHINE")]
+    public bool? PermMachine { get; set; }
+
+    /// <summary>
+    /// 전기관리 권한
+    /// </summary>
+    [Column("PERM_ELEC")]
+    public bool? PermElec { get; set; }
+
+    /// <summary>
+    /// 승강관리 권한
+    /// </summary>
+    [Column("PERM_LIFT")]
+    public bool? PermLift { get; set; }
+
+    /// <summary>
+    /// 소방관리 권한
+    /// </summary>
+    [Column("PERM_FIRE")]
+    public bool? PermFire { get; set; }
+
+    /// <summary>
+    /// 건축관리 권한
+    /// </summary>
+    [Column("PERM_CONSTRUCT")]
+    public bool? PermConstruct { get; set; }
+
+    /// <summary>
+    /// 통신관리 권한
+    /// </summary>
+    [Column("PERM_NETWORK")]
+    public bool? PermNetwork { get; set; }
+
+    /// <summary>
+    /// 미화 권한
+    /// </summary>
+    [Column("PERM_BEAUTY")]
+    public bool? PermBeauty { get; set; }
+
+    /// <summary>
+    /// 보안 권한
+    /// </summary>
+    [Column("PERM_SECURITY")]
+    public bool? PermSecurity { get; set; }
+
+    /// <summary>
+    /// 자재관리 권한
+    /// </summary>
+    [Column("PERM_MATERIAL")]
+    public bool? PermMaterial { get; set; }
+
+    /// <summary>
+    /// 에너지관리 권한
+    /// </summary>
+    [Column("PERM_ENERGY")]
+    public bool? PermEnergy { get; set; }
+
+    /// <summary>
+    /// 민원관리 권한
+    /// </summary>
+    [Column("PERM_VOC")]
+    public bool? PermVoc { get; set; }
+
+    /// <summary>
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -150,7 +156,7 @@ public partial class PlaceTb
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정일
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -169,7 +175,7 @@ public partial class PlaceTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 삭제일
+    /// 삭제일자
     /// </summary>
     [Column("DEL_DT", TypeName = "datetime")]
     public DateTime? DelDt { get; set; }
@@ -181,7 +187,7 @@ public partial class PlaceTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    [InverseProperty("Place")]
+    [InverseProperty("PlaceTb")]
     public virtual ICollection<AdminPlaceTb> AdminPlaceTbs { get; set; } = new List<AdminPlaceTb>();
 
     [InverseProperty("PlaceTb")]
@@ -194,5 +200,5 @@ public partial class PlaceTb
     public virtual ICollection<UnitTb> UnitTbs { get; set; } = new List<UnitTb>();
 
     [InverseProperty("PlaceTb")]
-    public virtual ICollection<UserTb> UserTbs { get; set; } = new List<UserTb>();
+    public virtual ICollection<UsersTb> UsersTbs { get; set; } = new List<UsersTb>();
 }

@@ -24,16 +24,16 @@ namespace FamTec.Server.Repository.User
         /// <param name="model"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<UserTb?> AddAsync(UserTb? model)
+        public async ValueTask<UsersTb?> AddAsync(UsersTb? model)
         {
             try
             {
                 if (model is not null)
                 {
-                    UserTb? search = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId == model.UserId);
+                    UsersTb? search = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId == model.UserId);
                     if (search is null)
                     {
-                        context.UserTbs.Add(model);
+                        context.UsersTbs.Add(model);
                         await context.SaveChangesAsync();
                         return model;
                     }
@@ -61,13 +61,13 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="useridx"></param>
         /// <returns></returns>
-        public async ValueTask<UserTb?> GetUserIndexInfo(int? useridx)
+        public async ValueTask<UsersTb?> GetUserIndexInfo(int? useridx)
         {
             try
             {
                 if(useridx is not null)
                 {
-                    UserTb? model = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != true);
+                    UsersTb? model = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != true);
                     
                     if(model is not null)
                         return model;
@@ -91,13 +91,13 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteUserInfo(UserTb? model)
+        public async ValueTask<bool?> DeleteUserInfo(UsersTb? model)
         {
             try
             {
                 if(model is not null)
                 {
-                    context.UserTbs.Update(model);
+                    context.UsersTbs.Update(model);
                     return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
@@ -120,13 +120,13 @@ namespace FamTec.Server.Repository.User
         /// <param name="password"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<UserTb?> GetUserInfo(string? userid, string? password)
+        public async ValueTask<UsersTb?> GetUserInfo(string? userid, string? password)
         {
             try
             {
                 if(!String.IsNullOrWhiteSpace(userid) && !String.IsNullOrWhiteSpace(password))
                 {
-                    UserTb? model = await context.UserTbs
+                    UsersTb? model = await context.UsersTbs
                         .FirstOrDefaultAsync(m => 
                         m.UserId!.Equals(userid) &&
                         m.Password!.Equals(password));
@@ -153,13 +153,13 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<UserTb?> UserIdCheck(string? userid)
+        public async ValueTask<UsersTb?> UserIdCheck(string? userid)
         {
             try
             {
                 if(!String.IsNullOrWhiteSpace(userid))
                 {
-                    UserTb? model = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId == userid);
+                    UsersTb? model = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId == userid);
                     if(model is not null)
                     {
                         return model;
@@ -185,7 +185,7 @@ namespace FamTec.Server.Repository.User
         /// 해당 사업장의 기계 Voc권한 가진 사용자 리스트 반환
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetVocMachineList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocMachineList(int? placeidx)
         {
             try
             {
@@ -198,12 +198,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocMachine == 1).ToListAsync();
+                    m.VocMachine == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -226,13 +226,13 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetPlaceUserList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetPlaceUserList(int? placeidx)
         {
             try
             {
                 if(placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m => 
+                    List<UsersTb>? model = await context.UsersTbs.Where(m => 
                     m.PlaceTbId == placeidx &&
                     m.AdminYn != true &&
                     m.DelYn != true).ToListAsync();
@@ -259,7 +259,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetVocElecList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocElecList(int? placeidx)
         {
             try
             {
@@ -272,12 +272,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocElec == 1).ToListAsync();
+                    m.VocElec == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -301,7 +301,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetVocLiftList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocLiftList(int? placeidx)
         {
             try
             {
@@ -314,12 +314,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocLift == 1).ToListAsync();
+                    m.VocLift == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -344,7 +344,7 @@ namespace FamTec.Server.Repository.User
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<UserTb>?> GetVocFireList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocFireList(int? placeidx)
         {
             try
             {
@@ -357,12 +357,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocFire == 1).ToListAsync();
+                    m.VocFire == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -388,7 +388,7 @@ namespace FamTec.Server.Repository.User
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<UserTb>?> GetVocConstructList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocConstructList(int? placeidx)
         {
             try
             {
@@ -401,12 +401,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocConstruct == 1).ToListAsync();
+                    m.VocConstruct == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -430,7 +430,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetVocNetWorkList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocNetWorkList(int? placeidx)
         {
             try
             {
@@ -443,12 +443,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocNetwork == 1).ToListAsync();
+                    m.VocNetwork == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -473,7 +473,7 @@ namespace FamTec.Server.Repository.User
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<UserTb>?> GetVocBeautyList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocBeautyList(int? placeidx)
         {
             try
             {
@@ -486,12 +486,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocBeauty == 1).ToListAsync();
+                    m.VocBeauty == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -516,7 +516,7 @@ namespace FamTec.Server.Repository.User
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<UserTb>?> GetVocSecurityList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocSecurityList(int? placeidx)
         {
             try
             {
@@ -529,12 +529,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocSecurity == 1).ToListAsync();
+                    m.VocSecurity == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -558,7 +558,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetVocDefaultList(int? placeidx)
+        public async ValueTask<List<UsersTb>?> GetVocDefaultList(int? placeidx)
         {
             try
             {
@@ -571,12 +571,12 @@ namespace FamTec.Server.Repository.User
                  */
                 if (placeidx is not null)
                 {
-                    List<UserTb>? model = await context.UserTbs.Where(m =>
+                    List<UsersTb>? model = await context.UsersTbs.Where(m =>
                     m.PlaceTbId == placeidx &&
                     m.PermVoc == 2 &&
-                    m.AlramYn == true &&
+                    m.AlarmYn == true &&
                     m.DelYn != true &&
-                    m.VocDefault == 1).ToListAsync();
+                    m.VocEtc == true).ToListAsync();
 
                     if (model is not null)
                         return model;
@@ -609,7 +609,7 @@ namespace FamTec.Server.Repository.User
 
                 if (Useridx is [_, ..])
                 {
-                    List<UserTb>? UserList = context.UserTbs.Where(m => Useridx.Contains(m.Id)).ToList();
+                    List<UsersTb>? UserList = context.UsersTbs.Where(m => Useridx.Contains(m.Id)).ToList();
                     foreach(var Users in UserList)
                     {
                         Users.DelYn = true;
@@ -640,7 +640,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<UserTb?> UpdateUserInfo(UserTb? model)
+        public async ValueTask<UsersTb?> UpdateUserInfo(UsersTb? model)
         {
             try
             {
@@ -666,11 +666,11 @@ namespace FamTec.Server.Repository.User
         /// 테이블 전체 리스트 반환
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<UserTb>?> GetAllUserList()
+        public async ValueTask<List<UsersTb>?> GetAllUserList()
         {
             try
             {
-                List<UserTb>? UserList = await context.UserTbs.Where(m => m.DelYn != true).ToListAsync();
+                List<UsersTb>? UserList = await context.UsersTbs.Where(m => m.DelYn != true).ToListAsync();
                 if (UserList is [_, ..])
                     return UserList;
                 else

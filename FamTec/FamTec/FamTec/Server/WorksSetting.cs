@@ -56,7 +56,7 @@ namespace FamTec.Server
             if (!di.Exists) di.Create();
 
 
-            DepartmentTb? department = new DepartmentTb();
+            DepartmentsTb? department = new DepartmentsTb();
             department.Name = "에스텍시스템";
             department.CreateDt = DateTime.Now;
             department.CreateUser = "시스템관리자";
@@ -64,16 +64,16 @@ namespace FamTec.Server
             department.UpdateUser = "시스템관리자";
             department.DelYn = false;
 
-            DepartmentTb? selectDepartment = await context.DepartmentTbs
+            DepartmentsTb? selectDepartment = await context.DepartmentsTbs
                 .FirstOrDefaultAsync(m =>
                 m.Name!.Equals("에스텍시스템") &&
                 m.DelYn != true);
 
             if (selectDepartment is null)
             {
-                context.DepartmentTbs.Add(department);
+                context.DepartmentsTbs.Add(department);
                 await context.SaveChangesAsync();
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
+                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
             else
             {
@@ -90,13 +90,13 @@ namespace FamTec.Server
                     selectDepartment.UpdateUser = "시스템관리자";
                 }
 
-                context.DepartmentTbs.Update(selectDepartment);
+                context.DepartmentsTbs.Update(selectDepartment);
                 await context.SaveChangesAsync();
 
-                selectDepartment = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
+                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
             }
 
-            UserTb? user = new UserTb()
+            UsersTb? user = new UsersTb()
             {
                 UserId = "Admin",
                 Password = "stecdev1234!",
@@ -116,18 +116,18 @@ namespace FamTec.Server
                 PermEnergy = 2, // 에너지관리메뉴 권한
                 PermUser = 2, // 사용자관리메뉴 권한
                 PermVoc = 2, // 민원관리메뉴 권한
-                VocMachine = 2, // 기계민원 처리권한
-                VocElec = 2, // 전기민원 처리권한
-                VocLift = 2, // 승강민원 처리권한
-                VocFire = 2, // 소방민원 처리권한
-                VocConstruct = 2, // 건축민원 처리권한
-                VocNetwork = 2, // 통신민원 처리권한
-                VocBeauty = 2, // 미화민원 처리권한
-                VocSecurity = 2, // 보안민원 처리권한
-                VocDefault = 2, // 기타민원 처리권한
+                VocMachine = true, // 기계민원 처리권한
+                VocElec = true, // 전기민원 처리권한
+                VocLift = true, // 승강민원 처리권한
+                VocFire = true, // 소방민원 처리권한
+                VocConstruct = true, // 건축민원 처리권한
+                VocNetwork = true, // 통신민원 처리권한
+                VocBeauty = true, // 미화민원 처리권한
+                VocSecurity = true, // 보안민원 처리권한
+                VocEtc = true, // 기타민원 처리권한
                 AdminYn = true, // 관리자유무
-                AlramYn = true, // 알람유무
-                Status = true, // 재직유무
+                AlarmYn = true, // 알람유무
+                Status = 2, // 재직유무
                 CreateDt = DateTime.Now,
                 CreateUser = "시스템관리자",
                 UpdateDt = DateTime.Now,
@@ -136,12 +136,12 @@ namespace FamTec.Server
                 Job = "시스템관리자"
             };
 
-            UserTb? selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+            UsersTb? selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
             if (selectUser is null)
             {
-                context.UserTbs.Add(user);
+                context.UsersTbs.Add(user);
                 await context.SaveChangesAsync();
-                selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
             }
             else
             {
@@ -248,9 +248,9 @@ namespace FamTec.Server
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
-                if (user.AlramYn != selectUser.AlramYn)
+                if (user.AlarmYn != selectUser.AlarmYn)
                 {
-                    selectUser.AlramYn = user.AlramYn;
+                    selectUser.AlarmYn = user.AlarmYn;
                     selectUser.UpdateDt = DateTime.Now;
                     selectUser.UpdateUser = "시스템관리자";
                 }
@@ -267,10 +267,10 @@ namespace FamTec.Server
                     selectUser.UpdateUser = "시스템관리자";
                 }
 
-                context.UserTbs.Update(selectUser);
+                context.UsersTbs.Update(selectUser);
                 await context.SaveChangesAsync();
 
-                selectUser = await context.UserTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
             }
 
             AdminTb? admin = new AdminTb();
@@ -311,7 +311,7 @@ namespace FamTec.Server
                     selectAdmin.UpdateUser = "시스템관리자";
                 }
 
-                context.UserTbs.Update(selectUser);
+                context.UsersTbs.Update(selectUser);
                 await context.SaveChangesAsync();
             }
         }

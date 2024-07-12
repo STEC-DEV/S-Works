@@ -175,89 +175,90 @@ namespace FamTec.Server.Repository.Place
             {
                 if (placeidx is [_, ..])
                 {
-                    //List<AdminPlaceTb>? adminplace = (from adminplacetb in context.AdminPlaceTbs.ToList()
-                    //                                  join placetb in placeidx
-                    //                                  on adminplacetb.PlaceId equals placetb
-                    //                                  where adminplacetb.DelYn != 1
-                    //                                  select new AdminPlaceTb()
-                    //                                  {
-                    //                                      Id = adminplacetb.Id,
-                    //                                      CreateDt = adminplacetb.CreateDt,
-                    //                                      CreateUser = adminplacetb.CreateUser,
-                    //                                      UpdateDt = adminplacetb.UpdateDt,
-                    //                                      UpdateUser = adminplacetb.UpdateUser,
-                    //                                      DelYn = adminplacetb.DelYn,
-                    //                                      DelDt = adminplacetb.DelDt,
-                    //                                      DelUser = adminplacetb.DelUser,
-                    //                                      AdminTbId = adminplacetb.AdminTbId,
-                    //                                      PlaceId = adminplacetb.PlaceId
-                    //                                  }).ToList();
-                    //if (adminplace.Count() == 0)
-                    //{
-                    //    List<PlaceTb>? PlaceTbs = (from placetb in context.PlaceTbs.ToList()
-                    //                              join list in placeidx
-                    //                              on placetb.Id equals list
-                    //                              where placetb.DelYn != 1
-                    //                              select new PlaceTb()
-                    //                              {
-                    //                                  //Id = placetb.Id,
-                    //                                  PlaceCd = placetb.PlaceCd,
-                    //                                  ContractNum = placetb.ContractNum,
-                    //                                  Name = placetb.Name,
-                    //                                  Tel = placetb.Tel,
-                    //                                  Note = placetb.Note,
-                    //                                  Address = placetb.Address,
-                    //                                  ContractDt = placetb.ContractDt,
-                    //                                  PermMachine = placetb.PermMachine,
-                    //                                  PermLift = placetb.PermLift,
-                    //                                  PermFire = placetb.PermFire,
-                    //                                  PermConstruct = placetb.PermConstruct,
-                    //                                  PermNetwork = placetb.PermNetwork,
-                    //                                  PermBeauty = placetb.PermBeauty,
-                    //                                  PermSecurity = placetb.PermSecurity,
-                    //                                  PermMaterial = placetb.PermMaterial,
-                    //                                  PermEnergy = placetb.PermEnergy,
-                    //                                  PermVoc = placetb.PermVoc,
-                    //                                  CancelDt = placetb.CancelDt,
-                    //                                  Status = placetb.Status,
-                    //                                  CreateDt = placetb.CreateDt,
-                    //                                  CreateUser = placetb.CreateUser,
-                    //                                  UpdateDt = placetb.UpdateDt,
-                    //                                  UpdateUser = placetb.UpdateUser,
-                    //                                  DelDt = placetb.DelDt,
-                    //                                  DelUser = placetb.DelUser,
-                    //                                  DelYn = placetb.DelYn
-                    //                              }).ToList();
-
+                    List<AdminPlaceTb>? adminplace = (from adminplacetb in context.AdminPlaceTbs.ToList()
+                                                      join placetb in placeidx
+                                                      on adminplacetb.PlaceTbId equals placetb
+                                                      where adminplacetb.DelYn != true
+                                                      select new AdminPlaceTb()
+                                                      {
+                                                          Id = adminplacetb.Id,
+                                                          CreateDt = adminplacetb.CreateDt,
+                                                          CreateUser = adminplacetb.CreateUser,
+                                                          UpdateDt = adminplacetb.UpdateDt,
+                                                          UpdateUser = adminplacetb.UpdateUser,
+                                                          DelYn = adminplacetb.DelYn,
+                                                          DelDt = adminplacetb.DelDt,
+                                                          DelUser = adminplacetb.DelUser,
+                                                          AdminTbId = adminplacetb.AdminTbId,
+                                                          PlaceTbId = adminplacetb.PlaceTbId
+                                                      }).ToList();
+                    if (adminplace.Count() == 0)
+                    {
+                        List<PlaceTb>? PlaceTbs = (from placetb in context.PlaceTbs.ToList()
+                                                   join list in placeidx
+                                                   on placetb.Id equals list
+                                                   where placetb.DelYn != true
+                                                   select new PlaceTb()
+                                                   {
+                                                       Id = placetb.Id,
+                                                       PlaceCd = placetb.PlaceCd,
+                                                       ContractNum = placetb.ContractNum,
+                                                       Name = placetb.Name,
+                                                       Tel = placetb.Tel,
+                                                       Note = placetb.Note,
+                                                       Address = placetb.Address,
+                                                       ContractDt = placetb.ContractDt,
+                                                       PermMachine = placetb.PermMachine,
+                                                       PermLift = placetb.PermLift,
+                                                       PermFire = placetb.PermFire,
+                                                       PermConstruct = placetb.PermConstruct,
+                                                       PermNetwork = placetb.PermNetwork,
+                                                       PermBeauty = placetb.PermBeauty,
+                                                       PermSecurity = placetb.PermSecurity,
+                                                       PermMaterial = placetb.PermMaterial,
+                                                       PermEnergy = placetb.PermEnergy,
+                                                       PermVoc = placetb.PermVoc,
+                                                       CancelDt = placetb.CancelDt,
+                                                       Status = placetb.Status,
+                                                       CreateDt = placetb.CreateDt,
+                                                       CreateUser = placetb.CreateUser,
+                                                       UpdateDt = placetb.UpdateDt,
+                                                       UpdateUser = placetb.UpdateUser,
+                                                       DelDt = placetb.DelDt,
+                                                       DelUser = placetb.DelUser,
+                                                       DelYn = placetb.DelYn
+                                                   }).ToList();
 
 
                     var places = await context.PlaceTbs
                             .Where(m => placeidx.Contains(m.Id))
                             .ToListAsync();
 
-                    foreach(var item in places)
-                    {
-                        foreach(var adminplace in item.AdminPlaceTbs)
+                        foreach (var item in places)
                         {
-                            adminplace.DelDt = DateTime.Now;
-                            adminplace.DelUser = Name;
-                            adminplace.DelYn = true;
-                            context.AdminPlaceTbs.Update(adminplace);
+                            foreach (var adminplacemodel in item.AdminPlaceTbs)
+                            {
+                                adminplacemodel.DelDt = DateTime.Now;
+                                adminplacemodel.DelUser = Name;
+                                adminplacemodel.DelYn = true;
+                                context.AdminPlaceTbs.Update(adminplacemodel);
+                            }
+
+                            item.DelDt = DateTime.Now;
+                            item.DelUser = Name;
+                            item.DelYn = true;
+                            context.PlaceTbs.Update(item);
                         }
-                        item.DelDt = DateTime.Now;
-                        item.DelUser = Name;
-                        item.DelYn = true;
-                        context.PlaceTbs.Update(item);
                     }
-                    
+
                     return await context.SaveChangesAsync() > 0 ? true : false;
-                        //return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
                 {
                     return null;
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();

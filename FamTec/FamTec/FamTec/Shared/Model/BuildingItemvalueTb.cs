@@ -6,23 +6,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[Table("building_itemvalue_tb")]
-[Index("ItemKeyId", Name = "FK_ItemKey_202407041727")]
-public partial class BuildingItemvalueTb
+/// <summary>
+/// 건물&gt;그룹항목&gt;키&gt;값
+/// </summary>
+[Table("building_item_value_tb")]
+[Index("BuildingKeyTbId", Name = "fk_building_item_value_building_item_key1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
+public partial class BuildingItemValueTb
 {
     /// <summary>
-    /// 값 테이블 아이디
+    /// 값 인덱스
     /// </summary>
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
     /// <summary>
-    /// 아이템의 값 몇개
+    /// 값
     /// </summary>
-    [Column("ITEMVALUE")]
+    [Column("ITEM_VALUE")]
     [StringLength(255)]
-    public string Itemvalue { get; set; } = null!;
+    public string? ItemValue { get; set; }
 
     /// <summary>
     /// 단위
@@ -32,7 +36,7 @@ public partial class BuildingItemvalueTb
     public string? Unit { get; set; }
 
     /// <summary>
-    /// 생성시간
+    /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -41,11 +45,11 @@ public partial class BuildingItemvalueTb
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
-    [StringLength(15)]
+    [StringLength(255)]
     public string? CreateUser { get; set; }
 
     /// <summary>
-    /// 수정시간
+    /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -54,21 +58,8 @@ public partial class BuildingItemvalueTb
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
-    [StringLength(15)]
+    [StringLength(255)]
     public string? UpdateUser { get; set; }
-
-    /// <summary>
-    /// 삭제시간
-    /// </summary>
-    [Column("DEL_DT", TypeName = "datetime")]
-    public DateTime? DelDt { get; set; }
-
-    /// <summary>
-    /// 삭제자
-    /// </summary>
-    [Column("DEL_USER")]
-    [StringLength(15)]
-    public string? DelUser { get; set; }
 
     /// <summary>
     /// 삭제여부
@@ -77,12 +68,22 @@ public partial class BuildingItemvalueTb
     public bool? DelYn { get; set; }
 
     /// <summary>
-    /// 키 테이블 인덱스
+    /// 삭제일자
     /// </summary>
-    [Column(TypeName = "int(11)")]
-    public int? ItemKeyId { get; set; }
+    [Column("DEL_DT", TypeName = "datetime")]
+    public DateTime? DelDt { get; set; }
 
-    [ForeignKey("ItemKeyId")]
-    [InverseProperty("BuildingItemvalueTbs")]
-    public virtual BuildingItemkeyTb? ItemKey { get; set; }
+    /// <summary>
+    /// 삭제자
+    /// </summary>
+    [Column("DEL_USER")]
+    [StringLength(255)]
+    public string? DelUser { get; set; }
+
+    [Column("BUILDING_KEY_TB_ID", TypeName = "int(11)")]
+    public int? BuildingKeyTbId { get; set; }
+
+    [ForeignKey("BuildingKeyTbId")]
+    [InverseProperty("BuildingItemValueTbs")]
+    public virtual BuildingItemKeyTb? BuildingKeyTb { get; set; }
 }

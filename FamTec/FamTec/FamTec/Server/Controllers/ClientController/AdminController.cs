@@ -64,11 +64,10 @@ namespace FamTec.Server.Controllers.ClientController
             using var transaction = await _workContext.Database.BeginTransactionAsync();
             try
             {
-
                 //사용자 테이블 생성
                 //생성 id를 포함한 데이터로 관리자db 생성
                 Console.WriteLine("매니저 추가");
-                UserTb userTb = new()
+                UsersTb userTb = new()
                 {
                     UserId = manager.UserId,
                     Name = manager.Name,
@@ -88,9 +87,9 @@ namespace FamTec.Server.Controllers.ClientController
                     PermUser = 2,
                     PermVoc = 2,
                     AdminYn = true,
-                    Status = true,
+                    Status = 2,
                 };
-                UserTb resUsertb = _workContext.UserTbs.Add(userTb).Entity;
+                UsersTb resUsertb = _workContext.UsersTbs.Add(userTb).Entity;
                 await _workContext.SaveChangesAsync();
 
                 if (resUsertb == null)
@@ -152,7 +151,7 @@ namespace FamTec.Server.Controllers.ClientController
             try
             {
                 Console.WriteLine("부서 전체 조회");
-                List<DepartmentTb> res = await _workContext.DepartmentTbs
+                List<DepartmentsTb> res = await _workContext.DepartmentsTbs
                     .Where(d => d.DelYn != true)
                     .ToListAsync();
                 List<DepartmentDTO> departmentList = res.Select(departTb => new DepartmentDTO
@@ -187,17 +186,17 @@ namespace FamTec.Server.Controllers.ClientController
                     return BadRequest("부서명이 공백입니다.");
                 }
 
-                DepartmentTb newDepartment = new()
+                DepartmentsTb newDepartment = new()
                 {
                     Name = department.Name,
                 };
 
-                var resData = _workContext.DepartmentTbs.Add(newDepartment).Entity;
+                var resData = _workContext.DepartmentsTbs.Add(newDepartment).Entity;
                 await _workContext.SaveChangesAsync();
+                
+                List<DepartmentsTb> data = new List<DepartmentsTb> { resData };
 
-                List<DepartmentTb> data = new List<DepartmentTb> { resData };
-
-                return Ok(new ResponseObj<DepartmentTb> { message = "부서 추가 완료", data = data, code = 200 });
+                return Ok(new ResponseObj<DepartmentsTb> { message = "부서 추가 완료", data = data, code = 200 });
 
                 //return Ok();
             }
@@ -226,7 +225,7 @@ namespace FamTec.Server.Controllers.ClientController
                  * 1-2 성공 시 del_yn y로 변경
                  */
                 Console.WriteLine(delData);
-                var departments = await _workContext.DepartmentTbs
+                var departments = await _workContext.DepartmentsTbs
                     .Where(d => delData.Contains(d.Id))
                     .ToListAsync();
 

@@ -5,7 +5,6 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 
 namespace FamTec.Server.Repository.Admin.AdminPlaces
@@ -102,7 +101,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
 
                             List<AdminPlaceDTO>? result = (from admin in adminplacetb
                                                    join place in placetb
-                                                   on admin.PlaceId equals place.Id
+                                                   on admin.PlaceTbId equals place.Id
                                                    where place.DelYn != true
                                                            select new AdminPlaceDTO
                                                    {
@@ -161,11 +160,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
 
                     if (admintb is not null)
                     {
-                        DepartmentTb? departmenttb = await context.DepartmentTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != true);
+                        DepartmentsTb? departmenttb = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != true);
 
                         if (departmenttb is not null)
                         {
-                            UserTb? usertb = await context.UserTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+                            UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
 
                             if (usertb is not null)
                             {
@@ -250,7 +249,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     List<PlaceTb>? result =  (from adminplacetb in model
                                             join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
-                                            on adminplacetb.PlaceId equals placetb.Id
+                                            on adminplacetb.PlaceTbId equals placetb.Id
                                             where adminplacetb.DelYn != true && placetb.DelYn != true
                                               select new PlaceTb
                                             {
@@ -317,11 +316,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                     {
 
                         List<ManagerListDTO>? ManagerDTO = (from admintb in context.AdminTbs.ToList()
-                                                            join adminplacetb in context.AdminPlaceTbs.Where(m => m.PlaceId == placeid).ToList()
+                                                            join adminplacetb in context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid).ToList()
                                                             on admintb.Id equals adminplacetb.AdminTbId
-                                                            join usertb in context.UserTbs.ToList()
+                                                            join usertb in context.UsersTbs.ToList()
                                                             on admintb.UserTbId equals usertb.Id
-                                                            join departmenttb in context.DepartmentTbs.ToList()
+                                                            join departmenttb in context.DepartmentsTbs.ToList()
                                                             on admintb.DepartmentTbId equals departmenttb.Id
                                                             where (admintb.DelYn != true && adminplacetb.DelYn != true)
                                                             select new ManagerListDTO
@@ -339,11 +338,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                 Id = place.Id,
                                 PlaceCd = place.PlaceCd,
                                 Name = place.Name,
-                                Tel = place.Tel,
+                                //Tel = place.Tel,
                                 ContractNum = place.ContractNum,
                                 ContractDt = place.ContractDt,
-                                CancelDt = place.CancelDt,
-                                Status = place.Status,
+                                //CancelDt = place.CancelDt,
+                                //Status = place.Status,
                                 Note = place.Note
                             },
 
@@ -395,7 +394,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(placeid is not null)
                 {
-                    AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceId == placeid);
+                    AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid);
 
                     if(adminplacetb is not null)
                     {
@@ -430,7 +429,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(admintbid is not null && placeid is not null)
                 {
-                    AdminPlaceTb? model = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceId == placeid);
+                    AdminPlaceTb? model = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceTbId == placeid);
 
                     if (model is not null)
                         return model;
@@ -488,7 +487,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 if(placeidx is [_, ..])
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceId)) && m.DelYn != true).ToListAsync();
+                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true).ToListAsync();
                     if (adminplacetb is [_, ..])
                     {
                         return adminplacetb;
@@ -527,7 +526,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 if (adminid is null)
                     return null;
 
-                List<int?> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceId).ToListAsync();
+                List<int?> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceTbId).ToListAsync();
 
                 if (placeidx is [_, ..])
                 {
@@ -535,7 +534,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                     if (allplaceidx is [_, ..])
                     {
                         // 넘어온 PlaceID중에서 내가 갖고 있는것.
-                        selectplaceidx = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceId)) && m.DelYn != true && m.AdminTbId == adminid).Select(m => m.PlaceId).ToListAsync();
+                        selectplaceidx = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true && m.AdminTbId == adminid).Select(m => m.PlaceTbId).ToListAsync();
                         if (selectplaceidx is [_, ..]) // 가지고 있는게 있으면
                         {
                             // 추가사업장 구하기

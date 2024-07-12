@@ -6,16 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
+/// <summary>
+/// 에너지 월별 사용량
+/// </summary>
 [Table("energy_month_usage_tb")]
-[Index("MeterReaderTbId", Name = "fk_ENERGY_MONTH_USAGE_TB_METER_READER_TB1_idx")]
+[Index("MeterItemId", Name = "fk_energy_month_usage_tb_meter_item_tb1_idx")]
+[MySqlCollation("utf8mb4_unicode_ci")]
 public partial class EnergyMonthUsageTb
 {
-    /// <summary>
-    /// 에너지 월별 사용량 인덱스
-    /// </summary>
     [Key]
-    [Column("ID", TypeName = "int(11)")]
-    public int Id { get; set; }
+    [Column("MONTH_USAGE_ID", TypeName = "int(11)")]
+    public int MonthUsageId { get; set; }
 
     /// <summary>
     /// 1월
@@ -86,8 +87,8 @@ public partial class EnergyMonthUsageTb
     /// <summary>
     /// 12월
     /// </summary>
-    [Column("DEV")]
-    public float? Dev { get; set; }
+    [Column("DEC")]
+    public float? Dec { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -114,12 +115,12 @@ public partial class EnergyMonthUsageTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// (외래키)검침기 인덱스
+    /// 검침기 인덱스
     /// </summary>
-    [Column("METER_READER_TB_ID", TypeName = "int(11)")]
-    public int? MeterReaderTbId { get; set; }
+    [Column("METER_ITEM_ID", TypeName = "int(11)")]
+    public int? MeterItemId { get; set; }
 
-    [ForeignKey("MeterReaderTbId")]
+    [ForeignKey("MeterItemId")]
     [InverseProperty("EnergyMonthUsageTbs")]
-    public virtual MeterReaderTb? MeterReaderTb { get; set; }
+    public virtual MeterItemTb? MeterItem { get; set; }
 }

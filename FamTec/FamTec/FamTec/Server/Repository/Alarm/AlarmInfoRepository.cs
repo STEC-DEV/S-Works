@@ -1,7 +1,6 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FamTec.Server.Repository.Alarm
 {

@@ -55,7 +55,7 @@ namespace FamTec.Server.Repository.Material
             try
             {
                 List<MaterialTb>? model = await context.MaterialTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
-                
+              
                 if(model is not null)
                 {
                     return model;
