@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.Building
     public class BuildingController : ControllerBase
     {
         private IBuildingService BuildingService;
-    
+
 
         public BuildingController(IBuildingService _buildingservice)
         {
@@ -54,7 +54,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO? dto, [FromForm]IFormFile? files)
+        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO? dto, [FromForm] IFormFile? files)
         {
             ResponseUnit<AddBuildingDTO?> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
 
@@ -108,10 +108,11 @@ namespace FamTec.Server.Controllers.Building
 
         // 건물 삭제
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("sign/DeleteBuilding")]
         public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
+
             ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
             if (model is not null)
             {
@@ -155,8 +156,8 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
-       
-      
+
+
 
     }
 }

@@ -24,7 +24,7 @@ namespace FamTec.Server.Controllers.Building.Group
         public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO? dto)
         {
             //AddGroupDTO dto = new AddGroupDTO();
-            //dto.BuildingIdx = 30;
+            //dto.BuildingIdx = 34;
             //dto.Name = "옥상주차장";
 
             //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
@@ -54,8 +54,8 @@ namespace FamTec.Server.Controllers.Building.Group
             //dto.AddGroupKey.Add(key);
 
             ResponseUnit<AddGroupDTO?> model = await GroupService.AddBuildingGroupService(HttpContext, dto);
-            
-            if(model is not null)
+
+            if (model is not null)
             {
                 if (model.code == 200)
                 {
@@ -80,7 +80,7 @@ namespace FamTec.Server.Controllers.Building.Group
             ResponseList<GroupListDTO?> model = await GroupService.GetBuildingGroupListService(HttpContext, buildingid);
             if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }
@@ -101,9 +101,9 @@ namespace FamTec.Server.Controllers.Building.Group
         public async ValueTask<IActionResult> UpdateBuildingGroup([FromBody] UpdateGroupDTO? dto)
         {
             ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
-            if(model is not null)
+            if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }
