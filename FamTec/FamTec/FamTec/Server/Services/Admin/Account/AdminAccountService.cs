@@ -349,13 +349,13 @@ namespace FamTec.Server.Services.Admin.Account
                                         
                         if (adminplacetb is [_, ..])
                         {
-                            for (int j = 0; j < adminplacetb.Count(); j++)
+                            foreach(AdminPlaceTb adminplace in adminplacetb)
                             {
-                                adminplacetb[j].DelYn = true;
-                                adminplacetb[j].DelDt = DateTime.Now;
-                                adminplacetb[j].DelUser = creater;
-
-                                bool? result = await AdminPlaceInfoRepository.DeleteMyWorks(adminplacetb[j]);
+                                bool? result = await AdminPlaceInfoRepository.DeleteAdminPlaceInfo(adminplace);
+                                if(result != true)
+                                {
+                                    return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                }
                             }
                         }
                         delcount++;

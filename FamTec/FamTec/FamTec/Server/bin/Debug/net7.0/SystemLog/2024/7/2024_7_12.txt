@@ -27,3 +27,7 @@
    at FamTec.Server.Services.User.UserService.GetPlaceUserList(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\User\UserService.cs:line 410
 [2024-07-12 오후 4:30:45]	System.NullReferenceException: Object reference not set to an instance of an object.
    at FamTec.Server.Services.User.UserService.GetPlaceUserList(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\User\UserService.cs:line 410
+[2024-07-12 오후 4:40:46]	System.NullReferenceException: Object reference not set to an instance of an object.
+   at FamTec.Server.Services.Admin.Account.AdminAccountService.DeleteAdminService(HttpContext context, List`1 adminidx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Account\AdminAccountService.cs:line 340
+[2024-07-12 오후 4:59:26]	System.NullReferenceException: Object reference not set to an instance of an object.
+   at FamTec.Server.Services.Admin.Account.AdminAccountService.DeleteAdminService(HttpContext context, List`1 adminidx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Account\AdminAccountService.cs:line 340
