@@ -24,7 +24,7 @@ namespace FamTec.Server.Controllers.Building.Group
         public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO? dto)
         {
             //AddGroupDTO dto = new AddGroupDTO();
-            //dto.BuildingIdx = 34;
+            //dto.BuildingIdx = 2;
             //dto.Name = "옥상주차장";
 
             //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
@@ -121,7 +121,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteBuildingGroup(int? groupid)
+        public async ValueTask<IActionResult> DeleteBuildingGroup([FromBody]int? groupid)
         {
             ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid);
             if (model is not null)

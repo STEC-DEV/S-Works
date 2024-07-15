@@ -1,30 +1,100 @@
-﻿using FamTec.Server.Repository.Building.SubItem.ItemKey;
+﻿using FamTec.Server.Repository.Building.SubItem.Group;
+using FamTec.Server.Repository.Building.SubItem.ItemKey;
 using FamTec.Server.Repository.Building.SubItem.ItemValue;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
+using FamTec.Shared.Server.DTO.Building.Group;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
-using System.Linq;
+using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 
 namespace FamTec.Server.Services.Building.Key
 {
     public class BuildingKeyService : IBuildingKeyService
     {
+        private readonly IBuildingGroupItemInfoRepository BuildingGroupItemInfoRepository;
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
 
         private ILogService LogService;
 
-        public BuildingKeyService(IBuildingItemKeyInfoRepository _buildingItemkeyinforepository,
+        public BuildingKeyService(
+            IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
+            IBuildingItemKeyInfoRepository _buildingItemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             ILogService _logservice)
         {
+            this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
             this.BuildingItemKeyInfoRepository = _buildingItemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
             
             
             this.LogService = _logservice;
         }
+
+        public async ValueTask<ResponseUnit<AddKeyDTO?>> AddKeyService(HttpContext? context, AddKeyDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupID);
+                if(GroupTb is null) // 기존의 GroupTB 이 존재하는지 Check
+                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+
+                BuildingItemKeyTb KeyTb = new BuildingItemKeyTb();
+                KeyTb.Name = dto.Name;
+                KeyTb.CreateDt = DateTime.Now;
+                KeyTb.CreateUser = creater;
+                KeyTb.UpdateDt = DateTime.Now;
+                KeyTb.UpdateUser = creater;
+                KeyTb.BuildingGroupTbId = dto.GroupID;
+
+                BuildingItemKeyTb? AddkeyResult = await BuildingItemKeyInfoRepository.AddAsync(KeyTb);
+                if(AddkeyResult is not null)
+                {
+                    if (dto.ItemValues is [_, ..])
+                    {
+                        foreach (AddGroupItemValueDTO GroupDTO in dto.ItemValues)
+                        {
+                            BuildingItemValueTb ValueTB = new BuildingItemValueTb();
+                            ValueTB.ItemValue = GroupDTO.Values;
+                            ValueTB.Unit = GroupDTO.Unit;
+                            ValueTB.CreateDt = DateTime.Now;
+                            ValueTB.CreateUser = creater;
+                            ValueTB.UpdateDt = DateTime.Now;
+                            ValueTB.UpdateUser = creater;
+                            ValueTB.BuildingKeyTbId = AddkeyResult.Id;
+
+                            BuildingItemValueTb? result = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
+                            if(result is null)
+                            {
+                                return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                            }
+                        }
+                    }
+
+                    return new ResponseUnit<AddKeyDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+            }
+        }
+
 
         public async ValueTask<ResponseUnit<UpdateKeyDTO?>> UpdateKeyService(HttpContext? context, UpdateKeyDTO? dto)
         {

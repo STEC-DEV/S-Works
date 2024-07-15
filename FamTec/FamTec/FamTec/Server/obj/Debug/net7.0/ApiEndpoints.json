@@ -625,7 +625,7 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "DeleteBuilding",
     "RelativePath": "api/Building/sign/DeleteBuilding",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -994,6 +994,48 @@
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Building.Group.UpdateGroupDTO",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
+    "Method": "AddGroupKey",
+    "RelativePath": "api/BuildingGroupKey/sign/AddKey",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.Value.AddKeyDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
+    "Method": "DeleteGroupKey",
+    "RelativePath": "api/BuildingGroupKey/sign/DeleteKey",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
+    "Method": "UpdateGroupKey",
+    "RelativePath": "api/BuildingGroupKey/sign/UpdateKey",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.UpdateKeyDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

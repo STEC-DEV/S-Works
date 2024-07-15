@@ -108,11 +108,11 @@ namespace FamTec.Server.Controllers.Building
 
         // 건물 삭제
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/DeleteBuilding")]
         public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
-
+            
             ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
             if (model is not null)
             {

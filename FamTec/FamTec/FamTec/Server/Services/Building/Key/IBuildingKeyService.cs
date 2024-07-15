@@ -1,10 +1,14 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
+using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 
 namespace FamTec.Server.Services.Building.Key
 {
     public interface IBuildingKeyService
     {
+        // 키 추가
+        public ValueTask<ResponseUnit<AddKeyDTO?>> AddKeyService(HttpContext? context, AddKeyDTO? dto);
+
         // 키 - value 업데이트 (키-Value) 단일 묶음 업데이트
         public ValueTask<ResponseUnit<UpdateKeyDTO?>> UpdateKeyService(HttpContext? context, UpdateKeyDTO? dto);
 

@@ -290,6 +290,17 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGro
     appBuilder.UseMiddleware<UserMiddleware>();
 });
 
+// GroupKey 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupKey/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// GroupValue 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupValue/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
 #endregion
 
 app.UseAuthentication();

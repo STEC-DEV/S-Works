@@ -54,7 +54,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 if(buildingid is not null)
                 {
-                    List<BuildingItemGroupTb>? model = await context.BuildingItemGroupTbs.Where(m => m.Id == buildingid && m.DelYn != true).ToListAsync();
+                    List<BuildingItemGroupTb>? model = await context.BuildingItemGroupTbs.Where(m => m.BuildingTbId == buildingid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
