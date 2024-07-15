@@ -1008,7 +1008,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.Value.AddKeyDTO",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.AddKeyDTO",
         "IsRequired": true
       }
     ],
@@ -1018,10 +1018,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
     "Method": "DeleteGroupKey",
     "RelativePath": "api/BuildingGroupKey/sign/DeleteKey",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "keyid",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -1035,6 +1041,54 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.UpdateKeyDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupValueController",
+    "Method": "AddGroupValue",
+    "RelativePath": "api/BuildingGroupValue/sign/AddValue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.Value.AddValueDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupValueController",
+    "Method": "DeleteGroupValue",
+    "RelativePath": "api/BuildingGroupValue/sign/DeleteValue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "valueid",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupValueController",
+    "Method": "UpdateGroupValue",
+    "RelativePath": "api/BuildingGroupValue/sign/UpdateValue",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.Value.UpdateValueDTO",
         "IsRequired": true
       }
     ],

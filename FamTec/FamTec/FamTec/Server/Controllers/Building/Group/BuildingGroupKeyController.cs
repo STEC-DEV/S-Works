@@ -4,7 +4,6 @@ using FamTec.Shared.Server.DTO.Building.Group.Key;
 using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace FamTec.Server.Controllers.Building.Group
 {

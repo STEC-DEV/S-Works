@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Building.SubItem.ItemValue;
+﻿using FamTec.Server.Repository.Building.SubItem.ItemKey;
+using FamTec.Server.Repository.Building.SubItem.ItemValue;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
@@ -8,14 +9,60 @@ namespace FamTec.Server.Services.Building.Value
     public class BuildingValueService : IBuildingValueService
     {
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
+        private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
 
         private ILogService LogService;
 
         public BuildingValueService(IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
+            IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             ILogService _logservice)
         {
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
+            this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
             this.LogService = _logservice;
+        }
+
+        public async ValueTask<ResponseUnit<AddValueDTO?>> AddValueService(HttpContext? context, AddValueDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+
+                BuildingItemKeyTb? KeyTb = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.KeyID);
+                if (KeyTb is null) // 기존의 KEYTB가 존재하는지 Check
+                    return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
+
+                BuildingItemValueTb ValueTb = new BuildingItemValueTb();
+                ValueTb.ItemValue = dto.Value;
+                ValueTb.Unit = dto.Unit;
+                ValueTb.CreateDt = DateTime.Now;
+                ValueTb.CreateUser = creater;
+                ValueTb.UpdateDt = DateTime.Now;
+                ValueTb.UpdateUser = creater;
+                ValueTb.BuildingKeyTbId = dto.KeyID;
+
+                BuildingItemValueTb? AddValueResult = await BuildingItemValueInfoRepository.AddAsync(ValueTb);
+                if(AddValueResult is not null)
+                {
+                    return new ResponseUnit<AddValueDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<AddValueDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddValueDTO(), code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<AddValueDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
         }
 
         public async ValueTask<ResponseUnit<UpdateValueDTO?>> UpdateValueService(HttpContext? context, UpdateValueDTO? dto)

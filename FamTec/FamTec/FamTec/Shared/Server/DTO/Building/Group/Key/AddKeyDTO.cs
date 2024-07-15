@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FamTec.Shared.Server.DTO.Building.Group.Key.Value
+namespace FamTec.Shared.Server.DTO.Building.Group.Key
 {
     public class AddKeyDTO
     {

@@ -6,7 +6,6 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
 using FamTec.Shared.Server.DTO.Building.Group;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
-using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 
 namespace FamTec.Server.Services.Building.Key
 {

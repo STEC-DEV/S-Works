@@ -5,6 +5,9 @@ namespace FamTec.Server.Services.Building.Value
 {
     public interface IBuildingValueService
     {
+
+        public ValueTask<ResponseUnit<AddValueDTO?>> AddValueService(HttpContext? context, AddValueDTO? dto);
+
         // value - 업데이트 (단일)
         public ValueTask<ResponseUnit<UpdateValueDTO?>> UpdateValueService(HttpContext? context, UpdateValueDTO? dto);
 

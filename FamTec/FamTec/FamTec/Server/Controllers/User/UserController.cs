@@ -46,7 +46,12 @@ namespace FamTec.Server.Controllers.User
             }
         }
 
-
+        /// <summary>
+        /// 사용자 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUser")]
