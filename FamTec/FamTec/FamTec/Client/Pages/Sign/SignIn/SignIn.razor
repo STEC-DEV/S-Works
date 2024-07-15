@@ -40,7 +40,7 @@
 
 @code {
     LoginDTO user = new LoginDTO();
-    sbyte? LoginMode=0;
+    bool LoginMode=false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -60,9 +60,8 @@
             }
 
 
-
             //관리자 모드 로그인 선택 유무
-            string endpoint = (LoginMode == 1) ? "Login/SettingLogin" : "Login/Login";
+            string endpoint = (LoginMode) ? "Login/SettingLogin" : "Login/Login";
 
             //로그인 요청
             ResponseUnit<string> response = await apiManager.PostLoginAsync<string>(endpoint, user);

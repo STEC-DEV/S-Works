@@ -36,7 +36,7 @@
 @code {
     private AuthenticationState authenticationState;
     private ClaimsPrincipal user;
-    private int LoginMode;
+    private bool LoginMode;
     private bool IsLogin = false;
 
     protected override async Task OnInitializedAsync()
@@ -54,13 +54,13 @@
         else
         {
             await LoadsessionData();
-            if (LoginMode == 1 && !IsLogin)
+            if (LoginMode && !IsLogin)
             {
                 await sessionStorage.SetItemAsync("IsLogin", true);
                 Navigation.NavigateTo("/admin/place");
                 return;
             }
-            else if (LoginMode == 0 && !IsLogin)
+            else if (!LoginMode && !IsLogin)
             {
                 await sessionStorage.SetItemAsync("IsLogin", true);
                 Navigation.NavigateTo("/user");
@@ -73,7 +73,7 @@
 
     private async Task LoadsessionData()
     {
-        LoginMode = int.Parse(await sessionStorage.GetItemAsStringAsync("LoginMode"));
+        LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
         IsLogin = await sessionStorage.GetItemAsync<bool>("IsLogin");
     }
 

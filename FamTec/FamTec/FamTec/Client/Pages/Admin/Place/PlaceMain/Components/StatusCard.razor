@@ -6,13 +6,12 @@
 
 
 @code {
-    [Parameter] public string Status { get; set; }
+    [Parameter] public bool? Status { get; set; }
     public string StatusClass => $"status-{Status}";
-     public string StatusText => Status switch
+    public string StatusText => Status switch
     {
-        "0" => "해약",
-        "1" => "계약",
-        "2" => "예정",
-        _ => "Unknown"
+        false => "해약",
+        true => "계약",
+        null => "Unknown"
     };
 }

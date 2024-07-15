@@ -20,7 +20,7 @@
             <div class="table-header-option">
                 <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
 
-                @if (_userType == "시스템관리자" || _userType == "마스터")
+                @if (_Role == "시스템관리자" || _Role == "마스터")
                 {
                     <Button Name="등록"
                             Width="true"
@@ -35,9 +35,6 @@
             </div>
         </div>
         <div class="place-table">
-            @* <Table DataList="FilterPlaceList"
-                   Select="OnSelected"
-                   Detail="true" /> *@
             <PlaceTable ListData="FilterPlaceList" Select="@OnSelected" CheckedItems="@CheckedItems" />
         </div>
         @if (is_openModal)
@@ -60,8 +57,8 @@
     HashSet<int> CheckedItems = new HashSet<int>();
 
     string searchText = string.Empty;
-    private string? _userType;
-    private int LoginMode;
+    private string? _Role;
+    private bool LoginMode;
 
 
 
@@ -71,8 +68,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
-        
         /*
         * fetch 서버 요청
         */
@@ -80,15 +75,13 @@
         await LoadSession();
 
         await LoadPlace();
-
-
     }
 
     private async Task LoadSession()
     {
         var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-        _userType = await SessionService.GetClaimValue(session, "Role");
-        LoginMode = await sessionStorage.GetItemAsync<int>("LoginMode");
+        _Role = await SessionService.GetClaimValue(session, "Role");
+        LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
     }
 
 
@@ -100,7 +93,6 @@
         try
         {
             Console.WriteLine("[관리자 모드][사업장 조회]");
-            // ResponseList<PlaceTableDTO> res = await HttpClient.GetFromJsonAsync<ResponseList<PlaceTableDTO>>("http://123.2.156.148:5245/api/AdminPlace/GetAllWorksList");
             ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("AdminPlace/sign/GetAllWorksList");
             if(res.code != 200)
             {
@@ -170,8 +162,6 @@
             else
             {
                 ResponseUnit<bool> resDel = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeletePlaceList", CheckedItems);
-                // var resDeletePlace = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/AdminPlace/DeleteWorks", DeletePlace);
-                // ResponseUnit<bool> resDeletePlaceData = await resDeletePlace.Content.ReadFromJsonAsync<ResponseUnit<bool>>();
                 if (resDel.code == 200)
                 {
                     

@@ -72,7 +72,7 @@
                         @row.ContractDt
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
-                        <StatusCard Status="@(Convert.ToString(row.Status))" />
+                        <StatusCard Status="@(row.Status)" />
                     </td>
                     <td class="td">
                         <input type="checkbox" checked="@CheckedItems.Contains(row.Id)"  @onchange="e=> OnSelect(e, row.Id)" />

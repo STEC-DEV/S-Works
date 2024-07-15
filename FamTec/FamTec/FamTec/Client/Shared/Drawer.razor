@@ -36,7 +36,7 @@
 
 
 @code {
-    [Parameter] public int IsUser { get; set; }
+    [Parameter] public bool IsUser { get; set; }
     List<Category>? CategoryList;
     public class Category
     {
@@ -57,7 +57,7 @@
     {
         return Task.Run(() =>
         {
-            CategoryList = IsUser == 1 ? GetAdminCategories() : GetUserCategories();
+            CategoryList = IsUser ? GetAdminCategories() : GetUserCategories();
         });
     }
 

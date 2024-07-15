@@ -3,11 +3,11 @@
     <label class="inputfield-label">
         @Label
     </label>
-    <input class="inputfield-input @EditCss"
+    <input class="inputfield-input @(EditMode ? null : "block")"
         type="@InputType"
-        @bind-value="@Value"
+        @bind-value="@(Value)"
         placeholder="@Placeholder"
-        @oninput="onChangeText"
+        @oninput="onInputChange"
         @onblur="OnBlur"
         disabled="@(!EditMode)"
     />
@@ -24,7 +24,7 @@
 @code {
     [Parameter] public string Label { get; set; }
     [Parameter] public string InputType{ get; set; }
-    [Parameter] public string Value { get; set; }
+    [Parameter] public string? Value { get; set; }
     [Parameter] public string Placeholder { get; set; }
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public bool Duplication { get; set; }
@@ -32,11 +32,11 @@
     [Parameter] public EventCallback OnBlur{ get; set; }
     [Parameter] public EventCallback OnClick{get;set;}
 
-    private string EditCss => EditMode ? null : "block";
 
-    private async Task onChangeText(ChangeEventArgs e)
+    private async Task onInputChange(ChangeEventArgs e)
     {
         Value = e?.Value?.ToString();
+
 
         await ValueChanged.InvokeAsync(Value);
     }

@@ -8,14 +8,14 @@
     border-radius: .25em;
 }
 
-.status-0[b-bwxf2o4x4c] {
+.status-false[b-bwxf2o4x4c] {
     background-color: var(--status-0);
 }
 
-.status-1[b-bwxf2o4x4c] {
+.status-True[b-bwxf2o4x4c] {
     background-color: var(--status-1);
 }
 
-.status-2[b-bwxf2o4x4c] {
+.status-[b-bwxf2o4x4c] {
     background-color: var(--status-2);
 }
