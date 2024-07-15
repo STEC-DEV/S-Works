@@ -191,24 +191,42 @@ namespace FamTec.Server.Services.Floor
 
                 for (int i = 0; i < del.Count(); i++)
                 {
+                    List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(del[i]);
+
+                    if (roomtb is [_, ..])
+                        return new ResponseUnit<int?>() { message = "해당 층에 속한 공간정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                }
+
+                for (int i = 0; i < del.Count(); i++)
+                {
                     FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(del[i]);
 
                     if(FloorTB is not null)
                     {
-                        List<RoomTb>? RoomTB = await RoomInfoRepository.GetRoomList(FloorTB.Id);
-                        
-                        if(RoomTB is null) // 공간에 물려있는데가 없으면
-                        {
-                            FloorTB.DelDt = DateTime.Now;
-                            FloorTB.DelUser = creater;
-                            FloorTB.DelYn = true;
+                        FloorTB.DelDt = DateTime.Now;
+                        FloorTB.DelUser = creater;
+                        FloorTB.DelYn = true;
 
-                            bool? DelFloorResult = await FloorInfoRepository.DeleteFloorInfo(FloorTB);
-                            if (DelFloorResult == true)
-                            {
-                                delCount++;
-                            }
+                        bool? DelFloorResult = await FloorInfoRepository.DeleteFloorInfo(FloorTB);
+                        if(DelFloorResult == true)
+                        {
+                            delCount++;
                         }
+
+                        //List<RoomTb>? RoomTB = await RoomInfoRepository.GetRoomList(FloorTB.Id);
+                        
+                        //if(RoomTB is null) // 공간에 물려있는데가 없으면
+                        //{
+                        //    FloorTB.DelDt = DateTime.Now;
+                        //    FloorTB.DelUser = creater;
+                        //    FloorTB.DelYn = true;
+
+                        //    bool? DelFloorResult = await FloorInfoRepository.DeleteFloorInfo(FloorTB);
+                        //    if (DelFloorResult == true)
+                        //    {
+                        //        delCount++;
+                        //    }
+                        //}
                     }
                 }
                 return new ResponseUnit<int?>() { message = $"요청이 {delCount}건 처리되었습니다.", data = delCount, code = 200 };

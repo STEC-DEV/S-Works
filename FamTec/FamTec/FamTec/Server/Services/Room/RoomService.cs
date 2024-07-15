@@ -1,11 +1,10 @@
 ﻿using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Room;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Services.Room
 {
@@ -14,16 +13,23 @@ namespace FamTec.Server.Services.Room
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
+        private readonly IFacilityInfoRepository FacilityInfoRepository;
+
+        private ILogService LogService;
 
         public RoomService(
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
-            IRoomInfoRepository _roominforepository
-            )
+            IRoomInfoRepository _roominforepository,
+            IFacilityInfoRepository _facilityinforepository,
+            ILogService _logService)
         {
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
+            this.FacilityInfoRepository = _facilityinforepository;
+
+            LogService = _logService;
         }
 
         /// <summary>
@@ -33,24 +39,26 @@ namespace FamTec.Server.Services.Room
         /// <returns></returns>
         public async ValueTask<ResponseUnit<RoomDTO>?> AddRoomService(HttpContext? context, RoomDTO? dto)
         {
-            if (dto is null)
-                return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
-
-            if(context is null)
-                return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
-
             try
             {
-                RoomTb roomtb = new RoomTb()
-                {
-                    Name = dto.Name,
-                    FloorTbId = dto.FloorID,
-                    CreateDt = DateTime.Now,
-                    CreateUser = context.Items["Name"].ToString(),
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = context.Items["Name"].ToString()
-                };
+                if (dto is null)
+                return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
+                if(context is null)
+                    return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
+
+                RoomTb roomtb = new RoomTb();
+                roomtb.Name = dto.Name;
+                roomtb.FloorTbId = dto.FloorID;
+                roomtb.CreateDt = DateTime.Now;
+                roomtb.CreateUser = creater;
+                roomtb.UpdateDt = DateTime.Now;
+                roomtb.UpdateUser = creater;
+                
                 RoomTb? result = await RoomInfoRepository.AddAsync(roomtb);
                 if(result is not null)
                 {
@@ -58,15 +66,18 @@ namespace FamTec.Server.Services.Room
                 }
                 else
                 {
-                    return new ResponseUnit<RoomDTO>() { message = "요청이 처리되지 않았습니다.", data = new RoomDTO(), code = 204 };
+                    return new ResponseUnit<RoomDTO>() { message = "요청이 처리되지 않았습니다.", data = new RoomDTO(), code = 404 };
                 }
             }
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<RoomDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new RoomDTO(), code = 500 };
             }
 
         }
+
+    
 
         /// <summary>
         /// 로그인한 사업장의 모든 공간정보 반환
@@ -75,62 +86,178 @@ namespace FamTec.Server.Services.Room
         /// <returns></returns>
         public async ValueTask<ResponseList<RoomListDTO>> GetRoomListService(HttpContext? context)
         {
-
-            if (context is null)
-                return new ResponseList<RoomListDTO>() { message = "요청이 잘못되었습니다.", data = new List<RoomListDTO>(), code = 404 };
-            
-            int? placeidx = Int32.Parse(context.Items["PlaceIdx"].ToString()); // 로그인한 사업장 인덱스
-
-            List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(placeidx);
-
-            List<RoomListDTO> result = new List<RoomListDTO>();
-
-            if(buildinglist is [_, ..])
+            try
             {
-                for (int i = 0; i < buildinglist.Count(); i++)
-                {
-                    List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildinglist[i].Id);
-                    
-                    if(floortb is [_, ..])
-                    {
-                        for (int j = 0; j < floortb.Count(); j++)
-                        {
-                            List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(floortb[j].Id);
+                if (context is null)
+                    return new ResponseList<RoomListDTO>() { message = "요청이 잘못되었습니다.", data = new List<RoomListDTO>(), code = 404 };
 
-                            if(roomtb is [_, ..])
+                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(PlaceIdx))
+                    return new ResponseList<RoomListDTO>() { message = "요청이 잘못되었습니다.", data = new List<RoomListDTO>(), code = 404 };
+
+
+                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(PlaceIdx));
+
+                List<RoomListDTO> result = new List<RoomListDTO>();
+
+                if (buildinglist is [_, ..])
+                {
+                    for (int i = 0; i < buildinglist.Count(); i++)
+                    {
+                        List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildinglist[i].Id);
+
+                        if (floortb is [_, ..])
+                        {
+                            for (int j = 0; j < floortb.Count(); j++)
                             {
-                                for (int k = 0; k < roomtb.Count(); k++)
+                                List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(floortb[j].Id);
+
+                                if (roomtb is [_, ..])
                                 {
-                                    result.Add(new RoomListDTO()
+                                    for (int k = 0; k < roomtb.Count(); k++)
                                     {
-                                        RoomID = roomtb[k].Id,
-                                        RoomName = roomtb[k].Name,
-                                        BuildingID = buildinglist[i].Id,
-                                        BuildingName = buildinglist[i].Name,
-                                        FloorID = floortb[j].Id,
-                                        FloorName = floortb[j].Name,
-                                        CreateDT = roomtb[k].CreateDt
-                                    });
+                                        result.Add(new RoomListDTO()
+                                        {
+                                            RoomID = roomtb[k].Id,
+                                            RoomName = roomtb[k].Name,
+                                            BuildingID = buildinglist[i].Id,
+                                            BuildingName = buildinglist[i].Name,
+                                            FloorID = floortb[j].Id,
+                                            FloorName = floortb[j].Name,
+                                            CreateDT = roomtb[k].CreateDt
+                                        });
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (result is [_, ..])
-                {
-                    return new ResponseList<RoomListDTO>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 };
+                    if (result is [_, ..])
+                    {
+                        return new ResponseList<RoomListDTO>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 };
+                    }
+                    else
+                    {
+                        return new ResponseList<RoomListDTO>() { message = "등록된 데이터가 없습니다.", data = result, code = 200 };
+                    }
                 }
                 else
                 {
-                    return new ResponseList<RoomListDTO>() { message = "등록된 데이터가 없습니다.", data = result, code = 200 };
+                    return new ResponseList<RoomListDTO>() { message = "등록된 건물 정보가 없습니다.", data = new List<RoomListDTO>(), code = 200 };
                 }
-            }
-            else
+            }catch(Exception ex)
             {
-                return new ResponseList<RoomListDTO>() { message = "등록된 건물 정보가 없습니다.", data = new List<RoomListDTO>(), code = 200 };
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<RoomListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-
         }
+
+        /// <summary>
+        /// 공간 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> UpdateRoomService(HttpContext? context, UpdateRoomDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (dto is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId);
+                if(model is not null)
+                {
+                    model.Name = dto.Name;
+                    model.UpdateDt = DateTime.Now;
+                    model.UpdateUser = creater;
+
+                    bool? UpdateRoomResult = await RoomInfoRepository.UpdateRoomInfo(model);
+                    if(UpdateRoomResult == true)
+                    {
+                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
+                    }
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 공간정보 삭제 - 하위 포함되어있는거 있으면 삭제안됨
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> DeleteRoomService(HttpContext? context, List<int>? del)
+        {
+            try
+            {
+                int delCount = 0;
+
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (del is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                for (int i = 0; i < del.Count(); i++) 
+                {
+                    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(del[i]);
+                    if (FacilityList is [_, ..])
+                        return new ResponseUnit<int?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                }
+
+                for (int i = 0; i < del.Count(); i++)
+                {
+                    RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(del[i]);
+
+                    if(RoomTB is not null)
+                    {
+                        RoomTB.DelDt = DateTime.Now;
+                        RoomTB.DelUser = creater;
+                        RoomTB.DelYn = true;
+
+                        bool? DelRoomResult = await RoomInfoRepository.DeleteRoomInfo(RoomTB);
+                        if(DelRoomResult == true)
+                        {
+                            delCount++;
+                        }
+                    }
+                }
+                return new ResponseUnit<int?>() { message = $"요청이 {delCount}건 처리되었습니다.", data = delCount, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+      
+
     }
 }

@@ -21,7 +21,7 @@ namespace FamTec.Server.Services.Building
 
         // 파일디렉토리
         private DirectoryInfo? di;
-        private string PlaceFileFolderPath;
+        private string? PlaceFileFolderPath;
 
       
 
@@ -54,8 +54,8 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-                string FileName = String.Empty;
-                string FileExtenstion = String.Empty;
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
 
                 if (context is null)
                     return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -471,7 +471,7 @@ namespace FamTec.Server.Services.Building
 
                         // DB 파일 삭제
                         string? filePath = model.Image;
-                        PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                        PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
 
                         if (!String.IsNullOrWhiteSpace(filePath))
                         {
@@ -497,7 +497,7 @@ namespace FamTec.Server.Services.Building
                         string? filePath = model.Image;
                         if (!String.IsNullOrWhiteSpace(filePath))
                         {
-                            PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
+                            PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString()); // 사업장
                             FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
                             if (File.Exists(FileName))
                             {
@@ -514,7 +514,7 @@ namespace FamTec.Server.Services.Building
                     }
                     else
                     {
-                        return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 500 };
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
                 }
                 else

@@ -109,6 +109,56 @@ namespace FamTec.Server.Repository.Room
             }
         }
 
+        /// <summary>
+        /// 공간정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateRoomInfo(RoomTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.RoomTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
+        /// <summary>
+        /// 공간정보 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteRoomInfo(RoomTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.RoomTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

@@ -18,8 +18,6 @@ namespace FamTec.Server.Services.Building
         /// <returns></returns>
         public ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext? context);
 
-        
-
         /// <summary>
         /// 건물 상세 정보 조회
         /// </summary>

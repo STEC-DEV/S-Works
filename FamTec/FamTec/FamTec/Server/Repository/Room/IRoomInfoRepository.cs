@@ -29,5 +29,8 @@ namespace FamTec.Server.Repository.Room
         /// <returns></returns>
         ValueTask<RoomTb?> GetRoomInfo(int? roomidx);
 
+        ValueTask<bool?> UpdateRoomInfo(RoomTb? model);
+        ValueTask<bool?> DeleteRoomInfo(RoomTb? model);
+
     }
 }

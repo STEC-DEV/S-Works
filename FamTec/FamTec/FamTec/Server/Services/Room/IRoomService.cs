@@ -19,5 +19,22 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<RoomListDTO>> GetRoomListService(HttpContext? context);
+
+        /// <summary>
+        /// 공간 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> UpdateRoomService(HttpContext? context, UpdateRoomDTO? dto);
+
+        /// <summary>
+        /// 공간 정보 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="del"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> DeleteRoomService(HttpContext? context, List<int>? del);
+
     }
 }

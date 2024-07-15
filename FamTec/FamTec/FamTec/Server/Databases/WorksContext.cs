@@ -431,6 +431,7 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.EquipDt).HasComment("설치년월");
+            entity.Property(e => e.Image).HasComment("이미지");
             entity.Property(e => e.Lifespan).HasComment("내용연수");
             entity.Property(e => e.Name).HasComment("설비명칭");
             entity.Property(e => e.Num).HasComment("수량");

@@ -85,8 +85,6 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/DetailBuilding")]
         public async ValueTask<IActionResult> DetailBuilding([FromQuery] int? buildingid)
         {
-            // 파일도 반환하는거 찾아야함.
-
             ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
 
             if (model is not null)

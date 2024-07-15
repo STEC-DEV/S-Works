@@ -28,7 +28,6 @@ using FamTec.Server.Repository.Voc;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Middleware;
 using FamTec.Server.Repository.Facility;
-using FamTec.Server.Services.Facility;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Services.Material;
 using FamTec.Server.Repository.Building.SubItem.Group;
@@ -39,6 +38,10 @@ using FamTec.Server.Databases;
 using FamTec.Server.Services.Building.Group;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Server.Services.Building.Value;
+using FamTec.Server.Services.Facility.Machine;
+using FamTec.Server.Repository.Facility.Group;
+using FamTec.Server.Repository.Facility.ItemKey;
+using FamTec.Server.Repository.Facility.ItemValue;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,11 +65,13 @@ builder.Services.AddTransient<IRoomInfoRepository, RoomInfoRepository>();
 builder.Services.AddTransient<IUnitInfoRepository, UnitInfoRepository>();
 builder.Services.AddTransient<IVocInfoRpeository, VocInfoRepository>();
 builder.Services.AddTransient<IAlarmInfoRepository, AlarmInfoRepository>();
-builder.Services.AddTransient<IFacilityInfoRepository, FacilityInfoRepository>();
 builder.Services.AddTransient<IMaterialInfoRepository, MaterialInfoRepository>();
 builder.Services.AddTransient<IVocCommentRepository, VocCommentRepository>();
 
-
+builder.Services.AddTransient<IFacilityInfoRepository, FacilityInfoRepository>();
+builder.Services.AddTransient<IFacilityGroupItemInfoRepository, FacilityGroupItemInfoRepository>();
+builder.Services.AddTransient<IFacilityItemKeyInfoRepository, FacilityItemKeyInfoRepository>();
+builder.Services.AddTransient<IFacilityItemValueInfoRepository, FacilityItemValueInfoRepository>();
 
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -84,9 +89,11 @@ builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUnitService, UnitService>();
 builder.Services.AddTransient<IVocService, VocService>();
 builder.Services.AddTransient<ILogService, LogService>();
-builder.Services.AddTransient<IFacilityService, FacilityService>();
+
 builder.Services.AddTransient<IMaterialService, MaterialService>();
 builder.Services.AddTransient<IVocCommentService, VocCommentService>();
+
+builder.Services.AddTransient<IMachineFacilityService, MachineFacilityService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
@@ -267,7 +274,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"
 });
 
 // Facility 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Facility/sign"), appBuilder =>
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/MachineFacility/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });

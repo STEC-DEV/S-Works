@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Room;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Services.Room;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Room;
 using Microsoft.AspNetCore.Authorization;
@@ -66,6 +67,51 @@ namespace FamTec.Server.Controllers.Room
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/UpdateRoom")]
+        public async ValueTask<IActionResult> UpdateRoom([FromBody] UpdateRoomDTO? dto)
+        {
+            ResponseUnit<bool?> model = await RoomService.UpdateRoomService(HttpContext, dto);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/DeleteRoom")]
+        public async ValueTask<IActionResult> DeleteRoom([FromBody]List<int> idx)
+        {
+            ResponseUnit<int?> model = await RoomService.DeleteRoomService(HttpContext, idx);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
 
 

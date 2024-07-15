@@ -44,32 +44,18 @@ namespace FamTec.Server.Repository.Facility
             }
         }
 
-        public async ValueTask<List<FacilityListDTO>?> GetFacilityList(int? placeid)
+        /// <summary>
+        /// 공간ID에 포함되어있는 전체 설비LIST 조회
+        /// </summary>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<FacilityTb>?> GetAllFacilityList(int? roomid)
         {
             try
             {
-                if (placeid is not null)
+                if(roomid is not null)
                 {
-                    List<FacilityListDTO>? model = (from buildingtb in context.BuildingTbs
-                                                    join floortb in context.FloorTbs
-                                                    on buildingtb.Id equals floortb.BuildingTbId
-                                                    join roomtb in context.RoomTbs
-                                                    on floortb.Id equals roomtb.FloorTbId
-                                                    join facilitytb in context.FacilityTbs
-                                                    on roomtb.Id equals facilitytb.RoomTbId
-                                                    where buildingtb.DelYn != true && floortb.DelYn != true && roomtb.DelYn != true && facilitytb.DelYn != true
-                                                    select new FacilityListDTO
-                                                    {
-                                                        Id = facilitytb.Id, // 인덱스
-                                                        Name = facilitytb.Name, // 설비명칭
-                                                        Type = facilitytb.Type, // 형식
-                                                        Num = facilitytb.Num, // 개수
-                                                        RoomName = roomtb.Name, // 위치
-                                                        StandardCapacity = facilitytb.StandardCapacity, // 규격용량
-                                                        EquipDT = facilitytb.EquipDt, // 설치년월
-                                                        LifeSpan = facilitytb.Lifespan, // 내용연수
-                                                        FacUpdateDT = facilitytb.UpdateDt // 교체년월
-                                                    }).ToList();
+                    List<FacilityTb>? model = await context.FacilityTbs.Where(m => m.RoomTbId == roomid && m.DelYn != true).ToListAsync();
 
                     if (model is [_, ..])
                         return model;
@@ -88,43 +74,21 @@ namespace FamTec.Server.Repository.Facility
             }
         }
 
-        public async ValueTask<FacilityDetailDTO?> GetDetailInfo(int? facilityId)
+        /// <summary>
+        /// 설비 ID로 단일 설비모델 조회
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async ValueTask<FacilityTb?> GetFacilityInfo(int? id)
         {
             try
             {
-                if (facilityId is not null)
+                if(id is not null)
                 {
-
-                    IQueryable<FacilityDetailDTO>? model = (from facilitytb in context.FacilityTbs.Where(m => m.Id == facilityId)
-                                                          join roomtb in context.RoomTbs
-                                                          on facilitytb.RoomTbId equals roomtb.Id
-                                                          join floortb in context.FloorTbs
-                                                          on roomtb.FloorTbId equals floortb.Id
-                                                          join buildingtb in context.BuildingTbs
-                                                          on floortb.BuildingTbId equals buildingtb.Id
-                                                          where facilitytb.DelYn != true && roomtb.DelYn != true && floortb.DelYn != true && buildingtb.DelYn != true
-                                                          select new FacilityDetailDTO
-                                                          {
-                                                              Id = facilitytb.Id,
-                                                              Name = facilitytb.Name,
-                                                              BuildingId = buildingtb.Id,
-                                                              BuildingName = buildingtb.Name,
-                                                              FloorId = floortb.Id,
-                                                              FloorName = floortb.Name,
-                                                              RoomId = roomtb.Id,
-                                                              RoomName = roomtb.Name,
-                                                              Num = facilitytb.Num,
-                                                              Category = facilitytb.Category,
-                                                              Type = facilitytb.Type,
-                                                              LifeSpan = facilitytb.Lifespan,
-                                                              EquipDT = facilitytb.EquipDt,
-                                                              ChangeDT = facilitytb.ChangeDt,
-                                                              Standard_capacity = facilitytb.StandardCapacity,
-                                                              Standard_unit = facilitytb.Unit
-                                                          });
-
+                    FacilityTb? model = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
+                    
                     if (model is not null)
-                        return await model.FirstOrDefaultAsync();
+                        return model;
                     else
                         return null;
                 }
@@ -132,15 +96,113 @@ namespace FamTec.Server.Repository.Facility
                 {
                     return null;
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }
 
-        
+        /// <summary>
+        /// 설비 정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateFacilityInfo(FacilityTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.FacilityTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
+        /// <summary>
+        /// 설비 정보 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteFacilityInfo(FacilityTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.FacilityTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
+        public async ValueTask<List<MachineFacilityListDTO>?> GetPlaceMachineFacilityList(int? placeid)
+        {
+            try
+            {
+                if(placeid is not null)
+                {
+                    List<MachineFacilityListDTO> machinelist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                                join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                                on building.Id equals floortb.BuildingTbId
+                                                                join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                                on floortb.Id equals roomtb.FloorTbId
+                                                                join facilitytb in context.FacilityTbs.Where(m => m.Category == "기계" && m.DelYn != true).ToList()
+                                                                on roomtb.Id equals facilitytb.RoomTbId
+                                                                select new MachineFacilityListDTO
+                                                                {
+                                                                    Id = facilitytb.Id, // 설비인덱스
+                                                                    Name = facilitytb.Name, // 설비명칭
+                                                                    Type = facilitytb.Type,
+                                                                    Num = facilitytb.Num, // 수량
+                                                                    Unit = facilitytb.Unit, // 단위
+                                                                    RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                                    RoomName = roomtb.Name, // 공간위치 이름
+                                                                    StandardCapacity = facilitytb.StandardCapacity,
+                                                                    EquipDT = facilitytb.EquipDt,
+                                                                    LifeSpan = facilitytb.Lifespan,
+                                                                    ChangeDT = facilitytb.ChangeDt
+                                                                }).ToList();
+                                                        
+                    if(machinelist is [_, ..])
+                    {
+                        return machinelist;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

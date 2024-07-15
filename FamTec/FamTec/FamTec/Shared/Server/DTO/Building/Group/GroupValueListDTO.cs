@@ -15,6 +15,6 @@
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; } // 단위
+        public string? Unit { get; set; }
     }
 }
