@@ -21,7 +21,7 @@
 
 .placetoggle-container .placetoggle-toggle[b-pzhayuyjkk]{
     display : grid;
-    grid-template-columns : repeat(5, 1fr);
+    grid-template-columns : repeat(4, 1fr);
     gap:var(--default-pd);
     padding : var(--default-pd);
 

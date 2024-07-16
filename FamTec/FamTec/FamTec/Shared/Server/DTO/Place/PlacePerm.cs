@@ -12,33 +12,67 @@ namespace FamTec.Shared.Server.DTO.Place
         public int Id { get; set; }
 
         [Display(Name = "기계설비 권한")]
-        public sbyte? PermMachine { get; set; }
+        public bool PermMachine { get; set; }
+        [Display(Name = "전기설비 권한")]
+        public bool PermElec { get; set; }
 
         [Display(Name = "승강설비 권한")]
-        public sbyte? PermLift { get; set; }
+        public bool PermLift { get; set; }
 
         [Display(Name = "소방설비 권한")]
-        public sbyte? PermFire { get; set; }
+        public bool PermFire { get; set; }
 
         [Display(Name = "건축설비 권한")]
-        public sbyte? PermConstruct { get; set; }
+        public bool PermConstruct { get; set; }
 
         [Display(Name = "통신설비 권한")]
-        public sbyte? PermNetwork { get; set; }
+        public bool PermNetwork { get; set; }
 
         [Display(Name = "미화설비 권한")]
-        public sbyte? PermBeauty { get; set; }
+        public bool PermBeauty { get; set; }
 
         [Display(Name = "보안설비 권한")]
-        public sbyte? PermSecurity { get; set; }
+        public bool PermSecurity { get; set; }
 
         [Display(Name = "자재 권한")]
-        public sbyte? PermMaterial { get; set; }
+        public bool PermMaterial { get; set; }
 
         [Display(Name = "에너지 권한")]
-        public sbyte? PermEnergy { get; set; }
+        public bool PermEnergy { get; set; }
 
         [Display(Name = "민원 권한")]
-        public sbyte? PermVoc { get; set; }
+        public bool PermVoc { get; set; }
+
+        // 기본 생성자
+        public PlacePerm()
+        {
+        }
+
+        // 복사 생성자
+        public PlacePerm(PlacePerm source)
+        {
+            if (source != null)
+            {
+                Id = source.Id;
+                PermMachine = source.PermMachine;
+                PermElec = source.PermElec;
+                PermLift = source.PermLift;
+                PermFire = source.PermFire;
+                PermConstruct = source.PermConstruct;
+                PermNetwork = source.PermNetwork;
+                PermBeauty = source.PermBeauty;
+                PermSecurity = source.PermSecurity;
+                PermMaterial = source.PermMaterial;
+                PermEnergy = source.PermEnergy;
+                PermVoc = source.PermVoc;
+            }
+        }
+
+        // 깊은 복사 메서드
+        public PlacePerm DeepCopy()
+        {
+            return new PlacePerm(this);
+        }
+
     }
 }

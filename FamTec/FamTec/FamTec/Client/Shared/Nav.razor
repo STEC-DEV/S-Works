@@ -6,7 +6,7 @@
 
 <div class="nav-container">
     <div class="nav-logo">
-        <NavLink href="@(LoginMode==1 ? "/admin/place" : "/user")" class="nav-wrap-img">
+        <NavLink href="@(LoginMode ? "/admin/place" : "/user")" class="nav-wrap-img">
             <img src="img/Stec_Logo.png" />
         </NavLink>
     </div>
@@ -49,14 +49,14 @@
     private int MessageCount { get; set; }
     private string? _userType;
     private string? _userName;
-    private int LoginMode;
+    private bool LoginMode;
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        LoginMode = await sessionStorage.GetItemAsync<int>("LoginMode");
+        LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
         var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-        _userType = await SessionService.GetClaimValue(session, "UserType");
+        _userType = await SessionService.GetClaimValue(session, "Role");
         _userName = await SessionService.GetClaimValue(session, "Name");
     }
 

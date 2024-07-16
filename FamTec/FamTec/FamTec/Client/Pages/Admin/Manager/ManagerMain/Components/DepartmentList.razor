@@ -31,16 +31,18 @@
                 }
                 else
                 {
-                    <input class="item-title item-input " type="text" @bind-value="@item.Name" disabled=@(!InputEdit) />
+                    
+                    <input class="item-title item-input " type="text" @bind-value="@item.Name" disabled=@(!(editStates.ContainsKey(item.Id) && editStates[item.Id]))  />
                     <div class="item-option">
-                        @if (InputEdit)
+                        @if (editStates.ContainsKey(item.Id) && editStates[item.Id])
                         {
-                            <button class="edit-btn btn-submit" @onclick=OnSubmitEdit />
+                            <button class="edit-btn btn-submit" @onclick="()=>OnSubmitEdit(item.Id) " />
+                    
 
                         }
                         else
                         {
-                            <button class="edit-btn" @onclick=OnInputEdit />
+                            <button class="edit-btn" @onclick="()=>OnInputEdit(item.Id)" />
 
                         }
 
@@ -63,8 +65,10 @@
     [Parameter] public EventCallback OnListSync { get; set; }
     [Parameter] public bool AddMode {get; set;}
 
+
+    private Dictionary<int, bool> editStates = new Dictionary<int, bool>();
     AddDepartmentDTO newDepartment = new AddDepartmentDTO();
-    
+
     public bool InputEdit { get; set; } = false;
 
 
@@ -74,17 +78,61 @@
         await Select.InvokeAsync((isChecked, id));
     }
 
-    private void OnInputEdit()
+    private void OnInputEdit(int id)
     {
-        InputEdit = true;
+        Console.WriteLine("부서편집");
+        if (!editStates.ContainsKey(id))
+        {
+            editStates[id] = false;
+            Console.WriteLine(editStates[id]);
+        }
+
+        editStates[id] = true;
+
+
+
     }
 
-    private void OnSubmitEdit()
+    private async Task OnSubmitEdit(int id)
     {
-        InputEdit = false;
+        var updateDepartment = DataList.FirstOrDefault(d => d.Id ==id);
+        Console.WriteLine(updateDepartment.Name + updateDepartment.Id);
+        if (updateDepartment != null)
+        {
+            try
+            {
+                ResponseUnit<DepartmentDTO> resUpdate = await apiManager.PutAsync<DepartmentDTO>("Department/sign/UpdateDepartment", updateDepartment);
+                Console.WriteLine(resUpdate);
+                if (resUpdate.code == 200)
+                {
+                    Console.WriteLine($"수정된 값: {updateDepartment.Name}");
+                    await OnLoadDepartments.InvokeAsync();
+                    await OnListSync.InvokeAsync();
+                }
+                else
+                {
+                    await JS.InvokeVoidAsync("alert", "부서 수정 실패.");
+                }
+            }
+            catch(Exception ex)
+            {
+                
+            }
+        }
+
+
+
+
+
+
+
+        if (editStates.ContainsKey(id))
+        {
+            editStates[id] = false;
+        }
     }
 
-    
+
     /*
     * (POST)부서 추가
     */
@@ -116,4 +164,21 @@
             Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
         }
     }
+
+    /*
+    * (Put)부서 편집
+    */
+    private async Task OnUpdateDepartment()
+    {
+        try
+        {
+            Console.WriteLine();
+        }
+        catch
+        {
+            
+        }
+    }
+
+    
 }

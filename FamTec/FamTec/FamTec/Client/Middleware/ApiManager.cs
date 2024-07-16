@@ -19,7 +19,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(CustomAuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -109,6 +109,14 @@ namespace FamTec.Client.Middleware
             string jsonResponse = await PostSendReqeustAsync(endpoint, user);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
         }
+
+        //put 공통
+        public async Task<ResponseUnit<T>> PutAsync<T>(string endpoint, object data)
+        {
+            string jsonResponse = await PutSendRequestAsync(endpoint, data);
+            return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
+        }
+
 
         //ResponseUinit Get
         public async Task<ResponseUnit<T>> GetUnitAsync<T>(string endpoint)

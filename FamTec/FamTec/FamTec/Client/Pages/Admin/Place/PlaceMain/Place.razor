@@ -54,7 +54,8 @@
     List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
     // DeleteDTO DeletePlace = new DeleteDTO();
     List<int> DeletePlace = new List<int>();
-    HashSet<int> CheckedItems = new HashSet<int>();
+    // HashSet<int> CheckedItems = new HashSet<int>();
+    HashSet<int> CheckedItems;
 
     string searchText = string.Empty;
     private string? _Role;
@@ -158,19 +159,21 @@
             if (CheckedItems == null)
             {
                 Console.WriteLine("삭제 데이터 없음");
+                await JS.InvokeVoidAsync("alert", "삭데 데이터가 존재하지 않습니다.");
             }
             else
             {
-                ResponseUnit<bool> resDel = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeletePlaceList", CheckedItems);
+                ResponseUnit<bool> resDel = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeleteWorks", CheckedItems);
                 if (resDel.code == 200)
                 {
-                    
+
                     Console.WriteLine(resDel.message);
                     CheckedItems.Clear();
                     await LoadPlace();
                 }
                 else
                 {
+                    await JS.InvokeVoidAsync("alert", $"{resDel.message}");
                     Console.WriteLine(resDel.message);
                     CheckedItems.Clear();
                     await LoadPlace();

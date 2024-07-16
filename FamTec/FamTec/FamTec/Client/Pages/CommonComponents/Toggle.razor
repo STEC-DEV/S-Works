@@ -3,6 +3,7 @@
     <input 
         class="toggle-input" 
         type="checkbox" 
+        checked="@IsChecked"
         role="switch" 
         @onchange="OnValueChanged"
         disabled="@(!EditMode)" 
@@ -15,6 +16,7 @@
 @code {
     [Parameter] public string Title { get; set; }
     [Parameter] public bool EditMode { get; set; } = false; //비활성화 여부
+    [Parameter] public bool IsChecked { get; set; }
     [Parameter] public bool Value { get; set; }
     [Parameter] public EventCallback<bool> ValueChanged { get; set; }
 

@@ -6,11 +6,13 @@
     <input class="inputfield-input @(EditMode ? null : "block")"
         type="@InputType"
         @bind-value="@(Value)"
-        placeholder="@Placeholder"
         @oninput="onInputChange"
+        placeholder="@Placeholder"
         @onblur="OnBlur"
         disabled="@(!EditMode)"
     />
+    @* @oninput="onInputChange" *@
+    @* @bind-value:event="oninput" *@
     @if (Duplication)
     {
         <button class="btn" type="button" @onclick="OnClick" value="@Value">

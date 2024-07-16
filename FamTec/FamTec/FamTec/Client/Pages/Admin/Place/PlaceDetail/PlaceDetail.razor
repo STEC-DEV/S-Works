@@ -10,11 +10,11 @@
 <div class="placedetail-container yappear">
     <div class="placedetail-wrap">
         <div class="placedetail-info">
-            <PlaceForm placeInfo="PlaceInfo" EditMode=PlaceEdit />
+            <PlaceForm placeInfo="@(PlaceEdit ? _editedPlaceInfo :  PlaceInfo)" EditMode=PlaceEdit />
         </div>
         <div class="placedetail-option">
             <div class="placedetail-toggle">
-                <PlaceToggle placePerm=@PlacePerm EditMode=PlaceEdit />
+                <PlaceToggle placePerm=@(PlaceEdit ? _editedPlacePerm : PlacePerm) EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
                 <ManagerTable DataList="ManagerList" EditMode=PlaceEdit />
@@ -23,7 +23,7 @@
     </div>
     <div class="placedetail-btns">
         @if(PlaceEdit){
-            <Button Name="저장" Width="true" Type=0 />
+            <Button Name="저장" Width="true" Type=0 OnClick="@OnCheck" />
             <Button Name="취소" Width="true" Type=1 OnClick ="DetailMode" />
         }else{
             <Button Name="편집" Width="true" Type=0 OnClick ="EditMode" />
@@ -50,6 +50,12 @@
     PlacePerm PlacePerm;
     PlaceDetailDTO resPlaceDetail;
 
+    private PlaceInfo _editedPlaceInfo;
+    private PlacePerm _editedPlacePerm;
+    private List<ManagerListDTO> _editedManagerList;
+
+
+
     bool PlaceEdit = false;
     bool isCancleModal = false;
 
@@ -74,7 +80,15 @@
     private void EditMode()
     {
         PlaceEdit = true;
+        _editedManagerList = ManagerList.Select(m => m.DeepCopy()).ToList();
+        _editedPlaceInfo = PlaceInfo.DeepCopy();
+        _editedPlacePerm = PlacePerm.DeepCopy();
+
+
+
         StateHasChanged();
+
+
     }
 
     private void DetailMode()
@@ -86,6 +100,25 @@
     private void OnIsCancleModal()
     {
         isCancleModal = !isCancleModal;
+    }
+
+    private async void OnCheck()
+    {
+        UpdatePlaceDetailDTO();
+
+        Console.WriteLine(_editedPlaceInfo.PlaceCd);
+        Console.WriteLine(PlaceInfo.PlaceCd);
+        Console.WriteLine(_editedPlacePerm.PermFire);
+        Console.WriteLine(PlacePerm.PermFire);
+        //서버로 전송
+
+    }
+
+    private void UpdatePlaceDetailDTO()
+    {
+        resPlaceDetail.PlaceInfo = _editedPlaceInfo;
+        resPlaceDetail.PlacePerm = _editedPlacePerm;
+        resPlaceDetail.ManagerList = _editedManagerList;
     }
 }
     
