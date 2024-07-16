@@ -580,7 +580,7 @@ namespace FamTec.Server.Services.Building
                         bool? delBuilding = await BuildingInfoRepository.DeleteBuildingInfo(BuildingTB);
                         if(delBuilding != true)
                         {
-                            return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                         }
 
                         List<BuildingItemGroupTb>? GroupTBList = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingid[i]);
@@ -595,7 +595,7 @@ namespace FamTec.Server.Services.Building
                                 bool? delGroup = await BuildingGroupItemInfoRepository.DeleteGroupInfo(GroupTB);
                                 if(delGroup != true)
                                 {
-                                    return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                 }
 
                                 List<BuildingItemKeyTb>? GroupKeyList = await BuildingItemKeyInfoRepository.GetAllKeyList(GroupTB.Id);
@@ -611,7 +611,7 @@ namespace FamTec.Server.Services.Building
                                         bool? delKey = await BuildingItemKeyInfoRepository.DeleteKeyInfo(KeyTB);
                                         if(delKey != true)
                                         {
-                                            return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                         }
 
                                         List<BuildingItemValueTb>? GroupValueList = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
@@ -628,7 +628,7 @@ namespace FamTec.Server.Services.Building
 
                                                 if(delValue != true)
                                                 {
-                                                    return new ResponseUnit<int?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                                                 }
                                             }
                                         }

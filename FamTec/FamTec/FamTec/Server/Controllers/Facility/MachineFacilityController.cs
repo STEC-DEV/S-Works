@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Services.Building;
-using FamTec.Server.Services.Facility.Machine;
+﻿using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;
@@ -47,7 +46,7 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/GetAllMachineFacility")]
         public async ValueTask<IActionResult> GetAllMachineFacility()
         {
-            ResponseList<MachineFacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext);
+            ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext);
 
             if(model is not null)
             {
@@ -112,6 +111,28 @@ namespace FamTec.Server.Controllers.Facility
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/DeleteMachineFacility")]
+        public async ValueTask<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
+        {
+            ResponseUnit<int?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
     }
 }

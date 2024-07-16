@@ -38,10 +38,14 @@ using FamTec.Server.Databases;
 using FamTec.Server.Services.Building.Group;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Server.Services.Building.Value;
-using FamTec.Server.Services.Facility.Machine;
 using FamTec.Server.Repository.Facility.Group;
 using FamTec.Server.Repository.Facility.ItemKey;
 using FamTec.Server.Repository.Facility.ItemValue;
+using FamTec.Server.Services.Facility.Group;
+using FamTec.Server.Services.Facility.Key;
+using FamTec.Server.Services.Facility.Value;
+using FamTec.Server.Services.Facility.Type.Machine;
+using FamTec.Server.Services.Facility.Type.Electronic;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -94,6 +98,11 @@ builder.Services.AddTransient<IMaterialService, MaterialService>();
 builder.Services.AddTransient<IVocCommentService, VocCommentService>();
 
 builder.Services.AddTransient<IMachineFacilityService, MachineFacilityService>();
+builder.Services.AddTransient<IElectronicFacilityService, ElectronicFacilityService>();
+
+builder.Services.AddTransient<IFacilityGroupService, FacilityGroupService>();
+builder.Services.AddTransient<IFacilityKeyService, FacilityKeyService>();
+builder.Services.AddTransient<IFacilityValueService, FacilityValueService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
@@ -273,11 +282,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"
     appBuilder.UseMiddleware<UserMiddleware>();
 });
 
-// Facility 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/MachineFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+
 
 // Material 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/sign"), appBuilder =>
@@ -305,6 +310,33 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGro
 
 // GroupValue 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupValue/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 기계 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/MachineFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+// Facility 전기 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ElectronicFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 그룹 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroup/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+// Facility 키 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupKey/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+// Facility 값 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupValue/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });

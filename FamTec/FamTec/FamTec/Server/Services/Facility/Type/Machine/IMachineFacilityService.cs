@@ -1,7 +1,7 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 
-namespace FamTec.Server.Services.Facility.Machine
+namespace FamTec.Server.Services.Facility.Type.Machine
 {
     public interface IMachineFacilityService
     {
@@ -18,7 +18,7 @@ namespace FamTec.Server.Services.Facility.Machine
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<MachineFacilityListDTO>?> GetMachineFacilityListService(HttpContext? context);
+        public ValueTask<ResponseList<FacilityListDTO>?> GetMachineFacilityListService(HttpContext? context);
 
         /// <summary>
         /// 설비ID의 설비 모델 조회

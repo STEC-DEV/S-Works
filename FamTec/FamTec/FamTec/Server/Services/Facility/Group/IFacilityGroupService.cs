@@ -1,9 +1,9 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 
-namespace FamTec.Server.Services.Facility.Machine.Group
+namespace FamTec.Server.Services.Facility.Group
 {
-    public interface IMachineGroupService
+    public interface IFacilityGroupService
     {
         public ValueTask<ResponseUnit<AddGroupDTO?>> AddFacilityGroupService(HttpContext? context, AddGroupDTO? dto);
 

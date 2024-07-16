@@ -17,7 +17,57 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<MachineFacilityListDTO>?> GetPlaceMachineFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int? placeid);
+        
+        /// <summary>
+        /// 사업장에 속한 전기설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int? placeid);
+
+        /// <summary>
+        /// 사업장에 속한 승강설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int? placeid);
+        
+        /// <summary>
+        /// 사업장에 속한 소방설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int? placeid);
+        
+        /// <summary>
+        /// 사업장에 속한 건축설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int? placeid);
+
+        /// <summary>
+        /// 사업장에 속한 통신설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int? placeid);
+
+        /// <summary>
+        /// 사업장에 속한 미화설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int? placeid);
+
+        /// <summary>
+        /// 사업장에 속한 보안설비 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int? placeid);
+
 
         /// <summary>
         /// 공간ID에 포함되어있는 전체 설비LIST 조회

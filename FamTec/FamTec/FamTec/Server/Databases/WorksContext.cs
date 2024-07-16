@@ -403,7 +403,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateUser).HasComment("생성자");
             entity.Property(e => e.DelDt).HasComment("삭제일자");
             entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn).HasComment("삭제여부");
+            entity.Property(e => e.DelYn)
+                .HasDefaultValueSql("'0'")
+                .HasComment("삭제여부");
             entity.Property(e => e.ItemValue).HasComment("값");
             entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");

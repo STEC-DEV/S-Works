@@ -1,9 +1,9 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 
-namespace FamTec.Server.Services.Facility.Machine.Value
+namespace FamTec.Server.Services.Facility.Value
 {
-    public interface IMachineValueService
+    public interface IFacilityValueService
     {
         public ValueTask<ResponseUnit<AddValueDTO?>> AddValueService(HttpContext? context, AddValueDTO? dto);
 
@@ -12,6 +12,6 @@ namespace FamTec.Server.Services.Facility.Machine.Value
 
         // value - 삭제 (단일)
         public ValueTask<ResponseUnit<bool?>> DeleteValueService(HttpContext? context, int? valueid);
-            
+
     }
 }

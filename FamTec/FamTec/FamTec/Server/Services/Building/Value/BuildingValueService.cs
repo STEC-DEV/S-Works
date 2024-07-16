@@ -8,8 +8,8 @@ namespace FamTec.Server.Services.Building.Value
 {
     public class BuildingValueService : IBuildingValueService
     {
-        private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
+        private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
 
         private ILogService LogService;
 

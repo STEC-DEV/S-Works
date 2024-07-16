@@ -2,10 +2,7 @@
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FamTec.Server.Controllers.Building.Group
 {

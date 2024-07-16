@@ -1,52 +1,60 @@
-﻿using DocumentFormat.OpenXml.Office.Word;
-using FamTec.Client.Pages.Admin.Place.PlaceMain;
-using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Repository.Facility.Group;
+using FamTec.Server.Repository.Facility.ItemKey;
+using FamTec.Server.Repository.Facility.ItemValue;
 using FamTec.Server.Repository.Facility;
-using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Room;
-using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
-using Microsoft.JSInterop.Infrastructure;
+using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Floor;
+using FamTec.Shared.Model;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 
-namespace FamTec.Server.Services.Facility.Machine
+namespace FamTec.Server.Services.Facility.Type.Electronic
 {
-    public class MachineFacilityService : IMachineFacilityService
+    public class ElectronicFacilityService : IElectronicFacilityService
     {
-        private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
-        
         private readonly IRoomInfoRepository RoomInfoRepository;
-        private readonly IFloorInfoRepository FloorInfoRepository;
 
+        private readonly IFacilityGroupItemInfoRepository FacilityGroupItemInfoRepository;
+        private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
+        private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
 
         private readonly ILogService LogService;
 
         private DirectoryInfo? di;
-        private string? MachineFileFolderPath;
+        private string? ElectronicFileFolderPath;
 
-        public MachineFacilityService(
-            IBuildingInfoRepository _buildinginforepository,
-            IFacilityInfoRepository _facilityinforepository,
-            IRoomInfoRepository _roominforepository,
-            IFloorInfoRepository _floorinforepository,
-            ILogService _logService)
+        public ElectronicFacilityService(
+           IBuildingInfoRepository _buildinginforepository,
+           IFacilityInfoRepository _facilityinforepository,
+           IRoomInfoRepository _roominforepository,
+           IFloorInfoRepository _floorinforepository,
+           IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
+           IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
+           IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
+           ILogService _logService)
         {
-            this.BuildingInfoRepository = _buildinginforepository;
-            this.FacilityInfoRepository = _facilityinforepository;
-            this.RoomInfoRepository = _roominforepository;
-            this.FloorInfoRepository = _floorinforepository;
+            FacilityInfoRepository = _facilityinforepository;
+            RoomInfoRepository = _roominforepository;
 
-            this.LogService = _logService;
+            FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
+            FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
+            FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
+
+            LogService = _logService;
         }
 
         /// <summary>
-        /// 설비 추가
+        /// 전기설비 추가
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
+        /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddFacilityDTO>?> AddMachineFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<AddFacilityDTO>?> AddElectronicFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files)
         {
             try
             {
@@ -55,12 +63,12 @@ namespace FamTec.Server.Services.Facility.Machine
 
                 if (context is null)
                     return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
-
+                
                 if (dto is null)
                     return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeidx))
+                if (string.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
 
                 RoomTb? tokenck = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId);
@@ -68,24 +76,25 @@ namespace FamTec.Server.Services.Facility.Machine
                     return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
 
                 string? creator = Convert.ToString(context.Items["Name"]);
-                if (string.IsNullOrWhiteSpace(creator))
+                if(String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
 
-                // 기계설비 관련한 폴더 없으면 만들기
-                MachineFileFolderPath = String.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeidx.ToString());
 
-                di = new DirectoryInfo(MachineFileFolderPath);
+                // 전기설비 관련한 폴더 없으면 만들기 
+                ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeidx);
+
+                di = new DirectoryInfo(ElectronicFileFolderPath);
                 if (!di.Exists) di.Create();
 
                 FacilityTb? model = new FacilityTb();
-                model.Category = dto.Category; // 카테고리 - 기계
+                model.Category = "전기"; //  카테고리 - 전기
                 model.Name = dto.Name; // 설비명칭
                 model.Type = dto.Type; // 형식
                 model.Num = dto.Num; // 개수
                 model.Unit = dto.Unit; // 단위
                 model.EquipDt = dto.EquipDT; // 설치년월
                 model.Lifespan = dto.LifeSpan; // 내용연수
-                model.StandardCapacity = dto.Standard_capacity; //규격용량
+                model.StandardCapacity = dto.Standard_capacity; // 규격용량
                 model.ChangeDt = dto.ChangeDT; // 교체년월
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = creator;
@@ -98,7 +107,7 @@ namespace FamTec.Server.Services.Facility.Machine
                     FileName = files.FileName;
                     FileExtenstion = Path.GetExtension(FileName);
 
-                    if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
                         return new ResponseUnit<AddFacilityDTO>() { message = "올바르지 않는 파일형식입니다.", data = null, code = 404 };
                     }
@@ -107,7 +116,7 @@ namespace FamTec.Server.Services.Facility.Machine
                         // 이미지 경로
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}"; // 암호화된 파일명
 
-                        string? newFilePath = Path.Combine(MachineFileFolderPath, newFileName);
+                        string? newFilePath = Path.Combine(ElectronicFileFolderPath, newFileName);
 
                         using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
                         {
@@ -125,66 +134,69 @@ namespace FamTec.Server.Services.Facility.Machine
                 if (result is not null)
                     return new ResponseUnit<AddFacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<AddFacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddFacilityDTO(), code = 404 };
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<AddFacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddFacilityDTO(), code = 500 };
             }
-
         }
 
         /// <summary>
-        /// 사업장에 등록되어있는 기계설비 List 반환
+        /// 사업장에 등록되어있는 전기설비 List 반환
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MachineFacilityListDTO>?> GetMachineFacilityListService(HttpContext? context)
+        public async ValueTask<ResponseList<FacilityListDTO>?> GetElectronicFacilityListService(HttpContext? context)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<MachineFacilityListDTO>() { message = "요청이 잘못되었습니다.", data = new List<MachineFacilityListDTO>(), code = 404 };
+                    return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<MachineFacilityListDTO>() { message = "요청이 잘못되었습니다.", data = new List<MachineFacilityListDTO>(), code = 404 };
+                if(String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<MachineFacilityListDTO>? model = await FacilityInfoRepository.GetPlaceMachineFacilityList(Convert.ToInt32(placeidx));
+                List<FacilityListDTO>? model = await FacilityInfoRepository.GetPlaceElectronicFacilityList(Convert.ToInt32(placeidx));
 
-                if (model is [_, ..])
+                if(model is [_, ..])
                 {
-                    return new ResponseList<MachineFacilityListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<FacilityListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<MachineFacilityListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MachineFacilityListDTO>(), code = 200 };
+                    return new ResponseList<FacilityListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FacilityListDTO>(), code = 404 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<MachineFacilityListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<FacilityListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO?>> GetMachineDetailFacilityService(HttpContext? context, int? facilityId)
+        /// <summary>
+        /// 설비ID 상세정보 보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="facilityId"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<FacilityDetailDTO?>> GetElectronicDetailFacilityService(HttpContext? context, int? facilityId)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
-                
-                if (facilityId is null)
-                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                if(facilityId is null)
+                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId);
-                
                 if(model is not null)
                 {
                     RoomTb? room = await RoomInfoRepository.GetRoomInfo(model.RoomTbId);
@@ -207,8 +219,8 @@ namespace FamTec.Server.Services.Facility.Machine
                         string? Image = model.Image;
                         if(!String.IsNullOrWhiteSpace(Image))
                         {
-                            string placeFilePath = String.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
-                            string[] FileList = Directory.GetFiles(placeFilePath);
+                            ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                            string[] FileList = Directory.GetFiles(ElectronicFileFolderPath);
                             if(FileList is [_, ..])
                             {
                                 foreach(var file in FileList)
@@ -249,8 +261,7 @@ namespace FamTec.Server.Services.Facility.Machine
             }
         }
 
-
-        public async ValueTask<ResponseUnit<bool?>> UpdateMachineFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files)
         {
             try
             {
@@ -265,7 +276,7 @@ namespace FamTec.Server.Services.Facility.Machine
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(creater))
+                if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
@@ -289,30 +300,28 @@ namespace FamTec.Server.Services.Facility.Machine
                     model.RoomTbId = dto.RoomId;
 
                     // 이미지 변경 or 삭제
-                    if(files is not null) // 파일이 공백이 아닌경우 - 삭제 업데이트 or insert
+                    if(files is not null)
                     {
                         FileName = files.FileName;
                         FileExtenstion = Path.GetExtension(FileName);
+
                         if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                         {
-                            return new ResponseUnit<bool?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            return new ResponseUnit<bool?>() { message = "이미지 형식이 올바르지 않습니다.", data = null, code = 404 };
                         }
 
                         // DB 파일 삭제
                         string? filePath = model.Image;
-                        placeFilePath = String.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                        ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
 
                         if(!String.IsNullOrWhiteSpace(filePath))
                         {
-                            FileName = String.Format("{0}\\{1}", placeFilePath, filePath);
+                            FileName = String.Format("{0}\\{1}", ElectronicFileFolderPath, filePath);
                             if(File.Exists(FileName))
                             {
                                 File.Delete(FileName);
                             }
                         }
-
-                        
-
 
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
 
@@ -329,8 +338,9 @@ namespace FamTec.Server.Services.Facility.Machine
                         string? filePath = model.Image;
                         if(!String.IsNullOrWhiteSpace(filePath))
                         {
-                            placeFilePath = String.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                            placeFilePath = String.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
                             FileName = String.Format("{0}\\{1}", placeFilePath, filePath);
+
                             if(File.Exists(FileName))
                             {
                                 File.Delete(FileName);
@@ -346,7 +356,7 @@ namespace FamTec.Server.Services.Facility.Machine
                     }
                     else
                     {
-                        return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
                 }
                 else
@@ -361,8 +371,8 @@ namespace FamTec.Server.Services.Facility.Machine
             }
         }
 
-        // 그룹까지 삭제해야해서 나중에
-        public async ValueTask<ResponseUnit<int?>> DeleteMachineFacilityService(HttpContext? context, List<int>? delIdx)
+
+        public async ValueTask<ResponseUnit<int?>> DeleteElectronicFacilityService(HttpContext? context, List<int> delIdx)
         {
             try
             {
@@ -375,20 +385,99 @@ namespace FamTec.Server.Services.Facility.Machine
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(creater))
+                if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                return null;
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]); // 토큰 사업장 검사
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                for (int i = 0; i < delIdx.Count(); i++)
+                {
+                    FacilityTb? FacilityTB = await FacilityInfoRepository.GetFacilityInfo(delIdx[i]);
+
+                    if (FacilityTB is not null)
+                    {
+                        FacilityTB.DelDt = DateTime.Now;
+                        FacilityTB.DelUser = creater;
+                        FacilityTB.DelYn = true;
+
+                        bool? delFacility = await FacilityInfoRepository.DeleteFacilityInfo(FacilityTB);
+                        if (delFacility != true)
+                        {
+                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
+
+                        List<FacilityItemGroupTb>? GroupTBList = await FacilityGroupItemInfoRepository.GetAllGroupList(delIdx[i]);
+                        if (GroupTBList is [_, ..])
+                        {
+                            foreach (FacilityItemGroupTb GroupTB in GroupTBList)
+                            {
+                                GroupTB.DelDt = DateTime.Now;
+                                GroupTB.DelUser = creater;
+                                GroupTB.DelYn = true;
+
+                                bool? delGroup = await FacilityGroupItemInfoRepository.DeleteGroupInfo(GroupTB);
+                                if (delGroup != true)
+                                {
+                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                }
+
+                                List<FacilityItemKeyTb>? GroupKeyList = await FacilityItemKeyInfoRepository.GetAllKeyList(GroupTB.Id);
+
+                                if (GroupKeyList is [_, ..])
+                                {
+                                    foreach (FacilityItemKeyTb KeyTB in GroupKeyList)
+                                    {
+                                        KeyTB.DelDt = DateTime.Now;
+                                        KeyTB.DelUser = creater;
+                                        KeyTB.DelYn = true;
+
+                                        bool? delKey = await FacilityItemKeyInfoRepository.DeleteKeyInfo(KeyTB);
+                                        if (delKey != true)
+                                        {
+                                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                        }
+
+                                        List<FacilityItemValueTb>? GroupValueList = await FacilityItemValueInfoRepository.GetAllValueList(KeyTB.Id);
+                                        if (GroupValueList is [_, ..])
+                                        {
+                                            foreach (FacilityItemValueTb ValueTB in GroupValueList)
+                                            {
+                                                ValueTB.DelDt = DateTime.Now;
+                                                ValueTB.DelUser = creater;
+                                                ValueTB.DelYn = true;
+
+                                                bool? delValue = await FacilityItemValueInfoRepository.DeleteValueInfo(ValueTB);
+
+                                                if (delValue != true)
+                                                {
+                                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    }
+                    delCount++;
+                }
+                return new ResponseUnit<int?>() { message = $"{delCount}건 삭제 성공", data = delCount, code = 200 };
             }
-            catch(Exception ex)
+            catch (Exception ex) 
             {
-                return null;
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
+     
 
-
-      
+     
     }
 }

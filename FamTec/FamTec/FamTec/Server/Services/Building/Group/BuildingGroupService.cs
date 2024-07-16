@@ -73,6 +73,10 @@ namespace FamTec.Server.Services.Building.Group
                                     BuildingItemValueTb ValueTB = new BuildingItemValueTb();
                                     ValueTB.ItemValue = ValueDTO.Values;
                                     ValueTB.Unit = ValueDTO.Unit;
+                                    ValueTB.CreateDt = DateTime.Now;
+                                    ValueTB.CreateUser = creater;
+                                    ValueTB.UpdateDt = DateTime.Now;
+                                    ValueTB.UpdateUser = creater;
                                     ValueTB.BuildingKeyTbId = AddKeyTable.Id;
 
                                     BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
@@ -135,7 +139,7 @@ namespace FamTec.Server.Services.Building.Group
                                 {
                                     foreach (BuildingItemValueTb Value in GroupValueTB)
                                     {
-                                        GroupValueList.Add(new GroupValueListDTO
+                                        GroupValueList.Add(new GroupValueListDTO()
                                         {
                                             ID = Value.Id,
                                             ItemValue = Value.ItemValue,
@@ -152,7 +156,6 @@ namespace FamTec.Server.Services.Building.Group
                                     GroupValueList = new List<GroupValueListDTO?>();
                                 }
                             }
-
                         }
 
                         GroupList.Add(new GroupListDTO()
@@ -174,6 +177,7 @@ namespace FamTec.Server.Services.Building.Group
             }
             catch (Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return new ResponseList<GroupListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
@@ -208,7 +212,7 @@ namespace FamTec.Server.Services.Building.Group
                     }
                     else
                     {
-                        return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                     }
                 }
                 else
@@ -250,7 +254,7 @@ namespace FamTec.Server.Services.Building.Group
                     bool? DeleteGroupResult = await BuildingGroupItemInfoRepository.DeleteGroupInfo(GroupTb);
 
                     if (DeleteGroupResult != true)
-                        return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
 
                     List<BuildingItemKeyTb>? KeyTb = await BuildingItemKeyInfoRepository.GetAllKeyList(groupid);
                     if (KeyTb is [_, ..])
@@ -265,7 +269,7 @@ namespace FamTec.Server.Services.Building.Group
 
                             if (DeleteKeyResult != true)
                             {
-                                return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
+                                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                             }
 
                             List<BuildingItemValueTb>? ValueTb = await BuildingItemValueInfoRepository.GetAllValueList(KeyModel.Id);
@@ -280,7 +284,7 @@ namespace FamTec.Server.Services.Building.Group
                                     bool? DeleteValueResult = await BuildingItemValueInfoRepository.DeleteValueInfo(ValueModel);
                                     if (DeleteValueResult != true)
                                     {
-                                        return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
+                                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                                     }
                                 }
                             }

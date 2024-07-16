@@ -3,7 +3,7 @@
     /// <summary>
     /// 설비 LIST DTO
     /// </summary>
-    public class MachineFacilityListDTO
+    public class FacilityListDTO
     {
         /// <summary>
         /// 설비 인덱스
