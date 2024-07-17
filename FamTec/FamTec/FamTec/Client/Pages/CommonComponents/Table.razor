@@ -1,6 +1,7 @@
 ﻿@typeparam T
 @using System.Reflection
 @using System.ComponentModel.DataAnnotations
+@using FamTec.Shared.Client.DTO
 @inject NavigationManager Navigation
 
 <table class="table-container">
@@ -98,19 +99,24 @@
         Console.WriteLine("체크 index값 : "+ id);
         if (isChecked)
         {
+            Console.WriteLine("1");
             CheckedItems.Add(id);
         }
         else
         {
+            Console.WriteLine("2");
             CheckedItems.Remove(id);
         }
 
         if (ReturnType == "object")
         {
+            Console.WriteLine("3");
+            Console.WriteLine("DD");
             await SelectItem.InvokeAsync((isChecked, item));
         }
         else
         {
+            Console.WriteLine("4");
             await Select.InvokeAsync((isChecked, id));
         }
     }

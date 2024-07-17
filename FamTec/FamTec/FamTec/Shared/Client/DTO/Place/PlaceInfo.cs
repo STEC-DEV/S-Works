@@ -23,8 +23,35 @@ namespace FamTec.Shared.Client.DTO.Place
         [Display(Name = "해약일자")]
         public DateTime? CancelDt { get; set; }
         [Display(Name="계약상태")]
-        public sbyte? Status{ get; set; }
+        public bool? Status{ get; set; }
         [Display(Name = "비고")]
         public string? Note { get; set; }
+
+        public PlaceInfo()
+        {
+        }
+
+        // 복사 생성자 추가
+        public PlaceInfo(PlaceInfo source)
+        {
+            if (source != null)
+            {
+                Id = source.Id;
+                PlaceCd = source.PlaceCd;
+                Name = source.Name;
+                Tel = source.Tel;
+                ContractNum = source.ContractNum;
+                ContractDt = source.ContractDt;
+                CancelDt = source.CancelDt;
+                Note = source.Note;
+                Status = source.Status;
+            }
+        }
+
+        // 깊은 복사 메서드 추가
+        public PlaceInfo DeepCopy()
+        {
+            return new PlaceInfo(this);
+        }
     }
 }

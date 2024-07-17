@@ -1,10 +1,13 @@
 ﻿@page "/admin/place/{Id:int}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Place.PlaceDetail.Components
-@using FamTec.Shared.Server
+@using FamTec.Shared.Client
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server.DTO
-@using FamTec.Shared.Server.DTO.Admin.Place
-@using FamTec.Shared.Server.DTO.Place
+@*@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Admin.Place *@
+@* @using FamTec.Shared.Server.DTO.Place *@
 @inject HttpClient HttpClient
 
 <div class="placedetail-container yappear">
@@ -17,19 +20,18 @@
                 <PlaceToggle placePerm=@(PlaceEdit ? _editedPlacePerm : PlacePerm) EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
-                <ManagerTable DataList="ManagerList" EditMode=PlaceEdit />
+                <ManagerTable DataList="ManagerList" EditMode=PlaceEdit Id=@Id OnLoadManager="@LoadPlaceDetailInfo" />
             </div>
         </div>
     </div>
     <div class="placedetail-btns">
         @if(PlaceEdit){
-            <Button Name="저장" Width="true" Type=0 OnClick="@OnCheck" />
+            <Button Name="저장" Width="true" Type=0 OnClick="@UpdatePlaceDetailDTO" />
             <Button Name="취소" Width="true" Type=1 OnClick ="DetailMode" />
         }else{
             <Button Name="편집" Width="true" Type=0 OnClick ="EditMode" />
             <Button Name="나가기" Width="true" Type=1 OnClick="OnIsCancleModal" />
         }
-        
     </div>
     @if (isCancleModal)
     {
@@ -45,14 +47,15 @@
     [Parameter] public int Id { get; set; }
 
 
-    List<ManagerListDTO> ManagerList;
+    List<ManagerDTO> ManagerList;
     PlaceInfo PlaceInfo;
     PlacePerm PlacePerm;
     PlaceDetailDTO resPlaceDetail;
+    UpdatePlaceDTO UpdatePlace;
 
     private PlaceInfo _editedPlaceInfo;
     private PlacePerm _editedPlacePerm;
-    private List<ManagerListDTO> _editedManagerList;
+    private List<ManagerDTO> _editedManagerList;
 
 
 
@@ -67,6 +70,7 @@
 
     private async Task LoadPlaceDetailInfo()
     {
+        Console.WriteLine("샐행됨");
         ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
 
 
@@ -114,11 +118,27 @@
 
     }
 
-    private void UpdatePlaceDetailDTO()
+    private async void UpdatePlaceDetailDTO()
     {
-        resPlaceDetail.PlaceInfo = _editedPlaceInfo;
-        resPlaceDetail.PlacePerm = _editedPlacePerm;
-        resPlaceDetail.ManagerList = _editedManagerList;
+        UpdatePlace = new UpdatePlaceDTO();
+        UpdatePlace.PlaceInfo = _editedPlaceInfo;
+        UpdatePlace.PlacePerm = _editedPlacePerm;
+
+        Console.WriteLine(_editedPlaceInfo.ContractDt);
+        Console.WriteLine(_editedPlaceInfo.CancelDt);
+
+        ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
+        Console.WriteLine(resUpdate.code);
+        if(resUpdate.code == 200)
+        {
+            await LoadPlaceDetailInfo();
+            DetailMode();
+        }
+        StateHasChanged();
+
+        // resPlaceDetail.PlaceInfo = _editedPlaceInfo;
+        // resPlaceDetail.PlacePerm = _editedPlacePerm;
+        // resPlaceDetail.ManagerList = _editedManagerList;
     }
 }
     
