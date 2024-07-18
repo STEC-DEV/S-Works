@@ -126,9 +126,6 @@ public partial class FacilityTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// 이미지
-    /// </summary>
     [StringLength(255)]
     public string? Image { get; set; }
 

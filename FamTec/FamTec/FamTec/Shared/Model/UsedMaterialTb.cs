@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("used_material_tb")]
-[Index("MaintenenceHistoryTbId", Name = "fk_used_material_maintenence_history_tb1_idx")]
-[Index("MaterialTbId", Name = "fk_used_material_material_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class UsedMaterialTb
 {
@@ -60,18 +58,4 @@ public partial class UsedMaterialTb
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
-
-    [Column("MAINTENENCE_HISTORY_TB_ID", TypeName = "int(11)")]
-    public int? MaintenenceHistoryTbId { get; set; }
-
-    [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
-    public int? MaterialTbId { get; set; }
-
-    [ForeignKey("MaintenenceHistoryTbId")]
-    [InverseProperty("UsedMaterialTbs")]
-    public virtual MaintenenceHistoryTb? MaintenenceHistoryTb { get; set; }
-
-    [ForeignKey("MaterialTbId")]
-    [InverseProperty("UsedMaterialTbs")]
-    public virtual MaterialTb? MaterialTb { get; set; }
 }

@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.Store
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
                     model.MaterialTbId = materialId; // 품목ID
-                    model.RoomTbId = Store.RoomID; // 공간ID
+                    //model.RoomTbId = Store.RoomID; // 공간ID
 
                     StoreTb? AddStore = await StoreInfoRepository.AddAsync(model);
                     if(AddStore is null)

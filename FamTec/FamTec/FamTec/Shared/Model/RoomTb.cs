@@ -81,5 +81,5 @@ public partial class RoomTb
     public virtual FloorTb? FloorTb { get; set; }
 
     [InverseProperty("RoomTb")]
-    public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();
+    public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
 }

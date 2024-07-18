@@ -199,6 +199,7 @@ namespace FamTec.Server.Services.Admin.Account
                 model.PermBasic = 2;
                 model.PermMachine = 2;
                 model.PermLift = 2;
+                model.PermElec = 2;
                 model.PermFire = 2;
                 model.PermConstruct = 2;
                 model.PermNetwork = 2;
