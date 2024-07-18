@@ -503,15 +503,14 @@ public partial class WorksContext : DbContext
             entity.ToTable("material_tb", tb => tb.HasComment("자재"));
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.DefaultLocation).HasComment("기본위치");
+            entity.Property(e => e.DefaultLocation).HasComment("공간인덱스");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.Image).HasComment("이미지");
             entity.Property(e => e.ManufacturingComp).HasComment("제조사");
             entity.Property(e => e.Name).HasComment("자재명");
             entity.Property(e => e.SafeNum).HasComment("안전재고수량");
             entity.Property(e => e.Standard).HasComment("규격");
             entity.Property(e => e.Unit).HasComment("단위");
-
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.MaterialTbs).HasConstraintName("fk_material_tb_building_tb1");
 
             entity.HasOne(d => d.PlaceTb).WithMany(p => p.MaterialTbs).HasConstraintName("fk_material_tb_place_tb1");
         });
@@ -585,7 +584,9 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("민원관리 권한");
             entity.Property(e => e.PlaceCd).HasComment("사업장 코드");
-            entity.Property(e => e.Status).HasComment("계약상태");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasComment("계약상태");
             entity.Property(e => e.Tel).HasComment("전화번호");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");

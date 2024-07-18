@@ -14,6 +14,13 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         ValueTask<AdminTb?> AddAdminUserInfo(AdminTb? model);
 
         /// <summary>
+        /// 해당 사업장 관리자로 선택가능한 사업장 리스트 출력
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<ManagerListDTO?>> GetNotContainsAdminList(int? placeid);
+
+        /// <summary>
         /// 매개변수의 USERID에 해당하는 관리자모델 조회
         /// </summary>
         /// <param name="adminid"></param>

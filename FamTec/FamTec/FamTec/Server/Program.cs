@@ -46,6 +46,14 @@ using FamTec.Server.Services.Facility.Key;
 using FamTec.Server.Services.Facility.Value;
 using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Server.Services.Facility.Type.Electronic;
+using FamTec.Server.Services.Facility.Type.Lift;
+using FamTec.Server.Services.Facility.Type.Fire;
+using FamTec.Server.Services.Facility.Type.Contstruct;
+using FamTec.Server.Services.Facility.Type.Network;
+using FamTec.Server.Services.Facility.Type.Beauty;
+using FamTec.Server.Services.Facility.Type.Security;
+using FamTec.Server.Repository.Store;
+using FamTec.Server.Services.Store;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,6 +85,8 @@ builder.Services.AddTransient<IFacilityGroupItemInfoRepository, FacilityGroupIte
 builder.Services.AddTransient<IFacilityItemKeyInfoRepository, FacilityItemKeyInfoRepository>();
 builder.Services.AddTransient<IFacilityItemValueInfoRepository, FacilityItemValueInfoRepository>();
 
+builder.Services.AddTransient<IStoreInfoRepository, StoreInfoRepository>();
+
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
 builder.Services.AddTransient<IAdminPlaceService, AdminPlaceService>();
@@ -97,12 +107,21 @@ builder.Services.AddTransient<ILogService, LogService>();
 builder.Services.AddTransient<IMaterialService, MaterialService>();
 builder.Services.AddTransient<IVocCommentService, VocCommentService>();
 
-builder.Services.AddTransient<IMachineFacilityService, MachineFacilityService>();
-builder.Services.AddTransient<IElectronicFacilityService, ElectronicFacilityService>();
+builder.Services.AddTransient<IMachineFacilityService, MachineFacilityService>(); // 기계설비
+builder.Services.AddTransient<IElectronicFacilityService, ElectronicFacilityService>(); // 전기설비
+builder.Services.AddTransient<ILiftFacilityService, LiftFacilityService>(); // 승강설비
+builder.Services.AddTransient<IFireFacilityService, FireFacilityService>(); // 소방설비
+builder.Services.AddTransient<IConstructFacilityService, ConstructFacilityService>(); // 건축설비
+builder.Services.AddTransient<INetworkFacilityService, NetworkFacilityService>(); // 통신설비
+builder.Services.AddTransient<IBeautyFacilityService, BeautyFacilityService>(); // 미화설비
+builder.Services.AddTransient<ISecurityFacilityService, SecurityFacilityService>(); // 보안설비
+
 
 builder.Services.AddTransient<IFacilityGroupService, FacilityGroupService>();
 builder.Services.AddTransient<IFacilityKeyService, FacilityKeyService>();
 builder.Services.AddTransient<IFacilityValueService, FacilityValueService>();
+
+builder.Services.AddTransient<IInStoreService, InStoreService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
@@ -325,6 +344,42 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ElectronicF
     appBuilder.UseMiddleware<UserMiddleware>();
 });
 
+// Facility 승강 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/LiftFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 소방 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FireFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 건축 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ConstructFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 통신 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/NetworkFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 미화 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BeautyFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Facility 보안 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/SecurityFacility/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
 // Facility 그룹 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroup/sign"), appBuilder =>
 {
@@ -340,6 +395,13 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGro
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });
+
+// InStore 값 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Store/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
 #endregion
 
 app.UseAuthentication();

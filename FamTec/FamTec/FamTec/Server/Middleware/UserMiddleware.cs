@@ -112,6 +112,7 @@ namespace FamTec.Server.Middleware
                     context.Items.Add("PlaceIdx", parse["PlaceIdx"].ToString());
                     context.Items.Add("PlaceName", parse["PlaceName"].ToString());
                     context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
+                    context.Items.Add("PlacePerm_Elec", parse["PlacePerm_Elec"].ToString());
                     context.Items.Add("PlacePerm_Lift", parse["PlacePerm_Lift"].ToString());
                     context.Items.Add("PlacePerm_Fire", parse["PlacePerm_Fire"].ToString());
                     context.Items.Add("PlacePerm_Construct", parse["PlacePerm_Construct"].ToString());
@@ -171,6 +172,7 @@ namespace FamTec.Server.Middleware
                 context.Items.Add("PlaceIdx", parse["PlaceIdx"].ToString());
                 context.Items.Add("PlaceName", parse["PlaceName"].ToString());
                 context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
+                context.Items.Add("PlacePerm_Elec", parse["PlacePerm_Elec"].ToString());
                 context.Items.Add("PlacePerm_Lift", parse["PlacePerm_Lift"].ToString());
                 context.Items.Add("PlacePerm_Fire", parse["PlacePerm_Fire"].ToString());
                 context.Items.Add("PlacePerm_Construct", parse["PlacePerm_Construct"].ToString());

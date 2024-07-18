@@ -227,6 +227,62 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 {
                     return Ok(model);
                 }
+                else if(model.code == 204)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPut]
+        [Route("sign/UpdateWorks")]
+        public async ValueTask<IActionResult> UpdateWorks([FromBody]UpdatePlaceDTO dto)
+        {
+            ResponseUnit<UpdatePlaceDTO>? model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
+
+            if (model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else if (model.code == 204)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpGet]
+        [Route("sign/NotContainManagerList")]
+        public async ValueTask<IActionResult> NotContainManagerList([FromQuery]int placeid)
+        {
+            ResponseList<ManagerListDTO>? model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
+
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
                 else
                 {
                     return BadRequest();
@@ -289,7 +345,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeletePlaceManager")]
-        public async ValueTask<IActionResult> DeleteWorks([FromBody] AddPlaceManagerDTO<ManagerListDTO> dto)
+        public async ValueTask<IActionResult> DeleteWorks([FromBody] AddPlaceManagerDTO<ManagerListDTO>? dto)
         {
             try
             {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FamTec.Shared.Server.DTO.Place
 {
@@ -13,6 +8,9 @@ namespace FamTec.Shared.Server.DTO.Place
 
         [Display(Name = "기계설비 권한")]
         public bool? PermMachine { get; set; } = false;
+
+        [Display(Name = "전기설비 권한")]
+        public bool? PermElec { get; set; } = false;
 
         [Display(Name = "승강설비 권한")]
         public bool? PermLift { get; set; } = false;

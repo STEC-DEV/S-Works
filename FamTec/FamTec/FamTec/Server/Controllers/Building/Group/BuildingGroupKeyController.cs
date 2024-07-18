@@ -1,7 +1,6 @@
 ﻿using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
-using FamTec.Shared.Server.DTO.Building.Group.Key.Value;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

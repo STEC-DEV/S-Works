@@ -212,8 +212,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                         string? Image = model.Image;
                         if (!string.IsNullOrWhiteSpace(Image))
                         {
-                            string placeFilePath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
-                            string[] FileList = Directory.GetFiles(placeFilePath);
+                            MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                            string[] FileList = Directory.GetFiles(MachineFileFolderPath);
                             if (FileList is [_, ..])
                             {
                                 foreach (var file in FileList)
@@ -259,9 +259,9 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         {
             try
             {
-                string? FileName = string.Empty;
-                string? FileExtenstion = string.Empty;
-                string? placeFilePath = string.Empty;
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
+                string? placeFilePath = String.Empty;
 
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -270,17 +270,21 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (string.IsNullOrWhiteSpace(creater))
+                if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (string.IsNullOrWhiteSpace(placeid))
+                if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.Id);
+
                 if (model is not null)
                 {
-                    model.Category = dto.Category; // 카테고리
+                    if (model!.Category != "기계")
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    model.Category = "기계"; // 카테고리
                     model.Name = dto.Name; // 설비명칭
                     model.Type = dto.Type; // 타입
                     model.Num = dto.Num; // 개수
@@ -294,34 +298,40 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     model.RoomTbId = dto.RoomId;
 
                     // 이미지 변경 or 삭제
-                    if (files is not null) // 파일이 공백이 아닌경우 - 삭제 업데이트 or insert
+                    if (files is not null)
                     {
                         FileName = files.FileName;
                         FileExtenstion = Path.GetExtension(FileName);
+
                         if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                         {
-                            return new ResponseUnit<bool?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            return new ResponseUnit<bool?>() { message = "이미지 형식이 올바르지 않습니다.", data = null, code = 404 };
                         }
+
 
                         // DB 파일 삭제
                         string? filePath = model.Image;
-                        placeFilePath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
-
-                        if (!string.IsNullOrWhiteSpace(filePath))
+                        MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                        di = new DirectoryInfo(MachineFileFolderPath);
+                        if (di.Exists)
                         {
-                            FileName = string.Format("{0}\\{1}", placeFilePath, filePath);
-                            if (File.Exists(FileName))
+                            if (!String.IsNullOrWhiteSpace(filePath))
                             {
-                                File.Delete(FileName);
+                                FileName = String.Format("{0}\\{1}", MachineFileFolderPath, filePath);
+                                if (File.Exists(FileName))
+                                {
+                                    File.Delete(FileName);
+                                }
                             }
                         }
-
-
-
+                        else
+                        {
+                            di.Create();
+                        }
 
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
 
-                        string? newFilePath = Path.Combine(placeFilePath, newFileName);
+                        string? newFilePath = Path.Combine(MachineFileFolderPath, newFileName);
 
                         using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
                         {
@@ -332,15 +342,16 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     else // 파일이 공백인 경우 db에 해당 값이 있으면 삭제
                     {
                         string? filePath = model.Image;
-                        if (!string.IsNullOrWhiteSpace(filePath))
+                        if (!String.IsNullOrWhiteSpace(filePath))
                         {
-                            placeFilePath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
-                            FileName = string.Format("{0}\\{1}", placeFilePath, filePath);
+                            MachineFileFolderPath = String.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                            FileName = String.Format("{0}\\{1}", MachineFileFolderPath, filePath);
+
                             if (File.Exists(FileName))
                             {
                                 File.Delete(FileName);
-                                model.Image = null;
                             }
+                            model.Image = null;
                         }
                     }
 

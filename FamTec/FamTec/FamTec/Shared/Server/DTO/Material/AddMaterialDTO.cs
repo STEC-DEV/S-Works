@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Material
+﻿namespace FamTec.Shared.Server.DTO.Material
 {
     public class AddMaterialDTO
     {
-
         /// <summary>
         /// 자재명
         /// </summary>
@@ -20,11 +13,6 @@ namespace FamTec.Shared.Server.DTO.Material
         public string? Unit { get; set; }
 
         /// <summary>
-        /// 자재위치
-        /// </summary>
-        public int? Default_Location { get; set; }
-
-        /// <summary>
         /// 규격
         /// </summary>
         public string? Standard { get; set; }
@@ -32,7 +20,7 @@ namespace FamTec.Shared.Server.DTO.Material
         /// <summary>
         /// 제조사
         /// </summary>
-        public string? Mfr { get; set; }
+        public string? ManufacturingComp { get; set; }
 
         /// <summary>
         /// 안전재고 수량
@@ -40,9 +28,9 @@ namespace FamTec.Shared.Server.DTO.Material
         public int? SafeNum { get; set; }
 
         /// <summary>
-        /// 건물인덱스
+        /// 자재위치
         /// </summary>
-        public int? BuildingId { get; set; }
+        public int? DefaultLocation { get; set; }
 
     }
 }

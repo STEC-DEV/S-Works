@@ -28,7 +28,9 @@ namespace FamTec.Server.Services.User
 
         private readonly IConfiguration Configuration;
         private ILogService LogService;
-       
+
+        DirectoryInfo? di;
+        string? PlaceFileFolderPath = String.Empty;
 
         public UserService(IUserInfoRepository _userinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
@@ -137,6 +139,7 @@ namespace FamTec.Server.Services.User
                             items.Add("PlaceIdx", placetb.Id.ToString());
                             items.Add("PlaceName", placetb.Name.ToString());
                             items.Add("PlacePerm_Machine", placetb.PermMachine.ToString());
+                            items.Add("PlacePerm_Elec", placetb.PermElec.ToString());
                             items.Add("PlacePerm_Lift", placetb.PermLift.ToString());
                             items.Add("PlacePerm_Fire", placetb.PermFire.ToString());
                             items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString());
@@ -259,6 +262,7 @@ namespace FamTec.Server.Services.User
                                 items.Add("PlaceIdx", usertb.PlaceTbId.ToString()); // 사업장 인덱스
                                 items.Add("PlaceName", placetb.Name.ToString()); // 사업장 이름
                                 items.Add("PlacePerm_Machine", placetb.PermMachine.ToString()); // 사업장 기계메뉴 권한
+                                items.Add("PlacePerm_Elec", placetb.PermElec.ToString()); // 사업장 전기메뉴 권한
                                 items.Add("PlacePerm_Lift", placetb.PermLift.ToString()); // 사업장 승강메뉴 권한
                                 items.Add("PlacePerm_Fire", placetb.PermFire.ToString()); // 사업장 소방메뉴 권한
                                 items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString()); // 사업장 건축메뉴 권한
@@ -462,8 +466,7 @@ namespace FamTec.Server.Services.User
                 string? FileName = String.Empty;
                 string? FileExtenstion = String.Empty;
 
-                DirectoryInfo? di;
-                string? PlaceFileFolderPath = String.Empty;
+                
 
 
                 if (context is null)
@@ -863,13 +866,21 @@ namespace FamTec.Server.Services.User
                         string? filePath = model.Image;
                         PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
 
-                        if(!String.IsNullOrWhiteSpace(filePath))
+                        di = new DirectoryInfo(PlaceFileFolderPath);
+                        if(di.Exists)
                         {
-                            FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
-                            if(File.Exists(FileName))
+                            if (!String.IsNullOrWhiteSpace(filePath))
                             {
-                                File.Delete(FileName);
+                                FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
+                                if (File.Exists(FileName))
+                                {
+                                    File.Delete(FileName);
+                                }
                             }
+                        }
+                        else
+                        {
+                            di.Create();
                         }
 
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
@@ -892,8 +903,8 @@ namespace FamTec.Server.Services.User
                             if (File.Exists(FileName))
                             {
                                 File.Delete(FileName);
-                                model.Image = null;
                             }
+                            model.Image = null;
                         }
                     }
 

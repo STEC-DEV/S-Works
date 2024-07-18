@@ -1,0 +1,28 @@
+[2024-07-17 오전 9:45:56]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\2\Facility\Fire\66be988f-f3e9-4df5-8ff5-74cee9d6c639.png'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.Facility.Type.Fire.FireFacilityService.UpdateFireFacilityService(HttpContext context, UpdateFacilityDTO dto, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Facility\Type\Fire\FireFacilityService.cs:line 310
+[2024-07-17 오전 9:46:04]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\2\Facility\Fire\bb70a973-779b-47b7-8e1a-a49d5a0964ed.png'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.Facility.Type.Fire.FireFacilityService.UpdateFireFacilityService(HttpContext context, UpdateFacilityDTO dto, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Facility\Type\Fire\FireFacilityService.cs:line 310
+[2024-07-17 오전 9:46:10]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\2\Facility\Fire\cc776e22-9470-41e4-a37b-59746b9165d7.png'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.Facility.Type.Fire.FireFacilityService.UpdateFireFacilityService(HttpContext context, UpdateFacilityDTO dto, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Facility\Type\Fire\FireFacilityService.cs:line 310
+[2024-07-17 오전 9:48:34]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\2\Facility\Fire\06d90ef7-41b5-4538-a3f3-626a4f2a3e81.png'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.Facility.Type.Fire.FireFacilityService.UpdateFireFacilityService(HttpContext context, UpdateFacilityDTO dto, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Facility\Type\Fire\FireFacilityService.cs:line 310

@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared;
 using FamTec.Shared.DTO;
+using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
@@ -9,6 +10,14 @@ namespace FamTec.Server.Services.Admin.Place
 {
     public interface IAdminPlaceService
     {
+        /// <summary>
+        /// 사업장ID
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<ManagerListDTO>?> NotContainManagerList(HttpContext? context, int? placeid);
+
+
         /// <summary>
         /// 로그인한 관리자ID 인덱스가 속해있는 사업장 리스트 조회
         /// </summary>
@@ -42,6 +51,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// <returns></returns>
         public ValueTask<ResponseUnit<int?>> AddPlaceService(HttpContext? context, AddPlaceDTO? dto);
 
+        /// <summary>
+        /// 사업장 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        ValueTask<ResponseUnit<UpdatePlaceDTO>?> UpdatePlaceService(HttpContext? context, UpdatePlaceDTO? dto);
 
         /// <summary>
         /// 사업장 번호로 사업장 모델 반환

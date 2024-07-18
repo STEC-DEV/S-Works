@@ -1,5 +1,7 @@
 ﻿using FamTec.Server.Databases;
+using FamTec.Server.Repository.Place;
 using FamTec.Server.Services;
+using FamTec.Server.Services.Facility.Type.Electronic;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             this.context = _context;
             this.LogService = _logservice;
         }
+
+       
+
 
         /// <summary>
         /// 관리자 추가
@@ -159,6 +164,81 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     return null;
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 해당 사업장 관리자로 선택가능한 사업장 리스트 출력
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<ManagerListDTO?>?> GetNotContainsAdminList(int? placeid)
+        {
+            try
+            {
+                if (placeid is not null)
+                {
+                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+
+                    if (adminplacetb is [_, ..])
+                    {
+                        List<int?> adminplacetbid = adminplacetb.Select(m => m.AdminTbId).ToList();
+
+                        List<AdminTb>? admintb = await context.AdminTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
+                        if (admintb is [_, ..])
+                        {
+                            List<ManagerListDTO>? model = (from Admin in admintb
+                                                           join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
+                                                           on Admin.UserTbId equals User.Id
+                                                           join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
+                                                           on Admin.DepartmentTbId equals Department.Id
+                                                           select new ManagerListDTO()
+                                                           {
+                                                               Id = Admin.Id,
+                                                               Name = User.Name,
+                                                               UserId = User.UserId,
+                                                               Department = Department.Name
+                                                           }).ToList();
+
+                            return model;
+                        }
+                        else
+                        {
+                            return null; // 전체 관리자 다 이사업장에 포함됨.
+                        }
+                    }
+                    else
+                    {
+                        // 이사업장에 아무도 포함되어있지 않음
+                        //List<AdminTb>? alladmin = await context.AdminTbs.Where(m => m.DelYn != true).ToListAsync();
+
+                        List<ManagerListDTO>? model = (from Admin in context.AdminTbs.Where(m => m.DelYn != true).ToList()
+                                                       join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
+                                                       on Admin.UserTbId equals User.Id
+                                                       join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
+                                                       on Admin.DepartmentTbId equals Department.Id
+                                                       select new ManagerListDTO()
+                                                       {
+                                                           Id = Admin.Id,
+                                                           Name = User.Name,
+                                                           UserId = User.UserId,
+                                                           Department = Department.Name
+                                                       }).ToList();
+
+
+                        return model;
+                        //return alladmin;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();

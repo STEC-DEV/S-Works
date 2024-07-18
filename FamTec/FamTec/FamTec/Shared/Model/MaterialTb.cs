@@ -10,7 +10,6 @@ namespace FamTec.Shared.Model;
 /// 자재
 /// </summary>
 [Table("material_tb")]
-[Index("BuildingTbId", Name = "fk_material_tb_building_tb1_idx")]
 [Index("PlaceTbId", Name = "fk_material_tb_place_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MaterialTb
@@ -53,6 +52,18 @@ public partial class MaterialTb
     [Column("SAFE_NUM", TypeName = "int(11)")]
     public int? SafeNum { get; set; }
 
+    /// <summary>
+    /// 공간인덱스
+    /// </summary>
+    [Column("DEFAULT_LOCATION", TypeName = "int(11)")]
+    public int? DefaultLocation { get; set; }
+
+    /// <summary>
+    /// 이미지
+    /// </summary>
+    [StringLength(255)]
+    public string? Image { get; set; }
+
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
 
@@ -77,21 +88,8 @@ public partial class MaterialTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    /// <summary>
-    /// 기본위치
-    /// </summary>
-    [Column("DEFAULT_LOCATION", TypeName = "int(11)")]
-    public int? DefaultLocation { get; set; }
-
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int? PlaceTbId { get; set; }
-
-    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
-
-    [ForeignKey("BuildingTbId")]
-    [InverseProperty("MaterialTbs")]
-    public virtual BuildingTb? BuildingTb { get; set; }
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("MaterialTbs")]

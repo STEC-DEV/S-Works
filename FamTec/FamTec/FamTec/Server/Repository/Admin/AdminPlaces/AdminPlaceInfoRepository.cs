@@ -338,11 +338,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                 Id = place.Id,
                                 PlaceCd = place.PlaceCd,
                                 Name = place.Name,
-                                //Tel = place.Tel,
+                                Tel = place.Tel,
                                 ContractNum = place.ContractNum,
                                 ContractDt = place.ContractDt,
-                                //CancelDt = place.CancelDt,
-                                //Status = place.Status,
+                                CancelDt = place.CancelDt,
+                                Status = place.Status,
                                 Note = place.Note
                             },
 
@@ -350,6 +350,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             {
                                 Id = place.Id,
                                 PermMachine = place.PermMachine,
+                                PermElec = place.PermElec,
                                 PermLift = place.PermLift,
                                 PermFire = place.PermFire,
                                 PermConstruct = place.PermConstruct,

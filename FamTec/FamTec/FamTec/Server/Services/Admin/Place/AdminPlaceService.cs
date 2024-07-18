@@ -292,7 +292,72 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
-      
+        /// <summary>
+        /// 사업장 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<UpdatePlaceDTO>?> UpdatePlaceService(HttpContext? context, UpdatePlaceDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceInfo.Id);
+                if(model is not null)
+                {
+                    model.PlaceCd = dto.PlaceInfo.PlaceCd;
+                    model.Name = dto.PlaceInfo.Name;
+                    model.Tel = dto.PlaceInfo.Tel;
+                    model.ContractNum = dto.PlaceInfo.ContractNum;
+                    model.ContractDt = dto.PlaceInfo.ContractDt;
+                    model.CancelDt = dto.PlaceInfo.CancelDt;
+                    model.Status = dto.PlaceInfo.Status;
+                    model.Note = dto.PlaceInfo.Note;
+                    model.PermMachine = dto.PlacePerm.PermMachine;
+                    model.PermElec = dto.PlacePerm.PermElec;
+                    model.PermLift = dto.PlacePerm.PermLift;
+                    model.PermFire = dto.PlacePerm.PermFire;
+                    model.PermConstruct = dto.PlacePerm.PermConstruct;
+                    model.PermNetwork = dto.PlacePerm.PermNetwork;
+                    model.PermBeauty = dto.PlacePerm.PermBeauty;
+                    model.PermSecurity = dto.PlacePerm.PermSecurity;
+                    model.PermMaterial = dto.PlacePerm.PermMaterial;
+                    model.PermEnergy = dto.PlacePerm.PermEnergy;
+                    model.PermVoc = dto.PlacePerm.PermVoc;
+                    model.UpdateDt = DateTime.Now;
+                    model.UpdateUser = creater;
+
+                    bool? UpdatePlaceResult = await PlaceInfoRepository.EditPlaceInfo(model);
+                    if(UpdatePlaceResult == true)
+                    {
+                        return new ResponseUnit<UpdatePlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    }
+                }
+                else
+                {
+                    return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
 
         /// <summary>
         /// 사업장정보 상세조회
@@ -554,12 +619,12 @@ namespace FamTec.Server.Services.Admin.Place
                 // 해당 사업장인덱스와 AdminPlaceTb의 PlaceTbID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
                 List<AdminPlaceTb>? adminplaceetb = await AdminPlaceInfoRepository.SelectPlaceAdminList(placeidx);
                 if(adminplaceetb is not null)
-                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
 
                 // 해당 사업장인덱스와 BuildingTb의 PlaceId 외래키로 검색해서 있는지 검사 - 삭제조건 [2]
                 List<BuildingTb>? buildingtb = await BuildingInfoRepository.SelectPlaceBuildingList(placeidx);
                 if(buildingtb is not null)
-                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                    return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 204 };
 
                 // PlaceTb 삭제
                 for (int i = 0; i < placeidx.Count(); i++)
@@ -589,10 +654,35 @@ namespace FamTec.Server.Services.Admin.Place
             }
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
             }
         }
 
-    
+        public async ValueTask<ResponseList<ManagerListDTO>?> NotContainManagerList(HttpContext? context,int? placeid)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<ManagerListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (placeid is null)
+                    return new ResponseList<ManagerListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+
+                List<ManagerListDTO?> SelectList = await AdminUserInfoRepository.GetNotContainsAdminList(placeid);
+                if (SelectList is [_, ..])
+                    return new ResponseList<ManagerListDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+                else
+                    return new ResponseList<ManagerListDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<ManagerListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+     
     }
 }

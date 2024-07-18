@@ -472,14 +472,22 @@ namespace FamTec.Server.Services.Building
                         // DB 파일 삭제
                         string? filePath = model.Image;
                         PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                        di = new DirectoryInfo(PlaceFileFolderPath);
 
-                        if (!String.IsNullOrWhiteSpace(filePath))
+                        if (di.Exists)
                         {
-                            FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
-                            if (File.Exists(FileName))
+                            if (!String.IsNullOrWhiteSpace(filePath))
                             {
-                                File.Delete(FileName);
+                                FileName = String.Format(@"{0}\\{1}", PlaceFileFolderPath, filePath);
+                                if (File.Exists(FileName))
+                                {
+                                    File.Delete(FileName);
+                                }
                             }
+                        }
+                        else
+                        {
+                            di.Create();
                         }
 
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
@@ -498,12 +506,12 @@ namespace FamTec.Server.Services.Building
                         if (!String.IsNullOrWhiteSpace(filePath))
                         {
                             PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString()); // 사업장
-                            FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
+                            FileName = String.Format(@"{0}\\{1}", PlaceFileFolderPath, filePath);
                             if (File.Exists(FileName))
                             {
                                 File.Delete(FileName);
-                                model.Image = null;
                             }
+                            model.Image = null;
                         }
                     }
 

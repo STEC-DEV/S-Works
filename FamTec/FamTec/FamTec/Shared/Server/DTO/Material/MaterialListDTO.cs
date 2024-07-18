@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace FamTec.Shared.Server.DTO.Material
 {
+    /// <summary>
+    /// 품목 리스트 DTO
+    /// </summary>
     public class MaterialListDTO
     {
         /// <summary>
         /// 자재(품목) INDEX
         /// </summary>
-        public int ID { get; set; }
+        public int? ID { get; set; }
 
         /// <summary>
-        /// 자재(품목)명
+        /// 품목이름
         /// </summary>
         public string? Name { get; set; }
 
@@ -26,7 +29,7 @@ namespace FamTec.Shared.Server.DTO.Material
         /// <summary>
         /// 제조사
         /// </summary>
-        public string? ManufacturingCompany { get; set; }
+        public string? ManufacturingComp { get; set; }
 
         /// <summary>
         /// 단위
@@ -37,6 +40,7 @@ namespace FamTec.Shared.Server.DTO.Material
         /// 안전재고
         /// </summary>
         public int? SafeNum { get; set; }
+
 
 
     }

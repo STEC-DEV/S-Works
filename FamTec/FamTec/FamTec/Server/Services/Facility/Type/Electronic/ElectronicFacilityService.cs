@@ -8,8 +8,6 @@ using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 
 namespace FamTec.Server.Services.Facility.Type.Electronic
 {
@@ -284,9 +282,13 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.Id);
-                if(model is not null)
+                
+                if (model is not null)
                 {
-                    model.Category = dto.Category; // 카테고리
+                    if (model!.Category != "전기")
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    model.Category = "전기"; // 카테고리
                     model.Name = dto.Name; // 설비명칭
                     model.Type = dto.Type; // 타입
                     model.Num = dto.Num; // 개수
@@ -300,32 +302,40 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     model.RoomTbId = dto.RoomId;
 
                     // 이미지 변경 or 삭제
-                    if(files is not null)
+                    if (files is not null)
                     {
                         FileName = files.FileName;
                         FileExtenstion = Path.GetExtension(FileName);
 
-                        if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                        if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                         {
                             return new ResponseUnit<bool?>() { message = "이미지 형식이 올바르지 않습니다.", data = null, code = 404 };
                         }
 
+
                         // DB 파일 삭제
                         string? filePath = model.Image;
                         ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
-
-                        if(!String.IsNullOrWhiteSpace(filePath))
+                        di = new DirectoryInfo(ElectronicFileFolderPath);
+                        if (di.Exists)
                         {
-                            FileName = String.Format("{0}\\{1}", ElectronicFileFolderPath, filePath);
-                            if(File.Exists(FileName))
+                            if (!String.IsNullOrWhiteSpace(filePath))
                             {
-                                File.Delete(FileName);
+                                FileName = String.Format("{0}\\{1}", ElectronicFileFolderPath, filePath);
+                                if (File.Exists(FileName))
+                                {
+                                    File.Delete(FileName);
+                                }
                             }
+                        }
+                        else
+                        {
+                            di.Create();
                         }
 
                         string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
 
-                        string? newFilePath = Path.Combine(placeFilePath, newFileName);
+                        string? newFilePath = Path.Combine(ElectronicFileFolderPath, newFileName);
 
                         using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
                         {
@@ -336,21 +346,21 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     else // 파일이 공백인 경우 db에 해당 값이 있으면 삭제
                     {
                         string? filePath = model.Image;
-                        if(!String.IsNullOrWhiteSpace(filePath))
+                        if (!String.IsNullOrWhiteSpace(filePath))
                         {
-                            placeFilePath = String.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
-                            FileName = String.Format("{0}\\{1}", placeFilePath, filePath);
+                            ElectronicFileFolderPath = String.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                            FileName = String.Format("{0}\\{1}", ElectronicFileFolderPath, filePath);
 
-                            if(File.Exists(FileName))
+                            if (File.Exists(FileName))
                             {
                                 File.Delete(FileName);
-                                model.Image = null;
                             }
+                            model.Image = null;
                         }
                     }
 
                     bool? updateBuilding = await FacilityInfoRepository.UpdateFacilityInfo(model);
-                    if(updateBuilding == true)
+                    if (updateBuilding == true)
                     {
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
@@ -364,7 +374,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };

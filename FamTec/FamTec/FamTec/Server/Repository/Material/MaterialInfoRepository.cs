@@ -1,9 +1,8 @@
-﻿using FamTec.Client.Pages.Admin.Place.PlaceMain;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Material;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FamTec.Server.Repository.Material
 {
@@ -54,43 +53,14 @@ namespace FamTec.Server.Repository.Material
         {
             try
             {
-                List<MaterialTb>? model = await context.MaterialTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
-              
-                if(model is not null)
-                {
-                    return model;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
+                List<MaterialTb>? model = await context.MaterialTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
 
-        /// <summary>
-        /// 건물에 속해있는 자재 리스트들 반환
-        /// </summary>
-        /// <param name="buildingid"></param>
-        /// <returns></returns>
-        public async ValueTask<List<MaterialTb>?> GetBuildingAllMatertialList(int? buildingid)
-        {
-            try
-            {
-                List<MaterialTb>? model = await context.MaterialTbs.Where(m => m.BuildingTbId == buildingid && m.DelYn != true).ToListAsync();
-
-                if (model is not null)
-                {
+                if(model is [_, ..])
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -104,15 +74,38 @@ namespace FamTec.Server.Repository.Material
         /// </summary>
         /// <param name="materialId"></param>
         /// <returns></returns>
-        public async ValueTask<MaterialTb?> GetMaterialInfo(int? materialId)
+        public async ValueTask<MaterialTb?> GetDetailMaterialInfo(int? placeid, int? materialId)
         {
             try
             {
-                MaterialTb? model = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == materialId && m.DelYn != true);
+                MaterialTb? model = await context.MaterialTbs
+                    .FirstOrDefaultAsync(m => m.Id == materialId && m.PlaceTbId == placeid && m.DelYn != true);
 
+                if (model is not null)
+                    return model;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 자재정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateMaterialInfo(MaterialTb? model)
+        {
+            try
+            {
                 if(model is not null)
                 {
-                    return model;
+                    context.MaterialTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
                 }
                 else
                 {
@@ -126,6 +119,31 @@ namespace FamTec.Server.Repository.Material
             }
         }
 
-       
+        /// <summary>
+        /// 자재정보 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async ValueTask<bool?> DeleteMaterialInfo(MaterialTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.MaterialTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

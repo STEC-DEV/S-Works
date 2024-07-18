@@ -44,7 +44,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllElectronicFacility")]
-        public async ValueTask<IActionResult> GetAllMachineFacility()
+        public async ValueTask<IActionResult> GetAllElecFacility()
         {
             ResponseList<FacilityListDTO>? model = await ElectronicFacilityService.GetElectronicFacilityListService(HttpContext);
 
@@ -68,7 +68,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailElectronicFacility")]
-        public async ValueTask<IActionResult> DetailMachineFacility([FromQuery] int? facilityid)
+        public async ValueTask<IActionResult> DetailElecFacility([FromQuery] int? facilityid)
         {
             ResponseUnit<FacilityDetailDTO?> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
             if (model is not null)
@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateElectronicFacility")]
-        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateElecFacility([FromForm] UpdateFacilityDTO? dto, IFormFile? files)
         {
             ResponseUnit<bool?> model = await ElectronicFacilityService.UpdateElectronicFacilityService(HttpContext, dto, files);
             if (model is not null)
@@ -114,7 +114,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteElectronicFacility")]
-        public async ValueTask<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
+        public async ValueTask<IActionResult> DeleteElecFacility([FromBody] List<int> delIdx)
         {
             ResponseUnit<int?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
             if (model is not null)
