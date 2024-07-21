@@ -1,43 +1,79 @@
-﻿.placetable-container {
-    display: flex;
-    flex-direction: column;
-    gap:var(--default-pd);
+﻿.table {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+}
 
-    border: var(--comp-bd);
+.table .thead{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr{
+    background-color:var(--main-color);
     border-radius: var(--default-rd);
-    background-color: var(--default-color);
-    padding: var(--default-pd);
-    height: 100%;
-
-    
 }
 
-.placetable-container .placetable-title {
-    display:flex;
-    justify-content:space-between;
-    font-size: var(--title-size);
-    font-weight: var(--bold-wt);
-    padding: var(--default-pd);
-    border-bottom: var(--default-bd);
-
-
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child {
+    border-radius: 4px 0 0 4px;
 }
 
-.placetable-container .placetable-title > span {
-    display:flex;
-    height:33px;
-    align-items:center;
-    justify-content:center;
-    color: var(--main-color);
+.table .th:last-child {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
 }
 
-.placetable-container .placetable-btns{
-    display : flex;
-    gap : var(--half-pd);
+.table .text-center{
+    text-align : center;
 }
 
-.placetable-container .placetable-table{
-    height:100%;
+.table th>span{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody{
     overflow:auto;
 }
 
+.table .tbody-tr{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tbody-tr:hover td{
+    background-color:var(--main-light);
+    
+}
+
+.table .td{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table ::deep .table-td-link {
+    color : var(--main-color);
+}

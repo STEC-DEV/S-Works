@@ -873,8 +873,8 @@
     width: 100%;
     border-radius: var(--default-rd);
 }
-/* /Pages/Admin/Place/PlaceDetail/Components/ManagerTable.razor.rz.scp.css */
-.placetable-container[b-sbtdix8whn] {
+/* /Pages/Admin/Place/PlaceDetail/Components/ManagerList.razor.rz.scp.css */
+.placetable-container[b-mb8sqxjz45] {
     display: flex;
     flex-direction: column;
     gap:var(--default-pd);
@@ -888,7 +888,7 @@
     
 }
 
-.placetable-container .placetable-title[b-sbtdix8whn] {
+.placetable-container .placetable-title[b-mb8sqxjz45] {
     display:flex;
     justify-content:space-between;
     font-size: var(--title-size);
@@ -899,7 +899,7 @@
 
 }
 
-.placetable-container .placetable-title > span[b-sbtdix8whn] {
+.placetable-container .placetable-title > span[b-mb8sqxjz45] {
     display:flex;
     height:33px;
     align-items:center;
@@ -907,16 +907,96 @@
     color: var(--main-color);
 }
 
-.placetable-container .placetable-btns[b-sbtdix8whn]{
+.placetable-container .placetable-btns[b-mb8sqxjz45]{
     display : flex;
     gap : var(--half-pd);
 }
 
-.placetable-container .placetable-table[b-sbtdix8whn]{
+.placetable-container .placetable-table[b-mb8sqxjz45]{
     height:100%;
     overflow:auto;
 }
 
+/* /Pages/Admin/Place/PlaceDetail/Components/ManagerTable.razor.rz.scp.css */
+.table[b-sbtdix8whn] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+}
+
+.table .thead[b-sbtdix8whn]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-sbtdix8whn]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-sbtdix8whn] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-sbtdix8whn] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-sbtdix8whn]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-sbtdix8whn]{
+    text-align : center;
+}
+
+.table th>span[b-sbtdix8whn]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-sbtdix8whn]{
+    overflow:auto;
+}
+
+.table .tbody-tr[b-sbtdix8whn]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tbody-tr:hover td[b-sbtdix8whn]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-sbtdix8whn]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-sbtdix8whn]  .table-td-link {
+    color : var(--main-color);
+}
 /* /Pages/Admin/Place/PlaceDetail/Components/PlaceForm.razor.rz.scp.css */
 .placeform-container[b-ka8q354chg]{
     display:flex;

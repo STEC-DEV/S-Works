@@ -1,9 +1,16 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using Azure.Core;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Vml;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
+
 //using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Web;
@@ -52,25 +59,82 @@ namespace FamTec.Client.Middleware
         /*
          * Post 요청
          */
-        private async Task<string> PostSendReqeustAsync(string endpoint, object data)
+        //private async Task<string> PostSendReqeustAsync(string endpoint, object data, string contentsType)
+        //{
+        //    await AddAuthorizationHeader();
+
+        //    var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+        //    if (data != null)
+        //    {
+        //        string json = JsonSerializer.Serialize(data);
+        //        request.Content = new StringContent(json, Encoding.UTF8, contentsType);
+        //    }
+
+        //    HttpResponseMessage response = await _httpClient.SendAsync(request);
+        //    var a= response.Content;
+        //    Console.WriteLine(a);
+        //    response.EnsureSuccessStatusCode();
+
+        //    return await response.Content.ReadAsStringAsync();
+
+        //}
+
+        private async Task<string> PostSendReqeustAsync(string endpoint, object data, string contentType)
         {
             await AddAuthorizationHeader();
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
 
-            if (data != null)
+            if (data is HttpContent httpContent)
             {
-                string json = JsonSerializer.Serialize(data);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                request.Content = httpContent;
+            }
+            else if (data != null)
+            {
+                if (contentType == "application/json")
+                {
+                    string json = JsonSerializer.Serialize(data);
+                    request.Content = new StringContent(json, Encoding.UTF8, contentType);
+                }
+                else if (contentType == "multipart/form-data")
+                {
+                    await Console.Out.WriteLineAsync(contentType);
+                    var multipartContent = new MultipartFormDataContent();
+
+                    foreach (var prop in data.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(data);
+                        if (value != null)
+                        {
+                            if (value is byte[] fileBytes)
+                            {
+                                multipartContent.Add(new ByteArrayContent(fileBytes), prop.Name, prop.Name);
+                            }
+                            else
+                            {
+                                multipartContent.Add(new StringContent(value.ToString()), prop.Name, contentType);
+                            }
+                        }
+                    }
+
+                    request.Content = multipartContent;
+                }
+                else
+                {
+                    throw new ArgumentException($"Unsupported content type: {contentType}");
+                }
             }
 
+            if (request.Content != null && request.Content.Headers.ContentType == null)
+            {
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            }
+            Console.WriteLine($"Final Content-Type: {request.Content.Headers.ContentType}"); // 최종 Content-Type 로깅
             HttpResponseMessage response = await _httpClient.SendAsync(request);
-            var a= response.Content;
-            Console.WriteLine(a);
             response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsStringAsync();
             
+            return await response.Content.ReadAsStringAsync();
         }
 
         /*
@@ -99,16 +163,59 @@ namespace FamTec.Client.Middleware
         //로그인
         public async Task<ResponseUnit<T>> PostLoginAsync<T>(string endpoint, LoginDTO user)
         {
-            string jsonResponse = await PostSendReqeustAsync(endpoint, user);
+            string contentType = "application/json";
+            string jsonResponse = await PostSendReqeustAsync(endpoint, user, contentType);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
         }
 
         //post 공통
         public async Task<ResponseUnit<T>> PostAsync<T>(string endpoint, object user)
         {
-            string jsonResponse = await PostSendReqeustAsync(endpoint, user);
+            string contentsType = "application/json";
+            string jsonResponse = await PostSendReqeustAsync(endpoint, user, contentsType);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
         }
+
+        //Post Image
+        public async Task<ResponseUnit<T>> PostWithFilesAsync<T>(string endPoint, object manager)
+        {
+            string contentType = "multipart/form-data";
+            using var content = new MultipartFormDataContent();
+            // DTO 속성들을 폼 데이터로 추가
+            var properties = manager.GetType().GetProperties();
+            foreach (var prop in properties)
+            {
+                var value = prop.GetValue(manager);
+                if (value != null)
+                {
+                    switch (prop.Name)
+                    {
+                        case "Image":
+                            if (value is byte[] imageBytes && imageBytes.Length > 0)
+                            {
+                                var imageContent = new ByteArrayContent(imageBytes);
+                                content.Add(imageContent, "Image", manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+                            }
+                            break;
+                        case "PlaceList":
+                            if (value is List<int> placeList)
+                            {
+                                foreach (var place in placeList)
+                                {
+                                    content.Add(new StringContent(place.ToString()), "PlaceList");
+                                }
+                            }
+                            break;
+                        default:
+                            content.Add(new StringContent(value.ToString()), prop.Name);
+                            break;
+                    }
+                }
+            }
+            string jsonResponse = await PostSendReqeustAsync(endPoint, content, contentType);
+            return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
+        }
+        
 
         //put 공통
         public async Task<ResponseUnit<T>> PutAsync<T>(string endpoint, object data)

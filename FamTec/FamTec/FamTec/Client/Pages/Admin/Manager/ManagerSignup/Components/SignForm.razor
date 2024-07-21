@@ -52,10 +52,10 @@
             />
         <InputField 
             InputType="text"
-            Placeholder="Type"
-            @bind-Value="@NewManager.Type"
+            Value="@ManagerType"
+            Placeholder="Type"            
             Label="계정 유형" 
-            EditMode=EditMode
+            EditMode=false
             />
         <InputSelectField 
             Label="부서"
@@ -63,7 +63,7 @@
             SelectedValueChanged="HandleSelectedValueChange"
             IsReverse=true
             />
-        
+        <InputFile OnChange="@LoadImage" accept=".jpg,.jpeg,.png" />
     </div>
     
 </div>
@@ -72,10 +72,27 @@
     [Parameter] public AddManagerDTO NewManager { get; set; }
     [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public string? ManagerType { get; set; }
+    private byte[] imageData;
+
 
     private void HandleSelectedValueChange(int value)
     {
         NewManager.DepartmentId = value;
 
+    }
+
+
+   
+
+    private async Task LoadImage(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        var resizedImage = await e.File.RequestImageFileAsync(format, 200, 200);
+        var buffer = new byte[resizedImage.Size];
+        await resizedImage.OpenReadStream().ReadAsync(buffer);
+        imageData = buffer;
+        NewManager.Image = buffer;
+        NewManager.ImageName = e.File.Name;
     }
 }

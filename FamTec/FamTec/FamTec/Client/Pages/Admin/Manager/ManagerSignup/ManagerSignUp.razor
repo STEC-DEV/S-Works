@@ -7,6 +7,7 @@
 @using FamTec.Shared.DTO
 @using FamTec.Shared.Server
 @using FamTec.Shared.Server.DTO
+@using System.IdentityModel.Tokens.Jwt
 
 @inject HttpClient HttpClient
 @inject NavigationManager Navigation
@@ -18,6 +19,7 @@
                 NewManager="newManager" 
                 DepartmentList="departmetnList" 
                 EditMode=EditMode
+                ManagerType="@UserType"
                 />
         </div>
         <div class="place">
@@ -37,9 +39,14 @@
     AddManagerPlaceDTO managerPlace = new AddManagerPlaceDTO(); // 추가할 사업장 목록(선택 리스트)
     List<DepartmentDTO> departmetnList = new List<DepartmentDTO>();
     bool EditMode = true;
-    string session;
+    string? EncryptSession;
+    string? UserType;
+
+
+
     protected async override Task OnInitializedAsync()
     {
+        await LoadsessionData();
         await OnLoadDepartments();
         newManager = new();
     }
@@ -68,13 +75,48 @@
     }
 
     /*
+    * Session 조회
+    */
+    private async Task LoadsessionData()
+    {
+        var handler = new JwtSecurityTokenHandler();
+
+        string encryptedSession = await customStateProvider.GetTokenAsync();
+        Console.WriteLine("Encrypted Session: " + encryptedSession);
+
+        if (handler.CanReadToken(encryptedSession))
+        {
+            var jwtSecurityToken = handler.ReadToken(encryptedSession) as JwtSecurityToken;
+
+            var WriterUserType = jwtSecurityToken.Claims.FirstOrDefault(C => C.Type == "Role")?.Value;
+            UserType = WriterUserType switch
+            {
+                "시스템관리자" => "Master",
+                "마스터" => "Manager",
+                _ => "Unknown"
+            }; 
+
+            // if (jwtSecurityToken != null)
+            // {
+            //     Console.WriteLine("Decrypted Session Claims:");
+            //     foreach (var claim in jwtSecurityToken.Claims)
+            //     {
+            //         Console.WriteLine($"{claim.Type}: {claim.Value}");
+            //     }
+            // }
+        }
+
+    }
+
+
+    /*
     * (POST)매니저 등록
     */
     private async Task Submit()
     {
         try
         {
-            ResponseUnit<int> resManager = await apiManager.PostAsync<int>("AdminUser/sign/AddManager", newManager);
+            ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
             if(resManager.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "관리자 정보 등록 실패");

@@ -20,7 +20,7 @@
                 <PlaceToggle placePerm=@(PlaceEdit ? _editedPlacePerm : PlacePerm) EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
-                <ManagerTable DataList="ManagerList" EditMode=PlaceEdit Id=@Id OnLoadManager="@LoadPlaceDetailInfo" />
+                <ManagerList DataList="ManagerList" EditMode=PlaceEdit Id=@Id OnLoadManager="@LoadPlaceDetailInfo" />
             </div>
         </div>
     </div>

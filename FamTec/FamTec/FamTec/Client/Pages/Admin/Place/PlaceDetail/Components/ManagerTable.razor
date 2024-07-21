@@ -1,97 +1,88 @@
-﻿@using FamTec.Client.Pages.Admin.Place.PlaceDetail.Modals
-@using FamTec.Client.Pages.CommonComponents
-@using FamTec.Shared.Client.DTO
+﻿@using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Place
-@using FamTec.Shared.Server.DTO
-@typeparam T
 
-<div class="placetable-container">
-    <div class="placetable-title">
-        <span>
-            사업장 매니저
-        </span>
-        <div class="placetable-btns">
-            @if (EditMode)
-            {
-                <Button Name="추가" Width="true" Type=0 OnClick="OnOpen" />
-                <Button Name="삭제" Width="true" Type=1 OnClick="OnDelete" />
-            }
-            
-        </div>
-    </div>
-    <div class="placetable-table">
-        <Table DataList="DataList" SelectItem="OnCheckData" ReturnType="object"/>
-    </div>
-    @if (isOpen)
-    {
-        <ModalBackground >
-            <ChildComponent>
-                <ManagerModal OnClose="OnOpen" />
-            </ChildComponent>
-        </ModalBackground>
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    아이디
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                   이름
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    부서
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
 
-    }
-</div>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var row in ListData)
+        {
+            <tr class="tbody-tr">
+                <td class="td">
+                    <span>
+                        @row.UserId
+                    </span>
+                </td>
+                <td class="td">
+                    <span>
+                        @row.Name
+                    </span>
+                </td>
+                <td class="td">
+                    <span>
+                        @row.Department
+                    </span>
+                </td>
+                <td class="td">
+                    <input type="checkbox" @onchange="(e) => OnCheckboxChanged(row, e.Value)" />
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+
 
 @code {
-    [Parameter] public int Id { get; set; }
-    [Parameter] public List<T> DataList { get; set; }
-    [Parameter] public bool EditMode{ get; set; }
-    [Parameter] public EventCallback OnLoadManager {get; set;}
-    AddPlaceManagerDTO<ManagerDTO> DelManager = new AddPlaceManagerDTO<ManagerDTO>();
-    
-    bool isOpen = false;
+    [Parameter] public List<ManagerDTO> ListData { get; set; }
+    [Parameter] public EventCallback<AddPlaceManagerDTO<ManagerDTO>> OnSelectionChanged { get; set; }
 
-    protected override Task OnInitializedAsync()
+    private AddPlaceManagerDTO<ManagerDTO> selectedManagers = new AddPlaceManagerDTO<ManagerDTO>();
+
+    protected override void OnInitialized()
     {
-        Console.WriteLine("하위컴포넌트");
-        return base.OnInitializedAsync();
     }
 
-    private void OnOpen()
+    protected override void OnParametersSet()
     {
-        isOpen = !isOpen;
+        Console.WriteLine("Parameters Set");
+
     }
 
-    private void OnCheckData((bool isChecked, object item)selection)
+    private async Task OnCheckboxChanged(ManagerDTO manager, object isChecked)
     {
-        Console.WriteLine("ㅎㅇㅎㅇ");
-        ManagerDTO selectManager = new ManagerDTO();
-        selectManager = (ManagerDTO)selection.item;
-        DelManager.PlaceId = Id;
-
-
-        if(selection.isChecked)
+        if ((bool)isChecked)
         {
-            if (!DelManager.PlaceManager.Any(m => m.Id == selectManager.Id))
-            {
-                DelManager.PlaceManager.Add(selectManager);
-                foreach (var i in DelManager.PlaceManager){
-                    Console.WriteLine(i.Name);
-                }
-            }
-
-
-        }else
-        {
-            // 체크 해제된 경우: 리스트에 있으면 제거
-            DelManager.PlaceManager.RemoveAll(m => m.Id == selectManager.Id);
+            selectedManagers.PlaceManager.Add(manager);
         }
-    }
+        else
+        {
+            selectedManagers.PlaceManager.Remove(manager);
+        }
 
-    private async void OnDelete()
-    {
-        try
-        {
-            ResponseUnit<int> resDelManager = await apiManager.PutAsync<int>("AdminPlace/sign/DeletePlaceManager", DelManager);
-            if(resDelManager.code == 200)
-            {
-                await OnLoadManager.InvokeAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            
-        }
+        await OnSelectionChanged.InvokeAsync(selectedManagers);
     }
 }

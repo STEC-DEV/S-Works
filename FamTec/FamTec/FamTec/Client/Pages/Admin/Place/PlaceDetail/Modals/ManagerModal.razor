@@ -1,4 +1,8 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.Admin.Place.PlaceDetail.Components
 
 <div class="manager-modal yappear">
     <div class="manager-title">
@@ -7,7 +11,7 @@
         </span>
     </div>
     <div class="manager-content">
-
+        <ManagerTable ListData="@ManagerList" OnSelectionChanged="@OnSelectManager" />
     </div>
     <div class="manager-count">
         <span class="count">
@@ -15,14 +19,67 @@
         </span>
     </div>
     <div class="manager-btns">
-        <Button Name="추가" Type="0"  />
+        <Button Name="추가" Type="0" OnClick="OnAdd" />
         <Button Name="닫기" Type="2" OnClick="OnCloseModal"/>
     </div>
 </div>
 
 @code {
+    [Parameter] public int Id{ get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback LoadManager { get; set; }
+    List<ManagerDTO> ManagerList = new List<ManagerDTO>();
+    AddPlaceManagerDTO<ManagerDTO> AddManager = new AddPlaceManagerDTO<ManagerDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadManager();
 
+    }
+
+    private async Task OnLoadManager()
+    {
+        ResponseList<ManagerDTO> resManager = await apiManager.GetListAsync<ManagerDTO>($"AdminPlace/sign/NotContainManagerList?placeid={Id}");
+        if(resManager.code == 200)
+        {
+            ManagerList = resManager.data;
+            StateHasChanged();
+            foreach(var i in ManagerList)
+            {
+                Console.WriteLine(i.Name);
+            }
+        }
+    }
+
+    private void OnSelectManager(AddPlaceManagerDTO<ManagerDTO> selected)
+    {
+        AddManager = selected;
+        StateHasChanged();
+    }
+
+    private async void OnAdd()
+    {
+        try
+        {
+            AddManager.PlaceId = Id;
+            ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", AddManager);
+            if (resAdd.code == 200)
+            {
+                await LoadManager.InvokeAsync();
+                StateHasChanged();
+                OnCloseModal();
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                OnCloseModal();
+            }
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", ex);
+            OnCloseModal();
+        }
+
+    }
 
     private void OnCloseModal()
     {
