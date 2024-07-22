@@ -81,6 +81,15 @@
     height: 100%;
     padding: var(--default-pd);
 }
+
+.form-container .img[b-vema0fw9we]{
+    object-fit :fill;
+}
+
+.form-container .img-wrap[b-vema0fw9we]{
+    width : 200px;
+    height : 200px;
+}
 /* /Pages/Admin/Manager/ManagerDetail/ManagerDetail.razor.rz.scp.css */
 .managerdetail-container[b-b73rq70qck] {
     display : flex;

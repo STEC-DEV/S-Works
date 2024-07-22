@@ -1,7 +1,7 @@
 {
   "entryAssembly": "FamTec.Client",
   "resources": {
-    "hash": "sha256-zZBGxvKWqM1EZTtqYaXTqr9nvqHbyaZlhmAukl8jMz4=",
+    "hash": "sha256-yOq1LMJ14Ho5UM/x3/S5zxwHFqazNWw0sjMxw2dztH0=",
     "runtime": {
       "dotnet.7.0.16.v4x92qokea.js": "sha256-4BiArKugJJtpQrznGF5zWfmJ2TB98+p6rKsyoqhtMk4=",
       "dotnet.timezones.blat": "sha256-rwyJqJu36keQwNmm/O1XV7tnkkVldIOK8GIjn4gTUt4=",
@@ -266,12 +266,11 @@
       "mscorlib.dll": "sha256-7yxnoj0sx/xIMKjSCkfYzaeQKDj1UsUSr/JXW7fRggs=",
       "netstandard.dll": "sha256-c9xgB5oQro5/rBTTHeD+4cqLi9QOB+6fhaP3jmkeGo4=",
       "System.Private.CoreLib.dll": "sha256-FGXoQzMt7mcWfUZbWXoXgg8tPIt7PF+QZoXXBQWegAQ=",
-      "FamTec.Shared.dll": "sha256-oLrhNbHYdP5QHUp8DJgb7RE1OgXB7Gm80N88kRuIafQ=",
-      "FamTec.Client.dll": "sha256-ByZjTZ847BknPdmbFNruGqWNTzjoCGGxeBxNmrV87sY="
+      "FamTec.Shared.dll": "sha256-S+4IulAkjqolHnVvYl4sF2E++6/9Z3B7PG02j/Hs50E=",
+      "FamTec.Client.dll": "sha256-rUPJMKfDVaG9fIX5WzW3v3OdfEHaFMhGY/yncDAnbw0="
     },
     "pdb": {
-      "FamTec.Shared.pdb": "sha256-CcICMXw5Bfke6r6cLdzLzogAsKqigvV9VCX+Q+RmLGM=",
-      "FamTec.Client.pdb": "sha256-99pykoYns8PW1QBHHI0sdRNfsj5jJUsXipFmz5YCfJ0="
+      "FamTec.Client.pdb": "sha256-sPKdg69DC3FmL/YF+9XOyOMGjfRIpd2K84xPLbhNiS4="
     },
     "runtimeAssets": {
       "dotnet.wasm": {

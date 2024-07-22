@@ -193,8 +193,12 @@ namespace FamTec.Client.Middleware
                         case "Image":
                             if (value is byte[] imageBytes && imageBytes.Length > 0)
                             {
-                                var imageContent = new ByteArrayContent(imageBytes);
-                                content.Add(imageContent, "Image", manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+                                //var imageContent = new ByteArrayContent(imageBytes);
+                                //content.Add(imageContent, "Image", manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+
+                                var stream = new MemoryStream(imageBytes);
+                                var streamContent = new StreamContent(stream);
+                                content.Add(content : streamContent, name : "\"files\"", fileName : manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
                             }
                             break;
                         case "PlaceList":

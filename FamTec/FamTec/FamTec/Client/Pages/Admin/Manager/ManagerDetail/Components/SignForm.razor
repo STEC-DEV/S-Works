@@ -71,6 +71,11 @@
 
                     />
             }
+            <div class="img-wrap">
+                <img class="img" src="data:image/png;base64,@Manager.Image" />
+            </div>
+            
+
         
     </div>
     
@@ -86,6 +91,7 @@
     protected async override Task OnInitializedAsync()
     {
         await OnLoadDetailManager();
+        Console.WriteLine(Manager.Image);
     }
 
     // private void HandleSelectedValueChange(int value)
@@ -101,7 +107,7 @@
     {
         try
         {
-            ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/GetManagerInfo?adminId={Id}");
+            ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/DetailManagerInfo?adminId={Id}");
             if (object.ReferenceEquals(null, resDetailManager) || resDetailManager.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "매니저 상세 정보 조회 실패");

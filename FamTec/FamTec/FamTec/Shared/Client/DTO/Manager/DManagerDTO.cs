@@ -23,5 +23,7 @@ namespace FamTec.Shared.Client.DTO.Manager
         public string Type { get; set; }
         [Display(Name = "부서")]
         public string Department { get; set; }
+        public string Image { get; set; }
+
     }
 }
