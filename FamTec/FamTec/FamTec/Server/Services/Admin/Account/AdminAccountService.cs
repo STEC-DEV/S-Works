@@ -1,4 +1,7 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
+﻿
+using DocumentFormat.OpenXml.Drawing.Charts;
+
+using DocumentFormat.OpenXml.Office2013.Excel;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
@@ -12,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FamTec.Server.Services.Admin.Account
 {
@@ -228,12 +232,14 @@ namespace FamTec.Server.Services.Admin.Account
                 model.CreateUser = creater;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
+
                 
-                if(files is not null)
+
+                if (files is not null)
                 {
                     FileName = files.FileName;
                     FileExtenstion = Path.GetExtension(FileName);
-
+                    
                     if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
                         return new ResponseUnit<int?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 404 };
@@ -246,8 +252,16 @@ namespace FamTec.Server.Services.Admin.Account
 
                         using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
                         {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
+                            if (fileStream.Length < 1048576)
+                            {
+
+                                await files.CopyToAsync(fileStream);
+                                model.Image = newFileName;
+                            }
+                            else
+                            {
+                                return new ResponseUnit<int?> { message = "허용하지 않는 파일 크기입니다.", data = null, code = 200 };
+                            }
                         }
                     }
                 }
@@ -299,13 +313,15 @@ namespace FamTec.Server.Services.Admin.Account
             }
         }
 
-        /// <summary>
-        /// 관리자 삭제
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="useridx"></param>
-        /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context,List<int>? adminidx)
+        
+
+            /// <summary>
+            /// 관리자 삭제
+            /// </summary>
+            /// <param name="context"></param>
+            /// <param name="useridx"></param>
+            /// <returns></returns>
+            public async ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context,List<int>? adminidx)
         {
             int delcount = 0;
             

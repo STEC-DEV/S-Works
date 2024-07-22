@@ -40,14 +40,16 @@
     private string DropdownClass => IsDropdownOpen ? "show" : "";
     private string Reverse => IsReverse ? "reverse" : null;
     
-
+    
     private void ToggleDropdown()
     {
         IsDropdownOpen = !IsDropdownOpen;
+        
     }
 
     private async void SelectOption(T option)
     {
+        
         IsDropdownOpen = false;
         SelectedValue = (int)option.GetType().GetProperty("Id").GetValue(option);
         SelectedOptionName = option.GetType().GetProperty("Name").GetValue(option).ToString();

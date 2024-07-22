@@ -47,7 +47,6 @@ public partial class InventoryTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    [ConcurrencyCheck]
     [Column(TypeName = "datetime")]
     public DateTime? TimeStamp { get; set; }
 

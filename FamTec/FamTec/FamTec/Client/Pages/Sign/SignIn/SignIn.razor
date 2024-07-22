@@ -42,6 +42,7 @@
     LoginDTO user = new LoginDTO();
     sbyte? LoginMode=0;
 
+
     protected async override Task OnInitializedAsync()
     {
 
@@ -56,6 +57,7 @@
             {
                 await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 공백입니다.");
                 user = new LoginDTO();
+                
                 return;
             }
 

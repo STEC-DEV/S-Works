@@ -1,9 +1,12 @@
-﻿using FamTec.Server.Repository.Inventory;
+﻿using DocumentFormat.OpenXml.InkML;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
+using System;
+using System.Data;
 
 namespace FamTec.Server.Services.Store
 {
@@ -151,27 +154,28 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if(materialid is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if(roomid is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (placeid is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            //if (context is null)
+            //return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            //if(materialid is null)
+            //return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            //if(roomid is null)
+            //return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            //string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+            //if (placeid is null)
+            //return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InventoryTb>? model = await InventoryInfoRepository.GetMaterialCount(materialid, roomid, Convert.ToInt32(placeid));
+            //List<InventoryTb>? model = await InventoryInfoRepository.GetMaterialCount(materialid, roomid, Convert.ToInt32(placeid));
 
-                if (model is [_, ..])
-                {
-                    int result = model.Sum(i => i.Num).Value;
-                    return new ResponseUnit<int?>() { message = "요청이 정상적으로 처리되었습니다.", data = result, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<int?>() { message = "요청이 정상적으로 처리되었습니다.", data = 0, code = 200 };
-                }
+            //if (model is [_, ..])
+            //{
+            //int result = model.Sum(i => i.Num).Value;
+            //return new ResponseUnit<int?>() { message = "요청이 정상적으로 처리되었습니다.", data = result, code = 200 };
+            //}
+            //else
+            //{
+            //return new ResponseUnit<int?>() { message = "요청이 정상적으로 처리되었습니다.", data = 0, code = 200 };
+            //}
+                return null;
             }
             catch(Exception ex)
             {
@@ -199,12 +203,17 @@ namespace FamTec.Server.Services.Store
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (placeid is null)
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (creater is null)
+                    return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
+                // 사업장ID + ROOMID + MATERIAL ID로 출고시킬 LIST에 GUID 토큰 박아넣음.
                 bool? AvailableCheck = await InventoryInfoRepository.AvailableCheck(Int32.Parse(placeid), roomid, materialid, GUID);
                 if(AvailableCheck == true)
                 {
-                    List<InventoryTb>? InventoryList = await InventoryInfoRepository.GetMaterialCount(Convert.ToInt32(placeid), roomid, materialid);
+                    // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + GUID로 검색
+                    List<InventoryTb>? InventoryList = await InventoryInfoRepository.GetMaterialCount(Convert.ToInt32(placeid), roomid, materialid, delCount, GUID);
                     if (InventoryList is [_, ..])
                     {
                         foreach (InventoryTb? inventory in InventoryList)
@@ -220,22 +229,36 @@ namespace FamTec.Server.Services.Store
                             }
                         }
 
-                        // 개수만큼 - 빼주면 됨.
-
-                        
-
-                        Console.WriteLine("여기 찍히는가");
+                        if (model is [_, ..])
+                        {
+                            if (result >= delCount)
+                            {
+                                // 개수만큼 - 빼주면 됨.
+                                bool? temp = await InventoryInfoRepository.SetOutInventoryInfo(model, delCount, creater, GUID);
+                                return new ResponseList<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                            }
+                            else
+                            {
+                                await InventoryInfoRepository.RoolBackOccupant(GUID);
+                                return new ResponseList<bool?>() { message = "품목의 수량이 요청 수량보다 부족합니다.", data = null, code = 200 };
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseList<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                        }
+                    }
+                    else
+                    {
+                        await InventoryInfoRepository.RoolBackOccupant(GUID);
+                        return new ResponseList<bool?>() { message = "품목의 수량이 요청 수량보다 부족합니다.", data = null, code = 200 };
                     }
                 }
                 else
                 {
+                    await InventoryInfoRepository.RoolBackOccupant(GUID);
                     return new ResponseList<bool?>() { message = "다른 곳에서 해당 품목을 수정 중입니다.", data = null, code = 200 };
                 }
-
-                
-                
-
-                return null;
             }
             catch (Exception ex)
             {

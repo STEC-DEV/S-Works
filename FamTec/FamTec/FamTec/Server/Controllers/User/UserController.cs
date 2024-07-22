@@ -28,7 +28,7 @@ namespace FamTec.Server.Controllers.User
         public async ValueTask<IActionResult> GetUserList()
         {
             ResponseList<ListUser>? model = await UserService.GetPlaceUserList(HttpContext);
-
+            
             if (model is not null)
             {
                 if (model.code == 200)
