@@ -3,14 +3,14 @@
     /// <summary>
     /// 입출고 등록
     /// </summary>
-    public class AddStoreDTO
+    public class AddInventoryDTO
     {
         /// <summary>
         /// 품목ID
         /// </summary>
         public int? MaterialID { get; set; }
 
-        public List<StoreDTO> StoreList { get; set; } = new List<StoreDTO>();
+        public List<InventoryDTO> StoreList { get; set; } = new List<InventoryDTO>();
 
     }
 }

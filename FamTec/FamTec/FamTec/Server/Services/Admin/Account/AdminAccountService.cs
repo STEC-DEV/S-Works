@@ -186,7 +186,6 @@ namespace FamTec.Server.Services.Admin.Account
                 if (!di.Exists) di.Create();
 
 
-
                 UsersTb? model = new UsersTb();
 
                 model.UserId = dto.UserId;

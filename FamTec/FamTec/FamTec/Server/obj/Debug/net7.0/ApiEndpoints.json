@@ -270,6 +270,16 @@
         "IsRequired": false
       },
       {
+        "Name": "Image",
+        "Type": "System.Byte[]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "ContentType",
         "Type": "System.String",
         "IsRequired": false
@@ -3368,6 +3378,58 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetInoutHistory",
+    "RelativePath": "api/Store/sign/GetHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetMaterialCount",
+    "RelativePath": "api/Store/sign/GetMaterialCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "roomid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "OutInventoryService",
+    "RelativePath": "api/Store/sign/OutInventory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "roomid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

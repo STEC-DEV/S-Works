@@ -10,9 +10,9 @@ namespace FamTec.Server.Controllers.Store
     [ApiController]
     public class StoreController : ControllerBase
     {
-        private IInStoreService InStoreService;
+        private IInVentoryService InStoreService;
 
-        public StoreController(IInStoreService _instoreservice)
+        public StoreController(IInVentoryService _instoreservice)
         {
             this.InStoreService = _instoreservice;
         }
@@ -24,26 +24,75 @@ namespace FamTec.Server.Controllers.Store
         public async ValueTask<IActionResult> AddInStore()
         //public async ValueTask<IActionResult> AddInStore([FromBody]AddStoreDTO dto)
         {
-            AddStoreDTO dto = new AddStoreDTO();
+            AddInventoryDTO dto = new AddInventoryDTO();
             dto.MaterialID = 1; // 품목코드
-            dto.StoreList.Add(new StoreDTO()
+            dto.StoreList.Add(new InventoryDTO()
             {
                 InOut = 1, // 입고
                 InOutDate = DateTime.Now.AddDays(-10), // 입고날짜
                 Num = 100, // 입고수량
                 RoomID = 1, // 공간정보
-                UnitPrice = 3000 // 입고금액
+                UnitPrice = 3000, // 입고금액
+                Note = "비고1"
             });
-            dto.StoreList.Add(new StoreDTO()
+            dto.StoreList.Add(new InventoryDTO()
             {
                 InOut = 1,
                 InOutDate = DateTime.Now.AddDays(-20),
                 Num = 300,
                 RoomID = 1,
-                UnitPrice = 3500
+                UnitPrice = 3500,
+                Note = "비고2"
             });
 
-            ResponseUnit<AddStoreDTO>? model = await InStoreService.AddInStoreService(HttpContext, dto);
+            ResponseUnit<AddInventoryDTO>? model = await InStoreService.AddInStoreService(HttpContext, dto);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetHistory")]
+        public async ValueTask<IActionResult> GetInoutHistory()
+        {
+            ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInOutHistoryService(HttpContext);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else 
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMaterialCount")]
+        public async ValueTask<IActionResult> GetMaterialCount([FromQuery]int materialid, [FromQuery]int roomid)
+        {
+
+            ResponseUnit<int?> model = await InStoreService.GetOutCountService(HttpContext, materialid, roomid);
             if(model is not null)
             {
                 if(model.code == 200)
@@ -61,6 +110,28 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/OutInventory")]
+        public async ValueTask<IActionResult> OutInventoryService([FromQuery]int materialid, int roomid)
+        {
+            ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, materialid, roomid);
+            if(model is not null)
+            {
+                if(model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
 
     }

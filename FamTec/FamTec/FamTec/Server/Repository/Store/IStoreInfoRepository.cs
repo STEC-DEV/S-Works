@@ -8,16 +8,12 @@ namespace FamTec.Server.Repository.Store
         ValueTask<StoreTb?> AddAsync(StoreTb? model);
 
         /// <summary>
-        /// 품목의 사용자재 List 출력
+        /// 사업장별 INOUT 리스트 반환
         /// </summary>
-        /// <param name="Materialid"></param>
+        /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<StoreListDTO>> UsedMaterialList(int? Materialid);
+        ValueTask<List<InOutHistoryListDTO>?> GetInOutList(int? placeid);
 
-        ValueTask<List<StoreTb>?> GetStoreList(int? placeid); // DTO 반환해야함.
-
-
-
-
+        ValueTask<List<InventoryTb>?> GetOutList(int? placeid, int? roomid);
     }
 }

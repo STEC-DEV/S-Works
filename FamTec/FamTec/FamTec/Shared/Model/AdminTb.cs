@@ -81,7 +81,7 @@ public partial class AdminTb
     public int? UserTbId { get; set; }
 
     /// <summary>
-    /// 부서 인덱스
+    /// 부서 인덱스\\n
     /// </summary>
     [Column("DEPARTMENT_TB_ID", TypeName = "int(11)")]
     public int? DepartmentTbId { get; set; }

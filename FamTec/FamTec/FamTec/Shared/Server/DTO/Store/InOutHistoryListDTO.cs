@@ -3,7 +3,7 @@
     /// <summary>
     /// 입출고 LIST
     /// </summary>
-    public class StoreListDTO
+    public class InOutHistoryListDTO
     {
         /// <summary>
         /// 입출고 테이블ID
@@ -60,5 +60,9 @@
         /// </summary>
         public float? ToTalPrice { get; set; }
 
+        /// <summary>
+        /// 비고
+        /// </summary>
+        public string? Note { get; set; }
     }
 }

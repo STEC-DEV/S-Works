@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FamTec.Shared.Server.DTO.Store
 {
-    public class StoreDTO
+    public class InventoryDTO
     {
         /// <summary>
         /// 창고ID
@@ -24,16 +24,21 @@ namespace FamTec.Shared.Server.DTO.Store
         /// <summary>
         /// 단가
         /// </summary>
-        public int? UnitPrice { get; set; }
+        public float? UnitPrice { get; set; }
 
         /// <summary>
-        /// 입-출고 가격
+        /// 합계 가격
         /// </summary>
-        public int? TotalPrice { get; set; }
+        public float? TotalPrice { get; set; }
 
         /// <summary>
         /// 입-출고 날짜
         /// </summary>
         public DateTime? InOutDate { get; set; }
+
+        /// <summary>
+        /// 비고
+        /// </summary>
+        public string? Note { get; set; }
     }
 }

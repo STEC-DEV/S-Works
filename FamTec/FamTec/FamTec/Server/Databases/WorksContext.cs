@@ -118,7 +118,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn)
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
-            entity.Property(e => e.DepartmentTbId).HasComment("부서 인덱스");
+            entity.Property(e => e.DepartmentTbId).HasComment("부서 인덱스\\\\n");
             entity.Property(e => e.Type).HasComment("계정유형");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
@@ -405,9 +405,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateUser).HasComment("생성자");
             entity.Property(e => e.DelDt).HasComment("삭제일자");
             entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("삭제여부");
+            entity.Property(e => e.DelYn).HasComment("삭제여부");
             entity.Property(e => e.ItemValue).HasComment("값");
             entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
@@ -477,17 +475,11 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
 
-            entity.HasOne(d => d.MaterailTb).WithMany(p => p.InventoryTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_inventory_tb_material_tb1");
+            entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_material_tb1");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.InventoryTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_inventory_tb_place_tb1");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_place_tb1");
 
-            entity.HasOne(d => d.RoomTb).WithMany(p => p.InventoryTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_inventory_tb_room_tb");
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_room_tb1");
         });
 
         modelBuilder.Entity<KakaoLogTb>(entity =>
@@ -639,11 +631,10 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Inout).HasComment("입출고 구분");
             entity.Property(e => e.InoutDate).HasComment("입출고 날짜");
+            entity.Property(e => e.Note).HasComment("비고");
             entity.Property(e => e.Num).HasComment("수량");
             entity.Property(e => e.TotalPrice).HasComment("입출고 가격");
             entity.Property(e => e.UnitPrice).HasComment("단가");
-
-            entity.HasOne(d => d.InventoryTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_inventory_tb1");
 
             entity.HasOne(d => d.MaintenenceHistoryTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_maintenence_history_tb1");
 

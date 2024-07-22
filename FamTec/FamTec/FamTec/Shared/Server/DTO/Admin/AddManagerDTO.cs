@@ -23,7 +23,7 @@
         public string? Phone { get; set; }
 
         /// <summary>
-        /// 
+        /// 이메일
         /// </summary>
         public string? Email { get; set; }
         
@@ -33,6 +33,9 @@
         /// </summary>
         public int? DepartmentId { get; set; }
 
-       
+
+        public byte[]? Image { get; set; }
+
+        public string? ImageName { get; set; }
     }
 }

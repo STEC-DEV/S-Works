@@ -88,7 +88,7 @@ public partial class MaterialTb
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int? PlaceTbId { get; set; }
 
-    [InverseProperty("MaterailTb")]
+    [InverseProperty("MaterialTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
 
     [ForeignKey("PlaceTbId")]

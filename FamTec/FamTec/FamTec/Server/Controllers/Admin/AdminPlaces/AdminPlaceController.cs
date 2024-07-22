@@ -302,11 +302,17 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/AddPlaceManager")]
-
         public async ValueTask<IActionResult> AddPlaceManager([FromBody]AddPlaceManagerDTO<ManagerListDTO> placemanager)
         {
             try
             {
+                //AddPlaceManagerDTO<ManagerListDTO> placemanager = new AddPlaceManagerDTO<ManagerListDTO>();
+                //placemanager.PlaceId = 4;
+                //placemanager.PlaceManager.Add(new ManagerListDTO()
+                //{
+                //    Id = 11
+                //});
+
                 ResponseUnit<bool>? model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager);
 
                 if (model is not null)

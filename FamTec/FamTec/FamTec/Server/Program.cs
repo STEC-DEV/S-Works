@@ -54,6 +54,7 @@ using FamTec.Server.Services.Facility.Type.Beauty;
 using FamTec.Server.Services.Facility.Type.Security;
 using FamTec.Server.Repository.Store;
 using FamTec.Server.Services.Store;
+using FamTec.Server.Repository.Inventory;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -85,6 +86,7 @@ builder.Services.AddTransient<IFacilityGroupItemInfoRepository, FacilityGroupIte
 builder.Services.AddTransient<IFacilityItemKeyInfoRepository, FacilityItemKeyInfoRepository>();
 builder.Services.AddTransient<IFacilityItemValueInfoRepository, FacilityItemValueInfoRepository>();
 
+builder.Services.AddTransient<IInventoryInfoRepository, InventoryInfoRepository>();
 builder.Services.AddTransient<IStoreInfoRepository, StoreInfoRepository>();
 
 // Add services to the container.
@@ -121,7 +123,7 @@ builder.Services.AddTransient<IFacilityGroupService, FacilityGroupService>();
 builder.Services.AddTransient<IFacilityKeyService, FacilityKeyService>();
 builder.Services.AddTransient<IFacilityValueService, FacilityValueService>();
 
-builder.Services.AddTransient<IInStoreService, InStoreService>();
+builder.Services.AddTransient<IInVentoryService, InVentoryService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 

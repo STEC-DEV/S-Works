@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("store_tb")]
-[Index("InventoryTbId", Name = "fk_store_tb_inventory_tb1_idx")]
+[Index("InvenoryTbId", Name = "fk_store_tb_invenory_tb1_idx")]
 [Index("MaintenenceHistoryTbId", Name = "fk_store_tb_maintenence_history_tb1_idx")]
 [Index("MaterialTbId", Name = "fk_store_tb_material_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
@@ -28,6 +28,9 @@ public partial class StoreTb
     /// </summary>
     [Column("NUM", TypeName = "int(11)")]
     public int? Num { get; set; }
+
+    [Column("LOCATION", TypeName = "int(11)")]
+    public int? Location { get; set; }
 
     /// <summary>
     /// 단가
@@ -71,18 +74,21 @@ public partial class StoreTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    /// <summary>
+    /// 비고
+    /// </summary>
+    [Column("NOTE")]
+    [StringLength(255)]
+    public string? Note { get; set; }
+
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int? MaterialTbId { get; set; }
-
-    [Column("INVENTORY_TB_ID", TypeName = "int(11)")]
-    public int? InventoryTbId { get; set; }
 
     [Column("MAINTENENCE_HISTORY_TB_ID", TypeName = "int(11)")]
     public int? MaintenenceHistoryTbId { get; set; }
 
-    [ForeignKey("InventoryTbId")]
-    [InverseProperty("StoreTbs")]
-    public virtual InventoryTb? InventoryTb { get; set; }
+    [Column("invenory_tb_ID", TypeName = "int(11)")]
+    public int? InvenoryTbId { get; set; }
 
     [ForeignKey("MaintenenceHistoryTbId")]
     [InverseProperty("StoreTbs")]

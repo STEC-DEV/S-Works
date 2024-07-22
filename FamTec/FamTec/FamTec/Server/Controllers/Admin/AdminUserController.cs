@@ -6,6 +6,8 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -34,6 +36,24 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/AddManager")]
         public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
+
+            //var file = Request.Form.Files[0];
+            //if (file.Length > 0)
+            //{
+            //    // 파일명 생성 (중복 방지를 위해 GUID 사용)
+            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            //    var filePath = Path.Combine(@"X:\\FMS\\설계\\ERD", fileName);
+
+            //    // 파일 저장
+            //    using (var stream = new FileStream(filePath, FileMode.Create))
+            //    {
+            //        await file.CopyToAsync(stream);
+            //    }
+
+            //    // 파일 경로를 데이터베이스에 저장하거나 필요한 처리를 수행
+            //    Console.WriteLine(filePath);
+            //}
+
             ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
 
             if (model is not null)
