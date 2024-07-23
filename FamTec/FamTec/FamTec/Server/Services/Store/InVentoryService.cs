@@ -178,6 +178,7 @@ namespace FamTec.Server.Services.Store
                 {
                     bool? AvailableCheck = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), model.AddStore.RoomID, model.MaterialID, GUID);
                     if (AvailableCheck != true)
+
                     {
                         await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
                         return new ResponseList<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 404 };

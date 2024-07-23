@@ -46,25 +46,11 @@ namespace FamTec.Server.Controllers.Store
                 AddStore = new AddStoreDTO()
                 {
                     InOutDate = DateTime.Now.AddDays(-20),
-                    Num = 300,
-                    RoomID = 1,
-                    UnitPrice = 500,
-                    TotalPrice = 300 * 500,
-                    Note = "입고데이터_2"
-                }
-            });
-            dto.Add(new InOutInventoryDTO
-            {
-                InOut = 1,
-                MaterialID = 1,
-                AddStore = new AddStoreDTO()
-                {
-                    InOutDate = DateTime.Now.AddDays(-20),
-                    Num = 300,
+                    Num = 135,
                     RoomID = 2,
                     UnitPrice = 500,
                     TotalPrice = 300 * 500,
-                    Note = "입고데이터_2_2"
+                    Note = "입고데이터_2"
                 }
             });
 
@@ -103,13 +89,14 @@ namespace FamTec.Server.Controllers.Store
                 {
                     InOutDate = DateTime.Now,
                     Note = "출고데이터_1",
-                    Num = 180,
+                    Num = 125,
                     RoomID = 1,
                     UnitPrice = 300,
                     TotalPrice = 720 * 300
                 }
             });
           
+        
             dto.Add(new InOutInventoryDTO()
             {
                 InOut = 0,
@@ -118,13 +105,13 @@ namespace FamTec.Server.Controllers.Store
                 {
                     InOutDate = DateTime.Now,
                     Note = "출고데이터_1",
-                    Num = 300,
+                    Num = 155,
                     RoomID = 2,
                     UnitPrice = 100,
                     TotalPrice = 720 * 100
                 }
             });
-            
+          
 
             ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);
             if (model is not null)
