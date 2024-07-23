@@ -48,7 +48,9 @@ namespace FamTec.Shared.Server.DTO.User
         /// <summary>
         /// 사용자 이미지
         /// </summary>
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
+
+        public string? ImageName { get; set; }
 
         /// <summary>
         /// 기본정보등록 권한

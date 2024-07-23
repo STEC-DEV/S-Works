@@ -24,28 +24,52 @@ namespace FamTec.Server.Controllers.Store
         public async ValueTask<IActionResult> AddInStore()
         //public async ValueTask<IActionResult> AddInStore([FromBody]AddStoreDTO dto)
         {
-            AddInventoryDTO dto = new AddInventoryDTO();
-            dto.MaterialID = 1; // 품목코드
-            dto.StoreList.Add(new InventoryDTO()
-            {
-                InOut = 1, // 입고
-                InOutDate = DateTime.Now.AddDays(-10), // 입고날짜
-                Num = 100, // 입고수량
-                RoomID = 1, // 공간정보
-                UnitPrice = 3000, // 입고금액
-                Note = "입고데이터_1"
-            });
-            dto.StoreList.Add(new InventoryDTO()
+            List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+            dto.Add(new InOutInventoryDTO
             {
                 InOut = 1,
-                InOutDate = DateTime.Now.AddDays(-20),
-                Num = 300,
-                RoomID = 1,
-                UnitPrice = 3500,
-                Note = "입고데이터_2"
+                MaterialID = 1,
+                AddStore = new AddStoreDTO()
+                {
+                    InOutDate = DateTime.Now.AddDays(-10),
+                    Num = 100,
+                    RoomID = 1,
+                    UnitPrice = 3000,
+                    TotalPrice = 100*3000,
+                    Note = "입고데이터_1"
+                }
+            });
+            dto.Add(new InOutInventoryDTO
+            {
+                InOut = 1,
+                MaterialID = 1,
+                AddStore = new AddStoreDTO()
+                {
+                    InOutDate = DateTime.Now.AddDays(-20),
+                    Num = 300,
+                    RoomID = 1,
+                    UnitPrice = 500,
+                    TotalPrice = 300 * 500,
+                    Note = "입고데이터_2"
+                }
+            });
+            dto.Add(new InOutInventoryDTO
+            {
+                InOut = 1,
+                MaterialID = 1,
+                AddStore = new AddStoreDTO()
+                {
+                    InOutDate = DateTime.Now.AddDays(-20),
+                    Num = 300,
+                    RoomID = 2,
+                    UnitPrice = 500,
+                    TotalPrice = 300 * 500,
+                    Note = "입고데이터_2_2"
+                }
             });
 
-            ResponseUnit<AddInventoryDTO>? model = await InStoreService.AddInStoreService(HttpContext, dto);
+
+            ResponseUnit<bool?> model = await InStoreService.AddInStoreService(HttpContext, dto);
             if(model is not null)
             {
                 if(model.code == 200)
@@ -62,7 +86,65 @@ namespace FamTec.Server.Controllers.Store
                 return BadRequest();
             }
         }
-        
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/OutInventory")]
+        public async ValueTask<IActionResult> OutInventoryService()
+        {
+
+            List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+            
+            dto.Add(new InOutInventoryDTO()
+            {
+                InOut = 0,
+                MaterialID = 1,
+                AddStore = new AddStoreDTO()
+                {
+                    InOutDate = DateTime.Now,
+                    Note = "출고데이터_1",
+                    Num = 180,
+                    RoomID = 1,
+                    UnitPrice = 300,
+                    TotalPrice = 720 * 300
+                }
+            });
+          
+            dto.Add(new InOutInventoryDTO()
+            {
+                InOut = 0,
+                MaterialID = 1,
+                AddStore = new AddStoreDTO()
+                {
+                    InOutDate = DateTime.Now,
+                    Note = "출고데이터_1",
+                    Num = 300,
+                    RoomID = 2,
+                    UnitPrice = 100,
+                    TotalPrice = 720 * 100
+                }
+            });
+            
+
+            ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);
+            if (model is not null)
+            {
+                if (model.code == 200)
+                {
+                    return Ok(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetHistory")]
@@ -110,28 +192,7 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/OutInventory")]
-        public async ValueTask<IActionResult> OutInventoryService([FromQuery]int materialid, int roomid)
-        {
-            ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, materialid, roomid);
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+       
 
 
     }

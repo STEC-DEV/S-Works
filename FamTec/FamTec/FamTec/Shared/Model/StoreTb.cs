@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("store_tb")]
-[Index("InvenoryTbId", Name = "fk_store_tb_invenory_tb1_idx")]
+[Index("PlaceTbId", Name = "FK_PLACE_202407231358")]
+[Index("RoomTbId", Name = "FK_ROOM_202407231358")]
 [Index("MaintenenceHistoryTbId", Name = "fk_store_tb_maintenence_history_tb1_idx")]
 [Index("MaterialTbId", Name = "fk_store_tb_material_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
@@ -28,9 +29,6 @@ public partial class StoreTb
     /// </summary>
     [Column("NUM", TypeName = "int(11)")]
     public int? Num { get; set; }
-
-    [Column("LOCATION", TypeName = "int(11)")]
-    public int? Location { get; set; }
 
     /// <summary>
     /// 단가
@@ -87,14 +85,29 @@ public partial class StoreTb
     [StringLength(255)]
     public string? Note { get; set; }
 
+    /// <summary>
+    /// 공간ID
+    /// </summary>
+    [Column("ROOM_TB_ID", TypeName = "int(11)")]
+    public int? RoomTbId { get; set; }
+
+    /// <summary>
+    /// 사업장ID
+    /// </summary>
+    [Column("PLACE_TB_ID", TypeName = "int(11)")]
+    public int? PlaceTbId { get; set; }
+
+    /// <summary>
+    /// 품목ID
+    /// </summary>
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int? MaterialTbId { get; set; }
 
+    /// <summary>
+    /// 유지보수이력ID
+    /// </summary>
     [Column("MAINTENENCE_HISTORY_TB_ID", TypeName = "int(11)")]
     public int? MaintenenceHistoryTbId { get; set; }
-
-    [Column("invenory_tb_ID", TypeName = "int(11)")]
-    public int? InvenoryTbId { get; set; }
 
     [ForeignKey("MaintenenceHistoryTbId")]
     [InverseProperty("StoreTbs")]
@@ -103,4 +116,12 @@ public partial class StoreTb
     [ForeignKey("MaterialTbId")]
     [InverseProperty("StoreTbs")]
     public virtual MaterialTb? MaterialTb { get; set; }
+
+    [ForeignKey("PlaceTbId")]
+    [InverseProperty("StoreTbs")]
+    public virtual PlaceTb? PlaceTb { get; set; }
+
+    [ForeignKey("RoomTbId")]
+    [InverseProperty("StoreTbs")]
+    public virtual RoomTb? RoomTb { get; set; }
 }

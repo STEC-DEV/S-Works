@@ -3,15 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\store\\inventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\store\\inventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\inventory\\iinventoryinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\inventory\\iinventoryinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\store\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\controllers\\store\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\store\\storecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -19,23 +11,59 @@
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\inventory\\inventoryinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\adminuser\\adminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminuser\\adminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\store\\inventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\store\\inventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\store\\istoreinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\repository\\store\\istoreinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\store\\istoreinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\store\\storeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\admin\\adminusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\admin\\adminusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\user\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\user\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\repository\\inventory\\iinventoryinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\inventory\\iinventoryinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\admin\\place\\adminplaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\admin\\place\\adminplaceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\repository\\admin\\adminuser\\adminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminuser\\adminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\repository\\store\\storeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\store\\storeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\databases\\workscontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\databases\\workscontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\user\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\user\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\shared\\tableinfo.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\shared\\server\\dto\\user\\usersdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|solutionrelative:famtec\\shared\\server\\dto\\user\\usersdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\services\\store\\iinventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\store\\iinventoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\server\\services\\admin\\department\\departmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\admin\\department\\departmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\shared\\server\\dto\\store\\inoutinventorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|solutionrelative:famtec\\shared\\server\\dto\\store\\inoutinventorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\famtec\\shared\\tableinfo.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|solutionrelative:famtec\\shared\\tableinfo.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
@@ -46,17 +74,82 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "StoreController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Store\\StoreController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Store\\StoreController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Store\\StoreController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\Store\\StoreController.cs",
+              "ViewState": "AQIAAG4AAAAAAAAAAAAUwHIAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T23:08:38.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AdminPlaceService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Place\\AdminPlaceService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Admin\\Place\\AdminPlaceService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Place\\AdminPlaceService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Admin\\Place\\AdminPlaceService.cs",
+              "ViewState": "AQIAAIEAAAAAAAAAAAAEwJAAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T04:19:21.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AdminUserInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
+              "ViewState": "AQIAAA8AAAAAAAAAAIAxwB4AAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T00:13:12.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "StoreInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADoAAABUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T23:58:02.534Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\User\\UserController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\User\\UserController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\User\\UserController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\User\\UserController.cs",
+              "ViewState": "AQIAADcAAAAAAAAAAAAEwDYAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T06:13:06.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "InVentoryService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Store\\InVentoryService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Store\\InVentoryService.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Store\\InVentoryService.cs",
               "RelativeToolTip": "FamTec\\Server\\Services\\Store\\InVentoryService.cs",
-              "ViewState": "AQIAACAAAAAAAAAAAAAQwCMAAAB2AAAA",
+              "ViewState": "AQIAAKgAAAAAAAAAAAAYwKMAAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-22T22:55:10.645Z",
               "EditorCaption": ""
@@ -64,19 +157,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "AdminUserInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
-              "ViewState": "AQIAAKoAAAAAAAAAAAAgwL4AAAAvAAAA",
+              "Title": "AdminUserController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
+              "ViewState": "AQIAAEYAAAAAAAAAAAAEwFUAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-23T00:13:12.857Z",
+              "WhenOpened": "2024-07-23T06:48:46.037Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "IStoreInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\IStoreInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Store\\IStoreInfoRepository.cs",
@@ -89,52 +182,65 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "StoreInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
-              "ViewState": "AQIAAD4AAAAAAAAAAAAQwAAAAAAAAAAA",
+              "DocumentIndex": 10,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\User\\UserService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\User\\UserService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\User\\UserService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\User\\UserService.cs",
+              "ViewState": "AQIAAL8BAAAAAAAAAAAEwMcBAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-22T23:58:02.534Z",
+              "WhenOpened": "2024-07-23T06:44:25.765Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "StoreController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Store\\StoreController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Store\\StoreController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Store\\StoreController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\Store\\StoreController.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAApwC8AAABQAAAA",
+              "DocumentIndex": 11,
+              "Title": "UsersDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
+              "RelativeDocumentMoniker": "FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
+              "RelativeToolTip": "FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwBEAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-22T23:08:38.618Z",
+              "WhenOpened": "2024-07-23T06:43:51.944Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "WorksContext.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Databases\\WorksContext.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Databases\\WorksContext.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Databases\\WorksContext.cs",
-              "RelativeToolTip": "FamTec\\Server\\Databases\\WorksContext.cs",
-              "ViewState": "AQIAAEMAAAAAAAAAAAAowEsAAABFAAAA",
+              "DocumentIndex": 13,
+              "Title": "DepartmentService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-22T23:08:13.24Z",
+              "WhenOpened": "2024-07-23T01:07:17.767Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
+              "Title": "IInVentoryService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Store\\IInVentoryService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Store\\IInVentoryService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Store\\IInVentoryService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Store\\IInVentoryService.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAAwB8AAAB0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T01:54:05.871Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "TableINFO.txt",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\TableINFO.txt",
               "RelativeDocumentMoniker": "FamTec\\Shared\\TableINFO.txt",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\TableINFO.txt",
               "RelativeToolTip": "FamTec\\Shared\\TableINFO.txt",
-              "ViewState": "AQIAAPUBAAAAAAAAAAAowAQCAACbAAAA",
+              "ViewState": "AQIAAPUBAAAAAAAAAAAowA8CAACkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2024-07-22T23:07:17.45Z",
               "EditorCaption": ""
@@ -162,26 +268,60 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "InventoryInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADYAAAAuAAAA",
+              "DocumentIndex": 14,
+              "Title": "InOutInventoryDTO.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\Store\\InOutInventoryDTO.cs",
+              "RelativeDocumentMoniker": "FamTec\\Shared\\Server\\DTO\\Store\\InOutInventoryDTO.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\Store\\InOutInventoryDTO.cs",
+              "RelativeToolTip": "FamTec\\Shared\\Server\\DTO\\Store\\InOutInventoryDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-22T22:55:27.193Z",
+              "WhenOpened": "2024-07-23T01:00:19.357Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "InventoryInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
+              "ViewState": "AQIAAEEBAAAAAAAAAAD4v5EBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T22:55:27.193Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "FloatingWindowState": {
+        "Id": "022428d2-f61e-4270-a06b-801743d45dc4",
+        "Display": 0,
+        "X": 527,
+        "Y": 0,
+        "Width": 1092,
+        "Height": 1875,
+        "WindowState": 0
+      },
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "IInventoryInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
               "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAADwvwYAAAAmAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAABDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-23T00:08:37.953Z",
               "EditorCaption": ""

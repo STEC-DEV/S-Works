@@ -200,6 +200,9 @@ public partial class PlaceTb
     public virtual ICollection<MaterialTb> MaterialTbs { get; set; } = new List<MaterialTb>();
 
     [InverseProperty("PlaceTb")]
+    public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();
+
+    [InverseProperty("PlaceTb")]
     public virtual ICollection<UnitTb> UnitTbs { get; set; } = new List<UnitTb>();
 
     [InverseProperty("PlaceTb")]

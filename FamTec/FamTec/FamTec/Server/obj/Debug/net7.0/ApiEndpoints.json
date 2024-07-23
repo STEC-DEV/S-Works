@@ -3418,18 +3418,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "materialid",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "roomid",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -3535,6 +3524,11 @@
       },
       {
         "Name": "Image",
+        "Type": "System.Byte[]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageName",
         "Type": "System.String",
         "IsRequired": false
       },

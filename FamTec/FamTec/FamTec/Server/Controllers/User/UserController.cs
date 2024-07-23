@@ -57,6 +57,9 @@ namespace FamTec.Server.Controllers.User
         [Route("sign/AddUser")]
         public async ValueTask<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
         {
+            return Ok(files.FileName);
+
+            /*
             ResponseUnit<UsersDTO>? model = await UserService.AddUserService(HttpContext, dto, files);
 
             if(model is not null)
@@ -74,6 +77,7 @@ namespace FamTec.Server.Controllers.User
             {
                 return BadRequest();
             }
+            */
         }
 
         [AllowAnonymous]

@@ -632,14 +632,22 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Inout).HasComment("입출고 구분");
             entity.Property(e => e.InoutDate).HasComment("입출고 날짜");
+            entity.Property(e => e.MaintenenceHistoryTbId).HasComment("유지보수이력ID");
+            entity.Property(e => e.MaterialTbId).HasComment("품목ID");
             entity.Property(e => e.Note).HasComment("비고");
             entity.Property(e => e.Num).HasComment("수량");
+            entity.Property(e => e.PlaceTbId).HasComment("사업장ID");
+            entity.Property(e => e.RoomTbId).HasComment("공간ID");
             entity.Property(e => e.TotalPrice).HasComment("입출고 가격");
             entity.Property(e => e.UnitPrice).HasComment("단가");
 
             entity.HasOne(d => d.MaintenenceHistoryTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_maintenence_history_tb1");
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_material_tb1");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.StoreTbs).HasConstraintName("FK_PLACE_202407231358");
+
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.StoreTbs).HasConstraintName("FK_ROOM_202407231358");
         });
 
         modelBuilder.Entity<UnitTb>(entity =>

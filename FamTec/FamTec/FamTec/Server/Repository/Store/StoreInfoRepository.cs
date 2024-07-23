@@ -51,7 +51,7 @@ namespace FamTec.Server.Repository.Store
                                                      join Material in context.MaterialTbs.Where(m => m.DelYn != true)
                                                      on Store.MaterialTbId equals Material.Id
                                                      join Room in context.RoomTbs.Where(m => m.DelYn != true)
-                                                     on Store.Location equals Room.Id
+                                                     on Store.RoomTbId equals Room.Id
                                                      select new InOutHistoryListDTO()
                                                      {
                                                          ID = Store.Id,

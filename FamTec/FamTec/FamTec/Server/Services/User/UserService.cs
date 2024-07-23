@@ -581,7 +581,7 @@ namespace FamTec.Server.Services.User
                             NAME = result.Name,
                             EMAIL = result.Email,
                             PHONE = result.Phone,
-                            Image = result.Image,
+                            //Image = result.Image,
                             PERM_BASIC = result.PermBasic,
                             PERM_MACHINE = result.PermMachine,
                             PERM_ELEC = result.PermElec,
@@ -703,18 +703,18 @@ namespace FamTec.Server.Services.User
                                 if (file.Contains(Image))
                                 {
                                     byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Image = Convert.ToBase64String(ImageBytes);
+                                    //dto.Image = Convert.ToBase64String(ImageBytes);
                                 }
                             }
                         }
                         else
                         {
-                            dto.Image = model.Image;
+                            //dto.Image = model.Image;
                         }
                     }
                     else
                     {
-                        dto.Image = model.Image;
+                        //dto.Image = model.Image;
                     }
 
                     return new ResponseUnit<UsersDTO>()
