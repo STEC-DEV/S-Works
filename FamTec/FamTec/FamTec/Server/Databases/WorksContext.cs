@@ -628,6 +628,7 @@ public partial class WorksContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.CurrentNum).HasComment("현재재고수량");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Inout).HasComment("입출고 구분");
             entity.Property(e => e.InoutDate).HasComment("입출고 날짜");

@@ -33,7 +33,7 @@ namespace FamTec.Server.Controllers.Store
                 Num = 100, // 입고수량
                 RoomID = 1, // 공간정보
                 UnitPrice = 3000, // 입고금액
-                Note = "비고1"
+                Note = "입고데이터_1"
             });
             dto.StoreList.Add(new InventoryDTO()
             {
@@ -42,7 +42,7 @@ namespace FamTec.Server.Controllers.Store
                 Num = 300,
                 RoomID = 1,
                 UnitPrice = 3500,
-                Note = "비고2"
+                Note = "입고데이터_2"
             });
 
             ResponseUnit<AddInventoryDTO>? model = await InStoreService.AddInStoreService(HttpContext, dto);

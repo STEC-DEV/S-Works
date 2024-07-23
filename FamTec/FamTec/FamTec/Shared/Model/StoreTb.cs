@@ -75,6 +75,12 @@ public partial class StoreTb
     public string? DelUser { get; set; }
 
     /// <summary>
+    /// 현재재고수량
+    /// </summary>
+    [Column("CURRENT_NUM", TypeName = "int(11)")]
+    public int? CurrentNum { get; set; }
+
+    /// <summary>
     /// 비고
     /// </summary>
     [Column("NOTE")]

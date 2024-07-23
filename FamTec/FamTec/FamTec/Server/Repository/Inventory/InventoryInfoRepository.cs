@@ -1,11 +1,8 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Inventory
 {
@@ -20,15 +17,48 @@ namespace FamTec.Server.Repository.Inventory
             this.LogService = _logservice;
         }
 
-        public async ValueTask<InventoryTb?> AddAsync(InventoryTb? model)
+        public async ValueTask<bool?> AddAsync(List<InventoryTb>? model, string? GUID)
         {
             try
             {
-                if(model is not null)
+                if (String.IsNullOrWhiteSpace(GUID))
+                    return null;
+
+                if (model is [_, ..])
                 {
-                    context.InventoryTbs.Add(model);
-                    await context.SaveChangesAsync();
-                    return model;
+                    // ADD전 상태 기록
+                    List<InventoryTb>? BeforeList = await context.InventoryTbs.Where(m => m.DelYn != true && m.Occupant == GUID).ToListAsync();
+
+
+                    foreach (InventoryTb Inventory in model)
+                    {
+                        context.InventoryTbs.Add(Inventory);
+                    }
+
+                    bool result = await context.SaveChangesAsync() > 0 ? true : false;
+
+                    if (result)
+                    {
+
+                        List<InventoryTb>? AfterList = await context.InventoryTbs.Where(m => m.DelYn != true && m.Occupant == GUID).ToListAsync();
+
+                        List<InventoryTb>? difference = AfterList.Except(BeforeList).ToList(); // 여기서 나온값을 SotreTB에 ADD
+                        
+                        foreach(InventoryTb InStoreModel in difference)
+                        {
+                            StoreTb Store = new StoreTb();
+                            Store.Inout = 1;
+                            Store.Num = InStoreModel.Num;
+                            Store.Location = InStoreModel.RoomTbId;
+                            Store.UnitPrice = InStoreModel.UnitPrice;
+                            Store.TotalPrice = InStoreModel.Num * InStoreModel.UnitPrice;
+                            Store.InoutDate = 
+                        }
+                        Console.WriteLine("");
+                    
+                    
+                    }
+                    return null;
                 }
                 else
                 {
@@ -42,11 +72,11 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int? placeid, int? roomid, int? materialId, int? delcount,string? GUID)
+        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int? placeid, int? roomid, int? materialid, int? delcount,string? GUID)
         {
             try
             {
-                if (materialId is null)
+                if (materialid is null)
                     return null;
                 if (roomid is null)
                     return null;
@@ -57,7 +87,7 @@ namespace FamTec.Server.Repository.Inventory
 
                 // 선입선출
                 List<InventoryTb>? model = await context.InventoryTbs
-                .Where(m => m.MaterialTbId == materialId && 
+                .Where(m => m.MaterialTbId == materialid && 
                         m.RoomTbId == roomid && 
                         m.PlaceTbId == placeid &&
                         m.Occupant == GUID &&
@@ -120,7 +150,7 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-        public async ValueTask<bool?> AvailableCheck(int? placeid, int? roomid, int? materialid, string? guid)
+        public async ValueTask<bool?> SetOccupantToken(int? placeid, int? roomid, int? materialid, string? guid)
         {
             try
             {
@@ -278,7 +308,39 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
+        // IN - OUT시 이용가능한지 CHECK
+        public async ValueTask<bool?> AvailableCheck(int? placeid, int? roomid, int? materialid)
+        {
+            try
+            {
+                if (placeid is null)
+                    return null;
+                
+                if (roomid is null)
+                    return null;
+                
+                if (materialid is null)
+                    return null;
 
+                List<InventoryTb>? Occupant = await context.InventoryTbs
+                      .Where(m => m.PlaceTbId == placeid &&
+                      m.RoomTbId == roomid &&
+                      m.MaterialTbId == materialid &&
+                      m.DelYn != true).ToListAsync();
 
+                List<InventoryTb>? check = Occupant.Where(m => !String.IsNullOrWhiteSpace(m.Occupant) || !String.IsNullOrWhiteSpace(m.TimeStamp.ToString())).ToList();
+
+                if (check is [_, ..])
+                    return false;
+                else
+                    return true;
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
+        }
     }
 }

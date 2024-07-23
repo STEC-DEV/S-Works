@@ -16,7 +16,6 @@ public partial class InventoryTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int? Num { get; set; }
 
@@ -50,7 +49,6 @@ public partial class InventoryTb
     [Column(TypeName = "datetime")]
     public DateTime? TimeStamp { get; set; }
 
-    [ConcurrencyCheck]
     [StringLength(255)]
     public string? Occupant { get; set; }
 
