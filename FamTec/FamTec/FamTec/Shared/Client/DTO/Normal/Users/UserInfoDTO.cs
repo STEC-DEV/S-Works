@@ -15,9 +15,9 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public string Phone { get; set; }
         public string Job {  get; set; }
         public string Status { get; set; }
-        public sbyte? AlarmYN { get; set; }
-
-        public bool? AdminYN { get; set; }
+        public bool AlarmYN { get; set; }
+        public byte[] Image { get; set; }
+        public string ImageName { get; set; }
 
 
     }

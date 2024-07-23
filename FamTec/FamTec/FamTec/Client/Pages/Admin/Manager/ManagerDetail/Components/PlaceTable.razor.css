@@ -26,9 +26,14 @@
     color: var(--main-color);
 }
 
+.placetable-container .placetable-header{
+    display : flex;
+    gap : var(--half-pd);
+}
+
 .placetable-container .placetable-table {
-    height:100%;
-    overflow:auto;
+    height: 100%;
+    overflow: auto;
 }
 .placetable-container .placetable-count{
 

@@ -37,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Admin\Manager\ManagerDetail\Modal\" />
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
   </ItemGroup>
 

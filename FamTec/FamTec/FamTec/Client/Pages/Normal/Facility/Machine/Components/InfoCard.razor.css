@@ -1,0 +1,43 @@
+﻿
+
+.infocard-container{
+    width : 100%;
+    display : flex;
+    flex-direction : column;
+
+    background-color : var(--default-color);
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    box-shadow : var(--default-bs);
+}
+
+.infocard-container .infocard-header{    
+    display: flex;
+    padding: var(--default-pd);
+    justify-content: space-between;
+    border-bottom: var(--default-bd);
+}
+
+
+.infocard-container .infocard-header > span{
+    display: flex;
+    align-items: center;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+
+
+.infocard-container .infocard-content{
+    width : 100%;
+    display :flex;
+}
+
+.infocard-container .infocard-inputs{
+    display : grid;
+    grid-template-columns : repeat(2,1fr);
+}

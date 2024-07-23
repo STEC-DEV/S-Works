@@ -14,21 +14,21 @@
                 InputType="text" 
                 Placeholder="Name"
                 Label="이름"
-                Value="@Manager.Name"
+                @bind-Value="@Manager2.Name"
                 EditMode=EditMode
             />
             <InputField 
                 InputType="text" 
                 Placeholder="Id"
                 Label="아이디"
-                Value="@Manager.UserId"
+                    @bind-Value="@Manager2.UserId"
                 EditMode=EditMode
                 />
             <InputField 
                 InputType="password" 
                 Placeholder="Password"
                 Label="비밀번호"
-                Value="@Manager.Password"
+                    @bind-Value="@Manager2.Password"
                 EditMode=EditMode
                 />
         
@@ -36,21 +36,21 @@
                 InputType="text" 
                 Placeholder="Phone"
                 Label="전화번호"
-                Value="@Manager.Phone"
+                    @bind-Value="@Manager2.Phone"
                 EditMode=EditMode
                 />
             <InputField 
                 InputType="text" 
                 Placeholder="Email"
                 Label="이메일"
-                Value="@Manager.Email"
+                @bind-Value="@Manager2.Email"
                 EditMode=EditMode
                 />
             <InputField 
                 InputType="text"
                 Placeholder="Type"
-                Label="계정 유형" 
-                Value="@Manager.Type"
+                Label="계정 유형"
+                    @bind-Value="@Manager2.Type"
                 EditMode=EditMode
                 />
 
@@ -66,13 +66,13 @@
                 <InputField 
                     InputType="text"
                     Placeholder="Type"
-                    Value="@Manager.Department"
+                    Value="@Manager2.Department"
                     Label="부서" 
 
                     />
             }
             <div class="img-wrap">
-                <img class="img" src="data:image/png;base64,@Manager.Image" />
+                <img class="img" src="data:image/png;base64,@Manager2.Image" />
             </div>
             
 
@@ -82,11 +82,12 @@
 </div>
 
 @code {
-        [Parameter] public int Id { get; set; }
-        [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
-        [Parameter] public bool EditMode { get; set; }
+    [Parameter] public int Id { get; set; }
+    [Parameter] public DManagerDTO Manager2 { get; set; }
+    [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
+    [Parameter] public bool EditMode { get; set; }
 
-        DManagerDTO Manager = new DManagerDTO();
+    DManagerDTO Manager = new DManagerDTO();
 
     protected async override Task OnInitializedAsync()
     {

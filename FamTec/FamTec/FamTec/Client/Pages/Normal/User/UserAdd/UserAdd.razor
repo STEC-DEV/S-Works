@@ -55,30 +55,32 @@
 
     private async void OnAdd()
     {
-        // Console.WriteLine(User.UserInfo.Name);
-        // Console.WriteLine(User.UserInfo.UserId);
-        // Console.WriteLine(User.UserInfo.Phone);
-        // Console.WriteLine(User.UserInfo.Password);
-        // Console.WriteLine(User.UserInfo.Email);
-        // Console.WriteLine("1" + User.UserPerm.BasicPerm);
-        // Console.WriteLine("2" + User.UserPerm.MachinPerm);
-        // Console.WriteLine("3" + User.UserPerm.ElecPerm);
-        // Console.WriteLine("4" + User.UserPerm.LiftPerm);
-        // Console.WriteLine("5" + User.UserPerm.FirePerm);
-        // Console.WriteLine("6" + User.UserPerm.ConstructPerm);
-        // Console.WriteLine("7" + User.UserPerm.NetworkPerm);
-        // Console.WriteLine("8" + User.UserPerm.BeautyPerm);
-        // Console.WriteLine("9" + User.UserPerm.SecurityPerm);
-        // Console.WriteLine("10" + User.UserPerm.MaterialPerm);
-        // Console.WriteLine("11" + User.UserPerm.EnergyPerm);
-        // Console.WriteLine("12" + User.UserPerm.UserPerm);
-        // Console.WriteLine("13" + User.UserPerm.VocPerm);
-        // Console.WriteLine("a" + User.UserVocPerm.MachineVoc);
-        // Console.WriteLine("b" + User.UserVocPerm.ConstructVoc);
-        // Console.WriteLine("c" + User.UserVocPerm.NetworkVoc);
-        // Console.WriteLine("d" + User.UserVocPerm.SecurityVoc);
+        Console.WriteLine(User.UserInfo.Name);
+        Console.WriteLine(User.UserInfo.UserId);
+        Console.WriteLine(User.UserInfo.Phone);
+        Console.WriteLine(User.UserInfo.Password);
+        Console.WriteLine(User.UserInfo.Email);
+        Console.WriteLine("기본" + User.UserPerm.BasicPerm);
+        Console.WriteLine("기계" + User.UserPerm.MachinPerm);
+        Console.WriteLine("전기" + User.UserPerm.ElecPerm);
+        Console.WriteLine("승강" + User.UserPerm.LiftPerm);
+        Console.WriteLine("소방" + User.UserPerm.FirePerm);
+        Console.WriteLine("건축" + User.UserPerm.ConstructPerm);
+        Console.WriteLine("통신" + User.UserPerm.NetworkPerm);
+        Console.WriteLine("미하" + User.UserPerm.BeautyPerm);
+        Console.WriteLine("보안" + User.UserPerm.SecurityPerm);
+        Console.WriteLine("자재" + User.UserPerm.MaterialPerm);
+        Console.WriteLine("에너지" + User.UserPerm.EnergyPerm);
+        Console.WriteLine("사용자" + User.UserPerm.UserPerm);
+        Console.WriteLine("민원" + User.UserPerm.VocPerm);
+        Console.WriteLine("민기" + User.UserVocPerm.MachineVoc);
+        Console.WriteLine("민건" + User.UserVocPerm.ConstructVoc);
+        Console.WriteLine("민통" + User.UserVocPerm.NetworkVoc);
+        Console.WriteLine("민보" + User.UserVocPerm.SecurityVoc);
+        Console.WriteLine("img" + User.UserInfo.Image);
+        Console.WriteLine("img" + User.UserInfo.ImageName);
 
-        ResponseUnit<UserDTO> resAdd = await apiManager.PostAsync<UserDTO>("/user/sign/adduser", User);
+        ResponseUnit<UserDTO> resAdd = await apiManager.PostWithFilesAsync<UserDTO>("User/sign/AddUser", User);
         if(resAdd.code != 200)
         {
             await JS.InvokeVoidAsync("alert", "사용자 생성 실패");

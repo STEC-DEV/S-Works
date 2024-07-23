@@ -1,0 +1,53 @@
+.manager-modal[b-b0kpn4biqj]{
+    display:flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    padding :var(--default-pd);
+
+    border-radius :var(--default-rd) ;
+    border : var(--comp-bd);
+
+
+    width : 30%;
+    height : 80%;
+
+    background-color:var(--default-color);
+    box-shadow : var(--default-bs);
+}
+
+.manager-modal .manager-title[b-b0kpn4biqj]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+}
+.manager-modal .manager-title > .title[b-b0kpn4biqj]{
+    color : var(--main-color);
+}
+
+.manager-modal .manager-content[b-b0kpn4biqj]{
+    height : 100%;
+    border-radius : var(--default-rd);
+    overflow : auto;
+}
+
+
+.manager-modal .manager-count[b-b0kpn4biqj]{
+    border-radius : var(--default-rd);
+    padding : var(--three-q-pd);
+    
+    
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+    background-color : var(--main-color);
+}
+
+.manager-modal .manager-count> .count[b-b0kpn4biqj] {
+    color:var(--default-color);
+}
+
+.manager-modal .manager-btns[b-b0kpn4biqj]{
+    display:flex;
+    gap:var(--default-pd);
+    width : 100%;
+    border-radius : var(--default-rd);
+}

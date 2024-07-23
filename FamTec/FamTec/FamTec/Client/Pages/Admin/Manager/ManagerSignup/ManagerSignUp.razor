@@ -116,6 +116,7 @@
     {
         try
         {
+            Console.WriteLine(newManager.Image);
             ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
             if(resManager.code != 200)
             {

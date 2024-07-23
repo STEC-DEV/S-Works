@@ -2,27 +2,73 @@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerDetail.Components
 @using FamTec.Shared.Client.DTO.Manager
+@using FamTec.Shared.Server.DTO
 
 
 <div class="managerdetail-container yappear">
     <div class="managerdetail-wrap">
         <div class="managerdetail-info">
-            <SignForm Id="Id"/>
+            <SignForm Id="Id" EditMode=EditMode Manager2="@Manager" />
         </div>
         <div class="managerdetail-place">
-            <PlaceTable Id=Id/>
+            <PlaceTable Id=Id EditMode=EditMode />
         </div>
     </div>
     <div class="managerdetail-btns">
-        <Button Name="편집" Width=true Type=0 />
-        <Button Name="뒤로" Width=true Type=1/>
+        @if (EditMode)
+        {
+            <Button Name="저장" Width="true" Type=0 OnClick="@OnUpdateManager" />
+            <Button Name="취소" Width="true" Type=1 OnClick="@OnEditMode" />
+        }
+        else
+        {
+            <Button Name="편집" Width=true Type=0 OnClick="@OnEditMode" />
+            <Button Name="뒤로" Width=true Type=1 />
+        }
     </div>
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
+    DManagerDTO Manager;
+
+    private bool EditMode = false;
 
     protected override async Task OnInitializedAsync()
     {
+        await OnLoadDetailManager();
+    }
+
+    /*
+      * 매니저 상세 정보 조회
+      */
+    private async Task OnLoadDetailManager()
+    {
+        try
+        {
+            ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/DetailManagerInfo?adminId={Id}");
+            if (object.ReferenceEquals(null, resDetailManager) || resDetailManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 상세 정보 조회 실패");
+                return;
+            }
+            Manager = resDetailManager.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패\n" + ex);
+            await JS.InvokeVoidAsync("alert", "[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패");
+        }
+    }
+
+
+    private void OnUpdateManager()
+    {
+        Console.WriteLine(Manager.Name);
+    }
+
+    private void OnEditMode()
+    {
+        EditMode = !EditMode;
     }
 }

@@ -9,14 +9,14 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
     public class UserVocPermDTO
     {
 
-        public sbyte? MachineVoc{get; set;}
-        public sbyte? ElecVoc{get; set;}
-        public sbyte? LiftVoc{get; set;}
-        public sbyte? FireVoc{get; set;}
-        public sbyte? ConstructVoc{get; set;}
-        public sbyte? NetworkVoc{get; set;}
-        public sbyte? BeautyVoc{get; set;}
-        public sbyte? SecurityVoc{get; set;}
+        public bool MachineVoc{get; set;}
+        public bool ElecVoc{get; set;}
+        public bool LiftVoc {get; set;}
+        public bool FireVoc {get; set;}
+        public bool ConstructVoc {get; set;}
+        public bool NetworkVoc {get; set;}
+        public bool BeautyVoc {get; set;}
+        public bool SecurityVoc {get; set;}
 
     }
 }

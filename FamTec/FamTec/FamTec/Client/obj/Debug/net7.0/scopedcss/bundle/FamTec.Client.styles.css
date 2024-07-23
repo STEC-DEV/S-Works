@@ -27,9 +27,14 @@
     color: var(--main-color);
 }
 
+.placetable-container .placetable-header[b-fs4cvhcp5g]{
+    display : flex;
+    gap : var(--half-pd);
+}
+
 .placetable-container .placetable-table[b-fs4cvhcp5g] {
-    height:100%;
-    overflow:auto;
+    height: 100%;
+    overflow: auto;
 }
 .placetable-container .placetable-count[b-fs4cvhcp5g]{
 
@@ -131,6 +136,60 @@
     justify-content: flex-end;
     gap: var(--half-pd);
     padding: var(--default-pd);
+}
+/* /Pages/Admin/Manager/ManagerDetail/Modal/PlaceModal.razor.rz.scp.css */
+.manager-modal[b-vrugtyr1kq]{
+    display:flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    padding :var(--default-pd);
+
+    border-radius :var(--default-rd) ;
+    border : var(--comp-bd);
+
+
+    width : 30%;
+    height : 80%;
+
+    background-color:var(--default-color);
+    box-shadow : var(--default-bs);
+}
+
+.manager-modal .manager-title[b-vrugtyr1kq]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+}
+.manager-modal .manager-title > .title[b-vrugtyr1kq]{
+    color : var(--main-color);
+}
+
+.manager-modal .manager-content[b-vrugtyr1kq]{
+    height : 100%;
+    border-radius : var(--default-rd);
+    overflow : auto;
+}
+
+
+.manager-modal .manager-count[b-vrugtyr1kq]{
+    border-radius : var(--default-rd);
+    padding : var(--three-q-pd);
+    
+    
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+    background-color : var(--main-color);
+}
+
+.manager-modal .manager-count> .count[b-vrugtyr1kq] {
+    color:var(--default-color);
+}
+
+.manager-modal .manager-btns[b-vrugtyr1kq]{
+    display:flex;
+    gap:var(--default-pd);
+    width : 100%;
+    border-radius : var(--default-rd);
 }
 /* /Pages/Admin/Manager/ManagerMain/Components/Department.razor.rz.scp.css */
 
@@ -2692,6 +2751,50 @@
     background-color: var(--main-hover);
 }
 
+/* /Pages/Normal/Facility/Machine/Components/InfoCard.razor.rz.scp.css */
+
+
+.infocard-container[b-2akvokpspo]{
+    width : 100%;
+    display : flex;
+    flex-direction : column;
+
+    background-color : var(--default-color);
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    box-shadow : var(--default-bs);
+}
+
+.infocard-container .infocard-header[b-2akvokpspo]{    
+    display: flex;
+    padding: var(--default-pd);
+    justify-content: space-between;
+    border-bottom: var(--default-bd);
+}
+
+
+.infocard-container .infocard-header > span[b-2akvokpspo]{
+    display: flex;
+    align-items: center;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+
+
+.infocard-container .infocard-content[b-2akvokpspo]{
+    width : 100%;
+    display :flex;
+}
+
+.infocard-container .infocard-inputs[b-2akvokpspo]{
+    display : grid;
+    grid-template-columns : repeat(2,1fr);
+}
 /* /Pages/Normal/Location/LocationMain/Components/Floor.razor.rz.scp.css */
 .floor[b-mmvc68315j]{
     height :100%;

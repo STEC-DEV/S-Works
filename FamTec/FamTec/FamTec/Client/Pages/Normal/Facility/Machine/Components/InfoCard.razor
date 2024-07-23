@@ -1,0 +1,31 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+
+<div class="infocard-container">
+    <div class="infocard-header">
+        <span>
+            장비 제원
+        </span>
+    </div>
+    <div class="infocard-content">
+        <div >
+            <span>
+                이미지 영역
+            </span>
+        </div>
+        <div class="infocard-inputs">
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+            <InputField Label="형식" EditMode=EditMode />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    bool EditMode = true;
+}
