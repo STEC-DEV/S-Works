@@ -454,7 +454,7 @@ namespace FamTec.Server.Services.User
         }
 
         /// <summary>
-        /// 사용자 추가 서비스
+        /// 사용자 추가 서비스  0 : 퇴직 / 1 : 재직 / 2 :휴직
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
@@ -465,8 +465,6 @@ namespace FamTec.Server.Services.User
             {
                 string? FileName = String.Empty;
                 string? FileExtenstion = String.Empty;
-
-                
 
 
                 if (context is null)
@@ -524,7 +522,7 @@ namespace FamTec.Server.Services.User
                 model.PermVoc = dto.PERM_VOC; // VOC메뉴 권한
                 model.AdminYn = false; // 관리자 아님
                 model.AlarmYn = dto.ALRAM_YN; // 알람 여부
-                model.Status = 2; // 재직여부
+                model.Status = 1; // 재직여부
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = Creater; // 생성자
                 model.UpdateDt = DateTime.Now;
@@ -557,8 +555,11 @@ namespace FamTec.Server.Services.User
 
                         using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
                         {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
+                            if (fileStream.Length < 1048576)
+                            {
+                                await files.CopyToAsync(fileStream);
+                                model.Image = newFileName;
+                            }
                         }
                     }
                 }
@@ -581,7 +582,6 @@ namespace FamTec.Server.Services.User
                             NAME = result.Name,
                             EMAIL = result.Email,
                             PHONE = result.Phone,
-                            //Image = result.Image,
                             PERM_BASIC = result.PermBasic,
                             PERM_MACHINE = result.PermMachine,
                             PERM_ELEC = result.PermElec,

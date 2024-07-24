@@ -270,16 +270,6 @@
         "IsRequired": false
       },
       {
-        "Name": "Image",
-        "Type": "System.Byte[]",
-        "IsRequired": false
-      },
-      {
-        "Name": "ImageName",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "ContentType",
         "Type": "System.String",
         "IsRequired": false
@@ -3415,6 +3405,26 @@
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "OutInventoryService",
     "RelativePath": "api/Store/sign/OutInventory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetList",
+    "RelativePath": "api/Store/sign/Temp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetList2",
+    "RelativePath": "api/Store/sign/Temp2",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

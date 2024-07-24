@@ -181,8 +181,8 @@ namespace FamTec.Server.Repository.Facility
                                                                     Name = facilitytb.Name, // 설비명칭
                                                                     Type = facilitytb.Type,
                                                                     Num = facilitytb.Num, // 수량
-                                                                    Unit = facilitytb.Unit, // 단위
-                                                                    RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                                    //Unit = facilitytb.Unit, // 단위
+                                                                    //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                                     RoomName = roomtb.Name, // 공간위치 이름
                                                                     StandardCapacity = facilitytb.StandardCapacity,
                                                                     EquipDT = facilitytb.EquipDt,
@@ -235,7 +235,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -289,7 +289,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -343,7 +343,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -397,7 +397,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -451,7 +451,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -505,7 +505,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,
@@ -559,7 +559,7 @@ namespace FamTec.Server.Repository.Facility
                                                            Name = facilitytb.Name, // 설비명칭
                                                            Type = facilitytb.Type, // 타입
                                                            Num = facilitytb.Num, // 수량
-                                                           RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
                                                            RoomName = roomtb.Name, // 공간위치 이름
                                                            StandardCapacity = facilitytb.StandardCapacity,
                                                            EquipDT = facilitytb.EquipDt,

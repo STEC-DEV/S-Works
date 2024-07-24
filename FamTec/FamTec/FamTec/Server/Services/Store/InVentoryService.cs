@@ -69,7 +69,6 @@ namespace FamTec.Server.Services.Store
                     }
                 }
                 
-               
                 // 인벤토리 테이블에 ADD
                 bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid), GUID);
                 if(AddInStore == true)

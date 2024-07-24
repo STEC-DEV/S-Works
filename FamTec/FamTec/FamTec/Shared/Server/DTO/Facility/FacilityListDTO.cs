@@ -28,10 +28,8 @@
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; }
+        //public string? Unit { get; set; }
 
-      
-        
         /// <summary>
         /// 설치년월
         /// </summary>
@@ -55,7 +53,7 @@
         /// <summary>
         /// 공간ID
         /// </summary>
-        public int? RoomIdx { get; set; }
+        //public int? RoomIdx { get; set; }
 
         /// <summary>
         /// 공간 명칭

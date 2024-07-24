@@ -6,6 +6,11 @@
     public class AddFacilityDTO
     {
         /// <summary>
+        /// 인덱스
+        /// </summary>
+        public int? ID { get; set; }
+
+        /// <summary>
         /// 카테고리(기계, 전기...)
         /// </summary>
         public string? Category { get; set; }

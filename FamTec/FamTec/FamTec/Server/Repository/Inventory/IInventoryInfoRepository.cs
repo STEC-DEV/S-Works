@@ -19,5 +19,9 @@ namespace FamTec.Server.Repository.Inventory
         ValueTask<Task?> RoolBackOccupant(string GUID);
 
         ValueTask<bool?> AvailableCheck(int? placeid, int? roomid, int? materialid);
+
+        ValueTask<bool?> GetInventoryRecord(int? placeid, int? materialid);
+
+        ValueTask<bool?> GetInventoryRecord2(int? placeid);
     }
 }

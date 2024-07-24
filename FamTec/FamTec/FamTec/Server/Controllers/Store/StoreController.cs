@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Store;
+﻿using FamTec.Server.Repository.Inventory;
+using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
@@ -11,12 +12,37 @@ namespace FamTec.Server.Controllers.Store
     public class StoreController : ControllerBase
     {
         private IInVentoryService InStoreService;
+        
+        // Temp
+        private IInventoryInfoRepository InventoryInfoRepository;
 
-        public StoreController(IInVentoryService _instoreservice)
+        public StoreController(IInVentoryService _instoreservice, IInventoryInfoRepository _inven)
         {
             this.InStoreService = _instoreservice;
+            this.InventoryInfoRepository = _inven;
         }
 
+        // 기간별 입출고 내역 뽑는 로직 짜야함.
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/Temp")]
+        public async ValueTask<IActionResult> GetList()
+        {
+            InventoryInfoRepository.GetInventoryRecord(3,1);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/Temp2")]
+        public async ValueTask<IActionResult> GetList2()
+        {
+            InventoryInfoRepository.GetInventoryRecord2(3);
+            return Ok();
+        }
+
+        // 입고
         [AllowAnonymous]
         //[HttpPost]
         [HttpGet]
@@ -28,7 +54,7 @@ namespace FamTec.Server.Controllers.Store
             dto.Add(new InOutInventoryDTO
             {
                 InOut = 1,
-                MaterialID = 1,
+                MaterialID = 5,
                 AddStore = new AddStoreDTO()
                 {
                     InOutDate = DateTime.Now.AddDays(-10),
@@ -42,7 +68,7 @@ namespace FamTec.Server.Controllers.Store
             dto.Add(new InOutInventoryDTO
             {
                 InOut = 1,
-                MaterialID = 1,
+                MaterialID = 6,
                 AddStore = new AddStoreDTO()
                 {
                     InOutDate = DateTime.Now.AddDays(-20),
@@ -73,6 +99,7 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
+        // 출고
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/OutInventory")]
@@ -84,7 +111,7 @@ namespace FamTec.Server.Controllers.Store
             dto.Add(new InOutInventoryDTO()
             {
                 InOut = 0,
-                MaterialID = 1,
+                MaterialID = 5,
                 AddStore = new AddStoreDTO()
                 {
                     InOutDate = DateTime.Now,
@@ -100,7 +127,7 @@ namespace FamTec.Server.Controllers.Store
             dto.Add(new InOutInventoryDTO()
             {
                 InOut = 0,
-                MaterialID = 1,
+                MaterialID = 6,
                 AddStore = new AddStoreDTO()
                 {
                     InOutDate = DateTime.Now,
@@ -131,7 +158,7 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
-
+        // 입출고 이력
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetHistory")]
