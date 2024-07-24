@@ -29,7 +29,7 @@
     bool isVocPerm = false;
     bool EditMode = true;
     UserDTO User;
-
+    UserTbDTO Users;
 
     protected override Task OnInitializedAsync()
     {
@@ -39,7 +39,7 @@
             UserPerm = new UserPermDTO(),
             UserVocPerm = new UserVocPermDTO(),
         };
-
+        Users = new UserTbDTO();
         return base.OnInitializedAsync();
     }
 
@@ -80,7 +80,8 @@
         Console.WriteLine("img" + User.UserInfo.Image);
         Console.WriteLine("img" + User.UserInfo.ImageName);
 
-        ResponseUnit<UserDTO> resAdd = await apiManager.PostWithFilesAsync<UserDTO>("User/sign/AddUser", User);
+        await OnConvert();
+        ResponseUnit<UserDTO> resAdd = await apiManager.PostWithFilesAsync<UserDTO>("User/sign/AddUser", Users);
         if(resAdd.code != 200)
         {
             await JS.InvokeVoidAsync("alert", "사용자 생성 실패");
@@ -98,5 +99,39 @@
     {
         User = new UserDTO();
         Navigation.NavigateTo("/users");
+    }
+
+    private async Task OnConvert()
+    {
+        Users.USERID = User.UserInfo.UserId;
+        Users.NAME = User.UserInfo.Name;
+        Users.JOB= User.UserInfo.Job;
+        Users.PHONE = User.UserInfo.Phone;
+        Users.EMAIL = User.UserInfo.Email;
+        Users.Image = User.UserInfo.Image;
+        Users.ImageName= User.UserInfo.ImageName;
+        Users.USERID = User.UserInfo.UserId;
+        Users.STATUS = User.UserInfo.Status;
+        Users.ALRAM_YN = User.UserInfo.AlarmYN;
+        Users.PERM_BASIC = User.UserPerm.BasicPerm;
+        Users.PERM_MACHINE = User.UserPerm.MachinPerm;
+        Users.PERM_ELEC = User.UserPerm.ElecPerm;
+        Users.PERM_LIFT = User.UserPerm.LiftPerm;
+        Users.PERM_FIRE = User.UserPerm.FirePerm;
+        Users.PERM_CONSTRUCT = User.UserPerm.ConstructPerm;
+        Users.PERM_NETWORK = User.UserPerm.NetworkPerm;
+        Users.PERM_MATERIAL = User.UserPerm.MaterialPerm;
+        Users.PERM_ENERGY = User.UserPerm.EnergyPerm;
+        Users.PERM_USER = User.UserPerm.UserPerm;
+        Users.PERM_VOC = User.UserPerm.VocPerm;
+        Users.VOC_MACHINE = User.UserVocPerm.MachineVoc;
+        Users.VOC_ELEC = User.UserVocPerm.ElecVoc;
+        Users.VOC_LIFT = User.UserVocPerm.LiftVoc;
+        Users.VOC_FIRE = User.UserVocPerm.FireVoc;
+        Users.VOC_CONSTRUCT = User.UserVocPerm.ConstructVoc;
+        Users.VOC_NETWORK = User.UserVocPerm.NetworkVoc;
+        Users.VOC_BEAUTY = User.UserVocPerm.BeautyVoc;
+        Users.VOC_SECURITY = User.UserVocPerm.SecurityVoc;
+        Users.VOC_ETC = User.UserVocPerm.ETCVoc;
     }
 }

@@ -1,0 +1,26 @@
+﻿.fac-container {
+    display : flex;
+    flex-direction : column;
+
+    padding: var(--default-pd);
+    width: 100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color : var(--default-color);
+}
+.fac-container .fac-header{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:var(--default-pd);
+    border-bottom : var(--default-bd);
+}
+
+.fac-container .title{
+     white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+

@@ -1,0 +1,33 @@
+﻿@page "/facility/machine/{Id:int}"
+@using FamTec.Client.Pages.Normal.Facility.Machine.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Server.DTO
+
+<div>
+    <InfoCard Facility=@facilityDetailDTO />
+    <History />
+</div>
+
+@code {
+
+    [Parameter] public int Id { get; set; }
+    FacilityDetailDTO facilityDetailDTO;
+
+    protected override async Task OnInitializedAsync()
+    {
+        facilityDetailDTO = new FacilityDetailDTO();
+        await OnLoadFacility();
+        
+    }
+
+    private async Task OnLoadFacility()
+    {
+        ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={Id}");
+        if(resFacInfo.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");
+            return;
+        }
+        facilityDetailDTO = resFacInfo.data;
+    }
+}

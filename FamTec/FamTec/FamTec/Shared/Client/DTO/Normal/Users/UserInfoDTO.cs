@@ -14,7 +14,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Job {  get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
         public bool AlarmYN { get; set; }
         public byte[] Image { get; set; }
         public string ImageName { get; set; }

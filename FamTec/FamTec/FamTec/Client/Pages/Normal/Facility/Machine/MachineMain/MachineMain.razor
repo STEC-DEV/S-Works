@@ -1,0 +1,53 @@
+﻿@page "/facility/machine"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Server.DTO
+
+
+<div class="fac-container">
+    <div class="fac-header">
+        <span class="title">
+            기계 설비
+        </span>
+        <div>
+            <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
+            <Button Name="삭제" Width=true Type=1 />
+        </div>
+    </div>
+    <FacilityTable ListData="ListFacility" />
+</div>
+
+@code {
+    List<FacilityListDTO> ListFacility;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListFacility = new List<FacilityListDTO>();
+        await OnLoadMahine();
+    }
+
+    private async Task OnLoadMahine()
+    {
+        ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>("MachineFacility/sign/GetAllMachineFacility");
+        foreach(var i in resGetData.data)
+        {
+            Console.WriteLine(i.Name);
+        }
+        if(resGetData.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "전기 설비 리스트 조회 실패");
+            return;
+        }
+        ListFacility = resGetData.data;
+
+    }
+
+    private void onAdd()
+    {
+        Navigation.NavigateTo("/facility/machine/add");
+    }
+
+
+
+}

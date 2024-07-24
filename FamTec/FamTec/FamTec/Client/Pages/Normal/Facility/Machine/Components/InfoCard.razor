@@ -1,4 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Location
 
 
 <div class="infocard-container">
@@ -8,24 +10,52 @@
         </span>
     </div>
     <div class="infocard-content">
-        <div >
+        <div class="infocard-img-area">
             <span>
                 이미지 영역
             </span>
         </div>
         <div class="infocard-inputs">
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
-            <InputField Label="형식" EditMode=EditMode />
+            <InputField 
+                Label="형식"
+                @bind-Value=@Facility.Type
+                Placeholder="형식"
+                EditMode=@EditMode />
+            <InputField 
+                Label="규격 용량"
+                @bind-Value=@Facility.StandardCapacity
+                Placeholder="규격 용량"
+                EditMode=@EditMode />
+            <InputField 
+                Label="내용년수"
+                @bind-Value=@Facility.LifeSpan
+                Placeholder="내용 년수"
+                EditMode=@EditMode />
+            <DateTimeInput 
+                Label="설치년월"
+                DateValue="@Facility.EquipDT"
+                DateValueChanged="@OnEquipDTChanged"
+                Disabled="@(!EditMode)"
+                />
+            <DateTimeInput 
+                Label="교체년월"
+                DateValue="@Facility.ChangeDT"
+                DateValueChanged="@OnEquipDTChanged"
+                Disabled="@(!EditMode)"
+                />
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string Title { get; set; }
+    [Parameter] public FacilityDetailDTO Facility { get; set; }
+    // [Parameter] public List<RoomDTO>? Rooms { get; set; }
+
     bool EditMode = true;
+
+
+    private void OnEquipDTChanged(DateTime? newDate)
+    {
+        Facility.EquipDT = newDate;
+    }
 }

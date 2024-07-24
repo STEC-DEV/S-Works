@@ -1,0 +1,113 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-rt">
+            <th class="th">
+                <span>
+                    설비 명칭
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    형식
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    위치
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    규격 용량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    설치 년월
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    내용 년수
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    교체 년월
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    QR
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            <p>...Loading</p>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Name
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)" >
+                        @row.Type
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Num
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Location
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.StandardCapacity
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.EquipDT.ToString()
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.LifeSpan
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.ChangeDT.ToString()
+                    </td>
+                    <td class="td">
+                        <Button Name="QR" Width=true Type=0/>
+                    </td>
+                    <td class="td">
+                        <input type="checkbox"/>
+                    </td>
+                </tr>
+            }
+        }
+       
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<FacilityListDTO?> ListData { get; set; }
+
+    private void OnDetail(int Id)
+    {
+        Navigation.NavigateTo($"/facility/machine/{Id}");
+
+    }
+}

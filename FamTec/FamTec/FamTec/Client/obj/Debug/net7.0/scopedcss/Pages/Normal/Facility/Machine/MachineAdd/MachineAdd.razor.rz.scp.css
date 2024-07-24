@@ -1,0 +1,7 @@
+
+
+.btns[b-y8siuilxs5]{
+    display : flex;
+    justify-content : flex-end;
+    gap : var(--half-pd);
+}

@@ -38,6 +38,15 @@
 }
 
 .infocard-container .infocard-inputs{
+    flex:2;
+    width:100%;
     display : grid;
     grid-template-columns : repeat(2,1fr);
+    grid-column-gap : var(--wide-pd);
+    grid-row-gap : var(--default-pd)
+}
+
+.infocard-container .infocard-img-area{
+    flex:1;
+    min-width : 300px
 }

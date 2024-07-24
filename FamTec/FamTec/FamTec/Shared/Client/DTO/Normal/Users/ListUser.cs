@@ -25,5 +25,6 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public string Created { get; set; }
         [Display(Name = "재직 상태")]
         public sbyte? Status { get; set; }
+        
     }
 }

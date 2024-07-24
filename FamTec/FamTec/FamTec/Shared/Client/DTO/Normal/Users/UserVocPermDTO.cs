@@ -15,8 +15,9 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public bool FireVoc {get; set;}
         public bool ConstructVoc {get; set;}
         public bool NetworkVoc {get; set;}
-        public bool BeautyVoc {get; set;}
-        public bool SecurityVoc {get; set;}
+        public bool BeautyVoc {get; set; }
+        public bool SecurityVoc { get; set; }
+        public bool ETCVoc { get; set; }
 
     }
 }
