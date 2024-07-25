@@ -11,111 +11,111 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         /// <summary>
         /// 사용자 인덱스
         /// </summary>
-        public int? ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// 사용자이름
         /// </summary>
-        public string? NAME { get; set; }
+        public string NAME { get; set; }
 
         /// <summary>
         /// 직책
         /// </summary>
-        public string? JOB { get; set; }
+        public string JOB { get; set; }
 
         /// <summary>
         /// 전화번호
         /// </summary>
-        public string? PHONE { get; set; }
+        public string PHONE { get; set; }
 
 
         /// <summary>
         /// 이메일
         /// </summary>
-        public string? EMAIL { get; set; }
+        public string EMAIL { get; set; }
 
         /// <summary>
         /// 사용자 아이디
         /// </summary>
 
-        public string? USERID { get; set; }
+        public string USERID { get; set; }
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        public string? PASSWORD { get; set; }
+        public string PASSWORD { get; set; }
 
         /// <summary>
         /// 사용자 이미지
         /// </summary>
-        public byte[]? Image { get; set; }
+        public byte[] Image { get; set; }
 
-        public string? ImageName { get; set; }
+        public string ImageUrl { get; set; }
 
         /// <summary>
         /// 기본정보등록 권한
         /// </summary>
-        public int? PERM_BASIC { get; set; } = 0;
+        public int PERM_BASIC { get; set; } = 0;
 
         /// <summary>
         /// 설비 권한
         /// </summary>
-        public int? PERM_MACHINE { get; set; } = 0;
+        public int PERM_MACHINE { get; set; } = 0;
 
         /// <summary>
         /// 전기 권한
         /// </summary>
-        public int? PERM_ELEC { get; set; } = 0;
+        public int PERM_ELEC { get; set; } = 0;
 
         /// <summary>
         /// 승강 권한
         /// </summary>
-        public int? PERM_LIFT { get; set; } = 0;
+        public int PERM_LIFT { get; set; } = 0;
 
         /// <summary>
         /// 소방 권한
         /// </summary>
-        public int? PERM_FIRE { get; set; } = 0;
+        public int PERM_FIRE { get; set; } = 0;
 
         /// <summary>
         /// 건축 권한
         /// </summary>
-        public int? PERM_CONSTRUCT { get; set; } = 0;
+        public int PERM_CONSTRUCT { get; set; } = 0;
 
         /// <summary>
         /// 통신 권한
         /// </summary>
-        public int? PERM_NETWORK { get; set; } = 0;
+        public int PERM_NETWORK { get; set; } = 0;
 
         /// <summary>
         /// 미화 권한
         /// </summary>
-        public int? PERM_BEAUTY { get; set; } = 0;
+        public int PERM_BEAUTY { get; set; } = 0;
 
         /// <summary>
         /// 보안 권한
         /// </summary>
-        public int? PERM_SECURITY { get; set; } = 0;
+        public int PERM_SECURITY { get; set; } = 0;
 
         /// <summary>
         /// 자재 권한
         /// </summary>
-        public int? PERM_MATERIAL { get; set; } = 0;
+        public int PERM_MATERIAL { get; set; } = 0;
 
         /// <summary>
         /// 에너지 권한
         /// </summary>
-        public int? PERM_ENERGY { get; set; } = 0;
+        public int PERM_ENERGY { get; set; } = 0;
 
         /// <summary>
         /// 사용자 설정 권한
         /// </summary>
-        public int? PERM_USER { get; set; } = 0;
+        public int PERM_USER { get; set; } = 0;
 
         /// <summary>
         /// VOC 권한
         /// </summary>
-        public int? PERM_VOC { get; set; } = 0;
+        public int PERM_VOC { get; set; } = 0;
 
         /// <summary>
         /// 관리자유무
@@ -130,7 +130,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         /// <summary>
         /// 재직여부
         /// </summary>
-        public int? STATUS { get; set; } = 2;
+        public int STATUS { get; set; } = 1;
 
         /// <summary>
         /// 기계민원 처리권한

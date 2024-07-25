@@ -1,15 +1,108 @@
 ﻿@page "/users/{Id:int}"
+@using FamTec.Client.Pages.Normal.User.UserDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.CommonComponents
 
 <div class="detail-container">
     <div class="detail-wrap">
         <div class="detail-form">
+            <SignForm UserInfo="@User.UserInfo" EditMode=@EditMode />
         </div>
         <div class="detail-perm">
-
+            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive=OnVocActive />
         </div>
+        @if (User.UserPerm.VocPerm >= 1)
+        {
+            <div class="useradd-sub yappear">
+                <UserVocPermComponent UserVocPerm="@User.UserVocPerm"  />
+            </div>
+        }
+    </div>
+    <div class="btns">
+        @if (!EditMode)
+        {
+            <Button Name="편집" Width=true Type="0" />
+            <Button Name="나가기" Width=true Type="1" />
+        }
+        else
+        {
+            <Button Name="저장" Width=true Type="0" />
+            <Button Name="취소" Width=true Type="1" />
+        }
+
     </div>
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
+    UserDTO User;
+    UserTbDTO userTb;
+    bool EditMode = false;
+    bool isVocPerm = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userTb = new UserTbDTO();
+        await OnLoadDetail();
+    }
+
+
+    private void OnVocActive(UserPermDTO updatedPerm)
+    {
+        Console.WriteLine("ㅁㄴㅇ");
+        // User.UserPerm = updatedPerm;
+        isVocPerm = !isVocPerm;
+        StateHasChanged();
+    }
+
+
+    private async Task OnLoadDetail()
+    {
+        ResponseUnit<UserTbDTO> resDetail = await apiManager.GetUnitAsync<UserTbDTO>($"User/sign/DetailUser?id={Id}");
+        if(resDetail.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "사용자 조회 실패");
+            return;
+        }
+        userTb = resDetail.data;
+        OnUserConvert();
+    }
+
+    private void OnUserConvert()
+    {
+
+        User = new UserDTO()
+        {
+            UserInfo = new UserInfoDTO(),
+            UserPerm = new UserPermDTO(),
+            UserVocPerm = new UserVocPermDTO(),
+        };
+
+        User.Id = userTb.ID;
+        User.UserInfo.Name = userTb.NAME;
+        User.UserInfo.UserId = userTb.USERID;
+        User.UserInfo.Password = userTb.PASSWORD;
+        User.UserInfo.Email = userTb.EMAIL;
+        User.UserInfo.Phone = userTb.PHONE;
+        User.UserInfo.Job = userTb.JOB;
+        User.UserInfo.Status = userTb.STATUS;
+        User.UserInfo.AlarmYN = userTb.ALRAM_YN;
+        User.UserInfo.ImageName = userTb.ImageUrl;
+
+        User.UserPerm.BasicPerm = userTb.PERM_BASIC;
+        User.UserPerm.MachinPerm = userTb.PERM_MACHINE;
+        User.UserPerm.ElecPerm = userTb.PERM_ELEC;
+        User.UserPerm.LiftPerm = userTb.PERM_LIFT;
+        User.UserPerm.FirePerm = userTb.PERM_FIRE;
+        User.UserPerm.ConstructPerm = userTb.PERM_CONSTRUCT;
+        User.UserPerm.NetworkPerm = userTb.PERM_NETWORK;
+        User.UserPerm.BeautyPerm = userTb.PERM_BEAUTY;
+        User.UserPerm.SecurityPerm = userTb.PERM_SECURITY;
+        User.UserPerm.MaterialPerm = userTb.PERM_MATERIAL;
+        User.UserPerm.EnergyPerm = userTb.PERM_ENERGY;
+        User.UserPerm.UserPerm = userTb.PERM_USER;
+        User.UserPerm.VocPerm = userTb.PERM_VOC;
+    }
 }

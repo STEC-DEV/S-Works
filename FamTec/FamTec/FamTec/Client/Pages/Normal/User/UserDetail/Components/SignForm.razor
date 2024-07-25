@@ -1,0 +1,87 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Client.Pages.CommonComponents
+
+
+<div class="form-container">
+    <div class="form-title">
+        <span class="title">사용자 정보</span>
+    </div>
+    <div class="form-area">
+        <div class="img-wrap">
+            <img class="img" src="data:image/png;base64,@UserInfo.ImageName" />
+        </div>
+        <div class="form-input">
+            <InputField InputType="text"
+                        Placeholder="Id"
+                        @bind-Value="@UserInfo.UserId"
+                        Label="아이디"
+                        EditMode=EditMode
+                        />
+            <InputField InputType="password"
+                        Placeholder="Password"
+                        @bind-Value="@UserInfo.Password"
+                        Label="비밀번호"
+                        EditMode=EditMode />
+            <InputField InputType="password"
+                        Placeholder="Password Check"
+                        Label="비밀번호 확인"
+                        EditMode=EditMode />
+            <InputField InputType="text"
+                        Placeholder="Name"
+                        @bind-Value="@UserInfo.Name"
+                        Label="이름"
+                        EditMode=EditMode />
+            <InputField InputType="text"
+                        Placeholder="Phone"
+                        @bind-Value="@UserInfo.Phone"
+                        Label="전화번호"
+                        EditMode=EditMode />
+            <InputField InputType="text"
+                        Placeholder="Email"
+                        @bind-Value="@UserInfo.Email"
+                        Label="이메일"
+                        EditMode=EditMode />
+            <InputField InputType="text"
+                        Placeholder="Job"
+                        @bind-Value="@UserInfo.Job"
+                        Label="직책"
+                        EditMode=EditMode />
+            <Toggle Title="알람 수신"
+                    @bind-Value="@UserInfo.AlarmYN"
+                    EditMode=EditMode />
+        </div>
+        
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public UserInfoDTO UserInfo { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+    private byte[] imageData;
+
+
+    private async Task LoadImage(InputFileChangeEventArgs e)
+    {
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+
+        // 파일 확장자 추출
+        var extension = Path.GetExtension(e.File.Name).ToLowerInvariant();
+
+        // 확장자 검사
+        if (!allowedExtensions.Contains(extension))
+        {
+            await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
+            return;
+        }
+
+
+        var buffer = new byte[e.File.Size];
+        await using var stream = e.File.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
+        await stream.ReadAsync(buffer);
+        imageData = buffer;
+        UserInfo.Image = buffer;
+        UserInfo.ImageName = e.File.Name;
+    }
+}

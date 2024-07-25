@@ -1,0 +1,71 @@
+.table[b-9jsa6qx3k5]{
+    border-collapse: separate;
+    width:100%;
+    max-height : 100%;
+}
+
+.table .thead[b-9jsa6qx3k5]{
+    position:sticky;
+    top:0;
+}
+
+.table .th-tr[b-9jsa6qx3k5]{
+    background-color : var(--main-color)
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-9jsa6qx3k5] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-9jsa6qx3k5] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+
+.table  .th[b-9jsa6qx3k5]{
+    text-align : center;
+    
+    padding : 0 var(--half-pd);
+}
+
+.table  .th > span[b-9jsa6qx3k5]{
+    display : inline-block;
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--default-color);
+
+    padding : var(--three-q-pd) var(--half-pd);
+}
+
+
+.table .tbody[b-9jsa6qx3k5]{
+    overflow : auto;
+}
+
+.table .tbody-tr[b-9jsa6qx3k5]{
+    background-color :var(--content-back-color);
+}
+
+.table .tbody-tr:hover td[b-9jsa6qx3k5]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-9jsa6qx3k5]{
+    border-top: var(--three-q-pd) solid var(--default-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break:break-all;
+    text-align : center;
+    padding:var(--half-pd);
+
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    
+}
