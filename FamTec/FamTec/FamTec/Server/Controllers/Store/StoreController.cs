@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Repository.Inventory;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
@@ -12,25 +13,46 @@ namespace FamTec.Server.Controllers.Store
     public class StoreController : ControllerBase
     {
         private IInVentoryService InStoreService;
+        private ILogService LogService;
         
         // Temp
         private IInventoryInfoRepository InventoryInfoRepository;
 
-        public StoreController(IInVentoryService _instoreservice, IInventoryInfoRepository _inven)
+        public StoreController(IInVentoryService _instoreservice,
+            ILogService _logservice,
+            IInventoryInfoRepository _inven)
         {
             this.InStoreService = _instoreservice;
+            this.LogService = _logservice;
             this.InventoryInfoRepository = _inven;
         }
 
         // 기간별 입출고 내역 뽑는 로직 짜야함.
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/Temp")]
-        public async ValueTask<IActionResult> GetList()
+        [Route("sign/PeriodicRecord")]
+        public async ValueTask<IActionResult> GetList([FromQuery]int? materialid, DateTime? Startdate, DateTime? EndDate)
         {
-            InventoryInfoRepository.GetInventoryRecord(3,1);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            return Ok();
+                ResponseList<PeriodicInventoryRecordDTO>? model = await InStoreService.PeriodicInventoryRecordService(HttpContext, materialid, Startdate, EndDate);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
+            }
         }
 
         [AllowAnonymous]
@@ -38,7 +60,7 @@ namespace FamTec.Server.Controllers.Store
         [Route("sign/Temp2")]
         public async ValueTask<IActionResult> GetList2()
         {
-            InventoryInfoRepository.GetInventoryRecord2(3);
+            await InventoryInfoRepository.GetInventoryRecord2(3);
             return Ok();
         }
 

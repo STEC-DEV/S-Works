@@ -45,7 +45,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         }
 
 
-        public async ValueTask<ResponseUnit<AddFacilityDTO>?> AddNetworkFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<FacilityDTO>?> AddNetworkFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files)
         {
             try
             {
@@ -53,22 +53,22 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 string? FileExtenstion = String.Empty;
 
                 if (context is null)
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 if (dto is null)
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (string.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 RoomTb? tokenck = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId);
                 if (tokenck is null)
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
                 string? creator = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creator))
-                    return new ResponseUnit<AddFacilityDTO>() { message = "잘못된 요청입니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
 
                 // 전기설비 관련한 폴더 없으면 만들기 
@@ -100,7 +100,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
 
                     if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                     {
-                        return new ResponseUnit<AddFacilityDTO>() { message = "올바르지 않는 파일형식입니다.", data = null, code = 404 };
+                        return new ResponseUnit<FacilityDTO>() { message = "올바르지 않는 파일형식입니다.", data = null, code = 404 };
                     }
                     else
                     {
@@ -123,14 +123,14 @@ namespace FamTec.Server.Services.Facility.Type.Network
 
                 FacilityTb? result = await FacilityInfoRepository.AddAsync(model);
                 if (result is not null)
-                    return new ResponseUnit<AddFacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
-                    return new ResponseUnit<AddFacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddFacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = new FacilityDTO(), code = 404 };
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddFacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddFacilityDTO(), code = 500 };
+                return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
         }
 
@@ -241,7 +241,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateNetworkFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> UpdateNetworkFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files)
         {
             try
             {
@@ -263,7 +263,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.Id);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID);
                 
                 if (model is not null)
                 {
@@ -281,7 +281,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                     model.ChangeDt = dto.ChangeDT;
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
-                    model.RoomTbId = dto.RoomId;
+                    model.RoomTbId = dto.RoomTbId;
 
                     // 이미지 변경 or 삭제
                     if (files is not null)

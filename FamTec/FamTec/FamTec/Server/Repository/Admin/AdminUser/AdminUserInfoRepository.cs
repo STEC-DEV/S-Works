@@ -19,9 +19,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             this.LogService = _logservice;
         }
 
-       
-
-
         /// <summary>
         /// 관리자 추가
         /// </summary>
@@ -185,9 +182,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                     if (adminplacetb is [_, ..])
                     {
-                        List<int?> adminplacetbid = adminplacetb.Select(m => m.AdminTbId).ToList();
+                        List<int?> admintbid = adminplacetb.Select(m => m.AdminTbId).ToList();
 
-                        List<AdminTb>? admintb = await context.AdminTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
+                        List<AdminTb>? admintb = await context.AdminTbs.Where(e => !admintbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
                         if (admintb is [_, ..])
                         {
                             List<ManagerListDTO>? model = (from Admin in admintb

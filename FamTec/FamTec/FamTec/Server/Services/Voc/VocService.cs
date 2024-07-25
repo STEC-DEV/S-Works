@@ -4,7 +4,6 @@ using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
-using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
@@ -105,15 +104,15 @@ namespace FamTec.Server.Services.Voc
                                                 {
                                                     Id = voc.Id, // VOC ID
                                                     Location = bd.Name, // 위치
-                                                    //Type = voc.Type, // VOC 유형
-                                                    //Writer = voc.Name, // 작성자
+                                                    Type = voc.Type, // VOC 유형
+                                                    Writer = voc.CreateUser, // 작성자
                                                     Status = voc.Status, // VOC 처리상태
                                                     Tel = voc.Phone, // 전화번호
-                                                    Title = voc.Title,
-                                                    Content = voc.Content,
-                                                    CreateDT = voc.CreateDt,
-                                                    //CompleteDT = voc.CompleteTime,
-                                                    //TotalDT = voc.TotalTime
+                                                    Title = voc.Title, // 제목
+                                                    Content = voc.Content, // 내용
+                                                    CreateDT = voc.CreateDt, // 작성일
+                                                    CompleteDT = voc.CompleteDt, // 완료일
+                                                    DurationDT = voc.DurationDt // 소요시간
                                                 }).ToList();
                             // VOC 리스트 반환
                             if (dto is [_, ..])
@@ -177,15 +176,15 @@ namespace FamTec.Server.Services.Voc
                                             {
                                                 Id = voc.Id, // VOC ID
                                                 Location = bd.Name, // 위치
-                                                //Type = voc.Type, // VOC 유형
-                                                //Writer = voc.Name, // 작성자
+                                                Type = voc.Type, // VOC 유형
+                                                Writer = voc.CreateUser, // 작성자
                                                 Status = voc.Status, // VOC 처리상태
                                                 Tel = voc.Phone, // 전화번호
                                                 Title = voc.Title,
                                                 Content = voc.Content,
                                                 CreateDT = voc.CreateDt,
-                                                //CompleteDT = voc.CompleteTime,
-                                                //TotalDT = voc.TotalTime
+                                                CompleteDT = voc.CompleteDt,
+                                                DurationDT = voc.DurationDt
                                             }).ToList();
                         // VOC 리스트 반환
                         if (dto is [_, ..])
@@ -216,6 +215,7 @@ namespace FamTec.Server.Services.Voc
         {
             try
             {
+                
                 JObject? jobj = JObject.Parse(obj);
 
                 string? Voctype = Convert.ToString(jobj["Type"]);
@@ -245,13 +245,13 @@ namespace FamTec.Server.Services.Voc
                 BuildingTb? buildingck = await BuildingInfoRepository.GetBuildingInfo(Int32.Parse(Vocbuildingidx)); // 넘어온 해당 건물이 있는지 먼저 CHECK / 해당 건물이 속해있는 사업장 INDEX 반환
 
                 VocTb? model = new VocTb();
-                //model.Type = Int32.Parse(Voctype); // 종류
-                //model.Name = VocName; // 이름
+                model.Type = Convert.ToInt32(Voctype); // 종류
+                model.CreateUser = VocName; // 이름
                 model.Phone = VocPhoneNumber; // 전화번호
                 model.Title = VocTitle; // 제목
                 model.Content = VocContents; // 내용
                 model.BuildingTbId = Int32.Parse(Vocbuildingidx); // 건물 인덱스
-                    
+               
                 if (image is [_, ..])
                 {
                     // 확장자 검사
@@ -269,6 +269,13 @@ namespace FamTec.Server.Services.Voc
 
                 if (buildingck is not null)
                 {
+                   
+
+
+
+
+
+                    // 이미지 저장
                     for (int i = 0; i < image.Count(); i++)
                     {
                         string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(image[i].FileName)}";

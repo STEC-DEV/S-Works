@@ -61,6 +61,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 민원처리 소요 시간
         /// </summary>
-        public DateTime? TotalDT { get; set; }
+        public DateTime? DurationDT { get; set; }
     }
 }

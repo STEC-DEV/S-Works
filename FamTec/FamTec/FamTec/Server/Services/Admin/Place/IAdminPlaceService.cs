@@ -5,17 +5,26 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
+using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Services.Admin.Place
 {
     public interface IAdminPlaceService
     {
         /// <summary>
-        /// 사업장ID
+        /// 사업장에 포함되어있지 않은 관리자 리스트 조회
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<ManagerListDTO>?> NotContainManagerList(HttpContext? context, int? placeid);
+
+        /// <summary>
+        /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<AdminPlaceDTO>?> NotContainPlaceList(HttpContext? context, int? adminid);
 
 
         /// <summary>
@@ -93,7 +102,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> DeletePlaceService(HttpContext context, List<int> placeidx);
+        public ValueTask<ResponseUnit<bool>> DeletePlaceService(HttpContext? context, List<int> placeidx);
 
 
     }

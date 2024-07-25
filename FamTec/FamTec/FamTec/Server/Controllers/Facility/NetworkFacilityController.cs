@@ -20,9 +20,9 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddNetworkFacility")]
-        public async ValueTask<IActionResult> AddFacility([FromForm] AddFacilityDTO dto, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<AddFacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(HttpContext, dto, files);
+            ResponseUnit<FacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(HttpContext, dto, files);
 
             if (model is not null)
             {
@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateNetworkFacility")]
-        public async ValueTask<IActionResult> UpdateNetworkFacility([FromForm] UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateNetworkFacility([FromForm] FacilityDTO? dto, IFormFile? files)
         {
             ResponseUnit<bool?> model = await NetworkFacilityService.UpdateNetworkFacilityService(HttpContext, dto, files);
             if (model is not null)

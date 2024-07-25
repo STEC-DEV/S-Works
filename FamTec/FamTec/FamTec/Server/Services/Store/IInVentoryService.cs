@@ -31,7 +31,17 @@ namespace FamTec.Server.Services.Store
 
         public ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext? context, List<InOutInventoryDTO>? dto);
 
-     
+        /// <summary>
+        /// 품목별 기간별 입출고내역
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="materialid"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<PeriodicInventoryRecordDTO>> PeriodicInventoryRecordService(HttpContext? context, int? materialid, DateTime? startDate, DateTime? endDate);
+
+
     }
 }
 

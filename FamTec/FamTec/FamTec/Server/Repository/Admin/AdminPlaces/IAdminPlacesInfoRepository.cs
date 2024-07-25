@@ -43,7 +43,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <returns></returns>
         ValueTask<List<AdminPlaceTb>?> GetMyWorksList(int? adminid);
 
-
         /// <summary>
         /// 관리자 상세보기 페이지
         /// </summary>
@@ -108,5 +107,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="placeidx"></param>
         /// <returns></returns>
         ValueTask<(List<int?>? insert, List<int?>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int?> placeidx);
+
+        /// <summary>
+        /// 관리자가 포함안된 사업장 리스트 반환
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        ValueTask<List<AdminPlaceDTO?>> GetNotContainsPlaceList(int? adminid);
     }
 }

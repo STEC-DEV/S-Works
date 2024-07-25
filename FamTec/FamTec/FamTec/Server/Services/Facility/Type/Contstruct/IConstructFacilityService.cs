@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddFacilityDTO>?> AddConstructFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<FacilityDTO>?> AddConstructFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateConstructFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateConstructFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제

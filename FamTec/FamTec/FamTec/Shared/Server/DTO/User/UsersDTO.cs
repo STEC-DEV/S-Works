@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace FamTec.Shared.Server.DTO.User
@@ -46,11 +47,14 @@ namespace FamTec.Shared.Server.DTO.User
         public string? PASSWORD { get; set; }
 
         /// <summary>
-        /// 사용자 이미지
+        /// 사용자 이미지 - 클라이언트 담는용
         /// </summary>
         public byte[]? Image { get; set; }
 
-        public string? ImageName { get; set; }
+        /// <summary>
+        /// 사용자 이미지 - 클라이언트 반환용
+        /// </summary>
+        public string? ImageUrl { get; set; }
 
         /// <summary>
         /// 기본정보등록 권한

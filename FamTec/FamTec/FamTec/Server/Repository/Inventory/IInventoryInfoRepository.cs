@@ -20,7 +20,15 @@ namespace FamTec.Server.Repository.Inventory
 
         ValueTask<bool?> AvailableCheck(int? placeid, int? roomid, int? materialid);
 
-        ValueTask<bool?> GetInventoryRecord(int? placeid, int? materialid);
+        /// <summary>
+        /// 기간별 - 품목별 입출고 리스트 출력
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid, int? materialid, DateTime? startDate, DateTime? endDate);
 
         ValueTask<bool?> GetInventoryRecord2(int? placeid);
     }

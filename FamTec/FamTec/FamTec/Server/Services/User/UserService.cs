@@ -466,7 +466,6 @@ namespace FamTec.Server.Services.User
                 string? FileName = String.Empty;
                 string? FileExtenstion = String.Empty;
 
-
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 if (dto is null)
@@ -491,8 +490,6 @@ namespace FamTec.Server.Services.User
 
                 if (TokenChk.PermUser != 2)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-
-                
 
                 // 사용자 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, PlaceIdx.ToString());
@@ -621,7 +618,8 @@ namespace FamTec.Server.Services.User
                         code = 404
                     };
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
@@ -703,18 +701,18 @@ namespace FamTec.Server.Services.User
                                 if (file.Contains(Image))
                                 {
                                     byte[] ImageBytes = File.ReadAllBytes(file);
-                                    //dto.Image = Convert.ToBase64String(ImageBytes);
+                                    dto.ImageUrl = Convert.ToBase64String(ImageBytes);
                                 }
                             }
                         }
                         else
                         {
-                            //dto.Image = model.Image;
+                            dto.ImageUrl = model.Image;
                         }
                     }
                     else
                     {
-                        //dto.Image = model.Image;
+                        dto.ImageUrl = model.Image;
                     }
 
                     return new ResponseUnit<UsersDTO>()

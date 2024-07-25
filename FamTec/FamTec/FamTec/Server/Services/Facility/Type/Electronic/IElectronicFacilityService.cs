@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddFacilityDTO>?> AddElectronicFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<FacilityDTO>?> AddElectronicFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제

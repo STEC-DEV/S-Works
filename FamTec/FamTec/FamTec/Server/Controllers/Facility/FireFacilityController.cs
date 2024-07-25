@@ -20,9 +20,9 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddFireFacility")]
-        public async ValueTask<IActionResult> AddFacility([FromForm] AddFacilityDTO dto, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<AddFacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files);
+            ResponseUnit<FacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files);
 
             if (model is not null)
             {
@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateFireFacility")]
-        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] FacilityDTO? dto, IFormFile? files)
         {
             ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(HttpContext, dto, files);
             if (model is not null)

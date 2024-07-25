@@ -399,4 +399,7 @@ public partial class BuildingTb
     [ForeignKey("PlaceTbId")]
     [InverseProperty("BuildingTbs")]
     public virtual PlaceTb? PlaceTb { get; set; }
+
+    [InverseProperty("BuildingTb")]
+    public virtual ICollection<VocTb> VocTbs { get; set; } = new List<VocTb>();
 }

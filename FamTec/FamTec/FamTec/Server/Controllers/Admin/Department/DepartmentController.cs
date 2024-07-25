@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Admin.Department;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Admin.Department;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,13 @@ namespace FamTec.Server.Controllers.Admin.Department
     public class DepartmentController : ControllerBase
     {
         private IDepartmentService DepartmentService;
+        private ILogService LogService;
 
-        public DepartmentController(IDepartmentService _departmentservice)
+        public DepartmentController(IDepartmentService _departmentservice,
+            ILogService _logservice)
         {
             this.DepartmentService = _departmentservice;
+            this.LogService = _logservice;
         }
 
         /// <summary>
@@ -27,22 +31,25 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Route("sign/AddDepartment")]
         public async ValueTask<IActionResult> AddDepartment([FromBody] AddDepartmentDTO dto)
         {
-            ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if(model is not null)
-            {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -55,21 +62,24 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Route("sign/GetDepartmentList")]
         public async ValueTask<IActionResult> GetAllDepartment()
         {
-            ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService();
-            if(model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService();
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -83,18 +93,25 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Route("sign/DeleteDepartment")]
         public async ValueTask<IActionResult> DeleteDepartmentList([FromBody]List<int> departmentidx)
         {
-            ResponseUnit<bool>? model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
-
-            if(model is not null)
+            try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool>? model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
+
+                if (model is null)
+                    return BadRequest(model);
+
                 if (model.code == 200)
                     return Ok(model);
                 else
                     return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -108,22 +125,25 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Route("sign/UpdateDepartment")]
         public async ValueTask<IActionResult> UpdateDepartment([FromBody] DepartmentDTO dto)
         {
-            ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 

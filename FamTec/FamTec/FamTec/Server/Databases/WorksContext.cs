@@ -72,14 +72,20 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
 
+    public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<MaterialInventory>(entity =>
+        {
+            entity.HasNoDiscriminator();
+        });
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -781,10 +787,49 @@ public partial class WorksContext : DbContext
                 .HasComment("답변회신여부");
             entity.Property(e => e.Status).HasComment("민원처리상태");
             entity.Property(e => e.Title).HasComment("민원제목");
+
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.VocTbs).HasConstraintName("building_tb_202407250842");
         });
 
         OnModelCreatingPartial(modelBuilder);
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.DefaultTypeMapping<MaterialInventory>();
+        
+    }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}
+
+
+[Keyless]
+public partial class MaterialInventory
+{
+    /// <summary>
+    /// 창고 ID
+    /// </summary>
+    public int? R_ID { get; set; }
+
+    /// <summary>
+    /// 창고명
+    /// </summary>
+    public string? R_NM { get; set; }
+
+    /// <summary>
+    /// 자재ID
+    /// </summary>
+    public int? M_ID { get; set; }
+
+    /// <summary>
+    /// 자재명
+    /// </summary>
+    public string? M_NM { get; set; }
+
+    /// <summary>
+    /// 자재수량
+    /// </summary>
+    public string? TOTAL { get; set; }
 }

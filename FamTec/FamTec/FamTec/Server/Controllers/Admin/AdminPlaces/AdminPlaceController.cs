@@ -17,7 +17,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         private ILogService LogService;
 
 
-
         public AdminPlaceController(IAdminPlaceService _adminplaceservice,
             ILogService _logservice)
         {
@@ -38,22 +37,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseList<AllPlaceDTO>? model = await AdminPlaceService.GetAllWorksService(HttpContext);
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return Ok(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return Ok(model);
+
             }
             catch (Exception ex)
             {
@@ -73,23 +68,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseList<ManagerListDTO>? model = await AdminPlaceService.GetAllManagerListService();
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
             catch (Exception ex)
             {
@@ -110,23 +100,19 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.GetMyWorksService(adminid);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest();
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
             }
             catch (Exception ex)
             {
@@ -148,23 +134,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseUnit<PlaceDetailDTO>? model = await AdminPlaceService.GetPlaceService(placeid);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
             catch(Exception ex)
             {
@@ -185,23 +166,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(HttpContext, dto);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
             catch(Exception ex)
             {
@@ -219,26 +195,27 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Route("sign/DeleteWorks")]
         public async ValueTask<IActionResult> DeleteWorks([FromBody]List<int> placeidx)
         {
-            ResponseUnit<bool>? model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else if(model.code == 204)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool>? model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -247,26 +224,27 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Route("sign/UpdateWorks")]
         public async ValueTask<IActionResult> UpdateWorks([FromBody]UpdatePlaceDTO dto)
         {
-            ResponseUnit<UpdatePlaceDTO>? model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else if (model.code == 204)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<UpdatePlaceDTO>? model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -275,22 +253,52 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Route("sign/NotContainManagerList")]
         public async ValueTask<IActionResult> NotContainManagerList([FromQuery]int placeid)
         {
-            ResponseList<ManagerListDTO>? model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<ManagerListDTO>? model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpGet]
+        [Route("sign/NotContainPlaceList")]
+        public async ValueTask<IActionResult> NotContainPlaceList([FromQuery]int adminid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -306,42 +314,28 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
-                //AddPlaceManagerDTO<ManagerListDTO> placemanager = new AddPlaceManagerDTO<ManagerListDTO>();
-                //placemanager.PlaceId = 4;
-                //placemanager.PlaceManager.Add(new ManagerListDTO()
-                //{
-                //    Id = 11
-                //});
+                if (HttpContext is null)
+                    return BadRequest();
 
                 ResponseUnit<bool>? model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else if(model.code == 401)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
-            }catch(Exception ex)
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 401)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
+
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return StatusCode(500);
             }
         }
-
-
 
         /// <summary>
         /// 사업장에서 관리자 삭제
@@ -355,24 +349,21 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseUnit<int?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest(model);
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest(model);
-                }
-            }catch(Exception ex)
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
+
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return StatusCode(500);

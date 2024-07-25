@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("voc_tb")]
+[Index("BuildingTbId", Name = "building_tb_202407250842")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class VocTb
 {
@@ -81,12 +82,6 @@ public partial class VocTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// 건물 인덱스
-    /// </summary>
-    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
-
-    /// <summary>
     /// 이미지
     /// </summary>
     [StringLength(255)]
@@ -104,8 +99,18 @@ public partial class VocTb
     [StringLength(255)]
     public string? Image3 { get; set; }
 
+    /// <summary>
+    /// 건물 인덱스
+    /// </summary>
+    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
+    public int? BuildingTbId { get; set; }
+
     [InverseProperty("VocTb")]
     public virtual ICollection<AlarmTb> AlarmTbs { get; set; } = new List<AlarmTb>();
+
+    [ForeignKey("BuildingTbId")]
+    [InverseProperty("VocTbs")]
+    public virtual BuildingTb? BuildingTb { get; set; }
 
     [InverseProperty("VocTb")]
     public virtual ICollection<CommentTb> CommentTbs { get; set; } = new List<CommentTb>();

@@ -5,14 +5,7 @@ using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-public class TOTALTEMP
-{
-    public object? R_ID { get; set; }
-    public object? R_NM { get; set; }
-    public object? M_ID { get; set; }
-    public object? M_NM { get; set; }
-    public object? TOTAL { get; set; }
-}
+
 
 namespace FamTec.Server.Repository.Inventory
 {
@@ -33,42 +26,71 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> GetInventoryRecord(int? placeid,int? materialid)
+        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid,int? materialid, DateTime? startDate,  DateTime? endDate)
         {
-            DateTime startDate = new DateTime(2024, 7, 24);
-            DateTime endDate = new DateTime(2024, 7, 29);
-
-            // 각날짜별 최종 INDEX 구하기 --> 해당컬럼의 INDEX가 전일재고 수량으로 들어가면됨.
-            List<int> MaxID = context.Database.SqlQuery<int>
-            ($"SELECT max(ID) FROM store_tb where PLACE_TB_ID = {placeid} && MATERIAL_TB_ID = {materialid} && Create_dt >= {startDate} && Create_dt <= {endDate} group by date(CREATE_DT) order by CREATE_DT desc").ToList();
-
-            /*
-                select date(create_dt) as `date`,
-                  max(id) as `id`
-                   from store_tb
-                 WHERE place_tb_id =3 && material_tb_id = 1
-                  group by date(create_dt) order by create_dt desc;
-             */
-
-            List<StoreTb>? StoreTb = context.StoreTbs
-                .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MaterialTbId == materialid)
-                .ToList()
-                .Where(e => e.CreateDt >= startDate && e.CreateDt <= endDate && e.DelYn != true).ToList();
-            
-
-            foreach(StoreTb store in StoreTb)
+            try
             {
+                if (placeid is null)
+                    return null;
+                if (materialid is null)
+                    return null;
+                if (startDate is null)
+                    return null;
+                if (endDate is null)
+                    return null;
 
+                List<StoreTb>? StoreList = await context.StoreTbs
+                .Where(m => m.DelYn != true &&
+                m.PlaceTbId == placeid &&
+                m.MaterialTbId == materialid &&
+                m.CreateDt >= startDate &&
+                m.CreateDt <= endDate)
+                .OrderBy(m => m.CreateDt)
+                .ToListAsync();
+
+                if (StoreList is [_, ..])
+                {
+                    List<PeriodicInventoryRecordDTO> dto = (from StoreTB in StoreList
+                                                            join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
+                                                            on StoreTB.MaterialTbId equals MaterialTB.Id
+                                                            select new PeriodicInventoryRecordDTO
+                                                            {
+                                                                INOUT_DATE = StoreTB.CreateDt, // 거래일
+                                                                Type = StoreTB.Inout, // 입출고구분
+                                                                MaterialID = StoreTB.MaterialTbId, // 품목코드
+                                                                MaterialName = MaterialTB.Name, // 품목명
+                                                                MaterialUnit = MaterialTB.Unit, // 품목 단위
+                                                                InOutNum = StoreTB.Num, // 입출고 수량
+                                                                InOutUnitPrice = StoreTB.UnitPrice, // 입출고 단가
+                                                                InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
+                                                                CurrentNum = StoreTB.CurrentNum,
+                                                                Note = StoreTB.Note // 비고
+                                                            }).ToList();
+                    
+                    return dto;
+                }
+                else
+                {
+                    return new List<PeriodicInventoryRecordDTO>();
+                }
             }
-
-            Console.WriteLine("");
-            return null;
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
         }
 
         
 
         public async ValueTask<bool?> GetInventoryRecord2(int? placeid)
         {
+            //var temp = context.Database.SqlQuery<TOTALTEMP>($" SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id ORDER BY M_ID");
+            var temp = await context.MaterialInven.FromSql<MaterialInventory>($"SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = {placeid} AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = {placeid}))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id ORDER BY M_ID, R_ID").ToListAsync();
+                
+
+            Console.WriteLine("");
+
             // 아래 항목 LINQ로 한번 도전
             /*
              SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL
@@ -84,7 +106,7 @@ namespace FamTec.Server.Repository.Inventory
              AND A.M_ID = B.material_tb_id
             ORDER BY M_ID
              */
-             
+
             Console.WriteLine("dd");
 
             return null;

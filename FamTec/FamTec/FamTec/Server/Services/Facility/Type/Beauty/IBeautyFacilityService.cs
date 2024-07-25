@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddFacilityDTO>?> AddBeautyFacilityService(HttpContext? context, AddFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<FacilityDTO>?> AddBeautyFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext? context, UpdateFacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제

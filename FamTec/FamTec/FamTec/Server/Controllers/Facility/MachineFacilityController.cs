@@ -20,9 +20,9 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMachineFacility")]
-        public async ValueTask<IActionResult> AddFacility([FromForm] AddFacilityDTO dto, [FromForm]IFormFile? files)
+        public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<AddFacilityDTO>? model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
+            ResponseUnit<FacilityDTO>? model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
 
             if (model is not null)
             {
@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateMachineFacility")]
-        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm]UpdateFacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO? dto, IFormFile? files)
         {
             ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files);
             if(model is not null)

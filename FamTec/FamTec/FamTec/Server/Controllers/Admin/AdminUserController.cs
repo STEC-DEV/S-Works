@@ -1,13 +1,11 @@
 ﻿using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
-using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static System.Net.Mime.MediaTypeNames;
-using System.IO;
+using FamTec.Server.Services;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -17,12 +15,15 @@ namespace FamTec.Server.Controllers.Admin
     {
         private IAdminAccountService AdminAccountService;
         private IAdminPlaceService AdminPlaceService;
+        private ILogService LogService;
 
         public AdminUserController(IAdminAccountService _adminservice,
-            IAdminPlaceService _adminplaceservice)
+            IAdminPlaceService _adminplaceservice,
+            ILogService _logservice)
         {
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
+            this.LogService = _logservice;
         }
 
 
@@ -36,42 +37,43 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/AddManager")]
         public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
-
-            //var file = Request.Form.Files[0];
-            //if (file.Length > 0)
-            //{
-            //    // 파일명 생성 (중복 방지를 위해 GUID 사용)
-            //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            //    var filePath = Path.Combine(@"X:\\FMS\\설계\\ERD", fileName);
-
-            //    // 파일 저장
-            //    using (var stream = new FileStream(filePath, FileMode.Create))
-            //    {
-            //        await file.CopyToAsync(stream);
-            //    }
-
-            //    // 파일 경로를 데이터베이스에 저장하거나 필요한 처리를 수행
-            //    Console.WriteLine(filePath);
-            //}
-
-            ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                //var file = Request.Form.Files[0];
+                //if (file.Length > 0)
+                //{
+                //    // 파일명 생성 (중복 방지를 위해 GUID 사용)
+                //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                //    var filePath = Path.Combine(@"X:\\FMS\\설계\\ERD", fileName);
+
+                //    // 파일 저장
+                //    using (var stream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        await file.CopyToAsync(stream);
+                //    }
+
+                //    // 파일 경로를 데이터베이스에 저장하거나 필요한 처리를 수행
+                //    Console.WriteLine(filePath);
+                //}
+
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
-           
         }
 
         /// <summary>
@@ -84,22 +86,25 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/DetailManagerInfo")]
         public async ValueTask<IActionResult> GetManagerInfo([FromQuery]int adminid)
         {
-            ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -113,22 +118,25 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/AddManagerWorks")]
         public async ValueTask<IActionResult> AddManagerWorks([FromBody] AddManagerPlaceDTO dto)
         {
-            ResponseUnit<bool>? model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                ResponseUnit<bool>? model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -142,22 +150,25 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/DeleteManager")]
         public async ValueTask<IActionResult> DeleteManager(List<int> adminidx)
         {
-            ResponseUnit<int?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                ResponseUnit<int?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -170,21 +181,24 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/UpdateManager")]
         public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO? dto, IFormFile? files)
         {
-            ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -198,21 +212,24 @@ namespace FamTec.Server.Controllers.Admin
         [Route("sign/UserIdCheck")]
         public async ValueTask<IActionResult> UserIdCheck([FromBody] string userid)
         {
-            ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
             }
         }
 

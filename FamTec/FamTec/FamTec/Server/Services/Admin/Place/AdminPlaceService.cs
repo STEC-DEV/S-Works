@@ -659,6 +659,12 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
+        /// <summary>
+        /// 사업장에 포함되어있지 않은 관리자 리스트 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseList<ManagerListDTO>?> NotContainManagerList(HttpContext? context,int? placeid)
         {
             try
@@ -683,6 +689,33 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
-     
+        /// <summary>
+        /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<AdminPlaceDTO>?> NotContainPlaceList(HttpContext? context, int? adminid)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (adminid is null)
+                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<AdminPlaceDTO?> SelectList = await AdminPlaceInfoRepository.GetNotContainsPlaceList(adminid);
+                if (SelectList is [_, ..])
+                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+                else
+                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 }

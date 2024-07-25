@@ -623,5 +623,81 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 관리자가 포함안된 사업장 리스트 반환
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<AdminPlaceDTO?>> GetNotContainsPlaceList(int? adminid)
+        {
+            try
+            {
+                if (adminid is null)
+                    return null;
+
+                // 관리자 있는지 Check
+                AdminTb? AdminCheck = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                if (AdminCheck is null)
+                    return null;
+
+
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
+                if(adminplacetb is [_, ..])
+                {
+                    List<int?> adminplacetbid = adminplacetb.Select(m => m.PlaceTbId).ToList();
+
+                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
+                    if(placetb is [_, ..])
+                    {
+                        List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
+                        {
+                            Id = e.Id, // 사업장ID
+                            PlaceCd = e.PlaceCd, // 사업장코드
+                            Name = e.Name, // 사업장이름
+                            ContractNum = e.ContractNum, // 계약번호
+                            ContractDt = e.ContractDt, // 계약일자
+                            Status = e.Status, // 상태
+                            Note = e.Note, // 비고
+                        }).ToList();
+
+                        return model;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else // 이사람은 아무 사업장도 없음
+                {
+                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(m => m.DelYn != true).ToListAsync();
+                    if(placetb is [_, ..])
+                    {
+                        List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
+                        {
+                            Id = e.Id, // 사업장ID
+                            PlaceCd = e.PlaceCd, // 사업장코드
+                            Name = e.Name, // 사업장이름
+                            ContractNum = e.ContractNum, // 계약번호
+                            ContractDt = e.ContractDt, // 계약일자
+                            Status = e.Status, // 상태
+                            Note = e.Note, // 비고
+                        }).ToList();
+
+                        return model;
+                    }
+                    else // 사업장 자체가 아무것도 없음
+                    {
+                        return null;
+                    }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }
