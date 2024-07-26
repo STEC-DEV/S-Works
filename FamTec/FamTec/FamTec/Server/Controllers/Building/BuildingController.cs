@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Building;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +12,13 @@ namespace FamTec.Server.Controllers.Building
     public class BuildingController : ControllerBase
     {
         private IBuildingService BuildingService;
+        private ILogService LogService;
 
-
-        public BuildingController(IBuildingService _buildingservice)
+        public BuildingController(IBuildingService _buildingservice,
+            ILogService _logservice)
         {
-            BuildingService = _buildingservice;
+            this.BuildingService = _buildingservice;
+            this.LogService = _logservice;
         }
 
         /// <summary>
@@ -27,22 +30,25 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/MyBuildings")]
         public async ValueTask<IActionResult> SelectMyBuilding()
         {
-            ResponseList<BuildinglistDTO>? model = await BuildingService.GetBuilidngListService(HttpContext);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if (model is not null)
-            {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                ResponseList<BuildinglistDTO>? model = await BuildingService.GetBuilidngListService(HttpContext);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -56,22 +62,33 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/AddBuilding")]
         public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO? dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<AddBuildingDTO?> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
-            if (model is not null)
-            {
-                if (model.code == 200)
+                if(files is not null)
                 {
-                    return Ok(model);
+                    if(files.Length > 1048576)
+                    {
+                        return Ok(new ResponseUnit<AddBuildingDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
-                else
-                {
+
+                ResponseUnit<AddBuildingDTO?> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
+
+                if (model is null)
                     return BadRequest(model);
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -85,22 +102,25 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/DetailBuilding")]
         public async ValueTask<IActionResult> DetailBuilding([FromQuery] int? buildingid)
         {
-            ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -110,22 +130,24 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/DeleteBuilding")]
         public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
-            
-            ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -135,22 +157,34 @@ namespace FamTec.Server.Controllers.Building
         [Route("sign/UpdateBuilding")]
         public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO? dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<bool?> model = await BuildingService.UpdateBuildingService(HttpContext, dto, files);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                // 파일크기 1MB 지정
+                if(files is not null)
+                {
+                    if(files.Length > 1048576)
+                    {
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<bool?> model = await BuildingService.UpdateBuildingService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 

@@ -30,6 +30,13 @@ namespace FamTec.Server.Repository.Inventory
         /// <returns></returns>
         ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid, int? materialid, DateTime? startDate, DateTime? endDate);
 
-        ValueTask<bool?> GetInventoryRecord2(int? placeid);
+        /// <summary>
+        /// 품목별 창고별 재고현황
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="MaterialId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int? placeid, List<int>? MaterialId, bool? type);
     }
 }

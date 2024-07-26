@@ -12,6 +12,13 @@ namespace FamTec.Server.Repository.User
         ValueTask<UsersTb?> AddAsync(UsersTb? model);
 
         /// <summary>
+        /// 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<bool?> AddUserAsync(UsersTb? model);
+
+        /// <summary>
         /// 유저 INDEX로 유저테이블 검색
         /// </summary>
         /// <param name="useridx"></param>

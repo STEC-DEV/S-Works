@@ -153,6 +153,7 @@ namespace FamTec.Server.Services.Store
             }
         }
 
+
         public async ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext? context, List<InOutInventoryDTO>? dto)
         {
             try
@@ -244,6 +245,49 @@ namespace FamTec.Server.Services.Store
                 return new ResponseList<PeriodicInventoryRecordDTO>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
+
+
+
+        /// <summary>
+        /// 사업장별 재고 현황
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="materialid"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<MaterialHistory>?> GetPlaceInventoryRecordService(HttpContext? context, List<int>? materialid, bool? type)
+        {
+            try
+            {
+                if(context is null)
+                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(materialid is null)
+                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(type is null)
+                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<MaterialHistory>? model = await InventoryInfoRepository.GetPlaceInventoryRecord(Convert.ToInt32(placeid), materialid, type);
+                
+                if(model is null)
+                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                else if(model.Count > 0)
+                    return new ResponseList<MaterialHistory>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<MaterialHistory>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<MaterialHistory>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 
    

@@ -831,5 +831,5 @@ public partial class MaterialInventory
     /// <summary>
     /// 자재수량
     /// </summary>
-    public string? TOTAL { get; set; }
+    public int? TOTAL { get; set; }
 }

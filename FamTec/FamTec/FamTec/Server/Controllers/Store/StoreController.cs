@@ -27,11 +27,17 @@ namespace FamTec.Server.Controllers.Store
             this.InventoryInfoRepository = _inven;
         }
 
-        // 기간별 입출고 내역 뽑는 로직 짜야함.
+        /// <summary>
+        /// 기간별 입출고 내역
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <param name="Startdate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/PeriodicRecord")]
-        public async ValueTask<IActionResult> GetList([FromQuery]int? materialid, DateTime? Startdate, DateTime? EndDate)
+        [Route("sign/GetPeriodicRecord")]
+        public async ValueTask<IActionResult> PeriodicRecord([FromQuery]int? materialid, DateTime? Startdate, DateTime? EndDate)
         {
             try
             {
@@ -55,58 +61,83 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
+        /// <summary>
+        /// 폼목별 재고 현황
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/Temp2")]
-        public async ValueTask<IActionResult> GetList2()
+        [Route("sign/GetPlaceInventoryStatus")]
+        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int>? materialid, [FromQuery]bool? type)
         {
-            await InventoryInfoRepository.GetInventoryRecord2(3);
-            return Ok();
+            try
+            {
+                //List<int> materialId = new List<int>() { 3, 4, 5, 6 };
+                //bool type = true;
+
+                if (HttpContext is null)
+                    return BadRequest();
+               
+                ResponseList<MaterialHistory>? model = await InStoreService.GetPlaceInventoryRecordService(HttpContext, materialid, type);
+
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return StatusCode(500);
+            }
         }
 
         // 입고
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddInStore")]
-        public async ValueTask<IActionResult> AddInStore()
-        //public async ValueTask<IActionResult> AddInStore([FromBody]AddStoreDTO dto)
+        //public async ValueTask<IActionResult> AddInStore()
+        public async ValueTask<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
         {
-            List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-            dto.Add(new InOutInventoryDTO
-            {
-                InOut = 1,
-                MaterialID = 5,
-                AddStore = new AddStoreDTO()
-                {
-                    InOutDate = DateTime.Now.AddDays(-10),
-                    Num = 100,
-                    RoomID = 1,
-                    UnitPrice = 3000,
-                    TotalPrice = 100*3000,
-                    Note = "입고데이터_1"
-                }
-            });
-            dto.Add(new InOutInventoryDTO
-            {
-                InOut = 1,
-                MaterialID = 6,
-                AddStore = new AddStoreDTO()
-                {
-                    InOutDate = DateTime.Now.AddDays(-20),
-                    Num = 135,
-                    RoomID = 2,
-                    UnitPrice = 500,
-                    TotalPrice = 300 * 500,
-                    Note = "입고데이터_2"
-                }
-            });
+            //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+            //dto.Add(new InOutInventoryDTO
+            //{
+            //    InOut = 1,
+            //    MaterialID = 5,
+            //    AddStore = new AddStoreDTO()
+            //    {
+            //        InOutDate = DateTime.Now.AddDays(-10),
+            //        Num = 100,
+            //        RoomID = 1,
+            //        UnitPrice = 3000,
+            //        TotalPrice = 100*3000,
+            //        Note = "입고데이터_1"
+            //    }
+            //});
+            //dto.Add(new InOutInventoryDTO
+            //{
+            //    InOut = 1,
+            //    MaterialID = 6,
+            //    AddStore = new AddStoreDTO()
+            //    {
+            //        InOutDate = DateTime.Now.AddDays(-20),
+            //        Num = 135,
+            //        RoomID = 2,
+            //        UnitPrice = 500,
+            //        TotalPrice = 300 * 500,
+            //        Note = "입고데이터_2"
+            //    }
+            //});
 
 
             ResponseUnit<bool?> model = await InStoreService.AddInStoreService(HttpContext, dto);
-            if(model is not null)
+            if (model is not null)
             {
-                if(model.code == 200)
+                if (model.code == 200)
                 {
                     return Ok(model);
                 }
@@ -123,43 +154,45 @@ namespace FamTec.Server.Controllers.Store
 
         // 출고
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/OutInventory")]
-        public async ValueTask<IActionResult> OutInventoryService()
+        public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
+        //public async ValueTask<IActionResult> OutInventoryService()
         {
 
-            List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+            //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
             
-            dto.Add(new InOutInventoryDTO()
-            {
-                InOut = 0,
-                MaterialID = 5,
-                AddStore = new AddStoreDTO()
-                {
-                    InOutDate = DateTime.Now,
-                    Note = "출고데이터_1",
-                    Num = 125,
-                    RoomID = 1,
-                    UnitPrice = 300,
-                    TotalPrice = 720 * 300
-                }
-            });
+            //dto.Add(new InOutInventoryDTO()
+            //{
+                //InOut = 0,
+                //MaterialID = 5,
+                //AddStore = new AddStoreDTO()
+                //{
+                    //InOutDate = DateTime.Now,
+                    //Note = "출고데이터_1",
+                    //Num = 125,
+                    //RoomID = 1,
+                    //UnitPrice = 300,
+                    //TotalPrice = 720 * 300
+                //}
+            //});
           
         
-            dto.Add(new InOutInventoryDTO()
-            {
-                InOut = 0,
-                MaterialID = 6,
-                AddStore = new AddStoreDTO()
-                {
-                    InOutDate = DateTime.Now,
-                    Note = "출고데이터_1",
-                    Num = 155,
-                    RoomID = 2,
-                    UnitPrice = 100,
-                    TotalPrice = 720 * 100
-                }
-            });
+            //dto.Add(new InOutInventoryDTO()
+            //{
+                //InOut = 0,
+                //MaterialID = 6,
+                //AddStore = new AddStoreDTO()
+                //{
+                    //InOutDate = DateTime.Now,
+                    //Note = "출고데이터_1",
+                    //Num = 155,
+                    //RoomID = 2,
+                    //UnitPrice = 100,
+                    //TotalPrice = 720 * 100
+                //}
+            //});
           
 
             ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);

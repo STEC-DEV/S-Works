@@ -1,8 +1,13 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Floor;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 
 
@@ -81,35 +86,183 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-        
 
-        public async ValueTask<bool?> GetInventoryRecord2(int? placeid)
+        /// <summary>
+        /// 품목별 창고별 재고현황
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="MaterialIdx"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public async ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int? placeid, List<int>? MaterialIdx, bool? type)
         {
-            //var temp = context.Database.SqlQuery<TOTALTEMP>($" SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id ORDER BY M_ID");
-            var temp = await context.MaterialInven.FromSql<MaterialInventory>($"SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = {placeid} AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = {placeid}))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id ORDER BY M_ID, R_ID").ToListAsync();
+            try
+            {
+                if (placeid is null)
+                    return null;
+                if(MaterialIdx is null)
+                    return null;
+                if (type is null)
+                    return null;
                 
+                string query = string.Empty;
 
-            Console.WriteLine("");
+                // 전체조회
+                if (type == true) 
+                {
+                    // 대상 전체조회
+                    string Where = String.Empty;
+                    for (int i = 0; i < MaterialIdx.Count; i++)
+                    {
+                        Where += $"M_ID = {MaterialIdx[i]} OR ";
+                    }
 
-            // 아래 항목 LINQ로 한번 도전
-            /*
-             SELECT R_ID, R_NM, M_ID, M_NM, IF(B.TOTAL != '', B.TOTAL, '0') AS TOTAL
-              FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM 
-                      FROM room_tb 
-                      JOIN material_tb 
-                     WHERE material_tb.DEL_YN = 0 
-                       AND material_tb.PLACE_TB_ID = 3
-                       AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))
-                   ) A
-            LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B
-              ON A.R_ID = B.ROOM_TB_ID
-             AND A.M_ID = B.material_tb_id
-            ORDER BY M_ID
-             */
+                    Where = Where.Substring(0, Where.Length - 3);
+                    query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
+                    List<MaterialInventory>? model = await context.MaterialInven.FromSqlRaw<MaterialInventory>(query).ToListAsync();
+                    
+                    if (model is null)
+                        return null;
+                    
+                    // 반복문 돌리 조건 [1]
+                    List<RoomTb>? roomlist = (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                                              join floor in context.FloorTbs.Where(m => m.DelYn != true)
+                                              on building.Id equals floor.BuildingTbId
+                                              join room in context.RoomTbs.Where(m => m.DelYn != true)
+                                              on floor.Id equals room.FloorTbId
+                                              select new RoomTb
+                                              {
+                                                  Id = room.Id,
+                                                  Name = room.Name,
+                                                  CreateDt = room.CreateDt,
+                                                  CreateUser = room.CreateUser,
+                                                  UpdateDt = room.UpdateDt,
+                                                  UpdateUser = room.UpdateUser,
+                                                  DelYn = room.DelYn,
+                                                  DelDt = room.DelDt,
+                                                  DelUser = room.DelUser,
+                                                  FloorTbId = room.FloorTbId
+                                              }).ToList();
+                    if (roomlist is null)
+                        return null;
 
-            Console.WriteLine("dd");
+                    // 반복문 돌리기 조건 [2]
+                    int materiallist = model.GroupBy(m => m.M_ID).Count();
 
-            return null;
+                    // 개수 Check
+                    int checkCount = roomlist.Count() * materiallist;
+                    if (checkCount != model.Count())
+                        return null;
+
+
+                    List<MaterialHistory> history = new List<MaterialHistory>();
+                    int resultCount = 0;
+                    for (int i = 0; i < materiallist; i++)
+                    {
+                        MaterialHistory material = new MaterialHistory();
+                        material.ID = model[resultCount].M_ID;
+                        material.Name = model[resultCount].M_NM;
+
+                        //List<RoomDTO> room = new List<RoomDTO>();
+                        for (int j = 0; j < roomlist.Count(); j++)
+                        {
+                            RoomDTO dto = new RoomDTO();
+                            dto.Name = model[resultCount + j].R_NM;
+                            dto.Num = model[resultCount + j].TOTAL;
+                            material.RoomHistory.Add(dto);
+                        }
+                        resultCount += roomlist.Count();
+                        history.Add(material);
+                    }
+                    if (model.Count == resultCount)
+                    {
+                        return history;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else // 0이 아닌것만 조회
+                {
+                    string Where = String.Empty;
+                    for (int i = 0; i < MaterialIdx.Count; i++)
+                    {
+                        Where += $"M_ID = {MaterialIdx[i]} OR ";
+                    }
+
+                    Where = Where.Substring(0, Where.Length - 3);
+
+                    query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
+
+                    List<MaterialInventory> model = await context.MaterialInven.FromSqlRaw<MaterialInventory>(query).ToListAsync();
+
+                    model = model
+                    .GroupBy(m => m.M_ID)
+                    .Where(g => g.Any(m => m.TOTAL != 0))
+                    .SelectMany(g => g)
+                    .ToList();
+
+                    if(model is [_, ..]) // 있으면
+                    {
+                        // 반복문 돌리 조건 [1]
+                        List<RoomTb>? roomlist = (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                                                  join floor in context.FloorTbs.Where(m => m.DelYn != true)
+                                                  on building.Id equals floor.BuildingTbId
+                                                  join room in context.RoomTbs.Where(m => m.DelYn != true)
+                                                  on floor.Id equals room.FloorTbId
+                                                  select new RoomTb
+                                                  {
+                                                      Id = room.Id,
+                                                      Name = room.Name,
+                                                      CreateDt = room.CreateDt,
+                                                      CreateUser = room.CreateUser,
+                                                      UpdateDt = room.UpdateDt,
+                                                      UpdateUser = room.UpdateUser,
+                                                      DelYn = room.DelYn,
+                                                      DelDt = room.DelDt,
+                                                      DelUser = room.DelUser,
+                                                      FloorTbId = room.FloorTbId
+                                                  }).ToList();
+
+                        int materialcount = model.GroupBy(m => m.M_ID).Count();
+
+                        //int resultCount = 0;
+                        List<MaterialHistory> history = new List<MaterialHistory>();
+                        int resultCount = 0;
+                        for (int i = 0; i < materialcount; i++)
+                        {
+                            MaterialHistory material = new MaterialHistory();
+                            material.ID = model[resultCount].M_ID;
+                            material.Name = model[resultCount].M_NM;
+
+                            for (int j = 0; j < roomlist.Count(); j++)
+                            {
+                                RoomDTO dto = new RoomDTO();
+                                dto.Name = model[resultCount + j].R_NM;
+                                dto.Num = model[resultCount + j].TOTAL;
+                                material.RoomHistory.Add(dto);
+                            }
+                            resultCount += roomlist.Count();
+                            history.Add(material);
+                        }
+
+                        if (history is [_, ..])
+                            return history;
+                        else
+                            return new List<MaterialHistory>();
+                    }
+                    else // 없으면
+                    {
+                        return new List<MaterialHistory>();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
         }
 
 
@@ -135,7 +288,6 @@ namespace FamTec.Server.Repository.Inventory
                 // 실패했을때 삭제하기 위함.
                 List<InventoryTb> delInventoryTB = new List<InventoryTb>();
                 List<StoreTb> delStoreTB = new List<StoreTb>();
-
                 foreach(InOutInventoryDTO InventoryDTO in model)
                 {
                     StoreTb Storetb = new StoreTb();
@@ -153,10 +305,8 @@ namespace FamTec.Server.Repository.Inventory
                     Storetb.PlaceTbId = placeid;
                     Storetb.MaterialTbId = InventoryDTO.MaterialID;
                     Storetb.MaintenenceHistoryTbId = null;
-
                     context.StoreTbs.Add(Storetb);
                     bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
-
                     if(AddStoreResult == true)
                     {
                         delStoreTB.Add(Storetb); // StoreTB 삭제대기열
@@ -173,17 +323,14 @@ namespace FamTec.Server.Repository.Inventory
                         Inventorytb.PlaceTbId = placeid;
                         Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID;
                         Inventorytb.MaterialTbId = InventoryDTO.MaterialID;
-
                         context.InventoryTbs.Add(Inventorytb);
                         bool? AddInventoryResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        
                         if(AddInventoryResult == true)
                         {
                             delInventoryTB.Add(Inventorytb);
-
                             int? thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
-                                            m.MaterialTbId == InventoryDTO.MaterialID &&
-                                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
+                            m.MaterialTbId == InventoryDTO.MaterialID &&
+                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                                             m.PlaceTbId == placeid).Sum(m => m.Num);
 
                             if (thisCurrentNum is null)

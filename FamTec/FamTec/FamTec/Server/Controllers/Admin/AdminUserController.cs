@@ -72,7 +72,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -104,7 +104,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -136,7 +136,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -168,7 +168,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -198,7 +198,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -229,7 +229,7 @@ namespace FamTec.Server.Controllers.Admin
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 

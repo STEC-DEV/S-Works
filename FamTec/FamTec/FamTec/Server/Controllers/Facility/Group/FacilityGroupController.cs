@@ -1,8 +1,8 @@
-﻿using FamTec.Server.Services.Facility.Group;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Facility.Group;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Facility.Group
@@ -12,10 +12,14 @@ namespace FamTec.Server.Controllers.Facility.Group
     public class FacilityGroupController : ControllerBase
     {
         private IFacilityGroupService GroupService;
+        private ILogService LogService;
 
-        public FacilityGroupController(IFacilityGroupService _groupservice)
+
+        public FacilityGroupController(IFacilityGroupService _groupservice,
+            ILogService _logservice)
         {
             this.GroupService = _groupservice;
+            this.LogService = _logservice;
         }
 
 
@@ -24,44 +28,47 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/AddFacilityGroup")]
         public async ValueTask<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO? dto)
         {
-            //AddGroupDTO dto = new AddGroupDTO();
-            //dto.FacilityIdx = 2;
-            //dto.Name = "송풍기";
-
-            //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
-            //key.Name = "모터용량";
-
-            //key.ItemValues.Add(new AddGroupItemValueDTO()
-            //{
-            //    Values = "15KW x 2EA"
-            //});
-            //dto.AddGroupKey.Add(key);
-
-            //key = new AddGroupItemKeyDTO();
-            //key.Name = "정압";
-            //key.ItemValues.Add(new AddGroupItemValueDTO()
-            //{
-            //    Values = "120",
-            //    Unit = "mmAq"
-            //});
-            //dto.AddGroupKey.Add(key);
-
-            ResponseUnit<AddGroupDTO?> model = await GroupService.AddFacilityGroupService(HttpContext, dto);
-            
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                //AddGroupDTO dto = new AddGroupDTO();
+                //dto.FacilityIdx = 2;
+                //dto.Name = "송풍기";
+
+                //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
+                //key.Name = "모터용량";
+
+                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //{
+                //    Values = "15KW x 2EA"
+                //});
+                //dto.AddGroupKey.Add(key);
+
+                //key = new AddGroupItemKeyDTO();
+                //key.Name = "정압";
+                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //{
+                //    Values = "120",
+                //    Unit = "mmAq"
+                //});
+                //dto.AddGroupKey.Add(key);
+
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<AddGroupDTO?> model = await GroupService.AddFacilityGroupService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -70,21 +77,24 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/GetFacilityGroup")]
         public async ValueTask<IActionResult> GetDetailFacility(int? Facilityid)
         {
-            ResponseList<GroupListDTO?> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<GroupListDTO?> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -93,21 +103,24 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/UpdateGroup")]
         public async ValueTask<IActionResult> UpdateFacilityGroup([FromBody] UpdateGroupDTO? dto)
         {
-            ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -116,21 +129,24 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/DeleteGroup")]
         public async ValueTask<IActionResult> DeleteFacilityGroup([FromBody]int? groupid)
         {
-            ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid);
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 

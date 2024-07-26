@@ -54,7 +54,35 @@ namespace FamTec.Server.Repository.User
             }
         }
 
- 
+        public async ValueTask<bool?> AddUserAsync(UsersTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    UsersTb? search = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId == model.UserId);
+                    if (search is null)
+                    {
+                        context.UsersTbs.Add(model);
+                        return await context.SaveChangesAsync() > 0 ? true: false;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
 
         /// <summary>
         /// 유저 INDEX로 유저테이블 조회
@@ -682,5 +710,7 @@ namespace FamTec.Server.Repository.User
                 throw new ArgumentNullException();
             }
         }
+
+   
     }
 }

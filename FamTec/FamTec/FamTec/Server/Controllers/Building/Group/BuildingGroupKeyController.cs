@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Building.Key;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.AspNetCore.Authorization;
@@ -11,10 +12,12 @@ namespace FamTec.Server.Controllers.Building.Group
     public class BuildingGroupKeyController : ControllerBase
     {
         private IBuildingKeyService BuildingKeyService;
+        private ILogService LogService;
 
-        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice)
+        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice, ILogService _logservice)
         {
             this.BuildingKeyService = _buildingkeyservice;
+            this.LogService = _logservice;
         }
 
         // 추가
@@ -23,36 +26,39 @@ namespace FamTec.Server.Controllers.Building.Group
         [Route("sign/AddKey")]
         public async ValueTask<IActionResult> AddGroupKey([FromBody]AddKeyDTO dto)
         {
-            //AddKeyDTO dto = new AddKeyDTO();
-            //dto.GroupID = 1;
-            //dto.Name = "추가키";
-            //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
-            //{
-            //    Values = "값1",
-            //    Unit = "단위1"
-            //});
-            //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
-            //{
-            //    Values = "값2",
-            //    Unit = "단위2"
-            //});
-
-            ResponseUnit<AddKeyDTO?> model = await BuildingKeyService.AddKeyService(HttpContext, dto);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                //AddKeyDTO dto = new AddKeyDTO();
+                //dto.GroupID = 1;
+                //dto.Name = "추가키";
+                //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
+                //{
+                //    Values = "값1",
+                //    Unit = "단위1"
+                //});
+                //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
+                //{
+                //    Values = "값2",
+                //    Unit = "단위2"
+                //});
+
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<AddKeyDTO?> model = await BuildingKeyService.AddKeyService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -64,38 +70,41 @@ namespace FamTec.Server.Controllers.Building.Group
         [Route("sign/UpdateKey")]
         public async ValueTask<IActionResult> UpdateGroupKey([FromBody]UpdateKeyDTO dto)
         {
-            //UpdateKeyDTO dto = new UpdateKeyDTO();
-            //dto.ID = 3;
-            //dto.Itemkey = "추가_수정1";
-            //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
-            //{
-            //    ID = 4,
-            //    ItemValue = "수정값1",
-            //    Unit = "수정단위1"
-            //});
-            //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
-            //{
-            //    ID = 5,
-            //    ItemValue = "수정값2",
-            //    Unit = "수정단위2"
-            //});
-
-            ResponseUnit<UpdateKeyDTO?> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                //UpdateKeyDTO dto = new UpdateKeyDTO();
+                //dto.ID = 3;
+                //dto.Itemkey = "추가_수정1";
+                //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
+                //{
+                //    ID = 4,
+                //    ItemValue = "수정값1",
+                //    Unit = "수정단위1"
+                //});
+                //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
+                //{
+                //    ID = 5,
+                //    ItemValue = "수정값2",
+                //    Unit = "수정단위2"
+                //});
+
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<UpdateKeyDTO?> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 
@@ -105,22 +114,25 @@ namespace FamTec.Server.Controllers.Building.Group
         [Route("sign/DeleteKey")]
         public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {
-            ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(HttpContext, keyid);
-            
-            if(model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(HttpContext, keyid);
+
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
             }
         }
 

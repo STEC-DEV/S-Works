@@ -565,48 +565,23 @@ namespace FamTec.Server.Services.User
                     model.Image = null;
                 }
 
-                UsersTb? result = await UserInfoRepository.AddAsync(model);
-                if (result is not null)
+                bool? result = await UserInfoRepository.AddUserAsync(model);
+                if (result == true)
                 {
                     return new ResponseUnit<UsersDTO>()
                     {
                         message = "요청이 정상 처리되었습니다.",
-                        data = new UsersDTO()
-                        {
-                            ID = result.Id,
-                            USERID = result.UserId,
-                            PASSWORD = result.Password,
-                            NAME = result.Name,
-                            EMAIL = result.Email,
-                            PHONE = result.Phone,
-                            PERM_BASIC = result.PermBasic,
-                            PERM_MACHINE = result.PermMachine,
-                            PERM_ELEC = result.PermElec,
-                            PERM_LIFT = result.PermLift,
-                            PERM_FIRE = result.PermFire,
-                            PERM_CONSTRUCT = result.PermConstruct,
-                            PERM_NETWORK = result.PermNetwork,
-                            PERM_BEAUTY = result.PermBeauty,
-                            PERM_SECURITY = result.PermSecurity,
-                            PERM_MATERIAL = result.PermMaterial,
-                            PERM_ENERGY = result.PermEnergy,
-                            PERM_USER = result.PermUser,
-                            PERM_VOC = result.PermVoc,
-                            ADMIN_YN = result.AdminYn,
-                            ALRAM_YN = result.AlarmYn,
-                            STATUS = result.Status,
-                            JOB = result.Job,
-                            VOC_MACHINE = result.VocMachine,
-                            VOC_ELEC = result.VocElec,
-                            VOC_LIFT = result.VocLift,
-                            VOC_FIRE = result.VocFire,
-                            VOC_CONSTRUCT = result.VocConstruct,
-                            VOC_NETWORK = result.VocNetwork,
-                            VOC_BEAUTY = result.VocBeauty,
-                            VOC_SECURITY = result.VocSecurity,
-                            VOC_ETC = result.VocEtc
-                        },
+                        data = dto,
                         code = 200
+                    };
+                }
+                else if(result == false)
+                {
+                    return new ResponseUnit<UsersDTO>()
+                    {
+                        message = "중복된 아이디입니다.",
+                        data = dto,
+                        code = 204
                     };
                 }
                 else
@@ -791,7 +766,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UpdateUserDTO>> UpdateUserService(HttpContext? context, UpdateUserDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext? context, UsersDTO? dto, IFormFile? files)
         {
             try
             {
@@ -800,17 +775,17 @@ namespace FamTec.Server.Services.User
                 string? PlaceFileFolderPath = null;
 
                 if (context is null)
-                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 if(dto is null)
-                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 
                 string? Name = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(Name))
-                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID);
                 if (model is not null)
@@ -857,7 +832,7 @@ namespace FamTec.Server.Services.User
                         FileExtenstion = Path.GetExtension(FileName);
                         if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
                         {
-                            return new ResponseUnit<UpdateUserDTO>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            return new ResponseUnit<UsersDTO>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
                         }
 
                         // DB 파일 삭제
@@ -909,22 +884,22 @@ namespace FamTec.Server.Services.User
                     UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
                     if (updatemodel is not null)
                     {
-                        return new ResponseUnit<UpdateUserDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                        return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
                     else
                     {
-                        return new ResponseUnit<UpdateUserDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
+                        return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<UpdateUserDTO>() { message = "잘못된 요청입니다.", data = new UpdateUserDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<UpdateUserDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateUserDTO(), code = 500 };
+                return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
 
