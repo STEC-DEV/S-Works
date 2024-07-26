@@ -61,7 +61,7 @@
                 var readChecked = value > 0;
 
                 <td class="td">
-                    <input type="checkbox" checked="@readChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, true)" />
+                    <input type="checkbox" checked="@readChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, true)" disabled="@(!EditMode)" />
                 </td>
             }
         </tr>
@@ -76,7 +76,7 @@
                 var writeChecked = value == 2;
 
                 <td class="td">
-                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)" disabled="@(!readChecked)" />
+                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)" disabled="@(!EditMode || !readChecked)" />
                 </td>
             }
         </tr>
@@ -85,6 +85,7 @@
 
 @code {
     [Parameter] public UserPermDTO UserPerm { get; set; }
+    [Parameter] public bool EditMode { get; set; }
     [Parameter] public EventCallback<UserPermDTO> OnVocActive { get; set; }
 
     private List<string> EquipmentSubHeaders = new List<string> { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안" };

@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using System.IdentityModel.Tokens.Jwt
 
 
 <div class="voccomment-container">
@@ -37,8 +38,30 @@
 
 @code {
     [Parameter] public bool EditMode { get; set; } = false;
+
     bool AddComment = false;
-   
+    string WriterName;
+
+
+    /*
+       * Session 조회
+       */
+    private async Task LoadsessionData()
+    {
+        var handler = new JwtSecurityTokenHandler();
+
+        string encryptedSession = await customStateProvider.GetTokenAsync();
+        Console.WriteLine("Encrypted Session: " + encryptedSession);
+
+        if (handler.CanReadToken(encryptedSession))
+        {
+            var jwtSecurityToken = handler.ReadToken(encryptedSession) as JwtSecurityToken;
+
+            WriterName = jwtSecurityToken.Claims.FirstOrDefault(C => C.Type == "Name")?.Value.ToString();
+
+        }
+
+    }
 
     private void OnChangeEditMode()
     {

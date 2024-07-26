@@ -120,7 +120,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         /// <summary>
         /// 관리자유무
         /// </summary>
-        public bool? ADMIN_YN { get; set; } = false;
+        public bool ADMIN_YN { get; set; } = false;
 
         /// <summary>
         /// 알람유무
@@ -135,47 +135,47 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         /// <summary>
         /// 기계민원 처리권한
         /// </summary>
-        public bool? VOC_MACHINE { get; set; } = false;
+        public bool VOC_MACHINE { get; set; } = false;
 
         /// <summary>
         /// 전기민원 처리권한
         /// </summary>
-        public bool? VOC_ELEC { get; set; } = false;
+        public bool VOC_ELEC { get; set; } = false;
 
         /// <summary>
         /// 승강민원 처리권한
         /// </summary>
-        public bool? VOC_LIFT { get; set; } = false;
+        public bool VOC_LIFT { get; set; } = false;
 
         /// <summary>
         /// 소방민원 처리권한
         /// </summary>
-        public bool? VOC_FIRE { get; set; } = false;
+        public bool VOC_FIRE { get; set; } = false;
 
         /// <summary>
         /// 건축민원 처리권한
         /// </summary>
-        public bool? VOC_CONSTRUCT { get; set; } = false;
+        public bool VOC_CONSTRUCT { get; set; } = false;
 
         /// <summary>
         /// 통신민원 처리권한
         /// </summary>
-        public bool? VOC_NETWORK { get; set; } = false;
+        public bool VOC_NETWORK { get; set; } = false;
 
         /// <summary>
         /// 미화민원 처리권한
         /// </summary>
-        public bool? VOC_BEAUTY { get; set; } = false;
+        public bool VOC_BEAUTY { get; set; } = false;
 
         /// <summary>
         /// 보안민원 처리권한
         /// </summary>
-        public bool? VOC_SECURITY { get; set; } = false;
+        public bool VOC_SECURITY { get; set; } = false;
 
         /// <summary>
         /// 기타 처리권한
         /// </summary>
-        public bool? VOC_ETC { get; set; } = false;
+        public bool VOC_ETC { get; set; } = false;
 
     
 

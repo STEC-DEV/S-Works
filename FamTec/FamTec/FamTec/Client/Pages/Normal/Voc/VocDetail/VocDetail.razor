@@ -1,6 +1,7 @@
 ﻿@page "/voc/{Id:int}"
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
+@using System.IdentityModel.Tokens.Jwt
 
 <div class="vocdetail-container">
     <div class="vocdetail-wrap">
@@ -16,11 +17,13 @@
 @code {
     [Parameter] public int Id { get; set; }
     ListVoc VocData = new ListVoc();
-
+   
     protected async override Task OnInitializedAsync()
     {
         OnLoadVocDetail();
+        
     }
+
 
     private async void OnLoadVocDetail()
     {

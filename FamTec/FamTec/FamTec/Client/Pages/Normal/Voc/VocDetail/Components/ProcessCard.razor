@@ -1,15 +1,29 @@
 ﻿@using FamTec.Client.Pages.Normal.Voc.Components
 
 <div class="processcard ">
-    <div class="status ">
+    <div class="header">
+        <div class="writer-wrap">
+            <span class="writer">
+                @Writer
+            </span>
+            <span class="date">
+                @DateTime.Now
+            </span>
+        </div>
+            
         <StatusCard Status="@Status" />
     </div>
     <div class="content">
-        <TextField Label="처리 일시" Context="@DateTime.Now.ToString()"/>
-        <TextField Label="처리 내용" Context="해당 타일 교체 완료"/>
+        <div class="content-text">
+            <TextField Label="처리 일시" Context="@DateTime.Now.ToString()" />
+            <TextField Label="처리 내용" Context="해당 타일 교체 완료" />
+        </div>
+        <div class="img">
+        </div>
     </div>
 </div>
 
 @code {
     [Parameter] public string Status { get; set; }
+    [Parameter] public string Writer { get; set; } = "홍길동";
 }

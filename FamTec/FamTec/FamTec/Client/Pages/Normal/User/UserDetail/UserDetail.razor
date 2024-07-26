@@ -10,25 +10,25 @@
             <SignForm UserInfo="@User.UserInfo" EditMode=@EditMode />
         </div>
         <div class="detail-perm">
-            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive=OnVocActive />
+            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive=OnVocActive EditMode=@EditMode />
         </div>
         @if (User.UserPerm.VocPerm >= 1)
         {
             <div class="useradd-sub yappear">
-                <UserVocPermComponent UserVocPerm="@User.UserVocPerm"  />
+                <UserVocPermComponent UserVocPerm="@User.UserVocPerm" EditMode=@EditMode />
             </div>
         }
     </div>
     <div class="btns">
         @if (!EditMode)
         {
-            <Button Name="편집" Width=true Type="0" />
+            <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
             <Button Name="나가기" Width=true Type="1" />
         }
         else
         {
-            <Button Name="저장" Width=true Type="0" />
-            <Button Name="취소" Width=true Type="1" />
+            <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+            <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
         }
 
     </div>
@@ -70,6 +70,32 @@
         OnUserConvert();
     }
 
+    private async Task OnUpdate()
+    {
+        try
+        {
+            OnUserUpdateConvert();
+            ResponseUnit<UserTbDTO> resUpdate = await apiManager.PostWithFilesAsync<UserTbDTO>("User/sign/UpdateUser", userTb);
+            if (resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "정보 수정 실패");
+                OnEditMode();
+            }
+            Console.WriteLine("성공");
+            OnEditMode();
+            StateHasChanged();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine($"[User][Detail][{User.UserInfo.UserId}] 정보 수정 에러 "+ex);
+        }
+    }
+
+    private void OnEditMode()
+    {
+        EditMode = !EditMode;
+    }
+
     private void OnUserConvert()
     {
 
@@ -104,5 +130,52 @@
         User.UserPerm.EnergyPerm = userTb.PERM_ENERGY;
         User.UserPerm.UserPerm = userTb.PERM_USER;
         User.UserPerm.VocPerm = userTb.PERM_VOC;
+
+        User.UserVocPerm.MachineVoc = userTb.VOC_MACHINE;
+        User.UserVocPerm.ElecVoc = userTb.VOC_ELEC;
+        User.UserVocPerm.LiftVoc = userTb.VOC_LIFT;
+        User.UserVocPerm.FireVoc = userTb.VOC_FIRE;
+        User.UserVocPerm.ConstructVoc = userTb.VOC_CONSTRUCT;
+        User.UserVocPerm.NetworkVoc = userTb.VOC_NETWORK;
+        User.UserVocPerm.BeautyVoc = userTb.VOC_BEAUTY;
+        User.UserVocPerm.SecurityVoc = userTb.VOC_SECURITY;
+        User.UserVocPerm.ETCVoc = userTb.VOC_ETC;
+    }
+    private void OnUserUpdateConvert()
+    {
+        userTb.ID = User.Id;
+        userTb.NAME = User.UserInfo.Name;
+        userTb.USERID = User.UserInfo.UserId;
+        userTb.PASSWORD = User.UserInfo.Password;
+        userTb.EMAIL = User.UserInfo.Email;
+        userTb.PHONE = User.UserInfo.Phone;
+        userTb.JOB = User.UserInfo.Job;
+        userTb.STATUS = User.UserInfo.Status;
+        userTb.ALRAM_YN = User.UserInfo.AlarmYN;
+        userTb.ImageUrl = User.UserInfo.ImageName;
+
+        userTb.PERM_BASIC = User.UserPerm.BasicPerm;
+        userTb.PERM_MACHINE = User.UserPerm.MachinPerm;
+        userTb.PERM_ELEC = User.UserPerm.ElecPerm;
+        userTb.PERM_LIFT = User.UserPerm.LiftPerm;
+        userTb.PERM_FIRE = User.UserPerm.FirePerm;
+        userTb.PERM_CONSTRUCT = User.UserPerm.ConstructPerm;
+        userTb.PERM_NETWORK = User.UserPerm.NetworkPerm;
+        userTb.PERM_BEAUTY = User.UserPerm.BeautyPerm;
+        userTb.PERM_SECURITY = User.UserPerm.SecurityPerm;
+        userTb.PERM_MATERIAL = User.UserPerm.MaterialPerm;
+        userTb.PERM_ENERGY = User.UserPerm.EnergyPerm;
+        userTb.PERM_USER = User.UserPerm.UserPerm;
+        userTb.PERM_VOC = User.UserPerm.VocPerm;
+
+        userTb.VOC_MACHINE = User.UserVocPerm.MachineVoc;
+        userTb.VOC_ELEC = User.UserVocPerm.ElecVoc;
+        userTb.VOC_LIFT = User.UserVocPerm.LiftVoc;
+        userTb.VOC_FIRE = User.UserVocPerm.FireVoc;
+        userTb.VOC_CONSTRUCT = User.UserVocPerm.ConstructVoc;
+        userTb.VOC_NETWORK = User.UserVocPerm.NetworkVoc;
+        userTb.VOC_BEAUTY = User.UserVocPerm.BeautyVoc;
+        userTb.VOC_SECURITY = User.UserVocPerm.SecurityVoc;
+        userTb.VOC_ETC = User.UserVocPerm.ETCVoc;
     }
 }

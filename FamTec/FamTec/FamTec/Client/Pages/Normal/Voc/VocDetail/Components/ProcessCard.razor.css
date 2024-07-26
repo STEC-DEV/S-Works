@@ -1,4 +1,4 @@
-﻿.processcard {
+﻿/*.processcard {
     width : 100%;
     display : flex;
     gap : var(--default-pd);
@@ -28,4 +28,57 @@
     gap : var(--half-pd);
     width:100%;
     background-color : #ffffff;
+}*/
+
+.processcard {
+    width: 100%;
+    display: flex;
+    flex-direction : column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border: var(--default-bd);
+    border-radius: var(--default-rd);
+    box-shadow: 0 0 7px 2px #b5b5b5;
+}
+
+.header{
+    display:flex;
+    justify-content : space-between;
+}
+
+.writer-wrap>span{
+    display : flex;
+    align-items:flex-end;
+}
+
+.writer-wrap{
+    display : flex;
+    gap : var(--half-pd);
+}
+
+.writer {
+    font-size: calc(var(--normal-size) + 0.1rem);
+    color: var(--main-color);
+    font-weight: var(--bold-wt);
+}
+
+.date {
+    font-size: calc(var(--explain-size) + 0.1rem);
+    
+}
+
+.processcard .content {
+    width:100%;
+    display: flex;
+    gap: var(--half-pd);
+    background-color: #ffffff;
+}
+
+.processcard .content-text{
+    flex: 3
+}
+
+.img {
+    flex : 2;
+    height: 200px;
 }
