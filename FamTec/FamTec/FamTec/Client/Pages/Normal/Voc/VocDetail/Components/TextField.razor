@@ -1,16 +1,27 @@
 ﻿
-<div class="textfield">
+<div class="textfield @(Type == "textarea" ? "height" : "")">
     <label class="label">
         @Label
     </label>
     <div class="content">
-        <p class="text">
-            @Context
-        </p>
+        @if(Type == "textarea")
+        {
+            <InputTextArea  @bind-Value="@Context"  disabled="@(!EditMode)"/>
+        }
+        else
+        {
+            <p class="text">
+                @Context
+            </p>
+        }
+        
     </div>
 </div>
 
 @code{
     [Parameter] public string? Label {get; set;}
     [Parameter] public string? Context { get; set; }
+    [Parameter] public string? Type { get; set; }
+    [Parameter] public bool? EditMode { get; set; } = false;
 }
+

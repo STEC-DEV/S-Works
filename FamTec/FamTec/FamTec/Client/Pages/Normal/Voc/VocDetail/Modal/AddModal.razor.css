@@ -1,0 +1,76 @@
+﻿.addmodal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    height: 80%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.addmodal .hedaer{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+}
+.addmodal .header > .title{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+    color : var(--main-color);
+}
+
+
+
+.content {
+    height: 100%;
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    overflow: auto;
+}
+
+.col{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+}
+
+.height {
+    height : 100%;
+}
+
+.col label {
+    color : var(--main-color);
+    
+}
+
+.col span {
+    font-size: calc(var(--normal-size) + 0.1rem);
+}
+
+
+.col ::deep textarea{
+    width : 100%;
+    height : 100%;
+    resize :none;
+    outline : none;
+    border : var(--input-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all .3s
+}
+
+
+.col ::deep textarea:focus{
+    border : var(--default-bd);
+}
+
+.btns{
+    display : flex;
+    gap : var(--default-pd);
+}

@@ -7,6 +7,12 @@
     position: relative;
 }
 
+.col {
+    display : flex;
+    flex-direction : column;
+    gap:var(--half-pd);
+}
+
 
 .selectfield-container .selectfield-label {
     grid-area: label;
@@ -48,12 +54,13 @@
     position:relative;
 
     font-size:var(--normal-size);
+    transition : all .3s;
     /*font-weight: bold*/
 }
 .selectfield-container .selectfield-select {
     display: none;
     position: absolute;
-    top:100%;
+    top:120%;
     background-color: var(--default-color);
     border: var(--input-bd);
     border-radius: var(--default-rd);
@@ -76,6 +83,17 @@
     color: darkgray;
     font-weight : var(--bold-wt);
     padding: var(--default-pd);
+
+}
+
+
+.col .selectfield-wrap {
+    border: var(--input-bd);
+    border-radius: var(--default-rd);
+}
+
+.col .focus{
+    border: var(--default-bd);
 }
 
 .selectfield-container .selectfield-display>span{
@@ -98,3 +116,4 @@
     display: block;
     overflow:auto;
 }
+

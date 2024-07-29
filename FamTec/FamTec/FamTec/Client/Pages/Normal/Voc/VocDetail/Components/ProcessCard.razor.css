@@ -34,7 +34,7 @@
     width: 100%;
     display: flex;
     flex-direction : column;
-    gap: var(--default-pd);
+    gap: var(--wide-pd);
     padding: var(--default-pd);
     border: var(--default-bd);
     border-radius: var(--default-rd);
@@ -68,6 +68,7 @@
 }
 
 .processcard .content {
+    height:100%;
     width:100%;
     display: flex;
     gap: var(--half-pd);
@@ -75,6 +76,10 @@
 }
 
 .processcard .content-text{
+    display : flex;
+    flex-direction:column;
+    gap : var(--default-pd);
+
     flex: 3
 }
 

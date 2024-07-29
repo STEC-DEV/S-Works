@@ -1,8 +1,8 @@
 ﻿@typeparam T
 
-<div class="selectfield-container">
+<div class="selectfield-container @(FlexColumn == true ? "col" : "")">
     <label class="selectfield-label">@Label</label>
-    <ul class="selectfield-wrap">
+    <ul class="selectfield-wrap @(IsDropdownOpen ? "focus" : "")">
         <li class="selectfield-display" @onclick="ToggleDropdown">
             @if (SelectedOptionName == null)
             {
@@ -32,6 +32,7 @@
     [Parameter] public string Label { get; set; }
     [Parameter] public int SelectedValue { get; set; }
     [Parameter] public bool  IsReverse { get; set; }
+    [Parameter] public bool? FlexColumn { get; set; }
     [Parameter] public EventCallback<int> SelectedValueChanged { get; set; }
 
     public string SelectedOptionName { get; set; }
@@ -49,6 +50,7 @@
     private async void SelectOption(T option)
     {
         IsDropdownOpen = false;
+        // SelectedValue = (int)option.GetType().GetProperty("Id").GetValue(option);
         SelectedValue = (int)option.GetType().GetProperty("Id").GetValue(option);
         SelectedOptionName = option.GetType().GetProperty("Name").GetValue(option).ToString();
 

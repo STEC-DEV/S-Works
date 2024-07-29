@@ -1,6 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using System.IdentityModel.Tokens.Jwt
-
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Modal
 
 <div class="voccomment-container">
     <div class="voccomment-title">
@@ -15,7 +15,8 @@
             }
             else
             {
-                <Button Name="추가" Width=true Type=0 OnClick="@OnAddComment" />
+                @* <Button Name="추가" Width=true Type=0 OnClick="@OnAddComment" /> *@
+                <Button Name="추가" Width=true Type=0 OnClick="@OnAddMode" />
             }
         </div>
     </div>
@@ -34,11 +35,20 @@
             
         </div>
     </div>
+    @if (AddMode)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <AddModal CloseModal="@OnAddMode" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
 </div>
 
 @code {
     [Parameter] public bool EditMode { get; set; } = false;
-
+    bool AddMode = false;
     bool AddComment = false;
     string WriterName;
 
@@ -71,5 +81,11 @@
     private void OnAddComment()
     {
         AddComment = !AddComment;
+    }
+
+
+    private void OnAddMode()
+    {
+        AddMode = !AddMode;
     }
 }

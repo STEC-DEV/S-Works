@@ -1,0 +1,129 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using System.IdentityModel.Tokens.Jwt
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+
+
+<div class="addmodal">
+    <div class="header">
+        <span class="title">
+             처리 내용
+        </span>
+    </div>
+    <div class="content"> 
+        <div class="col">
+            <label>작업자</label>
+            <span>
+                @WriterName
+            </span>
+        </div>
+        <div class="col">
+            <InputSelectField 
+                Label="처리 상태" 
+                SelectData="@status" 
+                FlexColumn=true 
+                SelectedValue="@Comment.Status"
+                SelectedValueChanged="HandleSelectedValueChange"
+                />
+        </div>
+        <div class="col height">
+            <label>처리 내용</label>
+            <InputTextArea @bind-Value=@Comment.Content />
+        </div>
+        <div class="col">
+            <label>첨부 이미지</label>
+            @* <input type="file" multiple @bind-value=@Comment.ImageList /> *@
+            <InputFile OnChange="OnFileChange" multiple />
+        </div>
+    </div>
+    <div class="btns">
+        <Button Name="등록" Type="0" OnClick="@OnAdd" />
+        <Button Name="닫기" Type="1" OnClick="@OnCloseModal" />
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+    AddCommentDTO Comment;
+    private List<IBrowserFile> browserFiles = new List<IBrowserFile>();
+
+    string text;
+    string WriterName;
+    List<object> status = new List<object>
+    {
+        new { Name = "미처리", Id = 0},
+        new { Name = "처리중", Id = 1},
+        new { Name = "처리완료", Id= 2},
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Comment = new AddCommentDTO();
+        await LoadsessionData();
+    }
+
+    private async Task LoadsessionData()
+    {
+        var handler = new JwtSecurityTokenHandler();
+
+        string encryptedSession = await customStateProvider.GetTokenAsync();
+        Console.WriteLine("Encrypted Session: " + encryptedSession);
+
+        if (handler.CanReadToken(encryptedSession))
+        {
+            var jwtSecurityToken = handler.ReadToken(encryptedSession) as JwtSecurityToken;
+
+            WriterName = jwtSecurityToken.Claims.FirstOrDefault(C => C.Type == "Name")?.Value.ToString();
+
+        }
+
+    }
+
+
+    //파일
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        browserFiles.AddRange(e.GetMultipleFiles());
+        Comment.ImageList = new List<byte[]>();
+
+        foreach (var file in browserFiles)
+        {
+            using var stream = file.OpenReadStream();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            Comment.ImageList.Add(ms.ToArray());
+        }
+    }
+
+    private void OnCloseModal()
+    {
+        CloseModal.InvokeAsync();
+    }
+
+
+    private async void OnAdd()
+    {
+        try
+        {
+            ResponseUnit<AddCommentDTO> resAdd = await apiManager.PostWithFilesAsync<AddCommentDTO>("VocComment/sign/AddVocComment", Comment);
+            if(resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원 코멘트 등록 실패");
+            }
+
+            OnCloseModal();
+        }catch(Exception ex)
+        {
+            
+        }
+    }
+
+    private void HandleSelectedValueChange(int value)
+    {
+        Comment.Status = value;
+
+    }
+    
+}

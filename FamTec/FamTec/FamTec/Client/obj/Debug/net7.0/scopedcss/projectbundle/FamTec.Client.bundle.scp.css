@@ -1798,7 +1798,7 @@
 /* /Pages/CommonComponents/Button.razor.rz.scp.css */
 
 .btn[b-nnxheo5jnq] {
-    height: 100%;
+    /*height: 100%;*/
     padding: var(--half-pd) var(--default-pd);
     border: none;
     border-radius: var(--default-rd);
@@ -2073,6 +2073,12 @@
     position: relative;
 }
 
+.col[b-iv6h6rvvwi] {
+    display : flex;
+    flex-direction : column;
+    gap:var(--half-pd);
+}
+
 
 .selectfield-container .selectfield-label[b-iv6h6rvvwi] {
     grid-area: label;
@@ -2114,12 +2120,13 @@
     position:relative;
 
     font-size:var(--normal-size);
+    transition : all .3s;
     /*font-weight: bold*/
 }
 .selectfield-container .selectfield-select[b-iv6h6rvvwi] {
     display: none;
     position: absolute;
-    top:100%;
+    top:120%;
     background-color: var(--default-color);
     border: var(--input-bd);
     border-radius: var(--default-rd);
@@ -2142,6 +2149,17 @@
     color: darkgray;
     font-weight : var(--bold-wt);
     padding: var(--default-pd);
+
+}
+
+
+.col .selectfield-wrap[b-iv6h6rvvwi] {
+    border: var(--input-bd);
+    border-radius: var(--default-rd);
+}
+
+.col .focus[b-iv6h6rvvwi]{
+    border: var(--default-bd);
 }
 
 .selectfield-container .selectfield-display>span[b-iv6h6rvvwi]{
@@ -2164,6 +2182,7 @@
     display: block;
     overflow:auto;
 }
+
 /* /Pages/CommonComponents/ModalBackground.razor.rz.scp.css */
 .modal-background[b-ctitcvxjcv] {
     z-index : 1;
@@ -3953,7 +3972,7 @@
     width: 100%;
     display: flex;
     flex-direction : column;
-    gap: var(--default-pd);
+    gap: var(--wide-pd);
     padding: var(--default-pd);
     border: var(--default-bd);
     border-radius: var(--default-rd);
@@ -3987,6 +4006,7 @@
 }
 
 .processcard .content[b-e9o93o5ovf] {
+    height:100%;
     width:100%;
     display: flex;
     gap: var(--half-pd);
@@ -3994,6 +4014,10 @@
 }
 
 .processcard .content-text[b-e9o93o5ovf]{
+    display : flex;
+    flex-direction:column;
+    gap : var(--default-pd);
+
     flex: 3
 }
 
@@ -4018,6 +4042,7 @@
 }
 
 .content[b-e5d0ioy9t2]{
+    height : 100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
 
@@ -4030,6 +4055,18 @@
     font-weight : var(--normal-wt);
     color : #333;
 
+}
+
+.height[b-e5d0ioy9t2]{
+    height : 100%;
+}
+
+ [b-e5d0ioy9t2] textarea {
+    outline : none;
+    border : none;
+    resize : none;
+    width : 100%;
+    background-color :transparent;
 }
 /* /Pages/Normal/Voc/VocDetail/Components/VocComment.razor.rz.scp.css */
 .voccomment-container[b-u7thnazr4p] {
@@ -4112,6 +4149,83 @@
     gap: var(--default-pd);
     height: 100%;
     padding: var(--default-pd);
+}
+/* /Pages/Normal/Voc/VocDetail/Modal/AddModal.razor.rz.scp.css */
+.addmodal[b-prp9p1j9tr] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    height: 80%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.addmodal .hedaer[b-prp9p1j9tr]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+}
+.addmodal .header > .title[b-prp9p1j9tr]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+    color : var(--main-color);
+}
+
+
+
+.content[b-prp9p1j9tr] {
+    height: 100%;
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    overflow: auto;
+}
+
+.col[b-prp9p1j9tr]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+}
+
+.height[b-prp9p1j9tr] {
+    height : 100%;
+}
+
+.col label[b-prp9p1j9tr] {
+    color : var(--main-color);
+    
+}
+
+.col span[b-prp9p1j9tr] {
+    font-size: calc(var(--normal-size) + 0.1rem);
+}
+
+
+.col[b-prp9p1j9tr]  textarea{
+    width : 100%;
+    height : 100%;
+    resize :none;
+    outline : none;
+    border : var(--input-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all .3s
+}
+
+
+.col[b-prp9p1j9tr]  textarea:focus{
+    border : var(--default-bd);
+}
+
+.btns[b-prp9p1j9tr]{
+    display : flex;
+    gap : var(--default-pd);
 }
 /* /Pages/Normal/Voc/VocDetail/VocDetail.razor.rz.scp.css */
 .vocdetail-container[b-yy3bwhdjh0] {
