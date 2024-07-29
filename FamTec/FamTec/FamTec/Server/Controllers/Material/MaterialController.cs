@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Material;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.AspNetCore.Authorization;
@@ -11,103 +12,155 @@ namespace FamTec.Server.Controllers.Material
     public class MaterialController : ControllerBase
     {
         private IMaterialService MaterialService;
+        private ILogService LogService;
 
-        public MaterialController(IMaterialService _materialservice)
+
+        public MaterialController(IMaterialService _materialservice,
+            ILogService _logservice)
         {
             this.MaterialService = _materialservice;
+            this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 자재 등록
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaterial")]
-        public async ValueTask<IActionResult> AddMaterial([FromForm] AddMaterialDTO? dto, [FromForm]IFormFile? files)
+        public async ValueTask<IActionResult> AddMaterial([FromForm] AddMaterialDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<AddMaterialDTO>? model = await MaterialService.AddMaterialService(HttpContext, dto, files);
-
-            if(model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > 1048576)
+                    {
+                        return Ok(new ResponseUnit<AddMaterialDTO?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<AddMaterialDTO>? model = await MaterialService.AddMaterialService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 
+        /// <summary>
+        /// 사업장에 속한 전체 자재LIST 조회
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllMaterial")]
         public async ValueTask<IActionResult> GetAllMaterial()
         {
-            ResponseList<MaterialListDTO>? model = await MaterialService.GetPlaceMaterialListService(HttpContext);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<MaterialListDTO>? model = await MaterialService.GetPlaceMaterialListService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 
+        /// <summary>
+        /// 자재정보 상세조회
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMaterial")]
-        public async ValueTask<IActionResult> DetailMaterial([FromQuery]int? materialid)
+        public async ValueTask<IActionResult> DetailMaterial([FromQuery]int materialid)
         {
-            ResponseUnit<DetailMaterialDTO>? model = await MaterialService.GetDetailMaterialService(HttpContext, materialid);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<DetailMaterialDTO>? model = await MaterialService.GetDetailMaterialService(HttpContext, materialid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 
-
+        /// <summary>
+        /// 자재정보 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateMaterial")]
-        public async ValueTask<IActionResult> UpdateMaterial([FromForm]UpdateMaterialDTO? dto, [FromForm]IFormFile? files)
+        public async ValueTask<IActionResult> UpdateMaterial([FromForm]UpdateMaterialDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(HttpContext, dto, files);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null) // 파일이 있으면 1MB 제한
+                {
+                    if(files.Length>1048576)
+                    {
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 

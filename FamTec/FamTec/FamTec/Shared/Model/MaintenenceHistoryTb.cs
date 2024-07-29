@@ -31,9 +31,8 @@ public partial class MaintenenceHistoryTb
     /// <summary>
     /// 작업구분
     /// </summary>
-    [Column("TYPE")]
-    [StringLength(255)]
-    public string? Type { get; set; }
+    [Column("TYPE", TypeName = "int(11)")]
+    public int? Type { get; set; }
 
     /// <summary>
     /// 작업자

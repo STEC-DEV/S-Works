@@ -1,8 +1,4 @@
-﻿
-using DocumentFormat.OpenXml.Drawing.Charts;
-
-using DocumentFormat.OpenXml.Office2013.Excel;
-using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
@@ -15,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FamTec.Server.Services.Admin.Account
 {

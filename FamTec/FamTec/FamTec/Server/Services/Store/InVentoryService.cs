@@ -153,7 +153,12 @@ namespace FamTec.Server.Services.Store
             }
         }
 
-
+        /// <summary>
+        /// 출고 등록
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext? context, List<InOutInventoryDTO>? dto)
         {
             try

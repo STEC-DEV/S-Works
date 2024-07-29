@@ -424,6 +424,7 @@ namespace FamTec.Server.Repository.Inventory
                     return null;
                 if (delcount is null)
                     return null;
+                
 
                 // 선입선출
                 List<InventoryTb>? model = await context.InventoryTbs
@@ -549,10 +550,34 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-       
+        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO>? dto, string? creater, int? placeid, string? GUID)
+        {
+            try
+            {
+                if (dto is null)
+                    return null;
+                if(placeid is null)
+                    return null;
+                if (String.IsNullOrWhiteSpace(creater))
+                    return null;
+                if (String.IsNullOrWhiteSpace(GUID))
+                    return null;
+
+                // [1] 토큰 체크
+                return null;
+
+
+            }
+            catch(Exception ex)
+            {
+                await RoolBackOccupant(GUID);
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
         /// <summary>
-        /// 출고등록
+        /// 출고등록 (수정해야함)
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="creater"></param>
@@ -560,203 +585,203 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO?> dto, string? creater, int? placeid, string? GUID)
-        {
-            try
-            {
-                if (dto is null)
-                    return null;
-                if (placeid is null)
-                    return null;
-                if (String.IsNullOrWhiteSpace(creater))
-                    return null;
-                if (String.IsNullOrWhiteSpace(GUID))
-                    return null;
+        //        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO?> dto, string? creater, int? placeid, string? GUID)
+        //        {
+        //            try
+        //            {
+        //                if (dto is null)
+        //                    return null;
+        //                if (placeid is null)
+        //                    return null;
+        //                if (String.IsNullOrWhiteSpace(creater))
+        //                    return null;
+        //                if (String.IsNullOrWhiteSpace(GUID))
+        //                    return null;
 
-                // 토큰 체크
-                foreach (InOutInventoryDTO model in dto)
-                {
-                    List<InventoryTb>? Occupant = await context.InventoryTbs
-                     .Where(m => m.PlaceTbId == placeid &&
-                     m.RoomTbId == model.AddStore.RoomID &&
-                     m.MaterialTbId == model.MaterialID &&
-                     m.DelYn != true).ToListAsync();
+        //                // 토큰 체크
+        //                foreach (InOutInventoryDTO model in dto)
+        //                {
+        //                    List<InventoryTb>? Occupant = await context.InventoryTbs
+        //                     .Where(m => m.PlaceTbId == placeid &&
+        //                     m.RoomTbId == model.AddStore.RoomID &&
+        //                     m.MaterialTbId == model.MaterialID &&
+        //                     m.DelYn != true).ToListAsync();
 
-                    List<InventoryTb>? check = Occupant
-                        .Where(m => 
-                        !String.IsNullOrWhiteSpace(m.Occupant) ||
-                        !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
-                        .ToList().Where(m => m.Occupant != GUID).ToList();
-                    
-                    if (check is [_, ..])
-                    {
-                        // 다른곳에서 해당 토큰 사용중.
-#if DEBUG
-                        Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
-#endif
-                        return false;
-                    }
-                }
+        //                    List<InventoryTb>? check = Occupant
+        //                        .Where(m => 
+        //                        !String.IsNullOrWhiteSpace(m.Occupant) ||
+        //                        !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
+        //                        .ToList().Where(m => m.Occupant != GUID).ToList();
 
-                // 수량 체크
-                foreach (InOutInventoryDTO model in dto)
-                {
-                    int? result = 0;
-                    List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
-                    if(InventoryList is [_, ..])
-                    {
-                        foreach(InventoryTb? inventory in InventoryList)
-                        {
-                            if (result <= model.AddStore.Num)
-                            {
-                                result += inventory.Num;
-                            }
-                        }
-                        
-                        if(result < model.AddStore.Num)
-                        {
-#if DEBUG
-                            Console.WriteLine("수량이 부족합니다");
-#endif
-                            await RoolBackOccupant(GUID);
-                            return null;
-                        }
-                    }
-                }
+        //                    if (check is [_, ..])
+        //                    {
+        //                        // 다른곳에서 해당 토큰 사용중.
+        //#if DEBUG
+        //                        Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
+        //#endif
+        //                        return false;
+        //                    }
+        //                }
 
-                foreach (InOutInventoryDTO model in dto)
-                {
-                    List<InventoryTb> OutModel = new List<InventoryTb>();
-                    int? result = 0;
+        //                // 수량 체크
+        //                foreach (InOutInventoryDTO model in dto)
+        //                {
+        //                    int? result = 0;
+        //                    List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+        //                    if(InventoryList is [_, ..])
+        //                    {
+        //                        foreach(InventoryTb? inventory in InventoryList)
+        //                        {
+        //                            if (result <= model.AddStore.Num)
+        //                            {
+        //                                result += inventory.Num;
+        //                            }
+        //                        }
 
-                    // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
-                    List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
-                    if(InventoryList is [_, ..])
-                    {
-                        foreach(InventoryTb? inventory in InventoryList)
-                        {
-                            if(result <= model.AddStore.Num)
-                            {
-                                OutModel.Add(inventory);
-                                result += inventory.Num;
-                                if(result == model.AddStore.Num)
-                                {
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+        //                        if(result < model.AddStore.Num)
+        //                        {
+        //#if DEBUG
+        //                            Console.WriteLine("수량이 부족합니다");
+        //#endif
+        //                            await RoolBackOccupant(GUID);
+        //                            return null;
+        //                        }
+        //                    }
+        //                }
 
-                        if(OutModel is [_, ..])
-                        {
-                            if(result >= model.AddStore.Num) // 출고개수가 충분할때
-                            {
-                                // 개수만큼 - 빼주면 됨
-                                int? outresult = 0;
-                                foreach (InventoryTb? OutInventoryTb in OutModel)
-                                {
-                                    outresult += OutInventoryTb.Num;
-                                    if (model.AddStore.Num > outresult)
-                                    {
-                                        OutInventoryTb.Num -= OutInventoryTb.Num;
-                                        OutInventoryTb.UpdateDt = DateTime.Now;
-                                        OutInventoryTb.UpdateUser = creater;
+        //                foreach (InOutInventoryDTO model in dto)
+        //                {
+        //                    List<InventoryTb> OutModel = new List<InventoryTb>();
+        //                    int? result = 0;
 
-                                        if (OutInventoryTb.Num == 0)
-                                        {
-                                            OutInventoryTb.TimeStamp = null;
-                                            OutInventoryTb.Occupant = null;
-                                            OutInventoryTb.DelYn = true;
-                                            OutInventoryTb.DelDt = DateTime.Now;
-                                            OutInventoryTb.DelUser = creater;
-                                        }
-                                        context.Update(OutInventoryTb);
-                                    }
-                                    else
-                                    {
-                                        outresult -= model.AddStore.Num;
-                                        OutInventoryTb.Num = outresult;
-                                        OutInventoryTb.UpdateDt = DateTime.Now;
-                                        OutInventoryTb.UpdateUser = creater;
+        //                    // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
+        //                    List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+        //                    if(InventoryList is [_, ..])
+        //                    {
+        //                        foreach(InventoryTb? inventory in InventoryList)
+        //                        {
+        //                            if(result <= model.AddStore.Num)
+        //                            {
+        //                                OutModel.Add(inventory);
+        //                                result += inventory.Num;
+        //                                if(result == model.AddStore.Num)
+        //                                {
+        //                                    break;
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                break;
+        //                            }
+        //                        }
 
-                                        if (OutInventoryTb.Num == 0)
-                                        {
-                                            OutInventoryTb.TimeStamp = null;
-                                            OutInventoryTb.Occupant = null;
-                                            OutInventoryTb.DelYn = true;
-                                            OutInventoryTb.DelDt = DateTime.Now;
-                                            OutInventoryTb.DelUser = creater;
-                                        }
-                                        context.Update(OutInventoryTb);
-                                    }
-                                }
-                            }
-                        }
+        //                        if(OutModel is [_, ..])
+        //                        {
+        //                            if(result >= model.AddStore.Num) // 출고개수가 충분할때
+        //                            {
+        //                                // 개수만큼 - 빼주면 됨
+        //                                int? outresult = 0;
+        //                                foreach (InventoryTb? OutInventoryTb in OutModel)
+        //                                {
+        //                                    outresult += OutInventoryTb.Num;
+        //                                    if (model.AddStore.Num > outresult)
+        //                                    {
+        //                                        OutInventoryTb.Num -= OutInventoryTb.Num;
+        //                                        OutInventoryTb.UpdateDt = DateTime.Now;
+        //                                        OutInventoryTb.UpdateUser = creater;
 
-                        await context.SaveChangesAsync();
+        //                                        if (OutInventoryTb.Num == 0)
+        //                                        {
+        //                                            OutInventoryTb.TimeStamp = null;
+        //                                            OutInventoryTb.Occupant = null;
+        //                                            OutInventoryTb.DelYn = true;
+        //                                            OutInventoryTb.DelDt = DateTime.Now;
+        //                                            OutInventoryTb.DelUser = creater;
+        //                                        }
+        //                                        context.Update(OutInventoryTb);
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        outresult -= model.AddStore.Num;
+        //                                        OutInventoryTb.Num = outresult;
+        //                                        OutInventoryTb.UpdateDt = DateTime.Now;
+        //                                        OutInventoryTb.UpdateUser = creater;
 
-                        // Inventory 테이블에서 해당 품목의 개수 Sum
-                        int? thisCurrentNum = context.InventoryTbs.Where(m =>
-                            m.DelYn != true &&
-                            m.MaterialTbId == model.MaterialID &&
-                            m.RoomTbId == model.AddStore.RoomID &&
-                            m.PlaceTbId == placeid)
-                                .Sum(m => m.Num);
+        //                                        if (OutInventoryTb.Num == 0)
+        //                                        {
+        //                                            OutInventoryTb.TimeStamp = null;
+        //                                            OutInventoryTb.Occupant = null;
+        //                                            OutInventoryTb.DelYn = true;
+        //                                            OutInventoryTb.DelDt = DateTime.Now;
+        //                                            OutInventoryTb.DelUser = creater;
+        //                                        }
+        //                                        context.Update(OutInventoryTb);
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
 
-                        if (thisCurrentNum == null)
-                            thisCurrentNum = 0;
+        //                        await context.SaveChangesAsync();
 
-                        StoreTb store = new StoreTb();
-                        store.Inout = model.InOut;
-                        store.Num = model.AddStore.Num;
-                        store.UnitPrice = model.AddStore.UnitPrice;
-                        store.TotalPrice = model.AddStore.TotalPrice;
-                        store.InoutDate = model.AddStore.InOutDate;
-                        store.CreateDt = DateTime.Now;
-                        store.CreateUser = creater;
-                        store.UpdateDt = DateTime.Now;
-                        store.UpdateUser = creater;
-                        store.RoomTbId = model.AddStore.RoomID;
-                        store.MaterialTbId = model.MaterialID;
-                        store.CurrentNum = thisCurrentNum;
-                        store.Note = model.AddStore.Note;
-                        store.PlaceTbId = placeid;
+        //                        // Inventory 테이블에서 해당 품목의 개수 Sum
+        //                        int? thisCurrentNum = context.InventoryTbs.Where(m =>
+        //                            m.DelYn != true &&
+        //                            m.MaterialTbId == model.MaterialID &&
+        //                            m.RoomTbId == model.AddStore.RoomID &&
+        //                            m.PlaceTbId == placeid)
+        //                                .Sum(m => m.Num);
 
-                        context.StoreTbs.Add(store);
-                        await context.SaveChangesAsync();
-                    }
-                    else
-                    {
-#if DEBUG
-                        Console.WriteLine("출고개수가 부족합니다");
-#endif
-                        await RoolBackOccupant(GUID);
-                        return null;
-                    }
-                }
+        //                        if (thisCurrentNum == null)
+        //                            thisCurrentNum = 0;
 
-#if DEBUG
-                Console.WriteLine("출고완료");
-#endif
-                return true;
-            }
-            catch (DBConcurrencyException ex)
-            {
-                // 해당 GUID 찾아서 TiemStamp / 토큰 null 해줘야함.
-                await RoolBackOccupant(GUID);
-                LogService.LogMessage($"동시성 에러 {ex.Message}");
-                throw new ArgumentNullException();
-            }
-            catch (Exception ex)
-            {
-                await RoolBackOccupant(GUID);
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
+        //                        StoreTb store = new StoreTb();
+        //                        store.Inout = model.InOut;
+        //                        store.Num = model.AddStore.Num;
+        //                        store.UnitPrice = model.AddStore.UnitPrice;
+        //                        store.TotalPrice = model.AddStore.TotalPrice;
+        //                        store.InoutDate = model.AddStore.InOutDate;
+        //                        store.CreateDt = DateTime.Now;
+        //                        store.CreateUser = creater;
+        //                        store.UpdateDt = DateTime.Now;
+        //                        store.UpdateUser = creater;
+        //                        store.RoomTbId = model.AddStore.RoomID;
+        //                        store.MaterialTbId = model.MaterialID;
+        //                        store.CurrentNum = thisCurrentNum;
+        //                        store.Note = model.AddStore.Note;
+        //                        store.PlaceTbId = placeid;
+
+        //                        context.StoreTbs.Add(store);
+        //                        await context.SaveChangesAsync();
+        //                    }
+        //                    else
+        //                    {
+        //#if DEBUG
+        //                        Console.WriteLine("출고개수가 부족합니다");
+        //#endif
+        //                        await RoolBackOccupant(GUID);
+        //                        return null;
+        //                    }
+        //                }
+
+        //#if DEBUG
+        //                Console.WriteLine("출고완료");
+        //#endif
+        //                return true;
+        //            }
+        //            catch (DBConcurrencyException ex)
+        //            {
+        //                // 해당 GUID 찾아서 TiemStamp / 토큰 null 해줘야함.
+        //                await RoolBackOccupant(GUID);
+        //                LogService.LogMessage($"동시성 에러 {ex.Message}");
+        //                throw new ArgumentNullException();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                await RoolBackOccupant(GUID);
+        //                LogService.LogMessage(ex.ToString());
+        //                throw new ArgumentNullException();
+        //            }
+        //        }
 
 
         public async ValueTask<Task?> RoolBackOccupant(string GUID)

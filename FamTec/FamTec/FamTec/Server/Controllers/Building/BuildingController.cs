@@ -67,7 +67,7 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null)
+                if(files is not null) // 파일이 있으면 1MB 제한
                 {
                     if(files.Length > 1048576)
                     {
@@ -88,7 +88,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 

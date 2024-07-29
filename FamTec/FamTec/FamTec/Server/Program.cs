@@ -55,6 +55,8 @@ using FamTec.Server.Services.Facility.Type.Security;
 using FamTec.Server.Repository.Store;
 using FamTec.Server.Services.Store;
 using FamTec.Server.Repository.Inventory;
+using FamTec.Server.Repository.Maintenence;
+using FamTec.Server.Services.Admin.Maintenance;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +64,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 
 //builder.Services.AddHttpClient();
+
+
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
@@ -88,6 +92,8 @@ builder.Services.AddTransient<IFacilityItemValueInfoRepository, FacilityItemValu
 
 builder.Services.AddTransient<IInventoryInfoRepository, InventoryInfoRepository>();
 builder.Services.AddTransient<IStoreInfoRepository, StoreInfoRepository>();
+
+builder.Services.AddTransient<IMaintanceRepository, MaintanceRepository>();
 
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -124,6 +130,8 @@ builder.Services.AddTransient<IFacilityKeyService, FacilityKeyService>();
 builder.Services.AddTransient<IFacilityValueService, FacilityValueService>();
 
 builder.Services.AddTransient<IInVentoryService, InVentoryService>();
+
+builder.Services.AddTransient<IMaintanceService, MaintanceService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
@@ -400,6 +408,12 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGro
 
 // InStore 값 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Store/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Maintenence 값 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Maintenance/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });
