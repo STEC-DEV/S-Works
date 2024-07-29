@@ -86,14 +86,14 @@
     private async Task OnFileChange(InputFileChangeEventArgs e)
     {
         browserFiles.AddRange(e.GetMultipleFiles());
-        Comment.ImageList = new List<byte[]>();
+        Comment.Image = new List<byte[]>();
 
         foreach (var file in browserFiles)
         {
             using var stream = file.OpenReadStream();
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
-            Comment.ImageList.Add(ms.ToArray());
+            Comment.Image.Add(ms.ToArray());
         }
     }
 

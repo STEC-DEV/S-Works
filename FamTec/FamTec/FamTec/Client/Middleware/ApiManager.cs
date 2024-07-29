@@ -191,6 +191,19 @@ namespace FamTec.Client.Middleware
                     switch (prop.Name)
                     {
                         case "Image":
+                            if (value is List<byte[]> imageList)
+                            {
+                                for (int i = 0; i < imageList.Count; i++)
+                                {
+                                    var imageByte1 = imageList[i];
+                                    if (imageByte1.Length > 0)
+                                    {
+                                        var stream = new MemoryStream(imageByte1);
+                                        var streamContent = new StreamContent(stream);
+                                        content.Add(content: streamContent, name: $"\"files[{i}]\"", fileName: $"image{i}.jpg");
+                                    }
+                                }
+                            }
                             if (value is byte[] imageBytes && imageBytes.Length > 0)
                             {
                                 var stream = new MemoryStream(imageBytes);
