@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.AspNetCore.Http;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -11,7 +12,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddVocCommentDTO>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto);
+        public ValueTask<ResponseUnit<AddVocCommentDTO>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto, List<IFormFile> files);
 
         /// <summary>
         /// 해당 민원의 댓글 상세정보

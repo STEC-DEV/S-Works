@@ -30,8 +30,6 @@ namespace FamTec.Server.Controllers.Building.Group
             try
             {
 
-
-
                 //AddGroupDTO dto = new AddGroupDTO();
                 //dto.BuildingIdx = 2;
                 //dto.Name = "옥상주차장";

@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Voc
+﻿namespace FamTec.Shared.Server.DTO.Voc
 {
     /// <summary>
     /// 민원등록 - 민원인용
@@ -24,11 +16,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         public string? Contents { get; set; }
 
         /// <summary>
-        /// 유형
-        /// </summary>
-        public int? Type { get; set; }
-
-        /// <summary>
         /// 작성자 이름
         /// </summary>
         public string? Name { get; set; }
@@ -39,18 +26,13 @@ namespace FamTec.Shared.Server.DTO.Voc
         public string? PhoneNumber { get; set; }
 
         /// <summary>
-        /// 답변수신 여부
-        /// </summary>
-        public bool? ReplyYN { get; set; }
-
-        /// <summary>
         /// 빌딩 인덱스
         /// </summary>
-        public int? buildingidx { get; set; }
+        public int? Buildingid { get; set; }
 
         /// <summary>
-        /// 사업장 인덱스
+        /// 이미지 때문에 사업장인덱스 받아야함.
         /// </summary>
-        public int? PlaceIdx { get; set; }
+        public int? Placeid { get; set; }
     }
 }

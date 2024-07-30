@@ -76,12 +76,14 @@ public partial class WorksContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
 
+        // 쿼리스트링 사용
         modelBuilder.Entity<MaterialInventory>(entity =>
         {
             entity.HasNoDiscriminator();
@@ -793,17 +795,18 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
+    
+    /// <summary>
+    /// 쿼리스트링 사용
+    /// </summary>
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
-        
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
-
 
 [Keyless]
 public partial class MaterialInventory

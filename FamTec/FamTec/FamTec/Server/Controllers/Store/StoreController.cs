@@ -15,16 +15,205 @@ namespace FamTec.Server.Controllers.Store
         private IInVentoryService InStoreService;
         private ILogService LogService;
         
-        // Temp
-        private IInventoryInfoRepository InventoryInfoRepository;
 
         public StoreController(IInVentoryService _instoreservice,
-            ILogService _logservice,
-            IInventoryInfoRepository _inven)
+            ILogService _logservice)
         {
             this.InStoreService = _instoreservice;
             this.LogService = _logservice;
-            this.InventoryInfoRepository = _inven;
+        }
+
+        /// <summary>
+        /// 입출고 이력 전체 조회
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetHistory")]
+        public async ValueTask<IActionResult> GetInoutHistory()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInOutHistoryService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 입고등록
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/AddInStore")]
+        public async ValueTask<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
+        {
+            try
+            {
+                //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+                //dto.Add(new InOutInventoryDTO
+                //{
+                //    InOut = 1,
+                //    MaterialID = 5,
+                //    AddStore = new AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now.AddDays(-10),
+                //        Num = 100,
+                //        RoomID = 1,
+                //        UnitPrice = 3000,
+                //        TotalPrice = 100*3000,
+                //        Note = "입고데이터_1"
+                //    }
+                //});
+                //dto.Add(new InOutInventoryDTO
+                //{
+                //    InOut = 1,
+                //    MaterialID = 6,
+                //    AddStore = new AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now.AddDays(-20),
+                //        Num = 135,
+                //        RoomID = 2,
+                //        UnitPrice = 500,
+                //        TotalPrice = 300 * 500,
+                //        Note = "입고데이터_2"
+                //    }
+                //});
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await InStoreService.AddInStoreService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 출고
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/OutInventory")]
+        public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
+        {
+            try
+            {
+                //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+                //dto.Add(new InOutInventoryDTO()
+                //{
+                //    InOut = 0,
+                //    MaterialID = 5,
+                //    AddStore = new AddStoreDTO()
+                //    {
+                //    InOutDate = DateTime.Now,
+                //    Note = "출고데이터_1",
+                //    Num = 10,
+                //    RoomID = 1,
+                //    UnitPrice = 300,
+                //    TotalPrice = 10 * 300
+                //    }
+                //});
+
+
+                //dto.Add(new InOutInventoryDTO()
+                //{
+                //    InOut = 0,
+                //    MaterialID = 6,
+                //    AddStore = new AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        Note = "출고데이터_1",
+                //        Num = 10,
+                //        RoomID = 2,
+                //        UnitPrice = 100,
+                //        TotalPrice = 100 * 10
+                //    }
+                //});
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+            }
+
+        }
+
+
+        /// <summary>
+        /// 사업장 별 폼목별 재고 현황
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetPlaceInventoryStatus")]
+        //public async ValueTask<IActionResult> GetPlaceInventoryStatus()
+        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int>? materialid, [FromQuery]bool? type)
+        {
+            try
+            {
+                //List<int> materialId = new List<int>() { 3, 4, 5, 6 };
+                //bool type = false;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaterialHistory>? model = await InStoreService.GetPlaceInventoryRecordService(HttpContext, materialid, type);
+
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -57,211 +246,9 @@ namespace FamTec.Server.Controllers.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return StatusCode(500);
+                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
             }
         }
-
-        /// <summary>
-        /// 폼목별 재고 현황
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/GetPlaceInventoryStatus")]
-        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int>? materialid, [FromQuery]bool? type)
-        {
-            try
-            {
-                //List<int> materialId = new List<int>() { 3, 4, 5, 6 };
-                //bool type = true;
-
-                if (HttpContext is null)
-                    return BadRequest();
-               
-                ResponseList<MaterialHistory>? model = await InStoreService.GetPlaceInventoryRecordService(HttpContext, materialid, type);
-
-                if (model is null)
-                    return BadRequest();
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
-
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.Message);
-                return StatusCode(500);
-            }
-        }
-
-        // 입고
-        [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
-        [Route("sign/AddInStore")]
-        //public async ValueTask<IActionResult> AddInStore()
-        public async ValueTask<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
-        {
-            //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-            //dto.Add(new InOutInventoryDTO
-            //{
-            //    InOut = 1,
-            //    MaterialID = 5,
-            //    AddStore = new AddStoreDTO()
-            //    {
-            //        InOutDate = DateTime.Now.AddDays(-10),
-            //        Num = 100,
-            //        RoomID = 1,
-            //        UnitPrice = 3000,
-            //        TotalPrice = 100*3000,
-            //        Note = "입고데이터_1"
-            //    }
-            //});
-            //dto.Add(new InOutInventoryDTO
-            //{
-            //    InOut = 1,
-            //    MaterialID = 6,
-            //    AddStore = new AddStoreDTO()
-            //    {
-            //        InOutDate = DateTime.Now.AddDays(-20),
-            //        Num = 135,
-            //        RoomID = 2,
-            //        UnitPrice = 500,
-            //        TotalPrice = 300 * 500,
-            //        Note = "입고데이터_2"
-            //    }
-            //});
-
-
-            ResponseUnit<bool?> model = await InStoreService.AddInStoreService(HttpContext, dto);
-            if (model is not null)
-            {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        // 출고
-        [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
-        [Route("sign/OutInventory")]
-        public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
-        //public async ValueTask<IActionResult> OutInventoryService()
-        {
-
-            //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-            
-            //dto.Add(new InOutInventoryDTO()
-            //{
-                //InOut = 0,
-                //MaterialID = 5,
-                //AddStore = new AddStoreDTO()
-                //{
-                    //InOutDate = DateTime.Now,
-                    //Note = "출고데이터_1",
-                    //Num = 125,
-                    //RoomID = 1,
-                    //UnitPrice = 300,
-                    //TotalPrice = 720 * 300
-                //}
-            //});
-          
-        
-            //dto.Add(new InOutInventoryDTO()
-            //{
-                //InOut = 0,
-                //MaterialID = 6,
-                //AddStore = new AddStoreDTO()
-                //{
-                    //InOutDate = DateTime.Now,
-                    //Note = "출고데이터_1",
-                    //Num = 155,
-                    //RoomID = 2,
-                    //UnitPrice = 100,
-                    //TotalPrice = 720 * 100
-                //}
-            //});
-          
-
-            ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);
-            if (model is not null)
-            {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        // 입출고 이력
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/GetHistory")]
-        public async ValueTask<IActionResult> GetInoutHistory()
-        {
-            ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInOutHistoryService(HttpContext);
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else 
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/GetMaterialCount")]
-        public async ValueTask<IActionResult> GetMaterialCount([FromQuery]int materialid, [FromQuery]int roomid)
-        {
-
-            ResponseUnit<int?> model = await InStoreService.GetOutCountService(HttpContext, materialid, roomid);
-            if(model is not null)
-            {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-       
 
 
     }

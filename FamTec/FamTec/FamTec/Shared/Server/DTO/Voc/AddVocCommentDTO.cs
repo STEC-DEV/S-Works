@@ -18,6 +18,11 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// </summary>
         public int? Status { get; set; }
 
+        ///// <summary>
+        ///// 사용자 이미지 - 클라이언트 담는용
+        ///// </summary>
+        //public byte[]? Image { get; set; }
+
         /// <summary>
         /// VOC 테이블 인덱스
         /// </summary>

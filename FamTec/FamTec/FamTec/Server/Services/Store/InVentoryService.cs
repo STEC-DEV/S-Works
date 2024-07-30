@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using FamTec.Server.Repository.Inventory;
+using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
 using FamTec.Shared.Model;
@@ -29,9 +30,9 @@ namespace FamTec.Server.Services.Store
             this.StoreInfoRepository = _storeinforepository;
             this.LogService = _logservice;
         }
-
+        
         /// <summary>
-        /// 입고 등록
+        /// 입고 등록 -- 수정해야함.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
@@ -57,17 +58,23 @@ namespace FamTec.Server.Services.Store
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string GUID = Guid.NewGuid().ToString();
-                
+
                 // 동시성 검사 TOKEN 넣기
-                foreach(InOutInventoryDTO model in dto)
+                bool? SetOccupantResult = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), dto, GUID);
+                if (SetOccupantResult == false)
                 {
-                    bool? AvailableCheck = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), model.AddStore.RoomID, model.MaterialID, GUID);
-                    if(AvailableCheck != true)
-                    {
-                        await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
-                        return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 404 };
-                    }
+                    // 다른곳에서 사용중인 품목
+                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 404 };
                 }
+                /*
+                if(SetOccupantResult == null)
+                {
+                    // 조회결과가 없을 때
+                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰결과 돌려놓기
+                    return new ResponseUnit<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
+                }
+                */
                 
                 // 인벤토리 테이블에 ADD
                 bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid), GUID);
@@ -76,12 +83,16 @@ namespace FamTec.Server.Services.Store
                     await InventoryInfoRepository.RoolBackOccupant(GUID);
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
+                else if(AddInStore == false)
+                {
+                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
+                }
                 else
                 {
                     await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
                     return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
-                
             }
             catch(Exception ex)
             {
@@ -163,8 +174,6 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
-                string GUID = Guid.NewGuid().ToString();
-
                 if (context is null)
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
@@ -178,17 +187,23 @@ namespace FamTec.Server.Services.Store
                 if (creater is null)
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                // 동시성 검사 TOKEN 넣기
-                foreach (InOutInventoryDTO model in dto)
-                {
-                    bool? AvailableCheck = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), model.AddStore.RoomID, model.MaterialID, GUID);
-                    if (AvailableCheck != true)
+                string GUID = Guid.NewGuid().ToString();
 
-                    {
-                        await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
-                        return new ResponseList<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 404 };
-                    }
+                // 동시성 검사 TOKEN 넣기
+                bool? SetOccupantResult = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), dto, GUID);
+                if (SetOccupantResult == false)
+                {
+                    // 다른곳에서 사용중인 품목
+                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
+                    return new ResponseList<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 404 };
                 }
+                if(SetOccupantResult == null)
+                {
+                    // 조회결과가 없을 때
+                    await InventoryInfoRepository.RoolBackOccupant(GUID);
+                    return new ResponseList<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
+                }
+                
                 bool? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid), GUID);
                 if(OutResult == true)
                 {
@@ -205,6 +220,7 @@ namespace FamTec.Server.Services.Store
                     await InventoryInfoRepository.RoolBackOccupant(GUID);
                     return new ResponseList<bool?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 200 };
                 }
+                
             }
             catch (Exception ex)
             {
@@ -292,7 +308,7 @@ namespace FamTec.Server.Services.Store
                 return new ResponseList<MaterialHistory>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
+        
     }
 
    

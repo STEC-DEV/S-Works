@@ -50,7 +50,7 @@ namespace FamTec.Server.Services.Admin.Maintenance
                     return new ResponseUnit<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
                 }
 
-                bool? OutResult = await MaintanceRepository.AddAsync(dto, creater, Convert.ToInt32(placeid), GUID);
+                bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, Convert.ToInt32(placeid), GUID);
                 if (OutResult == true)
                 {
                     await MaintanceRepository.RoolBackOccupant(GUID);

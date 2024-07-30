@@ -55,6 +55,15 @@ public partial class CommentTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    [StringLength(255)]
+    public string? Image1 { get; set; }
+
+    [StringLength(255)]
+    public string? Image2 { get; set; }
+
+    [StringLength(255)]
+    public string? Image3 { get; set; }
+
     [Column("VOC_TB_ID", TypeName = "int(11)")]
     public int? VocTbId { get; set; }
 

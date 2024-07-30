@@ -51,11 +51,6 @@ namespace FamTec.Server
             DirectoryInfo di = new DirectoryInfo(Common.FileServer);
             if (!di.Exists) di.Create();
 
-            // VOC 파일 이미지서버 경로
-            di = new DirectoryInfo(Common.VocFileImages);
-            if (!di.Exists) di.Create();
-
-
             DepartmentsTb? department = new DepartmentsTb();
             department.Name = "에스텍시스템";
             department.CreateDt = DateTime.Now;

@@ -11,7 +11,6 @@ namespace FamTec.Server.Controllers.Maintenance
     [ApiController]
     public class MaintenanceController : ControllerBase
     {
-        //private IMaintanceRepository MaintenenceRepository;
         private IMaintanceService MaintanceService;
         private ILogService LogService;
 
@@ -22,51 +21,57 @@ namespace FamTec.Server.Controllers.Maintenance
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 유지보수 등록
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddMaintenance")]
-        public async ValueTask<IActionResult> AddMaintenence()
+        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintanceDTO dto)
         {
             try
             {
-                AddMaintanceDTO dto = new AddMaintanceDTO();
-                dto.Name = "유지보수이력_1";
-                dto.Type = 0;
-                dto.Worker = "테스트";
-                dto.UnitPrice = 500;
-                dto.Num = 30;
-                dto.TotalPrice = 30 * 500;
-                dto.FacilityID = 1;
+                //AddMaintanceDTO dto = new AddMaintanceDTO();
+                //dto.Name = "유지보수이력_1";
+                //dto.Type = 0;
+                //dto.Worker = "테스트";
+                //dto.UnitPrice = 500;
+                //dto.Num = 30;
+                //dto.TotalPrice = 30 * 500;
+                //dto.FacilityID = 1;
 
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 5,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 1,
-                        Num = 10,
-                        UnitPrice = 100,
-                        TotalPrice = 10 * 100,
-                        Note = "출고등록"
-                    }
-                });
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 5,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 1,
+                //        Num = 10,
+                //        UnitPrice = 100,
+                //        TotalPrice = 10 * 100,
+                //        Note = "출고등록"
+                //    }
+                //});
 
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 6,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 2,
-                        Num = 3,
-                        UnitPrice = 200,
-                        TotalPrice = 3 * 200,
-                        Note = "출고등록"
-                    }
-                });
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 6,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 2,
+                //        Num = 3,
+                //        UnitPrice = 200,
+                //        TotalPrice = 3 * 200,
+                //        Note = "출고등록"
+                //    }
+                //});
 
                 ResponseUnit<bool?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
                 if (model is null)
@@ -76,7 +81,6 @@ namespace FamTec.Server.Controllers.Maintenance
                     return Ok(model);
                 else
                     return BadRequest();
-
             }
             catch(Exception ex)
             {

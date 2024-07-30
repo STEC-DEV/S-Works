@@ -22,10 +22,13 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddVocCommentDTO>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto)
+        public async ValueTask<ResponseUnit<AddVocCommentDTO>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto, List<IFormFile> files)
         {
             try
             {
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
+
                 if (context is null)
                     return new ResponseUnit<AddVocCommentDTO>() { message = "잘못된 요청입니다.", data = new AddVocCommentDTO(), code = 404 };
                 if (dto is null)
@@ -35,16 +38,15 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<AddVocCommentDTO>() { message = "잘못된 요청입니다.", data = new AddVocCommentDTO(), code = 404 };
 
-                CommentTb? comment = new CommentTb()
-                {
-                    Content = dto.Content,
-                    Status = dto.Status,
-                    CreateDt = DateTime.Now,
-                    CreateUser = Creater,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = Creater,
-                    VocTbId = dto.VocTbId
-                };
+                CommentTb? comment = new CommentTb();
+                comment.Content = dto.Content;
+                comment.Status = dto.Status;
+                comment.CreateDt = DateTime.Now;
+                comment.CreateUser = Creater;
+                comment.UpdateDt = DateTime.Now;
+                comment.UpdateUser = Creater;
+                comment.VocTbId = dto.VocTbId;
+                
 
                 CommentTb? model = await VocCommentRepository.AddAsync(comment);
 

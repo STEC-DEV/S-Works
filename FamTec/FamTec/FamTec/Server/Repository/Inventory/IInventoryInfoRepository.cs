@@ -11,9 +11,9 @@ namespace FamTec.Server.Repository.Inventory
 
         ValueTask<InventoryTb?> GetInventoryInfo(int? id);
 
-        ValueTask<bool?> SetOccupantToken(int? placeid, int? roomid, int? materialid, string? guid);
+        ValueTask<bool?> SetOccupantToken(int? placeid, List<InOutInventoryDTO>? dto, string? guid);
 
-        ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO?> model, string? creater, int? placeid, string? GUID);
+        ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO>? model, string? creater, int? placeid, string? GUID);
         //ValueTask<bool?> SetOutInventoryInfo(List<InventoryTb?> model, int delcount, string creater, string GUID);
 
         ValueTask<Task?> RoolBackOccupant(string GUID);
