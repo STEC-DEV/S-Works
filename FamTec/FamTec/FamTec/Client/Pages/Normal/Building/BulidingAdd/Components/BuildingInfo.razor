@@ -9,7 +9,8 @@
     </div>
     <div class="buildinginfo-contents">
         <div class="building-img">
-            
+            <InputFile type="file" OnChange="OnUploadFiles" />
+            <PreviewBox ImageUrl="@ImageUrl" />
         </div>
         <div class="infosection-1">
             <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@Building.Code"/>
@@ -82,6 +83,8 @@
 
 @code {
     [CascadingParameter] public BuildingDTO Building { get; set; }
+    private string ImageUrl;
+
     bool EditMode= true;
     protected override void OnInitialized()
     {
@@ -94,5 +97,21 @@
     private void changetest(ChangeEventArgs e)
     {
         Console.WriteLine(e.Value);
+    }
+
+    private async void OnUploadFiles(InputFileChangeEventArgs e)
+    {
+        Console.WriteLine(e.File.Name);
+        Console.WriteLine(e.File.ContentType);
+        Console.WriteLine(e.GetMultipleFiles());
+
+        var file = e.File;
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+        ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        Console.WriteLine(Convert.ToBase64String(buffer));
+        Building.Image = buffer;
+        Building.ImageName = e.File.Name;
+        StateHasChanged();
     }
 }

@@ -54,5 +54,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string WomenToiletNum { get; set; }
         public string FireRating { get; set; }
         public string SepticTankCapacity { get; set; }
+
+        public byte[] Image { get; set; }
+        public string ImageName { get; set; }
     }
 }

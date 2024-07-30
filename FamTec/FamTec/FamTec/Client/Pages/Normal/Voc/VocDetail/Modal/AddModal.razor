@@ -87,6 +87,7 @@
     {
         browserFiles.AddRange(e.GetMultipleFiles());
         Comment.Image = new List<byte[]>();
+        Comment.ImageName = new List<string>();
 
         foreach (var file in browserFiles)
         {
@@ -94,6 +95,7 @@
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
             Comment.Image.Add(ms.ToArray());
+            Comment.ImageName.Add(file.Name);
         }
     }
 

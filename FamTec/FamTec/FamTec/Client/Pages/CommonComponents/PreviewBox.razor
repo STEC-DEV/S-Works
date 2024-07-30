@@ -1,0 +1,9 @@
+﻿
+
+<div class="@(ImageUrl == null ? "none" : "") previewbox">
+    <img class="img" src="@ImageUrl" />
+</div>
+
+@code {
+    [Parameter] public string ImageUrl { get; set; }
+}

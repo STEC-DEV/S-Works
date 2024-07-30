@@ -26,7 +26,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(CustomAuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -193,6 +193,7 @@ namespace FamTec.Client.Middleware
                         case "Image":
                             if (value is List<byte[]> imageList)
                             {
+                                var imageNames = manager.GetType().GetProperty("ImageName")?.GetValue(manager) as List<string>;
                                 for (int i = 0; i < imageList.Count; i++)
                                 {
                                     var imageByte1 = imageList[i];
@@ -200,7 +201,8 @@ namespace FamTec.Client.Middleware
                                     {
                                         var stream = new MemoryStream(imageByte1);
                                         var streamContent = new StreamContent(stream);
-                                        content.Add(content: streamContent, name: $"\"files[{i}]\"", fileName: $"image{i}.jpg");
+                                        streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+                                        content.Add(content: streamContent, name: $"\"files\"", fileName: imageNames[i]);
                                     }
                                 }
                             }

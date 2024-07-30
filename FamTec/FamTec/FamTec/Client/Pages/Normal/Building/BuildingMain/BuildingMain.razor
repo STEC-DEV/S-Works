@@ -1,6 +1,8 @@
 ﻿@page "/basic/buildings"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BuildingMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Server.DTO
 
 <div class="building-container yappear">
     <div class="building-wrap">
@@ -14,13 +16,31 @@
             </div>
         </div>
         <div class="building-contents">
-            <BuildingTable />
+            <BuildingTable ListData="@BuildingList" />
         </div>
     </div>
 </div>
 
 
 @code {
+    List<BuildingListDTO> BuildingList;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuilding();
+    }
+
+    private async Task OnLoadBuilding()
+    {
+        ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
+        if(resGet.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+        }
+        BuildingList = resGet.data;
+
+    }
 
 
     private void OnMoveAdd()

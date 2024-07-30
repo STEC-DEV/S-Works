@@ -10,7 +10,7 @@
         <CascadingValue Value="@Building">
             @* <BuildingInfo Building=Building /> *@
             <ChildContent>
-                <BuildingInfo />
+                <BuildingInfo  />
             </ChildContent>
         </CascadingValue>
         
@@ -35,7 +35,14 @@
 
     private async void OnAdd()
     {
-        ResponseUnit<bool> ResAdd = await apiManager.PostAsync<bool>("/building/sign/addbuilding", Building);
+
+        ResponseUnit<BuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<BuildingDTO>("building/sign/addbuilding", Building);
+        if(ResAdd.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 생성 실패");
+        }
+        Navigation.NavigateTo("/basic/buildings");
+
     }
 
 }
