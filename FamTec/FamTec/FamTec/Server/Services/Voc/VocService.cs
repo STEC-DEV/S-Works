@@ -1,15 +1,9 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
-using FamTec.Server.Repository.Alarm;
+﻿using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Place;
-using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Newtonsoft.Json.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -255,66 +249,22 @@ namespace FamTec.Server.Services.Voc
                         dto.Phone = model.Phone; // 민원인 전화번호
                         dto.ReplyYN = model.ReplyYn; // 처리결과 반환유무
 
-                        if(!String.IsNullOrWhiteSpace(model.Image1))
+                        string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, PlaceIdx);
+                        if (!String.IsNullOrWhiteSpace(model.Image1))
                         {
-                            string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, PlaceIdx);
-                            string[] FileList = Directory.GetFiles(VocFileName);
-                            if(FileList is [_, ..])
-                            {
-                                foreach(var file in FileList)
-                                {
-                                    if(file.Contains(model.Image1))
-                                    {
-                                        //string ContentType = Path.GetExtension(model.Image1);
-                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                        byte[] ImageBytes = File.ReadAllBytes(file);
-                                        dto.Images.Add(ImageBytes);
-                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                    }
-                                }
-                            }
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image1);
+                            dto.Images.Add(ImageBytes);
                         }
-                        
                         if (!String.IsNullOrWhiteSpace(model.Image2))
                         {
-                            string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, PlaceIdx);
-                            string[] FileList = Directory.GetFiles(VocFileName);
-                            if (FileList is [_, ..])
-                            {
-                                foreach (var file in FileList)
-                                {
-                                    if (file.Contains(model.Image2))
-                                    {
-                                        //string ContentType = Path.GetExtension(model.Image2);
-                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                        byte[] ImageBytes = File.ReadAllBytes(file);
-                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                        dto.Images.Add(ImageBytes);
-                                    }
-                                }
-                            }
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image2);
+                            dto.Images.Add(ImageBytes);
                         }
-
                         if (!String.IsNullOrWhiteSpace(model.Image3))
                         {
-                            string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, PlaceIdx);
-                            string[] FileList = Directory.GetFiles(VocFileName);
-                            if (FileList is [_, ..])
-                            {
-                                foreach (var file in FileList)
-                                {
-                                    if (file.Contains(model.Image3))
-                                    {
-                                        //string ContentType = Path.GetExtension(model.Image3);
-                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                        byte[] ImageBytes = File.ReadAllBytes(file);
-                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                        dto.Images.Add(ImageBytes);
-                                    }
-                                }
-                            }
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image3);
+                            dto.Images.Add(ImageBytes);
                         }
-                        
 
                         return new ResponseUnit<VocDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
