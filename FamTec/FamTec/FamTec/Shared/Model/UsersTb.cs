@@ -244,6 +244,9 @@ public partial class UsersTb
     [InverseProperty("UsersTb")]
     public virtual ICollection<AlarmTb> AlarmTbs { get; set; } = new List<AlarmTb>();
 
+    [InverseProperty("UserTb")]
+    public virtual ICollection<CommentTb> CommentTbs { get; set; } = new List<CommentTb>();
+
     [ForeignKey("PlaceTbId")]
     [InverseProperty("UsersTbs")]
     public virtual PlaceTb? PlaceTb { get; set; }

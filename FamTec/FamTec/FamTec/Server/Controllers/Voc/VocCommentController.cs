@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using DocumentFormat.OpenXml.Office.Word;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
@@ -21,11 +22,17 @@ namespace FamTec.Server.Controllers.Voc
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 조치사항 입력 - VOC 댓글
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddVocComment")]
 
-        public async ValueTask<IActionResult> AddVocComment([FromForm]AddVocCommentDTO dto, [FromForm] List<IFormFile> files)
+        public async ValueTask<IActionResult> AddVocComment([FromForm]AddVocCommentDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
             {
@@ -70,28 +77,71 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
+        /// <summary>
+        /// Voc Comment List
+        /// </summary>
+        /// <param name="vocid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetVocComment")]
+        [Route("sign/GetVocCommentList")]
         public async ValueTask<IActionResult> GetVocComment([FromQuery]int vocid)
         {
-            ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(vocid);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할수 없음", statusCode: 500);
             }
         }
 
+        /// <summary>
+        /// VOC 댓글 상세보기
+        /// </summary>
+        /// <param name="commentid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/VocCommetDetail")]
+        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int? commentid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없음", statusCode: 500);
+            }
+        }
+
+
+        // VocCommentUpdate
+
+        //public async ValueTask<IActionResult> UpdateVocComment()
     }
 }

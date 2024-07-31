@@ -300,6 +300,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Status).HasComment("처리상태");
 
+            entity.HasOne(d => d.UserTb).WithMany(p => p.CommentTbs).HasConstraintName("FKUsertbId_202407311313");
+
             entity.HasOne(d => d.VocTb).WithMany(p => p.CommentTbs).HasConstraintName("fk_comment_tb_voc_tb1");
         });
 
@@ -795,7 +797,7 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-    
+
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>

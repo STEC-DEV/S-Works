@@ -10,6 +10,7 @@ namespace FamTec.Shared.Model;
 /// 민원 답변
 /// </summary>
 [Table("comment_tb")]
+[Index("UserTbId", Name = "FKUsertbId_202407311313")]
 [Index("VocTbId", Name = "fk_comment_tb_voc_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class CommentTb
@@ -66,6 +67,13 @@ public partial class CommentTb
 
     [Column("VOC_TB_ID", TypeName = "int(11)")]
     public int? VocTbId { get; set; }
+
+    [Column("USER_TB_ID", TypeName = "int(11)")]
+    public int? UserTbId { get; set; }
+
+    [ForeignKey("UserTbId")]
+    [InverseProperty("CommentTbs")]
+    public virtual UsersTb? UserTb { get; set; }
 
     [ForeignKey("VocTbId")]
     [InverseProperty("CommentTbs")]

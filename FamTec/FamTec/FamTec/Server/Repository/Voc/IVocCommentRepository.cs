@@ -11,8 +11,19 @@ namespace FamTec.Server.Repository.Voc
         /// <returns></returns>
         ValueTask<CommentTb?> AddAsync(CommentTb? model);
 
+        /// <summary>
+        /// VOCID에 해당하는 댓글 리스트 조회
+        /// </summary>
+        /// <param name="vocid"></param>
+        /// <returns></returns>
         ValueTask<List<CommentTb>?> GetCommentList(int? vocid);
 
+        /// <summary>
+        /// 댓글내용 상세보기
+        /// </summary>
+        /// <param name="commentid"></param>
+        /// <returns></returns>
+        ValueTask<CommentTb?> GetCommentInfo(int? commentid);
 
     }
 }

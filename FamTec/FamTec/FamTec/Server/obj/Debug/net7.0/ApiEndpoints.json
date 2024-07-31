@@ -4185,7 +4185,7 @@
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
     "Method": "GetVocComment",
-    "RelativePath": "api/VocComment/sign/GetVocComment",
+    "RelativePath": "api/VocComment/sign/GetVocCommentList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -4193,6 +4193,22 @@
       {
         "Name": "vocid",
         "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
+    "Method": "GetVocCommentDetail",
+    "RelativePath": "api/VocComment/sign/VocCommetDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "commentid",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],

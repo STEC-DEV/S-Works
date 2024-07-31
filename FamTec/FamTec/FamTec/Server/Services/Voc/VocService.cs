@@ -84,7 +84,6 @@ namespace FamTec.Server.Services.Voc
                 di = new DirectoryInfo(VocFileFolderPath);
                 if (!di.Exists) di.Create();
 
-
                 VocTb? model = new VocTb();
                 model.Title = dto.Title;
                 model.Content = dto.Contents;
@@ -102,6 +101,7 @@ namespace FamTec.Server.Services.Voc
                 model.UpdateUser = dto.Name; // 작성자
                 model.BuildingTbId = dto.Buildingid;
 
+                // 파일이 있으면
                 if (files is [_, ..])
                 {
                     // 이미지 저장
@@ -127,31 +127,12 @@ namespace FamTec.Server.Services.Voc
                 VocTb? result = await VocInfoRepository.AddAsync(model);
                 if(result is not null)
                 {
-                    List<UsersTb>? userlist = await UserInfoRepository.GetVocDefaultList(buildingtb.PlaceTbId);
-                    if(userlist is [_, ..])
-                    {
-                        bool AlarmResult = await SetMessage(userlist, dto.Name, result.Id);
-                        if(AlarmResult)
-                        {
-                            // 성공
-                            return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                        }
-                        else
-                        {
-                            // 실패
-                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                        }
-                    }
-                    else // 보낼대상이 없음
-                    {
-                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                    }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 }
-                    
             }
             catch (Exception ex)
             {
@@ -204,9 +185,6 @@ namespace FamTec.Server.Services.Voc
                 return new ResponseList<VocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTO>(), code = 500 };
             }
         }
-
-      
-
 
         /// <summary>
         /// VOC 알람메시지 처리
