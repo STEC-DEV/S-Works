@@ -1,0 +1,29 @@
+
+.container[b-2t6md138o2]{
+    display:flex;
+    flex-direction : column;
+    gap : var(--wide-pd);
+}
+
+.sub-btn[b-2t6md138o2] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding :var(--default-pd);
+    font-size: var(--size-s);
+    font-weight: var(--bold-wt);
+    color: var(--default-color);
+    
+    background-color: var(--main-color);
+    border-radius: 10px;
+    transition: all .3s;
+    box-shadow : 0 2px 15px gray;
+}
+
+
+.sub-btn:hover[b-2t6md138o2]{
+    color: var(--main-color);
+    background-color: var(--default-color);
+}

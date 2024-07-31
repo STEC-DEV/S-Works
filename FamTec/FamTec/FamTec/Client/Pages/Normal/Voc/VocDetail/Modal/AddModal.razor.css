@@ -17,7 +17,7 @@
 }
 .addmodal .header > .title{
     font-size : var(--title-size);
-    font-weight : var(--bold-bd);
+    font-weight : var(--bold-wt);
     color : var(--main-color);
 }
 

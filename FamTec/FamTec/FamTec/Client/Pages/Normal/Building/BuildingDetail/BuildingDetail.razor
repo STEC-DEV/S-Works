@@ -1,0 +1,54 @@
+﻿@page "/basic/buildings/{id:int}"
+@using FamTec.Client.Pages.Normal.Building.BuildingDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
+
+<div class="container">
+    <BuildingInfo Building="Building" />
+    <label class="sub-btn" @onclick=@OnModal>
+        항목 추가
+    </label>
+    @if (IsModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SubGroupModal CloseModal="OnModal" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    BuildingDTO Building;
+    bool IsModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuilding();
+    }
+
+    private async Task OnLoadBuilding()
+    {
+        ResponseUnit<BuildingDTO> resDetail = await apiManager.GetUnitAsync<BuildingDTO>($"Building/sign/DetailBuilding?buildingid={Id}");
+        if(resDetail.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 상세정보 조회 실패");
+        }
+        Building = resDetail.data;
+    }
+
+    private void OnModal()
+    {
+        Console.WriteLine("ㅎㅎ");
+        IsModal = !IsModal;
+    }
+
+    private void OnLoadGroup()
+    {
+        
+    }
+}

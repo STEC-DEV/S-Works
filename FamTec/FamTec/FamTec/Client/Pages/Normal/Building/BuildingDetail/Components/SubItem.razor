@@ -1,0 +1,19 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+
+<div class="item-container">
+    <label class="item-label">
+        @item.ItemName (@item.Unit)
+    </label>
+    <div class="item-values">
+        @foreach(var i in item.Values)
+        {
+            <span class="value">
+                @i.Value
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public ItemDTO item { get; set; }
+}

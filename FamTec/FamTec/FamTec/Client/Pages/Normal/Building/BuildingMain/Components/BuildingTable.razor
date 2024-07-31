@@ -44,39 +44,6 @@
         </tr>
     </thead>
     <tbody class="tbody">
-      @*   @for (int i = 0; i < 15; i++)
-        {
-            <tr class="tbody-tr">
-                <td class="td">
-                    <div class="td-wrap">
-                        <span class="name">강남우체국</span>
-                        <span class="code">B001</span>
-                    </div>
-                </td>
-                <td class="td">
-                    서울특별시 강남우체국 개포로 619
-                </td>
-                <td class="td text-center">
-                    02-244-2151
-                </td>
-                <td class="td text-center">
-                    8
-                </td>
-                <td class="td">
-                    @currentDateTime
-                </td>
-                <td class="td">
-                    @currentDateTime
-                </td>
-                <td class="td">
-                </td>
-                <td class="td text-right">
-                    <input type="checkbox"/>
-                </td>
-            </tr>
-        }
- *@
-
         @if(ListData == null)
         {
             <p>Loading ...</p>
@@ -85,27 +52,28 @@
         {
             @foreach (var row in ListData)
             {
+                int id = row.Id;
                 <tr class="tbody-tr">
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         <div class="td-wrap">
                             <span class="name">@row.Name</span>
                             <span class="code">@row.BuildingCd</span>
                         </div>
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         @row.Address
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         @row.Tel
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         @row.TotalFloor
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         @row.CompleteDt.ToString()
                     </td>
-                    <td class="td">
-                        @row.CreateDt;
+                    <td class="td" @onclick="()=>OnDetail(id)">
+                        @row.CreateDt
                     </td>
                     <td class="td">
                     </td>
@@ -122,4 +90,9 @@
 @code {
     [Parameter] public List<BuildingListDTO>  ListData { get; set; }
     private DateTime currentDateTime = DateTime.Now;
+
+    private void OnDetail(int id)
+    {
+        Navigation.NavigateTo($"/basic/buildings/{id}");
+    }
 }
