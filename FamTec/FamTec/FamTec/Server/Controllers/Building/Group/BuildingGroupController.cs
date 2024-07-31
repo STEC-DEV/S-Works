@@ -21,6 +21,31 @@ namespace FamTec.Server.Controllers.Building.Group
             this.LogService = _logservice;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/AddGroup")]
+        public async ValueTask<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<AddGroupInfoDTO?> model = await GroupService.AddBuildingGroupInfoService(HttpContext, dto);
+                
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
+        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -29,9 +54,8 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-
                 //AddGroupDTO dto = new AddGroupDTO();
-                //dto.BuildingIdx = 2;
+                //dto.BuildingIdx = 6;
                 //dto.Name = "옥상주차장";
 
                 //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();

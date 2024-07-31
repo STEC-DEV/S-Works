@@ -89,7 +89,7 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
-        // 사업장 민원 수정
+        // 민원 타입변경 - 미처리 --> 다른타입으로
 
 
     }

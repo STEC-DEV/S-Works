@@ -141,7 +141,37 @@ namespace FamTec.Server.Controllers.Voc
 
 
         // VocCommentUpdate
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("sign/VocCommentUpdate")]
+        public async ValueTask<IActionResult> UpdateVocComment(List<IFormFile>? files)
+        {
+            try
+            {
 
-        //public async ValueTask<IActionResult> UpdateVocComment()
+                VocCommentDetailDTO dto = new VocCommentDetailDTO();
+                dto.VocCommentId = 6;
+                dto.Content = "수저된내용";
+                dto.Status = 2;
+                dto.Userid = 10;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+                
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없음", statusCode: 500);
+            }
+        }
     }
 }

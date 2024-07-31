@@ -40,6 +40,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 이미지
         /// </summary>
-        public List<string>? Images { get; set; } = new List<string>(); // 이미지
+        public List<byte[]>? Images { get; set; } = new List<byte[]>(); // 이미지
     }
 }

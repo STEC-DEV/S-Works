@@ -1209,6 +1209,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
+    "Method": "AddGroup",
+    "RelativePath": "api/BuildingGroup/sign/AddGroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.AddGroupInfoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupController",
     "Method": "DeleteBuildingGroup",
     "RelativePath": "api/BuildingGroup/sign/DeleteGroup",
     "HttpMethod": "POST",
@@ -4193,6 +4209,22 @@
       {
         "Name": "vocid",
         "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
+    "Method": "UpdateVocComment",
+    "RelativePath": "api/VocComment/sign/VocCommentUpdate",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
         "IsRequired": false
       }
     ],

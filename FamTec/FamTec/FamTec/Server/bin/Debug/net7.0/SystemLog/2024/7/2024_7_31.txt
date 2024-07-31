@@ -1,0 +1,52 @@
+[2024-07-31 오후 4:10:29]	System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at FamTec.Server.Services.Voc.VocCommentService.UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List`1 files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocCommentService.cs:line 383
+[2024-07-31 오후 4:11:35]	System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at FamTec.Server.Services.Voc.VocCommentService.UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List`1 files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocCommentService.cs:line 383
+[2024-07-31 오후 4:51:16]	Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Cannot add or update a child row: a foreign key constraint fails (`works`.`comment_tb`, CONSTRAINT `fk_comment_tb_voc_tb1` FOREIGN KEY (`VOC_TB_ID`) REFERENCES `voc_tb` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION)
+   at MySqlConnector.Core.ResultSet.<ScanRowAsync>g__ScanRowAsyncAwaited|9_0(ResultSet resultSet, Task`1 payloadTask, Row row, CancellationToken token) in /_/src/MySqlConnector/Core/ResultSet.cs:line 244
+   at MySqlConnector.Core.ResultSet.ReadAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ResultSet.cs:line 199
+   at MySqlConnector.MySqlDataReader.ReadAsync(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 38
+   at Pomelo.EntityFrameworkCore.MySql.Update.Internal.MySqlModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Voc.VocCommentRepository.AddAsync(CommentTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocCommentRepository.cs:line 32
+[2024-07-31 오후 4:51:37]	System.ArgumentNullException: Value cannot be null.
+   at FamTec.Server.Repository.Voc.VocCommentRepository.AddAsync(CommentTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocCommentRepository.cs:line 43
+   at FamTec.Server.Services.Voc.VocCommentService.AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List`1 files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocCommentService.cs:line 114
+[2024-07-31 오후 4:52:01]	Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Cannot add or update a child row: a foreign key constraint fails (`works`.`comment_tb`, CONSTRAINT `fk_comment_tb_voc_tb1` FOREIGN KEY (`VOC_TB_ID`) REFERENCES `voc_tb` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION)
+   at MySqlConnector.Core.ResultSet.<ScanRowAsync>g__ScanRowAsyncAwaited|9_0(ResultSet resultSet, Task`1 payloadTask, Row row, CancellationToken token) in /_/src/MySqlConnector/Core/ResultSet.cs:line 244
+   at MySqlConnector.Core.ResultSet.ReadAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ResultSet.cs:line 199
+   at MySqlConnector.MySqlDataReader.ReadAsync(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 38
+   at Pomelo.EntityFrameworkCore.MySql.Update.Internal.MySqlModificationCommandBatch.ConsumeResultSetAsync(Int32 startCommandIndex, RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeAsync(RelationalDataReader reader, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Voc.VocCommentRepository.AddAsync(CommentTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocCommentRepository.cs:line 32
+[2024-07-31 오후 4:52:01]	System.ArgumentNullException: Value cannot be null.
+   at FamTec.Server.Repository.Voc.VocCommentRepository.AddAsync(CommentTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Voc\VocCommentRepository.cs:line 43
+   at FamTec.Server.Services.Voc.VocCommentService.AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List`1 files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Voc\VocCommentService.cs:line 114

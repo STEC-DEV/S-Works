@@ -4,6 +4,7 @@ using FamTec.Client.Pages.Admin.Place.PlaceMain;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Building.Building;
 using FamTec.Shared.Server.DTO.Voc;
 
 namespace FamTec.Server.Services.Voc
@@ -11,16 +12,23 @@ namespace FamTec.Server.Services.Voc
     public class VocCommentService : IVocCommentService
     {
         private readonly IVocCommentRepository VocCommentRepository;
+        private readonly IVocInfoRepository VocInfoRepository;
         private readonly ILogService LogService;
+        private readonly IFileService FileService;
 
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocCommentFileFolderPath;
 
-        public VocCommentService(IVocCommentRepository _voccommentrepository, ILogService _logservice)
+        public VocCommentService(IVocCommentRepository _voccommentrepository,
+            IVocInfoRepository _vocinforepository,
+            ILogService _logservice,
+            IFileService _fileservice)
         {
             this.VocCommentRepository = _voccommentrepository;
+            this.VocInfoRepository = _vocinforepository;
             this.LogService = _logservice;
+            this.FileService = _fileservice;
         }
 
         /// <summary>
@@ -70,26 +78,19 @@ namespace FamTec.Server.Services.Voc
                 comment.UserTbId = Convert.ToInt32(Useridx);
 
                 // 파일이 있으면
-                if(files is [_, ..])
+                if (files is [_, ..])
                 {
                     for (int i = 0; i < files.Count(); i++)
                     {
-                        string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(files[i].FileName)}";
-                        string filePath = Path.Combine(VocCommentFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files[i].CopyToAsync(fileStream);
-
-                            if (i == 0)
-                                comment.Image1 = newFileName;
-                            if (i == 1)
-                                comment.Image2 = newFileName;
-                            if (i == 2)
-                                comment.Image2 = newFileName;
-                        }
+                        if (i is 0)
+                            comment.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        if (i is 1)
+                            comment.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        if (i is 2)
+                            comment.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
                     }
                 }
+
 
                 CommentTb? model = await VocCommentRepository.AddAsync(comment);
 
@@ -193,59 +194,21 @@ namespace FamTec.Server.Services.Voc
                     dto.CreateUser = model.CreateUser; // 댓글 작성자
                     dto.Userid = model.UserTbId; // 작성자 인덱스
 
-                    if(!String.IsNullOrWhiteSpace(model.Image1))
+                    VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
+                    if (!String.IsNullOrWhiteSpace(model.Image1))
                     {
-                        VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
-                        string[] FileList = Directory.GetFiles(VocCommentFileFolderPath);
-                        if(FileList is [_, ..])
-                        {
-                            foreach(var file in FileList)
-                            {
-                                if(file.Contains(model.Image1))
-                                {
-                                    string ContentType = Path.GetExtension(model.Image1);
-                                    ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Images!.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                }
-                            }
-                        }
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, model.Image1);
+                        dto.Images.Add(ImageBytes);
                     }
                     if (!String.IsNullOrWhiteSpace(model.Image2))
                     {
-                        VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
-                        string[] FileList = Directory.GetFiles(VocCommentFileFolderPath);
-                        if (FileList is [_, ..])
-                        {
-                            foreach (var file in FileList)
-                            {
-                                if (file.Contains(model.Image2))
-                                {
-                                    string ContentType = Path.GetExtension(model.Image2);
-                                    ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Images!.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                }
-                            }
-                        }
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, model.Image2);
+                        dto.Images.Add(ImageBytes);
                     }
                     if (!String.IsNullOrWhiteSpace(model.Image3))
                     {
-                        VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
-                        string[] FileList = Directory.GetFiles(VocCommentFileFolderPath);
-                        if (FileList is [_, ..])
-                        {
-                            foreach (var file in FileList)
-                            {
-                                if (file.Contains(model.Image3))
-                                {
-                                    string ContentType = Path.GetExtension(model.Image3);
-                                    ContentType = ContentType.Substring(1, ContentType.Length - 1);
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Images!.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
-                                }
-                            }
-                        }
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, model.Image3);
+                        dto.Images.Add(ImageBytes);
                     }
 
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -262,6 +225,148 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
+        public async ValueTask<ResponseUnit<bool?>> UpdateCommentService(HttpContext? context, VocCommentDetailDTO? dto, List<IFormFile>? files)
+        {
+            try
+            {
+                string? FileName = String.Empty;
+                string? FileExtenstion = String.Empty;
+
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? Useridx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(Useridx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeId))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 내가 쓴건지 확인
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId);
+                if(model!.UserTbId != Convert.ToInt32(Useridx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                model.Content = dto.Content;
+                model.Status = dto.Status;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creater;
+
+                // VOC관련한 폴더 경로
+                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
+
+                if (files is [_, ..])
+                {
+                    // 디렉터리에서 파일 삭제
+                    if (model.Image1 is not null)
+                    {
+                        // DB에서 파일 검색해서 삭제
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image1);
+                        if (result)
+                            model.Image1 = null;
+                    }
+                    
+                    if (model.Image2 is not null)
+                    {
+                        // DB에서 파일 검색해서 삭제
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image2);
+                        if(result)
+                            model.Image2 = null;
+                    }
+                    if (model.Image3 is not null)
+                    {
+                        // DB에서 파일 검색해서 삭제
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image3);
+                        if (result)
+                            model.Image3 = null;
+                    }
+
+                    // 파일 생성 AND DB Update
+                    for (int i = 0; i < files.Count(); i++)
+                    {
+                        if(i is 0)
+                        {
+                            model.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        }
+                        if(i is 1)
+                        {
+                            model.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        }
+                        if(i is 2)
+                        {
+                            model.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    // 넘어온 파일이 공백인경우 DB에 파일이 있으면 삭제
+                    if(model.Image1 is not null)
+                    {
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image1);
+                        if (result)
+                            model.Image1 = null;
+                    }
+                    if(model.Image2 is not null)
+                    {
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image2);
+                        if (result)
+                            model.Image2 = null;
+                    }
+                    if(model.Image3 is not null)
+                    {
+                        bool result = FileService.DeleteImageFile(VocCommentFileFolderPath, model.Image3);
+                        if (result)
+                            model.Image3 = null;
+                    }
+                }
+
+                bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model);
+                if(UpdateResult == true)
+                {
+                    // 여기서 Voc 원본 조회해서 값 변경해줘야함!.
+                    VocTb? VocTB = await VocInfoRepository.GetDetailVoc(model.VocTbId);
+                    if (VocTB is not null)
+                    {
+                        VocTB.Status = dto.Status;
+                        VocTB.UpdateDt = DateTime.Now;
+                        VocTB.UpdateUser = creater;
+                        bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
+                        if (VocUpdateResult)
+                        {
+                            // 카카오 알림톡 (진행상태가 변경되는거임) - 민원자에게 민원현황 알려주기용
+
+                            return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        }
+                        else 
+                        {
+                            return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
+                    }     
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+
+        }
 
     }
 }

@@ -29,5 +29,13 @@ namespace FamTec.Server.Services.Voc
         /// <param name="vocid"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<VocDetailDTO?>> GetVocDetail(HttpContext? context, int? vocid);
+
+        /// <summary>
+        /// VOC 유형 변경
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> UpdateVocService(HttpContext? context, UpdateVocDTO? dto);
     }
 }

@@ -25,5 +25,12 @@ namespace FamTec.Server.Repository.Voc
         /// <returns></returns>
         ValueTask<CommentTb?> GetCommentInfo(int? commentid);
 
+        /// <summary>
+        /// 댓글수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<bool?> UpdateCommentInfo(CommentTb? model);
+
     }
 }

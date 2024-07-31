@@ -80,7 +80,7 @@ builder.Services.AddTransient<IFloorInfoRepository, FloorInfoRepository>();
 builder.Services.AddTransient<IDepartmentInfoRepository, DepartmentInfoRepository>();
 builder.Services.AddTransient<IRoomInfoRepository, RoomInfoRepository>();
 builder.Services.AddTransient<IUnitInfoRepository, UnitInfoRepository>();
-builder.Services.AddTransient<IVocInfoRpeository, VocInfoRepository>();
+builder.Services.AddTransient<IVocInfoRepository, VocInfoRepository>();
 builder.Services.AddTransient<IAlarmInfoRepository, AlarmInfoRepository>();
 builder.Services.AddTransient<IMaterialInfoRepository, MaterialInfoRepository>();
 builder.Services.AddTransient<IVocCommentRepository, VocCommentRepository>();
@@ -111,6 +111,7 @@ builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUnitService, UnitService>();
 builder.Services.AddTransient<IVocService, VocService>();
 builder.Services.AddTransient<ILogService, LogService>();
+builder.Services.AddTransient<IFileService, FileService>();
 
 builder.Services.AddTransient<IMaterialService, MaterialService>();
 builder.Services.AddTransient<IVocCommentService, VocCommentService>();

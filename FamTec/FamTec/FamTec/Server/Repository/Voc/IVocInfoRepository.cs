@@ -4,7 +4,7 @@ using FamTec.Shared.Server.DTO.Voc;
 
 namespace FamTec.Server.Repository.Voc
 {
-    public interface IVocInfoRpeository
+    public interface IVocInfoRepository
     {
         /// <summary>
         /// VOC 추가
@@ -27,5 +27,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="vocid"></param>
         /// <returns></returns>
         ValueTask<VocTb?> GetDetailVoc(int? vocid);
+
+        ValueTask<bool> UpdateVocInfo(VocTb? model);
     }
 }

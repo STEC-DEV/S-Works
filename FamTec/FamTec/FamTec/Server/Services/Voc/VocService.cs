@@ -7,6 +7,7 @@ using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -14,12 +15,10 @@ namespace FamTec.Server.Services.Voc
 {
     public class VocService : IVocService
     {
-        private readonly IVocInfoRpeository VocInfoRepository;
+        private readonly IVocInfoRepository VocInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly IUserInfoRepository UserInfoRepository;
         private readonly IAlarmInfoRepository AlarmInfoRepository;
-        private readonly IPlaceInfoRepository PlaceInfoRepository;
-        private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
+        private readonly IFileService FileService;
 
         // 파일디렉터리
         private DirectoryInfo? di;
@@ -27,20 +26,16 @@ namespace FamTec.Server.Services.Voc
 
         private ILogService LogService;
 
-        public VocService(IVocInfoRpeository _vocinforepository,
+        public VocService(IVocInfoRepository _vocinforepository,
             IBuildingInfoRepository _buildinginforepository,
-            IUserInfoRepository _userinforepository,
             IAlarmInfoRepository _alarminforepository,
-            IAdminPlacesInfoRepository _adminplaceinforepository,
-            IPlaceInfoRepository _placeinforepository,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.VocInfoRepository = _vocinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
-            this.UserInfoRepository = _userinforepository;
             this.AlarmInfoRepository = _alarminforepository;
-            this.AdminPlaceInfoRepository = _adminplaceinforepository;
-            this.PlaceInfoRepository = _placeinforepository;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -107,26 +102,20 @@ namespace FamTec.Server.Services.Voc
                     // 이미지 저장
                     for (int i = 0; i < files.Count(); i++)
                     {
-                        string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(files[i].FileName)}";
-                        string filePath = Path.Combine(VocFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files[i].CopyToAsync(fileStream);
-
-                            if (i == 0)
-                                model.Image1 = newFileName;
-                            if (i == 1)
-                                model.Image2 = newFileName;
-                            if (i == 2)
-                                model.Image3 = newFileName;
-                        }
+                        if (i is 0)
+                            model.Image1 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
+                        if (i is 1)
+                            model.Image2 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
+                        if (i is 2)
+                            model.Image3 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
                     }
                 }
 
                 VocTb? result = await VocInfoRepository.AddAsync(model);
                 if(result is not null)
                 {
+                    // 소켓알림! + 카카오 API 알림
+
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
@@ -276,10 +265,11 @@ namespace FamTec.Server.Services.Voc
                                 {
                                     if(file.Contains(model.Image1))
                                     {
-                                        string ContentType = Path.GetExtension(model.Image1);
-                                        ContentType = ContentType.Substring(1, ContentType.Length - 1);
+                                        //string ContentType = Path.GetExtension(model.Image1);
+                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
                                         byte[] ImageBytes = File.ReadAllBytes(file);
-                                        dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
+                                        dto.Images.Add(ImageBytes);
+                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
                                     }
                                 }
                             }
@@ -295,10 +285,11 @@ namespace FamTec.Server.Services.Voc
                                 {
                                     if (file.Contains(model.Image2))
                                     {
-                                        string ContentType = Path.GetExtension(model.Image2);
-                                        ContentType = ContentType.Substring(1, ContentType.Length - 1);
+                                        //string ContentType = Path.GetExtension(model.Image2);
+                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
                                         byte[] ImageBytes = File.ReadAllBytes(file);
-                                        dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
+                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
+                                        dto.Images.Add(ImageBytes);
                                     }
                                 }
                             }
@@ -314,10 +305,11 @@ namespace FamTec.Server.Services.Voc
                                 {
                                     if (file.Contains(model.Image3))
                                     {
-                                        string ContentType = Path.GetExtension(model.Image3);
-                                        ContentType = ContentType.Substring(1, ContentType.Length - 1);
+                                        //string ContentType = Path.GetExtension(model.Image3);
+                                        //ContentType = ContentType.Substring(1, ContentType.Length - 1);
                                         byte[] ImageBytes = File.ReadAllBytes(file);
-                                        dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
+                                        //dto.Images.Add($"data:{ContentType};base64,{Convert.ToBase64String(ImageBytes)}");
+                                        dto.Images.Add(ImageBytes);
                                     }
                                 }
                             }
@@ -344,5 +336,56 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
+        /// <summary>
+        /// voc 유형 변경
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> UpdateVocService(HttpContext? context, UpdateVocDTO? dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                if (dto is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if(String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                VocTb? VocTB = await VocInfoRepository.GetDetailVoc(dto.VocID);
+                if(VocTB is not null)
+                {
+                    VocTB.Type = dto.Type;
+                    VocTB.UpdateDt = DateTime.Now;
+                    VocTB.UpdateUser = creater;
+
+                    bool UpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
+                    if(UpdateResult)
+                    {
+                        // 소켓알림!
+
+                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    }
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "조회결과가 존재하지 않습니다.", data = null, code = 404 };
+                }
+
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

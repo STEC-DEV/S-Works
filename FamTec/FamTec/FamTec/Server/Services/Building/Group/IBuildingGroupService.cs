@@ -12,5 +12,7 @@ namespace FamTec.Server.Services.Building.Group
         public ValueTask<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext? context, UpdateGroupDTO? dto);
 
         public ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext? context, int? groupid);
+
+        public ValueTask<ResponseUnit<AddGroupInfoDTO?>> AddBuildingGroupInfoService(HttpContext? context, AddGroupInfoDTO? dto);
     }
 }

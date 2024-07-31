@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Voc
 {
-    public class VocInfoRepository : IVocInfoRpeository
+    public class VocInfoRepository : IVocInfoRepository
     {
         private readonly WorksContext context;
         private ILogService LogService;
@@ -155,5 +155,25 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
+        public async ValueTask<bool> UpdateVocInfo(VocTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.VocTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

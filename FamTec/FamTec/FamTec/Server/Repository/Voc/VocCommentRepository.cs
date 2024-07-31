@@ -95,5 +95,32 @@ namespace FamTec.Server.Repository.Voc
                 throw new ArgumentNullException();
             }
         }
+
+
+        /// <summary>
+        /// 댓글 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateCommentInfo(CommentTb? model)
+        {
+            try
+            {
+                if(model is not null)
+                {
+                    context.CommentTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

@@ -28,5 +28,8 @@ namespace FamTec.Server.Services.Voc
         /// <param name="commentid"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext? context, int? commentid);
+
+        public ValueTask<ResponseUnit<bool?>> UpdateCommentService(HttpContext? context, VocCommentDetailDTO? dto, List<IFormFile>? files);
+
     }
 }
