@@ -12,12 +12,15 @@ namespace FamTec.Server.Controllers.Facility
     public class BeautyFacilityController : ControllerBase
     {
         private IBeautyFacilityService BeautyFacilityService;
+        private IFileService FileService;
         private ILogService LogService;
 
         public BeautyFacilityController(IBeautyFacilityService _beautyfacilityservice,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.BeautyFacilityService = _beautyfacilityservice;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -37,11 +40,25 @@ namespace FamTec.Server.Controllers.Facility
                 if(HttpContext is null)
                     return BadRequest();
 
-                if(files is not null) // 파일이 있으면 1MB 제한
+                if (files is not null)
                 {
-                    if(files.Length > Common.MEGABYTE_1)
+                    if (files.Length > Common.MEGABYTE_1)
                     {
-                        return Ok(new ResponseUnit<FacilityDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
                     }
                 }
 

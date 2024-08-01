@@ -12,13 +12,16 @@ namespace FamTec.Server.Controllers.Material
     public class MaterialController : ControllerBase
     {
         private IMaterialService MaterialService;
+        private IFileService FileService;
         private ILogService LogService;
 
 
         public MaterialController(IMaterialService _materialservice,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaterialService = _materialservice;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -38,11 +41,25 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null)
+                if (files is not null)
                 {
-                    if(files.Length > 1048576)
+                    if (files.Length > Common.MEGABYTE_1)
                     {
-                        return Ok(new ResponseUnit<AddMaterialDTO?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
                     }
                 }
 
@@ -140,11 +157,25 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null) // 파일이 있으면 1MB 제한
+                if (files is not null)
                 {
-                    if(files.Length>1048576)
+                    if (files.Length > Common.MEGABYTE_1)
                     {
-                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
                     }
                 }
 

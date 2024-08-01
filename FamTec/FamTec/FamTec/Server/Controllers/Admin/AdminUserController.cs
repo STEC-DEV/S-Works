@@ -43,23 +43,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                //var file = Request.Form.Files[0];
-                //if (file.Length > 0)
-                //{
-                //    // 파일명 생성 (중복 방지를 위해 GUID 사용)
-                //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                //    var filePath = Path.Combine(@"X:\\FMS\\설계\\ERD", fileName);
-
-                //    // 파일 저장
-                //    using (var stream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //        await file.CopyToAsync(stream);
-                //    }
-
-                //    // 파일 경로를 데이터베이스에 저장하거나 필요한 처리를 수행
-                //    Console.WriteLine(filePath);
-                //}
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -71,12 +54,17 @@ namespace FamTec.Server.Controllers.Admin
                     }
 
                     string? extension = FileService.GetExtension(files);
-                    if(!String.IsNullOrWhiteSpace(extension))
-                    { 
-                        /*
-                         여기 수정전
-                         
-                         */
+                    if(String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
                     }
                 }
 
@@ -207,14 +195,26 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null)
+                if (files is not null)
                 {
-                    if(files.Length > Common.MEGABYTE_1)
+                    if (files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
 
-                    
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
+                    }
                 }
 
                 ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);

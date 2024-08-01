@@ -56,7 +56,7 @@ namespace FamTec.Server.Controllers.Voc
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없음", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -85,7 +85,7 @@ namespace FamTec.Server.Controllers.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없음.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

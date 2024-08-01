@@ -50,7 +50,7 @@ namespace FamTec.Server.Controllers.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -112,7 +112,7 @@ namespace FamTec.Server.Controllers.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -175,7 +175,7 @@ namespace FamTec.Server.Controllers.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
 
         }
@@ -189,7 +189,7 @@ namespace FamTec.Server.Controllers.Store
         [HttpGet]
         [Route("sign/GetPlaceInventoryStatus")]
         //public async ValueTask<IActionResult> GetPlaceInventoryStatus()
-        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int>? materialid, [FromQuery]bool? type)
+        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int> materialid, [FromQuery]bool type)
         {
             try
             {
@@ -212,7 +212,7 @@ namespace FamTec.Server.Controllers.Store
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -226,7 +226,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async ValueTask<IActionResult> PeriodicRecord([FromQuery]int? materialid, DateTime? Startdate, DateTime? EndDate)
+        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] int materialid, DateTime Startdate, DateTime EndDate)
         {
             try
             {
@@ -243,10 +243,10 @@ namespace FamTec.Server.Controllers.Store
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못하였습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services.Admin.Account;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Server.Services.User;
 using FamTec.Shared.Server.DTO;
@@ -15,37 +16,39 @@ namespace FamTec.Server.Controllers.Login
     {
         private IAdminAccountService AdminAccountService;
         private IAdminPlaceService AdminPlaceService;
-
+        private ILogService LogService;
         private IUserService UserService;
 
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
+            ILogService _logservice,
             IUserService _userservice)
         {
             this.AdminAccountService = _adminaccountservice;
             this.AdminPlaceService = _adminplaceservice;
+            this.LogService = _logservice;
             this.UserService = _userservice;
         }
 
         [HttpPost]
         [Route("SettingLogin")]
-        public async ValueTask<IActionResult> SettingLogin([FromBody] LoginDTO? dto)
+        public async ValueTask<IActionResult> SettingLogin([FromBody] LoginDTO dto)
         {
-            ResponseUnit<string>? model = await AdminAccountService.AdminLoginService(dto);
-            if (model is not null)
+            try
             {
+                ResponseUnit<string>? model = await AdminAccountService.AdminLoginService(dto);
+                if (model is null)
+                    return BadRequest(model);
+
                 if (model.code == 200)
-                {
                     return Ok(model);
-                }
                 else
-                {
                     return Ok(model);
-                }
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(model);
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -57,42 +60,26 @@ namespace FamTec.Server.Controllers.Login
         /// <returns></returns>
         [HttpPost]
         [Route("Login")]
-        public async ValueTask<IActionResult> Login([FromBody] LoginDTO? dto)
+        public async ValueTask<IActionResult> Login([FromBody] LoginDTO dto)
         {
             try
             {
-                if (dto is not null)
-                {
-                    ResponseUnit<string>? model = await UserService.UserLoginService(dto);
+                ResponseUnit<string>? model = await UserService.UserLoginService(dto);
 
-                    if (model is not null)
-                    {
-                        if (model.code == 200)
-                        {
-                            return Ok(model); // 유저
-                        }
-                        else if (model.code == 201)
-                        {
-                            return Ok(model); // 관리자
-                        }
-                        else
-                        {
-                            return Ok(model); // 유저
-                        }
-                    }
-                    else
-                    {
-                        return Ok(model);
-                    }
-                }
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model); // 유저
+                else if (model.code == 201)
+                    return Ok(model); // 관리자
                 else
-                {
-                    return StatusCode(404);
-                }
+                    return Ok(model); // 유저
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -105,21 +92,24 @@ namespace FamTec.Server.Controllers.Login
         [Route("sign/AdminPlaceList")]
         public async ValueTask<IActionResult> SelectPlaceList()
         {
-            ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.GetMyWorksList(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
            
         }
@@ -134,22 +124,25 @@ namespace FamTec.Server.Controllers.Login
         [Route("sign/SelectPlace")]
         public async ValueTask<IActionResult> SelectPlace([FromQuery]int placeid)
         {
-            ResponseUnit<string>? model = await UserService.LoginSelectPlaceService(HttpContext, placeid);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<string>? model = await UserService.LoginSelectPlaceService(HttpContext, placeid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

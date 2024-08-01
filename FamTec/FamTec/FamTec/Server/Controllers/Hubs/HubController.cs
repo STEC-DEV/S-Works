@@ -48,19 +48,22 @@ namespace FamTec.Server.Controllers.Hubs
                 {
                     foreach(IFormFile file in files)
                     {
-                        
-                        string? FileName = file.Name;
-                        string? FileExtenstion = Path.GetExtension(file.FileName);
-
                         // VOC 이미지는 2MB 제한
-                        if(file.Length > 2097152)
+                        if(file.Length > Common.MEGABYTE_2)
                         {
                             return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
                         }
 
-                        if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                        string? extension = Path.GetExtension(file.FileName);
+                        if(String.IsNullOrWhiteSpace(extension))
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 200 });
+                            return BadRequest();
+                        }
+
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }

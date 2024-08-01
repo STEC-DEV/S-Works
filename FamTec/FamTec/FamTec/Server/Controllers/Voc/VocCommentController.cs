@@ -13,12 +13,15 @@ namespace FamTec.Server.Controllers.Voc
     public class VocCommentController : ControllerBase
     {
         private IVocCommentService VocCommentService;
+        private IFileService FileService;
         private ILogService LogService;
 
         public VocCommentController(IVocCommentService _voccommentservice,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.VocCommentService = _voccommentservice;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -43,19 +46,23 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach(IFormFile file in files)
                     {
-                        string? FileName = file.Name;
-                        string? FileExtenstion = Path.GetExtension(file.FileName);
-
-                        // VOC 이미지는 2MB 제한
-                        if(file.Length > 2097152)
+                        if (file.Length > Common.MEGABYTE_2)
                         {
-                            return Ok(new ResponseUnit<AddVocCommentDTO?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                            return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
                         }
-                        
-                        // 파일형식 검사
-                        if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+
+                        string? extension = FileService.GetExtension(file);
+                        if (String.IsNullOrWhiteSpace(extension))
                         {
-                            return Ok(new ResponseUnit<bool?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 200 });
+                            return BadRequest();
+                        }
+                        else
+                        {
+                            bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                            if (!extensioncheck)
+                            {
+                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            }
                         }
                     }
                 }
@@ -73,7 +80,7 @@ namespace FamTec.Server.Controllers.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없습니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -104,7 +111,7 @@ namespace FamTec.Server.Controllers.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없음", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -116,7 +123,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/VocCommetDetail")]
-        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int? commentid)
+        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {
             try
             {
@@ -135,7 +142,7 @@ namespace FamTec.Server.Controllers.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없음", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -144,19 +151,44 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/VocCommentUpdate")]
-        public async ValueTask<IActionResult> UpdateVocComment(List<IFormFile>? files)
+        public async ValueTask<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
             {
 
-                VocCommentDetailDTO dto = new VocCommentDetailDTO();
-                dto.VocCommentId = 6;
-                dto.Content = "수저된내용";
-                dto.Status = 2;
-                dto.Userid = 10;
+                //VocCommentDetailDTO dto = new VocCommentDetailDTO();
+                //dto.VocCommentId = 6;
+                //dto.Content = "수저된내용";
+                //dto.Status = 2;
+                //dto.Userid = 10;
 
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (files is [_, ..])
+                {
+                    foreach (IFormFile file in files)
+                    {
+                        if (file.Length > Common.MEGABYTE_2)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                        }
+
+                        string? extension = FileService.GetExtension(file);
+                        if (String.IsNullOrWhiteSpace(extension))
+                        {
+                            return BadRequest();
+                        }
+                        else
+                        {
+                            bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                            if (!extensioncheck)
+                            {
+                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            }
+                        }
+                    }
+                }
 
                 ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files);
                 if (model is null)
@@ -165,12 +197,12 @@ namespace FamTec.Server.Controllers.Voc
                     return Ok(model);
                 else
                     return BadRequest();
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없음", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
     }
