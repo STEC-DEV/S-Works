@@ -43,7 +43,6 @@ namespace FamTec.Server.Services.Facility.Value
 
                 FacilityItemValueTb ValueTb = new FacilityItemValueTb();
                 ValueTb.ItemValue = dto.Value;
-                ValueTb.Unit = dto.Unit;
                 ValueTb.CreateDt = DateTime.Now;
                 ValueTb.CreateUser = creater;
                 ValueTb.UpdateDt = DateTime.Now;
@@ -85,7 +84,6 @@ namespace FamTec.Server.Services.Facility.Value
                 if(ItemValueTb is not null)
                 {
                     ItemValueTb.ItemValue = dto.ItemValue;
-                    ItemValueTb.Unit = dto.Unit;
                     ItemValueTb.UpdateDt = DateTime.Now;
                     ItemValueTb.UpdateUser = creater;
 

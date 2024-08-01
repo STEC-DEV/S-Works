@@ -20,17 +20,7 @@ namespace FamTec.Server.Controllers.Hubs
         private readonly IHubContext<BroadcastHub> HubContext;
         private IVocService VocService;
         private ILogService LogService;
-        //private readonly IWebHostEnvironment _env;
-
-
-        /*
-        public HubController(IHubContext<BroadcastHub> _hubcontext, IVocService _vocservice, IWebHostEnvironment env)
-        {
-            this.HubContext = _hubcontext;
-            this.VocService = _vocservice;
-            this._env = env;
-        }
-        */
+       
 
         public HubController(IHubContext<BroadcastHub> _hubcontext,
             IVocService _vocservice,
@@ -58,6 +48,7 @@ namespace FamTec.Server.Controllers.Hubs
                 {
                     foreach(IFormFile file in files)
                     {
+                        
                         string? FileName = file.Name;
                         string? FileExtenstion = Path.GetExtension(file.FileName);
 

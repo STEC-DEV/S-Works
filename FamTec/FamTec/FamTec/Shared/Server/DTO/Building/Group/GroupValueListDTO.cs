@@ -12,9 +12,5 @@
         /// </summary>
         public string? ItemValue { get; set; }
 
-        /// <summary>
-        /// 단위
-        /// </summary>
-        public string? Unit { get; set; }
     }
 }

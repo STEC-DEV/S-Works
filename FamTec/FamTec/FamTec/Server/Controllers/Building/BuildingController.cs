@@ -48,7 +48,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -60,7 +60,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO? dto, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace FamTec.Server.Controllers.Building
 
                 if(files is not null) // 파일이 있으면 1MB 제한
                 {
-                    if(files.Length > 1048576)
+                    if(files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<AddBuildingDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
@@ -88,7 +88,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -100,7 +100,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBuilding")]
-        public async ValueTask<IActionResult> DetailBuilding([FromQuery] int? buildingid)
+        public async ValueTask<IActionResult> DetailBuilding([FromQuery] int buildingid)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -147,7 +147,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -155,7 +155,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBuilding")]
-        public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO? dto, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace FamTec.Server.Controllers.Building
                 // 파일크기 1MB 지정
                 if(files is not null)
                 {
-                    if(files.Length > 1048576)
+                    if (files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
@@ -184,7 +184,7 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

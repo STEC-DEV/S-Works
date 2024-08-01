@@ -6,6 +6,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building;
 using FamTec.Shared.Server.DTO.Building.Group;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
+using Microsoft.JSInterop.Infrastructure;
 
 namespace FamTec.Server.Services.Building.Key
 {
@@ -49,7 +50,8 @@ namespace FamTec.Server.Services.Building.Key
                     return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 BuildingItemKeyTb KeyTb = new BuildingItemKeyTb();
-                KeyTb.Name = dto.Name;
+                KeyTb.Name = dto.Name; // 키명칭
+                KeyTb.Unit = dto.Unit; // 단위
                 KeyTb.CreateDt = DateTime.Now;
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;
@@ -65,7 +67,6 @@ namespace FamTec.Server.Services.Building.Key
                         {
                             BuildingItemValueTb ValueTB = new BuildingItemValueTb();
                             ValueTB.ItemValue = GroupDTO.Values;
-                            ValueTB.Unit = GroupDTO.Unit;
                             ValueTB.CreateDt = DateTime.Now;
                             ValueTB.CreateUser = creater;
                             ValueTB.UpdateDt = DateTime.Now;
@@ -112,6 +113,7 @@ namespace FamTec.Server.Services.Building.Key
                 if(KeyTB is not null)
                 {
                     KeyTB.Name = dto.Itemkey;
+                    KeyTB.Unit = dto.Unit;
                     KeyTB.UpdateDt = DateTime.Now;
                     KeyTB.UpdateUser = creater;
 
@@ -145,7 +147,6 @@ namespace FamTec.Server.Services.Building.Key
                                 if(valuetb is not null)
                                 {
                                     valuetb.ItemValue = value.ItemValue;
-                                    valuetb.Unit = value.Unit;
                                     valuetb.UpdateDt = DateTime.Now;
                                     valuetb.UpdateUser = creater;
 

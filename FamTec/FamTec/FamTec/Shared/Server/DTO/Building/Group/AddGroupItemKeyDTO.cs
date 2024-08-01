@@ -7,6 +7,8 @@
         /// </summary>
         public string? Name { get; set; } // 아이템이름
 
+        public string? Unit { get; set; } // 단위
+
         public List<AddGroupItemValueDTO>? ItemValues { get; set; } = new List<AddGroupItemValueDTO>();
 
     }

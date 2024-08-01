@@ -12,6 +12,11 @@
         /// </summary>
         public string? ItemKey { get; set; }
 
+        /// <summary>
+        /// 키의 단위
+        /// </summary>
+        public string? Unit { get; set; }
+
         public List<GroupValueListDTO> ValueList { get; set; } = new List<GroupValueListDTO>();
     }
 }

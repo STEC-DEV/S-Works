@@ -49,7 +49,6 @@ public partial class InventoryTb
     [Column(TypeName = "datetime")]
     public DateTime? TimeStamp { get; set; }
 
-    [ConcurrencyCheck]
     [StringLength(255)]
     public string? Occupant { get; set; }
 

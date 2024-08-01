@@ -29,13 +29,6 @@ public partial class BuildingItemValueTb
     public string? ItemValue { get; set; }
 
     /// <summary>
-    /// 단위
-    /// </summary>
-    [Column("UNIT")]
-    [StringLength(255)]
-    public string? Unit { get; set; }
-
-    /// <summary>
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]

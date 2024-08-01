@@ -3,6 +3,7 @@ using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FamTec.Server.Services;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -11,10 +12,13 @@ namespace FamTec.Server.Controllers.Facility
     public class FireFacilityController : ControllerBase
     {
         private IFireFacilityService FireFacilityService;
+        private ILogService LogService;
 
-        public FireFacilityController(IFireFacilityService _firefacilityservice)
+        public FireFacilityController(IFireFacilityService _firefacilityservice,
+            ILogService _logservice)
         {
             this.FireFacilityService = _firefacilityservice;
+            this.LogService = _logservice;
         }
 
         [AllowAnonymous]
@@ -22,22 +26,34 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/AddFireFacility")]
         public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<FacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<FacilityDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<FacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -46,68 +62,85 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/GetAllFireFacility")]
         public async ValueTask<IActionResult> GetAllFireFacility()
         {
-            ResponseList<FacilityListDTO>? model = await FireFacilityService.GetFireFacilityListService(HttpContext);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<FacilityListDTO>? model = await FireFacilityService.GetFireFacilityListService(HttpContext);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailFireFacility")]
-        public async ValueTask<IActionResult> DetailFireFacility([FromQuery] int? facilityid)
+        public async ValueTask<IActionResult> DetailFireFacility([FromQuery] int facilityid)
         {
-            ResponseUnit<FacilityDetailDTO?> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<FacilityDetailDTO?> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateFireFacility")]
-        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] FacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] FacilityDTO dto, IFormFile? files)
         {
-            ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(HttpContext, dto, files);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if (files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -116,21 +149,25 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/DeleteFireFacility")]
         public async ValueTask<IActionResult> DeleteFireFacility([FromBody] List<int> delIdx)
         {
-            ResponseUnit<int?> model = await FireFacilityService.DeleteFireFacilityService(HttpContext, delIdx);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await FireFacilityService.DeleteFireFacilityService(HttpContext, delIdx);
+                
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

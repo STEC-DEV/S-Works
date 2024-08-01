@@ -3,7 +3,7 @@
     public class FileService : IFileService
     {
         /// <summary>
-        /// 이미지 파일 추가
+        /// 이미지 등록
         /// </summary>
         /// <param name="folderpath"></param>
         /// <param name="files"></param>
@@ -28,52 +28,65 @@
         }
 
         /// <summary>
-        /// 이미지 파일 변환
+        /// 이미지 추출
         /// </summary>
         /// <param name="folderpath"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
         public async Task<byte[]?> GetImageFile(string folderpath, string filename)
         {
-            string[] FileList = Directory.GetFiles(folderpath);
-
-            if (FileList is [_, ..])
+            try
             {
-                foreach(var file in FileList)
+                string[] FileList = Directory.GetFiles(folderpath);
+
+                if (FileList is [_, ..])
                 {
-                    if (file.Contains(filename))
+                    foreach (var file in FileList)
                     {
-                        byte[] ImageBytes = await File.ReadAllBytesAsync(file);
-                        return ImageBytes;
+                        if (file.Contains(filename))
+                        {
+                            byte[] ImageBytes = await File.ReadAllBytesAsync(file);
+                            return ImageBytes;
+                        }
                     }
+                    return null;
                 }
-                return null;
-            }
-            else
+                else
+                {
+                    return null;
+                }
+            }catch(Exception ex)
             {
                 return null;
             }
         }
 
         /// <summary>
-        /// 이미지 파일 삭제
+        /// 이미지 삭제
         /// </summary>
         /// <param name="folderPath"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
         public bool DeleteImageFile(string folderPath, string filename)
         {
-            string filepath = String.Empty;
-            DirectoryInfo di = new DirectoryInfo(folderPath);
-            if(di.Exists)
+            try
             {
-                if(!String.IsNullOrWhiteSpace(filename))
+                string filepath = String.Empty;
+                DirectoryInfo di = new DirectoryInfo(folderPath);
+                if (di.Exists)
                 {
-                    filepath = String.Format(@"{0}\\{1}", folderPath, filename);
-                    if(File.Exists(filepath))
+                    if (!String.IsNullOrWhiteSpace(filename))
                     {
-                        File.Delete(filepath);
-                        return true;
+                        filepath = String.Format(@"{0}\\{1}", folderPath, filename);
+                        if (File.Exists(filepath))
+                        {
+                            File.Delete(filepath);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -84,13 +97,27 @@
                 {
                     return false;
                 }
-            }
-            else
+            }catch(Exception ex)
             {
                 return false;
             }
         }
 
-      
+        /// <summary>
+        /// 확장자 추출
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public string? GetExtension(IFormFile file)
+        {
+            try
+            {
+                return Path.GetExtension(file.FileName);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

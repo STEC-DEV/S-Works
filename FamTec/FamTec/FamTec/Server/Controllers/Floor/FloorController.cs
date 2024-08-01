@@ -3,6 +3,7 @@ using FamTec.Shared.Server.DTO.Floor;
 using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FamTec.Server.Services;
 
 namespace FamTec.Server.Controllers.Floor
 {
@@ -11,10 +12,12 @@ namespace FamTec.Server.Controllers.Floor
     public class FloorController : ControllerBase
     {
         private IFloorService FloorService;
-
-        public FloorController(IFloorService _floorservice)
+        private ILogService LogService;
+        public FloorController(IFloorService _floorservice,
+            ILogService _logservice)
         {
             this.FloorService = _floorservice;
+            this.LogService = _logservice;
         }
 
         [AllowAnonymous]
@@ -22,21 +25,24 @@ namespace FamTec.Server.Controllers.Floor
         [Route("sign/AddFloor")]
         public async ValueTask<IActionResult> AddFloorInfo([FromBody]FloorDTO dto)
         {
-            ResponseUnit<FloorDTO>? model = await FloorService.AddFloorService(HttpContext, dto);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<FloorDTO>? model = await FloorService.AddFloorService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -45,44 +51,50 @@ namespace FamTec.Server.Controllers.Floor
         [Route("sign/GetFloorList")]
         public async ValueTask<IActionResult> GetFloorList([FromQuery] int buildingid)
         {
-            ResponseList<FloorDTO>? model = await FloorService.GetFloorListService(buildingid);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<FloorDTO>? model = await FloorService.GetFloorListService(buildingid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateFloor")]
-        public async ValueTask<IActionResult> UpdateFloor([FromBody] UpdateFloorDTO? dto)
+        public async ValueTask<IActionResult> UpdateFloor([FromBody] UpdateFloorDTO dto)
         {
-            ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -91,21 +103,25 @@ namespace FamTec.Server.Controllers.Floor
         [Route("sign/DeleteFloor")]
         public async ValueTask<IActionResult> DeleteFloor([FromBody] List<int> idx)
         {
-            ResponseUnit<int?> model = await FloorService.DeleteFloorService(HttpContext, idx);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await FloorService.DeleteFloorService(HttpContext, idx);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

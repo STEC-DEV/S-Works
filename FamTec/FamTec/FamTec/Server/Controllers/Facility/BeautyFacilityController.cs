@@ -39,7 +39,7 @@ namespace FamTec.Server.Controllers.Facility
 
                 if(files is not null) // 파일이 있으면 1MB 제한
                 {
-                    if(files.Length > 1048576)
+                    if(files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<FacilityDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
@@ -59,7 +59,7 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -122,7 +122,7 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -144,7 +144,7 @@ namespace FamTec.Server.Controllers.Facility
 
                 if(files is not null) // 파일이 있으면 1MB 제한
                 {
-                    if(files.Length > 1048576)
+                    if(files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
@@ -162,7 +162,7 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -193,7 +193,7 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

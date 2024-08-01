@@ -6,6 +6,7 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
+using System.Security.AccessControl;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -15,14 +16,17 @@ namespace FamTec.Server.Controllers.Admin
     {
         private IAdminAccountService AdminAccountService;
         private IAdminPlaceService AdminPlaceService;
+        private IFileService FileService;
         private ILogService LogService;
 
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -59,6 +63,23 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if(!String.IsNullOrWhiteSpace(extension))
+                    { 
+                        /*
+                         여기 수정전
+                         
+                         */
+                    }
+                }
+
                 ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
 
                 if (model is null)
@@ -72,7 +93,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -104,7 +125,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -136,7 +157,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -168,7 +189,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -179,12 +200,22 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManager")]
-        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto, IFormFile? files)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    
+                }
 
                 ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
                 if (model is null)
@@ -198,7 +229,7 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -229,7 +260,7 @@ namespace FamTec.Server.Controllers.Admin
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

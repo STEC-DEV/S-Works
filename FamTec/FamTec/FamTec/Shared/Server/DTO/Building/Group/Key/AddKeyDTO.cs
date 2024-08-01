@@ -8,6 +8,11 @@
         /// </summary>
         public string? Name { get; set; } // Key 내용
 
+        /// <summary>
+        /// 단위
+        /// </summary>
+        public string? Unit { get; set; }
+
         public List<AddGroupItemValueDTO>? ItemValues { get; set; } = new List<AddGroupItemValueDTO>();
     }
 }

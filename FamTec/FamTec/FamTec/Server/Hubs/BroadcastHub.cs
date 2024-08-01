@@ -36,10 +36,12 @@ namespace FamTec.Server.Hubs
         }
 
         // 이건 안쓸듯.
+        /*
         public async Task SendMessageAsync(string message, string roomName)
         {
             await Clients.Group("35_BeautyRoom").SendAsync("ReceiveVoc", $"{message}");
         }
+        */
 
       
 

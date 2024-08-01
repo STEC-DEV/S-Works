@@ -89,6 +89,7 @@ public partial class WorksContext : DbContext
             entity.HasNoDiscriminator();
         });
 
+
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -191,6 +192,7 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.Name).HasComment("요소명");
+            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
@@ -214,7 +216,6 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.ItemValue).HasComment("값");
-            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
@@ -396,6 +397,7 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.Name).HasComment("요소명");
+            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
@@ -417,7 +419,6 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelUser).HasComment("삭제자");
             entity.Property(e => e.DelYn).HasComment("삭제여부");
             entity.Property(e => e.ItemValue).HasComment("값");
-            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
@@ -809,7 +810,6 @@ public partial class WorksContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
-
 [Keyless]
 public partial class MaterialInventory
 {

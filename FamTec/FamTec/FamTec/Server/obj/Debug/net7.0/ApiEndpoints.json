@@ -126,7 +126,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Place.AddPlaceManagerDTO\u00601[[FamTec.Shared.Server.DTO.Admin.Place.ManagerListDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -377,7 +377,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Admin.UpdateManagerDTO",
-        "IsRequired": false
+        "IsRequired": true
       },
       {
         "Name": "files",
@@ -904,7 +904,7 @@
     "Parameters": [
       {
         "Name": "buildingid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -1202,7 +1202,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Building.Group.AddGroupDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1233,8 +1233,8 @@
     "Parameters": [
       {
         "Name": "groupid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1249,7 +1249,7 @@
     "Parameters": [
       {
         "Name": "buildingid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -1266,7 +1266,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Building.Group.UpdateGroupDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1489,7 +1489,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -1756,7 +1756,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -1854,7 +1854,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Facility.Group.AddGroupDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1869,8 +1869,8 @@
     "Parameters": [
       {
         "Name": "groupid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -1885,7 +1885,7 @@
     "Parameters": [
       {
         "Name": "Facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -1902,7 +1902,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Facility.Group.UpdateGroupDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -2125,7 +2125,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -2271,7 +2271,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Floor.UpdateFloorDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -2444,7 +2444,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -2711,7 +2711,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -3109,7 +3109,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -3376,7 +3376,7 @@
     "Parameters": [
       {
         "Name": "facilityid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],

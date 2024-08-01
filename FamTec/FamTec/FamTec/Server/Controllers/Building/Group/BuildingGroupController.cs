@@ -43,14 +43,14 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuildingGroup")]
-        public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO? dto)
+        public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
@@ -86,8 +86,6 @@ namespace FamTec.Server.Controllers.Building.Group
 
                 if (HttpContext is null)
                     return BadRequest();
-                if (dto is null)
-                    return BadRequest();
 
                 ResponseUnit<AddGroupDTO?> model = await GroupService.AddBuildingGroupService(HttpContext, dto);
 
@@ -102,14 +100,14 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetBuildingGroup")]
-        public async ValueTask<IActionResult> GetDetailBuilding(int? buildingid)
+        public async ValueTask<IActionResult> GetDetailBuilding(int buildingid)
         {
             try
             {
@@ -129,20 +127,18 @@ namespace FamTec.Server.Controllers.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
-        public async ValueTask<IActionResult> UpdateBuildingGroup([FromBody] UpdateGroupDTO? dto)
+        public async ValueTask<IActionResult> UpdateBuildingGroup([FromBody] UpdateGroupDTO dto)
         {
             try
             {
                 if (HttpContext is null)
-                    return BadRequest();
-                if (dto is null)
                     return BadRequest();
 
                 ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
@@ -158,23 +154,20 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteBuildingGroup([FromBody]int? groupid)
+        public async ValueTask<IActionResult> DeleteBuildingGroup([FromBody]int groupid)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
                 
-                if (groupid is null)
-                    return BadRequest();
-
                 ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid);
                 if (model is null)
                     return BadRequest();
@@ -187,7 +180,7 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

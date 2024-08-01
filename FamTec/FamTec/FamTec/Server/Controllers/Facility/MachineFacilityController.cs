@@ -1,5 +1,7 @@
-﻿using FamTec.Server.Services.Facility.Type.Machine;
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Building.Building;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +13,13 @@ namespace FamTec.Server.Controllers.Facility
     public class MachineFacilityController : ControllerBase
     {
         private IMachineFacilityService MachineFacilityService;
+        private ILogService LogService;
 
-        public MachineFacilityController(IMachineFacilityService _machinefacilityservice)
+        public MachineFacilityController(IMachineFacilityService _machinefacilityservice,
+            ILogService _logservice)
         {
             this.MachineFacilityService = _machinefacilityservice;
+            this.LogService = _logservice;
         }
 
         [AllowAnonymous]
@@ -22,22 +27,33 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/AddMachineFacility")]
         public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm]IFormFile? files)
         {
-            ResponseUnit<FacilityDTO>? model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<FacilityDTO?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<FacilityDTO>? model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -46,68 +62,93 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/GetAllMachineFacility")]
         public async ValueTask<IActionResult> GetAllMachineFacility()
         {
-            ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext);
-
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMachineFacility")]
-        public async ValueTask<IActionResult> DetailMachineFacility([FromQuery]int? facilityid)
+        public async ValueTask<IActionResult> DetailMachineFacility([FromQuery]int facilityid)
         {
-            ResponseUnit<FacilityDetailDTO?> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<FacilityDetailDTO?> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateMachineFacility")]
-        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO dto, IFormFile? files)
         {
-            ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if(files is not null)
                 {
-                    return Ok(model);
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<AddBuildingDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+                }
+
+                ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files);
+                if (model is not null)
+                {
+                    if (model.code == 200)
+                    {
+                        return Ok(model);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
                 else
                 {
                     return BadRequest();
                 }
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

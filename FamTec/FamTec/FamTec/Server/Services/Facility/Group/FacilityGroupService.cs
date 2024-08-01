@@ -57,7 +57,8 @@ namespace FamTec.Server.Services.Facility.Group
                     foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
                     {
                         FacilityItemKeyTb KeyTB = new FacilityItemKeyTb();
-                        KeyTB.Name = KeyDTO.Name;
+                        KeyTB.Name = KeyDTO.Name; // 키의 명칭
+                        KeyTB.Unit = KeyDTO.Unit; // 단위
                         KeyTB.CreateDt = DateTime.Now;
                         KeyTB.CreateUser = creater;
                         KeyTB.UpdateDt = DateTime.Now;
@@ -73,7 +74,6 @@ namespace FamTec.Server.Services.Facility.Group
                                 {
                                     FacilityItemValueTb ValueTB = new FacilityItemValueTb();
                                     ValueTB.ItemValue = ValueDTO.Values;
-                                    ValueTB.Unit = ValueDTO.Unit;
                                     ValueTB.CreateDt = DateTime.Now;
                                     ValueTB.CreateUser = creater;
                                     ValueTB.UpdateDt = DateTime.Now;
@@ -144,7 +144,6 @@ namespace FamTec.Server.Services.Facility.Group
                                         {
                                             ID = Value.Id,
                                             ItemValue = Value.ItemValue,
-                                            Unit = Value.Unit
                                         });
                                     }
 
@@ -152,6 +151,7 @@ namespace FamTec.Server.Services.Facility.Group
                                     {
                                         ID = Key.Id,
                                         ItemKey = Key.Name,
+                                        Unit = Key.Unit,
                                         ValueList = GroupValueList
                                     });
                                     GroupValueList = new List<GroupValueListDTO?>();

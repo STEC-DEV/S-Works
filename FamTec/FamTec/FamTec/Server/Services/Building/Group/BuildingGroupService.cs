@@ -28,6 +28,12 @@ namespace FamTec.Server.Services.Building.Group
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 그룹 - 키 - 값 추가서비스
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseUnit<AddGroupDTO?>> AddBuildingGroupService(HttpContext? context, AddGroupDTO? dto)
         {
             try
@@ -56,7 +62,8 @@ namespace FamTec.Server.Services.Building.Group
                     foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
                     {
                         BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
-                        KeyTB.Name = KeyDTO.Name;
+                        KeyTB.Name = KeyDTO.Name; // 키명칭
+                        KeyTB.Unit = KeyDTO.Unit; // 키단위
                         KeyTB.CreateDt = DateTime.Now;
                         KeyTB.CreateUser = creater;
                         KeyTB.UpdateDt = DateTime.Now;
@@ -72,7 +79,6 @@ namespace FamTec.Server.Services.Building.Group
                                 {
                                     BuildingItemValueTb ValueTB = new BuildingItemValueTb();
                                     ValueTB.ItemValue = ValueDTO.Values;
-                                    ValueTB.Unit = ValueDTO.Unit;
                                     ValueTB.CreateDt = DateTime.Now;
                                     ValueTB.CreateUser = creater;
                                     ValueTB.UpdateDt = DateTime.Now;
@@ -142,15 +148,15 @@ namespace FamTec.Server.Services.Building.Group
                                         GroupValueList.Add(new GroupValueListDTO()
                                         {
                                             ID = Value.Id,
-                                            ItemValue = Value.ItemValue,
-                                            Unit = Value.Unit
+                                            ItemValue = Value.ItemValue
                                         });
                                     }
 
                                     GroupKeyList.Add(new GroupKeyListDTO()
                                     {
-                                        ID = Key.Id,
-                                        ItemKey = Key.Name,
+                                        ID = Key.Id, // 키 ID
+                                        ItemKey = Key.Name, // 키 명칭
+                                        Unit = Key.Unit, // 키 단위
                                         ValueList = GroupValueList
                                     });
                                     GroupValueList = new List<GroupValueListDTO?>();

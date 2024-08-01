@@ -1,9 +1,8 @@
-﻿using FamTec.Server.Services.Facility.Group;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Value;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Facility.Group
@@ -13,34 +12,39 @@ namespace FamTec.Server.Controllers.Facility.Group
     public class FacilityGroupValueController : ControllerBase
     {
         private IFacilityValueService FacilityValueService;
+        private ILogService LogService;
 
-        public FacilityGroupValueController(IFacilityValueService _facilityvalueservice)
+        public FacilityGroupValueController(IFacilityValueService _facilityvalueservice,
+            ILogService _logservice)
         {
             this.FacilityValueService = _facilityvalueservice;
+            this.LogService = _logservice;
         }
-
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddValue")]
         public async ValueTask<IActionResult> AddGroupValue([FromBody] AddValueDTO dto)
         {
-            ResponseUnit<AddValueDTO?> model = await FacilityValueService.AddValueService(HttpContext, dto);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<AddValueDTO?> model = await FacilityValueService.AddValueService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -49,21 +53,24 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/UpdateValue")]
         public async ValueTask<IActionResult> UpdateGroupValue([FromBody]UpdateValueDTO dto)
         {
-            ResponseUnit<UpdateValueDTO?> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<UpdateValueDTO?> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -72,22 +79,25 @@ namespace FamTec.Server.Controllers.Facility.Group
         [Route("sign/DeleteValue")]
         public async ValueTask<IActionResult> DeleteGroupValue([FromBody]int valueid)
         {
-            ResponseUnit<bool?> model = await FacilityValueService.DeleteValueService(HttpContext, valueid);
-            
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<bool?> model = await FacilityValueService.DeleteValueService(HttpContext, valueid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

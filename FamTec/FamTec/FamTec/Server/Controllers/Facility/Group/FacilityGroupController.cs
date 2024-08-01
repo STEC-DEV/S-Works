@@ -26,7 +26,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddFacilityGroup")]
-        public async ValueTask<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO? dto)
+        public async ValueTask<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
@@ -68,14 +68,14 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFacilityGroup")]
-        public async ValueTask<IActionResult> GetDetailFacility(int? Facilityid)
+        public async ValueTask<IActionResult> GetDetailFacility(int Facilityid)
         {
             try
             {
@@ -94,14 +94,14 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
-        public async ValueTask<IActionResult> UpdateFacilityGroup([FromBody] UpdateGroupDTO? dto)
+        public async ValueTask<IActionResult> UpdateFacilityGroup([FromBody] UpdateGroupDTO dto)
         {
             try
             {
@@ -120,14 +120,14 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteFacilityGroup([FromBody]int? groupid)
+        public async ValueTask<IActionResult> DeleteFacilityGroup([FromBody]int groupid)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

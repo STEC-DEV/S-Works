@@ -3,6 +3,8 @@ using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FamTec.Server.Services;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -11,10 +13,13 @@ namespace FamTec.Server.Controllers.Facility
     public class ElectronicFacilityController : ControllerBase
     {
         private IElectronicFacilityService ElectronicFacilityService;
+        private ILogService LogService;
 
-        public ElectronicFacilityController(IElectronicFacilityService _electronicfacilityservice)
+        public ElectronicFacilityController(IElectronicFacilityService _electronicfacilityservice,
+            ILogService _logservice)
         {
             this.ElectronicFacilityService = _electronicfacilityservice;
+            this.LogService = _logservice;
         }
 
         [AllowAnonymous]
@@ -22,22 +27,33 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/AddElectronicFacility")]
         public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
-            ResponseUnit<FacilityDTO>? model = await ElectronicFacilityService.AddElectronicFacilityService(HttpContext, dto, files);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<FacilityDTO>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<FacilityDTO>? model = await ElectronicFacilityService.AddElectronicFacilityService(HttpContext, dto, files);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -46,68 +62,85 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/GetAllElectronicFacility")]
         public async ValueTask<IActionResult> GetAllElecFacility()
         {
-            ResponseList<FacilityListDTO>? model = await ElectronicFacilityService.GetElectronicFacilityListService(HttpContext);
-
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseList<FacilityListDTO>? model = await ElectronicFacilityService.GetElectronicFacilityListService(HttpContext);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailElectronicFacility")]
-        public async ValueTask<IActionResult> DetailElecFacility([FromQuery] int? facilityid)
+        public async ValueTask<IActionResult> DetailElecFacility([FromQuery] int facilityid)
         {
-            ResponseUnit<FacilityDetailDTO?> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<FacilityDetailDTO?> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateElectronicFacility")]
-        public async ValueTask<IActionResult> UpdateElecFacility([FromForm] FacilityDTO? dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateElecFacility([FromForm] FacilityDTO dto, IFormFile? files)
         {
-            ResponseUnit<bool?> model = await ElectronicFacilityService.UpdateElectronicFacilityService(HttpContext, dto, files);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
+
+                if(files is not null)
+                {
+                    if(files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
                 }
+
+                ResponseUnit<bool?> model = await ElectronicFacilityService.UpdateElectronicFacilityService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -116,21 +149,24 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/DeleteElectronicFacility")]
         public async ValueTask<IActionResult> DeleteElecFacility([FromBody] List<int> delIdx)
         {
-            ResponseUnit<int?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
-            if (model is not null)
+            try
             {
-                if (model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                ResponseUnit<int?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

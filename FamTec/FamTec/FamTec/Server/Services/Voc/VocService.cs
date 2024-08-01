@@ -1,9 +1,12 @@
-﻿using FamTec.Server.Repository.Alarm;
+﻿using FamTec.Client.Pages.Admin.Place.PlaceMain;
+using FamTec.Server.Hubs;
+using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -14,6 +17,9 @@ namespace FamTec.Server.Services.Voc
         private readonly IAlarmInfoRepository AlarmInfoRepository;
         private readonly IFileService FileService;
 
+        private readonly IHubContext<BroadcastHub> HubContext;
+
+
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocFileFolderPath;
@@ -23,12 +29,16 @@ namespace FamTec.Server.Services.Voc
         public VocService(IVocInfoRepository _vocinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IAlarmInfoRepository _alarminforepository,
+            IHubContext<BroadcastHub> _hubcontext,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.VocInfoRepository = _vocinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.AlarmInfoRepository = _alarminforepository;
+
+
+            this.HubContext = _hubcontext;
             this.FileService = _fileservice;
             this.LogService = _logservice;
         }
@@ -46,7 +56,6 @@ namespace FamTec.Server.Services.Voc
             {
                 string? FileName = String.Empty;
                 string? FileExtenstion = String.Empty;
-
 
                 if (dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -109,7 +118,7 @@ namespace FamTec.Server.Services.Voc
                 if(result is not null)
                 {
                     // 소켓알림! + 카카오 API 알림
-
+                    await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
@@ -301,6 +310,10 @@ namespace FamTec.Server.Services.Voc
                 if (dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -316,7 +329,48 @@ namespace FamTec.Server.Services.Voc
                     if(UpdateResult)
                     {
                         // 소켓알림!
-
+                        switch(dto.Type)
+                        {
+                            // 기타
+                            case 0:
+                                // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
+                                await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 기계
+                            case 1:
+                                await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 전기
+                            case 2:
+                                await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 승강
+                            case 3:
+                                await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 소방
+                            case 4:
+                                await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                                
+                            // 건축
+                            case 5:
+                                await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 통신
+                            case 6:
+                                await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 미화
+                            case 7:
+                                await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            // 보안
+                            case 8:
+                                await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다");
+                                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        }
+                        
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else

@@ -49,6 +49,7 @@ namespace FamTec.Server.Services.Facility.Key
 
                 FacilityItemKeyTb KeyTb = new FacilityItemKeyTb();
                 KeyTb.Name = dto.Name;
+                KeyTb.Unit = dto.Unit;
                 KeyTb.CreateDt = DateTime.Now;
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;
@@ -64,7 +65,6 @@ namespace FamTec.Server.Services.Facility.Key
                         {
                             FacilityItemValueTb ValueTB = new FacilityItemValueTb();
                             ValueTB.ItemValue = GroupDTO.Values;
-                            ValueTB.Unit = GroupDTO.Unit;
                             ValueTB.CreateDt = DateTime.Now;
                             ValueTB.CreateUser = creater;
                             ValueTB.UpdateDt = DateTime.Now;
@@ -111,6 +111,7 @@ namespace FamTec.Server.Services.Facility.Key
                 if (KeyTB is not null)
                 {
                     KeyTB.Name = dto.Itemkey;
+                    KeyTB.Unit = dto.Unit;
                     KeyTB.UpdateDt = DateTime.Now;
                     KeyTB.UpdateUser = creater;
 
@@ -144,7 +145,6 @@ namespace FamTec.Server.Services.Facility.Key
                                 if(valuetb is not null)
                                 {
                                     valuetb.ItemValue = value.ItemValue;
-                                    valuetb.Unit = value.Unit;
                                     valuetb.UpdateDt = DateTime.Now;
                                     valuetb.UpdateUser = creater;
 

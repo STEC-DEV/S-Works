@@ -44,7 +44,7 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -59,25 +59,18 @@ namespace FamTec.Server.Controllers.Building.Group
                     return BadRequest();
 
                 ResponseUnit<UpdateValueDTO?> model = await BuildingValueService.UpdateValueService(HttpContext, dto);
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest();
-                }
-            }catch(Exception ex)
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -88,27 +81,23 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 ResponseUnit<bool?> model = await BuildingValueService.DeleteValueService(HttpContext, valueid);
 
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest();
-                }
-            }catch(Exception ex)
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할수 없는 작업입니다.", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
