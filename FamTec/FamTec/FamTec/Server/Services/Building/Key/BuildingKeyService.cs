@@ -112,61 +112,19 @@ namespace FamTec.Server.Services.Building.Key
                 BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.ID);
                 if(KeyTB is not null)
                 {
-                    KeyTB.Name = dto.Itemkey;
-                    KeyTB.Unit = dto.Unit;
-                    KeyTB.UpdateDt = DateTime.Now;
-                    KeyTB.UpdateUser = creater;
-
-                    bool? UpdateKeyResult = await BuildingItemKeyInfoRepository.UpdateKeyInfo(KeyTB);
-                    if(UpdateKeyResult != true)
+                    bool? UpdateResult = await BuildingItemKeyInfoRepository.UpdateKeyInfo(dto, creater);
+                    if(UpdateResult == true)
                     {
-                        return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
+                        return new ResponseUnit<UpdateKeyDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
-
-                    List<BuildingItemValueTb>? ValueTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
-                    if(ValueTB is [_, ..])
+                    else if(UpdateResult == false)
                     {
-                        if(ValueTB.Count() != dto.ValueList.Count())
-                        {
-                            // 개수가 다름 요청이 잘못됨
-                            return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                        }
-                        
-                        // 혹시모를 DTO안의 ID 개수와 내용이 실제 DB의 ID 개수와 내용과 같은지
-                        List<int> dtoList = dto.ValueList.Select(m => m.ID).Where(x=>x.HasValue).Select(x => x.Value).ToList();
-                        dtoList.Sort();
-                        List<int> dbList = ValueTB.Select(m => m.Id).ToList();
-                        dbList.Sort();
-
-                        bool equals = dtoList.SequenceEqual(dbList);
-                        if (equals)
-                        {
-                            foreach(GroupValueListDTO value in dto.ValueList)
-                            {
-                                BuildingItemValueTb? valuetb = await BuildingItemValueInfoRepository.GetValueInfo(value.ID);
-                                if(valuetb is not null)
-                                {
-                                    valuetb.ItemValue = value.ItemValue;
-                                    valuetb.UpdateDt = DateTime.Now;
-                                    valuetb.UpdateUser = creater;
-
-                                    bool? ValueUpdateResult = await BuildingItemValueInfoRepository.UpdateValueInfo(valuetb);
-                                    if(ValueUpdateResult != true)
-                                    {
-                                        return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
-                                    }
-                                }
-                                else
-                                {
-                                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                                }
-                            }
-
-                            
-                        }
+                        return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                     }
-
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    else
+                    {
+                        return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    }
                 }
                 else
                 {

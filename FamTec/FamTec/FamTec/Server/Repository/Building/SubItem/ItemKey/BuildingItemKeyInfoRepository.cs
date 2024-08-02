@@ -1,7 +1,11 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Building;
+using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FamTec.Server.Repository.Building.SubItem.ItemKey
 {
@@ -131,6 +135,143 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
+        /// 그룹 KEY - VALUE 업데이트
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="updater"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO? dto, string? updater)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (dto is null)
+                        return null;
+                    if (String.IsNullOrWhiteSpace(updater))
+                        return null;
+
+                    BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs.FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true);
+                    if(KeyTB is not null)
+                    {
+                        KeyTB.Name = dto.Itemkey;
+                        KeyTB.Unit = dto.Unit;
+
+                        context.BuildingItemKeyTbs.Update(KeyTB);
+                        bool KeyUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!KeyUpdate)
+                        {
+                            // KEY 업데이트 실패 시 rollback
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                        // SELECT VALUE 정보 반환
+                        List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == dto.ID && m.DelYn != true).ToListAsync();
+
+
+                        // NULL 인값 - INSERT - 시키면되는 리스트
+                        List<GroupValueListDTO> INSERTLIST = dto.ValueList.Where(m => m.ID == null).ToList();
+
+
+                        // DTO IDList 중 NULL이 아닌것 -- 수정대상
+                        List<GroupValueListDTO> UPDATELIST = dto.ValueList.Where(m => m.ID != null)
+                            .ToList();
+
+
+                        // DB IDList
+                        List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
+
+                        List<int> updateidx = UPDATELIST.Select(m => m.ID!.Value).ToList();
+                        // 삭제대상 (디비 인덱스 - DTO 인덱스 = 남는 DB 인덱스)
+                        List<int> delIdx = db_valueidx.Except(updateidx).ToList(); // list1에만 있는 값 -- DB에만있는값 (삭제할값)
+
+                        
+                        //추가작업
+                        foreach(GroupValueListDTO InsertInfo in INSERTLIST)
+                        {
+                            BuildingItemValueTb InsertTB = new BuildingItemValueTb();
+                            InsertTB.ItemValue = InsertInfo.ItemValue;
+                            InsertTB.CreateDt = DateTime.Now;
+                            InsertTB.CreateUser = updater;
+                            InsertTB.UpdateDt = DateTime.Now;
+                            InsertTB.UpdateUser = updater;
+                            context.BuildingItemValueTbs.Add(InsertTB);
+                        }
+                        bool InsertResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!InsertResult)
+                        {
+                            // ADD 실패
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                        // 업데이트 작업
+                        foreach(GroupValueListDTO UpdateInfo in UPDATELIST)
+                        {
+                            BuildingItemValueTb? UpdateTB = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
+                            if(UpdateTB is not null)
+                            {
+                                UpdateTB.ItemValue = UpdateInfo.ItemValue;
+                                UpdateTB.UpdateDt = DateTime.Now;
+                                UpdateTB.UpdateUser = updater;
+                                context.BuildingItemValueTbs.Update(UpdateTB);
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!UpdateResult)
+                        {
+                            // UPDATE 실패
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                        // 삭제작업
+                        foreach(int DelID in delIdx)
+                        {
+                            BuildingItemValueTb? DeleteTB = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
+                            if(DeleteTB is not null)
+                            {
+                                DeleteTB.DelDt = DateTime.Now;
+                                DeleteTB.DelYn = true;
+                                DeleteTB.DelUser = updater;
+                                context.BuildingItemValueTbs.Update(DeleteTB);
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!DeleteResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+        /// <summary>
         /// 그룹 KEY 삭제
         /// </summary>
         /// <param name="model"></param>
@@ -199,5 +340,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 throw new ArgumentNullException();
             }
         }
+
+    
     }
 }

@@ -2,7 +2,6 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Floor
 {
@@ -67,6 +66,61 @@ namespace FamTec.Server.Repository.Floor
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 층 삭제
+        /// </summary>
+        /// <param name="roomidx"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteFloorInfo(List<int>? roomidx, string? deleter)
+        {
+            using(var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (roomidx is [_, ..])
+                    {
+                        foreach(int roomid in roomidx)
+                        {
+                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            if(floortb is not null)
+                            {
+                                floortb.DelYn = true;
+                                floortb.DelDt = DateTime.Now;
+                                floortb.DelUser = deleter;
+
+                                context.FloorTbs.Update(floortb);
+                                bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if (!FloorResult)
+                                {
+                                    // 업데이트 실패시 롤백
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                // 값이 없으면 잘못됨 roolback
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
             }
         }
 

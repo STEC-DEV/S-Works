@@ -859,6 +859,38 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-    
+        /// <summary>
+        /// 사업장 - 품목ID에 해당하는 재고리스트 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int? placeid, int? materialid)
+        {
+            try
+            {
+                if (placeid is null)
+                    return null;
+                if (materialid is null)
+                    return null;
+
+                List<InventoryTb>? InventoryList = await context.InventoryTbs
+                    .Where(m => m.PlaceTbId == placeid && 
+                    m.MaterialTbId == materialid && 
+                    m.DelYn != true)
+                    .ToListAsync();
+
+                if (InventoryList is [_, ..])
+                    return InventoryList;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
+           
+        }
     }
 }

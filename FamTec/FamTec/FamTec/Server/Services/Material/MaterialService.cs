@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.EMMA;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
 using FamTec.Shared;
 using FamTec.Shared.DTO;
@@ -12,15 +13,19 @@ namespace FamTec.Server.Services.Material
     public class MaterialService : IMaterialService
     {
         private readonly IMaterialInfoRepository MaterialInfoRepository;
+        private readonly IInventoryInfoRepository InventoryInfoRepository;
         private ILogService LogService;
 
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
 
 
-        public MaterialService(IMaterialInfoRepository _materialinforepository, ILogService _logservice)
+        public MaterialService(IMaterialInfoRepository _materialinforepository,
+            IInventoryInfoRepository _inventoryinforepository,
+            ILogService _logservice)
         {
             this.MaterialInfoRepository = _materialinforepository;
+            this.InventoryInfoRepository = _inventoryinforepository;
             this.LogService = _logservice;
 
         }
@@ -361,14 +366,66 @@ namespace FamTec.Server.Services.Material
 
 
         /// <summary>
-        /// 자재정보 삭제
+        /// 품목 삭제
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext? context, List<int> delIdx)
+        public async ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext? context, List<int>? delIdx)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (delIdx is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (delIdx.Count() == 0)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                for (int i = 0; i < delIdx.Count(); i++)
+                {
+                    List<InventoryTb>? Inventory = await InventoryInfoRepository.GetPlaceMaterialInventoryList(Convert.ToInt32(placeid), delIdx[i]);
+
+                    if (Inventory is [_, ..])
+                    {
+                        List<InventoryTb>? CheckModel = Inventory.Where(m => m.Num > 0).ToList();
+                        if(CheckModel is [_, ..])
+                        {
+                            // 조건걸림
+                            return new ResponseUnit<bool?>() { message = "남아있는 재고가 있는 품목이 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        }
+                    }
+                }
+
+                //  품목삭제 하면됨
+                bool? DeleteResult = await MaterialInfoRepository.DeleteMaterialInfo(delIdx, creater);
+                if(DeleteResult == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
         }
 
         

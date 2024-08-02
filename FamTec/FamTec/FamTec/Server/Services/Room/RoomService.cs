@@ -210,60 +210,53 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> DeleteRoomService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext? context, List<int>? del)
         {
             try
             {
-                int delCount = 0;
-
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (del is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 for (int i = 0; i < del.Count(); i++) 
                 {
                     List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(del[i]);
                     if (FacilityList is [_, ..])
-                        return new ResponseUnit<int?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
 
 
                     bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), del[i]);
                     if(Inventory != true)
-                        return new ResponseUnit<int?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
-                for (int i = 0; i < del.Count(); i++)
+                bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater);
+                if(DeleteResult == true)
                 {
-                    RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(del[i]);
-
-                    if(RoomTB is not null)
-                    {
-                        RoomTB.DelDt = DateTime.Now;
-                        RoomTB.DelUser = creater;
-                        RoomTB.DelYn = true;
-
-                        bool? DelRoomResult = await RoomInfoRepository.DeleteRoomInfo(RoomTB);
-                        if(DelRoomResult == true)
-                        {
-                            delCount++;
-                        }
-                    }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
-                return new ResponseUnit<int?>() { message = $"요청이 {delCount}건 처리되었습니다.", data = delCount, code = 200 };
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

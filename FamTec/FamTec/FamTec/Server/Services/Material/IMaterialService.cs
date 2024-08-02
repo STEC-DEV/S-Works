@@ -41,6 +41,6 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext? context, List<int> delIdx);
+        public ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext? context, List<int>? delIdx);
     }
 }

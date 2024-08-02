@@ -162,6 +162,64 @@ namespace FamTec.Server.Repository.Room
         }
 
         /// <summary>
+        /// 공간정보 삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteRoomInfo(List<int>? idx, string? deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (String.IsNullOrWhiteSpace(deleter))
+                        return null;
+
+                    if (idx is [_, ..])
+                    {
+                        foreach(int roomid in idx)
+                        {
+                            RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            if(RoomTB is not null)
+                            {
+                                RoomTB.DelYn = true;
+                                RoomTB.DelDt = DateTime.Now;
+                                RoomTB.DelUser = deleter;
+
+                                context.RoomTbs.Update(RoomTB);
+                                bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if(!UpdateResult) // 업데이트 실패시 롤백
+                                {
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+
+        /// <summary>
         /// 공간 삭제 검사
         /// </summary>
         /// <param name="placeid"></param>
@@ -197,5 +255,7 @@ namespace FamTec.Server.Repository.Room
                 throw new ArgumentNullException();
             }
         }
+
+  
     }
 }

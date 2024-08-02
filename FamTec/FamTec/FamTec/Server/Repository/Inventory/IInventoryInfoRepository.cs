@@ -38,5 +38,14 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="type"></param>
         /// <returns></returns>
         ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int? placeid, List<int>? MaterialId, bool? type);
+
+        /// <summary>
+        /// 사업장 - 품목ID에 해당하는 재고리스트 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int? placeid, int? materialid);
+
     }
 }

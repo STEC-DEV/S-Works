@@ -108,7 +108,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await FloorService.DeleteFloorService(HttpContext, idx);
+                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(HttpContext, idx);
 
                 if (model is null)
                     return BadRequest();

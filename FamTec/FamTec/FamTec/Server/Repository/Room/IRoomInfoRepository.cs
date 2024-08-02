@@ -48,5 +48,12 @@ namespace FamTec.Server.Repository.Room
         /// <returns></returns>
         ValueTask<bool?> DeleteRoomInfo(RoomTb? model);
 
+        /// <summary>
+        /// 공간정보 삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteRoomInfo(List<int>? idx, string? deleter);
     }
 }

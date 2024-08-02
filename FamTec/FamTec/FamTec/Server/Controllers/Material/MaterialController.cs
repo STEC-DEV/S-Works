@@ -195,6 +195,36 @@ namespace FamTec.Server.Controllers.Material
             }
         }
 
+        /// <summary>
+        /// 품목 삭제
+        /// </summary>
+        /// <param name="delIdx"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DeleteMaterial")]
+        public async ValueTask<IActionResult> DeleteMateral([FromQuery]List<int> delIdx)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
+        }
 
     }
 }

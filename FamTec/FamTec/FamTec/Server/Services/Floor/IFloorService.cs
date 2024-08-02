@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteFloorService(HttpContext? context, List<int>? del);
+        ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext? context, List<int>? del);
 
     }
 }

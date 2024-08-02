@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Building.SubItem.ItemKey;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
@@ -11,12 +12,14 @@ namespace FamTec.Server.Controllers.Building.Group
     [ApiController]
     public class BuildingGroupKeyController : ControllerBase
     {
+        private IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private IBuildingKeyService BuildingKeyService;
         private ILogService LogService;
 
-        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice, ILogService _logservice)
+        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice, IBuildingItemKeyInfoRepository ib, ILogService _logservice)
         {
             this.BuildingKeyService = _buildingkeyservice;
+            this.BuildingItemKeyInfoRepository = ib;
             this.LogService = _logservice;
         }
 
@@ -73,26 +76,24 @@ namespace FamTec.Server.Controllers.Building.Group
             try
             {
                 //UpdateKeyDTO dto = new UpdateKeyDTO();
-                //dto.ID = 3;
+                //dto.ID = 9;
                 //dto.Itemkey = "추가_수정1";
+                //dto.Unit = "수정";
                 //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
                 //{
-                //    ID = 4,
+                //    ID = 17,
                 //    ItemValue = "수정값1",
-                //    Unit = "수정단위1"
                 //});
                 //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
                 //{
-                //    ID = 5,
-                //    ItemValue = "수정값2",
-                //    Unit = "수정단위2"
+                //    ItemValue = "추가값",
                 //});
+                //var model = await BuildingItemKeyInfoRepository.UpdateKeyInfo(dto, "테스트");
 
                 if (HttpContext is null)
                     return BadRequest();
 
                 ResponseUnit<UpdateKeyDTO?> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
-
                 if (model is null)
                     return BadRequest();
 
@@ -100,6 +101,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     return Ok(model);
                 else
                     return BadRequest();
+                
             }
             catch(Exception ex)
             {

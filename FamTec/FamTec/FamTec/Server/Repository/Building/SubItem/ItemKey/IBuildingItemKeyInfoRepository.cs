@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Building.Group.Key;
 
 namespace FamTec.Server.Repository.Building.SubItem.ItemKey
 {
@@ -31,6 +32,14 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<bool?> UpdateKeyInfo(BuildingItemKeyTb? model);
+
+        /// <summary>
+        /// 그룹 KEY - VALUE 업데이트
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="updater"></param>
+        /// <returns></returns>
+        ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO? dto, string? updater);
 
         /// <summary>
         /// 그룹 KEY 삭제

@@ -38,7 +38,9 @@ namespace FamTec.Server.Repository.Material
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ValueTask<bool?> DeleteMaterialInfo(MaterialTb? model);
+        public ValueTask<bool?> DeleteMaterialInfo(List<int>? delidx, string? deleter);
+
+       
 
     }
 }

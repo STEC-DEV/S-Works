@@ -113,7 +113,7 @@ namespace FamTec.Server.Controllers.Room
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await RoomService.DeleteRoomService(HttpContext, idx);
+                ResponseUnit<bool?> model = await RoomService.DeleteRoomService(HttpContext, idx);
                 if (model is null)
                     return BadRequest();
 

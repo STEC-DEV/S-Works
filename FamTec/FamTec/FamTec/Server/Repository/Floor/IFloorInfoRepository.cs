@@ -33,6 +33,13 @@ namespace FamTec.Server.Repository.Floor
         ValueTask<bool?> DeleteFloorInfo(FloorTb? model);
 
         /// <summary>
+        /// 층 삭제
+        /// </summary>
+        /// <param name="roomidx"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteFloorInfo(List<int>? roomidx, string? deleter);
+
+        /// <summary>
         /// 층 수정
         /// </summary>
         /// <param name="model"></param>

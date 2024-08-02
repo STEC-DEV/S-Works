@@ -125,24 +125,57 @@ namespace FamTec.Server.Repository.Material
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> DeleteMaterialInfo(MaterialTb? model)
+        public async ValueTask<bool?> DeleteMaterialInfo(List<int>? delidx, string? deleter)
         {
-            try
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                if (model is not null)
+                try
                 {
-                    context.MaterialTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
+                    if (String.IsNullOrWhiteSpace(deleter))
+                        return null;
+                    
+                    if(delidx is [_, ..])
+                    {
+                        foreach(int delId in delidx)
+                        {
+                            MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                            if(MaterialTB is not null)
+                            {
+                                MaterialTB.DelYn = true;
+                                MaterialTB.DelDt = DateTime.Now;
+                                MaterialTB.DelUser = deleter;
+
+                                context.MaterialTbs.Update(MaterialTB);
+                                bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if (!MaterialResult)
+                                {
+                                    // 업데이트 실패시 롤백
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                // 잘못된 조회결과 (롤백)
+                                await transaction.RollbackAsync();
+                                return null; 
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
                 }
-                else
+                catch(Exception ex)
                 {
-                    return null;
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
                 }
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
             }
         }
     }

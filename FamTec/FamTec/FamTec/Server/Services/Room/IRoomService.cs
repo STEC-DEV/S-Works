@@ -34,7 +34,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteRoomService(HttpContext? context, List<int>? del);
+        public ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext? context, List<int>? del);
 
     }
 }
