@@ -30,6 +30,11 @@ namespace FamTec.Server.Controllers.Login
             this.UserService = _userservice;
         }
 
+        /// <summary>
+        /// 관리자 화면 로그인
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("SettingLogin")]
         public async ValueTask<IActionResult> SettingLogin([FromBody] LoginDTO dto)

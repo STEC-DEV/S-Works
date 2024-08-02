@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Floor;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -224,11 +225,20 @@ namespace FamTec.Server.Services.Room
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
                 for (int i = 0; i < del.Count(); i++) 
                 {
                     List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(del[i]);
                     if (FacilityList is [_, ..])
                         return new ResponseUnit<int?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+
+
+                    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), del[i]);
+                    if(Inventory != true)
+                        return new ResponseUnit<int?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
                 for (int i = 0; i < del.Count(); i++)
@@ -256,8 +266,5 @@ namespace FamTec.Server.Services.Room
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-      
-
     }
 }

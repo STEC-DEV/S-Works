@@ -229,8 +229,8 @@ namespace FamTec.Server.Services.Voc
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
+                //string? FileName = String.Empty;
+                //string? FileExtenstion = String.Empty;
 
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };

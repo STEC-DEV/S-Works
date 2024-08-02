@@ -19,6 +19,13 @@ namespace FamTec.Server.Services.Building
         public ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext? context);
 
         /// <summary>
+        /// 사업장에 속한 건물-층 리스트 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext? context);
+
+        /// <summary>
         /// 건물 상세 정보 조회
         /// </summary>
         /// <param name="buildingId"></param>
@@ -39,7 +46,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid);
+        public ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid);
 
     }
 }

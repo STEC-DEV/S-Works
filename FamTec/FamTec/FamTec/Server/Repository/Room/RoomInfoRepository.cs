@@ -160,5 +160,42 @@ namespace FamTec.Server.Repository.Room
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 공간 삭제 검사
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> RoomDeleteCheck(int? placeid, int? roomidx)
+        {
+            try
+            {
+                if (placeid is null)
+                {
+                    return null;
+                }
+                if (roomidx is null)
+                {
+                    return null;
+                }
+
+                List<InventoryTb>? model = await context.InventoryTbs
+                    .Where(m => m.DelYn != true &&
+                    m.PlaceTbId == placeid &&
+                    m.RoomTbId == roomidx)
+                    .ToListAsync();
+
+                if (model is [_, ..]) // 사업장ID + 공간ID로 자재테이블 검색해서 나오는게 1개라도 있으면 false
+                    return false;
+                else // 사업장ID + 공간ID로 자재테이블 검색해서 나오는게 1개라도 있으면 true
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }

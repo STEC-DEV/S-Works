@@ -1,4 +1,6 @@
-﻿namespace FamTec.Server.Services
+﻿using Microsoft.AspNetCore.Mvc.Formatters;
+
+namespace FamTec.Server.Services
 {
     public class FileService : IFileService
     {
@@ -14,6 +16,7 @@
             {
                 string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(files.FileName)}";
                 string filePath = Path.Combine(folderpath, newFileName);
+
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {

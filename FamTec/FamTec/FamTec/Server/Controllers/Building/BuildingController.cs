@@ -55,6 +55,32 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/PlaceBuildingList")]
+        public async ValueTask<IActionResult> SelectPlaceBuilding()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<PlaceBuildingListDTO>? model = await BuildingService.GetPlaceBuildingService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 사업장에 건물 추가
         /// </summary>
@@ -152,7 +178,7 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
+                ResponseUnit<bool?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
                 if (model is null)
                     return BadRequest();
 

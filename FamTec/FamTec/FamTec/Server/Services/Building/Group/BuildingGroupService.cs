@@ -329,7 +329,7 @@ namespace FamTec.Server.Services.Building.Group
                 GroupTb.CreateUser = creater;
                 GroupTb.UpdateDt = DateTime.Now;
                 GroupTb.UpdateUser = creater;
-                GroupTb.BuildingTbId = GroupTb.BuildingTbId;
+                GroupTb.BuildingTbId = dto.BuildingIdx;
 
                 BuildingItemGroupTb? AddResult = await BuildingGroupItemInfoRepository.AddAsync(GroupTb);
                 if (AddResult is not null)

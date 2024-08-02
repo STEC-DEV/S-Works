@@ -166,6 +166,28 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                /*
+                AddPlaceDTO dto = new AddPlaceDTO();
+                dto.PlaceCd = "AB000000001"; // 사업장코드
+                dto.Name = "A사업장"; // 사업장명
+                dto.Tel = "02-0000-0000"; // 사업장 전화번호
+                dto.Address = "서울시 강서구"; // 사업장 주소
+                dto.ContractNum = "00054487"; // 계약번호
+                dto.ContractDT = DateTime.Now; // 계약일자
+                dto.PermMachine = true; // 설비메뉴 권한
+                dto.PermLift = true; // 승강메뉴 권한
+                dto.PermFire = true; // 소방메뉴 권한
+                dto.PermConstruct = true; // 건축메뉴 권한
+                dto.PermNetwork = true; // 통신메뉴 권한
+                dto.PermBeauty = false; // 미화메뉴 권한
+                dto.PermSecurity = false; // 보안메뉴 권한
+                dto.PermMaterial = false; // 자재메뉴 권한
+                dto.PermEnergy = false; // 에너지 메뉴 권한
+                dto.PermVoc = false; // VOC 권한
+                dto.Status = true; // 계약상태
+                dto.Note = "테스트데이터";
+                */
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -352,7 +374,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto);
+                ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest(model);

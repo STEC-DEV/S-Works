@@ -543,48 +543,39 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto)
+        public async ValueTask<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto)
         {
             try
             {
-                int delCount = 0;
-
                 if(dto is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                for (int i = 0; i < dto.PlaceManager.Count(); i++) 
+                List<int> adminidx = dto.PlaceManager.Select(m => m.Id!.Value).ToList();
+
+                bool? RemoveResult = await AdminPlaceInfoRepository.RemoveAdminPlace(adminidx, dto.PlaceId);
+                if(RemoveResult == true)
                 {
-                    AdminPlaceTb? model = await AdminPlaceInfoRepository.GetPlaceAdminInfo(dto.PlaceManager[i].Id, dto.PlaceId); // adminpalceid + placeid
-                    if(model is not null)
-                    {
-                        model.DelDt = DateTime.Now;
-                        model.DelYn = true;
-                        model.DelUser = creater;
-
-                        bool? result = await AdminPlaceInfoRepository.DeleteAdminPlaceManager(model);
-                        if(result == true)
-                        {
-                            delCount++;
-                        }
-                    }
-                    else
-                    {
-                        return new ResponseUnit<int?>() { message = "존재하지 않는 관리자입니다.", data = null, code = 200 };
-                    }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
-
-                return new ResponseUnit<int?>() { message = $"{delCount}건 삭제되었습니다", data = delCount, code =  200};
+                else if(RemoveResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 404 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "존재하지 않는 관리자입니다.", data = null, code = 404 };
+                }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
 
         }

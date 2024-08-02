@@ -882,16 +882,10 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "DeleteBuilding",
     "RelativePath": "api/Building/sign/DeleteBuilding",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "buildingidx",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -914,6 +908,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "SelectMyBuilding",
     "RelativePath": "api/Building/sign/MyBuildings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "SelectPlaceBuilding",
+    "RelativePath": "api/Building/sign/PlaceBuildingList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -2542,7 +2546,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Login.LoginDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -2558,7 +2562,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Login.LoginDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -3249,7 +3253,7 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Room.UpdateRoomDTO",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -3499,17 +3503,17 @@
     "Parameters": [
       {
         "Name": "materialid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       },
       {
         "Name": "Startdate",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.DateTime",
         "IsRequired": false
       },
       {
         "Name": "EndDate",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.DateTime",
         "IsRequired": false
       }
     ],
@@ -3530,7 +3534,7 @@
       },
       {
         "Name": "type",
-        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Boolean",
         "IsRequired": false
       }
     ],
@@ -3847,7 +3851,7 @@
     "Parameters": [
       {
         "Name": "id",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -4168,6 +4172,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "UpdateVocType",
+    "RelativePath": "api/Voc/sign/UpdateVocType",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Voc.UpdateVocDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
     "Method": "AddVocComment",
     "RelativePath": "api/VocComment/sign/AddVocComment",
@@ -4216,15 +4236,15 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
-    "Method": "UpdateVocComment",
-    "RelativePath": "api/VocComment/sign/VocCommentUpdate",
-    "HttpMethod": "PUT",
+    "Method": "GetVocCommentDetail",
+    "RelativePath": "api/VocComment/sign/VocCommentDetail",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "files",
-        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "Name": "commentid",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -4232,15 +4252,50 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
-    "Method": "GetVocCommentDetail",
-    "RelativePath": "api/VocComment/sign/VocCommetDetail",
-    "HttpMethod": "GET",
+    "Method": "UpdateVocComment",
+    "RelativePath": "api/VocComment/sign/VocCommentUpdate",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "commentid",
+        "Name": "VocCommentId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Content",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CreateDT",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CreateUser",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Userid",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Images",
+        "Type": "System.Collections.Generic.List\u00601[[System.Byte[], System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
         "IsRequired": false
       }
     ],

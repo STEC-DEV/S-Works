@@ -90,7 +90,34 @@ namespace FamTec.Server.Controllers.Voc
         }
 
         // 민원 타입변경 - 미처리 --> 다른타입으로
+        // -- 소켓 구현전
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("sign/UpdateVocType")]
+        public async ValueTask<IActionResult> UpdateVocType([FromBody]UpdateVocDTO dto)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
+                ResponseUnit<bool?> model = await VocService.UpdateVocService(HttpContext, dto);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
     }
 }

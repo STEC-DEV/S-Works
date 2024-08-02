@@ -72,6 +72,92 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             }
         }
 
+       
+        public async ValueTask<bool?> DeleteAdminsInfo(List<int>? idx, string? deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (String.IsNullOrWhiteSpace(deleter))
+                        return null;
+
+                    if (idx is [_, ..])
+                    {
+                        foreach(int adminid in idx)
+                        {
+                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                            if(admintb is not null)
+                            {
+                                admintb.DelYn = true;
+                                admintb.DelDt = DateTime.Now;
+                                admintb.DelUser = deleter;
+                                context.AdminTbs.Update(admintb);
+                                bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                
+                                if(!AdminTbResult) // 실패하면
+                                {
+                                    await context.Database.RollbackTransactionAsync(); // 롤백
+                                    return false;
+                                }
+
+                                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+                                if(usertb is not null)
+                                {
+                                    usertb.DelYn = true;
+                                    usertb.DelDt = DateTime.Now;
+                                    usertb.DelUser = deleter;
+                                    context.UsersTbs.Update(usertb);
+                                    bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                    if(!UserTbResult) // 실패하면
+                                    {
+                                        await context.Database.RollbackTransactionAsync(); // 롤백
+                                        return false;
+                                    }
+
+                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
+                                    if(adminplacetb is [_, ..])
+                                    {
+                                        foreach(AdminPlaceTb AdminPlace in adminplacetb)
+                                        {
+                                            context.AdminPlaceTbs.Remove(AdminPlace);
+                                            bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if (!AdminPlaceResult) // 실패하면
+                                            {
+                                                await context.Database.RollbackTransactionAsync(); //롤백
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    await context.Database.RollbackTransactionAsync(); // 롤백
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                return false;
+                            }
+                        }
+                        await context.Database.CommitTransactionAsync(); // 커밋
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
         /// <summary>
         /// 매개변수의 ADMINID에 해당하는 관리자모델 조회
         /// </summary>

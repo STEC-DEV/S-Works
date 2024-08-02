@@ -25,6 +25,6 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         [Display(Name = "부서")]
         public string? Department { get; set; }
 
-        public string? Image { get; set; } // 이미지
+        public byte[]? Image { get; set; } // 이미지
     }
 }

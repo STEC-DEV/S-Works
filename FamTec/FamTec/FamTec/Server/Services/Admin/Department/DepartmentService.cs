@@ -8,9 +8,7 @@ namespace FamTec.Server.Services.Admin.Department
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-        
         private ILogService LogService;
-
 
         public DepartmentService(IDepartmentInfoRepository _departmentinforepository,
             ILogService _logservice)

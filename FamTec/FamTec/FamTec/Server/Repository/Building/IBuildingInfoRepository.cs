@@ -19,7 +19,7 @@ namespace FamTec.Server.Repository.Building
         ValueTask<List<BuildingTb>?> GetAllBuildingList(int? placeid);
 
         /// <summary>
-        /// 빌딩인덱스로 빌뎅검색
+        /// 빌딩인덱스로 빌딩검색
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
@@ -46,6 +46,13 @@ namespace FamTec.Server.Repository.Building
 
         ValueTask<bool?> DeleteBuildingInfo(BuildingTb? model);
 
+        /// <summary>
+        /// 건물정보 삭제
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteBuildingList(List<int>? buildingid, string? deleter);
         
 
     }

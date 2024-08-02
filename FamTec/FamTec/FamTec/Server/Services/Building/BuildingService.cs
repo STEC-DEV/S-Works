@@ -15,7 +15,7 @@ namespace FamTec.Server.Services.Building
         private readonly IBuildingGroupItemInfoRepository BuildingGroupItemInfoRepository;
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
-        private readonly IFloorInfoRepository FloorInfoRepsitory;
+        private readonly IFloorInfoRepository FloorInfoRepository;
 
         private ILogService LogService;
 
@@ -39,7 +39,7 @@ namespace FamTec.Server.Services.Building
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
 
-            this.FloorInfoRepsitory = _floorinforepository;
+            this.FloorInfoRepository = _floorinforepository;
 
             this.LogService = _logservice;
         }
@@ -545,123 +545,108 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid)
+        public async ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid)
         {
             try
             {
-                int delCount = 0;
-
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (buildingid is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]); // 토큰 로그인 사용자 검사
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]); // 토큰 사업장 검사
                 if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
                 // - 층이 있으면 삭제안됨
                 // - 건물 삭제시 하위 추가내용들 전체삭제
                 for (int i = 0; i < buildingid.Count(); i++)
                 {
-                    List<FloorTb>? floortb = await FloorInfoRepsitory.GetFloorList(buildingid[i]);
+                    List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildingid[i]);
 
                     if (floortb is [_, ..])
-                        return new ResponseUnit<int?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseUnit<bool?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
-                for (int i = 0; i < buildingid.Count(); i++)
+                bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater);
+                if(DeleteResult == true)
                 {
-                    BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(buildingid[i]);
-                    
-                    if (BuildingTB is not null)
-                    {
-                        BuildingTB.DelDt = DateTime.Now;
-                        BuildingTB.DelUser = creater;
-                        BuildingTB.DelYn = true;
-
-                        bool? delBuilding = await BuildingInfoRepository.DeleteBuildingInfo(BuildingTB);
-                        if(delBuilding != true)
-                        {
-                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                        }
-
-                        List<BuildingItemGroupTb>? GroupTBList = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingid[i]);
-                        if (GroupTBList is [_, ..])
-                        {
-                            foreach(BuildingItemGroupTb GroupTB in GroupTBList)
-                            {
-                                GroupTB.DelDt = DateTime.Now;
-                                GroupTB.DelUser = creater;
-                                GroupTB.DelYn = true;
-
-                                bool? delGroup = await BuildingGroupItemInfoRepository.DeleteGroupInfo(GroupTB);
-                                if(delGroup != true)
-                                {
-                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                                }
-
-                                List<BuildingItemKeyTb>? GroupKeyList = await BuildingItemKeyInfoRepository.GetAllKeyList(GroupTB.Id);
-
-                                if(GroupKeyList is [_, ..])
-                                {
-                                    foreach(BuildingItemKeyTb KeyTB in GroupKeyList)
-                                    {
-                                        KeyTB.DelDt = DateTime.Now;
-                                        KeyTB.DelUser = creater;
-                                        KeyTB.DelYn = true;
-
-                                        bool? delKey = await BuildingItemKeyInfoRepository.DeleteKeyInfo(KeyTB);
-                                        if(delKey != true)
-                                        {
-                                            return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                                        }
-
-                                        List<BuildingItemValueTb>? GroupValueList = await BuildingItemValueInfoRepository.GetAllValueList(KeyTB.Id);
-
-                                        if (GroupValueList is [_, ..])
-                                        {
-                                            foreach (BuildingItemValueTb ValueTB in GroupValueList)
-                                            {
-                                                ValueTB.DelDt = DateTime.Now;
-                                                ValueTB.DelUser = creater;
-                                                ValueTB.DelYn = true;
-
-                                                bool? delValue = await BuildingItemValueInfoRepository.DeleteValueInfo(ValueTB);
-
-                                                if(delValue != true)
-                                                {
-                                                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                    }
-                    delCount++;
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
-                return new ResponseUnit<int?>() { message = $"{delCount}건 삭제 성공.", data = delCount, code = 200 };
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-      
+        /// <summary>
+        /// 사업장에 속한 건물-층 리스트 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext? context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<PlaceBuildingListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<PlaceBuildingListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx));
+                if(buildinglist is [_, ..])
+                {
+                    List<PlaceBuildingListDTO> dto = new List<PlaceBuildingListDTO>();
+
+                    foreach(BuildingTb Building in buildinglist)
+                    {
+                        PlaceBuildingListDTO buidlingDTO = new PlaceBuildingListDTO();
+                        buidlingDTO.BuildingId = Building.Id; // 건물ID
+                        buidlingDTO.Name = Building.Name; // 건물명
+
+                        List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id);
+                        if(FloorList is [_, ..])
+                        {
+                            foreach(FloorTb Floor in FloorList)
+                            {
+                                buidlingDTO.FloorList.Add(new BuildingFloor
+                                {
+                                    FloorId = Floor.Id,
+                                    Name = Floor.Name
+                                });
+                            }
+                        }
+                        dto.Add(buidlingDTO);
+                    }
+                    return new ResponseList<PlaceBuildingListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                }
+                else
+                {
+                    return new ResponseList<PlaceBuildingListDTO>() { message = "조회결과가 없습니다.", data = new List<PlaceBuildingListDTO>(), code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<PlaceBuildingListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

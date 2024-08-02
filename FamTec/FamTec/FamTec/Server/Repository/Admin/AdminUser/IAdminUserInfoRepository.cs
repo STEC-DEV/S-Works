@@ -49,6 +49,13 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         ValueTask<bool?> DeleteAdminInfo(AdminTb? model);
 
         /// <summary>
+        /// 관리자 삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteAdminsInfo(List<int>? idx, string? deleter);
+
+        /// <summary>
         /// 관리자 정보 수정
         /// </summary>
         /// <param name="model"></param>

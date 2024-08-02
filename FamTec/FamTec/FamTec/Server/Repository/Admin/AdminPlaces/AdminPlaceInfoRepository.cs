@@ -419,6 +419,43 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         }
 
         /// <summary>
+        /// 해당 사업장에서 관리자 삭제
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> RemoveAdminPlace(List<int> adminid, int placeid)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach (int id in adminid)
+                    {
+                        AdminPlaceTb? admintb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
+                        if (admintb is null)
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                        else
+                        {
+                            context.AdminPlaceTbs.Remove(admintb);
+                            await context.SaveChangesAsync();
+                        }
+                    }
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+        /// <summary>
         /// 해당 사업장에 할당된 관리자 삭제 - DelYN 삭제함.
         /// </summary>
         /// <param name="admintbid"></param>

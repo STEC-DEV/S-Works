@@ -1,7 +1,7 @@
-﻿using FamTec.Client.Pages.Admin.Place.PlaceMain;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -23,7 +23,6 @@ namespace FamTec.Server.Services.Voc
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocFileFolderPath;
-
         private ILogService LogService;
 
         public VocService(IVocInfoRepository _vocinforepository,
@@ -119,6 +118,8 @@ namespace FamTec.Server.Services.Voc
                 {
                     // 소켓알림! + 카카오 API 알림
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
+                    // 보낸 USER 휴대폰번호에 전송.
+
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
@@ -328,12 +329,17 @@ namespace FamTec.Server.Services.Voc
                     bool UpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
                     if(UpdateResult)
                     {
-                        // 소켓알림!
+                        // 소켓알림! + 알림톡
                         switch(dto.Type)
                         {
                             // 기타
                             case 0:
                                 // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
+                                VocTb? voc = await VocInfoRepository.GetDetailVoc(dto.VocID);
+                                //BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(voc.BuildingTbId);
+                                //List<UsersTb>? User = await UserInfoRepository.
+                                //var temp = await BuildingInfoRepository.GetBuildingInfo(dto.)
+
                                 await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                                 return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                             // 기계

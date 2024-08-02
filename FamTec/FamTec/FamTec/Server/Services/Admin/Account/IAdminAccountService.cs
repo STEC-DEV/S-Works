@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context, List<int>? adminidx);
+        public ValueTask<ResponseUnit<bool?>> DeleteAdminService(HttpContext? context, List<int>? adminidx);
        
 
         /// <summary>

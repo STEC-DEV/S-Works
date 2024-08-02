@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto);
+        public ValueTask<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? dto);
 
 
         /// <summary>

@@ -14,6 +14,13 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <returns></returns>
         ValueTask<bool?> AddAsync(List<AdminPlaceTb>? model);
 
+        /// <summary>
+        /// 해당 사업장에서 관리자 삭제
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> RemoveAdminPlace(List<int> adminid, int placeid);
 
         /// <summary>
         /// 관리자 사업장 단일추가
@@ -63,6 +70,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<bool?> DeleteMyWorks(AdminPlaceTb? model);
+
+
 
         /// <summary>
         /// 사업장 정보 조회

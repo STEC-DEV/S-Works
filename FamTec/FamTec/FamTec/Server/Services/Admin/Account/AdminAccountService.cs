@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Admin.Account
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
-
+        private IFileService FileService;
 
         private readonly IConfiguration Configuration;
         private ILogService LogService;
@@ -30,6 +30,7 @@ namespace FamTec.Server.Services.Admin.Account
             IAdminUserInfoRepository _admininfoRepository,
             IDepartmentInfoRepository _departmentinfoRepository,
             IAdminPlacesInfoRepository _adminplaceinforepository,
+            IFileService _fileservice,
             IConfiguration _configuration,
             ILogService _logservice)
         {
@@ -38,7 +39,7 @@ namespace FamTec.Server.Services.Admin.Account
             this.DepartmentInfoRepository = _departmentinfoRepository;
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
 
-
+            this.FileService = _fileservice;
             this.Configuration = _configuration;
             this.LogService = _logservice;
         }
@@ -177,16 +178,12 @@ namespace FamTec.Server.Services.Admin.Account
                 if (String.IsNullOrWhiteSpace(UserType))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-
                 // 관리자 관련한 폴더가 없으면 만듬
                 string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
-
                 di = new DirectoryInfo(AdminFileFolderPath);
                 if (!di.Exists) di.Create();
 
-
                 UsersTb? model = new UsersTb();
-
                 model.UserId = dto.UserId;
                 model.Name = dto.Name;
                 model.Password = dto.Password;
@@ -227,38 +224,10 @@ namespace FamTec.Server.Services.Admin.Account
                 model.CreateUser = creater;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
-
                 
-
                 if (files is not null)
                 {
-                    FileName = files.FileName;
-                    FileExtenstion = Path.GetExtension(FileName);
-                    
-                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
-                    {
-                        return new ResponseUnit<int?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 404 };
-                    }
-                    else
-                    {
-                        // 이미지경로
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-                        string? newFilePath = Path.Combine(AdminFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            if (fileStream.Length < 1048576)
-                            {
-
-                                await files.CopyToAsync(fileStream);
-                                model.Image = newFileName;
-                            }
-                            else
-                            {
-                                return new ResponseUnit<int?> { message = "허용하지 않는 파일 크기입니다.", data = null, code = 200 };
-                            }
-                        }
-                    }
+                    model.Image = await FileService.AddImageFile(AdminFileFolderPath, files);
                 }
                 else
                 {
@@ -310,74 +279,43 @@ namespace FamTec.Server.Services.Admin.Account
 
         
 
-            /// <summary>
-            /// 관리자 삭제
-            /// </summary>
-            /// <param name="context"></param>
-            /// <param name="useridx"></param>
-            /// <returns></returns>
-            public async ValueTask<ResponseUnit<int?>> DeleteAdminService(HttpContext? context,List<int>? adminidx)
+        /// <summary>
+        /// 관리자 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="useridx"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> DeleteAdminService(HttpContext? context,List<int>? adminidx)
         {
-            int delcount = 0;
-            
             try
             {
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 if (adminidx is null)
-                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-
-                for (int i=0;i< adminidx.Count();i++)
+                bool? result = await AdminUserInfoRepository.DeleteAdminsInfo(adminidx, creater);
+                if(result == true)
                 {
-                    AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx[i]);
-
-                    if (admintb is null)
-                        return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-                    
-                    admintb.DelYn = true;
-                    admintb.DelDt = DateTime.Now;
-                    admintb.DelUser = creater;
-
-                    bool? deladmintb = await AdminUserInfoRepository.DeleteAdminInfo(admintb);
-                    if(deladmintb != true)
-                        return new ResponseUnit<int?>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
-
-                    UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
-                    usertb!.DelYn = true;
-                    usertb!.DelDt = DateTime.Now;
-                    usertb.DelUser = creater;
-
-                    bool? delusertb = await UserInfoRepository.DeleteUserInfo(usertb);
-
-                    if (delusertb == true)
-                    {
-                        List<AdminPlaceTb>? adminplacetb = await AdminPlaceInfoRepository.GetMyWorksList(admintb.Id);
-                                        
-                        if (adminplacetb is [_, ..])
-                        {
-                            foreach(AdminPlaceTb adminplace in adminplacetb)
-                            {
-                                bool? result = await AdminPlaceInfoRepository.DeleteAdminPlaceInfo(adminplace);
-                                if(result != true)
-                                {
-                                    return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                                }
-                            }
-                        }
-                        delcount++;
-                    }
+                    return new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
-                return new ResponseUnit<int?> { message = $"요청이 {delcount}건 정상 처리되었습니다.", data = delcount, code = 200 };
+                else if(result == false)
+                {
+                    return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -413,31 +351,11 @@ namespace FamTec.Server.Services.Admin.Account
                             dto.Type = admintb.Type;
                             dto.Department = departmenttb.Name;
 
-                            string? Image = usertb.Image;
-                            if(!String.IsNullOrWhiteSpace(Image))
+                            string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
+                            if (!String.IsNullOrWhiteSpace(usertb.Image))
                             {
-                                string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
-                                string[] FileList = Directory.GetFiles(AdminFileName);
-
-                                if(FileList is [_, ..])
-                                {
-                                    foreach(var file in FileList)
-                                    {
-                                        if(file.Contains(Image))
-                                        {
-                                            byte[] ImageBytes = File.ReadAllBytes(file);
-                                            dto.Image = Convert.ToBase64String(ImageBytes);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    dto.Image = usertb.Image;
-                                }
-                            }
-                            else
-                            {
-                                dto.Image = usertb.Image;
+                                byte[]? ImageBytes = await FileService.GetImageFile(AdminFileName, usertb.Image);
+                                dto.Image = ImageBytes;
                             }
 
                             return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -543,54 +461,32 @@ namespace FamTec.Server.Services.Admin.Account
                 usertb.Email = dto.Email; // 이메일
                 usertb.UserId = dto.UserId; // 로그인 ID
                 usertb.Password = dto.Password; // 비밀번호
+                AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
                 
-                if(files is not null) // 파일이 공백이 아닌경우 - 삭제 - 업데이트 or insert
+                // 파일이 있을경우
+                if(files is not null)
                 {
-                    FileName = files.FileName;
-                    FileExtenstion = Path.GetExtension(FileName);
-
-                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                    // 파일 삭제
+                    if(usertb.Image is not null)
                     {
-                        return new ResponseUnit<int?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
-                    }
-
-                    string? filePath = usertb.Image;
-                    AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
-
-                    if(!String.IsNullOrWhiteSpace(filePath))
-                    {
-                        FileName = String.Format("{0}\\{1}", AdminFileFolderPath, filePath);
-                        if(File.Exists(FileName))
-                        {
-                            File.Delete(FileName);
-                        }
-                    }
-
-                    string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-                    string? newFilePath = Path.Combine(AdminFileFolderPath, newFileName);
-
-                    using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                    {
-                        await files.CopyToAsync(fileStream);
-                        usertb.Image = newFileName;
-                    }
-                }
-                else // 파일이 공백인경우 db에 해당 데이터 값이 있으면 삭제
-                {
-                    string? filePath = usertb.Image;
-                    if(!String.IsNullOrWhiteSpace(filePath))
-                    {
-                        AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
-                        FileName = String.Format("{0}\\{1}", AdminFileFolderPath, filePath);
-                        if(File.Exists(FileName))
-                        {
-                            File.Delete(FileName);
+                        // DB에서 파일 검색해서 삭제
+                        bool result = FileService.DeleteImageFile(AdminFileFolderPath, usertb.Image);
+                        if (result)
                             usertb.Image = null;
-                        }
+                    }
+
+                    // 파일 생성
+                    usertb.Image = await FileService.AddImageFile(AdminFileFolderPath, files);
+                }
+                else // 파일이 공백인경우 DB 파일 있으면 삭제
+                {
+                    if(usertb.Image is not null)
+                    {
+                        bool result = FileService.DeleteImageFile(AdminFileFolderPath, usertb.Image);
+                        if (result)
+                            usertb.Image = null;
                     }
                 }
-
-
                 // 사용자 정보 수정
                 UsersTb? updateusertb = await UserInfoRepository.UpdateUserInfo(usertb);
                 if (updateusertb is null)

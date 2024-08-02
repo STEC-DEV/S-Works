@@ -122,7 +122,7 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/VocCommetDetail")]
+        [Route("sign/VocCommentDetail")]
         public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {
             try
@@ -147,7 +147,12 @@ namespace FamTec.Server.Controllers.Voc
         }
 
 
-        // VocCommentUpdate
+        /// <summary>
+        /// 민원 댓글 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/VocCommentUpdate")]
@@ -171,7 +176,7 @@ namespace FamTec.Server.Controllers.Voc
                     {
                         if (file.Length > Common.MEGABYTE_2)
                         {
-                            return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                            return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
                         }
 
                         string? extension = FileService.GetExtension(file);
@@ -184,7 +189,7 @@ namespace FamTec.Server.Controllers.Voc
                             bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                             if (!extensioncheck)
                             {
-                                return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                                return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                             }
                         }
                     }

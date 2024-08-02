@@ -6,7 +6,6 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
-using System.Security.AccessControl;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -164,7 +163,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
+                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
 
                 if (model is null)
                     return BadRequest(model);
