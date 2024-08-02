@@ -1,5 +1,6 @@
 
 .container[b-2t6md138o2]{
+    padding : var(--default-pd);
     display:flex;
     flex-direction : column;
     gap : var(--wide-pd);

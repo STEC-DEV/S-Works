@@ -9,9 +9,9 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings.Group
     public class ItemDTO
     {
         public int Id { get; set; }
-        public string ItemName { get; set; }
-        public string Unit {  get; set; }
-        public List<ItemValueDTO> Values { get; set; }
-        public int GroupIdx { get; set; }
+        public string ItemKey { get; set; }
+        public string Unit { get; set; }
+        public List<ItemValueDTO> valueList { get; set; }
+        //public int GroupIdx { get; set; }
     }
 }

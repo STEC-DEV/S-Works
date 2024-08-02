@@ -1,20 +1,56 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+@using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 
-<div class="group">
+<div class="group yappear">
     <div class="header">
-        <span>
-            그룹명
-            @GroupData.GroupName
+        <span class="title">
+            @GroupData.Name
         </span>
+        <div class="options">
+        @if (EditMode)
+        {
+                <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+                <Button Name="삭제" Width=true Type="1" />
+                <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+        }
+        else
+        {
+                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+        }
+        </div>
     </div>
     <div class="content">
-        @foreach(var item in GroupData.Items)
+        @foreach(var item in GroupData.keyListDTO)
         {
-            <SubItem item="item"/>
+            <SubItem item="item" EditMode=EditMode />
         }
     </div>
+    @if (IsModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SubItemModal OnClose="OnModal" GroupId="@GroupData.id" LoadGroup="LoadGroup" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+    @* <button class="del-group">삭제</button> *@
 </div>
 
 @code {
-    [Parameter] public GroupDTO GroupData { get; set; }
+    [Parameter] public GroupDTO? GroupData { get; set; }
+    // [Parameter] public bool EditMode { get; set; } = false;
+    [Parameter] public EventCallback LoadGroup { get; set; }
+    bool IsModal = false;
+    bool EditMode = false;
+
+    private void OnModal()
+    {
+        IsModal = !IsModal;
+    }
+
+    private void OnEditMode()
+    {
+        EditMode = !EditMode;
+    }
 }

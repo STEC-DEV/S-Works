@@ -4,7 +4,7 @@
         <label class="inputfield-label">
             @Label
         </label>
-        <input class="inputfield-input @EditCss"
+        <input class="inputfield-input "
                type="@InputType"
                @bind-value="@Value"
                placeholder="@Placeholder"
@@ -31,7 +31,7 @@
     [Parameter] public EventCallback OnBlur{ get; set; }
     [Parameter] public EventCallback OnClick{get;set;}
 
-    private string EditCss => EditMode ? null : "block";
+    // private string EditCss => EditMode ? null : "block";
 
     private async Task onChangeText(ChangeEventArgs e)
     {

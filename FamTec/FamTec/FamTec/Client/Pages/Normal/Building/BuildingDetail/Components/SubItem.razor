@@ -1,19 +1,29 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+
 
 <div class="item-container">
-    <label class="item-label">
-        @item.ItemName (@item.Unit)
-    </label>
-    <div class="item-values">
-        @foreach(var i in item.Values)
+    <div class="item-wrap">
+        @if (EditMode)
         {
-            <span class="value">
-                @i.Value
-            </span>
+            <input type="checkbox" />
         }
+        <label class="item-label">
+            @item.ItemKey
+        </label>
+        <div class="item-values">
+            @foreach (var i in item.valueList)
+            {
+                <span class="value">
+                    @i.itemValue
+                </span>
+            }
+        </div>
     </div>
+    
 </div>
 
 @code {
     [Parameter] public ItemDTO item { get; set; }
+    [Parameter] public bool EditMode { get; set; } = false;
 }

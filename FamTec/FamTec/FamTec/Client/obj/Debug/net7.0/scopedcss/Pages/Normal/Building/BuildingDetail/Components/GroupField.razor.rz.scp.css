@@ -3,9 +3,15 @@
     grid-template-rows: 1fr auto;
     gap : 20px;
     border : var(--comp-bd);
+    border-radius : var(--default-rd);
     padding : var(--default-pd);
+    transition : all .3s;
     background-color:var(--content-back-color);
-    /*place-items: center;*/
+    
+}
+
+.groupfield:hover[b-mkfpw9b4ys]{
+    transform:scale(1.05);
 }
 
 .groupfield .groupfield-title[b-mkfpw9b4ys]{

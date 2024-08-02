@@ -1,0 +1,16 @@
+﻿
+<div>
+    <label>
+        @Label
+    </label>
+    <input type="@ValueType" placeholder="@Placeholder" />
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? ValueType { get; set; }
+    [Parameter] public string? Value { get; set; }
+   
+    
+}

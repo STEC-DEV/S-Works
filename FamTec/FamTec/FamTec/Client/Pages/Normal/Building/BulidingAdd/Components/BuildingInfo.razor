@@ -1,6 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
+@using Microsoft.AspNetCore.Http
 <div class="buildinginfo">
     <div class="buildinginfo-title">
         <span class="title">
@@ -108,6 +109,9 @@
         var file = e.File;
         var buffer = new byte[file.Size];
         await file.OpenReadStream().ReadAsync(buffer);
+
+
+
         ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
         Console.WriteLine(Convert.ToBase64String(buffer));
         Building.Image = buffer;

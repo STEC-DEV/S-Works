@@ -5,8 +5,8 @@
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--default-color);
-    padding: var(--default-pd);
-    box-shadow: var(--default-bs);
+    padding: var(--default-pd) var(--wide-pd);
+    box-shadow: var(--shadow-1);
 }
 
 

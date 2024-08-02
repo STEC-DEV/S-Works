@@ -13,8 +13,15 @@
 </div>
 
 @code {
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
 
-
+    private void OnLoadFloor()
+    {
+        
+    }
 }
 
 

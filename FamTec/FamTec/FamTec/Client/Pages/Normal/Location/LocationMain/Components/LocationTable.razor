@@ -37,29 +37,28 @@
         {
             <tr class="tbody-tr">
                 <td class="td text-left">
-                    @(@Locations.Count +1)
+                    @(@ListData.Count + 1)
                 </td>
                 <td class="td">
-                    <input type="text" @bind="@newLocation.Name"/>
+                    <input type="text" @bind-value="@newRoom.RoomName" />
                 </td> 
                 <td class="td">
-                    <input type="text" @bind="@newLocation.BuildingName"/>
                 </td> 
                 <td class="td">
-                    <input type="text" @bind="@newLocation.Floor"/>
+                    
                 </td>
                 <td class="td text-right">
                     <Button Name="등록" Width=true OnClick="@SaveRow" />
                 </td>
             </tr>
         }
-        @foreach (var location in Locations.Select((value, idx) => (value, idx)))
+        @foreach (var location in ListData.Select((value, idx) => (value, idx)))
         {
             <tr class="tbody-tr">
                 <td class="td text-left">@(location.idx+1)</td>
-                <td class="td">@location.value.Name</td>
+                <td class="td">@location.value.RoomName</td>
                 <td class="td">@location.value.BuildingName</td>
-                <td class="td">@location.value.Floor</td>
+                <td class="td">@location.value.FloorName</td>
                 <td class="td text-right">
                     <input type="checkbox" />
                 </td>
@@ -70,32 +69,33 @@
 
 @code {
     [Parameter] public List<LocationDTO> Locations {get; set;}
+    [Parameter] public List<RoomListDTO> ListData { get; set; }
     [Parameter] public bool isAddingRow { get; set; }
     [Parameter] public EventCallback AddMode { get; set; }
 
-    private LocationDTO newLocation = new LocationDTO();
+    private RoomListDTO newRoom;
 
 
     private void OnAddRow()
     {
         isAddingRow = true;
-        newLocation = new LocationDTO { Id = Locations.Count + 1 };
+        newRoom = new RoomListDTO();
     }
 
     private void SaveRow()
     {
-        if (string.IsNullOrWhiteSpace(newLocation.Name) ||
-            string.IsNullOrWhiteSpace(newLocation.BuildingName) ||
-            string.IsNullOrWhiteSpace(newLocation.Floor))
-        {
-            JS.InvokeVoidAsync("alert","값이 비어있습니다.");
-        }
-        else
-        {
-            Locations.Add(newLocation);
-        }
-        newLocation = new LocationDTO();
-        AddMode.InvokeAsync();
+        // if (string.IsNullOrWhiteSpace(newRoom.RoomName) ||
+        //     string.IsNullOrWhiteSpace(newRoom.BuildingName) ||
+        //     int?.IsNullOrWhiteSpace(newRoom.FloorID))
+        // {
+        //     JS.InvokeVoidAsync("alert","값이 비어있습니다.");
+        // }
+        // else
+        // {
+        //     Locations.Add(newLocation);
+        // }
+        // newLocation = new LocationDTO();
+        // AddMode.InvokeAsync();
     }
     
 }

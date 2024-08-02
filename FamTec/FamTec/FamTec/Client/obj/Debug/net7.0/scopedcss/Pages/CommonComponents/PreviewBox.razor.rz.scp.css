@@ -8,6 +8,7 @@
     border : var(--default-bd);
     border-radius : var(--default-rd);
     overflow:hidden;
+    background-color : var(--content-back-color);
 }
 
 .img[b-xvv12k5685]{

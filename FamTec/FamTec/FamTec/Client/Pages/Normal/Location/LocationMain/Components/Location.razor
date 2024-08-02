@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
 @using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
 
 <div class="location-container">
     <div class="location-wrap">
@@ -25,6 +27,8 @@
 </div>
 @code {
     private bool isAddingRow = false;
+    List<RoomListDTO> RoomList;
+    List<BuildingListDTO> BuildingList;
     private List<LocationDTO> Locations = new List<LocationDTO>
     {
         new LocationDTO{ Id = 1, Name = "전기실", BuildingName ="강남우체국", Floor = "지하 1층"},
@@ -32,6 +36,48 @@
         new LocationDTO{ Id = 3, Name = "창고A", BuildingName ="강남우체국", Floor = "5"},
         new LocationDTO{ Id = 4, Name = "창고B", BuildingName ="강남우체국", Floor = "1"},
     };
+
+
+    private async Task OnLoadLaction()
+    {
+        try
+        {
+            ResponseList<RoomListDTO> resGet = await apiManager.GetListAsync<RoomListDTO>("Room/sign/GetAllRoomList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "위치 조회 실패");
+                return;
+            }
+            RoomList = resGet.data;
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "위치 조회 실패");
+            Console.WriteLine("[Basic][Location] 위치 조회 에러!" + ex);
+        }
+    }
+
+    //건물전체 및 건물에 따른 층 리스트 조회 (요청함)
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                return;
+            }
+            BuildingList = resGet.data;
+
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
+        }
+    }
+
 
 
     private void OnAddMode()

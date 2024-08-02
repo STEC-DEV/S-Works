@@ -55,4 +55,5 @@
         box-shadow
     */
     --default-bs: 0 10px 15px rgba(0, 0, 0, 0.16), 0 10px 15px rgba(0, 0, 0, 0.23);
+    --shadow-1 : 0 2px 12px lightgray;
 }

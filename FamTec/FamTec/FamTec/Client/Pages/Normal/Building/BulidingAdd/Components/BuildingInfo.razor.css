@@ -1,16 +1,16 @@
 ﻿.buildinginfo {
     display : flex;
     flex-direction : column;
-    gap :var(--default-pd);
+    gap :var(--wide-pd);
     width : 100%;
 
-    padding : var(--default-pd);
+    padding : var(--default-pd) var(--wide-pd);
 
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     min-height : 40%;
     background-color : var(--default-color);
-    box-shadow : var(--default-bs);
+    box-shadow:var(--shadow-1);
 }
 
 .buildinginfo .buildinginfo-title{
@@ -36,10 +36,12 @@
     
     display : flex;
     flex-direction:column;
-    gap : var(--half-pd);
+    justify-content : space-between;
+    
     width:400px;
     max-width : 100%;
 }
+
 
 .buildinginfo .infosection-1{
     flex:1;
@@ -56,5 +58,6 @@
 .buildinginfo .infosection-2{
     display :grid;
     grid-template-columns : repeat(4, 1fr);
-    gap : var(--default-pd);
+    grid-row-gap : var(--wide-pd);
+    grid-column-gap : calc(var(--default-pd) + var(--half-pd));
 }

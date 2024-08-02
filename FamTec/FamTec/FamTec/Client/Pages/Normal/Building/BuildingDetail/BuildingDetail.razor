@@ -1,12 +1,18 @@
 ﻿@page "/basic/buildings/{id:int}"
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 
 <div class="container">
     <BuildingInfo Building="Building" />
+    @foreach(var group in Group)
+    {
+        <Group GroupData="@group" LoadGroup="OnLoadGroup" />
+
+    }
     <label class="sub-btn" @onclick=@OnModal>
         항목 추가
     </label>
@@ -14,7 +20,7 @@
     {
         <ModalBackground>
             <ChildComponent>
-                <SubGroupModal CloseModal="OnModal" />
+                <SubGroupModal Id="@Id" CloseModal="OnModal" LoadGroup="OnLoadGroup" />
             </ChildComponent>
         </ModalBackground>
     }
@@ -24,21 +30,52 @@
 @code {
     [Parameter] public int Id { get; set; }
     BuildingDTO Building;
+    List<GroupDTO> Group;
     bool IsModal = false;
+    bool EditMode = false;
 
     protected override async Task OnInitializedAsync()
     {
         await OnLoadBuilding();
+        await OnLoadGroup();
     }
 
     private async Task OnLoadBuilding()
     {
-        ResponseUnit<BuildingDTO> resDetail = await apiManager.GetUnitAsync<BuildingDTO>($"Building/sign/DetailBuilding?buildingid={Id}");
-        if(resDetail.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "건물 상세정보 조회 실패");
+            ResponseUnit<BuildingDTO> resDetail = await apiManager.GetUnitAsync<BuildingDTO>($"Building/sign/DetailBuilding?buildingid={Id}");
+            if (resDetail.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 상세정보 조회 실패");
+                return;
+            }
+            Building = resDetail.data;
         }
-        Building = resDetail.data;
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Building][Detail] 건물 세부 정보 조회 실패" + ex);
+        }
+    }
+
+    private async Task OnLoadGroup()
+    {
+        try
+        {
+            ResponseList<GroupDTO> resGroup = await apiManager.GetListAsync<GroupDTO>($"BuildingGroup/sign/GetBuildingGroup?buildingid={Id}");
+            if(resGroup.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert","그룹 조회 실패");
+                return;
+            }
+            Group = resGroup.data;
+            Console.WriteLine(Group[0].keyListDTO[0].ItemKey);
+            Console.WriteLine(Group[0].keyListDTO[0].valueList[0].itemValue);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Building][Detail] 건물 그룹 조회 실패" + ex);
+        }
     }
 
     private void OnModal()
@@ -47,8 +84,10 @@
         IsModal = !IsModal;
     }
 
-    private void OnLoadGroup()
+    private void OnEditMode()
     {
-        
+        EditMode = !EditMode;
     }
+
+  
 }

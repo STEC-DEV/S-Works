@@ -1,5 +1,6 @@
 ﻿
 .container{
+    padding : var(--default-pd);
     display:flex;
     flex-direction : column;
     gap : var(--wide-pd);
