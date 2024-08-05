@@ -230,7 +230,7 @@
         /// <summary>
         /// 이미지
         /// </summary>
-        public string? Image { get; set; }
+        public byte[]? Image { get; set; }
 
     }
 }

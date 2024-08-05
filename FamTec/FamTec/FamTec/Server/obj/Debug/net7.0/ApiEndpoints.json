@@ -1165,7 +1165,7 @@
       },
       {
         "Name": "Image",
-        "Type": "System.String",
+        "Type": "System.Byte[]",
         "IsRequired": false
       },
       {
@@ -1317,10 +1317,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
     "Method": "UpdateGroupKey",
     "RelativePath": "api/BuildingGroupKey/sign/UpdateKey",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Building.Group.Key.UpdateKeyDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

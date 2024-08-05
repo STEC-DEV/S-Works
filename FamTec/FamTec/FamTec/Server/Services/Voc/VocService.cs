@@ -16,6 +16,7 @@ namespace FamTec.Server.Services.Voc
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IAlarmInfoRepository AlarmInfoRepository;
         private readonly IFileService FileService;
+        private readonly IUserInfoRepository UserInfoRepository;
 
         private readonly IHubContext<BroadcastHub> HubContext;
 
@@ -28,6 +29,7 @@ namespace FamTec.Server.Services.Voc
         public VocService(IVocInfoRepository _vocinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IAlarmInfoRepository _alarminforepository,
+            IUserInfoRepository _userinforepository,
             IHubContext<BroadcastHub> _hubcontext,
             IFileService _fileservice,
             ILogService _logservice)
@@ -35,7 +37,7 @@ namespace FamTec.Server.Services.Voc
             this.VocInfoRepository = _vocinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.AlarmInfoRepository = _alarminforepository;
-
+            this.UserInfoRepository = _userinforepository;
 
             this.HubContext = _hubcontext;
             this.FileService = _fileservice;
@@ -335,15 +337,42 @@ namespace FamTec.Server.Services.Voc
                             // 기타
                             case 0:
                                 // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                VocTb? voc = await VocInfoRepository.GetDetailVoc(dto.VocID);
-                                //BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(voc.BuildingTbId);
-                                //List<UsersTb>? User = await UserInfoRepository.
-                                //var temp = await BuildingInfoRepository.GetBuildingInfo(dto.)
+                                VocTb? ETCvoc = await VocInfoRepository.GetDetailVoc(dto.VocID);
+                                if(ETCvoc is null)
+                                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
 
+                                BuildingTb? ETCbuilding = await BuildingInfoRepository.GetBuildingInfo(ETCvoc!.BuildingTbId);
+                                if(ETCbuilding is null)
+                                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
+                                
+                                List<UsersTb>? ETCUser = await UserInfoRepository.GetVocDefaultList(ETCbuilding!.PlaceTbId);
+
+                                if (ETCUser is [_, ..])
+                                {
+                                    bool AddAlarm = await SetMessage(ETCUser, ETCvoc.CreateUser!, dto.VocID);
+                                }
+                                // 소켓전송
                                 await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
+                                // + 알림톡
                                 return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            
                             // 기계
                             case 1:
+                                VocTb? MCvoc = await VocInfoRepository.GetDetailVoc(dto.VocID);
+                                if(MCvoc is null)
+                                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
+
+                                BuildingTb? MCbuilding = await BuildingInfoRepository.GetBuildingInfo(MCvoc!.BuildingTbId);
+                                if (MCbuilding is null)
+                                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
+
+                                List<UsersTb>? MCUser = await UserInfoRepository.GetVocDefaultList(MCbuilding!.PlaceTbId);
+
+                                if (MCUser is [_, ..])
+                                {
+                                    bool AddAlarm = await SetMessage(MCUser, MCvoc.CreateUser!, dto.VocID);
+                                }
+
                                 await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다");
                                 return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                             // 전기

@@ -42,7 +42,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files);
 
         /// <summary>
         /// 아이디 중복검사

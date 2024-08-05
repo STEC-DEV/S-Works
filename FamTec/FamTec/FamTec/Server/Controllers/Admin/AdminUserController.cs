@@ -6,6 +6,8 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
+using FamTec.Server.Repository.Admin.AdminPlaces;
+using FamTec.Server.Repository.Admin.AdminUser;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -18,14 +20,21 @@ namespace FamTec.Server.Controllers.Admin
         private IFileService FileService;
         private ILogService LogService;
 
+        private IAdminUserInfoRepository AdminUserInfoRepository;
+
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
             IFileService _fileservice,
+            IAdminUserInfoRepository _adminuserinforepository,
             ILogService _logservice)
         {
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
             this.FileService = _fileservice;
+
+
+
+            this.AdminUserInfoRepository = _adminuserinforepository;
             this.LogService = _logservice;
         }
 
@@ -187,10 +196,12 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManager")]
+        //public async ValueTask<IActionResult> UpdateManager(IFormFile? files)
         public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto, IFormFile? files)
         {
             try
             {
+               
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -215,7 +226,38 @@ namespace FamTec.Server.Controllers.Admin
                         }
                     }
                 }
+               
 
+                //UpdateManagerDTO dto = new UpdateManagerDTO();
+                //dto.AdminIndex = 10;
+                //dto.UserId = "Master";
+                //dto.Password = "123";
+                //dto.Email = "123123";
+                //dto.DepartmentId = 5;
+
+                //dto.PlaceList.Add(new AdminPlaceDTO()
+                //{
+                //    Id = 3
+                //});
+                //dto.PlaceList.Add(new AdminPlaceDTO()
+                //{
+                //    Id = 5
+                //});
+                //dto.PlaceList.Add(new AdminPlaceDTO()
+                //{
+                //    Id = 4,
+                //});
+
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext,dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+                /*
                 ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
                 if (model is null)
                     return BadRequest();
@@ -224,6 +266,8 @@ namespace FamTec.Server.Controllers.Admin
                     return Ok(model);
                 else
                     return BadRequest();
+                */
+
             }
             catch(Exception ex)
             {

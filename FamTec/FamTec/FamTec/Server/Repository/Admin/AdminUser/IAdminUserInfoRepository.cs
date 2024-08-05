@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 
 namespace FamTec.Server.Repository.Admin.AdminUser
@@ -61,7 +62,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<AdminTb?> UpdateAdminInfo(AdminTb? model);
-        
 
+        ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO? dto, string creater, IFormFile? files);
     }
 }

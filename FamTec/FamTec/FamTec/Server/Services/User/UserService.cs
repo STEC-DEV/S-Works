@@ -623,7 +623,7 @@ namespace FamTec.Server.Services.User
                 if (TokenChk is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                if (TokenChk.PermUser != 2)
+                if (TokenChk.PermUser < 1)
                     return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id);

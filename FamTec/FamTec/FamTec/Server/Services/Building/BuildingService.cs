@@ -17,6 +17,7 @@ namespace FamTec.Server.Services.Building
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
 
+        private IFileService FileService;
         private ILogService LogService;
 
         // 파일디렉토리
@@ -31,6 +32,7 @@ namespace FamTec.Server.Services.Building
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             IFloorInfoRepository _floorinforepository,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.BuildingInfoRepository = _buildinginforepository;
@@ -41,6 +43,7 @@ namespace FamTec.Server.Services.Building
 
             this.FloorInfoRepository = _floorinforepository;
 
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -127,28 +130,9 @@ namespace FamTec.Server.Services.Building
                 model.UpdateUser = Creater;
                 model.PlaceTbId = Int32.Parse(placeidx);
 
-                if (files is not null)
+                if(files is not null)
                 {
-                    FileName = files.FileName;
-                    FileExtenstion = Path.GetExtension(FileName);
-
-                    if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
-                    {
-                        return new ResponseUnit<AddBuildingDTO?>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 404 };
-                    }
-                    else
-                    {
-                        // 이미지경로
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}"; // 암호화된 파일명
-
-                        string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
-                        }
-                    }
+                    model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
                 }
                 else
                 {
@@ -292,7 +276,8 @@ namespace FamTec.Server.Services.Building
                if(String.IsNullOrWhiteSpace(placeid))
                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
 
-               BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
+
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
 
                 if (model is not null)
                 {
@@ -343,32 +328,11 @@ namespace FamTec.Server.Services.Building
                     dto.FireRating = model.FireRating; // 소방등급
                     dto.SeptictankCapacity = model.SepticTankCapacity; // 정화조 용량
 
-                    string? Image = model.Image;
-                    if (!String.IsNullOrWhiteSpace(Image))
+                    string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                    if(!String.IsNullOrWhiteSpace(model.Image))
                     {
-                        string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
-                        string[] FileList = Directory.GetFiles(PlaceFileName);
-                        if (FileList is [_, ..])
-                        {
-                            foreach (var file in FileList)
-                            {
-                                if (file.Contains(Image))
-                                {
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Image = Convert.ToBase64String(ImageBytes);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            dto.Image = model.Image;
-                        }
+                        dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image);
                     }
-                    else
-                    {
-                        dto.Image = model.Image;
-                    }
-
                     return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
@@ -459,59 +423,27 @@ namespace FamTec.Server.Services.Building
                     model.UpdateDt = DateTime.Now; // 수정일자
                     model.UpdateUser = creater; // 수정자
 
-                    // 이미지 변경 or 삭제
-                    if (files is not null) // 파일이 공백이 아닌경우 - 삭제 업데이트 or insert
+                    string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+
+                    if (files is not null) // 파일이 공백이 아닌 경우
                     {
-                        FileName = files.FileName;
-                        FileExtenstion = Path.GetExtension(FileName);
-                        if (!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을경우
                         {
-                            return new ResponseUnit<bool?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image); // 파일삭제
+                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files); // 파일추가
                         }
-
-                        // DB 파일 삭제
-                        string? filePath = model.Image;
-                        PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
-                        di = new DirectoryInfo(PlaceFileFolderPath);
-
-                        if (di.Exists)
+                        else // DB엔 없는경우
                         {
-                            if (!String.IsNullOrWhiteSpace(filePath))
-                            {
-                                FileName = String.Format(@"{0}\\{1}", PlaceFileFolderPath, filePath);
-                                if (File.Exists(FileName))
-                                {
-                                    File.Delete(FileName);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            di.Create();
-                        }
-
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-
-                        string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
+                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files); // 파일추가
                         }
                     }
-                    else // 파일이 공백인 경우 db에 해당 값이 있으면 삭제
+                    else // 파일이 공백인 경우
                     {
-                        string? filePath = model.Image;
-                        if (!String.IsNullOrWhiteSpace(filePath))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
                         {
-                            PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString()); // 사업장
-                            FileName = String.Format(@"{0}\\{1}", PlaceFileFolderPath, filePath);
-                            if (File.Exists(FileName))
-                            {
-                                File.Delete(FileName);
-                            }
-                            model.Image = null;
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image); // 파일삭제
+                            if (result)
+                                model.Image = null;
                         }
                     }
 
@@ -535,9 +467,7 @@ namespace FamTec.Server.Services.Building
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-
         }
-
 
         /// <summary>
         /// 건물정보 삭제

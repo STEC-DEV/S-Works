@@ -54,6 +54,15 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         ValueTask<bool?> DeleteDepartment(DepartmentsTb? model);
 
         /// <summary>
+        /// 부서삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteDepartmentInfo(List<int>? idx, string? deleter);
+
+
+        /// <summary>
         /// 부서수정
         /// </summary>
         /// <param name="model"></param>

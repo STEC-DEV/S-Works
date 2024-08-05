@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
@@ -255,20 +256,27 @@ namespace FamTec.Server.Services.Admin.Account
 
                     AdminTb? adminresult = await AdminUserInfoRepository.AddAdminUserInfo(adminmodel);
                         
+                    // 요청이 정상 처리되었을 경우
                     if (adminresult is not null)
                     {
                         return new ResponseUnit<int?> { message = "요청이 정상 처리되었습니다.", data = adminresult.Id, code = 200 };
                     }
                     else
                     {
+                        // 넣었던 이미지가 있으면 삭제
+                        if (!String.IsNullOrWhiteSpace(model.Image)) 
+                        {
+                            FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
+                        }
                         return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                     }
                 }
                 else
                 {
+                    // 파일삭제
+                    FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
-              
             }
             catch(Exception ex)
             {
@@ -352,12 +360,10 @@ namespace FamTec.Server.Services.Admin.Account
                             dto.Department = departmenttb.Name;
 
                             string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
-                            if (!String.IsNullOrWhiteSpace(usertb.Image))
+                            if(!String.IsNullOrWhiteSpace(usertb.Image))
                             {
-                                byte[]? ImageBytes = await FileService.GetImageFile(AdminFileName, usertb.Image);
-                                dto.Image = ImageBytes;
+                                dto.Image = await FileService.GetImageFile(AdminFileName, usertb.Image);
                             }
-
                             return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                         }
                         else
@@ -424,38 +430,55 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext? context, UpdateManagerDTO? dto, IFormFile? files)
         {
             try
             {
-                int updatecount = 0;
+                //int updatecount = 0;
                 string? FileName = String.Empty;
                 string? FileExtenstion = String.Empty;
                 string? AdminFileFolderPath = String.Empty;
 
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex);
                 if(admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 계정정보 변경을 위해 UserTB 조회
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                 if(usertb is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 UsersTb? UserIdcheck = await UserInfoRepository.UserIdCheck(dto.UserId);
                 if (UserIdcheck is not null)
-                    return new ResponseUnit<int?>() { message = "이미 사용중인 아이디입니다.", data = null, code = 200 };
+                    return new ResponseUnit<bool?>() { message = "이미 사용중인 아이디입니다.", data = null, code = 200 };
 
 
+                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, creater, files);
+
+                if(UpdateResult == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                }
+                else if(UpdateResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+
+                /*
                 usertb.Name = dto.Name; // 이름
                 usertb.Phone = dto.Phone; // 전화번호
                 usertb.Email = dto.Email; // 이메일
@@ -561,11 +584,13 @@ namespace FamTec.Server.Services.Admin.Account
                 }
 
                 return new ResponseUnit<int?>() { message = $"요청을 {updatecount}건 처리하였습니다.", data = updatecount, code = 200 };
+                */
+
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

@@ -33,7 +33,6 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 
-
 // 연결 -- 아래 코드 (게시용)
 string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 HubObject.hubConnection = new HubConnectionBuilder()

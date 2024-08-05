@@ -248,5 +248,63 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             }
         }
 
+        /// <summary>
+        /// 부서 삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteDepartmentInfo(List<int>? idx, string? deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (String.IsNullOrWhiteSpace(deleter))
+                        return null;
+
+                    if(idx is [_, ..])
+                    {
+                        foreach(int dpId in idx)
+                        {
+                            DepartmentsTb? DepartmentTB = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+                            if(DepartmentTB is not null)
+                            {
+                                DepartmentTB.DelYn = true;
+                                DepartmentTB.DelUser = deleter;
+                                DepartmentTB.DelDt = DateTime.Now;
+
+                                context.DepartmentsTbs.Update(DepartmentTB);
+                                bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if(!DepartmentResult)
+                                {
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            else // 잘못됨
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+
     }
 }
