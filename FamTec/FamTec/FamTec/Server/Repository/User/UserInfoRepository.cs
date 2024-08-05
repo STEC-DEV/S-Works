@@ -119,24 +119,47 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteUserInfo(UsersTb? model)
+        public async ValueTask<bool?> DeleteUserInfo(List<int> delIdx, string? deleter)
         {
-            try
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                if(model is not null)
+                try
                 {
-                    context.UsersTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
+                    foreach(int UserId in delIdx)
+                    {
+                        UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
+                        if(UserTB is not null)
+                        {
+                            UserTB.DelYn = true;
+                            UserTB.DelDt = DateTime.Now;
+                            UserTB.DelUser = deleter;
+                            context.UsersTbs.Update(UserTB);
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                    }
+
+                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(UpdateResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    return null;
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
                 }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
             }
         }
 

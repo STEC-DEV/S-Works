@@ -52,7 +52,7 @@ namespace FamTec.Server.Repository.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteUserInfo(UsersTb? model);
+        ValueTask<bool?> DeleteUserInfo(List<int> delIdx, string? deleter);
 
         /// <summary>
         /// 유저 테이블 내용 수정

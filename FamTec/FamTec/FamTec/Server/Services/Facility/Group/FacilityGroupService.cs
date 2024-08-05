@@ -28,7 +28,6 @@ namespace FamTec.Server.Services.Facility.Group
         }
 
 
-
         public async ValueTask<ResponseUnit<AddGroupDTO?>> AddFacilityGroupService(HttpContext? context, AddGroupDTO? dto)
         {
             try

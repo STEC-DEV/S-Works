@@ -1,7 +1,6 @@
 ﻿using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Floor;
-using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;

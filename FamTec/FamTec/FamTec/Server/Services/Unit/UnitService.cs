@@ -39,16 +39,13 @@ namespace FamTec.Server.Services.Unit
                 if(String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
-                
-                UnitTb? model = new UnitTb
-                {
-                    Unit = dto.Unit,
-                    CreateDt = DateTime.Now,
-                    CreateUser = creator,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = creator,
-                    PlaceTbId = Int32.Parse(placeidx)
-                };
+                UnitTb? model = new UnitTb();
+                model.Unit = dto.Unit;
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = creator;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creator;
+                model.PlaceTbId = Int32.Parse(placeidx);
 
                 UnitTb? result = await UnitInfoRepository.AddAsync(model);
 

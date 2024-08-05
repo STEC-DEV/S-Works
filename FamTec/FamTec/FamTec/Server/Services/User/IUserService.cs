@@ -55,7 +55,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteUserService(HttpContext? context, List<int> del);
+        public ValueTask<ResponseUnit<bool?>> DeleteUserService(HttpContext? context, List<int>? del);
 
         /// <summary>
         /// 사용자 데이터 수정

@@ -8,9 +8,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.User;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.JSInterop.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,6 +24,7 @@ namespace FamTec.Server.Services.User
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
         private readonly IPlaceInfoRepository PlaceInfoRepository;
 
+        private readonly IFileService FileService;
         private readonly IConfiguration Configuration;
         private ILogService LogService;
 
@@ -37,6 +36,7 @@ namespace FamTec.Server.Services.User
             IAdminPlacesInfoRepository _adminplaceinforepository,
             IPlaceInfoRepository _placeinforpeository,
             IConfiguration _configuration,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.UserInfoRepository = _userinforepository;
@@ -44,6 +44,7 @@ namespace FamTec.Server.Services.User
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
             this.PlaceInfoRepository = _placeinforpeository;
 
+            this.FileService = _fileservice;
             this.Configuration = _configuration;
             this.LogService = _logservice;
         }
@@ -410,12 +411,11 @@ namespace FamTec.Server.Services.User
                 if (context is null)
                     return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
-                
-                int? placeidx = Int32.Parse(context.Items["PlaceIdx"].ToString());
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
 
                 if (placeidx is not null)
                 {
-                    List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(placeidx);
+                    List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx));
 
                     if (model is [_, ..])
                     {
@@ -538,27 +538,7 @@ namespace FamTec.Server.Services.User
                 
                 if(files is not null)
                 {
-                    FileName = files.FileName;
-                    FileExtenstion = Path.GetExtension(FileName);
-
-                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
-                    {
-                        return new ResponseUnit<UsersDTO> { message = "이미지 형식에 맞지않습니다.", data = new UsersDTO(), code = 404 };
-                    }
-                    else
-                    {
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-                        string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            if (fileStream.Length < 1048576)
-                            {
-                                await files.CopyToAsync(fileStream);
-                                model.Image = newFileName;
-                            }
-                        }
-                    }
+                    model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
                 }
                 else
                 {
@@ -664,30 +644,10 @@ namespace FamTec.Server.Services.User
                     dto.VOC_SECURITY = model.VocSecurity;
                     dto.VOC_ETC = model.VocEtc;
 
-                    string? Image = model.Image;
-                    if (!String.IsNullOrWhiteSpace(Image))
+                    string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                    if(!String.IsNullOrWhiteSpace(model.Image))
                     {
-                        string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
-                        string[] FileList = Directory.GetFiles(PlaceFileName);
-                        if (FileList is [_, ..])
-                        {
-                            foreach (var file in FileList)
-                            {
-                                if (file.Contains(Image))
-                                {
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.ImageUrl = Convert.ToBase64String(ImageBytes);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            dto.ImageUrl = model.Image;
-                        }
-                    }
-                    else
-                    {
-                        dto.ImageUrl = model.Image;
+                        dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image);
                     }
 
                     return new ResponseUnit<UsersDTO>()
@@ -715,48 +675,42 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> DeleteUserService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<bool?>> DeleteUserService(HttpContext? context, List<int>? del)
         {
             try
             {
-                int delCount = 0;
 
                 if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (del is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (del.Count == 0)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                //int? model = await UserInfoRepository.DeleteUserList(del, Name);
-                for (int i = 0; i < del.Count(); i++)
+                bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater);
+                if (DeleteResult == true)
                 {
-                    UsersTb? Users = await UserInfoRepository.GetUserIndexInfo(del[i]);
-                    if (Users is not null)
-                    {
-                        Users.DelDt = DateTime.Now;
-                        Users.DelUser = creater;
-                        Users.DelYn = true;
-
-                        bool? DelUserResult = await UserInfoRepository.DeleteUserInfo(Users);
-                        if(DelUserResult == true)
-                        {
-                            delCount++;
-                        }
-                    }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
-                return new ResponseUnit<int?>() { message = $"요청이 {delCount}건 처리되었습니다.", data = delCount, code = 200 };
+                else if (DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -770,9 +724,9 @@ namespace FamTec.Server.Services.User
         {
             try
             {
-                string? FileName = null;
-                string? FileExtenstion = null;
-                string? PlaceFileFolderPath = null;
+                //string? FileName = null;
+                //string? FileExtenstion = null;
+                //string? PlaceFileFolderPath = null;
 
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
@@ -825,59 +779,28 @@ namespace FamTec.Server.Services.User
 
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = Name;
-
-                    if(files is not null) // 파일이 공백이 아닌경우 - 삭제 업데이트 or insert
+                    
+                    PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                    
+                    if(files is not null) // 파일이 공백이 아닌경우
                     {
-                        FileName = files.FileName;
-                        FileExtenstion = Path.GetExtension(FileName);
-                        if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을 경우
                         {
-                            return new ResponseUnit<UsersDTO>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
                         }
-
-                        // DB 파일 삭제
-                        string? filePath = model.Image;
-                        PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
-
-                        di = new DirectoryInfo(PlaceFileFolderPath);
-                        if(di.Exists)
+                        else // DB엔 없는경우
                         {
-                            if (!String.IsNullOrWhiteSpace(filePath))
-                            {
-                                FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
-                                if (File.Exists(FileName))
-                                {
-                                    File.Delete(FileName);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            di.Create();
-                        }
-
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-
-                        string? newFilePath = Path.Combine(PlaceFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
+                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
                         }
                     }
-                    else // 파일이 공백인 경우 db에 해당 값이 있으면 삭제
+                    else // 파일이 공백인경우
                     {
-                        string? filePath = model.Image;
-                        if(!String.IsNullOrWhiteSpace(filePath))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
                         {
-                            PlaceFileFolderPath = String.Format(@"{0}\\{1}", Common.FileServer, placeid.ToString()); // 사업장
-                            FileName = String.Format("{0}\\{1}", PlaceFileFolderPath, filePath);
-                            if (File.Exists(FileName))
-                            {
-                                File.Delete(FileName);
-                            }
-                            model.Image = null;
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                            if (result)
+                                model.Image = null;
                         }
                     }
 
@@ -888,6 +811,11 @@ namespace FamTec.Server.Services.User
                     }
                     else
                     {
+                        if(!String.IsNullOrWhiteSpace(model.Image))
+                        {
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                        }
+
                         return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
                     }
                 }

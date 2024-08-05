@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
-
-namespace FamTec.Server.Services
+﻿namespace FamTec.Server.Services
 {
     public class FileService : IFileService
     {

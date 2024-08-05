@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using FamTec.Server.Repository.Admin.AdminPlaces;
+﻿using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
@@ -20,17 +19,17 @@ namespace FamTec.Server.Services.Admin.Account
         private readonly IUserInfoRepository UserInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-        private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
         private IFileService FileService;
 
+        
         private readonly IConfiguration Configuration;
         private ILogService LogService;
-
+        
+        DirectoryInfo? di;
 
         public AdminAccountService(IUserInfoRepository _userinfoRepository,
             IAdminUserInfoRepository _admininfoRepository,
             IDepartmentInfoRepository _departmentinfoRepository,
-            IAdminPlacesInfoRepository _adminplaceinforepository,
             IFileService _fileservice,
             IConfiguration _configuration,
             ILogService _logservice)
@@ -38,7 +37,6 @@ namespace FamTec.Server.Services.Admin.Account
             this.UserInfoRepository = _userinfoRepository;
             this.AdminUserInfoRepository = _admininfoRepository;
             this.DepartmentInfoRepository = _departmentinfoRepository;
-            this.AdminPlaceInfoRepository = _adminplaceinforepository;
 
             this.FileService = _fileservice;
             this.Configuration = _configuration;
@@ -158,10 +156,6 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                DirectoryInfo? di;
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if(dto is null)
@@ -274,7 +268,10 @@ namespace FamTec.Server.Services.Admin.Account
                 else
                 {
                     // 파일삭제
-                    FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
+                    if (!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
+                    }
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
@@ -434,11 +431,6 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                //int updatecount = 0;
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-                string? AdminFileFolderPath = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)

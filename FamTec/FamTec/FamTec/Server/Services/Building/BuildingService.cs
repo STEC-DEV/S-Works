@@ -3,6 +3,7 @@ using FamTec.Server.Repository.Building.SubItem.Group;
 using FamTec.Server.Repository.Building.SubItem.ItemKey;
 using FamTec.Server.Repository.Building.SubItem.ItemValue;
 using FamTec.Server.Repository.Floor;
+using FamTec.Server.Repository.Material;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
@@ -57,9 +58,6 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -196,10 +194,14 @@ namespace FamTec.Server.Services.Building
                         },
                         code = 200
                     };
-                   
                 }
                 else
                 {
+                    if(!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                    }
+
                     return new ResponseUnit<AddBuildingDTO?>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
@@ -357,9 +359,6 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
@@ -454,6 +453,11 @@ namespace FamTec.Server.Services.Building
                     }
                     else
                     {
+                        if(!String.IsNullOrWhiteSpace(model.Image))
+                        {
+                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                        }
+
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
                 }

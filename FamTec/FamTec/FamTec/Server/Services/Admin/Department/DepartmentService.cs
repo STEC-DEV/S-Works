@@ -10,6 +10,7 @@ namespace FamTec.Server.Services.Admin.Department
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
         private ILogService LogService;
 
+
         public DepartmentService(IDepartmentInfoRepository _departmentinforepository,
             ILogService _logservice)
         {
@@ -135,6 +136,7 @@ namespace FamTec.Server.Services.Admin.Department
 
                 if (departmentidx.Count() == 0)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };

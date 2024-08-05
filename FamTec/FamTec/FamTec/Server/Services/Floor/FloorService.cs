@@ -49,16 +49,14 @@ namespace FamTec.Server.Services.Floor
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
-
                 FloorTb? model = new FloorTb();
                 model.Name = dto.Name;
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = creator;
-                model.BuildingTbId = dto.BuildingTBID;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creator;
+                model.BuildingTbId = dto.BuildingTBID;
                 
-
                 FloorTb? result = await FloorInfoRepository.AddAsync(model);
                 if (result is not null)
                     return new ResponseUnit<FloorDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -187,6 +185,7 @@ namespace FamTec.Server.Services.Floor
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                // 삭제 검사
                 for (int i = 0; i < del.Count(); i++)
                 {
                     List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(del[i]);

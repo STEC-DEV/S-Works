@@ -1,10 +1,6 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.EMMA;
-using FamTec.Client.Pages.Admin.Place.PlaceMain;
-using FamTec.Server.Repository.Voc;
+﻿using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Building.Building;
 using FamTec.Shared.Server.DTO.Voc;
 
 namespace FamTec.Server.Services.Voc

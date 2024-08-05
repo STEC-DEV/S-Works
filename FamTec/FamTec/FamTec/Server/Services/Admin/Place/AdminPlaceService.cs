@@ -247,31 +247,29 @@ namespace FamTec.Server.Services.Admin.Place
                 if(String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                PlaceTb? place = new PlaceTb
-                {
-                    PlaceCd = dto.PlaceCd,
-                    Name = dto.Name,
-                    Tel = dto.Tel,
-                    Address = dto.Address,
-                    ContractNum = dto.ContractNum,
-                    ContractDt = Convert.ToDateTime(dto.ContractDT),
-                    PermMachine = dto.PermMachine,
-                    PermLift = dto.PermLift,
-                    PermFire = dto.PermFire,
-                    PermConstruct = dto.PermConstruct,
-                    PermNetwork = dto.PermNetwork,
-                    PermBeauty = dto.PermBeauty,
-                    PermSecurity = dto.PermSecurity,
-                    PermMaterial = dto.PermMaterial,
-                    PermEnergy = dto.PermEnergy,
-                    PermVoc = dto.PermVoc,
-                    CreateDt = DateTime.Now,
-                    CreateUser = Creater,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = Creater,
-                    Status = dto.Status,  
-                    Note = dto.Note
-                };
+                PlaceTb? place = new PlaceTb();
+                place.PlaceCd = dto.PlaceCd;
+                place.Name = dto.Name;
+                place.Tel = dto.Tel;
+                place.Address = dto.Address;
+                place.ContractNum = dto.ContractNum;
+                place.ContractDt = Convert.ToDateTime(dto.ContractDT);
+                place.PermMachine = dto.PermMachine;
+                place.PermLift = dto.PermLift;
+                place.PermFire = dto.PermFire;
+                place.PermConstruct = dto.PermConstruct;
+                place.PermNetwork = dto.PermNetwork;
+                place.PermBeauty = dto.PermBeauty;
+                place.PermSecurity = dto.PermSecurity;
+                place.PermMaterial = dto.PermMaterial;
+                place.PermEnergy = dto.PermEnergy;
+                place.PermVoc = dto.PermVoc;
+                place.CreateDt = DateTime.Now;
+                place.CreateUser = Creater;
+                place.UpdateDt = DateTime.Now;
+                place.UpdateUser = Creater;
+                place.Status = dto.Status;
+                place.Note = dto.Note;
 
                 PlaceTb? place_result = await PlaceInfoRepository.AddPlaceInfo(place);
 
@@ -483,7 +481,7 @@ namespace FamTec.Server.Services.Admin.Place
 
                 if (dto.PlaceList is [_, ..])
                 {
-                    List<AdminPlaceTb?> placeadmintb = new List<AdminPlaceTb?>();
+                    List<AdminPlaceTb>? placeadmintb = new List<AdminPlaceTb>();
                     for (int i = 0; i < dto.PlaceList.Count(); i++)
                     {
                         PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceList[i]);

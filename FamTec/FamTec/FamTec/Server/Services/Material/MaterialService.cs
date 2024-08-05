@@ -1,11 +1,7 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using FamTec.Server.Repository.Inventory;
+﻿using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
-using FamTec.Shared;
-using FamTec.Shared.DTO;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Building.Building;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Services.Material
@@ -14,18 +10,20 @@ namespace FamTec.Server.Services.Material
     {
         private readonly IMaterialInfoRepository MaterialInfoRepository;
         private readonly IInventoryInfoRepository InventoryInfoRepository;
+        private IFileService FileService;
         private ILogService LogService;
 
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
 
-
         public MaterialService(IMaterialInfoRepository _materialinforepository,
             IInventoryInfoRepository _inventoryinforepository,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaterialInfoRepository = _materialinforepository;
             this.InventoryInfoRepository = _inventoryinforepository;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
 
         }
@@ -41,9 +39,6 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
                 if (dto is null)
@@ -77,32 +72,13 @@ namespace FamTec.Server.Services.Material
 
                 if(files is not null)
                 {
-                    FileName = files.FileName;
-                    FileExtenstion = Path.GetExtension(FileName);
-
-                    if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
-                    {
-                        return new ResponseUnit<AddMaterialDTO>() { message = "올바르지 않은 파일형식입니다.", data = null, code = 404 };
-                    }
-                    else
-                    {
-                        // 이미지 경로
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}"; // 암호화된 파일명
-
-                        string? newFilePath = Path.Combine(MaterialFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files.CopyToAsync(fileStream);
-                            matertialtb.Image = newFileName;
-                        }
-                    }
+                    matertialtb.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
                 }
                 else
                 {
                     matertialtb.Image = null;
                 }
-
+               
                 MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
                 
                 if(model is not null)
@@ -119,6 +95,10 @@ namespace FamTec.Server.Services.Material
                 }
                 else
                 {
+                    if(!String.IsNullOrWhiteSpace(matertialtb.Image))
+                    {
+                        bool result = FileService.DeleteImageFile(MaterialFileFolderPath, matertialtb.Image); // 파일삭제
+                    }
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 처리되지 않았습니다.", data = new AddMaterialDTO(), code = 404 };
                 }
             }
@@ -149,7 +129,6 @@ namespace FamTec.Server.Services.Material
 
                 if (model is [_, ..])
                 {
-
                     return new ResponseList<MaterialListDTO>()
                     {
                         message = "요청이 정상 처리되었습니다.",
@@ -209,31 +188,13 @@ namespace FamTec.Server.Services.Material
                     dto.SafeNum = model.SafeNum; // 안전재고 수량
                     dto.RoomID = model.DefaultLocation; // 기본위치
 
-                    string? Image = model.Image;
-                    if(!String.IsNullOrWhiteSpace(Image))
+                    MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+
+                    if(!String.IsNullOrWhiteSpace(model.Image))
                     {
-                        MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
-                        string[] FileList = Directory.GetFiles(MaterialFileFolderPath);
-                        if (FileList is [_, ..])
-                        {
-                            foreach(var file in FileList)
-                            {
-                                if(file.Contains(Image))
-                                {
-                                    byte[] ImageBytes = File.ReadAllBytes(file);
-                                    dto.Image = Convert.ToBase64String(ImageBytes);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            dto.Image = model.Image;
-                        }
+                        dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, model.Image);
                     }
-                    else
-                    {
-                        dto.Image = model.Image;
-                    }
+
                     return new ResponseUnit<DetailMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
@@ -258,9 +219,6 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
@@ -286,59 +244,27 @@ namespace FamTec.Server.Services.Material
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
 
-                    // 이미지 변경 or 사겢
+                    MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                    
                     if(files is not null)
                     {
-                        FileName = files.FileName;
-                        FileExtenstion = Path.GetExtension(FileName);
-                        if(!Common.ImageAllowedExtensions.Contains(FileExtenstion))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
                         {
-                            return new ResponseUnit<bool?>() { message = "이미지의 형식이 올바르지 않습니다.", data = null, code = 404 };
+                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
+                            model.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
                         }
-
-                        // DB 파일 삭제
-                        string? filePath = model.Image;
-                        MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
-                        di = new DirectoryInfo(MaterialFileFolderPath);
-
-                        if (di.Exists)
+                        else // DB엔 없는 경우
                         {
-                            if(!String.IsNullOrWhiteSpace(filePath))
-                            {
-                                FileName = String.Format(@"{0}\\{1}", MaterialFileFolderPath, filePath);
-                                if(File.Exists(FileName))
-                                {
-                                    File.Delete(FileName);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            di.Create();
-                        }
-
-                        string? newFileName = $"{Guid.NewGuid()}{Path.GetExtension(FileName)}";
-
-                        string? newFilePath = Path.Combine(MaterialFileFolderPath, newFileName);
-
-                        using (var fileStream = new FileStream(newFilePath, FileMode.Create, FileAccess.Write))
-                        {
-                            await files.CopyToAsync(fileStream);
-                            model.Image = newFileName;
+                            model.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
                         }
                     }
-                    else // 파일이 공백인 경우 db에서 해당 값이 있으면 삭제
+                    else // 파일이 공백인 경우
                     {
-                        string? filePath = model.Image;
-                        if (!String.IsNullOrWhiteSpace(filePath))
+                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
                         {
-                            MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
-                            FileName = String.Format(@"{0}\\{1}", MaterialFileFolderPath, filePath);
-                            if(File.Exists(FileName))
-                            {
-                                File.Delete(FileName);
-                            }
-                            model.Image = null;
+                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
+                            if (result)
+                                model.Image = null;
                         }
                     }
 
@@ -349,6 +275,11 @@ namespace FamTec.Server.Services.Material
                     }
                     else
                     {
+                        if (!String.IsNullOrWhiteSpace(model.Image))
+                        {
+                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
+                        }
+
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                     }
                 }
