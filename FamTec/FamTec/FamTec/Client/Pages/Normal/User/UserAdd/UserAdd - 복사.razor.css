@@ -1,0 +1,20 @@
+﻿.useradd-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+    padding: var(--wide-pd);
+}
+
+.useradd-container .useradd-wrap{
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+}
+
+
+.useradd-container .useradd-btns {
+    padding: var(--default-pd);
+    display: flex;
+    gap: var(--half-pd);
+    justify-content: flex-end;
+}

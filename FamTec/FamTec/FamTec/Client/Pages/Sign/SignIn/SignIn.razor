@@ -41,6 +41,8 @@
 @code {
     LoginDTO user = new LoginDTO();
     bool LoginMode=false;
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
 
     protected async override Task OnInitializedAsync()
     {
@@ -102,6 +104,20 @@
             // string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
             // JObject? jobj = JObject.Parse(payload.ToString());
 
+
+            int PlaceIdx = 3;
+            await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_ETCRoom");
+
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/broadcastHub"))
+                .Build();
+
+
+            hubConnection.On<string>("ReceiveVoc", (message) =>
+            {
+                messages.Add(message);
+                // StateHasChanged();
+            });
 
 
             // // 권한 JOIN

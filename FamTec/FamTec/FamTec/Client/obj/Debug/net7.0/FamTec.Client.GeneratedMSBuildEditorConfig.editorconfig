@@ -66,6 +66,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXEZhY2lsaXR5XE1hY2hpbmVcTWFjaGluZURldGFpbFxNYWNoaW5lRGV0YWlsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Location/LocationMain/Modal/AddFloor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXExvY2F0aW9uXExvY2F0aW9uTWFpblxNb2RhbFxBZGRGbG9vci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/Info/Main/MaterialMain.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluZm9cTWFpblxNYXRlcmlhbE1haW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXFZvY01haW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -346,6 +354,10 @@ build_metadata.AdditionalFiles.CssScope = b-0551ht3dkg
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXExvY2F0aW9uXExvY2F0aW9uTWFpblxDb21wb25lbnRzXExvY2F0aW9uVGFibGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-quwuwxajie
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Location/LocationMain/Components/SelectField.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXExvY2F0aW9uXExvY2F0aW9uTWFpblxDb21wb25lbnRzXFNlbGVjdEZpZWxkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-bjmstyaofj
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Location/LocationMain/LocationMain.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXExvY2F0aW9uXExvY2F0aW9uTWFpblxMb2NhdGlvbk1haW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-v00ot3xtdx
@@ -369,6 +381,26 @@ build_metadata.AdditionalFiles.CssScope = b-2a5auvly0m
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/Components/UserVocPermComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxDb21wb25lbnRzXFVzZXJWb2NQZXJtQ29tcG9uZW50LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-7e2o9n0b5h
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/Temp/SignForm2.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxUZW1wXFNpZ25Gb3JtMi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-n4hh76lg6q
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/Temp/UserPermComponent2.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxUZW1wXFVzZXJQZXJtQ29tcG9uZW50Mi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-lw3f4a5gfh
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/Temp/UserPermTable2.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxUZW1wXFVzZXJQZXJtVGFibGUyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-6njgftecqj
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/Temp/UserVocPermComponent2.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxUZW1wXFVzZXJWb2NQZXJtQ29tcG9uZW50Mi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-t4nzhfuhky
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/UserAdd - 복사.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxVc2VyQWRkIC0g67O17IKsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-8j9crqhga2
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/User/UserAdd/UserAdd.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFVzZXJcVXNlckFkZFxVc2VyQWRkLnJhem9y

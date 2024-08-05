@@ -35,17 +35,23 @@
     <tbody class="tbody">
         @if (isAddingRow)
         {
+            Console.WriteLine("aa");
             <tr class="tbody-tr">
                 <td class="td text-left">
-                    @(@ListData.Count + 1)
+                    @(@BuildingFloor.Count + 1)
                 </td>
                 <td class="td">
-                    <input type="text" @bind-value="@newRoom.RoomName" />
+                    <input type="text" @bind="@AddObject.Name" />
                 </td> 
                 <td class="td">
+                    <SelectField 
+                        SelectData=@BuildingFloor 
+                        OnChange="@OnSetBuilding" 
+                        EditMode=true
+                        />
                 </td> 
                 <td class="td">
-                    
+                    <SelectField SelectData=@Floor OnChange="@OnSetFloor" EditMode="@(Floor != null ? true : false)" />
                 </td>
                 <td class="td text-right">
                     <Button Name="등록" Width=true OnClick="@SaveRow" />
@@ -70,16 +76,47 @@
 @code {
     [Parameter] public List<LocationDTO> Locations {get; set;}
     [Parameter] public List<RoomListDTO> ListData { get; set; }
+    [Parameter] public List<BuildingFloorListDTO> BuildingFloor { get; set; }
+    [Parameter] public AddLoactionDTO AddObject { get; set; }
     [Parameter] public bool isAddingRow { get; set; }
     [Parameter] public EventCallback AddMode { get; set; }
+    [Parameter] public EventCallback OnAdd { get; set; }
 
-    private RoomListDTO newRoom;
 
+    List<BuildingFloor> Floor;
 
-    private void OnAddRow()
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine(Floor == null);
+        return base.OnInitializedAsync();
+    }
+
+    private async void OnAddRow()
     {
         isAddingRow = true;
-        newRoom = new RoomListDTO();
+
+    }
+
+
+    private void OnSetBuilding(int id)
+    {
+        if (id == 0)
+        {
+            Floor = null;
+            return;
+        }
+        var selectBuliding = BuildingFloor.FirstOrDefault(f => f.BuildingId == id);
+        if(selectBuliding == null)
+        {
+            return;
+        }
+        AddObject.BuildingId = id;
+        Floor = selectBuliding.FloorList;
+    }
+
+    private void OnSetFloor(int id)
+    {
+        AddObject.BuildingId = id;   
     }
 
     private void SaveRow()

@@ -3717,6 +3717,63 @@
 .location-table .text-right[b-quwuwxajie]{
     text-align : right;
 }
+/* /Pages/Normal/Location/LocationMain/Components/SelectField.razor.rz.scp.css */
+
+.selectbox[b-bjmstyaofj]{
+    position : relative;
+    width : 100%;
+    
+}
+
+.none[b-bjmstyaofj]{
+    pointer-events : none;
+}
+
+.display[b-bjmstyaofj] {
+    position : relative;
+    display:block;
+    width:100%;
+    padding: var(--default-pd);
+    border :var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color :var(--default-color);
+    cursor : pointer;
+    transition : all .3s;
+}
+
+
+.display:hover[b-bjmstyaofj],
+.active[b-bjmstyaofj] {
+    border: var(--default-bd);
+}
+
+.options[b-bjmstyaofj] {
+    overflow : auto;
+    display: none;
+    position: absolute;
+    margin-top: var(--half-pd);
+    padding : var(--default-pd);
+    width: 100%;
+    max-height : calc(100%*5);
+    border-radius: var(--default-rd);
+
+    background-color :var(--default-color);
+}
+.active[b-bjmstyaofj] {
+    display: block
+}
+
+.option-item[b-bjmstyaofj] {
+    padding: var(--half-pd) ;
+    border-radius : var(--default-rd);
+}
+
+.option-item:hover[b-bjmstyaofj]{
+   
+    background-color : var(--main-color);
+    color :var(--default-color);
+}
+
 /* /Pages/Normal/Location/LocationMain/LocationMain.razor.rz.scp.css */
 .location-container[b-v00ot3xtdx]{
     padding : var(--default-pd);
@@ -3924,14 +3981,251 @@
     grid-auto-flow: row;
 
 }
-/* /Pages/Normal/User/UserAdd/UserAdd.razor.rz.scp.css */
-.useradd-container[b-xipb2fhm38]{
+/* /Pages/Normal/User/UserAdd/Temp/SignForm2.razor.rz.scp.css */
+.form-container[b-n4hh76lg6q]{
     display : flex;
+    flex-direction : column;
+    height:100%;
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color : var(--back-default-color);
+
+    padding : var(--default-pd) var(--wide-pd);
+    box-shadow : var(--shadow-1);
+}
+
+.form-container .form-title[b-n4hh76lg6q]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+
+    padding:var(--default-pd);
+
+    border-bottom : var(--default-bd);
+}
+
+.form-container .title[b-n4hh76lg6q]{
+    display:flex;
+    align-items:center;
+    height:35px;
+    color:var(--main-color);
+}
+
+.form-container .form-area[b-n4hh76lg6q]{
+    display:flex;
+    padding :var(--default-pd);
+}
+
+.form-container .form-input[b-n4hh76lg6q]{
+    /*display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: var(--default-pd);*/
+    display : grid;
+    grid-template-columns : repeat(3, 1fr);
+    grid-column-gap : var(--wide-pd);
+    grid-row-gap : var(--default-pd);
+    width : 100%;
+    padding: var(--default-pd);
+
+}
+
+.form-container .img-wrap[b-n4hh76lg6q]{
+    width : 350px;
+    height : 250px;
+    background-color : var(--content-back-color);
+}
+
+.img[b-n4hh76lg6q]{
+    width:100%;
+    height : 100%;
+    object-fit:scale-down
+}
+/* /Pages/Normal/User/UserAdd/Temp/UserPermComponent2.razor.rz.scp.css */
+.placetoggle-container[b-lw3f4a5gfh] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    padding: var(--default-pd) var(--wide-pd);
+    box-shadow: var(--shadow-1);
+    height: 100%;
+}
+
+
+.placetoggle-container .placetoggle-title[b-lw3f4a5gfh]{
+    font-size:var(--title-size);
+    font-weight:var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+.placetoggle-container .placetoggle-title>span[b-lw3f4a5gfh]{
+    display: flex;
+    align-items: center;
+    height: 35px;
+    color: var(--main-color);
+}
+
+.placetoggle-container .placetoggle-toggle[b-lw3f4a5gfh]{
+    /*display : flex;
+    flex-wrap : wrap;
+    gap : var(--half-pd);*/
+    /*display : grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--default-pd);
+    padding: var(--default-pd);*/
+    grid-auto-flow: row;
+
+}
+/* /Pages/Normal/User/UserAdd/Temp/UserPermTable2.razor.rz.scp.css */
+.table[b-6njgftecqj]{
+    border-collapse: separate;
+    width:100%;
+    max-height : 100%;
+}
+
+.table .thead[b-6njgftecqj]{
+    position:sticky;
+    top:0;
+}
+
+.table .th-tr[b-6njgftecqj]{
+    background-color : var(--main-color)
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-6njgftecqj] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-6njgftecqj] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+
+.table  .th[b-6njgftecqj]{
+    text-align : center;
+    
+    padding : 0 var(--half-pd);
+}
+
+.table  .th > span[b-6njgftecqj]{
+    display : inline-block;
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--default-color);
+
+    padding : var(--three-q-pd) var(--half-pd);
+}
+
+.sub-head[b-6njgftecqj] {
+    display: inline-block;
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--default-color);
+    padding: var(--half-pd) var(--one-q-pd);
+}
+
+
+.table .tbody[b-6njgftecqj] {
+    overflow: auto;
+}
+
+.table .tbody-tr[b-6njgftecqj]{
+    background-color :var(--content-back-color);
+}
+
+.table .tbody-tr:hover td[b-6njgftecqj]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-6njgftecqj]{
+    border-top: var(--three-q-pd) solid var(--default-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break:break-all;
+    text-align : center;
+    padding:var(--half-pd);
+
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    
+}
+/* /Pages/Normal/User/UserAdd/Temp/UserVocPermComponent2.razor.rz.scp.css */
+.placetoggle-container[b-t4nzhfuhky] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    padding: var(--default-pd) var(--wide-pd);
+    box-shadow: var(--shadow-1);
+}
+
+
+.placetoggle-container .placetoggle-title[b-t4nzhfuhky]{
+    font-size:var(--title-size);
+    font-weight:var(--bold-wt);
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+.placetoggle-container .placetoggle-title>span[b-t4nzhfuhky]{
+    display: flex;
+    align-items: center;
+    height: 35px;
+    color: var(--main-color);
+}
+
+.placetoggle-container .placetoggle-toggle[b-t4nzhfuhky]{
+    display : grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    grid-auto-flow: row;
+
+}
+/* /Pages/Normal/User/UserAdd/UserAdd - 복사.razor.rz.scp.css */
+.useradd-container[b-8j9crqhga2] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+    padding: var(--wide-pd);
+}
+
+.useradd-container .useradd-wrap[b-8j9crqhga2]{
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+}
+
+
+.useradd-container .useradd-btns[b-8j9crqhga2] {
+    padding: var(--default-pd);
+    display: flex;
+    gap: var(--half-pd);
+    justify-content: flex-end;
+}
+/* /Pages/Normal/User/UserAdd/UserAdd.razor.rz.scp.css */
+.useradd-container[b-xipb2fhm38] {
+    /*display : flex;
     flex-direction : column;
     width : 100%;
     height : 100%;
 
-    gap : var(--default-pd);
+    gap : var(--default-pd);*/
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+    padding: var(--wide-pd);
 }
 
 .useradd-container .useradd-wrap[b-xipb2fhm38]{

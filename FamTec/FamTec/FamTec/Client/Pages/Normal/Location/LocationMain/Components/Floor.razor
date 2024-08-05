@@ -10,7 +10,7 @@
             </span>
         </div>
         <div class="floor-contents">
-            <FloorList Buildings=@Buildings />
+            <FloorList Buildings=@ListData />
         </div>
         <div class="floor-btns">
             <Button Name="편집" Type="0"/>
@@ -19,6 +19,9 @@
 </div>
 
 @code {
+    [Parameter] public List<BuildingFloorListDTO> ListData { get; set; }
+
+
     private List<BuildingDTO> Buildings = new List<BuildingDTO>
     {
         new BuildingDTO

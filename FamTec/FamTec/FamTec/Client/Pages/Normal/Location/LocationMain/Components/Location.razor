@@ -21,14 +21,21 @@
             </div>
         </div>
         <div class="location-contents">
-            <LocationTable Locations="@Locations" isAddingRow=@isAddingRow AddMode="@OnAddMode"/>
+            <LocationTable 
+                ListData="@RoomList" 
+                RowData="newRoom" 
+                isAddingRow=@isAddingRow 
+                AddMode="@OnAddMode" 
+                BuildingFloor=@BuildingFloor
+                />
         </div>
     </div>
 </div>
 @code {
+    [Parameter] public List<BuildingFloorListDTO> BuildingFloor{ get; set; }
     private bool isAddingRow = false;
-    List<RoomListDTO> RoomList;
-    List<BuildingListDTO> BuildingList;
+    List<RoomListDTO> RoomList = new List<RoomListDTO>();
+    List<BuildingFloorListDTO> BuildingList;
     private List<LocationDTO> Locations = new List<LocationDTO>
     {
         new LocationDTO{ Id = 1, Name = "전기실", BuildingName ="강남우체국", Floor = "지하 1층"},
@@ -36,7 +43,16 @@
         new LocationDTO{ Id = 3, Name = "창고A", BuildingName ="강남우체국", Floor = "5"},
         new LocationDTO{ Id = 4, Name = "창고B", BuildingName ="강남우체국", Floor = "1"},
     };
+    private RoomListDTO newRoom;
+    AddLoactionDTO AddLocation;
 
+    protected override async Task OnInitializedAsync()
+    {
+        AddLocation = new AddLoactionDTO();
+        // await OnLoadBuilding();
+        await OnLoadLaction();
+
+    }
 
     private async Task OnLoadLaction()
     {
@@ -57,32 +73,55 @@
         }
     }
 
-    //건물전체 및 건물에 따른 층 리스트 조회 (요청함)
-    private async Task OnLoadBuilding()
+
+    // //건물전체 및 건물에 따른 층 리스트 조회 (요청함)
+    // private async Task OnLoadBuilding()
+    // {
+    //     try
+    //     {
+    //         ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
+    //         if (resGet.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+    //             return;
+    //         }
+    //         BuildingList = resGet.data;
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+    //         Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
+    //     }
+    // }
+
+    private async Task OnAdd()
     {
         try
         {
-            ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
-            if (resGet.code != 200)
+            ResponseUnit<AddLoactionDTO> resAdd = await apiManager.PostAsync<AddLoactionDTO>("Room/sign/AddRoom", AddLocation);
+            if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-                return;
+                await JS.InvokeVoidAsync("alert", "위치 추가 실패");
             }
-            BuildingList = resGet.data;
 
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-            Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
+            Console.WriteLine("[Location][Add] 위치 추가 에러!" +ex);
         }
     }
-
 
 
     private void OnAddMode()
     {
         isAddingRow = !isAddingRow;
+        if (isAddingRow)
+        {
+            newRoom = new RoomListDTO();
+            return;
+        }
+
     }
 
     private void CancelAddRow()

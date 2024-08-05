@@ -1,13 +1,14 @@
-﻿@page "/users/add"
+﻿@* @page "/users/add"
 @using FamTec.Client.Pages.Normal.User.UserAdd.Components
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.Normal.User.UserAdd.Temp
 
 <div class="useradd-container">
     <div class="useradd-wrap">
         <div class="useradd-info">
-            <SignForm UserInfo="@User.UserInfo" EditMode=@EditMode />
+            <SignForm2 UserInfo="@User.UserInfo" EditMode=@EditMode />
         </div>
         <div class="useradd-perm">
             <UserPermComponent UserPerm="@User.UserPerm" OnVocActive="@OnVocActive" />
@@ -134,3 +135,4 @@
         Users.VOC_ETC = User.UserVocPerm.ETCVoc;
     }
 }
+ *@

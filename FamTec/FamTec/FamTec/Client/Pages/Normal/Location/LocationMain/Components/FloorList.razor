@@ -7,7 +7,7 @@
         <li class="floor-li" tabindex="@building.idx">
             <span class="title">@building.value.Name</span>
             <ul class="floor-inner-ul">
-                @foreach(var floor in building.value.Floors.Select((v,idx) => (v,idx)))
+                @foreach(var floor in building.value.FloorList.Select((v,idx) => (v,idx)))
                 {
                     <li class="floor-inner-li" tabindex="@floor.idx" >
                         <span class="inner-title">
@@ -21,7 +21,7 @@
 </ul>
 
 @code {
-    [Parameter] public List<BuildingDTO> Buildings { get; set; }
+    [Parameter] public List<BuildingFloorListDTO> Buildings { get; set; }
 
 
 }

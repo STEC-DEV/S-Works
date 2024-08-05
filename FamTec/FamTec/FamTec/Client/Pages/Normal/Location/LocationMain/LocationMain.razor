@@ -2,25 +2,47 @@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
 
 <div class="location-container">
     <div class="location-floor">
-        <Floor />
+        <Floor ListData="@BuildingList" />
     </div>
     <div class="location-location">
-        <Location />
+        <Location BuildingFloor="@BuildingList" />
     </div>
 </div>
 
 @code {
-    protected override Task OnInitializedAsync()
+
+
+    List<BuildingFloorListDTO> BuildingList;
+
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+
+        await OnLoadBuilding();
     }
 
-    private void OnLoadFloor()
+    private async Task OnLoadBuilding()
     {
-        
+    try
+        {
+            ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                return;
+            }
+            BuildingList = resGet.data;
+
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
+        }
+
     }
 }
 
