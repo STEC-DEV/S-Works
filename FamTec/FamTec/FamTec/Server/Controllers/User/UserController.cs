@@ -149,7 +149,7 @@ namespace FamTec.Server.Controllers.User
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await UserService.DeleteUserService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await UserService.DeleteUserService(HttpContext, delIdx);
 
                 if (model is null)
                     return BadRequest();

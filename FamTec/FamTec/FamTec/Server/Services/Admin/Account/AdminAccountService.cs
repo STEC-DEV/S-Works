@@ -249,7 +249,7 @@ namespace FamTec.Server.Services.Admin.Account
                     adminmodel.DepartmentTbId = dto.DepartmentId;
 
                     AdminTb? adminresult = await AdminUserInfoRepository.AddAdminUserInfo(adminmodel);
-                        
+                    
                     // 요청이 정상 처리되었을 경우
                     if (adminresult is not null)
                     {
@@ -262,6 +262,7 @@ namespace FamTec.Server.Services.Admin.Account
                         {
                             FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
                         }
+
                         return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                     }
                 }
@@ -272,6 +273,7 @@ namespace FamTec.Server.Services.Admin.Account
                     {
                         FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
                     }
+
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
@@ -281,7 +283,6 @@ namespace FamTec.Server.Services.Admin.Account
                 return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
         
 
         /// <summary>

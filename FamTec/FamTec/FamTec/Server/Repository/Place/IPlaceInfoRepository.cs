@@ -11,7 +11,7 @@ namespace FamTec.Server.Repository.Place
         ValueTask<PlaceTb?> AddPlaceInfo(PlaceTb model);
 
 
-        ValueTask<bool?> DeletePlaceList(string? Name, List<int>? placeidx);
+        
 
         /// <summary>
         /// 전제조회
@@ -48,6 +48,7 @@ namespace FamTec.Server.Repository.Place
         /// <returns></returns>
         ValueTask<bool?> DeletePlace(PlaceTb? model);
 
+        ValueTask<bool?> DeletePlaceList(string? Name, List<int>? placeidx);
 
     }
 }

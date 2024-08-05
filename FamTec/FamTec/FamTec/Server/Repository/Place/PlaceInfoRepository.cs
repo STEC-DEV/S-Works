@@ -171,97 +171,55 @@ namespace FamTec.Server.Repository.Place
         /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> DeletePlaceList(string? Name, List<int>? placeidx)
         {
-            try
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                if (placeidx is [_, ..])
+                try
                 {
-                    List<AdminPlaceTb>? adminplace = (from adminplacetb in context.AdminPlaceTbs.ToList()
-                                                      join placetb in placeidx
-                                                      on adminplacetb.PlaceTbId equals placetb
-                                                      where adminplacetb.DelYn != true
-                                                      select new AdminPlaceTb()
-                                                      {
-                                                          Id = adminplacetb.Id,
-                                                          CreateDt = adminplacetb.CreateDt,
-                                                          CreateUser = adminplacetb.CreateUser,
-                                                          UpdateDt = adminplacetb.UpdateDt,
-                                                          UpdateUser = adminplacetb.UpdateUser,
-                                                          DelYn = adminplacetb.DelYn,
-                                                          DelDt = adminplacetb.DelDt,
-                                                          DelUser = adminplacetb.DelUser,
-                                                          AdminTbId = adminplacetb.AdminTbId,
-                                                          PlaceTbId = adminplacetb.PlaceTbId
-                                                      }).ToList();
-                    if (adminplace.Count() == 0)
+                    if (String.IsNullOrWhiteSpace(Name))
+                        return null;
+                    
+                    if(placeidx is [_, ..])
                     {
-                        List<PlaceTb>? PlaceTbs = (from placetb in context.PlaceTbs.ToList()
-                                                   join list in placeidx
-                                                   on placetb.Id equals list
-                                                   where placetb.DelYn != true
-                                                   select new PlaceTb()
-                                                   {
-                                                       Id = placetb.Id,
-                                                       PlaceCd = placetb.PlaceCd,
-                                                       ContractNum = placetb.ContractNum,
-                                                       Name = placetb.Name,
-                                                       Tel = placetb.Tel,
-                                                       Note = placetb.Note,
-                                                       Address = placetb.Address,
-                                                       ContractDt = placetb.ContractDt,
-                                                       PermMachine = placetb.PermMachine,
-                                                       PermLift = placetb.PermLift,
-                                                       PermFire = placetb.PermFire,
-                                                       PermConstruct = placetb.PermConstruct,
-                                                       PermNetwork = placetb.PermNetwork,
-                                                       PermBeauty = placetb.PermBeauty,
-                                                       PermSecurity = placetb.PermSecurity,
-                                                       PermMaterial = placetb.PermMaterial,
-                                                       PermEnergy = placetb.PermEnergy,
-                                                       PermVoc = placetb.PermVoc,
-                                                       CancelDt = placetb.CancelDt,
-                                                       Status = placetb.Status,
-                                                       CreateDt = placetb.CreateDt,
-                                                       CreateUser = placetb.CreateUser,
-                                                       UpdateDt = placetb.UpdateDt,
-                                                       UpdateUser = placetb.UpdateUser,
-                                                       DelDt = placetb.DelDt,
-                                                       DelUser = placetb.DelUser,
-                                                       DelYn = placetb.DelYn
-                                                   }).ToList();
-
-
-                    var places = await context.PlaceTbs
-                            .Where(m => placeidx.Contains(m.Id))
-                            .ToListAsync();
-
-                        foreach (var item in places)
+                        foreach(int PlaceID in placeidx)
                         {
-                            foreach (var adminplacemodel in item.AdminPlaceTbs)
+                            PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == PlaceID && m.DelYn != true);
+                            if(PlaceTB is not null)
                             {
-                                adminplacemodel.DelDt = DateTime.Now;
-                                adminplacemodel.DelUser = Name;
-                                adminplacemodel.DelYn = true;
-                                context.AdminPlaceTbs.Update(adminplacemodel);
-                            }
+                                PlaceTB.DelYn = true;
+                                PlaceTB.DelDt = DateTime.Now;
+                                PlaceTB.DelUser = Name;
 
-                            item.DelDt = DateTime.Now;
-                            item.DelUser = Name;
-                            item.DelYn = true;
-                            context.PlaceTbs.Update(item);
+                                context.PlaceTbs.Update(PlaceTB);
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
                         }
                     }
-
-                    return await context.SaveChangesAsync() > 0 ? true : false;
+                    else
+                    {
+                        return null;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return null;
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
                 }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
             }
         }
 

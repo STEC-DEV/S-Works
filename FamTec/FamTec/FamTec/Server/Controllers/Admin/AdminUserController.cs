@@ -6,8 +6,6 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
-using FamTec.Server.Repository.Admin.AdminPlaces;
-using FamTec.Server.Repository.Admin.AdminUser;
 
 namespace FamTec.Server.Controllers.Admin
 {
@@ -20,12 +18,10 @@ namespace FamTec.Server.Controllers.Admin
         private IFileService FileService;
         private ILogService LogService;
 
-        private IAdminUserInfoRepository AdminUserInfoRepository;
 
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
             IFileService _fileservice,
-            IAdminUserInfoRepository _adminuserinforepository,
             ILogService _logservice)
         {
             this.AdminAccountService = _adminservice;
@@ -34,7 +30,6 @@ namespace FamTec.Server.Controllers.Admin
 
 
 
-            this.AdminUserInfoRepository = _adminuserinforepository;
             this.LogService = _logservice;
         }
 
@@ -75,6 +70,7 @@ namespace FamTec.Server.Controllers.Admin
                         }
                     }
                 }
+
 
                 ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
 

@@ -168,8 +168,8 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 /*
                 AddPlaceDTO dto = new AddPlaceDTO();
-                dto.PlaceCd = "AB000000001"; // 사업장코드
-                dto.Name = "A사업장"; // 사업장명
+                dto.PlaceCd = "AB000000002"; // 사업장코드
+                dto.Name = "B사업장"; // 사업장명
                 dto.Tel = "02-0000-0000"; // 사업장 전화번호
                 dto.Address = "서울시 강서구"; // 사업장 주소
                 dto.ContractNum = "00054487"; // 계약번호
@@ -187,7 +187,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 dto.Status = true; // 계약상태
                 dto.Note = "테스트데이터";
                 */
-
                 if (HttpContext is null)
                     return BadRequest();
 
