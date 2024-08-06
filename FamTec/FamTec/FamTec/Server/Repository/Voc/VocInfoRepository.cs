@@ -1,11 +1,8 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
-using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Voc
 {
@@ -134,6 +131,34 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
+        /// <summary>
+        /// 해당일자의 VOC 건수 구하기
+        /// </summary>
+        /// <param name="now"></param>
+        /// <returns></returns>
+        public async ValueTask<int?> VocDaysCount(DateTime now)
+        {
+            try
+            {
+                string searchTerm = now.ToString("yyyy-MM-dd") + "%";
+
+                List<VocTb>? results = context.VocTbs
+                    .Where(e => EF.Functions.Like(e.CreateDt, searchTerm))
+                    .ToList();
+
+                if (results is [_, ..])
+                    return results.Count();
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+
         // 민원 상세조회
         public async ValueTask<VocTb?> GetDetailVoc(int? vocid)
         {
@@ -175,5 +200,26 @@ namespace FamTec.Server.Repository.Voc
                 throw new ArgumentNullException();
             }
         }
+
+        public async ValueTask<VocTb?> GetVocInfo(string? code)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(code))
+                    return null;
+
+                VocTb? model = await context.VocTbs.FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true);
+                if (model is not null)
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

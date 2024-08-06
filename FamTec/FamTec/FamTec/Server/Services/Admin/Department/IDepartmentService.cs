@@ -21,6 +21,12 @@ namespace FamTec.Server.Services.Admin.Department
         public ValueTask<ResponseList<DepartmentDTO>> GetAllDepartmentService();
 
         /// <summary>
+        /// 관리부서 전체조회
+        /// </summary>
+        /// <returns></returns>
+        public ValueTask<ResponseList<DepartmentDTO>> ManageDepartmentService();
+
+        /// <summary>
         /// 부서삭제
         /// </summary>
         /// <param name="index"></param>

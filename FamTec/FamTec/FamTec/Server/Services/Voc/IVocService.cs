@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="obj"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> AddVocService(AddVocDTO? dto, List<IFormFile>? image);
+        public ValueTask<ResponseUnit<string?>> AddVocService(AddVocDTO? dto, List<IFormFile>? image);
 
         /// <summary>
         /// Voc List 출력

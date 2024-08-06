@@ -96,6 +96,27 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         }
 
         /// <summary>
+        /// 관리부서 조회
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask<List<DepartmentsTb>?> GetManageDepartmentList()
+        {
+            try
+            {
+                List<DepartmentsTb>? model = await context.DepartmentsTbs.Where(m => m.DelYn != true && m.ManagementYn == true).ToListAsync();
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 부서IDX에 해당하는 단일 모델 반환
         /// </summary>
         /// <param name="departmentidx"></param>
@@ -305,6 +326,6 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             }
         }
 
-
+  
     }
 }

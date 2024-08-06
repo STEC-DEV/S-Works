@@ -178,6 +178,10 @@ namespace FamTec.Server.Services.Admin.Account
                 di = new DirectoryInfo(AdminFileFolderPath);
                 if (!di.Exists) di.Create();
 
+                UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(dto.UserId);
+                if(AlreadyCheck is not null)
+                    return new ResponseUnit<int?>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+
                 UsersTb? model = new UsersTb();
                 model.UserId = dto.UserId;
                 model.Name = dto.Name;
@@ -230,7 +234,6 @@ namespace FamTec.Server.Services.Admin.Account
                 }
 
                 UsersTb? userresult = await UserInfoRepository.AddAsync(model);
-
                 if (userresult is not null)
                 {
                     AdminTb? adminmodel = new AdminTb();

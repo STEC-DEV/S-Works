@@ -56,5 +56,8 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         [Display(Name = "계약상태")]
         public bool? Status { get; set; }
+
+       
+        
     }
 }

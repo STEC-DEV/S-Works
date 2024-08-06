@@ -222,7 +222,7 @@ public partial class UsersTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// 직책\\r\\n
+    /// 직책
     /// </summary>
     [Column("JOB")]
     [StringLength(255)]

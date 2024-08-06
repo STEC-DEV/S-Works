@@ -43,6 +43,8 @@ namespace FamTec.Server.Controllers.Admin.Department
 
                 if (model.code == 200)
                     return Ok(model);
+                else if(model.code == 202) // 이미 해당 이름으로 부서가 존재함.
+                    return Ok(model);
                 else
                     return BadRequest(model);
             }
@@ -75,6 +77,33 @@ namespace FamTec.Server.Controllers.Admin.Department
                     return Ok(model);
                 else
                     return BadRequest(model);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpGet]
+        [Route("sign/GetManageDepartmentList")]
+        public async ValueTask<IActionResult> GetManageDepartmentList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<DepartmentDTO>? model = await DepartmentService.ManageDepartmentService();
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {
@@ -136,6 +165,8 @@ namespace FamTec.Server.Controllers.Admin.Department
                     return BadRequest();
 
                 if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
                     return Ok(model);
                 else
                     return BadRequest();

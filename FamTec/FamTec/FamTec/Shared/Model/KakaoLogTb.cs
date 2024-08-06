@@ -14,21 +14,19 @@ public partial class KakaoLogTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    /// <summary>
+    /// 전송결과
+    /// </summary>
     [Column("RESULT")]
     [StringLength(255)]
     public string? Result { get; set; }
 
-    [Column("RECEIVER")]
+    /// <summary>
+    /// 제목
+    /// </summary>
+    [Column("TITLE")]
     [StringLength(255)]
-    public string? Receiver { get; set; }
-
-    [Column("sender")]
-    [StringLength(255)]
-    public string? Sender { get; set; }
-
-    [Column("content")]
-    [StringLength(255)]
-    public string? Content { get; set; }
+    public string? Title { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }
@@ -42,7 +40,7 @@ public partial class KakaoLogTb
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -53,4 +51,19 @@ public partial class KakaoLogTb
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
+
+    [Column("VOC_TB_ID", TypeName = "int(11)")]
+    public int? VocTbId { get; set; }
+
+    /// <summary>
+    /// 사업장ID
+    /// </summary>
+    [Column("PLACE_TB_ID", TypeName = "int(11)")]
+    public int? PlaceTbId { get; set; }
+
+    /// <summary>
+    /// 건물ID
+    /// </summary>
+    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
+    public int? BuildingTbId { get; set; }
 }

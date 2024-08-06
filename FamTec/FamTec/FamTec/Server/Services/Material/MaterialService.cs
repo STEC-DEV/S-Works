@@ -58,6 +58,7 @@ namespace FamTec.Server.Services.Material
                 if (!di.Exists) di.Create();
 
                 MaterialTb matertialtb = new MaterialTb();
+                matertialtb.Code = dto.Code; // 품목코드
                 matertialtb.Name = dto.Name; // 자재명
                 matertialtb.Unit = dto.Unit; // 단위
                 matertialtb.Standard = dto.Standard; // 규격
@@ -85,6 +86,7 @@ namespace FamTec.Server.Services.Material
                 {
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
                     {
+                        Code = model.Code, // 품목코드
                         Name = model.Name, // 자재명
                         Unit = model.Unit, // 단위
                         Standard = model.Standard, // 규격
@@ -125,24 +127,37 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialListDTO>() { message = "잘못된 요청입니다.", data = new List<MaterialListDTO>(), code = 404 };
 
+                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                
                 List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid));
-
+                
                 if (model is [_, ..])
                 {
-                    return new ResponseList<MaterialListDTO>()
+                    List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
+                    foreach(MaterialTb MaterialTB in model)
                     {
-                        message = "요청이 정상 처리되었습니다.",
-                        data = model.Select(e => new MaterialListDTO
+                        MaterialListDTO DTO = new MaterialListDTO();
+                        DTO.ID = MaterialTB.Id; // 품목 인덱스
+                        DTO.Code = MaterialTB.Code; // 품목 코드
+                        DTO.Name = MaterialTB.Name; // 품목명
+                        DTO.Unit = MaterialTB.Unit; // 단위
+                        DTO.Standard = MaterialTB.Standard; // 규격
+                        DTO.ManufacturingComp = MaterialTB.ManufacturingComp; // 제조사
+                        DTO.SafeNum = MaterialTB.SafeNum; // 안전재고수량
+
+                        if(!String.IsNullOrWhiteSpace(MaterialTB.Image))
                         {
-                            ID = e.Id,
-                            Name = e.Name,
-                            Unit = e.Unit,
-                            Standard = e.Standard,
-                            ManufacturingComp = e.ManufacturingComp,
-                            SafeNum = e.SafeNum
-                        }).ToList(),
-                        code = 200
-                    };
+                            DTO.Image = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image);
+                        }
+                        else
+                        {
+                            DTO.Image = null;
+                        }
+
+                        ListDTO.Add(DTO);
+                    }
+
+                    return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
                 }
                 else
                 {
@@ -181,6 +196,7 @@ namespace FamTec.Server.Services.Material
                 {
                     DetailMaterialDTO dto = new DetailMaterialDTO();
                     dto.Id = model.Id; // 품목 ID
+                    dto.Code = model.Code; // 품목코드
                     dto.Name = model.Name; // 품목명
                     dto.Unit = model.Unit; // 품목단위
                     dto.Standard = model.Standard; // 규격
@@ -235,6 +251,7 @@ namespace FamTec.Server.Services.Material
                 MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id);
                 if(model is not null)
                 {
+                    model.Code = dto.Code; // 품목코드
                     model.Name = dto.Name; // 품목명
                     model.Unit = dto.Unit; // 단위
                     model.Standard = dto.Standard; // 규격

@@ -10,7 +10,12 @@ namespace FamTec.Server.Repository.Place
         /// <returns></returns>
         ValueTask<PlaceTb?> AddPlaceInfo(PlaceTb model);
 
-
+        /// <summary>
+        /// 건물ID로 사업장 정보 조회
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        ValueTask<PlaceTb?> GetBuildingPlace(int? buildingid);
         
 
         /// <summary>

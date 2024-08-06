@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Material
+﻿namespace FamTec.Shared.Server.DTO.Material
 {
     /// <summary>
     /// 품목 리스트 DTO
@@ -15,6 +9,11 @@ namespace FamTec.Shared.Server.DTO.Material
         /// 자재(품목) INDEX
         /// </summary>
         public int? ID { get; set; }
+
+        /// <summary>
+        /// 품목 코드
+        /// </summary>
+        public string? Code { get; set; }
 
         /// <summary>
         /// 품목이름
@@ -41,6 +40,10 @@ namespace FamTec.Shared.Server.DTO.Material
         /// </summary>
         public int? SafeNum { get; set; }
 
+        /// <summary>
+        /// 이미지
+        /// </summary>
+        public byte[]? Image { get; set; }
 
 
     }

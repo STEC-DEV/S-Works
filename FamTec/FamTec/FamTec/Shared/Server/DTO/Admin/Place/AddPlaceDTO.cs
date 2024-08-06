@@ -102,5 +102,9 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         public bool? Status { get; set; } = true;
 
+        /// <summary>
+        /// 관리부서 인덱스
+        /// </summary>
+        public int? DepartmentID { get; set; }
     }
 }

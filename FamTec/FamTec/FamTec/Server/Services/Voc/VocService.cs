@@ -1,12 +1,14 @@
 ﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
+using System.Text;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -17,6 +19,10 @@ namespace FamTec.Server.Services.Voc
         private readonly IAlarmInfoRepository AlarmInfoRepository;
         private readonly IFileService FileService;
         private readonly IUserInfoRepository UserInfoRepository;
+
+        private readonly IKakaoService KakaoService;
+
+        private readonly IPlaceInfoRepository PlaceInfoRepository;
 
         private readonly IHubContext<BroadcastHub> HubContext;
 
@@ -30,7 +36,9 @@ namespace FamTec.Server.Services.Voc
             IBuildingInfoRepository _buildinginforepository,
             IAlarmInfoRepository _alarminforepository,
             IUserInfoRepository _userinforepository,
+            IPlaceInfoRepository _placeinforepository,
             IHubContext<BroadcastHub> _hubcontext,
+            IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice)
         {
@@ -39,7 +47,11 @@ namespace FamTec.Server.Services.Voc
             this.AlarmInfoRepository = _alarminforepository;
             this.UserInfoRepository = _userinforepository;
 
+            this.PlaceInfoRepository = _placeinforepository;
+
             this.HubContext = _hubcontext;
+            this.KakaoService = _kakaoservice;
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
         }
@@ -51,7 +63,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="obj"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddVocService(AddVocDTO? dto, List<IFormFile>? files)
+        public async ValueTask<ResponseUnit<string?>> AddVocService(AddVocDTO? dto, List<IFormFile>? files)
         {
             try
             {
@@ -59,23 +71,23 @@ namespace FamTec.Server.Services.Voc
                 string? FileExtenstion = String.Empty;
 
                 if (dto is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if(String.IsNullOrWhiteSpace(dto.Title))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if(String.IsNullOrWhiteSpace(dto.Contents))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (String.IsNullOrWhiteSpace(dto.Name))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto.Buildingid is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto.Placeid is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid);
                 if(buildingtb is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // VOC관련한 폴더 없으면 만들기
                 VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, dto.Placeid);
@@ -100,6 +112,21 @@ namespace FamTec.Server.Services.Voc
                 model.UpdateUser = dto.Name; // 작성자
                 model.BuildingTbId = dto.Buildingid;
 
+                // 조회코드
+                string? ReceiptCode;
+                while (true)
+                {
+                    ReceiptCode = KakaoService.RandomCode();
+
+                    // VOC 에서 SELECT
+                    VocTb? CodeCheck = await VocInfoRepository.GetVocInfo(ReceiptCode);
+                    if (CodeCheck is null)
+                    {
+                        model.Code = ReceiptCode;
+                        break;
+                    }
+                }
+
                 // 파일이 있으면
                 if (files is [_, ..])
                 {
@@ -119,20 +146,62 @@ namespace FamTec.Server.Services.Voc
                 if(result is not null)
                 {
                     // 소켓알림! + 카카오 API 알림
+                    if(result.ReplyYn == true)
+                    {
+                        
+                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId);
+                        
+                        if (placeTB is null)
+                            return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        
+                        // 제목
+                        string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
+
+                        DateTime DateNow = DateTime.Now;
+
+                        // 전화번호
+                        string? reciver = model.Phone;
+
+                        string? placetel = placeTB.Tel;
+
+                        // 인코딩
+                        byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
+                        string base64 = Convert.ToBase64String(bytes);
+                        
+                        string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+
+                        // 여기서 블랙리스트 조회
+
+                        // 카카오 API 전송
+                        bool? SendResult = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, reciver, url, placetel);
+                        if(SendResult == true)
+                        {
+                            // 카카오 메시지 성공
+                        }
+                        else if(SendResult == false)
+                        {
+                            // 카카오 메시지 실패
+                        }
+                        else
+                        {
+                            // 카카오 메시지 에러
+                        }
+                    }
+
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                     // 보낸 USER 휴대폰번호에 전송.
 
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Code, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

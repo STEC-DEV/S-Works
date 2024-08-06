@@ -80,7 +80,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placemanager"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> AddPlaceManagerService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO> placemanager);
+        public ValueTask<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO> placemanager);
 
         /// <summary>
         /// 관리자생성후 사업장 추가 서비스

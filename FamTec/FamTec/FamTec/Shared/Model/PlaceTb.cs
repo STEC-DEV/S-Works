@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("place_tb")]
+[Index("DepartmentTbId", Name = "FK_departmenttb_20240806")]
 public partial class PlaceTb
 {
     /// <summary>
@@ -187,11 +188,21 @@ public partial class PlaceTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    /// <summary>
+    /// 관리부서 인덱스
+    /// </summary>
+    [Column("DEPARTMENT_TB_ID", TypeName = "int(11)")]
+    public int? DepartmentTbId { get; set; }
+
     [InverseProperty("PlaceTb")]
     public virtual ICollection<AdminPlaceTb> AdminPlaceTbs { get; set; } = new List<AdminPlaceTb>();
 
     [InverseProperty("PlaceTb")]
     public virtual ICollection<BuildingTb> BuildingTbs { get; set; } = new List<BuildingTb>();
+
+    [ForeignKey("DepartmentTbId")]
+    [InverseProperty("PlaceTbs")]
+    public virtual DepartmentsTb? DepartmentTb { get; set; }
 
     [InverseProperty("PlaceTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();

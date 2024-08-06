@@ -19,6 +19,13 @@ public partial class MaterialTb
     public int Id { get; set; }
 
     /// <summary>
+    /// 품목코드
+    /// </summary>
+    [Column("CODE")]
+    [StringLength(255)]
+    public string? Code { get; set; }
+
+    /// <summary>
     /// 자재명
     /// </summary>
     [Column("NAME")]

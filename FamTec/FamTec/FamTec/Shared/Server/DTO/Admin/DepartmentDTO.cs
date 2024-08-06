@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Admin
+﻿namespace FamTec.Shared.Server.DTO.Admin
 {
     public class DepartmentDTO
     {
@@ -23,6 +16,11 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// 부서명
         /// </summary>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// 관리부서 여부
+        /// </summary>
+        public bool? ManageYN { get; set; }
 
         public string? Description { get; set; } = null;
 

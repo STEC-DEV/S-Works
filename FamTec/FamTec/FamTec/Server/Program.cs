@@ -136,6 +136,7 @@ builder.Services.AddTransient<IMaintanceService, MaintanceService>();
 
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
+builder.Services.AddTransient<IKakaoService, KakaoService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -187,7 +188,7 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:7114", "https://localhost:8888", "http://123.2.156.148:5245", "http://123.2.156.229:5245", "http://123.2.156.28:5245", HostUrl)
+        policy.WithOrigins("https://localhost:7114", "http://123.2.156.148:5245", "http://123.2.156.229:5245", "http://123.2.156.28:5245", HostUrl)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()

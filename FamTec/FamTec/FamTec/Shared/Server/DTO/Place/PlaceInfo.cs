@@ -56,5 +56,15 @@ namespace FamTec.Shared.Server.DTO.Place
         /// </summary>
         [Display(Name = "비고")]
         public string? Note { get; set; }
+
+        /// <summary>
+        /// 관리부서 인덱스
+        /// </summary>
+        public int? DepartmentID { get; set; }
+
+        /// <summary>
+        /// 관리부서 명칭
+        /// </summary>
+        public string? DepartmentName { get; set; }
     }
 }

@@ -8,6 +8,11 @@
         public int? Id { get; set; }
 
         /// <summary>
+        /// 품목 코드
+        /// </summary>
+        public string? Code { get; set; }
+
+        /// <summary>
         /// 품목명
         /// </summary>
         public string? Name { get; set; }

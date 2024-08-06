@@ -30,17 +30,9 @@ namespace FamTec.Server.Repository.User
             {
                 if (model is not null)
                 {
-                    UsersTb? search = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId == model.UserId);
-                    if (search is null)
-                    {
-                        context.UsersTbs.Add(model);
-                        await context.SaveChangesAsync();
-                        return model;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    context.UsersTbs.Add(model);
+                    await context.SaveChangesAsync();
+                    return model;
                 }
                 else
                 {

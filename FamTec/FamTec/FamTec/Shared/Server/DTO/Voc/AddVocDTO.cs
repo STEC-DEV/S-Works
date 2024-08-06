@@ -31,7 +31,7 @@
         public int? Buildingid { get; set; }
 
         /// <summary>
-        /// 이미지 때문에 사업장인덱스 받아야함.
+        /// 사업장인덱스
         /// </summary>
         public int? Placeid { get; set; }
     }

@@ -1,13 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Logging;
-using System;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Place
 {
@@ -137,6 +131,43 @@ namespace FamTec.Server.Repository.Place
         }
 
         /// <summary>
+        /// 건물ID로 사업장정보 조회
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        public async ValueTask<PlaceTb?> GetBuildingPlace(int? buildingid)
+        {
+            try
+            {
+                if(buildingid is not null)
+                {
+                    BuildingTb? builingTB = await context.BuildingTbs.FirstOrDefaultAsync(m => m.Id == buildingid && m.DelYn != true);
+                    if(builingTB is not null)
+                    {
+                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == builingTB.PlaceTbId && m.DelYn != true);
+                        if (PlaceTB is not null)
+                            return PlaceTB;
+                        else
+                            return null;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 삭제
         /// </summary>
         /// <param name="placecd"></param>
@@ -250,6 +281,6 @@ namespace FamTec.Server.Repository.Place
             }
         }
 
-     
+ 
     }
 }

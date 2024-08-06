@@ -28,6 +28,21 @@ namespace FamTec.Server.Repository.Voc
         /// <returns></returns>
         ValueTask<VocTb?> GetDetailVoc(int? vocid);
 
+        /// <summary>
+        /// VOC 코드로 단일모델 조회
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        ValueTask<VocTb?> GetVocInfo(string? code);
+
+
         ValueTask<bool> UpdateVocInfo(VocTb? model);
+
+        /// <summary>
+        /// 해당일자의 VOC 건수 구하기
+        /// </summary>
+        /// <param name="now"></param>
+        /// <returns></returns>
+        ValueTask<int?> VocDaysCount(DateTime now);
     }
 }

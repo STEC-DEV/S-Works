@@ -51,6 +51,15 @@ public partial class DepartmentsTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    /// <summary>
+    /// 관리부서YN
+    /// </summary>
+    [Column("MANAGEMENT_YN")]
+    public bool? ManagementYn { get; set; }
+
     [InverseProperty("DepartmentTb")]
     public virtual ICollection<AdminTb> AdminTbs { get; set; } = new List<AdminTb>();
+
+    [InverseProperty("DepartmentTb")]
+    public virtual ICollection<PlaceTb> PlaceTbs { get; set; } = new List<PlaceTb>();
 }

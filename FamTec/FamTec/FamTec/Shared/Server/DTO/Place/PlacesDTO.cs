@@ -96,5 +96,7 @@ namespace FamTec.Shared.Server.DTO.Place
         /// 상태
         /// </summary>
         public sbyte? Status { get; set; }
+
+        
     }
 }

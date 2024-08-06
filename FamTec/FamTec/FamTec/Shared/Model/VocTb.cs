@@ -16,6 +16,13 @@ public partial class VocTb
     public int Id { get; set; }
 
     /// <summary>
+    /// VOC코드_민원조회용
+    /// </summary>
+    [Column("CODE")]
+    [StringLength(255)]
+    public string? Code { get; set; }
+
+    /// <summary>
     /// 민원제목
     /// </summary>
     [Column("TITLE")]

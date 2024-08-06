@@ -270,6 +270,7 @@ namespace FamTec.Server.Services.Admin.Place
                 place.UpdateUser = Creater;
                 place.Status = dto.Status;
                 place.Note = dto.Note;
+                place.DepartmentTbId = dto.DepartmentID;
 
                 PlaceTb? place_result = await PlaceInfoRepository.AddPlaceInfo(place);
 
@@ -331,8 +332,11 @@ namespace FamTec.Server.Services.Admin.Place
                     model.PermMaterial = dto.PlacePerm.PermMaterial;
                     model.PermEnergy = dto.PlacePerm.PermEnergy;
                     model.PermVoc = dto.PlacePerm.PermVoc;
+                    model.CreateDt = DateTime.Now;
+                    model.CreateUser = creater;
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
+                    model.DepartmentTbId = dto.PlaceInfo.DepartmentID;
 
                     bool? UpdatePlaceResult = await PlaceInfoRepository.EditPlaceInfo(model);
                     if(UpdatePlaceResult == true)
@@ -392,25 +396,36 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placemanager"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> AddPlaceManagerService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? placemanager)
+        public async ValueTask<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext? context, AddPlaceManagerDTO<ManagerListDTO>? placemanager)
         {
             try
             {
                 if (placemanager is null)
-                    return new ResponseUnit<bool> { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (context is null)
-                    return new ResponseUnit<bool> { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<bool> { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int placeid = placemanager.PlaceId;
                 List<ManagerListDTO> placeManagers = placemanager.PlaceManager;
 
                 if (placeManagers is [_, ..])
                 {
+                    // 중복검사
+                    foreach(var manager in placeManagers)
+                    {
+                        AdminPlaceTb? alreadyCheck = await AdminPlaceInfoRepository.GetPlaceAdminInfo(manager.Id, placeid);
+                        if(alreadyCheck is not null)
+                        {
+                            return new ResponseUnit<bool?>() { message = "해당 관리자는 이미 포함되어있습니다.", data = false, code = 202 };
+                        }
+                    }
+
+
                     List<AdminPlaceTb> adminplace = new List<AdminPlaceTb>();
 
                     foreach (var manager in placeManagers)
@@ -432,31 +447,31 @@ namespace FamTec.Server.Services.Admin.Place
 
                         if (result == true)
                         {
-                            return new ResponseUnit<bool> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                            return new ResponseUnit<bool?> { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                         }
                         else if (result == false)
                         {
-                            return new ResponseUnit<bool> { message = "요청이 처리되지 않았습니다.", data = false, code = 401 };
+                            return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                         }
                         else
                         {
-                            return new ResponseUnit<bool> { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                            return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
                         }
                     }
                     else
                     {
-                        return new ResponseUnit<bool> { message = "요청이 처리되지 않았습니다.", data = false, code = 404 };
+                        return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<bool> { message = "요청이 정상 처리되었습니다.", data = false, code = 200 };
+                    return new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 

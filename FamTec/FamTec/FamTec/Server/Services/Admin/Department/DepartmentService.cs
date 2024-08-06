@@ -38,41 +38,34 @@ namespace FamTec.Server.Services.Admin.Department
                     return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DepartmentsTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
+                if(model is not null)
+                    return new ResponseUnit<AddDepartmentDTO> { message = "이미 해당 부서가 존재합니다.", data = new AddDepartmentDTO(), code = 202 };
 
-                if (model is null)
+                DepartmentsTb? DepartmentTB = new DepartmentsTb();
+                DepartmentTB.Name = dto.Name;
+                DepartmentTB.CreateDt = DateTime.Now;
+                DepartmentTB.CreateUser = Creater;
+                DepartmentTB.UpdateDt = DateTime.Now;
+                DepartmentTB.UpdateUser = Creater;
+                DepartmentTB.ManagementYn = dto.ManagerYN;
+
+                DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(DepartmentTB);
+
+                if (result is not null)
                 {
-                    DepartmentsTb? tb = new DepartmentsTb
+                    return new ResponseUnit<AddDepartmentDTO>
                     {
-                        Name = dto.Name,
-                        CreateDt = DateTime.Now,
-                        CreateUser = Creater,
-                        UpdateDt = DateTime.Now,
-                        UpdateUser = Creater
-                    };
-
-                    DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(tb);
-
-                    if (result is not null)
-                    {
-                        return new ResponseUnit<AddDepartmentDTO>
+                        message = "데이터가 정상 처리되었습니다.",
+                        data = new AddDepartmentDTO
                         {
-                            message = "데이터가 정상 처리되었습니다.",
-                            data = new AddDepartmentDTO
-                            {
-                                Name = result.Name!
-                            },
-                            code = 200
-                        };
-
-                    }
-                    else
-                    {
-                        return new ResponseUnit<AddDepartmentDTO> { message = "데이터가 처리되지 않았습니다.", data = new AddDepartmentDTO(), code = 404 };
-                    }
+                            Name = result.Name!
+                        },
+                        code = 200
+                    };
                 }
                 else
                 {
-                    return new ResponseUnit<AddDepartmentDTO> { message = "이미 해당 부서가 존재합니다.", data = new AddDepartmentDTO(), code = 200 };
+                    return new ResponseUnit<AddDepartmentDTO> { message = "데이터가 처리되지 않았습니다.", data = new AddDepartmentDTO(), code = 404 };
                 }
                
             }
@@ -83,7 +76,7 @@ namespace FamTec.Server.Services.Admin.Department
             }
         }
 
-   
+
 
         /// <summary>
         /// 부서 전체조회
@@ -95,6 +88,43 @@ namespace FamTec.Server.Services.Admin.Department
             {
                 List<DepartmentsTb>? model = await DepartmentInfoRepository.GetAllList();
 
+                if (model is [_, ..])
+                {
+                    return new ResponseList<DepartmentDTO>
+                    {
+                        message = "데이터가 정상 처리되었습니다.",
+                        data = model.Select(e => new DepartmentDTO
+                        {
+                            Id = e.Id,
+                            Name = e.Name,
+                            ManageYN = e.ManagementYn
+                        }).ToList(),
+                        code = 200
+                    };
+                }
+                else
+                {
+                    return new ResponseList<DepartmentDTO> { message = "데이터가 존재하지 않습니다.", data = new List<DepartmentDTO>(), code = 200 };
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<DepartmentDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<DepartmentDTO>(), code = 500 };
+            }
+        }
+
+
+        /// <summary>
+        /// 관리부서 전체조회
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<DepartmentDTO>> ManageDepartmentService()
+        {
+            try
+            {
+                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetManageDepartmentList();
+
                 if(model is [_, ..])
                 {
                     return new ResponseList<DepartmentDTO>
@@ -103,13 +133,15 @@ namespace FamTec.Server.Services.Admin.Department
                         data = model.Select(e => new DepartmentDTO
                         {
                             Id = e.Id,
-                            Name = e.Name
+                            Name = e.Name,
+                            ManageYN = e.ManagementYn
                         }).ToList(),
-                        code = 200};
+                        code = 200
+                    };
                 }
                 else
                 {
-                    return new ResponseList<DepartmentDTO> { message = "데이터가 존재하지 않습니다.", data = new List<DepartmentDTO>(), code = 200 };
+                    return new ResponseList<DepartmentDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<DepartmentDTO>(), code = 204 };
                 }
             }
             catch(Exception ex)
@@ -131,9 +163,10 @@ namespace FamTec.Server.Services.Admin.Department
             {
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                if (departmentidx is not null)
+                
+                if (departmentidx is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-
+                 
                 if (departmentidx.Count() == 0)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
@@ -188,37 +221,33 @@ namespace FamTec.Server.Services.Admin.Department
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = new DepartmentDTO(), code = 404 };
                 
-                DepartmentsTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id);
-                    
-                if(model is not null)
-                {
-                    DepartmentsTb? duplechk = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
-                        
-                    if(duplechk is null)
-                    {
-                        model.Name = dto.Name;
-                        model.UpdateUser = updater;
-                        model.UpdateDt = DateTime.Now;
+                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
+                if (AlreadyCheck is not null)
+                    return new ResponseUnit<DepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
-                        bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(model);
-                        if (result == true)
-                        {
-                            return new ResponseUnit<DepartmentDTO>() { message = "요청이 정상 처리되었습니다.", data = new DepartmentDTO { Id = model.Id, Name = dto.Name }, code = 200 };
-                        }
-                        else
-                        {
-                            return new ResponseUnit<DepartmentDTO>() { message = "요청이 처리되지 않았습니다.", data = new DepartmentDTO(), code = 200 };
-                        }
+                DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id);
+                if (DepartmentTB is not null)
+                {
+                    DepartmentTB.Name = dto.Name;
+                    DepartmentTB.UpdateUser = updater;
+                    DepartmentTB.UpdateDt = DateTime.Now;
+                    DepartmentTB.ManagementYn = dto.ManageYN;
+
+                    bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB);
+                    if (result == true)
+                    {
+                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 정상 처리되었습니다.", data = new DepartmentDTO { Id = DepartmentTB.Id, Name = dto.Name }, code = 200 };
                     }
                     else
                     {
-                        return new ResponseUnit<DepartmentDTO>() { message = "입력하신 부서명이 존재합니다.", data = new DepartmentDTO(), code = 200 };
-                    }   
+                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 처리되지 않았습니다.", data = new DepartmentDTO(), code = 200 };
+                    }
                 }
                 else
                 {
-                    return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = new DepartmentDTO(), code = 200 };
-                }
+                    return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = new DepartmentDTO(), code = 404 };
+                }   
+              
             }
             catch(Exception ex)
             {
@@ -227,6 +256,6 @@ namespace FamTec.Server.Services.Admin.Department
             }
         }
 
-
+    
     }
 }

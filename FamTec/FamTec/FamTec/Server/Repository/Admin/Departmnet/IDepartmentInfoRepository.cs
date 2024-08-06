@@ -18,6 +18,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         ValueTask<List<DepartmentsTb>?> GetAllList();
 
         /// <summary>
+        /// 관리부서 조회
+        /// </summary>
+        /// <returns></returns>
+        ValueTask<List<DepartmentsTb>?> GetManageDepartmentList();
+
+        /// <summary>
         /// 부서INDEX에 해당하는 부서 조회
         /// </summary>
         /// <param name="departmentidx"></param>

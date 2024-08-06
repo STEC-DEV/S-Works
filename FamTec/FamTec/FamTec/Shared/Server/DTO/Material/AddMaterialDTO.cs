@@ -3,6 +3,11 @@
     public class AddMaterialDTO
     {
         /// <summary>
+        /// 품목 코드
+        /// </summary>
+        public string? Code { get; set; }
+
+        /// <summary>
         /// 자재명
         /// </summary>
         public string? Name { get; set; }

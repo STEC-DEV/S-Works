@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Databases;
+﻿using FamTec.Client.Pages.Admin.Manager.ManagerMain.Components;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
@@ -27,25 +28,39 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <returns></returns>
         public async ValueTask<bool?> AddAsync(List<AdminPlaceTb>? model)
         {
-            try
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                if (model is [_, ..])
+                try
                 {
-                    for (int i = 0; i < model.Count; i++)
+                    if (model is [_, ..])
                     {
-                        context.AdminPlaceTbs.Add(model[i]);
+                        foreach(AdminPlaceTb AdminPlaceTB in model)
+                        {
+                            context.AdminPlaceTbs.Add(AdminPlaceTB);
+                        }
+
+                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(AddResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
                     }
-                    return await context.SaveChangesAsync() > 0 ? true : false;
+                    else
+                    {
+                        return null;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return false;
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
                 }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
             }
         }
 
@@ -331,39 +346,41 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                                 Department = departmenttb.Name
                                                             }).ToList();
 
-                        PlaceDetailDTO PlaceDetail = new PlaceDetailDTO
+                        PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();
+                        PlaceDetail.PlaceInfo.Id = place.Id;
+                        PlaceDetail.PlaceInfo.PlaceCd = place.PlaceCd;
+                        PlaceDetail.PlaceInfo.Name = place.Name;
+                        PlaceDetail.PlaceInfo.Tel = place.Tel;
+                        PlaceDetail.PlaceInfo.ContractNum = place.ContractNum;
+                        PlaceDetail.PlaceInfo.ContractDt = place.ContractDt;
+                        PlaceDetail.PlaceInfo.CancelDt = place.CancelDt;
+                        PlaceDetail.PlaceInfo.Status = place.Status;
+                        PlaceDetail.PlaceInfo.Note = place.Note;
+                        
+                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+                            .FirstOrDefaultAsync(m => m.Id == place.DepartmentTbId);
+                        
+                        if (DepartmentTB is not null)
                         {
-                            PlaceInfo = new PlaceInfo
-                            {
-                                Id = place.Id,
-                                PlaceCd = place.PlaceCd,
-                                Name = place.Name,
-                                Tel = place.Tel,
-                                ContractNum = place.ContractNum,
-                                ContractDt = place.ContractDt,
-                                CancelDt = place.CancelDt,
-                                Status = place.Status,
-                                Note = place.Note
-                            },
+                            PlaceDetail.PlaceInfo.DepartmentID = DepartmentTB.Id;
+                            PlaceDetail.PlaceInfo.DepartmentName = DepartmentTB.Name;
+                        }
 
-                            PlacePerm = new PlacePerm
-                            {
-                                Id = place.Id,
-                                PermMachine = place.PermMachine,
-                                PermElec = place.PermElec,
-                                PermLift = place.PermLift,
-                                PermFire = place.PermFire,
-                                PermConstruct = place.PermConstruct,
-                                PermNetwork = place.PermNetwork,
-                                PermBeauty = place.PermBeauty,
-                                PermSecurity = place.PermSecurity,
-                                PermMaterial = place.PermMaterial,
-                                PermEnergy = place.PermEnergy,
-                                PermVoc = place.PermVoc
-                            },
-                            ManagerList = ManagerDTO
-                        };
+                        PlaceDetail.PlacePerm.Id = place.Id;
+                        PlaceDetail.PlacePerm.PermMachine = place.PermMachine;
+                        PlaceDetail.PlacePerm.PermElec = place.PermElec;
+                        PlaceDetail.PlacePerm.PermLift = place.PermLift;
+                        PlaceDetail.PlacePerm.PermFire = place.PermFire;
+                        PlaceDetail.PlacePerm.PermConstruct = place.PermConstruct;
+                        PlaceDetail.PlacePerm.PermNetwork = place.PermNetwork;
+                        PlaceDetail.PlacePerm.PermBeauty = place.PermBeauty;
+                        PlaceDetail.PlacePerm.PermSecurity = place.PermSecurity;
+                        PlaceDetail.PlacePerm.PermMaterial = place.PermMaterial;
+                        PlaceDetail.PlacePerm.PermEnergy = place.PermEnergy;
+                        PlaceDetail.PlacePerm.PermVoc = place.PermVoc;
 
+                        PlaceDetail.ManagerList = ManagerDTO;
+                        
                         return PlaceDetail;
                         
                     }

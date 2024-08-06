@@ -335,21 +335,31 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                //AddPlaceManagerDTO<ManagerListDTO> placemanager = new AddPlaceManagerDTO<ManagerListDTO>();
+                //placemanager.PlaceId = 3;
+                //placemanager.PlaceManager.Add(new ManagerListDTO
+                //{
+                //    Id = 15
+                //});
+                //placemanager.PlaceManager.Add(new ManagerListDTO
+                //{
+                //    Id = 16
+                //});
+
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager);
+                ResponseUnit<bool?> model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager);
 
                 if (model is null)
                     return BadRequest(model);
 
                 if (model.code == 200)
                     return Ok(model);
-                else if (model.code == 401)
+                else if (model.code == 202) // 이미 포함되어있는 관리자
                     return Ok(model);
                 else
                     return BadRequest(model);
-
             }
             catch(Exception ex)
             {
@@ -370,6 +380,17 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                //AddPlaceManagerDTO<ManagerListDTO> dto = new AddPlaceManagerDTO<ManagerListDTO>();
+                //dto.PlaceId = 3;
+                //dto.PlaceManager.Add(new ManagerListDTO
+                //{
+                //    Id = 15
+                //});
+                //dto.PlaceManager.Add(new ManagerListDTO
+                //{
+                //    Id = 16
+                //});
+
                 if (HttpContext is null)
                     return BadRequest();
 

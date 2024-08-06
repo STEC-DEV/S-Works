@@ -71,7 +71,6 @@ public partial class WorksContext : DbContext
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
-
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -88,7 +87,6 @@ public partial class WorksContext : DbContext
         {
             entity.HasNoDiscriminator();
         });
-
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -315,6 +313,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Id).HasComment("부서 인덱스");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.ManagementYn).HasComment("관리부서YN");
             entity.Property(e => e.Name).HasComment("부서명");
         });
 
@@ -497,8 +496,11 @@ public partial class WorksContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.BuildingTbId).HasComment("건물ID");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.PlaceTbId).HasComment("사업장ID");
+            entity.Property(e => e.Result).HasComment("전송결과");
+            entity.Property(e => e.Title).HasComment("제목");
         });
 
         modelBuilder.Entity<MaintenenceHistoryTb>(entity =>
@@ -526,6 +528,7 @@ public partial class WorksContext : DbContext
 
             entity.ToTable("material_tb", tb => tb.HasComment("자재"));
 
+            entity.Property(e => e.Code).HasComment("품목코드");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DefaultLocation).HasComment("기본위치");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
@@ -571,6 +574,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn)
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
+            entity.Property(e => e.DepartmentTbId).HasComment("관리부서 인덱스");
             entity.Property(e => e.Name).HasComment("사업장명");
             entity.Property(e => e.Note).HasComment("비고");
             entity.Property(e => e.PermBeauty)
@@ -611,6 +615,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Tel).HasComment("전화번호");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
+
+            entity.HasOne(d => d.DepartmentTb).WithMany(p => p.PlaceTbs).HasConstraintName("FK_departmenttb_20240806");
         });
 
         modelBuilder.Entity<RoomTb>(entity =>
@@ -722,7 +728,7 @@ public partial class WorksContext : DbContext
                 .HasComment("삭제여부");
             entity.Property(e => e.Email).HasComment("이메일");
             entity.Property(e => e.Image).HasComment("이미지");
-            entity.Property(e => e.Job).HasComment("직책\\\\r\\\\n");
+            entity.Property(e => e.Job).HasComment("직책");
             entity.Property(e => e.Name).HasComment("이름");
             entity.Property(e => e.Password).HasComment("비밀번호");
             entity.Property(e => e.PermBasic)
@@ -780,6 +786,7 @@ public partial class WorksContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.BuildingTbId).HasComment("건물 인덱스");
+            entity.Property(e => e.Code).HasComment("VOC코드_민원조회용");
             entity.Property(e => e.Content).HasComment("민원내용");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");

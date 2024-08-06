@@ -2,6 +2,13 @@
 {
     public class FileService : IFileService
     {
+        private readonly ILogService LogService;
+        public FileService(ILogService _logservice)
+        {
+            this.LogService = _logservice;
+        }
+
+
         /// <summary>
         /// 이미지 등록
         /// </summary>
@@ -24,6 +31,7 @@
             }
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return null;
             }
         }
@@ -58,6 +66,7 @@
                 }
             }catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return null;
             }
         }
@@ -100,6 +109,7 @@
                 }
             }catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return false;
             }
         }
@@ -117,6 +127,7 @@
             }
             catch (Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 return null;
             }
         }
