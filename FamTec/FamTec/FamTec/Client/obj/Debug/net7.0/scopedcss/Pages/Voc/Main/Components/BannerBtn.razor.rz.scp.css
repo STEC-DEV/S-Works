@@ -1,0 +1,51 @@
+.banner[b-sdw1dk55vx]{
+    max-width : 50%;
+
+    border : var(--default-bd);
+    border-radius : var(--default-rd);
+    padding : var(--wide-pd);
+
+    box-shadow : var(--shadow-1);
+    transition : all .3s;
+}
+
+.title[b-sdw1dk55vx]{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+}
+
+.type1[b-sdw1dk55vx]{
+    background-color : var(--main-color);
+    
+}
+.type1:hover[b-sdw1dk55vx]{
+    background-color : var(--content-back-color);
+    
+}
+.type1:hover .title[b-sdw1dk55vx]{
+    color : var(--main-color);
+}
+
+
+.type1 .title[b-sdw1dk55vx]{
+    color : var(--default-color);
+}
+
+
+.type2[b-sdw1dk55vx]{
+    background-color : var(--content-back-color);
+    
+}
+
+.type2 .title[b-sdw1dk55vx]{
+    color : var(--main-color);
+}
+
+.type2:hover[b-sdw1dk55vx]{
+    background-color : var(--main-color);
+    
+}
+.type2:hover .title[b-sdw1dk55vx]{
+    color : var(--content-back-color);
+}

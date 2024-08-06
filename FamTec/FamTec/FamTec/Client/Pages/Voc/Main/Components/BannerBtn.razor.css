@@ -1,0 +1,51 @@
+﻿.banner{
+    max-width : 50%;
+
+    border : var(--default-bd);
+    border-radius : var(--default-rd);
+    padding : var(--wide-pd);
+
+    box-shadow : var(--shadow-1);
+    transition : all .3s;
+}
+
+.title{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+}
+
+.type1{
+    background-color : var(--main-color);
+    
+}
+.type1:hover{
+    background-color : var(--content-back-color);
+    
+}
+.type1:hover .title{
+    color : var(--main-color);
+}
+
+
+.type1 .title{
+    color : var(--default-color);
+}
+
+
+.type2{
+    background-color : var(--content-back-color);
+    
+}
+
+.type2 .title{
+    color : var(--main-color);
+}
+
+.type2:hover{
+    background-color : var(--main-color);
+    
+}
+.type2:hover .title{
+    color : var(--content-back-color);
+}

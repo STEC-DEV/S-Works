@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
-    <Folder Include="Pages\Normal\Material\Info\Main\Components\" />
     <Folder Include="Pages\Normal\Voc\VocCreate\" />
   </ItemGroup>
 

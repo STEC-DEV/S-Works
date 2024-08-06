@@ -1,0 +1,95 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Material
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    품목코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    품목명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    규격
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    제조사
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    안전재고
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    이미지
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            <p> Loading...</p>
+        }
+        else
+        {
+            foreach(var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                        @row.Standard
+                    </td>
+                    <td class="td">
+                        @row.Mfr
+                    </td>
+                    <td class="td">
+                        @row.Unit
+                    </td>
+                    <td class="td">
+                        @row.SafeNum
+                    </td>
+                    <td class="td">
+                        @row.Image
+                    </td>
+                    <td class="td">
+                        <input type="checkbox"/>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<MaterialListDTO>? ListData { get; set; }
+
+
+
+
+}

@@ -1,0 +1,32 @@
+﻿.voc{
+    display : flex;
+    flex-direction : column;
+    justify-content :space-between;
+    gap : var(--wide-pd);
+    height:100%;
+}
+
+.voc .header{
+    /*padding : var(--default-pd) 0;*/
+}
+
+.title{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+.content{
+    flex : 1;
+    /*height:100%;*/
+    display : flex;
+    flex-direction :column;
+    gap:var(--default-pd);
+    overflow : auto;
+}
+
+.btns{
+    display : flex;
+    gap : var(--default-pd);
+}

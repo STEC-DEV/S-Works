@@ -1,0 +1,30 @@
+﻿@layout MainLayout2
+@page "/voc/banner"
+
+@using FamTec.Client.Pages.Voc.Main.Components
+
+<div class="main">
+    <div class="header">
+        <span class="title">
+            Sworks 민원
+        </span>
+    </div>
+    <div class="content">
+        <BannerBtn 
+            Label="민원 접수"
+            Url="/voc/add"
+            Type=true
+            />
+        <BannerBtn 
+            Label="민원 조회"
+            Type=false
+            />
+    </div>
+</div>
+
+
+@code {
+    //아래는 연결후 커넥트
+    [Parameter] public int placeid{ get; set; }
+    [Parameter] public int BulidingId { get; set; }
+}

@@ -1,0 +1,19 @@
+﻿
+
+<div class="banner @(Type ? "type1" : "type2")">
+    <span class="title">
+        @Label
+    </span>
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Url  { get; set; }
+    [Parameter] public bool Type { get; set; }
+
+
+    private void Navgate()
+    {
+        Navigation.NavigateTo(Url);
+    }
+}

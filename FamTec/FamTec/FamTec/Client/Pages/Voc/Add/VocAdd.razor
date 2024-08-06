@@ -1,0 +1,55 @@
+﻿@layout MainLayout2
+@page "/voc/add"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Voc.Add.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
+
+<div class="voc">
+    <div class="header">
+        <span class="title">
+            민원 접수
+        </span>
+    </div>
+    <div class="content">
+        <VocInput
+            Label="성함"
+            @bind-Value=@Voc.Name
+            Placeholder="성함"/>
+        <VocInput
+            Label="휴대폰 번호"
+            @bind-Value=@Voc.PhoneNumber
+            Placeholder="휴대폰 번호" />
+        <VocInput
+            Label="제목"
+            @bind-Value=@Voc.Title
+            Placeholder="제목" />
+        <VocInput
+            Label="내용"
+            @bind-Value=@Voc.Contents
+            Placeholder="내용" 
+            TextArea=true 
+            Height=true
+            />
+        <InputFile multiple/>
+    </div>
+    <div class="btns">
+        <Button Name="접수" Type="0" OnClick="@OnAdd"/>
+        <Button Name="취소" Type="1"/>
+    </div>
+</div>
+
+@code {
+    AddVoc Voc = new AddVoc();
+
+    private async Task OnAdd()
+    {
+        try
+        {
+            Console.WriteLine(Voc.Name);
+            Console.WriteLine(Voc.Contents);
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "민원 추가 에러");
+        }
+    }
+}
