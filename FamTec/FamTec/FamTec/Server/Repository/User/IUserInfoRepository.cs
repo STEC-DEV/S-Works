@@ -26,6 +26,13 @@ namespace FamTec.Server.Repository.User
         ValueTask<UsersTb?> GetUserIndexInfo(int? useridx);
 
         /// <summary>
+        /// 유저ID로 유저테이블 검색 (삭제유무와 관계없는 모든 사용자)
+        /// </summary>
+        /// <param name="useridx"></param>
+        /// <returns></returns>
+        ValueTask<UsersTb?> GetNotFilterUserInfo(int? useridx);
+
+        /// <summary>
         /// 삭제 쿼리
         /// </summary>
         /// <param name="Useridx"></param>

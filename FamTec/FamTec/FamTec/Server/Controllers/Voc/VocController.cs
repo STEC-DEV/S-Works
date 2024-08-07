@@ -11,17 +11,48 @@ namespace FamTec.Server.Controllers.Voc
     [ApiController]
     public class VocController : ControllerBase
     {
-        private IVocService VocService;
-        private ILogService LogService;
+        private readonly IVocService VocService;
+        private readonly ILogService LogService;
 
-        public VocController(IVocService _vocservice, ILogService _logservice)
+        public VocController(IVocService _vocservice,
+            ILogService _logservice)
         {
             this.VocService = _vocservice;
             this.LogService = _logservice;
         }
 
         /// <summary>
-        /// 사업장 민원 전체보기
+        /// 사업장 민원 전체보기 - 직원용
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetVocList")]
+        public async ValueTask<IActionResult> GetVocList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<VocListDTO?> model = await VocService.GetVocList(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 사업장 민원 필터 전체보기 - 직원용
         /// </summary>
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
@@ -31,18 +62,15 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetVocList")]
-        public async ValueTask<IActionResult> GetVocList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] int type, [FromQuery] int status, [FromQuery] int buildingid)
+        [Route("sign/GetVocFilterList")]
+        public async ValueTask<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] int type, [FromQuery] int status, [FromQuery] int buildingid)
         {
             try
             {
-                //DateTime start = DateTime.Now.AddDays(-1);
-                //DateTime end = DateTime.Now;
-
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocListDTO>? model = await VocService.GetVocList(HttpContext, StartDate, EndDate, type, status, buildingid);
+                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid);
 
                 if (model is null)
                     return BadRequest();
@@ -60,37 +88,45 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
-
-        // 사업장 민원 상세
+        /// <summary>
+        /// 민원 상세보기 - 직원용
+        /// </summary>
+        /// <param name="VocId"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetDetailVoc")]
-        public async ValueTask<IActionResult> GetDetailVoc([FromQuery]int VocId)
+        [Route("sign/VocInfo")]
+        public async ValueTask<IActionResult> GetDetailVoc([FromQuery] int VocId)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocDetailDTO?> dto = await VocService.GetVocDetail(HttpContext, VocId);
+                ResponseUnit<VocEmployeeDetailDTO?> dto = await VocService.GetVocDetail(HttpContext, VocId);
 
                 if (dto is null)
                     return BadRequest();
-                
+
                 if (dto.code == 200)
                     return Ok(dto);
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
-        // 민원 타입변경 - 미처리 --> 다른타입으로
-        // -- 소켓 구현전
+
+
+        /// <summary>
+        /// 민원타입 변경
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateVocType")]
@@ -101,7 +137,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await VocService.UpdateVocService(HttpContext, dto);
+                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -118,6 +154,7 @@ namespace FamTec.Server.Controllers.Voc
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
 
     }
 }

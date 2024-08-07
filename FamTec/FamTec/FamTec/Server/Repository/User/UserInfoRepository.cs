@@ -1,9 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.Intrinsics.X86;
 
 namespace FamTec.Server.Repository.User
 {
@@ -105,6 +103,37 @@ namespace FamTec.Server.Repository.User
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 유저 인덱스로 유저테이블 조회 (삭제유무와 상관없는 모든 사용자)
+        /// </summary>
+        /// <param name="useridx"></param>
+        /// <returns></returns>
+        public async ValueTask<UsersTb?> GetNotFilterUserInfo(int? useridx)
+        {
+            try
+            {
+                if (useridx is not null)
+                {
+                    UsersTb? model = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == useridx);
+
+                    if (model is not null)
+                        return model;
+                    else
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
 
         /// <summary>
         /// 유저테이블 모델 삭제

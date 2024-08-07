@@ -2343,6 +2343,54 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "GetVocComment",
+    "RelativePath": "api/Hub/GetVocCommentList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voccode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "GetVocCommentDetail",
+    "RelativePath": "api/Hub/VocCommentDetail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "commentid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "GetVocInfo",
+    "RelativePath": "api/Hub/VocInfo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voccode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.LiftFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/LiftFacility/sign/AddLiftFacility",
@@ -4163,24 +4211,8 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetDetailVoc",
-    "RelativePath": "api/Voc/sign/GetDetailVoc",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "VocId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetVocList",
-    "RelativePath": "api/Voc/sign/GetVocList",
+    "Method": "GetVocFilterList",
+    "RelativePath": "api/Voc/sign/GetVocFilterList",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -4215,6 +4247,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocList",
+    "RelativePath": "api/Voc/sign/GetVocList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "UpdateVocType",
     "RelativePath": "api/Voc/sign/UpdateVocType",
     "HttpMethod": "PUT",
@@ -4225,6 +4267,22 @@
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Voc.UpdateVocDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetDetailVoc",
+    "RelativePath": "api/Voc/sign/VocInfo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "VocId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -4323,11 +4381,6 @@
       {
         "Name": "CreateUser",
         "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Userid",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {

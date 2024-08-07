@@ -22,6 +22,8 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<AlarmTb> AlarmTbs { get; set; }
 
+    public virtual DbSet<BlacklistTb> BlacklistTbs { get; set; }
+
     public virtual DbSet<BuildingItemGroupTb> BuildingItemGroupTbs { get; set; }
 
     public virtual DbSet<BuildingItemKeyTb> BuildingItemKeyTbs { get; set; }
@@ -71,6 +73,7 @@ public partial class WorksContext : DbContext
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
+
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -148,6 +151,13 @@ public partial class WorksContext : DbContext
             entity.HasOne(d => d.UsersTb).WithMany(p => p.AlarmTbs).HasConstraintName("fk_alarm_tb_users_tb1");
 
             entity.HasOne(d => d.VocTb).WithMany(p => p.AlarmTbs).HasConstraintName("fk_alarm_tb_voc_tb1");
+        });
+
+        modelBuilder.Entity<BlacklistTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
         });
 
         modelBuilder.Entity<BuildingItemGroupTb>(entity =>
@@ -787,9 +797,11 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.BuildingTbId).HasComment("건물 인덱스");
             entity.Property(e => e.Code).HasComment("VOC코드_민원조회용");
+            entity.Property(e => e.CompleteDt).HasComment("완료시간");
             entity.Property(e => e.Content).HasComment("민원내용");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.DurationDt).HasComment("소요시간");
             entity.Property(e => e.Image1).HasComment("이미지");
             entity.Property(e => e.Image2).HasComment("이미지");
             entity.Property(e => e.Image3).HasComment("이미지");

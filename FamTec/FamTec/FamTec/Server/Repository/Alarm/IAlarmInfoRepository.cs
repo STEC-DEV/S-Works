@@ -10,5 +10,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<AlarmTb?> AddAsync(AlarmTb? model);
+
+        
     }
 }

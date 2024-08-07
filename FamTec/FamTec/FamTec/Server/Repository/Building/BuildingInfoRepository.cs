@@ -26,7 +26,7 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                if(model is not null)
+                if (model is not null)
                 {
                     context.BuildingTbs.Add(model);
                     await context.SaveChangesAsync();

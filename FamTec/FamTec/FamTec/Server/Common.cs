@@ -69,6 +69,6 @@
         /// <summary>
         /// 카카오톡 알림톡 템플릿 Code
         /// </summary>
-        public static readonly string KakaoTemplateCode = "TU_1843";
+        public static readonly string KakaoTemplateCode = "TU_2055";
     }
 }

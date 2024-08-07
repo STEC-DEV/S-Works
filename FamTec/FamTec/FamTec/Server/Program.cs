@@ -57,6 +57,9 @@ using FamTec.Server.Services.Store;
 using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services.Admin.Maintenance;
+using FamTec.Server.Repository.BlackList;
+using FamTec.Server.Repository.KakaoLog;
+using FamTec.Server.Services.Voc.Hub;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -94,6 +97,8 @@ builder.Services.AddTransient<IInventoryInfoRepository, InventoryInfoRepository>
 builder.Services.AddTransient<IStoreInfoRepository, StoreInfoRepository>();
 
 builder.Services.AddTransient<IMaintanceRepository, MaintanceRepository>();
+builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
+builder.Services.AddTransient<IKakaoLogInfoRepository, KakaoLogInfoRepository>();
 
 // Add services to the container.
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -109,6 +114,7 @@ builder.Services.AddTransient<IDepartmentService, DepartmentService>();
 builder.Services.AddTransient<IFloorService, FloorService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
 builder.Services.AddTransient<IUnitService, UnitService>();
+builder.Services.AddTransient<IHubService, HubService>();
 builder.Services.AddTransient<IVocService, VocService>();
 builder.Services.AddTransient<ILogService, LogService>();
 builder.Services.AddTransient<IFileService, FileService>();

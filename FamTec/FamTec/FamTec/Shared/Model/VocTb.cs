@@ -58,11 +58,18 @@ public partial class VocTb
     [Column("REPLY_YN")]
     public bool? ReplyYn { get; set; }
 
+    /// <summary>
+    /// 완료시간
+    /// </summary>
     [Column("COMPLETE_DT", TypeName = "datetime")]
     public DateTime? CompleteDt { get; set; }
 
-    [Column("DURATION_DT", TypeName = "datetime")]
-    public DateTime? DurationDt { get; set; }
+    /// <summary>
+    /// 소요시간
+    /// </summary>
+    [Column("DURATION_DT")]
+    [StringLength(255)]
+    public string? DurationDt { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime? CreateDt { get; set; }

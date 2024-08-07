@@ -46,7 +46,7 @@ namespace FamTec.Server.Services
                 string month = receiptdate.ToString("MM"); // 월
                 string day = receiptdate.ToString("dd"); // 일
 
-                string message = $"민원이 접수되었습니다.\n■제목: {title}\n■접수번호: {receiptnum}\n■접수일: {year}년{month}월{day}일\n■전화번호: {placetel}";
+                string message = $"민원이 접수되었습니다.\n■제목: {title}\n■접수번호: {receiptnum}\n■접수일: {year}년{month}월{day}일\n■문의전화: {placetel}";
 
                 JObject buttonValue = new JObject();
                 buttonValue.Add("name", "열람하기");

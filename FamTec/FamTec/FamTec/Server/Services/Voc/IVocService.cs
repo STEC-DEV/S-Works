@@ -5,22 +5,22 @@ namespace FamTec.Server.Services.Voc
 {
     public interface IVocService
     {
-        /// <summary>
-        /// 민원추가
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> AddVocService(AddVocDTO? dto, List<IFormFile>? image);
 
         /// <summary>
-        /// Voc List 출력
+        /// 사업장별 VOC 리스트 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<VocListDTO?>> GetVocList(HttpContext? context);
+
+        /// <summary>
+        /// 조건별 민원 리스트 조회
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<VocListDTO>?> GetVocList(HttpContext? context, DateTime? startdate, DateTime? enddate, int? type, int? status, int? buildingid);
+        public ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext? context, DateTime? startdate, DateTime? enddate, int? type, int? status, int? buildingid);
 
         /// <summary>
         /// VOC 상세보기
@@ -28,7 +28,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<VocDetailDTO?>> GetVocDetail(HttpContext? context, int? vocid);
+        public ValueTask<ResponseUnit<VocEmployeeDetailDTO?>> GetVocDetail(HttpContext? context, int? vocid);
 
         /// <summary>
         /// VOC 유형 변경
@@ -36,6 +36,6 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateVocService(HttpContext? context, UpdateVocDTO? dto);
+        public ValueTask<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext? context, UpdateVocDTO? dto);
     }
 }

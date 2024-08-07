@@ -35,7 +35,7 @@
         /// <summary>
         /// 민원처리 소요 시간
         /// </summary>
-        public DateTime? DurationDT { get; set; }
+        public string? DurationDT { get; set; }
 
         /// <summary>
         /// 요청일시

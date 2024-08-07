@@ -68,7 +68,7 @@ namespace FamTec.Server.Controllers.Voc
                 }
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTO>? model = await VocCommentService.AddVocCommentService(HttpContext, dto, files);
+                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(HttpContext, dto, files);
                 if (model is null)
                     return BadRequest();
 

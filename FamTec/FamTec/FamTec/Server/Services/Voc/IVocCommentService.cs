@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddVocCommentDTO>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto, List<IFormFile> files);
+        public ValueTask<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext? context, AddVocCommentDTO? dto, List<IFormFile> files);
 
         /// <summary>
         /// 해당 민원에 대한 댓글 리스트 조회

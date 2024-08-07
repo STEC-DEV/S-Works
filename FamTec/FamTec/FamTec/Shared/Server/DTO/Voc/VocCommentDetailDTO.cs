@@ -32,11 +32,7 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// </summary>
         public string? CreateUser { get; set; }
 
-        /// <summary>
-        /// 사용자 인덱스
-        /// </summary>
-        public int? Userid { get; set; }
-
+    
         /// <summary>
         /// 이미지
         /// </summary>

@@ -1,15 +1,10 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Services;
-using FamTec.Server.Services.Voc;
+using FamTec.Server.Services.Voc.Hub;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.User;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json.Linq;
-using System.Data;
 
 namespace FamTec.Server.Controllers.Hubs
 {
@@ -18,21 +13,21 @@ namespace FamTec.Server.Controllers.Hubs
     public class HubController : ControllerBase
     {
         private readonly IHubContext<BroadcastHub> HubContext;
-        private IVocService VocService;
+        private IHubService HubService;
         private ILogService LogService;
        
 
         public HubController(IHubContext<BroadcastHub> _hubcontext,
-            IVocService _vocservice,
+            IHubService _hubservice,
             ILogService _logservice)
         {
             this.HubContext = _hubcontext;
-            this.VocService = _vocservice;
+            this.HubService = _hubservice;
             this.LogService = _logservice;
         }
 
         /// <summary>
-        /// 민원접수
+        /// 민원접수 [일반사용자]
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="files"></param>
@@ -68,8 +63,7 @@ namespace FamTec.Server.Controllers.Hubs
                     }
                 }
 
-
-                ResponseUnit<bool?> model = await VocService.AddVocService(dto, files);
+                ResponseUnit<string?> model = await HubService.AddVocService(dto, files);
                 if (model is null)
                     return BadRequest();
 
@@ -83,67 +77,6 @@ namespace FamTec.Server.Controllers.Hubs
                 {
                     return BadRequest();
                 }
-                
-
-                //if (model is not null)
-                //{
-                //    if (model.code == 200)
-                //    {
-                //        int Voctype = Int32.Parse(jobj["Type"]!.ToString()); // 종류
-                //        int PlaceId = Int32.Parse(jobj["PlaceIdx"]!.ToString()); // 사업장ID
-
-                //        switch (Voctype)
-                //        {
-                //            // 기계
-                //            case 1:
-                //                // obj에서 사업장+Room Name으로 Group항목에 넣어야함.
-                //                await HubContext.Clients.Group($"{PlaceId}_MachineRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 전기
-                //            case 2:
-                //                await HubContext.Clients.Group($"{PlaceId}_ElectricityRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 승강
-                //            case 3:
-                //                await HubContext.Clients.Group($"{PlaceId}_LiftRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 소방
-                //            case 4:
-                //                await HubContext.Clients.Group($"{PlaceId}_FireRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 건축
-                //            case 5:
-                //                await HubContext.Clients.Group($"{PlaceId}_ConstructRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 통신
-                //            case 6:
-                //                await HubContext.Clients.Group($"{PlaceId}_NetworkRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 미화
-                //            case 7:
-                //                await HubContext.Clients.Group($"{PlaceId}_BeautyRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok("123");
-                //            // 보안
-                //            case 8:
-                //                await HubContext.Clients.Group($"{PlaceId}_SecurityRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            // 기타
-                //            case 9:
-                //                await HubContext.Clients.Group($"{PlaceId}_DefaultRoom").SendAsync("ReceiveVoc", title);
-                //                return Ok(model);
-                //            default:
-                //                return BadRequest();
-                //        }
-                //    }
-                //    else
-                //    {
-                //        return BadRequest();
-                //    }
-                //}
-                //else
-                //{
-                //    return BadRequest();
-                //}
             }
             catch(Exception ex)
             {
@@ -152,9 +85,89 @@ namespace FamTec.Server.Controllers.Hubs
             }
         }
 
-       
+        /// <summary>
+        /// 민원 조회 [일반사용자]
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("VocInfo")]
+        public async ValueTask<IActionResult> GetVocInfo([FromQuery]string voccode)
+        {
+            try
+            {
+                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
 
 
+        /// <summary>
+        /// 민원에 대한 댓글 조회 [일반사용자]
+        /// </summary>
+        /// <param name="voccode"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetVocCommentList")]
+        public async ValueTask<IActionResult> GetVocComment([FromQuery]string voccode)
+        {
+            try
+            {
+                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// VOC 댓글 상세보기
+        /// </summary>
+        /// <param name="commentid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("VocCommentDetail")]
+        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
 
     }
 }

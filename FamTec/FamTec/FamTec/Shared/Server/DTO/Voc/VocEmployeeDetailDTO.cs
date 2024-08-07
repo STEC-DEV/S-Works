@@ -1,11 +1,16 @@
 ﻿namespace FamTec.Shared.Server.DTO.Voc
 {
-    public class VocDetailDTO
+    public class VocEmployeeDetailDTO
     {
         /// <summary>
         /// 민원 인덱스
         /// </summary>
         public int? Id { get; set; }
+
+        /// <summary>
+        /// 접수코드
+        /// </summary>
+        public string? Code { get; set; }
 
         /// <summary>
         /// 민원 신청일
@@ -48,15 +53,8 @@
         public string? Phone { get; set; }
 
         /// <summary>
-        /// 처리결과 반환유무
-        /// </summary>
-        public bool? ReplyYN { get; set; }
-
-        /// <summary>
         /// 이미지
         /// </summary>
         public List<byte[]> Images { get; set; } = new List<byte[]>();
-
-
     }
 }

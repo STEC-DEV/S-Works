@@ -17,6 +17,11 @@ namespace FamTec.Server.Repository.Voc
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// VOC 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async ValueTask<VocTb?> AddAsync(VocTb? model)
         {
             try
@@ -40,13 +45,75 @@ namespace FamTec.Server.Repository.Voc
         }
 
         /// <summary>
-        /// 로그인한 사업장에 속한 건물들에 대한 모든 민원리스트 반환
+        /// 사업장별 민원 리스트 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<VocListDTO>?> GetVocList(int? placeid)
+        {
+            try
+            {
+                if (placeid is null)
+                    return null;
+
+                List<int>? buildingidx = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid)
+                    .Select(m => m.Id)
+                    .ToListAsync();
+
+                if (buildingidx is [_, ..])
+                {
+                    List<VocTb>? VocModel = await context.VocTbs.Where(m => buildingidx.Contains(m.BuildingTbId!.Value) && m.DelYn != true).ToListAsync();
+
+                    if(VocModel is [_, ..])
+                    {
+                        List<VocListDTO>? dto = (from VocTB in VocModel
+                                                join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
+                                                on VocTB.BuildingTbId equals BuildingTB.Id
+                                                select new VocListDTO
+                                                {
+                                                    Id = VocTB.Id, // VOCID
+                                                    BuildingName = BuildingTB.Name, // 건물명
+                                                    Type = VocTB.Type, // 유형
+                                                    Title = VocTB.Title, // 제목
+                                                    Status = VocTB.Status, // 처리상태
+                                                    CreateDT = VocTB.CreateDt, // 민원 요청시간
+                                                    CompleteDT = VocTB.CompleteDt, // 민원처리 완료시간
+                                                    DurationDT = VocTB.DurationDt // 민원처리 소요시간
+                                                }).ToList();
+
+                        if (dto is not null)
+                            return dto;
+                        else
+                            return new List<VocListDTO>();
+                    }
+                    else
+                    {
+                        return new List<VocListDTO>();
+                    }
+
+                }
+                else
+                {
+                    // 건물이 없음
+                    return null;
+                }
+
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 조건별 민원 리스트 조회
         /// </summary>
         /// <param name="buildinglist"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<VocListDTO>?> GetVocList(int? placeid, DateTime? StartDate, DateTime? EndDate, int? Type, int? status,int? BuildingID)
+        public async ValueTask<List<VocListDTO>?> GetVocFilterList(int? placeid, DateTime? StartDate, DateTime? EndDate, int? Type, int? status,int? BuildingID)
         {
             try
             {
@@ -131,36 +198,15 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
+    
+
+
         /// <summary>
-        /// 해당일자의 VOC 건수 구하기
+        /// ID로 민원 상세조회
         /// </summary>
-        /// <param name="now"></param>
+        /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<int?> VocDaysCount(DateTime now)
-        {
-            try
-            {
-                string searchTerm = now.ToString("yyyy-MM-dd") + "%";
-
-                List<VocTb>? results = context.VocTbs
-                    .Where(e => EF.Functions.Like(e.CreateDt, searchTerm))
-                    .ToList();
-
-                if (results is [_, ..])
-                    return results.Count();
-                else
-                    return null;
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
-
-
-        // 민원 상세조회
-        public async ValueTask<VocTb?> GetDetailVoc(int? vocid)
+        public async ValueTask<VocTb?> GetVocInfoById(int? vocid)
         {
             try
             {
@@ -180,28 +226,15 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
-        public async ValueTask<bool> UpdateVocInfo(VocTb? model)
-        {
-            try
-            {
-                if(model is not null)
-                {
-                    context.VocTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
+       
 
-        public async ValueTask<VocTb?> GetVocInfo(string? code)
+        /// <summary>
+        /// Code로 민원 상세조회
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<VocTb?> GetVocInfoByCode(string? code)
         {
             try
             {
@@ -215,6 +248,27 @@ namespace FamTec.Server.Repository.Voc
                     return null;
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        public async ValueTask<bool> UpdateVocInfo(VocTb? model)
+        {
+            try
+            {
+                if (model is not null)
+                {
+                    context.VocTbs.Update(model);
+                    return await context.SaveChangesAsync() > 0 ? true : false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
