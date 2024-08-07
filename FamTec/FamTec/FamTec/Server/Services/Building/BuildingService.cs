@@ -13,9 +13,6 @@ namespace FamTec.Server.Services.Building
     public class BuildingService : IBuildingService
     {
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private readonly IBuildingGroupItemInfoRepository BuildingGroupItemInfoRepository;
-        private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
-        private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
 
         private IFileService FileService;
@@ -26,22 +23,13 @@ namespace FamTec.Server.Services.Building
         private string? PlaceFileFolderPath;
 
       
-
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
-            IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
-            IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
-            IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.BuildingInfoRepository = _buildinginforepository;
-            this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
-
-            this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
-            this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
-
             this.FloorInfoRepository = _floorinforepository;
 
             this.FileService = _fileservice;

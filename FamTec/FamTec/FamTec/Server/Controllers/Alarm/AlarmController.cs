@@ -1,0 +1,105 @@
+﻿using FamTec.Server.Services;
+using FamTec.Server.Services.Alarm;
+using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Alarm;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FamTec.Server.Controllers.Alarm
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AlarmController : ControllerBase
+    {
+        private readonly IAlarmService AlarmService;
+        private readonly ILogService LogService;
+
+        public AlarmController(IAlarmService _alarmservice,
+            ILogService _logservice)
+        {
+            this.AlarmService = _alarmservice;
+            this.LogService = _logservice;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAlarmList")]
+        public async ValueTask<IActionResult> GetAlarmList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<AlarmDTO?> model = await AlarmService.GetAllAlarmService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/AllAlarmDelete")]
+        public async ValueTask<IActionResult> AllAlarmDelete()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await AlarmService.AllAlarmDelete(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/AlarmDelete")]
+        public async ValueTask<IActionResult> AlarmDelete([FromQuery]int delId)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await AlarmService.AlarmDelete(HttpContext, delId);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+    }
+}

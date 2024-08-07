@@ -1,4 +1,4 @@
-﻿namespace FamTec.Shared.Server.Unit
+﻿namespace FamTec.Shared.Server.DTO.Unit
 {
     public class UnitsDTO
     {

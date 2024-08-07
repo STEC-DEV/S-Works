@@ -62,28 +62,28 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="obj"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> AddVocService(AddVocDTO? dto, List<IFormFile>? files)
+        public async ValueTask<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO? dto, List<IFormFile>? files)
         {
             try
             {
                 if (dto is null)
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (String.IsNullOrWhiteSpace(dto.Title))
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (String.IsNullOrWhiteSpace(dto.Contents))
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (String.IsNullOrWhiteSpace(dto.Name))
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto.Buildingid is null)
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto.Placeid is null)
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid);
                 if (buildingtb is null)
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // VOC관련한 폴더 없으면 만들기
                 VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, dto.Placeid);
@@ -152,7 +152,7 @@ namespace FamTec.Server.Services.Voc.Hub
                             PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId);
 
                             if (placeTB is null)
-                                return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                                return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                             // 제목
                             string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
@@ -229,17 +229,22 @@ namespace FamTec.Server.Services.Voc.Hub
                     }
 
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
-                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Code, code = 200 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO
+                    {
+                        ReceiptCode = ReceiptCode, // 접수번호
+                        PhoneNumber = result.Phone, // 전화번호
+                        CreateDT = result.CreateDt // 생성일
+                    }, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

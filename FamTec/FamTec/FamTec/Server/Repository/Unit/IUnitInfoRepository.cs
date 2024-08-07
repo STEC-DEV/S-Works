@@ -1,5 +1,5 @@
 ﻿using FamTec.Shared.Model;
-using FamTec.Shared.Server.Unit;
+using FamTec.Shared.Server.DTO.Unit;
 
 namespace FamTec.Server.Repository.Unit
 {

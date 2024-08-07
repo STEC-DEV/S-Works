@@ -1,7 +1,7 @@
 ﻿using FamTec.Server.Repository.Unit;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.Unit;
+using FamTec.Shared.Server.DTO.Unit;
 
 namespace FamTec.Server.Services.Unit
 {

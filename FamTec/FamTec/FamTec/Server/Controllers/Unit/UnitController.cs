@@ -1,11 +1,11 @@
 ﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Unit;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.Unit;
+using FamTec.Shared.Server.DTO.Unit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FamTec.Server.Controllers
+namespace FamTec.Server.Controllers.Unit
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,8 +17,8 @@ namespace FamTec.Server.Controllers
         public UnitController(IUnitService _unitservice,
             ILogService _logservice)
         {
-            this.UnitService = _unitservice;
-            this.LogService = _logservice;
+            UnitService = _unitservice;
+            LogService = _logservice;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace FamTec.Server.Controllers
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
@@ -59,7 +59,7 @@ namespace FamTec.Server.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUnitInfo")]
-        public async ValueTask<IActionResult> AddUnitInfo([FromBody]UnitsDTO dto)
+        public async ValueTask<IActionResult> AddUnitInfo([FromBody] UnitsDTO dto)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace FamTec.Server.Controllers
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
@@ -86,7 +86,7 @@ namespace FamTec.Server.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteUnitInfo")]
-        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody]int unitid)
+        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody] int unitid)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace FamTec.Server.Controllers
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
@@ -112,7 +112,7 @@ namespace FamTec.Server.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateUnitInfo")]
-        public async ValueTask<IActionResult> UpdateUnitInfo([FromBody]UnitsDTO dto)
+        public async ValueTask<IActionResult> UpdateUnitInfo([FromBody] UnitsDTO dto)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace FamTec.Server.Controllers
                 else
                     return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);

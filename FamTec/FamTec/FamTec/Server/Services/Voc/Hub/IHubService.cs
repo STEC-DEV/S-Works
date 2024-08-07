@@ -15,7 +15,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="obj"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> AddVocService(AddVocDTO? dto, List<IFormFile>? image);
+        public ValueTask<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO? dto, List<IFormFile>? image);
 
         /// <summary>
         /// 민원 조회 - 민원인 전용

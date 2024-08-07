@@ -404,6 +404,42 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Alarm.AlarmController",
+    "Method": "AlarmDelete",
+    "RelativePath": "api/Alarm/sign/AlarmDelete",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "delId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Alarm.AlarmController",
+    "Method": "AllAlarmDelete",
+    "RelativePath": "api/Alarm/sign/AllAlarmDelete",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Alarm.AlarmController",
+    "Method": "GetAlarmList",
+    "RelativePath": "api/Alarm/sign/GetAlarmList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.BeautyFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/BeautyFacility/sign/AddBeautyFacility",
@@ -3647,7 +3683,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "ContainingType": "FamTec.Server.Controllers.Unit.UnitController",
     "Method": "AddUnitInfo",
     "RelativePath": "api/Unit/sign/AddUnitInfo",
     "HttpMethod": "POST",
@@ -3656,14 +3692,14 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FamTec.Shared.Server.Unit.UnitsDTO",
+        "Type": "FamTec.Shared.Server.DTO.Unit.UnitsDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "ContainingType": "FamTec.Server.Controllers.Unit.UnitController",
     "Method": "DeleteUnitInfo",
     "RelativePath": "api/Unit/sign/DeleteUnitInfo",
     "HttpMethod": "POST",
@@ -3679,7 +3715,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "ContainingType": "FamTec.Server.Controllers.Unit.UnitController",
     "Method": "GetUnitList",
     "RelativePath": "api/Unit/sign/SelectUnitList",
     "HttpMethod": "GET",
@@ -3689,7 +3725,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.UnitController",
+    "ContainingType": "FamTec.Server.Controllers.Unit.UnitController",
     "Method": "UpdateUnitInfo",
     "RelativePath": "api/Unit/sign/UpdateUnitInfo",
     "HttpMethod": "POST",
@@ -3698,7 +3734,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FamTec.Shared.Server.Unit.UnitsDTO",
+        "Type": "FamTec.Shared.Server.DTO.Unit.UnitsDTO",
         "IsRequired": true
       }
     ],

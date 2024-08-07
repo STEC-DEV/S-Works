@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-<!-- 
+
 @page "/VocSubmit/{placeid?}/{buildingid?}" 
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Voc
@@ -19,6 +19,15 @@
     table, th, td{
         border: 1px solid black;
     }
+
+    .custom-file-label {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+    }
 </style>
 
 <p>확인용 PLACEID</p>
@@ -26,21 +35,6 @@
 <h1>민원 접수</h1>
 
 <div style="display:flex; flex-direction:column; align-items:start; justify-content: space-between;">
-    <div style="display:flex">
-        <p>민원종류</p>
-        <InputSelect @bind-Value=dto.Type>
-            <option value="1">기계</option>
-            <option value="2">전기</option>
-            <option value="3">승강</option>
-            <option value="4">소방</option>
-            <option value="5">건축</option>
-            <option value="6">통신</option>
-            <option value="7">미화</option>
-            <option value="8">보안</option>
-            <option value="9">기타</option>
-        </InputSelect>
-    </div>
-
     <div style="display:flex; padding:10px">
         <p>성함: </p>
         <input type="text" @bind=dto.Name placeholder="문자만 입력"/>
@@ -66,15 +60,17 @@
         <div style="display:flex">
             <p>첨부파일</p>
             
-            <InputFile OnChange="@LoadFiles" multiple/>
+            <label for="fileInput" class="custom-file-label">파일 선택</label>
+            <InputFile id="fileInput" OnChange="@LoadFiles" multiple style="display:none;" />
 
-            @*
+           @*
             <input type="file" @ref="inputReference" @onchange="async () => await btnUpload()" multiple />
             *@
             @*
             <InputFile OnChange="btnUpload" multiple/>
             *@
             @*<input type=" @onclick="btnUpload" value="첨부파일 추가"/>*@
+
         </div>
         <table style="border-collapse: collapse">
             <thead>
@@ -99,9 +95,9 @@
     </div>
 </div>
 <input type="button" @onclick="async() => await btnSubmit()" value="등록"/>
--->
+
 @code {
-    @*
+
     [Parameter]
     public string PlaceId{ get; set; }
 
@@ -120,8 +116,6 @@
     protected override async Task OnInitializedAsync()
     {
         dto = new AddVocDTO();
-        dto.buildingidx = Int32.Parse(buildingid); // 해당 빌딩 INDEX -- QR로 넘어옴
-        dto.PlaceIdx = Int32.Parse(PlaceId); // 해당 빌딩이 속해있는 PlaceID
     }
 
     protected async Task LoadFiles(InputFileChangeEventArgs e)
@@ -131,6 +125,11 @@
 
         foreach(var file in e.GetMultipleFiles(maxAllowedFiles))
         {
+            if(e.GetMultipleFiles().Count > 3)
+            {
+                break;
+            }
+
             var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
@@ -157,13 +156,10 @@
     {
         using StringContent jsonContent = new(JsonSerializer.Serialize(new AddVocDTO
             {
-                Type = dto.Type, // 미화?
                 Name = dto.Name, // 이름
                 Title = dto.Title, // 제목
                 Contents = dto.Contents, // 내용
                 PhoneNumber = dto.PhoneNumber, // 전화번호
-                buildingidx = dto.buildingidx, // 건물인덱스
-                PlaceIdx = dto.PlaceIdx
             }), System.Text.Encoding.UTF8, "application/json");
 
         content.Add(jsonContent);
@@ -186,5 +182,5 @@
         public string? Name { get; set; }
         public string? Size{ get; set; }
     }
-    *@
+   
 }

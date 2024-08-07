@@ -60,6 +60,7 @@ using FamTec.Server.Services.Admin.Maintenance;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Services.Voc.Hub;
+using FamTec.Server.Services.Alarm;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,7 +68,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 
 //builder.Services.AddHttpClient();
-
 
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
@@ -143,6 +143,7 @@ builder.Services.AddTransient<IMaintanceService, MaintanceService>();
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 
 builder.Services.AddTransient<IKakaoService, KakaoService>();
+builder.Services.AddTransient<IAlarmService, AlarmService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -422,6 +423,12 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Store/sign"
 
 // Maintenence 값 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Maintenance/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// Alarm 값 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });
