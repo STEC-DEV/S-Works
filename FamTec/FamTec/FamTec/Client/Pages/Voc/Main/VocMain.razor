@@ -1,23 +1,20 @@
 ﻿@layout MainLayout2
 @page "/voc/banner"
 
+
 @using FamTec.Client.Pages.Voc.Main.Components
 
 <div class="main">
-    <div class="header">
+    <div class="header yappear">
         <span class="title">
             Sworks 민원
         </span>
     </div>
-    <div class="content">
+    <div class="content yappear">
+        <SelectInput Label="접수번호" Placeholder="접수번호"/>
         <BannerBtn 
             Label="민원 접수"
             Url="/voc/add"
-            Type=true
-            />
-        <BannerBtn 
-            Label="민원 조회"
-            Type=false
             />
     </div>
 </div>

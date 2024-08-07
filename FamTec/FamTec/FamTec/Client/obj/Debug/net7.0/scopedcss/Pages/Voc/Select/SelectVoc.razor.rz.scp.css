@@ -1,0 +1,31 @@
+.select[b-vzwdelykpg]{
+    display : flex;
+    flex-direction : column;
+    justify-content :space-between;
+    gap : var(--wide-pd);
+    /*height :100%;*/
+    
+}
+
+.title[b-vzwdelykpg] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.content[b-vzwdelykpg]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--wide-pd);
+}
+
+.item[b-vzwdelykpg]{
+    display :flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+}
+
+.item-title[b-vzwdelykpg] {
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}

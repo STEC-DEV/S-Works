@@ -1199,3 +1199,8 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Add\VocAdd.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Main\Components\BannerBtn.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Main\VocMain.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Main\Components\SelectInput.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Select\SelectVoc.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Select\Components\TextField.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Select\Components\StateBar.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Select\Components\Content.razor.rz.scp.css

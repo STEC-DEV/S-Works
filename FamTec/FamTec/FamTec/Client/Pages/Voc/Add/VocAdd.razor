@@ -4,13 +4,13 @@
 @using FamTec.Client.Pages.Voc.Add.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
 
-<div class="voc">
-    <div class="header">
+<div class="voc ">
+    <div class="header yappear">
         <span class="title">
             민원 접수
         </span>
     </div>
-    <div class="content">
+    <div class="content yappear">
         <VocInput
             Label="성함"
             @bind-Value=@Voc.Name
@@ -30,16 +30,20 @@
             TextArea=true 
             Height=true
             />
-        <InputFile multiple/>
+        <label for="files">
+            이미지 여기에 올려
+        </label>
+        <InputFile id="files" type="file" multiple OnChange="OnUploadImage" />
     </div>
-    <div class="btns">
+    <div class="btns yappear">
         <Button Name="접수" Type="0" OnClick="@OnAdd"/>
-        <Button Name="취소" Type="1"/>
+        <Button Name="취소" Type="1" OnClick="@Return" />
     </div>
 </div>
 
 @code {
     AddVoc Voc = new AddVoc();
+    int maxAllowedFiles = 3;
 
     private async Task OnAdd()
     {
@@ -51,5 +55,24 @@
         {
             await JS.InvokeVoidAsync("alert", "민원 추가 에러");
         }
+    }
+
+    private async void OnUploadImage(InputFileChangeEventArgs e)
+    {
+        Console.WriteLine("hi");
+
+        
+        // if (e.FileCount > 3)
+        // {
+        //     await JS.InvokeVoidAsync("alert", "이미지 파일은 최대 3장까지 가능합니다.");
+        //     e.GetMultipleFiles(maxAllowedFiles);
+        //     return;
+        // }
+        
+    }
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/voc/banner");
     }
 }

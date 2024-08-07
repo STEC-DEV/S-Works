@@ -38,6 +38,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dENvbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/InputFiles.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dEZpbGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/ExcelExample.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhjZWxFeGFtcGxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -522,9 +526,29 @@ build_metadata.AdditionalFiles.CssScope = b-ctwc34a2zh
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXE1haW5cQ29tcG9uZW50c1xCYW5uZXJCdG4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-sdw1dk55vx
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Main/Components/SelectInput.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXE1haW5cQ29tcG9uZW50c1xTZWxlY3RJbnB1dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-m9jn5aynoi
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Main/VocMain.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXE1haW5cVm9jTWFpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-vo74q2bouq
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Select/Components/Content.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXFNlbGVjdFxDb21wb25lbnRzXENvbnRlbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-lks9rc0458
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Select/Components/StateBar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXFNlbGVjdFxDb21wb25lbnRzXFN0YXRlQmFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-nawc4o3qgl
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Select/Components/TextField.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXFNlbGVjdFxDb21wb25lbnRzXFRleHRGaWVsZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-aaejot3a90
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Select/SelectVoc.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXFNlbGVjdFxTZWxlY3RWb2MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-vzwdelykpg
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Shared/Drawer.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXERyYXdlci5yYXpvcg==

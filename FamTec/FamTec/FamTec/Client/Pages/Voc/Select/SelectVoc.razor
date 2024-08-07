@@ -1,0 +1,57 @@
+﻿@layout MainLayout2
+@page "/voc/select/{Id}"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.Voc.Select.Components
+
+
+<div class="select yappear">
+    <div class="header">
+        <span class="title">
+            민원 조회
+        </span>
+    </div>
+    <StateBar/>
+    <div class="content">
+        <div class="item">
+            <span class="item-title">
+                접수내용
+            </span>
+             <Content />
+        </div>
+        <div class="item">
+            <span class="item-title">
+                처리내용
+            </span>
+        </div>
+    </div>
+    <Button Name="확인" Type="0" OnClick="OnReturn"/>
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; }
+    DetailVocDTO Voc;
+
+    protected override Task OnInitializedAsync()
+    {
+
+        return base.OnInitializedAsync();
+    }
+    private async Task OnLoadVoc()
+    {
+        try{
+            // ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Voc/sign/GetDetailVoc?");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Voc][Detail][User] 민원 조회 에러" +ex);
+            await JS.InvokeVoidAsync("alert", "민원 조회 에러");
+        }
+    }
+
+    private void OnReturn()
+    {
+        Navigation.NavigateTo("/voc/banner");
+    }
+}

@@ -1,0 +1,43 @@
+﻿.key-value-pair {
+    display: flex;
+    border : var(--comp-bd);
+    border-radius :var(--default-rd);
+    overflow :hidden;
+    font-size : var(--normal-size);
+
+    
+}
+
+.key {
+    display :flex;
+    align-items :center;
+    flex: 0 0 100px; /* 여기를 수정했습니다 */
+    padding: var(--half-pd) var(--default-pd);
+    font-weight: bold;
+    color: var(--default-color);
+    background-color: var(--main-color);
+    white-space: normal; /* 텍스트가 넘치지 않도록 */
+    overflow: hidden; /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
+}
+
+.value {
+    overflow : scroll;
+    padding: var(--half-pd) var(--default-pd);
+    flex: 1;
+    color: var(--main-color);
+    background-color : var(--default-color);
+    max-height : calc(1rem*10)
+}
+
+@media (max-width: 600px) {
+    .key-value-pair {
+
+        flex-direction: column;
+    }
+
+    .key {
+        flex: 0 0 auto;
+        margin-bottom: 2px;
+    }
+}

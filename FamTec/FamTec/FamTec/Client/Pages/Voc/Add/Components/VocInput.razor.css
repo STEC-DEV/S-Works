@@ -14,15 +14,19 @@
 .input{
     outline : none;
     border :none;
+    border-radius: var(--default-rd) var(--default-rd) 0 0;
+    
     border-bottom : var(--comp-bd);
+    overflow :hidden;
 
     padding :var(--default-pd);
-    background-color :transparent;
+    background-color :var(--default-color);
     
 
     transition : all .3s;
 
     font-size : var(--normal-size);
+    font-weight : bold;
 }
 .height{
     flex : 1;
@@ -41,8 +45,10 @@
     border-radius : var(--default-rd);
 
     padding :var(--default-pd);
-    background-color :transparent;
+    background-color :var(--default-color);
     
+    font-size : var(--normal-size);
+    font-weight : bold;
 
     transition : all .3s;
 
@@ -52,13 +58,13 @@
 
 .textarea:focus{
     border : var(--default-bd);
-    background-color :var(--content-back-color);
+    background-color :var(--default-color);
 }
 
 .input:focus {
-    border-radius: var(--default-rd) var(--default-rd) 0 0; 
+    border-radius: var(--default-rd) var(--default-rd) 0 0;
     border-bottom: var(--default-bd);
-    background-color: var(--content-back-color);
+    background-color: var(--default-color);
 }
 
 .inputfield:focus-within .label {
