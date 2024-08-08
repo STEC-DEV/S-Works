@@ -32,7 +32,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid,int? materialid, DateTime? startDate,  DateTime? endDate)
+        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid,int? materialid, DateTime? startDate, DateTime? endDate)
         {
             try
             {
@@ -275,15 +275,13 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO>? dto, string? creater,int? placeid, string? GUID)
+        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO>? dto, string? creater,int placeid, string? GUID)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
                     if (dto is null)
-                        return null;
-                    if(placeid is null)
                         return null;
                     if (String.IsNullOrWhiteSpace(creater))
                         return null;
@@ -353,7 +351,7 @@ namespace FamTec.Server.Repository.Inventory
                             context.InventoryTbs.Add(Inventorytb);
 
 
-                            int? thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
+                            int thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
                             m.MaterialTbId == InventoryDTO.MaterialID &&
                             m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                             m.PlaceTbId == placeid).Sum(m => m.Num);
@@ -574,15 +572,13 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO>? dto, string? creater, int? placeid, string? GUID)
+        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO>? dto, string? creater, int placeid, string? GUID)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
                     if (dto is null)
-                        return null;
-                    if (placeid is null)
                         return null;
                     if (String.IsNullOrWhiteSpace(creater))
                         return null;
@@ -674,7 +670,7 @@ namespace FamTec.Server.Repository.Inventory
                                 if(result >= model.AddStore.Num) // 출고개수가 충분할때만 동작
                                 {
                                     // 개수만큼 - 빼주면 됨
-                                    int? outresult = 0;
+                                    int outresult = 0;
                                     foreach(InventoryTb OutInventoryTb in OutModel)
                                     {
                                         outresult += OutInventoryTb.Num;
@@ -726,7 +722,7 @@ namespace FamTec.Server.Repository.Inventory
                             }
 
                             // Inventory 테이블에서 해당 품목의 개수 Sum
-                            int? thisCurrentNum = context.InventoryTbs.Where(m =>
+                            int thisCurrentNum = context.InventoryTbs.Where(m =>
                             m.DelYn != true &&
                             m.MaterialTbId == model.MaterialID &&
                             m.RoomTbId == model.AddStore.RoomID &&
@@ -734,8 +730,6 @@ namespace FamTec.Server.Repository.Inventory
                                 .Sum(m => m.Num);
 
 
-                            if (thisCurrentNum == null)
-                                thisCurrentNum = 0;
 
                             StoreTb store = new StoreTb();
                             store.Inout = model.InOut;

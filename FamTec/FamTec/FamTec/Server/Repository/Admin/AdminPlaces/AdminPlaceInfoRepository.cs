@@ -570,18 +570,18 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<(List<int?>? insert, List<int?>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int?> placeidx)
+        public async ValueTask<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int> placeidx)
         {
             try
             {
-                List<int?>? selectplaceidx = null;
-                List<int?>? insertplaceidx = null;
-                List<int?>? deleteplaceidx = null;
+                List<int>? selectplaceidx = null;
+                List<int>? insertplaceidx = null;
+                List<int>? deleteplaceidx = null;
                 
                 if (adminid is null)
                     return null;
 
-                List<int?> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceTbId).ToListAsync();
+                List<int> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceTbId).ToListAsync();
 
                 if (placeidx is [_, ..])
                 {
@@ -699,7 +699,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
                 if(adminplacetb is [_, ..])
                 {
-                    List<int?> adminplacetbid = adminplacetb.Select(m => m.PlaceTbId).ToList();
+                    List<int> adminplacetbid = adminplacetb.Select(m => m.PlaceTbId).ToList();
 
                     List<PlaceTb>? placetb = await context.PlaceTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
                     if(placetb is [_, ..])

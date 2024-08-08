@@ -107,9 +107,13 @@ public partial class WorksContext : DbContext
                 .HasComment("삭제여부");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
 
-            entity.HasOne(d => d.AdminTb).WithMany(p => p.AdminPlaceTbs).HasConstraintName("fk_admin_place_tb_admin_tb1");
+            entity.HasOne(d => d.AdminTb).WithMany(p => p.AdminPlaceTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_admin_place_tb_admin_tb1");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.AdminPlaceTbs).HasConstraintName("fk_admin_place_tb_place_tb1");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.AdminPlaceTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_admin_place_tb_place_tb1");
         });
 
         modelBuilder.Entity<AdminTb>(entity =>
@@ -134,9 +138,13 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateUser).HasComment("수정자");
             entity.Property(e => e.UserTbId).HasComment("사용자 인덱스");
 
-            entity.HasOne(d => d.DepartmentTb).WithMany(p => p.AdminTbs).HasConstraintName("fk_admin_tb_departments_tb1");
+            entity.HasOne(d => d.DepartmentTb).WithMany(p => p.AdminTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_admin_tb_departments_tb1");
 
-            entity.HasOne(d => d.UserTb).WithMany(p => p.AdminTbs).HasConstraintName("fk_admin_tb_users_tb");
+            entity.HasOne(d => d.UserTb).WithMany(p => p.AdminTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_admin_tb_users_tb");
         });
 
         modelBuilder.Entity<AlarmTb>(entity =>
@@ -148,9 +156,13 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
 
-            entity.HasOne(d => d.UsersTb).WithMany(p => p.AlarmTbs).HasConstraintName("fk_alarm_tb_users_tb1");
+            entity.HasOne(d => d.UsersTb).WithMany(p => p.AlarmTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_alarm_tb_users_tb1");
 
-            entity.HasOne(d => d.VocTb).WithMany(p => p.AlarmTbs).HasConstraintName("fk_alarm_tb_voc_tb1");
+            entity.HasOne(d => d.VocTb).WithMany(p => p.AlarmTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_alarm_tb_voc_tb1");
         });
 
         modelBuilder.Entity<BlacklistTb>(entity =>
@@ -180,7 +192,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.BuildingItemGroupTbs).HasConstraintName("fk_building_item_group_building_tb1");
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.BuildingItemGroupTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_building_item_group_building_tb1");
         });
 
         modelBuilder.Entity<BuildingItemKeyTb>(entity =>
@@ -204,7 +218,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.BuildingGroupTb).WithMany(p => p.BuildingItemKeyTbs).HasConstraintName("fk_building_item_key_building_item_group1");
+            entity.HasOne(d => d.BuildingGroupTb).WithMany(p => p.BuildingItemKeyTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_building_item_key_building_item_group1");
         });
 
         modelBuilder.Entity<BuildingItemValueTb>(entity =>
@@ -227,7 +243,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.BuildingKeyTb).WithMany(p => p.BuildingItemValueTbs).HasConstraintName("fk_building_item_value_building_item_key1");
+            entity.HasOne(d => d.BuildingKeyTb).WithMany(p => p.BuildingItemValueTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_building_item_value_building_item_key1");
         });
 
         modelBuilder.Entity<BuildingTb>(entity =>
@@ -295,7 +313,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.WaterTank).HasComment("저수조");
             entity.Property(e => e.WomenToiletNum).HasComment("여자");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.BuildingTbs).HasConstraintName("fk_building_tb_place_tb1");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.BuildingTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_building_tb_place_tb1");
         });
 
         modelBuilder.Entity<CommentTb>(entity =>
@@ -309,9 +329,13 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Status).HasComment("처리상태");
 
-            entity.HasOne(d => d.UserTb).WithMany(p => p.CommentTbs).HasConstraintName("FKUsertbId_202407311313");
+            entity.HasOne(d => d.UserTb).WithMany(p => p.CommentTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKUsertbId_202407311313");
 
-            entity.HasOne(d => d.VocTb).WithMany(p => p.CommentTbs).HasConstraintName("fk_comment_tb_voc_tb1");
+            entity.HasOne(d => d.VocTb).WithMany(p => p.CommentTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_comment_tb_voc_tb1");
         });
 
         modelBuilder.Entity<DepartmentsTb>(entity =>
@@ -386,7 +410,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.FacilityTb).WithMany(p => p.FacilityItemGroupTbs).HasConstraintName("fk_facility_item_group_facility_tb1");
+            entity.HasOne(d => d.FacilityTb).WithMany(p => p.FacilityItemGroupTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_facility_item_group_facility_tb1");
         });
 
         modelBuilder.Entity<FacilityItemKeyTb>(entity =>
@@ -410,7 +436,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.FacilityItemGroupTb).WithMany(p => p.FacilityItemKeyTbs).HasConstraintName("fk_facility_item_key_facility_item_group1");
+            entity.HasOne(d => d.FacilityItemGroupTb).WithMany(p => p.FacilityItemKeyTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_facility_item_key_facility_item_group1");
         });
 
         modelBuilder.Entity<FacilityItemValueTb>(entity =>
@@ -431,7 +459,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.FacilityItemKeyTb).WithMany(p => p.FacilityItemValueTbs).HasConstraintName("fk_facility_item_value_facility_item_key1");
+            entity.HasOne(d => d.FacilityItemKeyTb).WithMany(p => p.FacilityItemValueTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_facility_item_value_facility_item_key1");
         });
 
         modelBuilder.Entity<FacilityTb>(entity =>
@@ -462,7 +492,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.RoomTb).WithMany(p => p.FacilityTbs).HasConstraintName("fk_facility_tb_room_tb1");
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.FacilityTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_facility_tb_room_tb1");
         });
 
         modelBuilder.Entity<FloorTb>(entity =>
@@ -485,7 +517,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.FloorTbs).HasConstraintName("fk_floor_tb_building_tb1");
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.FloorTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_floor_tb_building_tb1");
         });
 
         modelBuilder.Entity<InventoryTb>(entity =>
@@ -495,11 +529,17 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
 
-            entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_material_tb1");
+            entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_invenory_tb_material_tb1");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_place_tb1");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.InventoryTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_invenory_tb_place_tb1");
 
-            entity.HasOne(d => d.RoomTb).WithMany(p => p.InventoryTbs).HasConstraintName("fk_invenory_tb_room_tb1");
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.InventoryTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_invenory_tb_room_tb1");
         });
 
         modelBuilder.Entity<KakaoLogTb>(entity =>
@@ -507,10 +547,22 @@ public partial class WorksContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.BuildingTbId).HasComment("건물ID");
+            entity.Property(e => e.Code).HasComment("전송결과 코드");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.Message).HasComment("전송결과 메시지");
             entity.Property(e => e.PlaceTbId).HasComment("사업장ID");
-            entity.Property(e => e.Result).HasComment("전송결과");
-            entity.Property(e => e.Title).HasComment("제목");
+
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.KakaoLogTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BUILDING_TB_ID_202408080816");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.KakaoLogTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PLACE_TB_ID_202408080816");
+
+            entity.HasOne(d => d.VocTb).WithMany(p => p.KakaoLogTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VOC_TB_ID_202408080816");
         });
 
         modelBuilder.Entity<MaintenenceHistoryTb>(entity =>
@@ -529,7 +581,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UnitPrice).HasComment("단가");
             entity.Property(e => e.Worker).HasComment("작업자");
 
-            entity.HasOne(d => d.FacilityTb).WithMany(p => p.MaintenenceHistoryTbs).HasConstraintName("fk_maintenence_history_tb_facility_tb1");
+            entity.HasOne(d => d.FacilityTb).WithMany(p => p.MaintenenceHistoryTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_maintenence_history_tb_facility_tb1");
         });
 
         modelBuilder.Entity<MaterialTb>(entity =>
@@ -548,7 +602,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Standard).HasComment("규격");
             entity.Property(e => e.Unit).HasComment("단위");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.MaterialTbs).HasConstraintName("fk_material_tb_place_tb1");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.MaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_material_tb_place_tb1");
         });
 
         modelBuilder.Entity<MeterItemTb>(entity =>
@@ -587,39 +643,17 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DepartmentTbId).HasComment("관리부서 인덱스");
             entity.Property(e => e.Name).HasComment("사업장명");
             entity.Property(e => e.Note).HasComment("비고");
-            entity.Property(e => e.PermBeauty)
-                .HasDefaultValueSql("'0'")
-                .HasComment("미화 권한");
-            entity.Property(e => e.PermConstruct)
-                .HasDefaultValueSql("'0'")
-                .HasComment("건축관리 권한");
-            entity.Property(e => e.PermElec)
-                .HasDefaultValueSql("'0'")
-                .HasComment("전기관리 권한");
-            entity.Property(e => e.PermEnergy)
-                .HasDefaultValueSql("'0'")
-                .HasComment("에너지관리 권한");
-            entity.Property(e => e.PermFire)
-                .HasDefaultValueSql("'0'")
-                .HasComment("소방관리 권한");
-            entity.Property(e => e.PermLift)
-                .HasDefaultValueSql("'0'")
-                .HasComment("승강관리 권한");
-            entity.Property(e => e.PermMachine)
-                .HasDefaultValueSql("'0'")
-                .HasComment("기게정보권한");
-            entity.Property(e => e.PermMaterial)
-                .HasDefaultValueSql("'0'")
-                .HasComment("자재관리 권한");
-            entity.Property(e => e.PermNetwork)
-                .HasDefaultValueSql("'0'")
-                .HasComment("통신관리 권한");
-            entity.Property(e => e.PermSecurity)
-                .HasDefaultValueSql("'0'")
-                .HasComment("보안 권한");
-            entity.Property(e => e.PermVoc)
-                .HasDefaultValueSql("'0'")
-                .HasComment("민원관리 권한");
+            entity.Property(e => e.PermBeauty).HasComment("미화 권한");
+            entity.Property(e => e.PermConstruct).HasComment("건축관리 권한");
+            entity.Property(e => e.PermElec).HasComment("전기관리 권한");
+            entity.Property(e => e.PermEnergy).HasComment("에너지관리 권한");
+            entity.Property(e => e.PermFire).HasComment("소방관리 권한");
+            entity.Property(e => e.PermLift).HasComment("승강관리 권한");
+            entity.Property(e => e.PermMachine).HasComment("기게정보권한");
+            entity.Property(e => e.PermMaterial).HasComment("자재관리 권한");
+            entity.Property(e => e.PermNetwork).HasComment("통신관리 권한");
+            entity.Property(e => e.PermSecurity).HasComment("보안 권한");
+            entity.Property(e => e.PermVoc).HasComment("민원관리 권한");
             entity.Property(e => e.PlaceCd).HasComment("사업장 코드");
             entity.Property(e => e.Status).HasComment("계약상태");
             entity.Property(e => e.Tel).HasComment("전화번호");
@@ -647,7 +681,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
-            entity.HasOne(d => d.FloorTb).WithMany(p => p.RoomTbs).HasConstraintName("fk_room_tb_floor_tb1");
+            entity.HasOne(d => d.FloorTb).WithMany(p => p.RoomTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_room_tb_floor_tb1");
         });
 
         modelBuilder.Entity<StoreTb>(entity =>
@@ -670,11 +706,17 @@ public partial class WorksContext : DbContext
 
             entity.HasOne(d => d.MaintenenceHistoryTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_maintenence_history_tb1");
 
-            entity.HasOne(d => d.MaterialTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_material_tb1");
+            entity.HasOne(d => d.MaterialTb).WithMany(p => p.StoreTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_store_tb_material_tb1");
 
-            entity.HasOne(d => d.PlaceTb).WithMany(p => p.StoreTbs).HasConstraintName("FK_PLACE_202407231358");
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.StoreTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PLACE_202407231358");
 
-            entity.HasOne(d => d.RoomTb).WithMany(p => p.StoreTbs).HasConstraintName("FK_ROOM_202407231358");
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.StoreTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ROOM_202407231358");
         });
 
         modelBuilder.Entity<UnitTb>(entity =>
@@ -721,12 +763,8 @@ public partial class WorksContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.Id).HasComment("사용자 인덱스");
-            entity.Property(e => e.AdminYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("관리자 여부");
-            entity.Property(e => e.AlarmYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("알람여부");
+            entity.Property(e => e.AdminYn).HasComment("관리자 여부");
+            entity.Property(e => e.AlarmYn).HasComment("알람여부");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("생성일자");
@@ -741,45 +779,19 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Job).HasComment("직책");
             entity.Property(e => e.Name).HasComment("이름");
             entity.Property(e => e.Password).HasComment("비밀번호");
-            entity.Property(e => e.PermBasic)
-                .HasDefaultValueSql("'0'")
-                .HasComment("기본정보 권한");
-            entity.Property(e => e.PermBeauty)
-                .HasDefaultValueSql("'0'")
-                .HasComment("미화 권한");
-            entity.Property(e => e.PermConstruct)
-                .HasDefaultValueSql("'0'")
-                .HasComment("건축관리 권한");
-            entity.Property(e => e.PermElec)
-                .HasDefaultValueSql("'0'")
-                .HasComment("전기관리 권한");
-            entity.Property(e => e.PermEnergy)
-                .HasDefaultValueSql("'0'")
-                .HasComment("에너지관리 권한");
-            entity.Property(e => e.PermFire)
-                .HasDefaultValueSql("'0'")
-                .HasComment("소방관리 권한");
-            entity.Property(e => e.PermLift)
-                .HasDefaultValueSql("'0'")
-                .HasComment("승강관리 권한");
-            entity.Property(e => e.PermMachine)
-                .HasDefaultValueSql("'0'")
-                .HasComment("기계관리 권한");
-            entity.Property(e => e.PermMaterial)
-                .HasDefaultValueSql("'0'")
-                .HasComment("자재관리 권한");
-            entity.Property(e => e.PermNetwork)
-                .HasDefaultValueSql("'0'")
-                .HasComment("통신연동 권한");
-            entity.Property(e => e.PermSecurity)
-                .HasDefaultValueSql("'0'")
-                .HasComment("보안 권한");
-            entity.Property(e => e.PermUser)
-                .HasDefaultValueSql("'0'")
-                .HasComment("사용자 관리 권한");
-            entity.Property(e => e.PermVoc)
-                .HasDefaultValueSql("'0'")
-                .HasComment("민원관리 권한");
+            entity.Property(e => e.PermBasic).HasComment("기본정보 권한");
+            entity.Property(e => e.PermBeauty).HasComment("미화 권한");
+            entity.Property(e => e.PermConstruct).HasComment("건축관리 권한");
+            entity.Property(e => e.PermElec).HasComment("전기관리 권한");
+            entity.Property(e => e.PermEnergy).HasComment("에너지관리 권한");
+            entity.Property(e => e.PermFire).HasComment("소방관리 권한");
+            entity.Property(e => e.PermLift).HasComment("승강관리 권한");
+            entity.Property(e => e.PermMachine).HasComment("기계관리 권한");
+            entity.Property(e => e.PermMaterial).HasComment("자재관리 권한");
+            entity.Property(e => e.PermNetwork).HasComment("통신연동 권한");
+            entity.Property(e => e.PermSecurity).HasComment("보안 권한");
+            entity.Property(e => e.PermUser).HasComment("사용자 관리 권한");
+            entity.Property(e => e.PermVoc).HasComment("민원관리 권한");
             entity.Property(e => e.Phone).HasComment("전화번호");
             entity.Property(e => e.Status)
                 .HasDefaultValueSql("'1'")
@@ -806,13 +818,13 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Image2).HasComment("이미지");
             entity.Property(e => e.Image3).HasComment("이미지");
             entity.Property(e => e.Phone).HasComment("전화번호");
-            entity.Property(e => e.ReplyYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("답변회신여부");
+            entity.Property(e => e.ReplyYn).HasComment("답변회신여부");
             entity.Property(e => e.Status).HasComment("민원처리상태");
             entity.Property(e => e.Title).HasComment("민원제목");
 
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.VocTbs).HasConstraintName("building_tb_202407250842");
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.VocTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("building_tb_202407250842");
         });
 
         OnModelCreatingPartial(modelBuilder);
@@ -829,6 +841,7 @@ public partial class WorksContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
 [Keyless]
 public partial class MaterialInventory
 {

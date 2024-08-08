@@ -26,52 +26,52 @@ public partial class MaintenenceHistoryTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 작업구분
     /// </summary>
     [Column("TYPE", TypeName = "int(11)")]
-    public int? Type { get; set; }
+    public int Type { get; set; }
 
     /// <summary>
     /// 작업자
     /// </summary>
     [Column("WORKER")]
     [StringLength(255)]
-    public string? Worker { get; set; }
+    public string Worker { get; set; } = null!;
 
     /// <summary>
     /// 단가
     /// </summary>
     [Column("UNIT_PRICE")]
-    public float? UnitPrice { get; set; }
+    public float UnitPrice { get; set; }
 
     /// <summary>
     /// 수량
     /// </summary>
     [Column("NUM", TypeName = "int(11)")]
-    public int? Num { get; set; }
+    public int Num { get; set; }
 
     /// <summary>
     /// 소요비용
     /// </summary>
     [Column("TOTAL_PRICE")]
-    public float? TotalPrice { get; set; }
+    public float TotalPrice { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -84,11 +84,11 @@ public partial class MaintenenceHistoryTb
     public string? DelUser { get; set; }
 
     [Column("FACILITY_TB_ID", TypeName = "int(11)")]
-    public int? FacilityTbId { get; set; }
+    public int FacilityTbId { get; set; }
 
     [ForeignKey("FacilityTbId")]
     [InverseProperty("MaintenenceHistoryTbs")]
-    public virtual FacilityTb? FacilityTb { get; set; }
+    public virtual FacilityTb FacilityTb { get; set; } = null!;
 
     [InverseProperty("MaintenenceHistoryTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();

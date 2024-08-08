@@ -75,11 +75,6 @@ namespace FamTec.Server.Services.Voc.Hub
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto.Buildingid is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto.Placeid is null)
-                    return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid);
                 if (buildingtb is null)
@@ -160,7 +155,7 @@ namespace FamTec.Server.Services.Voc.Hub
                             DateTime DateNow = DateTime.Now;
 
                             // 전화번호
-                            string reciver = model.Phone!;
+                            string receiver = model.Phone!;
 
                             // 사업장 전화번호
                             string placetel = placeTB.Tel!;
@@ -173,13 +168,13 @@ namespace FamTec.Server.Services.Voc.Hub
 
                             // 카카오 API 전송
                             // 보낸 USER 휴대폰번호에 전송.
-                            bool? SendResult = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, reciver, url, placetel);
+                            bool? SendResult = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
                             if (SendResult == true)
                             {
                                 // 카카오 메시지 성공
                                 KakaoLogTb LogTB = new KakaoLogTb();
-                                LogTB.Result = "Y";
-                                LogTB.Title = Title;
+                                //LogTB.Result = "Y";
+                                //LogTB.Title = Title;
                                 LogTB.CreateDt = DateTime.Now;
                                 LogTB.CreateUser = model.CreateUser;
                                 LogTB.UpdateDt = DateTime.Now;
@@ -195,8 +190,8 @@ namespace FamTec.Server.Services.Voc.Hub
                             {
                                 // 카카오 메시지 실패
                                 KakaoLogTb LogTB = new KakaoLogTb();
-                                LogTB.Result = "N";
-                                LogTB.Title = Title;
+                                //LogTB.Result = "N";
+                                //LogTB.Title = Title;
                                 LogTB.CreateDt = DateTime.Now;
                                 LogTB.CreateUser = model.CreateUser;
                                 LogTB.UpdateDt = DateTime.Now;
@@ -212,8 +207,8 @@ namespace FamTec.Server.Services.Voc.Hub
                             {
                                 // 카카오 메시지 에러
                                 KakaoLogTb LogTB = new KakaoLogTb();
-                                LogTB.Result = "E";
-                                LogTB.Title = Title;
+                                //LogTB.Result = "E";
+                                //LogTB.Title = Title;
                                 LogTB.CreateDt = DateTime.Now;
                                 LogTB.CreateUser = model.CreateUser;
                                 LogTB.UpdateDt = DateTime.Now;

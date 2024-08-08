@@ -8,17 +8,17 @@
         /// <summary>
         /// 관리자 테이블ID
         /// </summary>
-        public int? AdminIndex { get; set; }
+        public int AdminIndex { get; set; }
         
         /// <summary>
         /// 이름
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 부서인덱스
         /// </summary>
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
 
         /// <summary>
         /// 전화번호
@@ -33,12 +33,12 @@
         /// <summary>
         /// 로그인 ID
         /// </summary>
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// 사업장

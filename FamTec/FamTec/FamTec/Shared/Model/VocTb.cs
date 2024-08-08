@@ -8,6 +8,7 @@ namespace FamTec.Shared.Model;
 
 [Table("voc_tb")]
 [Index("BuildingTbId", Name = "building_tb_202407250842")]
+[Index("Code", Name = "uk_voccode", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class VocTb
 {
@@ -19,25 +20,24 @@ public partial class VocTb
     /// VOC코드_민원조회용
     /// </summary>
     [Column("CODE")]
-    [StringLength(255)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     /// <summary>
     /// 민원제목
     /// </summary>
     [Column("TITLE")]
     [StringLength(255)]
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     /// <summary>
     /// 민원내용
     /// </summary>
     [Column("CONTENT")]
     [StringLength(255)]
-    public string? Content { get; set; }
+    public string Content { get; set; } = null!;
 
     [Column("TYPE", TypeName = "int(11)")]
-    public int? Type { get; set; }
+    public int Type { get; set; }
 
     /// <summary>
     /// 전화번호
@@ -50,13 +50,13 @@ public partial class VocTb
     /// 민원처리상태
     /// </summary>
     [Column("STATUS", TypeName = "int(11)")]
-    public int? Status { get; set; }
+    public int Status { get; set; }
 
     /// <summary>
     /// 답변회신여부
     /// </summary>
     [Column("REPLY_YN")]
-    public bool? ReplyYn { get; set; }
+    public bool ReplyYn { get; set; }
 
     /// <summary>
     /// 완료시간
@@ -72,18 +72,18 @@ public partial class VocTb
     public string? DurationDt { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -117,15 +117,18 @@ public partial class VocTb
     /// 건물 인덱스
     /// </summary>
     [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
+    public int BuildingTbId { get; set; }
 
     [InverseProperty("VocTb")]
     public virtual ICollection<AlarmTb> AlarmTbs { get; set; } = new List<AlarmTb>();
 
     [ForeignKey("BuildingTbId")]
     [InverseProperty("VocTbs")]
-    public virtual BuildingTb? BuildingTb { get; set; }
+    public virtual BuildingTb BuildingTb { get; set; } = null!;
 
     [InverseProperty("VocTb")]
     public virtual ICollection<CommentTb> CommentTbs { get; set; } = new List<CommentTb>();
+
+    [InverseProperty("VocTb")]
+    public virtual ICollection<KakaoLogTb> KakaoLogTbs { get; set; } = new List<KakaoLogTb>();
 }

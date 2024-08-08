@@ -5,16 +5,16 @@
         /// <summary>
         /// 키 ID
         /// </summary>
-        public int? KeyID { get; set; }
+        public int KeyID { get; set; }
 
         /// <summary>
         /// 값 명칭
         /// </summary>
-        public string? Value { get; set; }
+        public string Value { get; set; }
 
         /// <summary>
         /// 단위 명칭
         /// </summary>
-        public string? Unit { get; set; }
+        public string Unit { get; set; }
     }
 }

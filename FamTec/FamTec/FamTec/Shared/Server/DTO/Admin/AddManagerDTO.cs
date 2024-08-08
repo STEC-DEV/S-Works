@@ -5,12 +5,12 @@
         /// <summary>
         /// 사용자 ID
         /// </summary>
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// 이름
@@ -31,7 +31,7 @@
         /// <summary>
         /// 부서INDEX
         /// </summary>
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
 
 
         //public byte[]? Image { get; set; }

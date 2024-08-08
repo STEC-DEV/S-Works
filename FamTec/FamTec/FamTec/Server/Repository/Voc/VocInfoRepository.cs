@@ -62,7 +62,7 @@ namespace FamTec.Server.Repository.Voc
 
                 if (buildingidx is [_, ..])
                 {
-                    List<VocTb>? VocModel = await context.VocTbs.Where(m => buildingidx.Contains(m.BuildingTbId!.Value) && m.DelYn != true).ToListAsync();
+                    List<VocTb>? VocModel = await context.VocTbs.Where(m => buildingidx.Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
 
                     if(VocModel is [_, ..])
                     {

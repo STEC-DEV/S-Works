@@ -10,27 +10,27 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// VOC Comment 인덱스
         /// </summary>
-        public int? VocCommentId { get; set; }
+        public int VocCommentId { get; set; }
         
         /// <summary>
         /// 내용
         /// </summary>
-        public string? Content { get; set; } 
+        public string Content { get; set; } 
         
         /// <summary>
         /// 처리상태
         /// </summary>
-        public int? Status { get; set; }
+        public int Status { get; set; }
 
         /// <summary>
         /// 작성일
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        public DateTime CreateDT { get; set; }
 
         /// <summary>
         /// 작성자
         /// </summary>
-        public string? CreateUser { get; set; }
+        public string CreateUser { get; set; }
 
     
         /// <summary>

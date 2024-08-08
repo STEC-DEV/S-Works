@@ -26,21 +26,21 @@ public partial class AdminPlaceTb
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -59,16 +59,16 @@ public partial class AdminPlaceTb
     public string? DelUser { get; set; }
 
     [Column("ADMIN_TB_ID", TypeName = "int(11)")]
-    public int? AdminTbId { get; set; }
+    public int AdminTbId { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
-    public int? PlaceTbId { get; set; }
+    public int PlaceTbId { get; set; }
 
     [ForeignKey("AdminTbId")]
     [InverseProperty("AdminPlaceTbs")]
-    public virtual AdminTb? AdminTb { get; set; }
+    public virtual AdminTb AdminTb { get; set; } = null!;
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("AdminPlaceTbs")]
-    public virtual PlaceTb? PlaceTb { get; set; }
+    public virtual PlaceTb PlaceTb { get; set; } = null!;
 }

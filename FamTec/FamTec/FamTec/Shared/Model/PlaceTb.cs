@@ -8,6 +8,8 @@ namespace FamTec.Shared.Model;
 
 [Table("place_tb")]
 [Index("DepartmentTbId", Name = "FK_departmenttb_20240806")]
+[Index("Name", Name = "uk_Name", IsUnique = true)]
+[Index("PlaceCd", Name = "uk_code", IsUnique = true)]
 public partial class PlaceTb
 {
     /// <summary>
@@ -21,15 +23,13 @@ public partial class PlaceTb
     /// 사업장 코드
     /// </summary>
     [Column("PLACE_CD")]
-    [StringLength(255)]
-    public string? PlaceCd { get; set; }
+    public string PlaceCd { get; set; } = null!;
 
     /// <summary>
     /// 사업장명
     /// </summary>
     [Column("NAME")]
-    [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 계약번호
@@ -75,99 +75,99 @@ public partial class PlaceTb
     /// 계약상태
     /// </summary>
     [Column("STATUS")]
-    public bool? Status { get; set; }
+    public bool Status { get; set; }
 
     /// <summary>
     /// 기게정보권한
     /// </summary>
     [Column("PERM_MACHINE")]
-    public bool? PermMachine { get; set; }
+    public bool PermMachine { get; set; }
 
     /// <summary>
     /// 전기관리 권한
     /// </summary>
     [Column("PERM_ELEC")]
-    public bool? PermElec { get; set; }
+    public bool PermElec { get; set; }
 
     /// <summary>
     /// 승강관리 권한
     /// </summary>
     [Column("PERM_LIFT")]
-    public bool? PermLift { get; set; }
+    public bool PermLift { get; set; }
 
     /// <summary>
     /// 소방관리 권한
     /// </summary>
     [Column("PERM_FIRE")]
-    public bool? PermFire { get; set; }
+    public bool PermFire { get; set; }
 
     /// <summary>
     /// 건축관리 권한
     /// </summary>
     [Column("PERM_CONSTRUCT")]
-    public bool? PermConstruct { get; set; }
+    public bool PermConstruct { get; set; }
 
     /// <summary>
     /// 통신관리 권한
     /// </summary>
     [Column("PERM_NETWORK")]
-    public bool? PermNetwork { get; set; }
+    public bool PermNetwork { get; set; }
 
     /// <summary>
     /// 미화 권한
     /// </summary>
     [Column("PERM_BEAUTY")]
-    public bool? PermBeauty { get; set; }
+    public bool PermBeauty { get; set; }
 
     /// <summary>
     /// 보안 권한
     /// </summary>
     [Column("PERM_SECURITY")]
-    public bool? PermSecurity { get; set; }
+    public bool PermSecurity { get; set; }
 
     /// <summary>
     /// 자재관리 권한
     /// </summary>
     [Column("PERM_MATERIAL")]
-    public bool? PermMaterial { get; set; }
+    public bool PermMaterial { get; set; }
 
     /// <summary>
     /// 에너지관리 권한
     /// </summary>
     [Column("PERM_ENERGY")]
-    public bool? PermEnergy { get; set; }
+    public bool PermEnergy { get; set; }
 
     /// <summary>
     /// 민원관리 권한
     /// </summary>
     [Column("PERM_VOC")]
-    public bool? PermVoc { get; set; }
+    public bool PermVoc { get; set; }
 
     /// <summary>
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -206,6 +206,9 @@ public partial class PlaceTb
 
     [InverseProperty("PlaceTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
+
+    [InverseProperty("PlaceTb")]
+    public virtual ICollection<KakaoLogTb> KakaoLogTbs { get; set; } = new List<KakaoLogTb>();
 
     [InverseProperty("PlaceTb")]
     public virtual ICollection<MaterialTb> MaterialTbs { get; set; } = new List<MaterialTb>();

@@ -5,17 +5,17 @@
         /// <summary>
         /// 품목 코드
         /// </summary>
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// 자재명
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; }
+        public string Unit { get; set; }
 
         /// <summary>
         /// 규격
@@ -35,7 +35,7 @@
         /// <summary>
         /// 자재위치
         /// </summary>
-        public int? DefaultLocation { get; set; }
+        public int DefaultLocation { get; set; }
 
     }
 }

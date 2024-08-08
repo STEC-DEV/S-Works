@@ -11,12 +11,12 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 댓글내용
         /// </summary>
-        public string? Content { get; set; }
+        public string Content { get; set; }
 
         /// <summary>
         /// 민원 처리상태
         /// </summary>
-        public int? Status { get; set; }
+        public int Status { get; set; }
 
         ///// <summary>
         ///// 사용자 이미지 - 클라이언트 담는용
@@ -26,6 +26,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// VOC 테이블 인덱스
         /// </summary>
-        public int? VocTbId { get; set; }
+        public int VocTbId { get; set; }
     }
 }

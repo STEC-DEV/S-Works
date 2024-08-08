@@ -5,11 +5,11 @@
         /// <summary>
         /// 건물 인덱스
         /// </summary>
-        public int? BuildingIdx { get; set; }
+        public int BuildingIdx { get; set; }
 
         /// <summary>
         /// 그룹명칭
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -23,14 +23,14 @@ public partial class MaterialTb
     /// </summary>
     [Column("CODE")]
     [StringLength(255)]
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     /// <summary>
     /// 자재명
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 단위
@@ -60,18 +60,18 @@ public partial class MaterialTb
     public int? SafeNum { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -87,20 +87,20 @@ public partial class MaterialTb
     /// 기본위치
     /// </summary>
     [Column("DEFAULT_LOCATION", TypeName = "int(11)")]
-    public int? DefaultLocation { get; set; }
+    public int DefaultLocation { get; set; }
 
     [StringLength(255)]
     public string? Image { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
-    public int? PlaceTbId { get; set; }
+    public int PlaceTbId { get; set; }
 
     [InverseProperty("MaterialTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("MaterialTbs")]
-    public virtual PlaceTb? PlaceTb { get; set; }
+    public virtual PlaceTb PlaceTb { get; set; } = null!;
 
     [InverseProperty("MaterialTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();

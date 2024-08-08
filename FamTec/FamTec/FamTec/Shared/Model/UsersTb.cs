@@ -8,6 +8,7 @@ namespace FamTec.Shared.Model;
 
 [Table("users_tb")]
 [Index("PlaceTbId", Name = "fk_users_tb_place_tb1_idx")]
+[Index("UserId", Name = "uk_userid", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class UsersTb
 {
@@ -22,15 +23,14 @@ public partial class UsersTb
     /// 사용자 아아디
     /// </summary>
     [Column("USER_ID")]
-    [StringLength(255)]
-    public string? UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     /// <summary>
     /// 비밀번호
     /// </summary>
     [Column("PASSWORD")]
     [StringLength(255)]
-    public string? Password { get; set; }
+    public string Password { get; set; } = null!;
 
     /// <summary>
     /// 이름
@@ -57,150 +57,150 @@ public partial class UsersTb
     /// 기본정보 권한
     /// </summary>
     [Column("PERM_BASIC", TypeName = "int(11)")]
-    public int? PermBasic { get; set; }
+    public int PermBasic { get; set; }
 
     /// <summary>
     /// 기계관리 권한
     /// </summary>
     [Column("PERM_MACHINE", TypeName = "int(11)")]
-    public int? PermMachine { get; set; }
+    public int PermMachine { get; set; }
 
     /// <summary>
     /// 전기관리 권한
     /// </summary>
     [Column("PERM_ELEC", TypeName = "int(11)")]
-    public int? PermElec { get; set; }
+    public int PermElec { get; set; }
 
     /// <summary>
     /// 승강관리 권한
     /// </summary>
     [Column("PERM_LIFT", TypeName = "int(11)")]
-    public int? PermLift { get; set; }
+    public int PermLift { get; set; }
 
     /// <summary>
     /// 소방관리 권한
     /// </summary>
     [Column("PERM_FIRE", TypeName = "int(11)")]
-    public int? PermFire { get; set; }
+    public int PermFire { get; set; }
 
     /// <summary>
     /// 건축관리 권한
     /// </summary>
     [Column("PERM_CONSTRUCT", TypeName = "int(11)")]
-    public int? PermConstruct { get; set; }
+    public int PermConstruct { get; set; }
 
     /// <summary>
     /// 통신연동 권한
     /// </summary>
     [Column("PERM_NETWORK", TypeName = "int(11)")]
-    public int? PermNetwork { get; set; }
+    public int PermNetwork { get; set; }
 
     /// <summary>
     /// 미화 권한
     /// </summary>
     [Column("PERM_BEAUTY", TypeName = "int(11)")]
-    public int? PermBeauty { get; set; }
+    public int PermBeauty { get; set; }
 
     /// <summary>
     /// 보안 권한
     /// </summary>
     [Column("PERM_SECURITY", TypeName = "int(11)")]
-    public int? PermSecurity { get; set; }
+    public int PermSecurity { get; set; }
 
     /// <summary>
     /// 자재관리 권한
     /// </summary>
     [Column("PERM_MATERIAL", TypeName = "int(11)")]
-    public int? PermMaterial { get; set; }
+    public int PermMaterial { get; set; }
 
     /// <summary>
     /// 에너지관리 권한
     /// </summary>
     [Column("PERM_ENERGY", TypeName = "int(11)")]
-    public int? PermEnergy { get; set; }
+    public int PermEnergy { get; set; }
 
     /// <summary>
     /// 사용자 관리 권한
     /// </summary>
     [Column("PERM_USER", TypeName = "int(11)")]
-    public int? PermUser { get; set; }
+    public int PermUser { get; set; }
 
     /// <summary>
     /// 민원관리 권한
     /// </summary>
     [Column("PERM_VOC", TypeName = "int(11)")]
-    public int? PermVoc { get; set; }
+    public int PermVoc { get; set; }
 
     [Column("VOC_MACHINE")]
-    public bool? VocMachine { get; set; }
+    public bool VocMachine { get; set; }
 
     [Column("VOC_ELEC")]
-    public bool? VocElec { get; set; }
+    public bool VocElec { get; set; }
 
     [Column("VOC_LIFT")]
-    public bool? VocLift { get; set; }
+    public bool VocLift { get; set; }
 
     [Column("VOC_FIRE")]
-    public bool? VocFire { get; set; }
+    public bool VocFire { get; set; }
 
     [Column("VOC_CONSTRUCT")]
-    public bool? VocConstruct { get; set; }
+    public bool VocConstruct { get; set; }
 
     [Column("VOC_NETWORK")]
-    public bool? VocNetwork { get; set; }
+    public bool VocNetwork { get; set; }
 
     [Column("VOC_BEAUTY")]
-    public bool? VocBeauty { get; set; }
+    public bool VocBeauty { get; set; }
 
     [Column("VOC_SECURITY")]
-    public bool? VocSecurity { get; set; }
+    public bool VocSecurity { get; set; }
 
     [Column("VOC_ETC")]
-    public bool? VocEtc { get; set; }
+    public bool VocEtc { get; set; }
 
     /// <summary>
     /// 관리자 여부
     /// </summary>
     [Column("ADMIN_YN")]
-    public bool? AdminYn { get; set; }
+    public bool AdminYn { get; set; }
 
     /// <summary>
     /// 알람여부
     /// </summary>
     [Column("ALARM_YN")]
-    public bool? AlarmYn { get; set; }
+    public bool AlarmYn { get; set; }
 
     /// <summary>
     /// 재직여부
     /// </summary>
     [Column("STATUS", TypeName = "int(11)")]
-    public int? Status { get; set; }
+    public int Status { get; set; }
 
     /// <summary>
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부

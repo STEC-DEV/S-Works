@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("blacklist_tb")]
+[Index("Phone", Name = "uk_phonenumber", IsUnique = true)]
 public partial class BlacklistTb
 {
     [Key]
@@ -14,22 +15,21 @@ public partial class BlacklistTb
     public int Id { get; set; }
 
     [Column("PHONE")]
-    [StringLength(255)]
-    public string? Phone { get; set; }
+    public string Phone { get; set; } = null!;
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }

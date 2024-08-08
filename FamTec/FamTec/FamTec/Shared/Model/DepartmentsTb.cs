@@ -25,21 +25,21 @@ public partial class DepartmentsTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -55,7 +55,7 @@ public partial class DepartmentsTb
     /// 관리부서YN
     /// </summary>
     [Column("MANAGEMENT_YN")]
-    public bool? ManagementYn { get; set; }
+    public bool ManagementYn { get; set; }
 
     [InverseProperty("DepartmentTb")]
     public virtual ICollection<AdminTb> AdminTbs { get; set; } = new List<AdminTb>();

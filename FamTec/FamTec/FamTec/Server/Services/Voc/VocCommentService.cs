@@ -1,8 +1,13 @@
-﻿using FamTec.Server.Repository.User;
+﻿using FamTec.Server.Repository.BlackList;
+using FamTec.Server.Repository.KakaoLog;
+using FamTec.Server.Repository.Place;
+using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
+using System.ComponentModel;
+using System.Text;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -11,8 +16,13 @@ namespace FamTec.Server.Services.Voc
         private readonly IVocCommentRepository VocCommentRepository;
         private readonly IVocInfoRepository VocInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
+        private readonly IBlackListInfoRepository BlackListInfoRepository;
+        private readonly IPlaceInfoRepository PlaceInfoRepository;
+        private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
+
         private readonly ILogService LogService;
         private readonly IFileService FileService;
+        private readonly IKakaoService KakaoService;
 
         // 파일디렉터리
         private DirectoryInfo? di;
@@ -21,12 +31,21 @@ namespace FamTec.Server.Services.Voc
         public VocCommentService(IVocCommentRepository _voccommentrepository,
             IVocInfoRepository _vocinforepository,
             IUserInfoRepository _userinforepository,
+            IBlackListInfoRepository _blacklistinforepository,
+            IPlaceInfoRepository _placeinforepository,
+            IKakaoLogInfoRepository _kakaologinforepository,
+            IKakaoService _kakaoservice,
             ILogService _logservice,
             IFileService _fileservice)
         {
             this.VocCommentRepository = _voccommentrepository;
             this.VocInfoRepository = _vocinforepository;
             this.UserInfoRepository = _userinforepository;
+            this.BlackListInfoRepository = _blacklistinforepository;
+            this.PlaceInfoRepository = _placeinforepository;
+            this.KakaoLogInfoRepository = _kakaologinforepository;
+
+            this.KakaoService = _kakaoservice;
             this.LogService = _logservice;
             this.FileService = _fileservice;
         }
@@ -110,6 +129,78 @@ namespace FamTec.Server.Services.Voc
                         
                         if (VocUpdateResult)
                         {
+                            // 만약 처리결과를 받는다고 했었으면.
+                            if(VocTB.ReplyYn == true)
+                            {
+                                BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(VocTB.Phone);
+
+                                if(BlackListTB is null) // 블랙리스트가 아니면
+                                {
+                                    PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId);
+
+                                    if (placeTB is null)
+                                        return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                                    // 전화번호
+                                    string receiver = VocTB.Phone!;
+
+                                    // 사업장 전화번호
+                                    string placetel = placeTB.Tel!;
+
+                                    // URL 파라미터 인코딩
+                                    byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
+                                    string base64 = Convert.ToBase64String(bytes);
+
+                                    string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+
+                                    string StatusResult = string.Empty;
+                                    if(model.Status == 1)
+                                    {
+                                        StatusResult = "처리중";
+                                    }
+                                    else if(model.Status == 2)
+                                    {
+                                        StatusResult = "처리완료";
+                                    }
+
+                                    // 카카오 API 전송
+                                    bool? SendResult = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
+
+                                    if(SendResult == true)
+                                    {
+                                        // 카카오 메시지 성공
+                                        KakaoLogTb LogTB = new KakaoLogTb();
+                                        //LogTB.Result = "Y";
+                                        //LogTB.Title = StatusResult;
+                                        LogTB.CreateDt = DateTime.Now;
+                                        LogTB.CreateUser = Creater;
+                                        LogTB.UpdateDt = DateTime.Now;
+                                        LogTB.UpdateUser = Creater;
+                                        LogTB.VocTbId = VocTB.Id; // 민원ID
+                                        LogTB.PlaceTbId = placeTB.Id; // 사업장ID
+                                        LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
+
+                                        // 카카오API 로그 테이블에 쌓아야함
+                                        KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                                    }
+                                    else if(SendResult == false)
+                                    {
+                                        // 카카오 메시지 실패
+                                        KakaoLogTb LogTB = new KakaoLogTb();
+                                        //LogTB.Result = "N";
+                                        //LogTB.Log
+
+                                    }
+                                    else
+                                    {
+                                        // 카카오 메시지 에러
+                                    }
+
+                                }
+
+                            }
+                            
+
                             // 카카오 알림톡 (진행상태가 변경되는거임) - 민원자에게 민원현황 알려주기용
                             // 등록했으면 - 전송 (해당VOC가 Reply -- Y 인경우) + 블랙리스트가 아닌경우
                             /*
@@ -241,6 +332,13 @@ namespace FamTec.Server.Services.Voc
             }
         }
 
+        /// <summary>
+        /// 차후 바꿈
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseUnit<bool?>> UpdateCommentService(HttpContext? context, VocCommentDetailDTO? dto, List<IFormFile>? files)
         {
             try

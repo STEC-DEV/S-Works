@@ -20,18 +20,18 @@ public partial class AlarmTb
     public int Id { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -44,16 +44,16 @@ public partial class AlarmTb
     public string? DelUser { get; set; }
 
     [Column("USERS_TB_ID", TypeName = "int(11)")]
-    public int? UsersTbId { get; set; }
+    public int UsersTbId { get; set; }
 
     [Column("VOC_TB_ID", TypeName = "int(11)")]
-    public int? VocTbId { get; set; }
+    public int VocTbId { get; set; }
 
     [ForeignKey("UsersTbId")]
     [InverseProperty("AlarmTbs")]
-    public virtual UsersTb? UsersTb { get; set; }
+    public virtual UsersTb UsersTb { get; set; } = null!;
 
     [ForeignKey("VocTbId")]
     [InverseProperty("AlarmTbs")]
-    public virtual VocTb? VocTb { get; set; }
+    public virtual VocTb VocTb { get; set; } = null!;
 }

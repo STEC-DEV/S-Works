@@ -12,17 +12,17 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// PlaceID
         /// </summary>
-        public int? Id { get; set; }
+        public int Id { get; set; }
         
         /// <summary>
         /// PlaceCode
         /// </summary>
-        public string? PlaceCd { get; set; }
+        public string PlaceCd { get; set; }
         
         /// <summary>
         /// 사업장명
         /// </summary>
-        public string? Name { get; set; } = null;
+        public string Name { get; set; } = null;
         
         /// <summary>
         /// 비고
@@ -42,7 +42,7 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// 계약상태
         /// </summary>
-        public bool? Status { get; set; }
+        public bool Status { get; set; }
 
     }
 }

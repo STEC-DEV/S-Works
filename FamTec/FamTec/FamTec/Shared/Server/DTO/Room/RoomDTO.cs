@@ -14,11 +14,11 @@ namespace FamTec.Shared.Server.DTO.Room
         /// <summary>
         /// 공간이름
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 층 인덱스
         /// </summary>
-        public int? FloorID { get; set; }
+        public int FloorID { get; set; }
     }
 }

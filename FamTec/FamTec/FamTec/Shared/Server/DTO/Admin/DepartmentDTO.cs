@@ -15,12 +15,12 @@
         /// <summary>
         /// 부서명
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 관리부서 여부
         /// </summary>
-        public bool? ManageYN { get; set; }
+        public bool ManageYN { get; set; }
 
         public string? Description { get; set; } = null;
 

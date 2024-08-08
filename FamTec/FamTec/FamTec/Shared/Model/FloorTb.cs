@@ -26,33 +26,33 @@ public partial class FloorTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -74,11 +74,11 @@ public partial class FloorTb
     public string? DelUser { get; set; }
 
     [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
+    public int BuildingTbId { get; set; }
 
     [ForeignKey("BuildingTbId")]
     [InverseProperty("FloorTbs")]
-    public virtual BuildingTb? BuildingTb { get; set; }
+    public virtual BuildingTb BuildingTb { get; set; } = null!;
 
     [InverseProperty("FloorTb")]
     public virtual ICollection<RoomTb> RoomTbs { get; set; } = new List<RoomTb>();

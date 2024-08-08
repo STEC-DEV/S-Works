@@ -33,7 +33,7 @@ public partial class FacilityTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 형식
@@ -85,27 +85,27 @@ public partial class FacilityTb
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -130,7 +130,7 @@ public partial class FacilityTb
     public string? Image { get; set; }
 
     [Column("ROOM_TB_ID", TypeName = "int(11)")]
-    public int? RoomTbId { get; set; }
+    public int RoomTbId { get; set; }
 
     [InverseProperty("FacilityTb")]
     public virtual ICollection<FacilityItemGroupTb> FacilityItemGroupTbs { get; set; } = new List<FacilityItemGroupTb>();
@@ -140,5 +140,5 @@ public partial class FacilityTb
 
     [ForeignKey("RoomTbId")]
     [InverseProperty("FacilityTbs")]
-    public virtual RoomTb? RoomTb { get; set; }
+    public virtual RoomTb RoomTb { get; set; } = null!;
 }

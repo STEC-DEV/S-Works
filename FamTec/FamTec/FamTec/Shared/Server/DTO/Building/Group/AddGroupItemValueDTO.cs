@@ -5,6 +5,6 @@
         /// <summary>
         /// 값
         /// </summary>
-        public string? Values { get; set; }
+        public string Values { get; set; }
     }
 }

@@ -5,16 +5,16 @@
         /// <summary>
         /// 아이템 ID
         /// </summary>
-        public int? ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// 값
         /// </summary>
-        public string? ItemValue { get; set; }
+        public string ItemValue { get; set; }
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; } // 단위
+        public string Unit { get; set; } // 단위
     }
 }

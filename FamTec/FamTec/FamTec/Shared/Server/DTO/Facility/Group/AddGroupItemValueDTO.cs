@@ -5,11 +5,11 @@
         /// <summary>
         /// 값
         /// </summary>
-        public string? Values { get; set; }
+        public string Values { get; set; }
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; }
+        public string Unit { get; set; }
     }
 }

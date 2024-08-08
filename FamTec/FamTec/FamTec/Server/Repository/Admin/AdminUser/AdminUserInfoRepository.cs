@@ -275,7 +275,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                     if (adminplacetb is [_, ..])
                     {
-                        List<int?> admintbid = adminplacetb.Select(m => m.AdminTbId).ToList();
+                        List<int> admintbid = adminplacetb.Select(m => m.AdminTbId).ToList();
 
                         List<AdminTb>? admintb = await context.AdminTbs.Where(e => !admintbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
                         if (admintb is [_, ..])
@@ -415,15 +415,15 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     }
 
                     // DTO의 PlaceID -- 최종 결과물이 되야할 것들
-                    List<int?> DTOPlaceIdx = dto.PlaceList.Select(m => m.Id).ToList();
+                    List<int> DTOPlaceIdx = dto.PlaceList.Select(m => m.Id).ToList();
 
                     // 이 관리자의 관리하고있는 사업장ID 조회
-                    List<int?> AdminPlaceIdx = await context.AdminPlaceTbs
+                    List<int> AdminPlaceIdx = await context.AdminPlaceTbs
                         .Where(m => m.AdminTbId == adminTB.Id && m.DelYn != true)
                         .Select(m => m.PlaceTbId).ToListAsync();
 
-                    List<int?> insertplaceidx = new List<int?>();
-                    List<int?> deleteplacecidx = new List<int?>();
+                    List<int> insertplaceidx = new List<int>();
+                    List<int> deleteplacecidx = new List<int>();
 
                     if (DTOPlaceIdx is [_, ..]) // 넘어온 사업장이 있으면
                     {
@@ -431,7 +431,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         if(AdminPlaceIdx is [_, ..]) // 해당 관리자의 사업장이 있으면
                         {
                             // 내가갖고 있는것
-                            List<int?>? MineList = await context.AdminPlaceTbs
+                            List<int>? MineList = await context.AdminPlaceTbs
                                 .Where(m => DTOPlaceIdx.Contains(Convert.ToInt32(m.PlaceTbId)) && 
                                 m.DelYn != true && 
                                 m.AdminTbId == adminTB.Id)

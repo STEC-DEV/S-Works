@@ -67,8 +67,13 @@
         public static readonly string KakaoSenderKey = "27fa43355ea9c4fedf48a8d37e7b08bc864888b8";
 
         /// <summary>
-        /// 카카오톡 알림톡 템플릿 Code
+        /// 카카오톡 알림톡 템플릿 Code [민원접수]
         /// </summary>
-        public static readonly string KakaoTemplateCode = "TU_2055";
+        public static readonly string KakaoTemplateCode_1 = "TU_2055";
+        
+        /// <summary>
+        /// 카카오톡 알림톡 템플릿 Code [민원 진행상태 변경]
+        /// </summary>
+        public static readonly string KakaoTemplateCode_2 = "TU_2276";
     }
 }

@@ -22,7 +22,7 @@ public partial class StoreTb
     /// 입출고 구분
     /// </summary>
     [Column("INOUT", TypeName = "int(11)")]
-    public int? Inout { get; set; }
+    public int Inout { get; set; }
 
     /// <summary>
     /// 수량
@@ -34,33 +34,33 @@ public partial class StoreTb
     /// 단가
     /// </summary>
     [Column("UNIT_PRICE")]
-    public float? UnitPrice { get; set; }
+    public float UnitPrice { get; set; }
 
     /// <summary>
     /// 입출고 가격
     /// </summary>
     [Column("TOTAL_PRICE")]
-    public float? TotalPrice { get; set; }
+    public float TotalPrice { get; set; }
 
     /// <summary>
     /// 입출고 날짜
     /// </summary>
     [Column("INOUT_DATE", TypeName = "datetime")]
-    public DateTime? InoutDate { get; set; }
+    public DateTime InoutDate { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     [Column("DEL_YN")]
     public bool? DelYn { get; set; }
@@ -76,7 +76,7 @@ public partial class StoreTb
     /// 현재재고수량
     /// </summary>
     [Column("CURRENT_NUM", TypeName = "int(11)")]
-    public int? CurrentNum { get; set; }
+    public int CurrentNum { get; set; }
 
     /// <summary>
     /// 비고
@@ -89,19 +89,19 @@ public partial class StoreTb
     /// 공간ID
     /// </summary>
     [Column("ROOM_TB_ID", TypeName = "int(11)")]
-    public int? RoomTbId { get; set; }
+    public int RoomTbId { get; set; }
 
     /// <summary>
     /// 사업장ID
     /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
-    public int? PlaceTbId { get; set; }
+    public int PlaceTbId { get; set; }
 
     /// <summary>
     /// 품목ID
     /// </summary>
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
-    public int? MaterialTbId { get; set; }
+    public int MaterialTbId { get; set; }
 
     /// <summary>
     /// 유지보수이력ID
@@ -115,13 +115,13 @@ public partial class StoreTb
 
     [ForeignKey("MaterialTbId")]
     [InverseProperty("StoreTbs")]
-    public virtual MaterialTb? MaterialTb { get; set; }
+    public virtual MaterialTb MaterialTb { get; set; } = null!;
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("StoreTbs")]
-    public virtual PlaceTb? PlaceTb { get; set; }
+    public virtual PlaceTb PlaceTb { get; set; } = null!;
 
     [ForeignKey("RoomTbId")]
     [InverseProperty("StoreTbs")]
-    public virtual RoomTb? RoomTb { get; set; }
+    public virtual RoomTb RoomTb { get; set; } = null!;
 }

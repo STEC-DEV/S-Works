@@ -11,6 +11,7 @@ namespace FamTec.Shared.Model;
 /// </summary>
 [Table("building_tb")]
 [Index("PlaceTbId", Name = "fk_building_tb_place_tb1_idx")]
+[Index("BuildingCd", Name = "uk_buildingcode", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class BuildingTb
 {
@@ -25,8 +26,7 @@ public partial class BuildingTb
     /// 건물코드
     /// </summary>
     [Column("BUILDING_CD")]
-    [StringLength(255)]
-    public string? BuildingCd { get; set; }
+    public string BuildingCd { get; set; } = null!;
 
     /// <summary>
     /// 이미지
@@ -40,7 +40,7 @@ public partial class BuildingTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 주소
@@ -340,27 +340,27 @@ public partial class BuildingTb
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -385,7 +385,7 @@ public partial class BuildingTb
     /// 사업장 인덱스
     /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
-    public int? PlaceTbId { get; set; }
+    public int PlaceTbId { get; set; }
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<BuildingItemGroupTb> BuildingItemGroupTbs { get; set; } = new List<BuildingItemGroupTb>();
@@ -394,11 +394,14 @@ public partial class BuildingTb
     public virtual ICollection<FloorTb> FloorTbs { get; set; } = new List<FloorTb>();
 
     [InverseProperty("BuildingTb")]
+    public virtual ICollection<KakaoLogTb> KakaoLogTbs { get; set; } = new List<KakaoLogTb>();
+
+    [InverseProperty("BuildingTb")]
     public virtual ICollection<MeterItemTb> MeterItemTbs { get; set; } = new List<MeterItemTb>();
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("BuildingTbs")]
-    public virtual PlaceTb? PlaceTb { get; set; }
+    public virtual PlaceTb PlaceTb { get; set; } = null!;
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<VocTb> VocTbs { get; set; } = new List<VocTb>();

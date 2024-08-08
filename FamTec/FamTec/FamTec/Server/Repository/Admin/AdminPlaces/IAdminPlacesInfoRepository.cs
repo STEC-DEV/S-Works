@@ -115,7 +115,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        ValueTask<(List<int?>? insert, List<int?>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int?> placeidx);
+        ValueTask<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int> placeidx);
 
         /// <summary>
         /// 관리자가 포함안된 사업장 리스트 반환

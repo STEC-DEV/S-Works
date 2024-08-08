@@ -8,32 +8,32 @@
         /// <summary>
         /// 인덱스
         /// </summary>
-        public int? ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// 카테고리(기계, 전기...)
         /// </summary>
-        public string? Category { get; set; }
+        public string Category { get; set; }
 
         /// <summary>
         /// 설비명칭
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 형식 (흡수식 ...)
         /// </summary>
-        public string? Type { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
         /// 개수
         /// </summary>
-        public int? Num { get; set; }
+        public int Num { get; set; }
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; }
+        public string Unit { get; set; }
 
         /// <summary>
         /// 설치년월
@@ -58,6 +58,6 @@
         /// <summary>
         /// 공간 인덱스
         /// </summary>
-        public int? RoomTbId { get; set; }
+        public int RoomTbId { get; set; }
     }
 }

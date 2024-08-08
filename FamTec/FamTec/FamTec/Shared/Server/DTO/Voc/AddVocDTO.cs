@@ -8,7 +8,7 @@
         /// <summary>
         /// 민원의 제목
         /// </summary>
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// 내용
@@ -18,7 +18,7 @@
         /// <summary>
         /// 작성자 이름
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 휴대폰번호
@@ -28,11 +28,11 @@
         /// <summary>
         /// 빌딩 인덱스
         /// </summary>
-        public int? Buildingid { get; set; }
+        public int Buildingid { get; set; }
 
         /// <summary>
         /// 사업장인덱스
         /// </summary>
-        public int? Placeid { get; set; }
+        public int Placeid { get; set; }
     }
 }

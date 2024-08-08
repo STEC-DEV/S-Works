@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
-using System.Reflection.Emit;
 using System.Text;
 
 namespace FamTec.Server.Services
@@ -23,7 +22,7 @@ namespace FamTec.Server.Services
         /// 민원인 전용 VOC 등록 확인메시지
         /// </summary>
         /// <returns></returns>
-        public async Task<bool?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string reciver, string url, string placetel)
+        public async Task<bool?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel)
         {
             try
             {
@@ -66,9 +65,9 @@ namespace FamTec.Server.Services
                     { "userid", Common.KakaoUserId},
                     { "token",token},
                     { "senderkey",Common.KakaoSenderKey},
-                    { "tpl_code",Common.KakaoTemplateCode},
+                    { "tpl_code",Common.KakaoTemplateCode_1},
                     { "sender",Common.KakaoSenders},
-                    { "receiver_1",reciver},
+                    { "receiver_1",receiver},
                     { "subject_1",title},
                     { "message_1",message},
                     { "button_1",buttonResult.ToString()}
@@ -105,6 +104,94 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// 민원인 전용 VOC 상태변경 메시지
+        /// </summary>
+        /// <param name="receiptnum">접수번호</param>
+        /// <param name="status">진행상태</param>
+        /// <param name="receiver">받는사람 전화번호</param>
+        /// <param name="url">링크 URL</param>
+        /// <param name="placetel">상버장 전화번호</param>
+        /// <returns></returns>
+        public async Task<bool?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
+        {
+            try
+            {
+                // [1]. 토큰생성
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    { "apikey", Common.KakaoAPIKey},
+                    { "userid", Common.KakaoUserId}
+                });
+
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s/", Content);
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+
+                JObject? Jobj = JObject.Parse(HttpResponseResult);
+                string? token = Convert.ToString(Jobj["token"]);
+                if (String.IsNullOrWhiteSpace(token))
+                    return false;
+
+                string message = $" ■{receiptnum}의 진행사항이 변경되었습니다.\n■ 진행상태: {status}\n■ 문의전화: {placetel}";
+
+                JObject buttonValue = new JObject();
+                buttonValue.Add("name", "열람하기");
+                buttonValue.Add("linkType", "WL");
+                buttonValue.Add("linkTypeName", "웹 링크");
+                buttonValue.Add("linkMo", url);
+                buttonValue.Add("linkPc", url);
+
+                JArray Jarr = new JArray();
+                Jarr.Add(buttonValue);
+                JObject buttonResult = new JObject();
+                buttonResult.Add("button", Jarr);
+
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    { "apikey", Common.KakaoAPIKey},
+                    { "userid", Common.KakaoUserId},
+                    { "token", token},
+                    { "senderkey", Common.KakaoSenderKey},
+                    { "tpl_code",Common.KakaoTemplateCode_2},
+                    { "sender", Common.KakaoSenders},
+                    { "receiver_1",receiver},
+                    { "subject_1","진행사항 변경"},
+                    { "message_1",message},
+                    { "button_1",buttonResult.ToString()}
+                });
+
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content);
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
+                {
+                    CharSet = "euc-kr"
+                };
+
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+                Jobj = JObject.Parse(HttpResponseResult);
+
+                string? code = Convert.ToString(Jobj["code"]);
+                if (String.IsNullOrWhiteSpace(code))
+                    return false;
+
+                if (code == "0")
+                {
+                    // 정상 전송
+                    return true;
+                }
+                else
+                {
+                    // 메시지 전송 실패
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 랜덤코드 생성

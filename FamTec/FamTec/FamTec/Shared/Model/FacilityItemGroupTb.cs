@@ -26,33 +26,33 @@ public partial class FacilityItemGroupTb
     /// </summary>
     [Column("NAME")]
     [StringLength(255)]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 생성일자
     /// </summary>
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     /// <summary>
     /// 생성자
     /// </summary>
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     /// <summary>
     /// 수정일자
     /// </summary>
     [Column("UPDATE_DT", TypeName = "datetime")]
-    public DateTime? UpdateDt { get; set; }
+    public DateTime UpdateDt { get; set; }
 
     /// <summary>
     /// 수정자
     /// </summary>
     [Column("UPDATE_USER")]
     [StringLength(255)]
-    public string? UpdateUser { get; set; }
+    public string UpdateUser { get; set; } = null!;
 
     /// <summary>
     /// 삭제여부
@@ -74,12 +74,12 @@ public partial class FacilityItemGroupTb
     public string? DelUser { get; set; }
 
     [Column("FACILITY_TB_ID", TypeName = "int(11)")]
-    public int? FacilityTbId { get; set; }
+    public int FacilityTbId { get; set; }
 
     [InverseProperty("FacilityItemGroupTb")]
     public virtual ICollection<FacilityItemKeyTb> FacilityItemKeyTbs { get; set; } = new List<FacilityItemKeyTb>();
 
     [ForeignKey("FacilityTbId")]
     [InverseProperty("FacilityItemGroupTbs")]
-    public virtual FacilityTb? FacilityTb { get; set; }
+    public virtual FacilityTb FacilityTb { get; set; } = null!;
 }

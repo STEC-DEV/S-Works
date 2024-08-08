@@ -63,7 +63,7 @@ namespace FamTec.Server.Controllers.Hubs
                     }
                 }
 
-                ResponseUnit<string?> model = await HubService.AddVocService(dto, files);
+                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files);
                 if (model is null)
                     return BadRequest();
 
