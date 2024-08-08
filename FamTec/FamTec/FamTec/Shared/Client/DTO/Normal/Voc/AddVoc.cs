@@ -42,6 +42,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// 이미지
         /// </summary>
         public List<byte[]>? Image {  get; set; }
+        public List<string>? ImageName {  get; set; }
 
     }
 }

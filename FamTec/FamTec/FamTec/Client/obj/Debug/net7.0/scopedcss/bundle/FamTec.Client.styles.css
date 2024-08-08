@@ -2063,6 +2063,32 @@
     background-color: var(--main-hover);
 }
 
+/* /Pages/CommonComponents/InputImages.razor.rz.scp.css */
+.inputimages[b-ccl1kplbej]{
+    display :flex;
+    align-items : center;
+    gap : var(--half-pd);
+}
+
+.label[b-ccl1kplbej]{
+    padding : var(--half-pd) var(--default-pd);
+    border-radius : var(--default-rd);
+    border : var(--default-bd);
+    color : var(--default-color);
+    background-color : var(--main-color);
+
+    font-size : var(--normal-size);
+    transition : all .3s;
+}
+
+.label:hover[b-ccl1kplbej]{
+    background-color : #263e9b;
+    cursor :pointer;
+}
+
+[b-ccl1kplbej] #inputimage {
+    display: none;
+}
 /* /Pages/CommonComponents/InputSelectField.razor.rz.scp.css */
 .selectfield-container[b-iv6h6rvvwi] {
     display: grid;
@@ -5711,6 +5737,30 @@
 .btns[b-ctwc34a2zh]{
     display : flex;
     gap : var(--default-pd);
+}
+/* /Pages/Voc/Add/VocAddResult.razor.rz.scp.css */
+.result[b-zq6lzuvwfx] {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items:center;*/
+    gap: var(--wide-pd);
+    height: 100%;
+}
+
+.title[b-zq6lzuvwfx] {
+    font-size: calc(var(--title-size));
+    font-weight: bolder;
+    color: var(--main-color);
+}
+
+.content[b-zq6lzuvwfx] {
+    width: 100%;
+    display:flex;
+    flex-direction : column;
+    
+    gap: var(--default-pd);
 }
 /* /Pages/Voc/Main/Components/BannerBtn.razor.rz.scp.css */
 .banner[b-sdw1dk55vx] {

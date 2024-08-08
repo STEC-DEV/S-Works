@@ -1,16 +1,17 @@
-﻿
+﻿@using FamTec.Shared.Client.DTO.Normal.Voc
+
 
 <div class="voc-content">
-    <div><TextField Label="접수 번호" Value="1234567890" /></div>
-    <div><TextField Label="처리 상태" Value="처리중" /></div>
-    <div><TextField Label="접수자" Value="홍길동" /></div>
-    <div><TextField Label="접수 일자" Value="2024-08-05" /></div>
-    <div><TextField Label="담당 부서" Value="전기" /></div>
-    <div><TextField Label="건물명" Value="강남우체국" /></div>
-    <div class="full-width"><TextField Label="제목" Value="6층화장실 타일 민원" /></div>
-    <div class="full-width"><TextField Label="내용" Value="" /></div>
+    <div><TextField Label="접수 번호" Value=@Data.Code /></div>
+    <div><TextField Label="처리 상태" Value=@Data.Status.ToString() /></div>
+    <div><TextField Label="접수자" Value=@Data.CreateUser /></div>
+    <div><TextField Label="접수 일자" Value=@Data.CreateDT /></div>
+    <div><TextField Label="담당 부서" Value=@Data.Type /></div>
+    <div><TextField Label="건물명" Value=@Data.BuildingName /></div>
+    <div class="full-width"><TextField Label="제목" Value=@Data.Title /></div>
+    <div class="full-width"><TextField Label="내용" Value=@Data.Contents /></div>
 </div>
 
 @code {
-
+    [Parameter] public DetailVocDTO  Data {get;set;}
 }

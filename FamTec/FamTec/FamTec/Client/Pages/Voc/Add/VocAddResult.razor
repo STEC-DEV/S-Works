@@ -1,0 +1,50 @@
+﻿@layout MainLayout2
+@page "/voc/add/result"
+
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Voc.Select.Components
+
+
+<div class="result">
+    <div class="header">
+        
+            @if(code == 200)
+            {
+            <span class="title">
+                접수완료
+            </span>
+        }
+        else
+        {
+            <span class="title">
+                접수실패
+            </span>
+        }        
+    </div>
+    <div class="content">
+        <TextField Label="접수번호" Value="@Cd" />
+        <TextField Label="접수일자" Value="@Dt" />
+        <TextField Label="휴대폰 번호" Value="@Num" />
+    </div>
+    <Button Name="확인" Type="0" OnClick="OnHome"/>
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "code")]
+    public int code{ get; set; }
+    [Parameter] 
+    [SupplyParameterFromQuery(Name = "Cd")]
+    public string Cd { get; set; }
+    [Parameter] 
+    [SupplyParameterFromQuery(Name = "Num")]
+    public string Num { get; set; }
+    [Parameter] 
+    [SupplyParameterFromQuery(Name = "Dt")]
+    public string Dt { get; set; }
+
+    private void OnHome()
+    {
+        Navigation.NavigateTo("/voc/banner");
+    }
+}

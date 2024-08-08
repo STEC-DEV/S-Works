@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/select/{Id}"
+@page "/voc/select/{voocode}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
@@ -12,13 +12,13 @@
             민원 조회
         </span>
     </div>
-    <StateBar/>
+    <StateBar Status="@Voc.Status.Value"/>
     <div class="content">
         <div class="item">
             <span class="item-title">
                 접수내용
             </span>
-             <Content />
+            <Content Data=@Voc />
         </div>
         <div class="item">
             <span class="item-title">
@@ -30,18 +30,24 @@
 </div>
 
 @code {
-    [Parameter] public string Id { get; set; }
-    DetailVocDTO Voc;
+    [Parameter] public string voocode { get; set; }
+    DetailVocDTO Voc = new DetailVocDTO();
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await OnLoadVoc();
 
-        return base.OnInitializedAsync();
     }
     private async Task OnLoadVoc()
     {
         try{
-            // ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Voc/sign/GetDetailVoc?");
+            ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Hub/VocInfo?voccode={voocode}");
+            if(resVoc.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원 조회 실패");
+                return;
+            }
+            Voc = resVoc.data;
         }
         catch (Exception ex)
         {

@@ -38,10 +38,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dENvbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/InputFiles.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dEZpbGVzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/ExcelExample.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhjZWxFeGFtcGxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -237,6 +233,10 @@ build_metadata.AdditionalFiles.CssScope = b-uz6flisf9l
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/InputFieldDate.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dEZpZWxkRGF0ZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-74nxpimon3
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/InputImages.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dEltYWdlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-ccl1kplbej
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/InputSelectField.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbnB1dFNlbGVjdEZpZWxkLnJhem9y
@@ -521,6 +521,10 @@ build_metadata.AdditionalFiles.CssScope = b-t973amhyoc
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Add/VocAdd.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXEFkZFxWb2NBZGQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-ctwc34a2zh
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Add/VocAddResult.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXEFkZFxWb2NBZGRSZXN1bHQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-zq6lzuvwfx
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Voc/Main/Components/BannerBtn.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm9jXE1haW5cQ29tcG9uZW50c1xCYW5uZXJCdG4ucmF6b3I=

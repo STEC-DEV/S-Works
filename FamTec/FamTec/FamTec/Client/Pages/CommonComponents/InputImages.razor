@@ -1,0 +1,52 @@
+﻿@using FamTec.Shared.Client.Class
+
+
+<div class="inputimages">
+    <label class="label" for="inputimage">
+        첨부파일
+    </label>
+    <InputFile id="inputimage" multiple OnChange="OnUploadFiles" />
+    @if (images != null)
+    {
+        <span>
+            @images.Count
+        </span>
+    }
+</div>
+
+@code {
+    [Parameter] public int MaxFilesNum { get; set; }
+    [Parameter] public EventCallback<List<ImageFile>> OnChange { get; set; }
+
+    List<ImageFile> images = new List<ImageFile>();
+
+    private async void OnUploadFiles(InputFileChangeEventArgs e)
+    {
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+        if(e.FileCount > MaxFilesNum)
+        {
+            await JS.InvokeVoidAsync("alert", $"최대 {MaxFilesNum}개까지 가능합니다.");
+            return;
+        }
+        images.Clear();
+
+        foreach(var image in e.GetMultipleFiles(MaxFilesNum))
+        {
+            var rawFilesExtension = Path.GetExtension(image.Name).ToLowerInvariant();
+            if (!allowedExtensions.Contains(rawFilesExtension))
+            {
+                await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
+                continue;
+            }
+
+            var buffer = new byte[image.Size];
+            await using var stream = image.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
+            await stream.ReadAsync(buffer);
+
+            images.Add(new ImageFile {Name = image.Name, Image = buffer});
+        }
+
+        await OnChange.InvokeAsync(images);
+        images.Clear();
+    }
+}
