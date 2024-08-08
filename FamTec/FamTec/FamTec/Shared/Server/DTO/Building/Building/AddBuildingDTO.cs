@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FamTec.Shared.Server.DTO.Building.Building
 {
@@ -7,17 +8,19 @@ namespace FamTec.Shared.Server.DTO.Building.Building
     /// </summary>
     public class AddBuildingDTO
     {
-        public int? ID { get; set; }
-
         /// <summary>
         /// 건물코드
         /// </summary>
-        public string? Code { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "추가하실 건물코드는 공백일 수 없습니다.")]
+        public string Code { get; set; } = null!;
 
         /// <summary>
         /// 건물명
         /// </summary>
-        public string? Name { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "추가하실 건물명은 공백일 수 없습니다.")]
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// 주소

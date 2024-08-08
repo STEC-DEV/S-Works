@@ -69,8 +69,6 @@ namespace FamTec.Server.Controllers.Hubs
 
                 if (model.code == 200)
                 {
-                    // 미분류로 알람전송
-                    await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", dto.Title);
                     return Ok(model);
                 }
                 else

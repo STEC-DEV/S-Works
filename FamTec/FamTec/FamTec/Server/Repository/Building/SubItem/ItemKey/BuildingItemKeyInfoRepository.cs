@@ -182,7 +182,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                         // DB IDList
                         List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
 
-                        List<int> updateidx = UPDATELIST.Select(m => m.ID!.Value).ToList();
+                        List<int> updateidx = UPDATELIST.Select(m => m.ID.Value).ToList();
                         // 삭제대상 (디비 인덱스 - DTO 인덱스 = 남는 DB 인덱스)
                         List<int> delIdx = db_valueidx.Except(updateidx).ToList(); // list1에만 있는 값 -- DB에만있는값 (삭제할값)
 

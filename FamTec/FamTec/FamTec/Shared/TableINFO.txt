@@ -526,3 +526,35 @@ Scaffold-DbContext  "Data Source=123.2.156.122,1002;Database=FMS;User Id=stec;Pa
 https://stackoverflow.com/questions/39176018/cannot-update-identity-column-in-entity-framework-core
 
 Scaffold-DbContext "Server=123.2.156.122,3306;Database=Works;User Id=root;Password=stecdev1234!;" Pomelo.EntityFrameworkCore.MySql -outputDir Model -DataAnnotations
+
+
+--appsetting.json
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  
+  "Kestrel": {
+    "Endpoints": {
+      "MyHttpEndpoint": {
+        "Url": "http://123.2.156.148:5245"
+      }
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=123.2.156.122,3306;Database=Works;userid=root;pwd=stecdev1234!;"
+  },
+  "JWT": {
+    "Issuer": "https://localhost:7114/",
+    "Audience": "https://localhost:7114/",
+    "authSigningKey": "DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4"
+  },
+  "APIKEYNAME": "Authorization",
+  "FileStorage": "N:\\개인" 
+  //"DefaultConnection": "Server=127.0.0.1; port=3307;Database=works;uid=root;pwd=stecdev1234!;"
+}

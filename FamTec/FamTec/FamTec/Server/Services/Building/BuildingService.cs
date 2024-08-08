@@ -134,7 +134,6 @@ namespace FamTec.Server.Services.Building
                         message = "요청이 정상 처리되었습니다.",
                         data = new AddBuildingDTO()
                         {
-                            ID = buildingtb.Id, // 추가된 후 건물ID
                             Code = buildingtb.BuildingCd, // 건물코드
                             Name = buildingtb.Name, // 건물명
                             Address = buildingtb.Address,  // 건물주소

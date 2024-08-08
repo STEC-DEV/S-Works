@@ -1,26 +1,35 @@
-﻿namespace FamTec.Shared.Server.DTO.Voc
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FamTec.Shared.Server.DTO.Voc
 {
     public class VocUserDetailDTO
     {
         /// <summary>
         /// 민원 인덱스
         /// </summary>
-        public int? Id { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "민원 인덱스는 공백일 수 없습니다.")]
+        public int Id { get; set; }
 
         /// <summary>
         /// 접수코드
         /// </summary>
-        public string? Code { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "접수코드는 공백일 수 없습니다.")]
+        public string Code { get; set; } = null!;
 
         /// <summary>
         /// 민원 신청일
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "민원 신청일은 공백일 수 없습니다.")]
+        public string CreateDT { get; set; } = null!;
 
         /// <summary>
         /// 민원 상태
         /// </summary>
-        public int? Status { get; set; }
+        public int Status { get; set; }
 
         /// <summary>
         /// 건물명
@@ -30,7 +39,7 @@
         /// <summary>
         /// 민원 유형
         /// </summary>
-        public int? Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// 민원 제목
@@ -55,7 +64,7 @@
         /// <summary>
         /// 완료시간
         /// </summary>
-        public DateTime? CompleteDT { get; set; }
+        public string? CompleteDT { get; set; }
 
         /// <summary>
         /// 소요시간

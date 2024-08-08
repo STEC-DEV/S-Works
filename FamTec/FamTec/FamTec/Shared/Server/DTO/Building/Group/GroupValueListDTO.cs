@@ -1,4 +1,7 @@
-﻿namespace FamTec.Shared.Server.DTO.Building
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FamTec.Shared.Server.DTO.Building
 {
     public class GroupValueListDTO
     {
@@ -10,7 +13,9 @@
         /// <summary>
         /// 값
         /// </summary>
-        public string? ItemValue { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "값은 공백일 수 없습니다.")]
+        public string ItemValue { get; set; } = null!;
 
     }
 }

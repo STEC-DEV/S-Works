@@ -61,13 +61,35 @@ using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Server.Services.Alarm;
+using System.Net;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
+IPAddress temp = IPAddress.Parse("127.0.0.1");
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Kestrel 서버
+builder.WebHost.UseKestrel((context, options) =>
+{
+    options.Configure(context.Configuration.GetSection("Kestrel"));
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+    options.Limits.MaxConcurrentUpgradedConnections = 1000;
+    options.ConfigureEndpointDefaults(endpointOptions =>
+    {
+        endpointOptions.Protocols = HttpProtocols.Http1AndHttp2;
+    });
+    /*
+    options.Listen(IPAddress.Loopback, 5245, listenOptions =>
+    {
+        listenOptions.UseHttps("path/to/cert.pfx"", "testPassword");
+    });
+    */
+});
+#endregion
 builder.Services.AddDistributedMemoryCache();
 
-//builder.Services.AddHttpClient();
+builder.Services.AddHttpClient();
 
 
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
@@ -158,7 +180,7 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(options =>
 {
     options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
@@ -170,7 +192,7 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
-string? HostUrl = builder.Configuration["Kestrel:Endpoints:MyHttpEndpoint:Url"];
+string? HostUrl = builder.Configuration["Kestrel:Endpoints:Http:Url"];
 
 #region DB연결 정보
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -195,7 +217,7 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:7114", "http://123.2.156.148:5245", "http://123.2.156.229:5245", "http://123.2.156.28:5245", HostUrl)
+        policy.WithOrigins("http://123.2.156.148:5245","https://123.2.156.148:5246")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
@@ -219,6 +241,7 @@ builder.Services.AddCors(opts =>
 
 builder.Services.AddResponseCompression(opts =>
 {
+    opts.EnableForHttps = true;
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         new[] { "application/octet-stream" });
 });
@@ -237,7 +260,7 @@ app.UseCors();
 #region SIGNALR HUB 사용
 app.UseResponseCompression();
 
-app.MapHub<BroadcastHub>("/VocHub"); // 서버에서 변경해야하네
+app.MapHub<BroadcastHub>("/VocHub");
 #endregion
 
 // Configure the HTTP request pipeline.
@@ -319,7 +342,6 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });
-
 
 
 // Material 컨트롤러 미들웨어 추가
@@ -435,6 +457,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"
 
 #endregion
 
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -442,39 +465,6 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-//Console.WriteLine($"{AppDomain.CurrentDomain.BaseDirectory} : 기본경로");
-/*
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == HttpMethods.Get && context.Request.Query["mdw"] == "test")
-    {
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync("Middleware running.\n");
-    }
-
-    await next();
-});
-*/
-//app.MapGet("/", () => "Hello World!");
-
-//app.MapGet("/hi", () => "Hello!");
-/*
-app.Use(async (context, next) =>
-{
-    Console.WriteLine("Use Middleware1 Incoming Request \n");
-
-    await next();
-    Console.WriteLine("Use Middleware1 Outgoing Response \n");
-});
-
-app.Use(async (context, next) =>
-{
-    Console.WriteLine("Use Middleware2 Incoming Request \n");
-    await next();
-    Console.WriteLine("Use Middleware2 Outgoing Response \n");
-});
-app.Run();
-*/
 
 
 WorksSetting settings = new();

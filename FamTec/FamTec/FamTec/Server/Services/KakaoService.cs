@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FamTec.Shared.Server.DTO;
+using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -22,7 +23,7 @@ namespace FamTec.Server.Services
         /// 민원인 전용 VOC 등록 확인메시지
         /// </summary>
         /// <returns></returns>
-        public async Task<bool?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel)
+        public async Task<KakaoLogDTO?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel)
         {
             try
             {
@@ -39,7 +40,7 @@ namespace FamTec.Server.Services
                 JObject? Jobj = JObject.Parse(HttpResponseResult);
                 string? token = Convert.ToString(Jobj["token"]);
                 if (String.IsNullOrWhiteSpace(token))
-                    return false;
+                    return null;
 
                 string year = receiptdate.ToString("yyyy"); //년
                 string month = receiptdate.ToString("MM"); // 월
@@ -82,21 +83,11 @@ namespace FamTec.Server.Services
 
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
                 Jobj = JObject.Parse(HttpResponseResult);
-
-                string? code = Convert.ToString(Jobj["code"]);
-                if(String.IsNullOrWhiteSpace(code))
-                    return false;
-
-                if(code == "0")
-                {
-                    // 정상 전송
-                    return true;
-                }
-                else
-                {
-                    // 메시지 전송 실패
-                    return false;
-                }
+                
+                KakaoLogDTO LogDTO = new KakaoLogDTO();
+                LogDTO.Code = Convert.ToString(Jobj["code"]);
+                LogDTO.Message = Convert.ToString(Jobj["message"]);
+                return LogDTO;
             }
             catch(Exception ex)
             {
@@ -114,7 +105,7 @@ namespace FamTec.Server.Services
         /// <param name="url">링크 URL</param>
         /// <param name="placetel">상버장 전화번호</param>
         /// <returns></returns>
-        public async Task<bool?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
+        public async Task<KakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
         {
             try
             {
@@ -131,7 +122,7 @@ namespace FamTec.Server.Services
                 JObject? Jobj = JObject.Parse(HttpResponseResult);
                 string? token = Convert.ToString(Jobj["token"]);
                 if (String.IsNullOrWhiteSpace(token))
-                    return false;
+                    return null;
 
                 string message = $" ■{receiptnum}의 진행사항이 변경되었습니다.\n■ 진행상태: {status}\n■ 문의전화: {placetel}";
 
@@ -170,20 +161,10 @@ namespace FamTec.Server.Services
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
                 Jobj = JObject.Parse(HttpResponseResult);
 
-                string? code = Convert.ToString(Jobj["code"]);
-                if (String.IsNullOrWhiteSpace(code))
-                    return false;
-
-                if (code == "0")
-                {
-                    // 정상 전송
-                    return true;
-                }
-                else
-                {
-                    // 메시지 전송 실패
-                    return false;
-                }
+                KakaoLogDTO LogDTO = new KakaoLogDTO();
+                LogDTO.Code = Convert.ToString(Jobj["code"]);
+                LogDTO.Message = Convert.ToString(Jobj["message"]);
+                return LogDTO;
             }
             catch (Exception ex)
             {

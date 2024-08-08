@@ -107,7 +107,6 @@ namespace FamTec.Server.Services.Voc
                     }
                 }
 
-
                 CommentTb? model = await VocCommentRepository.AddAsync(comment);
 
                 if (model is not null)
@@ -164,14 +163,14 @@ namespace FamTec.Server.Services.Voc
                                     }
 
                                     // 카카오 API 전송
-                                    bool? SendResult = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
+                                    KakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
 
-                                    if(SendResult == true)
+                                    if(LogDTO is not null)
                                     {
                                         // 카카오 메시지 성공
                                         KakaoLogTb LogTB = new KakaoLogTb();
-                                        //LogTB.Result = "Y";
-                                        //LogTB.Title = StatusResult;
+                                        LogTB.Code = LogDTO.Code;
+                                        LogTB.Message = LogDTO.Message;
                                         LogTB.CreateDt = DateTime.Now;
                                         LogTB.CreateUser = Creater;
                                         LogTB.UpdateDt = DateTime.Now;
@@ -183,31 +182,28 @@ namespace FamTec.Server.Services.Voc
                                         // 카카오API 로그 테이블에 쌓아야함
                                         KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
                                     }
-                                    else if(SendResult == false)
-                                    {
-                                        // 카카오 메시지 실패
-                                        KakaoLogTb LogTB = new KakaoLogTb();
-                                        //LogTB.Result = "N";
-                                        //LogTB.Log
-
-                                    }
                                     else
                                     {
                                         // 카카오 메시지 에러
-                                    }
+                                        KakaoLogTb LogTB = new KakaoLogTb();
+                                        LogTB.Code = "ERROR";
+                                        LogTB.Message = "ERROR";
+                                        LogTB.CreateDt = DateTime.Now;
+                                        LogTB.CreateUser = Creater;
+                                        LogTB.UpdateDt = DateTime.Now;
+                                        LogTB.UpdateUser = Creater;
+                                        LogTB.VocTbId = VocTB.Id; // 민원ID
+                                        LogTB.PlaceTbId = placeTB.Id; // 사업장ID
+                                        LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
 
+                                        // 카카오API 로그 테이블에 쌓아야함
+                                        KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                                    }
                                 }
 
                             }
-                            
 
-                            // 카카오 알림톡 (진행상태가 변경되는거임) - 민원자에게 민원현황 알려주기용
-                            // 등록했으면 - 전송 (해당VOC가 Reply -- Y 인경우) + 블랙리스트가 아닌경우
-                            /*
-                                알림톡 들어올자리
-                             */
-                            return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocCommentDTO(), code = 200 };
-
+                            return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto , code = 200 };
                         }
                         else
                         {
@@ -343,9 +339,6 @@ namespace FamTec.Server.Services.Voc
         {
             try
             {
-                //string? FileName = String.Empty;
-                //string? FileExtenstion = String.Empty;
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
@@ -369,7 +362,6 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Content = dto.Content;
-                model.Status = dto.Status;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
 
@@ -445,29 +437,9 @@ namespace FamTec.Server.Services.Voc
                 bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model);
                 if(UpdateResult == true)
                 {
-                    // 여기서 Voc 원본 조회해서 값 변경해줘야함!.
-                    VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId);
-                    if (VocTB is not null)
-                    {
-                        VocTB.Status = dto.Status;
-                        VocTB.UpdateDt = DateTime.Now;
-                        VocTB.UpdateUser = creater;
-                        bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
-                        if (VocUpdateResult)
-                        {
-                            // 카카오 알림톡 (진행상태가 변경되는거임) - 민원자에게 민원현황 알려주기용
+                    // 알림톡으로 내용바꿧다는거 알려줄것인지 ?
 
-                            return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                        }
-                        else 
-                        {
-                            return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
-                        }
-                    }
-                    else
-                    {
-                        return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
-                    }     
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 404 };
                 }
                 else
                 {

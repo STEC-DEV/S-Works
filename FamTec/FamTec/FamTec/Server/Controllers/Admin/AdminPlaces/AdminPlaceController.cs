@@ -40,7 +40,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllPlaceDTO>? model = await AdminPlaceService.GetAllWorksService(HttpContext);
+                ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService(HttpContext);
                 if (model is null)
                     return BadRequest(model);
 
@@ -58,7 +58,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 매니저리스트 전체 반환 [수정완료]
+        /// 관리자정보 전체조회
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
@@ -125,7 +125,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         /// <summary>
         /// 사업장 상세정보
         /// </summary>
-        /// <param name="placeid"></param>
+        /// <param name="placeid">사업장ID</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
@@ -137,7 +137,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<PlaceDetailDTO>? model = await AdminPlaceService.GetPlaceService(placeid);
+                ResponseUnit<PlaceDetailDTO?> model = await AdminPlaceService.GetPlaceService(placeid);
 
                 if (model is null)
                     return BadRequest(model);
@@ -155,9 +155,9 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 사업장 생성
+        /// 사업장 등록
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="dto">추가할 사업장정보 DTO</param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
@@ -221,7 +221,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
+                ResponseUnit<bool> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
 
                 if (model is null)
                     return BadRequest();
@@ -240,6 +240,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
         }
 
+        /// <summary>
+        /// 사업장 수정
+        /// </summary>
+        /// <param name="dto">수정할 DTO</param>
+        /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateWorks")]
@@ -250,7 +255,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UpdatePlaceDTO>? model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
+                ResponseUnit<UpdatePlaceDTO?> model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -269,6 +274,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
         }
 
+        /// <summary>
+        /// 사업장에 포함되어있지 않은 관리자 리스트 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/NotContainManagerList")]
@@ -279,34 +289,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ManagerListDTO>? model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
-
-                if (model is null)
-                    return BadRequest();
-
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
-            }
-        }
-
-        [Authorize(Roles = "SystemManager, Master, Manager")]
-        [HttpGet]
-        [Route("sign/NotContainPlaceList")]
-        public async ValueTask<IActionResult> NotContainPlaceList([FromQuery]int adminid)
-        {
-            try
-            {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
+                ResponseList<ManagerListDTO?> model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
 
                 if (model is null)
                     return BadRequest();
@@ -324,7 +307,39 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 사업장에 매니저 할당
+        /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpGet]
+        [Route("sign/NotContainPlaceList")]
+        public async ValueTask<IActionResult> NotContainPlaceList([FromQuery]int adminid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 사업장에 관리자 추가
         /// </summary>
         /// <param name="placemanager"></param>
         /// <returns></returns>

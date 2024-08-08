@@ -1,20 +1,29 @@
-﻿namespace FamTec.Shared.Server.DTO.Building.Building
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>
     /// 건물 상세정보 DTO
     /// </summary>
     public class DetailBuildingDTO
     {
-        public int? ID { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "건물 인덱스는 공백일 수 없습니다.")]
+        public int ID { get; set; }
 
         /// <summary>
         /// 건물코드
         /// </summary>
-        public string? Code { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "건물 코드는 공백일 수 없습니다.")]
+        public string Code { get; set; } = null!;
 
         /// <summary>
         /// 건물명
         /// </summary>
+        [NotNull]
+        [Required(ErrorMessage = "건물명은 공백일 수 없습니다.")]
         public string? Name { get; set; }
 
         /// <summary>

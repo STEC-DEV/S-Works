@@ -1,4 +1,7 @@
-﻿namespace FamTec.Shared.Server.DTO.Building.Building
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>
     /// 업데이터 건물항목
@@ -8,17 +11,23 @@
         /// <summary>
         /// 건물 테이블 인덱스
         /// </summary>
-        public int? Id { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "건물 인덱스는 공백일 수 없습니다.")]
+        public int Id { get; set; }
 
         /// <summary>
         /// 건물코드
         /// </summary>
-        public string? BuildingCD { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "건물코드는 공백일 수 없습니다.")]
+        public string BuildingCD { get; set; } = null!;
 
         /// <summary>
         /// 건물명
         /// </summary>
-        public string? Name { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "건물명은 공백일 수 없습니다.")]
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// 건물주소

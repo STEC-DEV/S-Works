@@ -41,7 +41,7 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                ResponseUnit<string>? model = await AdminAccountService.AdminLoginService(dto);
+                ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto);
                 if (model is null)
                     return BadRequest(model);
 

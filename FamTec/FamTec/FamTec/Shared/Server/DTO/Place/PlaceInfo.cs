@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FamTec.Shared.Server.DTO.Place
 {
@@ -12,14 +13,17 @@ namespace FamTec.Shared.Server.DTO.Place
         /// <summary>
         /// 사업장코드
         /// </summary>
+        [NotNull]
+        [Required(ErrorMessage = "사업장 코드는 공백일 수 없습니다.")]
         [Display(Name = "사업장 코드")]
-        public string PlaceCd { get; set; }
+        public string PlaceCd { get; set; } = null!;
 
         /// <summary>
         /// 사업장명
         /// </summary>
+        [Required(ErrorMessage = "사업장 명은 공백일 수 없습니다.")]
         [Display(Name = "사업장명")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// 전화번호
@@ -65,6 +69,6 @@ namespace FamTec.Shared.Server.DTO.Place
         /// <summary>
         /// 관리부서 명칭
         /// </summary>
-        public string DepartmentName { get; set; }
+        public string? DepartmentName { get; set; }
     }
 }

@@ -8,7 +8,15 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://localhost:5245;http://123.2.156.148:5245;http://123.2.156.148:8080"
+      "applicationUrl": ""
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "distributionName": ""
     },
     "https": {
       "commandName": "Project",
@@ -18,7 +26,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7114;http://localhost:5245;https://123.2.156.148:7114;https://123.2.156.148:8080"
+      "applicationUrl": ""
     },
     "IIS Express": {
       "commandName": "IISExpress",

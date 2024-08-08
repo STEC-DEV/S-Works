@@ -1,22 +1,31 @@
-﻿namespace FamTec.Shared.Server.DTO.Building.Group
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FamTec.Shared.Server.DTO.Building.Group
 {
     public class GroupKeyListDTO
     {
         /// <summary>
         /// 키 ID
         /// </summary>
-        public int? ID { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "Key의 ID값은 공백일 수 없습니다.")]
+        public int ID { get; set; }
 
         /// <summary>
         /// 키의 명칭
         /// </summary>
-        public string? ItemKey { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "Key의 이름은 공백일 수 없습니다.")]
+        public string ItemKey { get; set; } = null!;
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string? Unit { get; set; }
+        [NotNull]
+        [Required(ErrorMessage = "단위명은 공백일 수 없습니다.")]
+        public string Unit { get; set; } = null!;
 
-        public List<GroupValueListDTO> ValueList { get; set; } = new List<GroupValueListDTO>();
+        public List<GroupValueListDTO>? ValueList { get; set; } = new List<GroupValueListDTO>();
     }
 }
