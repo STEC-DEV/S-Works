@@ -113,7 +113,7 @@
         /// <summary>
         /// 재직여부
         /// </summary>
-        public int? STATUS { get; set; }
+        public int? STATUS { get; set; } = 2;
 
         /// <summary>
         /// 기계민원 처리권한

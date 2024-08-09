@@ -1,30 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamTec.Shared.Server.DTO.Admin
+﻿namespace FamTec.Shared.Server.DTO.Admin
 {
     public class AdminPlaceDTO
     {
         /// <summary>
         /// PlaceID
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장 인덱스는 공백일 수 없습니다.")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// PlaceCode
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장 코드는 공백일 수 없습니다.")]
-        public string PlaceCd { get; set; } = null!;
+        public string? PlaceCd { get; set; }
 
         /// <summary>
         /// 사업장명
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장 명은 공백일 수 없습니다.")]
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 비고
@@ -44,9 +35,7 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// 계약상태
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "계약상태는 공백일 수 없습니다")]
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
 
     }
 }

@@ -55,6 +55,6 @@
         /// <summary>
         /// 이미지
         /// </summary>
-        public List<byte[]> Images { get; set; } = new List<byte[]>();
+        public List<byte[]>? Images { get; set; } = new List<byte[]>();
     }
 }

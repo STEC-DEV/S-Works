@@ -37,9 +37,9 @@ namespace FamTec.Server
                 UnitTb? model = new UnitTb();
                 model.Unit = compare[i];
                 model.CreateDt = DateTime.Now;
-                model.CreateUser = "시스템개발파트";
+                model.CreateUser = "시스템관리자";
                 model.UpdateDt = DateTime.Now;
-                model.UpdateUser = "시스템개발파트";
+                model.UpdateUser = "시스템관리자";
                 model.DelYn = false;
 
                 context.UnitTbs.Add(model);
@@ -95,7 +95,7 @@ namespace FamTec.Server
             {
                 UserId = "Admin",
                 Password = "stecdev1234!",
-                Name = "시스템개발파트",
+                Name = "시스템관리자",
                 Email = "stecdev@s-tec.co.kr",
                 Phone = "1577-0722",
                 PermBasic = 2, // 기본정보관리메뉴 권한

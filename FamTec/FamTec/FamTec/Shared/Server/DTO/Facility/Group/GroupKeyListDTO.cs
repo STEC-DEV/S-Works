@@ -17,6 +17,6 @@
         /// </summary>
         public string? Unit { get; set; }
 
-        public List<GroupValueListDTO> ValueList { get; set; } = new List<GroupValueListDTO>();
+        public List<GroupValueListDTO>? ValueList { get; set; } = new List<GroupValueListDTO>();
     }
 }

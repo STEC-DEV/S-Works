@@ -15,8 +15,15 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        ValueTask<PlaceTb?> GetBuildingPlace(int? buildingid);
-        
+        ValueTask<PlaceTb?> GetBuildingPlace(int buildingid);
+
+        /// <summary>
+        /// 사업장코드로 사업장 검색
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        ValueTask<bool?> PlaceUKCheck(string Code);
+
 
         /// <summary>
         /// 전제조회
@@ -29,21 +36,21 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<PlaceTb?> GetByPlaceInfo(int? id);
+        ValueTask<PlaceTb?> GetByPlaceInfo(int id);
 
         /// <summary>
         /// 삭제할 사업장 인덱스 조회 - 동시다발 삭제때문에 DelYN 적용안함.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<PlaceTb?> GetDeletePlaceInfo(int? id);
+        ValueTask<PlaceTb?> GetDeletePlaceInfo(int id);
 
         /// <summary>
         /// 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> EditPlaceInfo(PlaceTb? model); // 사용
+        ValueTask<bool?> EditPlaceInfo(PlaceTb model); // 사용
 
 
         /// <summary>
@@ -51,9 +58,9 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeletePlace(PlaceTb? model);
+        ValueTask<bool?> DeletePlace(PlaceTb model);
 
-        ValueTask<bool?> DeletePlaceList(string? Name, List<int>? placeidx);
+        ValueTask<bool?> DeletePlaceList(string Name, List<int> placeidx);
 
     }
 }

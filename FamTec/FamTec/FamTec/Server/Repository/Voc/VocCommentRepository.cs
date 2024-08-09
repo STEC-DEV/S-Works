@@ -22,14 +22,15 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<CommentTb?> AddAsync(CommentTb? model)
+        public async ValueTask<CommentTb?> AddAsync(CommentTb model)
         {
             try
             {
-                if(model is not null)
+                context.CommentTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
+                if(AddResult)
                 {
-                    context.CommentTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -46,23 +47,19 @@ namespace FamTec.Server.Repository.Voc
 
 
 
-        public async ValueTask<List<CommentTb>?> GetCommentList(int? vocid)
+        public async ValueTask<List<CommentTb>?> GetCommentList(int vocid)
         {
             try
             {
-                if(vocid is not null)
-                {
-                    List<CommentTb>? model = await context.CommentTbs.Where(m => m.VocTbId == vocid && m.DelYn != true).ToListAsync();
+                List<CommentTb>? model = await context.CommentTbs
+                    .Where(m => m.VocTbId == vocid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -72,22 +69,17 @@ namespace FamTec.Server.Repository.Voc
         }
 
 
-        public async ValueTask<CommentTb?> GetCommentInfo(int? commentid)
+        public async ValueTask<CommentTb?> GetCommentInfo(int commentid)
         {
             try
             {
-                if(commentid is not null)
-                {
-                    CommentTb? model = await context.CommentTbs.FirstOrDefaultAsync(m => m.Id == commentid && m.DelYn != true);
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                CommentTb? model = await context.CommentTbs
+                    .FirstOrDefaultAsync(m => m.Id == commentid && m.DelYn != true);
+
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -102,19 +94,12 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateCommentInfo(CommentTb? model)
+        public async ValueTask<bool?> UpdateCommentInfo(CommentTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.CommentTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.CommentTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {

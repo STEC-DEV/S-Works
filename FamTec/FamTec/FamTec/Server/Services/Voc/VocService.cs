@@ -122,7 +122,7 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
 
-                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid);
+                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate.Value, enddate.Value, type.Value, status.Value, buildingid.Value);
                 if (model is [_, ..])
                     return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -157,7 +157,7 @@ namespace FamTec.Server.Services.Voc
                 if(String.IsNullOrWhiteSpace(PlaceIdx))
                     return new ResponseUnit<VocEmployeeDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid);
+                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid.Value);
                 if(model is not null)
                 {
                     BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(model.BuildingTbId);
@@ -235,10 +235,10 @@ namespace FamTec.Server.Services.Voc
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                 if(VocTB is not null)
                 {
-                    VocTB.Type = dto.Type;
+                    VocTB.Type = dto.Type.Value;
                     VocTB.UpdateDt = DateTime.Now;
                     VocTB.UpdateUser = creater;
 
@@ -251,7 +251,7 @@ namespace FamTec.Server.Services.Voc
                         {
 #region 기타민원 타입변경
                             case 0:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if(VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -263,7 +263,7 @@ namespace FamTec.Server.Services.Voc
                                 if (Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                                 }
@@ -273,7 +273,7 @@ namespace FamTec.Server.Services.Voc
 
 #region 기계민원 타입변경
                             case 1:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if(VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -286,7 +286,7 @@ namespace FamTec.Server.Services.Voc
                                 if (Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다");
                                 }
@@ -296,7 +296,7 @@ namespace FamTec.Server.Services.Voc
 
 #region 전기민원 타입변경
                             case 2:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -309,7 +309,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다");
                                 }
@@ -318,7 +318,7 @@ namespace FamTec.Server.Services.Voc
 #endregion
 #region 승강민원 타입변경
                             case 3:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -330,7 +330,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다");
                                 }
@@ -340,7 +340,7 @@ namespace FamTec.Server.Services.Voc
 
 #region 소방민원 타입변경
                             case 4:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -352,7 +352,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다");
@@ -363,7 +363,7 @@ namespace FamTec.Server.Services.Voc
 
 #region 건축민원 타입변경
                             case 5:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -375,7 +375,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다");
@@ -387,7 +387,7 @@ namespace FamTec.Server.Services.Voc
 #region 통신민원 타입변경
                             // 통신
                             case 6:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -399,7 +399,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다");
@@ -411,7 +411,7 @@ namespace FamTec.Server.Services.Voc
 #region 미화민원 타입변경
                             // 미화
                             case 7:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -423,7 +423,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                                     
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다");
@@ -435,7 +435,7 @@ namespace FamTec.Server.Services.Voc
 #region 보안민원 타입변경
                             // 보안
                             case 8:
-                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID);
+                                VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
                                 if (VocTB is null)
                                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
@@ -447,7 +447,7 @@ namespace FamTec.Server.Services.Voc
                                 if(Users is [_, ..])
                                 {
                                     // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID);
+                                    bool AddAlarm = await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                                     // 소켓전송
                                     await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다");

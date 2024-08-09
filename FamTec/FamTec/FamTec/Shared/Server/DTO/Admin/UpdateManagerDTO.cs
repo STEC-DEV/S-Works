@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamTec.Shared.Server.DTO.Admin
+﻿namespace FamTec.Shared.Server.DTO.Admin
 {
     /// <summary>
     /// 관리자 수정 DTO
@@ -11,23 +8,17 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// 관리자 테이블ID
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "관리자 인덱스는 공백일 수 없습니다.")]
-        public int AdminIndex { get; set; }
+        public int? AdminIndex { get; set; }
 
         /// <summary>
         /// 이름
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "변경하실 이름은 공백일 수 없습니다.")]
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 부서인덱스
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "변경하실 부서 인덱스는 공백일 수 없습니다.")]
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         /// <summary>
         /// 전화번호
@@ -42,21 +33,17 @@ namespace FamTec.Shared.Server.DTO.Admin
         /// <summary>
         /// 로그인 ID
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "변경하실 아이디는 공백일 수 없습니다.")]
-        public string UserId { get; set; } = null!;
+        public string? UserId { get; set; }
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "변경하실 비밀번호는 공백일 수 없습니다.")]
-        public string Password { get; set; } = null!;
+        public string? Password { get; set; }
 
         /// <summary>
         /// 사업장
         /// </summary>
-        public List<AdminPlaceDTO> PlaceList { get; set; } = new List<AdminPlaceDTO>();
+        public List<AdminPlaceDTO>? PlaceList { get; set; } = new List<AdminPlaceDTO>();
 
     }
 }

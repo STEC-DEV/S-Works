@@ -23,21 +23,22 @@ namespace FamTec.Server.Repository.Material
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<MaterialTb?> AddAsync(MaterialTb? model)
+        public async ValueTask<MaterialTb?> AddAsync(MaterialTb model)
         {
             try
             {
-                if (model is not null)
+                context.MaterialTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.MaterialTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
                 {
                     return null;
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
@@ -49,7 +50,7 @@ namespace FamTec.Server.Repository.Material
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaterialTb>?> GetPlaceAllMaterialList(int? placeid)
+        public async ValueTask<List<MaterialTb>?> GetPlaceAllMaterialList(int placeid)
         {
             try
             {
@@ -74,7 +75,7 @@ namespace FamTec.Server.Repository.Material
         /// </summary>
         /// <param name="materialId"></param>
         /// <returns></returns>
-        public async ValueTask<MaterialTb?> GetDetailMaterialInfo(int? placeid, int? materialId)
+        public async ValueTask<MaterialTb?> GetDetailMaterialInfo(int placeid, int materialId)
         {
             try
             {
@@ -98,19 +99,12 @@ namespace FamTec.Server.Repository.Material
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateMaterialInfo(MaterialTb? model)
+        public async ValueTask<bool?> UpdateMaterialInfo(MaterialTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.MaterialTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.MaterialTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -125,51 +119,40 @@ namespace FamTec.Server.Repository.Material
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> DeleteMaterialInfo(List<int>? delidx, string? deleter)
+        public async ValueTask<bool?> DeleteMaterialInfo(List<int> delidx, string deleter)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (String.IsNullOrWhiteSpace(deleter))
-                        return null;
-                    
-                    if(delidx is [_, ..])
+                    foreach(int delId in delidx)
                     {
-                        foreach(int delId in delidx)
+                        MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                        if(MaterialTB is not null)
                         {
-                            MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
-                            if(MaterialTB is not null)
-                            {
-                                MaterialTB.DelYn = true;
-                                MaterialTB.DelDt = DateTime.Now;
-                                MaterialTB.DelUser = deleter;
+                            MaterialTB.DelYn = true;
+                            MaterialTB.DelDt = DateTime.Now;
+                            MaterialTB.DelUser = deleter;
 
-                                context.MaterialTbs.Update(MaterialTB);
-                                bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if (!MaterialResult)
-                                {
-                                    // 업데이트 실패시 롤백
-                                    await transaction.RollbackAsync();
-                                    return false;
-                                }
-                            }
-                            else
+                            context.MaterialTbs.Update(MaterialTB);
+                            bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!MaterialResult)
                             {
-                                // 잘못된 조회결과 (롤백)
+                                // 업데이트 실패시 롤백
                                 await transaction.RollbackAsync();
-                                return null; 
+                                return false;
                             }
                         }
-
-                        await transaction.CommitAsync();
-                        return true;
+                        else
+                        {
+                            // 잘못된 조회결과 (롤백)
+                            await transaction.RollbackAsync();
+                            return null; 
+                        }
                     }
-                    else
-                    {
-                        return null;
-                    }
 
+                    await transaction.CommitAsync();
+                    return true;
                 }
                 catch(Exception ex)
                 {

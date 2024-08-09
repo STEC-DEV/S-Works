@@ -41,7 +41,7 @@ namespace FamTec.Server.Services.Floor
                 if (dto is null)
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
-                BuildingTb? tokenck = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID);
+                BuildingTb? tokenck = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID.Value);
                 if (tokenck is null)
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
@@ -55,7 +55,7 @@ namespace FamTec.Server.Services.Floor
                 model.CreateUser = creator;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creator;
-                model.BuildingTbId = dto.BuildingTBID;
+                model.BuildingTbId = dto.BuildingTBID.Value;
                 
                 FloorTb? result = await FloorInfoRepository.AddAsync(model);
                 if (result is not null)
@@ -81,7 +81,7 @@ namespace FamTec.Server.Services.Floor
             {
                 if(buildingtbid is not null)
                 {
-                    List<FloorTb>? model = await FloorInfoRepository.GetFloorList(buildingtbid);
+                    List<FloorTb>? model = await FloorInfoRepository.GetFloorList(buildingtbid.Value);
 
                     if(model is [_, ..])
                     {
@@ -136,7 +136,7 @@ namespace FamTec.Server.Services.Floor
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FloorTb? model = await FloorInfoRepository.GetFloorInfo(dto.FloorID);
+                FloorTb? model = await FloorInfoRepository.GetFloorInfo(dto.FloorID.Value);
                 if(model is not null)
                 {
                     model.Name = dto.Name;

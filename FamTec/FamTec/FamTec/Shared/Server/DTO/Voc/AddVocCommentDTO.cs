@@ -5,16 +5,16 @@
         /// <summary>
         /// 댓글내용
         /// </summary>
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         /// <summary>
         /// 민원 처리상태
         /// </summary>
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         /// <summary>
         /// VOC 테이블 인덱스
         /// </summary>
-        public int VocTbId { get; set; }
+        public int? VocTbId { get; set; }
     }
 }

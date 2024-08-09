@@ -22,14 +22,14 @@ namespace FamTec.Server.Repository.Facility.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemGroupTb?> AddAsync(FacilityItemGroupTb? model)
+        public async ValueTask<FacilityItemGroupTb?> AddAsync(FacilityItemGroupTb model)
         {
             try
             {
-                if(model is not null)
+                context.FacilityItemGroupTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.FacilityItemGroupTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -49,22 +49,18 @@ namespace FamTec.Server.Repository.Facility.Group
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityItemGroupTb>?> GetAllGroupList(int? facilityId)
+        public async ValueTask<List<FacilityItemGroupTb>?> GetAllGroupList(int facilityId)
         {
             try
             {
-                if (facilityId is not null)
-                {
-                    List<FacilityItemGroupTb>? model = await context.FacilityItemGroupTbs.Where(m => m.FacilityTbId == facilityId && m.DelYn != true).ToListAsync();
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                List<FacilityItemGroupTb>? model = await context.FacilityItemGroupTbs
+                    .Where(m => m.FacilityTbId == facilityId && m.DelYn != true)
+                    .ToListAsync();
+
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -78,22 +74,17 @@ namespace FamTec.Server.Repository.Facility.Group
         /// </summary>
         /// <param name="groupid"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemGroupTb?> GetGroupInfo(int? groupid)
+        public async ValueTask<FacilityItemGroupTb?> GetGroupInfo(int groupid)
         {
             try
             {
-                if(groupid is not null)
-                {
-                    FacilityItemGroupTb? model = await context.FacilityItemGroupTbs.FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                FacilityItemGroupTb? model = await context.FacilityItemGroupTbs
+                    .FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
+
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -107,19 +98,12 @@ namespace FamTec.Server.Repository.Facility.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateGroupInfo(FacilityItemGroupTb? model)
+        public async ValueTask<bool?> UpdateGroupInfo(FacilityItemGroupTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.FacilityItemGroupTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityItemGroupTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -133,19 +117,12 @@ namespace FamTec.Server.Repository.Facility.Group
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteGroupInfo(FacilityItemGroupTb? model)
+        public async ValueTask<bool?> DeleteGroupInfo(FacilityItemGroupTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.FacilityItemGroupTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityItemGroupTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {

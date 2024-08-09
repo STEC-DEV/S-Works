@@ -22,14 +22,14 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityTb?> AddAsync(FacilityTb? model)
+        public async ValueTask<FacilityTb?> AddAsync(FacilityTb model)
         {
             try
             {
-                if(model is not null)
+                context.FacilityTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.FacilityTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -49,23 +49,18 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityTb>?> GetAllFacilityList(int? roomid)
+        public async ValueTask<List<FacilityTb>?> GetAllFacilityList(int roomid)
         {
             try
             {
-                if(roomid is not null)
-                {
-                    List<FacilityTb>? model = await context.FacilityTbs.Where(m => m.RoomTbId == roomid && m.DelYn != true).ToListAsync();
+                List<FacilityTb>? model = await context.FacilityTbs
+                    .Where(m => m.RoomTbId == roomid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -79,23 +74,17 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityTb?> GetFacilityInfo(int? id)
+        public async ValueTask<FacilityTb?> GetFacilityInfo(int id)
         {
             try
             {
-                if(id is not null)
-                {
-                    FacilityTb? model = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
+                FacilityTb? model = await context.FacilityTbs.
+                    FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
                     
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -109,19 +98,12 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateFacilityInfo(FacilityTb? model)
+        public async ValueTask<bool?> UpdateFacilityInfo(FacilityTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.FacilityTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -135,19 +117,12 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteFacilityInfo(FacilityTb? model)
+        public async ValueTask<bool?> DeleteFacilityInfo(FacilityTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.FacilityTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -162,47 +137,41 @@ namespace FamTec.Server.Repository.Facility
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int placeid)
         {
             try
             {
-                if(placeid is not null)
+                List<FacilityListDTO> machinelist =  (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                            join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                            on building.Id equals floortb.BuildingTbId
+                                                            join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                            on floortb.Id equals roomtb.FloorTbId
+                                                            join facilitytb in context.FacilityTbs.Where(m => m.Category == "기계" && m.DelYn != true).ToList()
+                                                            on roomtb.Id equals facilitytb.RoomTbId
+                                                            select new FacilityListDTO
+                                                            {
+                                                                Id = facilitytb.Id, // 설비인덱스
+                                                                Name = facilitytb.Name, // 설비명칭
+                                                                Type = facilitytb.Type,
+                                                                Num = facilitytb.Num, // 수량
+                                                                //Unit = facilitytb.Unit, // 단위
+                                                                //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                                RoomName = roomtb.Name, // 공간위치 이름
+                                                                StandardCapacity = facilitytb.StandardCapacity,
+                                                                EquipDT = facilitytb.EquipDt,
+                                                                LifeSpan = facilitytb.Lifespan,
+                                                                ChangeDT = facilitytb.ChangeDt
+                                                            }).ToList();
+
+                if (machinelist is [_, ..])
                 {
-                    List<FacilityListDTO> machinelist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                                join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                                on building.Id equals floortb.BuildingTbId
-                                                                join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                                on floortb.Id equals roomtb.FloorTbId
-                                                                join facilitytb in context.FacilityTbs.Where(m => m.Category == "기계" && m.DelYn != true).ToList()
-                                                                on roomtb.Id equals facilitytb.RoomTbId
-                                                                select new FacilityListDTO
-                                                                {
-                                                                    Id = facilitytb.Id, // 설비인덱스
-                                                                    Name = facilitytb.Name, // 설비명칭
-                                                                    Type = facilitytb.Type,
-                                                                    Num = facilitytb.Num, // 수량
-                                                                    //Unit = facilitytb.Unit, // 단위
-                                                                    //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                                    RoomName = roomtb.Name, // 공간위치 이름
-                                                                    StandardCapacity = facilitytb.StandardCapacity,
-                                                                    EquipDT = facilitytb.EquipDt,
-                                                                    LifeSpan = facilitytb.Lifespan,
-                                                                    ChangeDT = facilitytb.ChangeDt
-                                                                }).ToList();
-                                                        
-                    if(machinelist is [_, ..])
-                    {
-                        return machinelist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return machinelist;
                 }
                 else
                 {
                     return null;
                 }
+               
             }
             catch(Exception ex)
             {
@@ -216,42 +185,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int placeid)
         {
             try
             {
-                if(placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "전기" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if(electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "전기" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if(electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -270,42 +231,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "승강" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "승강" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -324,42 +277,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "소방" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "소방" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -378,42 +323,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "건축" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "건축" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -432,42 +369,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "통신" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "통신" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -486,42 +415,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "미화" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "미화" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {
@@ -540,42 +461,34 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int? placeid)
+        public async ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
+                                                    on building.Id equals floortb.BuildingTbId
+                                                    join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
+                                                    on floortb.Id equals roomtb.FloorTbId
+                                                    join facilitytb in context.FacilityTbs.Where(m => m.Category == "보안" && m.DelYn != true).ToList()
+                                                    on roomtb.Id equals facilitytb.RoomTbId
+                                                    select new FacilityListDTO
+                                                    {
+                                                        Id = facilitytb.Id, // 설비인덱스
+                                                        Name = facilitytb.Name, // 설비명칭
+                                                        Type = facilitytb.Type, // 타입
+                                                        Num = facilitytb.Num, // 수량
+                                                        //RoomIdx = roomtb.Id, // 공간위치 인덱스
+                                                        RoomName = roomtb.Name, // 공간위치 이름
+                                                        StandardCapacity = facilitytb.StandardCapacity,
+                                                        EquipDT = facilitytb.EquipDt,
+                                                        LifeSpan = facilitytb.Lifespan,
+                                                        ChangeDT = facilitytb.ChangeDt
+                                                    }).ToList();
+
+                if (electlist is [_, ..])
                 {
-                    List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
-                                                       on building.Id equals floortb.BuildingTbId
-                                                       join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
-                                                       on floortb.Id equals roomtb.FloorTbId
-                                                       join facilitytb in context.FacilityTbs.Where(m => m.Category == "보안" && m.DelYn != true).ToList()
-                                                       on roomtb.Id equals facilitytb.RoomTbId
-                                                       select new FacilityListDTO
-                                                       {
-                                                           Id = facilitytb.Id, // 설비인덱스
-                                                           Name = facilitytb.Name, // 설비명칭
-                                                           Type = facilitytb.Type, // 타입
-                                                           Num = facilitytb.Num, // 수량
-                                                           //RoomIdx = roomtb.Id, // 공간위치 인덱스
-                                                           RoomName = roomtb.Name, // 공간위치 이름
-                                                           StandardCapacity = facilitytb.StandardCapacity,
-                                                           EquipDT = facilitytb.EquipDt,
-                                                           LifeSpan = facilitytb.Lifespan,
-                                                           ChangeDT = facilitytb.ChangeDt
-                                                       }).ToList();
-
-                    if (electlist is [_, ..])
-                    {
-                        return electlist;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
+                    return electlist;
                 }
                 else
                 {

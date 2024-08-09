@@ -86,7 +86,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
                 
 
-                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid);
+                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid.Value);
                 if (buildingtb is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
 
@@ -111,7 +111,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 model.CreateUser = dto.Name; // 작성자
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = dto.Name; // 작성자
-                model.BuildingTbId = dto.Buildingid;
+                model.BuildingTbId = dto.Buildingid.Value;
 
                 // 조회코드
                 string? ReceiptCode;
@@ -379,7 +379,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (commentid is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid.Value);
                 if(model is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

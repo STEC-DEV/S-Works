@@ -11,23 +11,17 @@ namespace FamTec.Shared.Server.DTO.Building.Building
         /// <summary>
         /// 건물 ID
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "건물 ID는 공백일 수 없습니다.")]
-        public int ID { get; set; }
+        public int? ID { get; set; }
 
         /// <summary>
         /// 건물 코드
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "건물 코드는 공백일 수 없습니다.")]
-        public string BuildingCD { get; set; } = null!;
+        public string? BuildingCD { get; set; }
 
         /// <summary>
         /// 건물명
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "건물명은 공백일 수 없습니다.")]
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 건물주소
@@ -42,9 +36,7 @@ namespace FamTec.Shared.Server.DTO.Building.Building
         /// <summary>
         /// 등록일자
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "등록일자는 공백일 수 없습니다.")]
-        public DateTime CreateDT { get; set; }
+        public DateTime? CreateDT { get; set; }
 
     }
 }

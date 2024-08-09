@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Facility.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
-                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupID);
+                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupID.Value);
                 if(GroupTb is null) // 기존의 GroupTB가 존재하는지 Check
                     return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
@@ -54,7 +54,7 @@ namespace FamTec.Server.Services.Facility.Key
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;
                 KeyTb.UpdateUser = creater;
-                KeyTb.FacilityItemGroupTbId = dto.GroupID;
+                KeyTb.FacilityItemGroupTbId = dto.GroupID.Value;
 
                 FacilityItemKeyTb? AddKeyResult = await FacilityItemKeyInfoRepository.AddAsync(KeyTb);
                 if(AddKeyResult is not null)
@@ -107,7 +107,7 @@ namespace FamTec.Server.Services.Facility.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
-                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID);
+                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID.Value);
                 if (KeyTB is not null)
                 {
                     KeyTB.Name = dto.Itemkey;
@@ -141,7 +141,7 @@ namespace FamTec.Server.Services.Facility.Key
                         {
                             foreach(GroupValueListDTO value in dto.ValueList)
                             {
-                                FacilityItemValueTb? valuetb = await FacilityItemValueInfoRepository.GetValueInfo(value.ID);
+                                FacilityItemValueTb? valuetb = await FacilityItemValueInfoRepository.GetValueInfo(value.ID.Value);
                                 if(valuetb is not null)
                                 {
                                     valuetb.ItemValue = value.ItemValue;
@@ -194,7 +194,7 @@ namespace FamTec.Server.Services.Facility.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId);
+                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId.Value);
 
                 if(KeyTB is not null)
                 {
@@ -209,7 +209,7 @@ namespace FamTec.Server.Services.Facility.Key
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
 
-                    List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId);
+                    List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId.Value);
                     if(ItemTB is [_, ..])
                     {
                         foreach(FacilityItemValueTb Item in ItemTB)

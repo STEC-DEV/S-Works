@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Building.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
-                BuildingItemKeyTb? KeyTb = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.KeyID);
+                BuildingItemKeyTb? KeyTb = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.KeyID.Value);
                 if (KeyTb is null) // 기존의 KEYTB가 존재하는지 Check
                     return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
@@ -45,7 +45,7 @@ namespace FamTec.Server.Services.Building.Value
                 ValueTb.CreateUser = creater;
                 ValueTb.UpdateDt = DateTime.Now;
                 ValueTb.UpdateUser = creater;
-                ValueTb.BuildingKeyTbId = dto.KeyID;
+                ValueTb.BuildingKeyTbId = dto.KeyID.Value;
 
                 BuildingItemValueTb? AddValueResult = await BuildingItemValueInfoRepository.AddAsync(ValueTb);
                 if(AddValueResult is not null)
@@ -77,7 +77,7 @@ namespace FamTec.Server.Services.Building.Value
                     return new ResponseUnit<UpdateValueDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(dto.ID);
+                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(dto.ID.Value);
                 if(ItemValueTb is not null)
                 {
                     ItemValueTb.ItemValue = dto.ItemValue;
@@ -120,7 +120,7 @@ namespace FamTec.Server.Services.Building.Value
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(valueid);
+                BuildingItemValueTb? ItemValueTb = await BuildingItemValueInfoRepository.GetValueInfo(valueid.Value);
                 if (ItemValueTb is not null)
                 {
                     ItemValueTb.DelDt = DateTime.Now;

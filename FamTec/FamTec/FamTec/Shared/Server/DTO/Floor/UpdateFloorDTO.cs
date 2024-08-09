@@ -8,7 +8,7 @@
         /// <summary>
         /// 층 INDEX
         /// </summary>
-        public int FloorID { get; set; }
+        public int? FloorID { get; set; }
 
         /// <summary>
         /// 층 이름

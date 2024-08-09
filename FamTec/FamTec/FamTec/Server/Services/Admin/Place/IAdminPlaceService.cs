@@ -13,7 +13,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeid">사업장 ID</param>
         /// <returns></returns>
-        public ValueTask<ResponseList<ManagerListDTO?>> NotContainManagerList(HttpContext context, int placeid);
+        public ValueTask<ResponseList<ManagerListDTO>> NotContainManagerList(HttpContext context, int placeid);
 
         /// <summary>
         /// 해당 관리자가 가지고 있지 않은 사업장 List 조회
@@ -21,7 +21,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="adminid">관리자 ID</param>
         /// <returns></returns>
-        public ValueTask<ResponseList<AdminPlaceDTO?>> NotContainPlaceList(HttpContext context, int adminid);
+        public ValueTask<ResponseList<AdminPlaceDTO>> NotContainPlaceList(HttpContext context, int adminid);
 
 
         /// <summary>
@@ -29,14 +29,14 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<AdminPlaceDTO?>> GetMyWorksService(int adminid);
+        public ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksService(int adminid);
 
         /// <summary>
         /// 관리자가 일반 로그인시 선택할 수 있는 PlaceList 반환
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        ValueTask<ResponseList<AdminPlaceDTO?>> GetMyWorksList(HttpContext context);
+        ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context);
 
         /// <summary>
         /// 전체 사업장 조회
@@ -67,14 +67,14 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        ValueTask<ResponseUnit<UpdatePlaceDTO?>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto);
+        ValueTask<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto);
 
         /// <summary>
         /// 사업장 번호로 사업장 모델 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<PlaceDetailDTO?>> GetPlaceService(int placeid);
+        public ValueTask<ResponseUnit<PlaceDetailDTO>> GetPlaceService(int placeid);
 
         /// <summary>
         /// 사업장에 관리자 추가

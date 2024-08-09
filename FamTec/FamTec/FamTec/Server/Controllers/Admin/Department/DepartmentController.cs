@@ -33,8 +33,19 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
+                //AddDepartmentDTO dto = new AddDepartmentDTO();
+                //dto.Name = "확인부서";
+                //dto.ManagerYN = true;
+
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+                if (dto.Name.Equals("에스텍시스템")) // 시스템명칭 사용불가
+                    return Ok(new ResponseUnit<AddDepartmentDTO>() { message = "시스템 명칭은 사용하실 수 없습니다.", data = null, code = 200 });
+                if(dto.ManagerYN is null)
+                    return NoContent();
 
                 ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto);
 
@@ -158,6 +169,14 @@ namespace FamTec.Server.Controllers.Admin.Department
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.Id is null)
+                    return NoContent();
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.ManageYN is null)
+                    return NoContent();
 
                 ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto);
 

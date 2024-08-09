@@ -15,6 +15,6 @@
         /// <summary>
         /// 창고
         /// </summary>
-        public List<RoomDTO> RoomHistory { get; set; } = new List<RoomDTO>();
+        public List<RoomDTO>? RoomHistory { get; set; } = new List<RoomDTO>();
     }
 }

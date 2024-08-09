@@ -254,7 +254,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<PeriodicInventoryRecordDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<PeriodicInventoryRecordDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate);
+                List<PeriodicInventoryRecordDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid.Value, startDate.Value, endDate.Value);
                 if (model is [_, ..])
                     return new ResponseList<PeriodicInventoryRecordDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -293,7 +293,7 @@ namespace FamTec.Server.Services.Store
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaterialHistory>? model = await InventoryInfoRepository.GetPlaceInventoryRecord(Convert.ToInt32(placeid), materialid, type);
+                List<MaterialHistory>? model = await InventoryInfoRepository.GetPlaceInventoryRecord(Convert.ToInt32(placeid), materialid, type.Value);
                 
                 if(model is null)
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };

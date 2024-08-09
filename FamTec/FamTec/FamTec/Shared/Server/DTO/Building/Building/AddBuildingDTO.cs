@@ -11,16 +11,12 @@ namespace FamTec.Shared.Server.DTO.Building.Building
         /// <summary>
         /// 건물코드
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "추가하실 건물코드는 공백일 수 없습니다.")]
-        public string Code { get; set; } = null!;
+        public string? Code { get; set; }
 
         /// <summary>
         /// 건물명
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "추가하실 건물명은 공백일 수 없습니다.")]
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 주소

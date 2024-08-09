@@ -21,14 +21,14 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<UnitTb?> AddAsync(UnitTb? model)
+        public async ValueTask<UnitTb?> AddAsync(UnitTb model)
         {
             try
             {
-                if(model is not null)
+                context.UnitTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.UnitTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -49,23 +49,19 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<UnitTb>?> GetUnitList(int? placeid)
+        public async ValueTask<List<UnitTb>?> GetUnitList(int placeid)
         {
             try
             {
-                if(placeid is not null)
-                {
-                    List<UnitTb>? model = await context.UnitTbs.Where(m => m.PlaceTbId == null || m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                List<UnitTb>? model = await context.UnitTbs
+                    .Where(m => m.PlaceTbId == null || m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -80,23 +76,18 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="UnitIdx"></param>
         /// <returns></returns>
-        public async ValueTask<UnitTb?> GetUnitInfo(int? UnitIdx)
+        public async ValueTask<UnitTb?> GetUnitInfo(int UnitIdx)
         {
             try
             {
-                if(UnitIdx is not null)
-                {
-                    UnitTb? model = await context.UnitTbs.FirstOrDefaultAsync(m => m.Id == UnitIdx && m.DelYn != true);
+                UnitTb? model = await context.UnitTbs
+                    .FirstOrDefaultAsync(m => m.Id == UnitIdx && m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -111,19 +102,12 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteUnitInfo(UnitTb? model)
+        public async ValueTask<bool?> DeleteUnitInfo(UnitTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.UnitTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.UnitTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -137,19 +121,12 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateUnitInfo(UnitTb? model)
+        public async ValueTask<bool?> UpdateUnitInfo(UnitTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.UnitTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.UnitTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FamTec.Shared.Server.DTO.Room
+﻿namespace FamTec.Shared.Server.DTO.Room
 {
     public class RoomManagementDTO
     {
         /// <summary>
         /// 공간 인덱스
         /// </summary>
-        public int RoomId { get; set; }
+        public int? RoomId { get; set; }
 
         /// <summary>
         /// 공간명칭

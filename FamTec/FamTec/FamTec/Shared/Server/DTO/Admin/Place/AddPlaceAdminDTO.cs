@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamTec.Shared.Server.DTO.Admin.Place
+﻿namespace FamTec.Shared.Server.DTO.Admin.Place
 {
     /// <summary>
     /// 사업장에 이미 생성되어있는 관리자들 할당해줄때 필요한 DTO
@@ -11,22 +8,16 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// <summary>
         /// ADMIN_PLACE_TB 인덱스
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "관리자테이블 ID는 공백일 수 없습니다.")]
-        public int ID { get; set; }
+        public int? ID { get; set; }
 
         /// <summary>
         /// 관리자테이블 인덱스 
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "관리자테이블 ID는 공백일 수 없습니다.")]
-        public int AdminTBID { get; set; }
+        public int? AdminTBID { get; set; }
 
         /// <summary>
         /// 사업장테이블 인덱스
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장테이블 ID는 공백일 수 없습니다.")]
-        public int PlaceID { get; set; }
+        public int? PlaceID { get; set; }
     }
 }

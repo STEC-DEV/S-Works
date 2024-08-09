@@ -26,11 +26,6 @@
         public int? Num { get; set; }
 
         /// <summary>
-        /// 단위
-        /// </summary>
-        //public string? Unit { get; set; }
-
-        /// <summary>
         /// 설치년월
         /// </summary>
         public DateTime? EquipDT { get; set; }
@@ -49,11 +44,6 @@
         /// 교체년월
         /// </summary>
         public DateTime? ChangeDT { get; set; }
-
-        /// <summary>
-        /// 공간ID
-        /// </summary>
-        //public int? RoomIdx { get; set; }
 
         /// <summary>
         /// 공간 명칭

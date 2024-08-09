@@ -22,14 +22,14 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingTb?> AddAsync(BuildingTb? model)
+        public async ValueTask<BuildingTb?> AddAsync(BuildingTb model)
         {
             try
             {
-                if (model is not null)
+                context.BuildingTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.BuildingTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -50,23 +50,18 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="placeid">로그인한 사업장정보</param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> GetAllBuildingList(int? placeid)
+        public async ValueTask<List<BuildingTb>?> GetAllBuildingList(int placeid)
         {
             try
             {
-                if(placeid is not null)
-                {
-                    List<BuildingTb>? model = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                List<BuildingTb>? model = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -80,23 +75,17 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingTb?> GetBuildingInfo(int? buildingId)
+        public async ValueTask<BuildingTb?> GetBuildingInfo(int buildingId)
         {
             try
             {
-                if(buildingId is not null)
-                {
-                    BuildingTb? model = await context.BuildingTbs.FirstOrDefaultAsync(m => m.Id == buildingId && m.DelYn != true);
+                BuildingTb? model = await context.BuildingTbs
+                    .FirstOrDefaultAsync(m => m.Id == buildingId && m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -105,26 +94,17 @@ namespace FamTec.Server.Repository.Building
             }
         }
 
-       
-
         /// <summary>
         /// 건물정보 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateBuildingInfo(BuildingTb? model)
+        public async ValueTask<bool?> UpdateBuildingInfo(BuildingTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.BuildingTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -139,38 +119,30 @@ namespace FamTec.Server.Repository.Building
         /// <param name="buildingId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<List<BuildingTb>?> GetDeleteList(List<int>? buildingId)
+        public async ValueTask<List<BuildingTb>?> GetDeleteList(List<int> buildingId)
         {
             try
             {
-                
-                if(buildingId is [_, ..])
+                List<BuildingTb>? buildinglist = await context.BuildingTbs.Where(m => buildingId.Contains(m.Id) && m.DelYn != true).ToListAsync();
+
+                if (buildinglist is [_, ..])
                 {
-                    List<BuildingTb>? buildinglist = await context.BuildingTbs.Where(m => buildingId.Contains(m.Id) && m.DelYn != true).ToListAsync();
-
-                    if (buildinglist is [_, ..])
-                    {
-                        // 층 Table의 DelYN = true
-                        List<BuildingTb> BuildingTb = (from buildingtb in buildinglist
-                                                       join floortb in context.FloorTbs.Where(m => m.DelYn == true)
-                                                       on buildingtb.Id equals floortb.BuildingTbId
-                                                       select buildingtb).ToList();
+                    // 층 Table의 DelYN = true
+                    List<BuildingTb> BuildingTb = (from buildingtb in buildinglist
+                                                    join floortb in context.FloorTbs.Where(m => m.DelYn == true)
+                                                    on buildingtb.Id equals floortb.BuildingTbId
+                                                    select buildingtb).ToList();
                         
-                        // 건물 Table의 층이 할당안된 테이블
-                        List<BuildingTb>? deleteList = buildinglist.Where(a => !context.FloorTbs.Any(b => b.BuildingTbId == a.Id)).ToList();
+                    // 건물 Table의 층이 할당안된 테이블
+                    List<BuildingTb>? deleteList = buildinglist.Where(a => !context.FloorTbs.Any(b => b.BuildingTbId == a.Id)).ToList();
                         
-                        // Merge
-                        deleteList.AddRange(BuildingTb);
+                    // Merge
+                    deleteList.AddRange(BuildingTb);
 
-                        if (deleteList is [_, ..])
-                            return deleteList;
-                        else
-                            return null;
-                    }
+                    if (deleteList is [_, ..])
+                        return deleteList;
                     else
-                    {
                         return null;
-                    }
                 }
                 else
                 {
@@ -190,21 +162,14 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> GetBuildings(List<int>? buildingid)
+        public async ValueTask<List<BuildingTb>?> GetBuildings(List<int> buildingid)
         {
             try
             {
-                if (buildingid is [_, ..])
+                List<BuildingTb>? model = await context.BuildingTbs.Where(m => buildingid.Contains(m.Id)).ToListAsync();
+                if (model is [_, ..])
                 {
-                    List<BuildingTb>? model = await context.BuildingTbs.Where(m => buildingid.Contains(m.Id)).ToListAsync();
-                    if (model is [_, ..])
-                    {
-                        return model;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return model;
                 }
                 else
                 {
@@ -218,19 +183,12 @@ namespace FamTec.Server.Repository.Building
             }
         }
 
-        public async ValueTask<bool?> DeleteBuildingInfo(BuildingTb? model)
+        public async ValueTask<bool?> DeleteBuildingInfo(BuildingTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.BuildingTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -244,27 +202,23 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> SelectPlaceBuildingList(List<int>? placeidx)
+        public async ValueTask<List<BuildingTb>?> SelectPlaceBuildingList(List<int> placeidx)
         {
             try
             {
-                if(placeidx is [_, ..])
-                {
-                    List<BuildingTb>? buildingtb = await context.BuildingTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true).ToListAsync();
+                List<BuildingTb>? buildingtb = await context.BuildingTbs
+                    .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
+                    .ToListAsync();
 
-                    if(buildingtb is [_, ..])
-                    {
-                        return buildingtb;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                if(buildingtb is [_, ..])
+                {
+                    return buildingtb;
                 }
                 else
                 {
                     return null;
                 }
+               
             }
             catch(Exception ex)
             {
@@ -279,20 +233,19 @@ namespace FamTec.Server.Repository.Building
         /// <param name="buildingid"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteBuildingList(List<int>? buildingid, string? deleter)
+        public async ValueTask<bool?> DeleteBuildingList(List<int> buildingid, string deleter)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (String.IsNullOrWhiteSpace(deleter))
-                        return null;
-
                     if (buildingid is [_, ..])
                     {
                         foreach(int bdid in buildingid)
                         {
-                            BuildingTb? BuildingTB = await context.BuildingTbs.FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true);
+                            BuildingTb? BuildingTB = await context.BuildingTbs
+                                .FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true);
+
                             if(BuildingTB is not null)
                             {
                                 BuildingTB.DelYn = true;
@@ -308,7 +261,10 @@ namespace FamTec.Server.Repository.Building
                                     return false;
                                 }
 
-                                List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs.Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true).ToListAsync();
+                                List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs
+                                    .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
+                                    .ToListAsync();
+
                                 if(GroupList is [_, ..])
                                 {
                                     foreach(BuildingItemGroupTb GroupTB in GroupList)

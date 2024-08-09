@@ -21,14 +21,14 @@ namespace FamTec.Server.Repository.KakaoLog
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<KakaoLogTb?> AddAsync(KakaoLogTb? model)
+        public async ValueTask<KakaoLogTb?> AddAsync(KakaoLogTb model)
         {
             try
             {
-                if (model is not null)
+                context.KakaoLogTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.KakaoLogTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -74,15 +74,10 @@ namespace FamTec.Server.Repository.KakaoLog
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList(DateTime? StartDate, DateTime? EndDate)
+        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList(DateTime StartDate, DateTime EndDate)
         {
             try
             {
-                if (StartDate is null)
-                    return null;
-                if (EndDate is null)
-                    return null;
-
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
                     .Where(m => m.DelYn != true && m.CreateDt >= StartDate && m.CreateDt <= EndDate)
                     .OrderBy(m => m.CreateDt).ToListAsync();

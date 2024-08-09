@@ -6,16 +6,16 @@ namespace FamTec.Shared.Server.DTO.Place
         /// <summary>
         /// 사업장 정보
         /// </summary>
-        public PlaceInfo PlaceInfo { get; set; } = new PlaceInfo();
+        public PlaceInfo? PlaceInfo { get; set; } = new PlaceInfo();
 
         /// <summary>
         /// 사업장 권한
         /// </summary>
-        public PlacePerm PlacePerm { get; set; } = new PlacePerm();
+        public PlacePerm? PlacePerm { get; set; } = new PlacePerm();
 
         /// <summary>
         /// 사업장 매니저 리스트
         /// </summary>
-        public List<ManagerListDTO> ManagerList { get; set; } = new List<ManagerListDTO>();
+        public List<ManagerListDTO>? ManagerList { get; set; } = new List<ManagerListDTO>();
     }
 }

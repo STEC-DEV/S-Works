@@ -71,7 +71,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ManagerListDTO>? model = await AdminPlaceService.GetAllManagerListService();
+                ResponseList<ManagerListDTO?> model = await AdminPlaceService.GetAllManagerListService();
 
                 if (model is null)
                     return BadRequest(model);
@@ -103,7 +103,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.GetMyWorksService(adminid);
+                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.GetMyWorksService(adminid);
 
                 if (model is null)
                     return BadRequest();
@@ -145,7 +145,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model.code == 200)
                     return Ok(model);
                 else
-                    return BadRequest(model);
+                    return BadRequest();
             }
             catch(Exception ex)
             {
@@ -168,8 +168,8 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 /*
                 AddPlaceDTO dto = new AddPlaceDTO();
-                dto.PlaceCd = "AB000000002"; // 사업장코드
-                dto.Name = "B사업장"; // 사업장명
+                dto.PlaceCd = "AB000000003"; // 사업장코드
+                dto.Name = "C사업장"; // 사업장명
                 dto.Tel = "02-0000-0000"; // 사업장 전화번호
                 dto.Address = "서울시 강서구"; // 사업장 주소
                 dto.ContractNum = "00054487"; // 계약번호
@@ -187,18 +187,64 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 dto.Status = true; // 계약상태
                 dto.Note = "테스트데이터";
                 */
+
+                if (String.IsNullOrWhiteSpace(dto.PlaceCd))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Tel))
+                    return NoContent();
+
+                if (dto.PermMachine == null)
+                    return NoContent();
+
+                if (dto.PermLift == null)
+                    return NoContent();
+
+                if (dto.PermFire == null)
+                    return NoContent();
+
+                if (dto.PermConstruct == null)
+                    return NoContent();
+
+                if (dto.PermNetwork == null)
+                    return NoContent();
+
+                if (dto.PermBeauty == null)
+                    return NoContent();
+
+                if (dto.PermSecurity == null)
+                    return NoContent();
+
+                if (dto.PermMaterial == null)
+                    return NoContent();
+
+                if (dto.PermEnergy == null)
+                    return NoContent();
+
+                if (dto.PermVoc == null)
+                    return NoContent();
+                
+
                 if (HttpContext is null)
                     return BadRequest();
 
                 ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(HttpContext, dto);
 
                 if (model is null)
-                    return BadRequest(model);
-
-                if (model.code == 200)
+                    return BadRequest();
+                
+                // 성공
+                if (model.code == 200) 
                     return Ok(model);
+                // 이미 해당 코드가 사용한 이력이 있을때
+                else if (model.code == 202) 
+                    return Ok(model);
+                // 실패
                 else
-                    return BadRequest(model);
+                    return BadRequest();
             }
             catch(Exception ex)
             {
@@ -240,10 +286,21 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
         }
 
+        
         /// <summary>
-        /// 사업장 수정
+        /// 사업장 정보 수정
         /// </summary>
-        /// <param name="dto">수정할 DTO</param>
+        /// <param name="dto">
+        ///     수정할 DTO
+        ///         - dto.PlaceInfo.Id  * 필수값
+        ///         - dto.PlaceInfo.PlaceCd * 필수값
+        ///         - dto.PlaceInfo.Name * 필수값
+        ///         - dto.PlaceInfo.Tel * 필수값
+        ///         - dto.PlaceInfo.Status * 계약상태
+        ///         - dto.PlaceInfo.DepartmentID * 부서ID
+        ///         
+        ///         - dto.PlacePerm * 필수값
+        /// </param>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
@@ -252,6 +309,78 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
+                /*
+                UpdatePlaceDTO dto = new UpdatePlaceDTO();
+                dto.PlaceInfo.Id = 3;
+                dto.PlaceInfo.Name = "A수정사업장";
+                dto.PlaceInfo.PlaceCd = "P001";
+                dto.PlaceInfo.ContractNum = "ABC123";
+                dto.PlaceInfo.Tel = "02-123-1234";
+                dto.PlaceInfo.DepartmentID = 5;
+                dto.PlaceInfo.Status = true;
+
+                dto.PlacePerm.PermMachine = true;
+                dto.PlacePerm.PermElec = true;
+                dto.PlacePerm.PermLift = true;
+                dto.PlacePerm.PermFire = true;
+                dto.PlacePerm.PermConstruct = true;
+                dto.PlacePerm.PermNetwork = true;
+                dto.PlacePerm.PermBeauty = true;
+                dto.PlacePerm.PermSecurity = true;
+                dto.PlacePerm.PermMaterial = true;
+                dto.PlacePerm.PermEnergy = true;
+                dto.PlacePerm.PermVoc = true;
+                */
+
+                if (dto.PlaceInfo.Id is null)
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.PlaceInfo.PlaceCd))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.PlaceInfo.Name))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.PlaceInfo.Tel))
+                    return NoContent();
+
+                if(dto.PlaceInfo.Status is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermMachine is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermElec is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermLift is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermFire is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermConstruct is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermNetwork is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermBeauty is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermSecurity is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermMaterial is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermEnergy is null)
+                    return NoContent();
+
+                if(dto.PlacePerm.PermVoc is null)
+                    return NoContent();
+
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -361,6 +490,18 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 //    Id = 16
                 //});
 
+                if(placemanager.PlaceId is null)
+                    return NoContent();
+                if(placemanager.PlaceManager is null)
+                    return NoContent();
+                
+                foreach (ManagerListDTO ManagerInfo in placemanager.PlaceManager)
+                {
+                    if(ManagerInfo.Id is null)
+                        return NoContent();
+                }
+                
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -405,6 +546,19 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 //{
                 //    Id = 16
                 //});
+
+                if (dto.PlaceId is null)
+                    return NoContent();
+                
+                if(dto.PlaceManager is null)
+                    return NoContent();
+                
+                foreach (ManagerListDTO ManagerList in dto.PlaceManager)
+                {
+                    if(ManagerList.Id is null)
+                        return NoContent();
+                }
+                
 
                 if (HttpContext is null)
                     return BadRequest();

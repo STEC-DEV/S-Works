@@ -39,12 +39,12 @@ namespace FamTec.Shared.Server.DTO.User
         /// 사용자 아이디
         /// </summary>
 
-        public string USERID { get; set; }
+        public string? USERID { get; set; }
 
         /// <summary>
         /// 비밀번호
         /// </summary>
-        public string PASSWORD { get; set; }
+        public string? PASSWORD { get; set; }
 
         /// <summary>
         /// 사용자 이미지 - 클라이언트 담는용

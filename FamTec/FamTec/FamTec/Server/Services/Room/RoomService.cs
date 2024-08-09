@@ -53,7 +53,7 @@ namespace FamTec.Server.Services.Room
 
                 RoomTb roomtb = new RoomTb();
                 roomtb.Name = dto.Name;
-                roomtb.FloorTbId = dto.FloorID;
+                roomtb.FloorTbId = dto.FloorID.Value;
                 roomtb.CreateDt = DateTime.Now;
                 roomtb.CreateUser = creater;
                 roomtb.UpdateDt = DateTime.Now;

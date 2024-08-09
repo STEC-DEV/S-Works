@@ -10,63 +10,63 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<FacilityTb?> AddAsync(FacilityTb? model);
+        ValueTask<FacilityTb?> AddAsync(FacilityTb model);
 
         /// <summary>
         /// 사업장에 속한 기계설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int placeid);
         
         /// <summary>
         /// 사업장에 속한 전기설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int placeid);
 
         /// <summary>
         /// 사업장에 속한 승강설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int placeid);
         
         /// <summary>
         /// 사업장에 속한 소방설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int placeid);
         
         /// <summary>
         /// 사업장에 속한 건축설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int placeid);
 
         /// <summary>
         /// 사업장에 속한 통신설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int placeid);
 
         /// <summary>
         /// 사업장에 속한 미화설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int placeid);
 
         /// <summary>
         /// 사업장에 속한 보안설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int? placeid);
+        ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int placeid);
 
 
         /// <summary>
@@ -74,28 +74,28 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityTb>?> GetAllFacilityList(int? roomid);
+        ValueTask<List<FacilityTb>?> GetAllFacilityList(int roomid);
 
         /// <summary>
         /// 설비ID로 단일 설비모델 조회
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<FacilityTb?> GetFacilityInfo(int? id);
+        ValueTask<FacilityTb?> GetFacilityInfo(int id);
 
         /// <summary>
         /// 설비 정보 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateFacilityInfo(FacilityTb? model);
+        ValueTask<bool?> UpdateFacilityInfo(FacilityTb model);
 
         /// <summary>
         /// 설비 정보 삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteFacilityInfo(FacilityTb? model);
+        ValueTask<bool?> DeleteFacilityInfo(FacilityTb model);
 
     }
 }

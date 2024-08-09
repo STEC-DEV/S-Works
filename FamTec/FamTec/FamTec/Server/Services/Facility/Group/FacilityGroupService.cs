@@ -48,7 +48,7 @@ namespace FamTec.Server.Services.Facility.Group
                 GroupTB.CreateUser = creater;
                 GroupTB.UpdateDt = DateTime.Now;
                 GroupTB.UpdateUser = creater;
-                GroupTB.FacilityTbId = dto.FacilityIdx; // 설비 인덱스
+                GroupTB.FacilityTbId = dto.FacilityIdx.Value; // 설비 인덱스
 
                 FacilityItemGroupTb? AddGroupTable = await FacilityGroupItemInfoRepository.AddAsync(GroupTB);
                 if (AddGroupTable is not null)
@@ -123,7 +123,7 @@ namespace FamTec.Server.Services.Facility.Group
                 List<GroupValueListDTO?> GroupValueList = new List<GroupValueListDTO?>(); // 그룹 [3]
 
 
-                List<FacilityItemGroupTb>? GroupListTB = await FacilityGroupItemInfoRepository.GetAllGroupList(facilityid);
+                List<FacilityItemGroupTb>? GroupListTB = await FacilityGroupItemInfoRepository.GetAllGroupList(facilityid.Value);
                 if (GroupListTB is [_, ..])
                 {
                     foreach (FacilityItemGroupTb Group in GroupListTB)
@@ -195,7 +195,7 @@ namespace FamTec.Server.Services.Facility.Group
                 if (string.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupId);
+                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupId.Value);
 
                 if (GroupTb is not null)
                 {
@@ -240,7 +240,7 @@ namespace FamTec.Server.Services.Facility.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(groupid);
+                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(groupid.Value);
                 
                 if(GroupTb is not null)
                 {
@@ -253,7 +253,7 @@ namespace FamTec.Server.Services.Facility.Group
                     if (DeleteGroupResult != true)
                         return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
 
-                    List<FacilityItemKeyTb>? KeyTb = await FacilityItemKeyInfoRepository.GetAllKeyList(groupid);
+                    List<FacilityItemKeyTb>? KeyTb = await FacilityItemKeyInfoRepository.GetAllKeyList(groupid.Value);
                     if(KeyTb is [_, ..])
                     {
                         foreach(FacilityItemKeyTb KeyModel in KeyTb)

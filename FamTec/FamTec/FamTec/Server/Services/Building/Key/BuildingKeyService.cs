@@ -45,7 +45,7 @@ namespace FamTec.Server.Services.Building.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
-                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupID);
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupID.Value);
                 if(GroupTb is null) // 기존의 GroupTB 이 존재하는지 Check
                     return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
@@ -56,7 +56,7 @@ namespace FamTec.Server.Services.Building.Key
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;
                 KeyTb.UpdateUser = creater;
-                KeyTb.BuildingGroupTbId = dto.GroupID;
+                KeyTb.BuildingGroupTbId = dto.GroupID.Value;
 
                 BuildingItemKeyTb? AddkeyResult = await BuildingItemKeyInfoRepository.AddAsync(KeyTb);
                 if(AddkeyResult is not null)
@@ -109,7 +109,7 @@ namespace FamTec.Server.Services.Building.Key
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
-                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.ID);
+                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.ID.Value);
                 if(KeyTB is not null)
                 {
                     bool? UpdateResult = await BuildingItemKeyInfoRepository.UpdateKeyInfo(dto, creater);
@@ -151,7 +151,7 @@ namespace FamTec.Server.Services.Building.Key
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(KeyId);
+                BuildingItemKeyTb? KeyTB = await BuildingItemKeyInfoRepository.GetKeyInfo(KeyId.Value);
 
                 if(KeyTB is not null)
                 {
@@ -166,7 +166,7 @@ namespace FamTec.Server.Services.Building.Key
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
 
-                    List<BuildingItemValueTb>? ItemTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyId);
+                    List<BuildingItemValueTb>? ItemTB = await BuildingItemValueInfoRepository.GetAllValueList(KeyId.Value);
                     if(ItemTB is [_, ..])
                     {
                         foreach(BuildingItemValueTb Item in ItemTB)

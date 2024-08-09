@@ -110,7 +110,7 @@ namespace FamTec.Server.Services.Alarm
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                bool? result = await AlarmInfoRepository.AlarmDelete(alarmid, deleter);
+                bool? result = await AlarmInfoRepository.AlarmDelete(alarmid.Value, deleter);
                 if (result == true)
                 {
                     // 성공

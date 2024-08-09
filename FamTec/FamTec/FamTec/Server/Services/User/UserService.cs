@@ -70,7 +70,7 @@ namespace FamTec.Server.Services.User
                     AdminPlaceTb? select = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
                     if (select is not null)
                     {
-                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid);
+                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid.Value);
                         if(placetb is not null)
                         {
                             authClaims.Add(new Claim("UserIdx", context.Items["UserIdx"].ToString())); // USER 인덱스
@@ -213,7 +213,7 @@ namespace FamTec.Server.Services.User
                         bool? AdminYN = usertb.AdminYn;
                         if(AdminYN == false) // 일반유저
                         {
-                            PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId);
+                            PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId.Value);
                             
                             if(placetb is not null)
                             {
@@ -606,7 +606,7 @@ namespace FamTec.Server.Services.User
                 if (TokenChk.PermUser < 1)
                     return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id.Value);
 
                 // 조회내용이 있으면 반환
                 if (model is not null)
@@ -741,7 +741,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID.Value);
                 if (model is not null)
                 {
                     model.UserId = dto.USERID;

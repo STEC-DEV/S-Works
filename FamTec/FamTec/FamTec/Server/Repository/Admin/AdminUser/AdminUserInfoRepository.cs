@@ -1,12 +1,8 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using FamTec.Server.Databases;
-using FamTec.Server.Repository.Place;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
-using FamTec.Server.Services.Facility.Type.Electronic;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
-using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Repository.Admin.AdminUser
@@ -31,14 +27,14 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> AddAdminUserInfo(AdminTb? model)
+        public async ValueTask<AdminTb?> AddAdminUserInfo(AdminTb model)
         {
             try
             {
-                if(model is not null)
+                context.AdminTbs.Add(model);
+                bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+                if(Addresult)
                 {
-                    context.AdminTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -58,19 +54,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteAdminInfo(AdminTb? model)
+        public async ValueTask<bool?> DeleteAdminInfo(AdminTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.AdminTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.AdminTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -80,67 +69,56 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         }
 
        
-        public async ValueTask<bool?> DeleteAdminsInfo(List<int>? idx, string? deleter)
+        public async ValueTask<bool?> DeleteAdminsInfo(List<int> idx, string deleter)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (String.IsNullOrWhiteSpace(deleter))
-                        return null;
-
-                    if (idx is [_, ..])
+                    foreach(int adminid in idx)
                     {
-                        foreach(int adminid in idx)
+                        AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                        if(admintb is not null)
                         {
-                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
-                            if(admintb is not null)
-                            {
-                                admintb.DelYn = true;
-                                admintb.DelDt = DateTime.Now;
-                                admintb.DelUser = deleter;
-                                context.AdminTbs.Update(admintb);
-                                bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            admintb.DelYn = true;
+                            admintb.DelDt = DateTime.Now;
+                            admintb.DelUser = deleter;
+                            context.AdminTbs.Update(admintb);
+                            bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
                                 
-                                if(!AdminTbResult) // 실패하면
+                            if(!AdminTbResult) // 실패하면
+                            {
+                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                return false;
+                            }
+
+                            UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+                            if(usertb is not null)
+                            {
+                                usertb.DelYn = true;
+                                usertb.DelDt = DateTime.Now;
+                                usertb.DelUser = deleter;
+                                context.UsersTbs.Update(usertb);
+                                bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if(!UserTbResult) // 실패하면
                                 {
                                     await context.Database.RollbackTransactionAsync(); // 롤백
                                     return false;
                                 }
 
-                                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
-                                if(usertb is not null)
+                                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
+                                if(adminplacetb is [_, ..])
                                 {
-                                    usertb.DelYn = true;
-                                    usertb.DelDt = DateTime.Now;
-                                    usertb.DelUser = deleter;
-                                    context.UsersTbs.Update(usertb);
-                                    bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if(!UserTbResult) // 실패하면
+                                    foreach(AdminPlaceTb AdminPlace in adminplacetb)
                                     {
-                                        await context.Database.RollbackTransactionAsync(); // 롤백
-                                        return false;
-                                    }
-
-                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
-                                    if(adminplacetb is [_, ..])
-                                    {
-                                        foreach(AdminPlaceTb AdminPlace in adminplacetb)
+                                        context.AdminPlaceTbs.Remove(AdminPlace);
+                                        bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if (!AdminPlaceResult) // 실패하면
                                         {
-                                            context.AdminPlaceTbs.Remove(AdminPlace);
-                                            bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if (!AdminPlaceResult) // 실패하면
-                                            {
-                                                await context.Database.RollbackTransactionAsync(); //롤백
-                                                return false;
-                                            }
+                                            await context.Database.RollbackTransactionAsync(); //롤백
+                                            return false;
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
-                                    return false;
                                 }
                             }
                             else
@@ -149,13 +127,14 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 return false;
                             }
                         }
-                        await context.Database.CommitTransactionAsync(); // 커밋
-                        return true;
+                        else
+                        {
+                            await context.Database.RollbackTransactionAsync(); // 롤백
+                            return false;
+                        }
                     }
-                    else
-                    {
-                        return null;
-                    }
+                    await context.Database.CommitTransactionAsync(); // 커밋
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -170,11 +149,13 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> GetAdminIdInfo(int? adminid)
+        public async ValueTask<AdminTb?> GetAdminIdInfo(int adminid)
         {
-            if (adminid is not null)
+            try
             {
-                AdminTb? model = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true);
+                AdminTb? model = await context.AdminTbs
+                    .FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true);
+                
                 if (model is not null)
                 {
                     return model;
@@ -184,9 +165,10 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     return null;
                 }
             }
-            else
+            catch(Exception ex)
             {
-                return null;
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
             }
         }
 
@@ -198,21 +180,16 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <param name="adminuseridx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<AdminTb?> GetAdminUserInfo(int? usertbid)
+        public async ValueTask<AdminTb?> GetAdminUserInfo(int usertbid)
         {
             try
             {
-                if (usertbid is not null)
+                AdminTb? model = await context.AdminTbs
+                    .FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true);
+                
+                if (model is not null)
                 {
-                    AdminTb? model = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true);
-                    if (model is not null)
-                    {
-                        return model;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return model;
                 }
                 else
                 {
@@ -241,12 +218,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     .Include(m => m.UserTb)
                     .Include(m => m.DepartmentTb)
                     .Select(m => new ManagerListDTO
-                {
-                    Id = m.Id,
-                    UserId = m.UserTb!.UserId!,
-                    Name = m.UserTb.Name!,
-                    Department = m.DepartmentTb!.Name!
-                }).ToListAsync();
+                    {
+                        Id = m.Id,
+                        UserId = m.UserTb!.UserId!,
+                        Name = m.UserTb.Name!,
+                        Department = m.DepartmentTb!.Name!
+                    }).ToListAsync();
                 
                 if (model is [_, ..])
                     return model;
@@ -265,67 +242,64 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<ManagerListDTO?>?> GetNotContainsAdminList(int? placeid)
+        public async ValueTask<List<ManagerListDTO>?> GetNotContainsAdminList(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
+
+                if (adminplacetb is [_, ..])
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToListAsync();
+                    List<int> admintbid = adminplacetb.Select(m => m.AdminTbId).ToList();
 
-                    if (adminplacetb is [_, ..])
+                    List<AdminTb>? admintb = await context.AdminTbs
+                        .Where(e => !admintbid.Contains(e.Id) && e.DelYn != true)
+                        .ToListAsync();
+
+                    if (admintb is [_, ..])
                     {
-                        List<int> admintbid = adminplacetb.Select(m => m.AdminTbId).ToList();
+                        List<ManagerListDTO>? model = (from Admin in admintb
+                                                        join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
+                                                        on Admin.UserTbId equals User.Id
+                                                        join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
+                                                        on Admin.DepartmentTbId equals Department.Id
+                                                        select new ManagerListDTO()
+                                                        {
+                                                            Id = Admin.Id,
+                                                            Name = User.Name,
+                                                            UserId = User.UserId,
+                                                            Department = Department.Name
+                                                        }).ToList();
 
-                        List<AdminTb>? admintb = await context.AdminTbs.Where(e => !admintbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
-                        if (admintb is [_, ..])
-                        {
-                            List<ManagerListDTO>? model = (from Admin in admintb
-                                                           join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
-                                                           on Admin.UserTbId equals User.Id
-                                                           join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
-                                                           on Admin.DepartmentTbId equals Department.Id
-                                                           select new ManagerListDTO()
-                                                           {
-                                                               Id = Admin.Id,
-                                                               Name = User.Name,
-                                                               UserId = User.UserId,
-                                                               Department = Department.Name
-                                                           }).ToList();
-
-                            return model;
-                        }
-                        else
-                        {
-                            return null; // 전체 관리자 다 이사업장에 포함됨.
-                        }
+                        return model;
                     }
                     else
                     {
-                        // 이사업장에 아무도 포함되어있지 않음
-                        //List<AdminTb>? alladmin = await context.AdminTbs.Where(m => m.DelYn != true).ToListAsync();
-
-                        List<ManagerListDTO>? model = (from Admin in context.AdminTbs.Where(m => m.DelYn != true).ToList()
-                                                       join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
-                                                       on Admin.UserTbId equals User.Id
-                                                       join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
-                                                       on Admin.DepartmentTbId equals Department.Id
-                                                       select new ManagerListDTO()
-                                                       {
-                                                           Id = Admin.Id,
-                                                           Name = User.Name,
-                                                           UserId = User.UserId,
-                                                           Department = Department.Name
-                                                       }).ToList();
-
-
-                        return model;
-                        //return alladmin;
+                        return null; // 전체 관리자 다 이사업장에 포함됨.
                     }
                 }
                 else
                 {
-                    return null;
+                    // 이사업장에 아무도 포함되어있지 않음
+                    //List<AdminTb>? alladmin = await context.AdminTbs.Where(m => m.DelYn != true).ToListAsync();
+
+                    List<ManagerListDTO>? model = (from Admin in context.AdminTbs.Where(m => m.DelYn != true).ToList()
+                                                    join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
+                                                    on Admin.UserTbId equals User.Id
+                                                    join Department in context.DepartmentsTbs.Where(m => m.DelYn != true).ToList()
+                                                    on Admin.DepartmentTbId equals Department.Id
+                                                    select new ManagerListDTO()
+                                                    {
+                                                        Id = Admin.Id,
+                                                        Name = User.Name,
+                                                        UserId = User.UserId,
+                                                        Department = Department.Name
+                                                    }).ToList();
+
+
+                    return model;
                 }
             }
             catch (Exception ex)
@@ -340,20 +314,17 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> UpdateAdminInfo(AdminTb? model)
+        public async ValueTask<AdminTb?> UpdateAdminInfo(AdminTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.AdminTbs.Update(model);
-                    await context.SaveChangesAsync();
+                context.AdminTbs.Update(model);
+                bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
+                if (UpdateResult)
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch (Exception ex)
             {
@@ -368,7 +339,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO? dto,string creater, IFormFile? files)
+        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto,string creater, IFormFile? files)
         {
             string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
 
@@ -388,8 +359,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     userTB.Name = dto.Name; // 이름
                     userTB.Phone = dto.Phone; // 전화번호
                     userTB.Email = dto.Email; // 이메일
-                    userTB.UserId = dto.UserId; // 로그인ID
-                    userTB.Password = dto.Password; // 비밀번호
+                    userTB.UserId = dto.UserId!; // 로그인ID
+                    userTB.Password = dto.Password!; // 비밀번호
                     userTB.UpdateDt = DateTime.Now;
                     userTB.UpdateUser = creater;
                     context.UsersTbs.Update(userTB);
@@ -402,7 +373,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         return false;
                     }
 
-                    adminTB.DepartmentTbId = dto.DepartmentId; // 부서
+                    adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
                     adminTB.UpdateDt = DateTime.Now;
                     adminTB.UpdateUser = creater;
                     context.AdminTbs.Update(adminTB);
@@ -415,7 +386,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     }
 
                     // DTO의 PlaceID -- 최종 결과물이 되야할 것들
-                    List<int> DTOPlaceIdx = dto.PlaceList.Select(m => m.Id).ToList();
+                    List<int> DTOPlaceIdx = dto.PlaceList!.Select(m => m.Id!.Value).ToList();
 
                     // 이 관리자의 관리하고있는 사업장ID 조회
                     List<int> AdminPlaceIdx = await context.AdminPlaceTbs
@@ -500,7 +471,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 m.PlaceTbId == DeletePlaceID &&
                                 m.DelYn != true);
 
-                            if(adminTB is not null)
+                            if(deleteTB is not null)
                             {
                                 context.AdminPlaceTbs.Remove(deleteTB);
                                 bool deleteResult = await context.SaveChangesAsync() > 0 ? true : false;

@@ -140,7 +140,7 @@ namespace FamTec.Server.Services.Unit
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
 
-                UnitTb? model = await UnitInfoRepository.GetUnitInfo(unitid);
+                UnitTb? model = await UnitInfoRepository.GetUnitInfo(unitid.Value);
 
                 if(model is not null)
                 {
@@ -189,7 +189,7 @@ namespace FamTec.Server.Services.Unit
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<UnitsDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UnitTb? model = await UnitInfoRepository.GetUnitInfo(dto.Id);
+                UnitTb? model = await UnitInfoRepository.GetUnitInfo(dto.Id.Value);
                 if (model is not null)
                 {
                     model.Unit = dto.Unit;

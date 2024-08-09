@@ -32,19 +32,10 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int? placeid,int? materialid, DateTime? startDate, DateTime? endDate)
+        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int placeid,int materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                if (materialid is null)
-                    return null;
-                if (startDate is null)
-                    return null;
-                if (endDate is null)
-                    return null;
-
                 List<StoreTb>? StoreList = await context.StoreTbs
                 .Where(m => m.DelYn != true &&
                 m.PlaceTbId == placeid &&
@@ -77,7 +68,7 @@ namespace FamTec.Server.Repository.Inventory
                 }
                 else
                 {
-                    return new List<PeriodicInventoryRecordDTO>();
+                    return null;
                 }
             }
             catch(Exception ex)
@@ -95,17 +86,10 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="MaterialIdx"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int? placeid, List<int>? MaterialIdx, bool? type)
+        public async ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int placeid, List<int> MaterialIdx, bool type)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                if(MaterialIdx is null)
-                    return null;
-                if (type is null)
-                    return null;
-                
                 string query = string.Empty;
 
                 // 전체조회
@@ -275,19 +259,12 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO>? dto, string? creater,int placeid, string? GUID)
+        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater,int placeid, string GUID)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
-                    if (dto is null)
-                        return null;
-                    if (String.IsNullOrWhiteSpace(creater))
-                        return null;
-                    if (String.IsNullOrWhiteSpace(GUID))
-                        return null;
-
                     // [1] 토큰체크
                     foreach(InOutInventoryDTO InventoryDTO in dto)
                     {
@@ -314,7 +291,7 @@ namespace FamTec.Server.Repository.Inventory
                     {
                         StoreTb Storetb = new StoreTb();
                         Storetb.Inout = InventoryDTO.InOut;
-                        Storetb.Num = InventoryDTO.AddStore.Num;
+                        Storetb.Num = InventoryDTO.AddStore!.Num;
                         Storetb.UnitPrice = InventoryDTO.AddStore.UnitPrice;
                         Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice;
                         Storetb.InoutDate = InventoryDTO.AddStore.InOutDate;
@@ -337,7 +314,7 @@ namespace FamTec.Server.Repository.Inventory
                         else
                         {
                             InventoryTb Inventorytb = new InventoryTb();
-                            Inventorytb.Num = InventoryDTO.AddStore.Num;
+                            Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
                             Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice;
                             Inventorytb.CreateDt = DateTime.Now;
                             Inventorytb.CreateUser = creater;
@@ -356,7 +333,7 @@ namespace FamTec.Server.Repository.Inventory
                             m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                             m.PlaceTbId == placeid).Sum(m => m.Num);
 
-                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num;
+                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num.Value;
                             context.Update(Storetb);
                             bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
                             if (UpdateStoreTB != true)
@@ -396,21 +373,10 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int? placeid, int? roomid, int? materialid, int? delcount,string? GUID)
+        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount,string GUID)
         {
             try
             {
-                if (materialid is null)
-                    return null;
-                if (roomid is null)
-                    return null;
-                if (placeid is null)
-                    return null;
-                if (delcount is null)
-                    return null;
-                if (String.IsNullOrWhiteSpace(GUID))
-                    return null;
-
                 // 선입선출
                 List<InventoryTb>? model = await context.InventoryTbs
                 .Where(m => m.MaterialTbId == materialid && 
@@ -450,22 +416,17 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-        public async ValueTask<InventoryTb?> GetInventoryInfo(int? id)
+        public async ValueTask<InventoryTb?> GetInventoryInfo(int id)
         {
             try
             {
-                if(id is not null)
-                {
-                    InventoryTb? model = await context.InventoryTbs.FirstOrDefaultAsync(m => m.Id == id);
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                InventoryTb? model = await context.InventoryTbs
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -482,21 +443,12 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="guid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> SetOccupantToken(int? placeid, List<InOutInventoryDTO>? dto, string? guid)
+        public async ValueTask<bool?> SetOccupantToken(int placeid, List<InOutInventoryDTO> dto, string guid)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
-                    if (placeid is null)
-                        return null;
-
-                    if (dto is null)
-                        return null;
-
-                    if (String.IsNullOrWhiteSpace(guid))
-                        return null;
-
                     foreach(InOutInventoryDTO inventoryDTO in dto)
                     {
                         List<InventoryTb>? Occupant = await context.InventoryTbs
@@ -572,25 +524,18 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO>? dto, string? creater, int placeid, string? GUID)
+        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
-                    if (dto is null)
-                        return null;
-                    if (String.IsNullOrWhiteSpace(creater))
-                        return null;
-                    if (String.IsNullOrWhiteSpace(GUID))
-                        return null;
-
                     // [1] 토큰 체크
                     foreach(InOutInventoryDTO InventoryDTO in dto)
                     {
                         List<InventoryTb>? Occupant = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
-                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
+                            m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
                             m.DelYn != true).ToListAsync();
 
                         List<InventoryTb>? check = Occupant
@@ -612,7 +557,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 출고할게 여러곳에 있으니 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
                         if(InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -643,7 +588,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 추가해야함
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
                         if(InventoryList is [_, ..])
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -693,7 +638,7 @@ namespace FamTec.Server.Repository.Inventory
                                         }
                                         else
                                         {
-                                            outresult -= model.AddStore.Num;
+                                            outresult -= model.AddStore.Num.Value;
                                             OutInventoryTb.Num = outresult;
                                             OutInventoryTb.UpdateDt = DateTime.Now;
                                             OutInventoryTb.UpdateUser = creater;
@@ -819,19 +764,10 @@ namespace FamTec.Server.Repository.Inventory
         }
 
         // IN - OUT시 이용가능한지 CHECK
-        public async ValueTask<bool?> AvailableCheck(int? placeid, int? roomid, int? materialid)
+        public async ValueTask<bool?> AvailableCheck(int placeid, int roomid, int materialid)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                
-                if (roomid is null)
-                    return null;
-                
-                if (materialid is null)
-                    return null;
-
                 List<InventoryTb>? Occupant = await context.InventoryTbs
                       .Where(m => m.PlaceTbId == placeid &&
                       m.RoomTbId == roomid &&
@@ -859,15 +795,10 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int? placeid, int? materialid)
+        public async ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int placeid, int materialid)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                if (materialid is null)
-                    return null;
-
                 List<InventoryTb>? InventoryList = await context.InventoryTbs
                     .Where(m => m.PlaceTbId == placeid && 
                     m.MaterialTbId == materialid && 

@@ -46,10 +46,32 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
+                //AddManagerDTO dto = new AddManagerDTO();
+                //dto.UserId = "MASTER0001";
+                //dto.Password = "123";
+                //dto.Name = "테스트이름";
+                //dto.Phone = "0123";
+                //dto.DepartmentId = 5;
+
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null)
+                if (String.IsNullOrWhiteSpace(dto.UserId))
+                    return NoContent();
+                
+                if(String.IsNullOrWhiteSpace(dto.Password))
+                    return NoContent();
+                
+                if(!String.IsNullOrWhiteSpace(dto.Name))
+                {
+                    if (dto.UserId.Equals("Admin"))
+                        return Ok(new ResponseUnit<int?>() { message = "해당 아이디는 사용하실 수 없습니다.", data = null, code = 404 });
+                }
+                
+                if (dto.DepartmentId is null)
+                    return NoContent();
+
+                if (files is not null)
                 {
                     if(files.Length > Common.MEGABYTE_1)
                     {
@@ -199,9 +221,23 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-               
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.AdminIndex is null)
+                    return NoContent();
+                
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+                
+                if(dto.DepartmentId is null)
+                    return NoContent();
+                
+                if(String.IsNullOrWhiteSpace(dto.UserId))
+                    return NoContent();
+                
+                if (String.IsNullOrWhiteSpace(dto.Password))
+                    return NoContent();
 
                 if (files is not null)
                 {

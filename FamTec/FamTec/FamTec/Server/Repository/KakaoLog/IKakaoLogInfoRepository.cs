@@ -9,7 +9,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<KakaoLogTb?> AddAsync(KakaoLogTb? model);
+        ValueTask<KakaoLogTb?> AddAsync(KakaoLogTb model);
 
         /// <summary>
         /// 카카오 알림톡 발송로그 리스트 전체조회
@@ -23,6 +23,6 @@ namespace FamTec.Server.Repository.KakaoLog
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        ValueTask<List<KakaoLogTb>?> GetKakaoLogList(DateTime? StartDate, DateTime? EndDate);
+        ValueTask<List<KakaoLogTb>?> GetKakaoLogList(DateTime StartDate, DateTime EndDate);
     }
 }

@@ -9,21 +9,21 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> AddAsync(BlacklistTb? model);
+        ValueTask<BlacklistTb?> AddAsync(BlacklistTb model);
 
         /// <summary>
         /// 블랙리스트 휴대폰번호로 조회
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> GetBlackListInfo(string? PhoneNumber);
+        ValueTask<BlacklistTb?> GetBlackListInfo(string PhoneNumber);
 
         /// <summary>
         /// 블랙리스트 인덱스로 조회
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> GetBlackListInfo(int? id);
+        ValueTask<BlacklistTb?> GetBlackListInfo(int id);
 
         /// <summary>
         /// 블랙리스트 전체조회
@@ -43,6 +43,6 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteBlackList(List<int>? delIdx, string? deleter);
+        ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter);
     }
 }

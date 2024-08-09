@@ -5,17 +5,17 @@
         /// <summary>
         /// 설비 인덱스
         /// </summary>
-        public int FacilityIdx { get; set; }
+        public int? FacilityIdx { get; set; }
 
         /// <summary>
         /// 설비명칭
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Key
         /// </summary>
-        public List<AddGroupItemKeyDTO> AddGroupKey { get; set; } = new List<AddGroupItemKeyDTO>();
+        public List<AddGroupItemKeyDTO>? AddGroupKey { get; set; } = new List<AddGroupItemKeyDTO>();
 
     }
 }

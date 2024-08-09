@@ -23,20 +23,22 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<AlarmTb?> AddAsync(AlarmTb? model)
+        public async ValueTask<AlarmTb?> AddAsync(AlarmTb model)
         {
             try
             {
-                if(model is not null)
+                context.AlarmTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
+                if (AddResult)
                 {
-                    context.AlarmTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
                 {
                     return null;
                 }
+               
             }
             catch(Exception ex)
             {
@@ -50,14 +52,13 @@ namespace FamTec.Server.Repository.Alarm
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AlarmDTO?>?> GetAlarmList(int? userid)
+        public async ValueTask<List<AlarmDTO?>?> GetAlarmList(int userid)
         {
             try
             {
-                if (userid is null)
-                    return null;
-
-                List<AlarmTb>? AlarmTB = await context.AlarmTbs.Where(m => m.DelYn != true && m.UsersTbId == userid).ToListAsync();
+                List<AlarmTb>? AlarmTB = await context.AlarmTbs
+                    .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                    .ToListAsync();
 
                 if (AlarmTB is [_, ..])
                 {
@@ -92,19 +93,15 @@ namespace FamTec.Server.Repository.Alarm
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AllAlarmDelete(int? userid, string? deleter)
+        public async ValueTask<bool?> AllAlarmDelete(int userid, string deleter)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (userid is null)
-                        return null;
-
-                    if (String.IsNullOrWhiteSpace(deleter))
-                        return null;
-
-                    List<AlarmTb>? AlarmList = await context.AlarmTbs.Where(m => m.DelYn != true && m.UsersTbId == userid).ToListAsync();
+                    List<AlarmTb>? AlarmList = await context.AlarmTbs
+                        .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                        .ToListAsync();
 
                     if (AlarmList is [_, ..])
                     {
@@ -128,7 +125,6 @@ namespace FamTec.Server.Repository.Alarm
                             await transaction.RollbackAsync();
                             return false;
                         }
-
                     }
                     else
                     {
@@ -149,17 +145,13 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="alarmId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> AlarmDelete(int? alarmId, string? deleter)
+        public async ValueTask<bool?> AlarmDelete(int alarmId, string deleter)
         {
             try
             {
-                if (alarmId is null)
-                    return null;
+                AlarmTb? AlarmTB = await context.AlarmTbs
+                    .FirstOrDefaultAsync(m => m.Id == alarmId && m.DelYn != true);
                 
-                if (String.IsNullOrWhiteSpace(deleter))
-                    return null;
-
-                AlarmTb? AlarmTB = await context.AlarmTbs.FirstOrDefaultAsync(m => m.Id == alarmId && m.DelYn != true);
                 if (AlarmTB is null)
                     return null;
 

@@ -5,7 +5,7 @@
         /// <summary>
         /// 상위 그룹ID
         /// </summary>
-        public int GroupID { get; set; }
+        public int? GroupID { get; set; }
 
         /// <summary>
         /// 키 명칭

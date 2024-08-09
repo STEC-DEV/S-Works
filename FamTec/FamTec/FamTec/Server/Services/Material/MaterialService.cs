@@ -64,7 +64,7 @@ namespace FamTec.Server.Services.Material
                 matertialtb.Standard = dto.Standard; // 규격
                 matertialtb.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 matertialtb.SafeNum = dto.SafeNum; // 안전재고수량
-                matertialtb.DefaultLocation = dto.DefaultLocation; // 공간위치 인덱스
+                matertialtb.DefaultLocation = dto.DefaultLocation.Value; // 공간위치 인덱스
                 matertialtb.CreateDt = DateTime.Now;
                 matertialtb.CreateUser = Creater;
                 matertialtb.UpdateDt = DateTime.Now;
@@ -191,7 +191,7 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid);
+                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid.Value);
                 if(model is not null)
                 {
                     DetailMaterialDTO dto = new DetailMaterialDTO();
@@ -248,7 +248,7 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id);
+                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id.Value);
                 if(model is not null)
                 {
                     model.Code = dto.Code; // 품목코드
@@ -257,7 +257,7 @@ namespace FamTec.Server.Services.Material
                     model.Standard = dto.Standard; // 규격
                     model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                     model.SafeNum = dto.SafeNum; // 안전재고수량
-                    model.DefaultLocation = dto.RoomID; // 공간위치
+                    model.DefaultLocation = dto.RoomID.Value; // 공간위치
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
 

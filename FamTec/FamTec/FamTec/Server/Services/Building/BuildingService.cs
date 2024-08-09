@@ -266,7 +266,7 @@ namespace FamTec.Server.Services.Building
                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
 
 
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId.Value);
 
                 if (model is not null)
                 {
@@ -359,7 +359,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID);
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID.Value);
                 if (model is not null)
                 {
                     model.BuildingCd = dto.Code; // 건물코드

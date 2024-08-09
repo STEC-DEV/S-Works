@@ -4,8 +4,6 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Building;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FamTec.Server.Repository.Building.SubItem.ItemKey
 {
@@ -26,14 +24,14 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb? model)
+        public async ValueTask<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb model)
         {
             try
             {
-                if(model is not null)
+                context.BuildingItemKeyTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.BuildingItemKeyTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -53,23 +51,18 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="groupitemid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemKeyTb>?> GetAllKeyList(int? groupitemid)
+        public async ValueTask<List<BuildingItemKeyTb>?> GetAllKeyList(int groupitemid)
         {
             try
             {
-                if(groupitemid is not null)
-                {
-                    List<BuildingItemKeyTb>? model = await context.BuildingItemKeyTbs.Where(m => m.BuildingGroupTbId == groupitemid && m.DelYn != true).ToListAsync();
+                List<BuildingItemKeyTb>? model = await context.BuildingItemKeyTbs
+                    .Where(m => m.BuildingGroupTbId == groupitemid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -83,23 +76,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemKeyTb?> GetKeyInfo(int? keyid)
+        public async ValueTask<BuildingItemKeyTb?> GetKeyInfo(int keyid)
         {
             try
             {
-                if(keyid is not null)
-                {
-                    BuildingItemKeyTb? model = await context.BuildingItemKeyTbs.FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
+                BuildingItemKeyTb? model = await context.BuildingItemKeyTbs
+                    .FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -113,19 +100,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(BuildingItemKeyTb? model)
+        public async ValueTask<bool?> UpdateKeyInfo(BuildingItemKeyTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.BuildingItemKeyTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingItemKeyTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -140,25 +120,23 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="dto"></param>
         /// <param name="updater"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO? dto, string? updater)
+        public async ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (dto is null)
-                        return null;
-                    if (String.IsNullOrWhiteSpace(updater))
-                        return null;
+                    BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs
+                        .FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true);
 
-                    BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs.FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true);
                     if(KeyTB is not null)
                     {
-                        KeyTB.Name = dto.Itemkey;
-                        KeyTB.Unit = dto.Unit;
+                        KeyTB.Name = dto.Itemkey!;
+                        KeyTB.Unit = dto.Unit!;
 
                         context.BuildingItemKeyTbs.Update(KeyTB);
                         bool KeyUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+
                         if(!KeyUpdate)
                         {
                             // KEY 업데이트 실패 시 rollback
@@ -167,22 +145,25 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                         }
 
                         // SELECT VALUE 정보 반환
-                        List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == dto.ID && m.DelYn != true).ToListAsync();
+                        List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs
+                            .Where(m => m.BuildingKeyTbId == dto.ID && m.DelYn != true)
+                            .ToListAsync();
+
 
 
                         // NULL 인값 - INSERT - 시키면되는 리스트
-                        List<GroupValueListDTO> INSERTLIST = dto.ValueList.Where(m => m.ID == null).ToList();
+                        List<GroupValueListDTO> INSERTLIST = dto.ValueList!.Where(m => m.ID == null).ToList();
 
 
                         // DTO IDList 중 NULL이 아닌것 -- 수정대상
-                        List<GroupValueListDTO> UPDATELIST = dto.ValueList.Where(m => m.ID != null)
+                        List<GroupValueListDTO> UPDATELIST = dto.ValueList!.Where(m => m.ID != null)
                             .ToList();
 
 
                         // DB IDList
                         List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
 
-                        List<int> updateidx = UPDATELIST.Select(m => m.ID.Value).ToList();
+                        List<int> updateidx = UPDATELIST.Select(m => m.ID!.Value).ToList();
                         // 삭제대상 (디비 인덱스 - DTO 인덱스 = 남는 DB 인덱스)
                         List<int> delIdx = db_valueidx.Except(updateidx).ToList(); // list1에만 있는 값 -- DB에만있는값 (삭제할값)
 
@@ -191,7 +172,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                         foreach(GroupValueListDTO InsertInfo in INSERTLIST)
                         {
                             BuildingItemValueTb InsertTB = new BuildingItemValueTb();
-                            InsertTB.ItemValue = InsertInfo.ItemValue;
+                            InsertTB.ItemValue = InsertInfo.ItemValue!;
                             InsertTB.CreateDt = DateTime.Now;
                             InsertTB.CreateUser = updater;
                             InsertTB.UpdateDt = DateTime.Now;
@@ -209,10 +190,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                         // 업데이트 작업
                         foreach(GroupValueListDTO UpdateInfo in UPDATELIST)
                         {
-                            BuildingItemValueTb? UpdateTB = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
+                            BuildingItemValueTb? UpdateTB = await context.BuildingItemValueTbs
+                                .FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
+
                             if(UpdateTB is not null)
                             {
-                                UpdateTB.ItemValue = UpdateInfo.ItemValue;
+                                UpdateTB.ItemValue = UpdateInfo.ItemValue!;
                                 UpdateTB.UpdateDt = DateTime.Now;
                                 UpdateTB.UpdateUser = updater;
                                 context.BuildingItemValueTbs.Update(UpdateTB);
@@ -234,7 +217,9 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                         // 삭제작업
                         foreach(int DelID in delIdx)
                         {
-                            BuildingItemValueTb? DeleteTB = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
+                            BuildingItemValueTb? DeleteTB = await context.BuildingItemValueTbs
+                                .FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
+
                             if(DeleteTB is not null)
                             {
                                 DeleteTB.DelDt = DateTime.Now;
@@ -276,19 +261,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteKeyInfo(BuildingItemKeyTb? model)
+        public async ValueTask<bool?> DeleteKeyInfo(BuildingItemKeyTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.BuildingItemKeyTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingItemKeyTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -306,7 +284,10 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         {
             try
             {
-                List<BuildingItemKeyTb>? keytb = await context.BuildingItemKeyTbs.Where(e => GroupItemId.Contains(Convert.ToInt32(e.BuildingGroupTbId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemKeyTb>? keytb = await context.BuildingItemKeyTbs
+                    .Where(e => GroupItemId.Contains(Convert.ToInt32(e.BuildingGroupTbId)) && e.DelYn != true)
+                    .ToListAsync();
+
                 if (keytb is [_, ..])
                     return keytb;
                 else
@@ -328,7 +309,10 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         {
             try
             {
-                List<BuildingItemKeyTb>? keytb = await context.BuildingItemKeyTbs.Where(e => !GroupItemId.Contains(Convert.ToInt32(e.BuildingGroupTbId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemKeyTb>? keytb = await context.BuildingItemKeyTbs
+                    .Where(e => !GroupItemId.Contains(Convert.ToInt32(e.BuildingGroupTbId)) && e.DelYn != true)
+                    .ToListAsync();
+
                 if (keytb is [_, ..])
                     return keytb;
                 else

@@ -21,14 +21,14 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemKeyTb?> AddAsync(FacilityItemKeyTb? model)
+        public async ValueTask<FacilityItemKeyTb?> AddAsync(FacilityItemKeyTb model)
         {
             try
             {
-                if(model is not null)
+                context.FacilityItemKeyTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.FacilityItemKeyTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -48,23 +48,19 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="groupitemid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityItemKeyTb>?> GetAllKeyList(int? groupitemid)
+        public async ValueTask<List<FacilityItemKeyTb>?> GetAllKeyList(int groupitemid)
         {
             try
             {
-                if(groupitemid is not null)
-                {
-                    List<FacilityItemKeyTb>? model = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupitemid && m.DelYn != true).ToListAsync();
+                List<FacilityItemKeyTb>? model = await context.FacilityItemKeyTbs
+                    .Where(m => m.FacilityItemGroupTbId == groupitemid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -79,22 +75,18 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemKeyTb?> GetKeyInfo(int? keyid)
+        public async ValueTask<FacilityItemKeyTb?> GetKeyInfo(int keyid)
         {
             try
             {
-                if(keyid is not null)
-                {
-                    FacilityItemKeyTb? model = await context.FacilityItemKeyTbs.FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                FacilityItemKeyTb? model = await context.FacilityItemKeyTbs
+                    .FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
+
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -108,19 +100,12 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(FacilityItemKeyTb? model)
+        public async ValueTask<bool?> UpdateKeyInfo(FacilityItemKeyTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.FacilityItemKeyTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityItemKeyTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -134,19 +119,12 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteKeyInfo(FacilityItemKeyTb? model)
+        public async ValueTask<bool?> DeleteKeyInfo(FacilityItemKeyTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.FacilityItemKeyTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FacilityItemKeyTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {

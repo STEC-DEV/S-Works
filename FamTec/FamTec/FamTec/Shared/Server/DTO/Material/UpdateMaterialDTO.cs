@@ -5,22 +5,22 @@
         /// <summary>
         /// 품목ID
         /// </summary>
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 품목 코드
         /// </summary>
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         /// <summary>
         /// 품목명
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 단위
         /// </summary>
-        public string Unit { get; set; }
+        public string? Unit { get; set; }
 
         /// <summary>
         /// 규격
@@ -40,6 +40,6 @@
         /// <summary>
         /// 공간ID
         /// </summary>
-        public int RoomID { get; set; }
+        public int? RoomID { get; set; }
     }
 }

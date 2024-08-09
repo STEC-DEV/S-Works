@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
-namespace FamTec.Shared.Server.DTO.Building.Group.Key
+﻿namespace FamTec.Shared.Server.DTO.Building.Group.Key
 {
     public class UpdateKeyDTO
     {
@@ -10,14 +7,16 @@ namespace FamTec.Shared.Server.DTO.Building.Group.Key
         /// </summary>
         public int? ID { get; set; }
 
-        [NotNull]
-        [Required(ErrorMessage = "수정하실 그룹의 KEY 이름은 공백일 수 없습니다.")]
-        public string Itemkey { get; set; } = null!;
+        /// <summary>
+        /// 키 명칭
+        /// </summary>
+        public string? Itemkey { get; set; }
 
-        [NotNull]
-        [Required(ErrorMessage = "수정하실 그룹의 KEY 단위명은 공백일 수 없습니다.")]
-        public string Unit { get; set; } = null!;
+        /// <summary>
+        /// 단위명
+        /// </summary>
+        public string? Unit { get; set; }
 
-        public List<GroupValueListDTO> ValueList { get; set; } = new List<GroupValueListDTO>();
+        public List<GroupValueListDTO>? ValueList { get; set; } = new List<GroupValueListDTO>();
     }
 }

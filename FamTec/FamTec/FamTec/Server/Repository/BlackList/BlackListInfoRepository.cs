@@ -21,16 +21,20 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> AddAsync(BlacklistTb? model)
+        public async ValueTask<BlacklistTb?> AddAsync(BlacklistTb model)
         {
             try
             {
-                if (model is null)
-                    return null;
-
                 context.BlacklistTbs.Add(model);
-                await context.SaveChangesAsync();
-                return model;
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
+                {
+                    return model;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch(Exception ex)
             {
@@ -47,11 +51,14 @@ namespace FamTec.Server.Repository.BlackList
         {
             try
             {
-                List<BlacklistTb>? model = await context.BlacklistTbs.Where(m => m.DelYn != true).ToListAsync();
+                List<BlacklistTb>? model = await context.BlacklistTbs
+                    .Where(m => m.DelYn != true)
+                    .ToListAsync();
+
                 if (model is [_, ..])
                     return model;
                 else
-                    return new List<BlacklistTb>();
+                    return null;
             }
             catch(Exception ex)
             {
@@ -65,14 +72,13 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> GetBlackListInfo(string? PhoneNumber)
+        public async ValueTask<BlacklistTb?> GetBlackListInfo(string PhoneNumber)
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(PhoneNumber))
-                    return null;
-
-                BlacklistTb? model = await context.BlacklistTbs.FirstOrDefaultAsync(m => m.Phone == PhoneNumber && m.DelYn != true);
+                BlacklistTb? model = await context.BlacklistTbs
+                    .FirstOrDefaultAsync(m => m.Phone == PhoneNumber && m.DelYn != true);
+                
                 if (model is not null)
                     return model;
                 else
@@ -90,18 +96,18 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> GetBlackListInfo(int? id)
+        public async ValueTask<BlacklistTb?> GetBlackListInfo(int id)
         {
             try
             {
-                if (id is null)
-                    return null;
+                BlacklistTb? model = await context.BlacklistTbs
+                    .FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
 
-                BlacklistTb? model = await context.BlacklistTbs.FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
                 if (model is not null)
                     return model;
                 else
                     return null;
+
             }
             catch(Exception ex)
             {
@@ -115,49 +121,44 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteBlackList(List<int>? delIdx, string? deleter)
+        public async ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if(delIdx is [_, ..])
+                    foreach(int BlackListID in delIdx)
                     {
-                        foreach(int BlackListID in delIdx)
+                        BlacklistTb? BlackListTB = await context.BlacklistTbs
+                            .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
+                        
+                        if(BlackListTB is not null)
                         {
-                            BlacklistTb? BlackListTB = await context.BlacklistTbs
-                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
-                            if(BlackListTB is not null)
-                            {
-                                BlackListTB.DelYn = true;
-                                BlackListTB.DelDt = DateTime.Now;
-                                BlackListTB.DelUser = deleter;
+                            BlackListTB.DelYn = true;
+                            BlackListTB.DelDt = DateTime.Now;
+                            BlackListTB.DelUser = deleter;
 
-                                context.BlacklistTbs.Update(BlackListTB);
-                            }
-                            else
-                            {
-                                // 조회결과가 없음
-                                return null;
-                            }
-                        }
-
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
+                            context.BlacklistTbs.Update(BlackListTB);
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
-                            return false;
+                            // 조회결과가 없음
+                            return null;
                         }
+                    }
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
                     }
                     else
                     {
-                        return null;
+                        await transaction.RollbackAsync();
+                        return false;
                     }
+                   
                 }
                 catch(Exception ex)
                 {

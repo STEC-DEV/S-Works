@@ -8,28 +8,22 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 민원 인덱스
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "민원 인덱스는 공백일 수 없습니다.")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 접수코드
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "접수코드는 공백일 수 없습니다.")]
-        public string Code { get; set; } = null!;
+        public string? Code { get; set; }
 
         /// <summary>
         /// 민원 신청일
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "민원 신청일은 공백일 수 없습니다.")]
-        public string CreateDT { get; set; } = null!;
+        public string? CreateDT { get; set; }
 
         /// <summary>
         /// 민원 상태
         /// </summary>
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         /// <summary>
         /// 건물명
@@ -74,7 +68,7 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 이미지
         /// </summary>
-        public List<byte[]> Images { get; set; } = new List<byte[]>();
+        public List<byte[]>? Images { get; set; } = new List<byte[]>();
 
 
     }

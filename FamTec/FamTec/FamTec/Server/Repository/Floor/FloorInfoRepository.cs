@@ -21,14 +21,14 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FloorTb?> AddAsync(FloorTb? model)
+        public async ValueTask<FloorTb?> AddAsync(FloorTb model)
         {
             try
             {
-                if(model is not null)
+                context.FloorTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.FloorTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -48,19 +48,12 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteFloorInfo(FloorTb? model)
+        public async ValueTask<bool?> DeleteFloorInfo(FloorTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.FloorTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FloorTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -74,47 +67,40 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="roomidx"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteFloorInfo(List<int>? roomidx, string? deleter)
+        public async ValueTask<bool?> DeleteFloorInfo(List<int> roomidx, string deleter)
         {
             using(var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (roomidx is [_, ..])
+                    foreach(int roomid in roomidx)
                     {
-                        foreach(int roomid in roomidx)
+                        FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                        if(floortb is not null)
                         {
-                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
-                            if(floortb is not null)
-                            {
-                                floortb.DelYn = true;
-                                floortb.DelDt = DateTime.Now;
-                                floortb.DelUser = deleter;
+                            floortb.DelYn = true;
+                            floortb.DelDt = DateTime.Now;
+                            floortb.DelUser = deleter;
 
-                                context.FloorTbs.Update(floortb);
-                                bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if (!FloorResult)
-                                {
-                                    // 업데이트 실패시 롤백
-                                    await transaction.RollbackAsync();
-                                    return false;
-                                }
-                            }
-                            else
+                            context.FloorTbs.Update(floortb);
+                            bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!FloorResult)
                             {
-                                // 값이 없으면 잘못됨 roolback
+                                // 업데이트 실패시 롤백
                                 await transaction.RollbackAsync();
                                 return false;
                             }
                         }
+                        else
+                        {
+                            // 값이 없으면 잘못됨 roolback
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                    }
 
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    await transaction.CommitAsync();
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -129,23 +115,17 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="flooridx"></param>
         /// <returns></returns>
-        public async ValueTask<FloorTb?> GetFloorInfo(int? flooridx)
+        public async ValueTask<FloorTb?> GetFloorInfo(int flooridx)
         {
             try
             {
-                if(flooridx is not null)
-                {
-                    FloorTb? model = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true);
+                FloorTb? model = await context.FloorTbs
+                    .FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -161,23 +141,18 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FloorTb>?> GetFloorList(int? buildingtbid)
+        public async ValueTask<List<FloorTb>?> GetFloorList(int buildingtbid)
         {
             try
             {
-                if(buildingtbid is not null)
-                {
-                    List<FloorTb>? model = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtbid && m.DelYn != true).ToListAsync();
+                List<FloorTb>? model = await context.FloorTbs
+                    .Where(m => m.BuildingTbId == buildingtbid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -192,46 +167,40 @@ namespace FamTec.Server.Repository.Floor
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<List<FloorTb>?> GetFloorList(List<BuildingTb?> model)
+        public async ValueTask<List<FloorTb>?> GetFloorList(List<BuildingTb> model)
         {
             try
             {
-                if(model is [_, ..])
+                
+                List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != true).ToListAsync();
+
+                if (floor is [_, ..])
                 {
-                    List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != true).ToListAsync();
+                    List<FloorTb>? result = (from bdtb in model
+                                                join floortb in floor
+                                                on bdtb.Id equals floortb.BuildingTbId
+                                                where floortb.DelYn != true && bdtb.DelYn != true
+                                                select new FloorTb
+                                                {
+                                                    Id = floortb.Id,
+                                                    Name = floortb.Name,
+                                                    CreateDt = floortb.CreateDt,
+                                                    CreateUser = floortb.CreateUser,
+                                                    UpdateDt = floortb.UpdateDt,
+                                                    UpdateUser = floortb.UpdateUser,
+                                                    DelYn = floortb.DelYn,
+                                                    DelDt = floortb.DelDt,
+                                                    DelUser = floortb.DelUser,
+                                                    BuildingTbId = floortb.BuildingTbId
+                                                }).ToList();
 
-                    if (floor is [_, ..])
-                    {
-                        List<FloorTb>? result = (from bdtb in model
-                                                 join floortb in floor
-                                                 on bdtb.Id equals floortb.BuildingTbId
-                                                 where floortb.DelYn != true && bdtb.DelYn != true
-                                                 select new FloorTb
-                                                 {
-                                                     Id = floortb.Id,
-                                                     Name = floortb.Name,
-                                                     CreateDt = floortb.CreateDt,
-                                                     CreateUser = floortb.CreateUser,
-                                                     UpdateDt = floortb.UpdateDt,
-                                                     UpdateUser = floortb.UpdateUser,
-                                                     DelYn = floortb.DelYn,
-                                                     DelDt = floortb.DelDt,
-                                                     DelUser = floortb.DelUser,
-                                                     BuildingTbId = floortb.BuildingTbId
-                                                 }).ToList();
-
-                        if (result is [_, ..])
-                            return result;
-                        else
-                            return null;
-                    }
+                    if (result is [_, ..])
+                        return result;
                     else
                         return null;
                 }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -245,19 +214,12 @@ namespace FamTec.Server.Repository.Floor
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateFloorInfo(FloorTb? model)
+        public async ValueTask<bool?> UpdateFloorInfo(FloorTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.FloorTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.FloorTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {

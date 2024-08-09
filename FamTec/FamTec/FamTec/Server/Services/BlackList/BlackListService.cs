@@ -119,7 +119,7 @@ namespace FamTec.Server.Services.BlackList
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID);
+                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID.Value);
                 if (model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

@@ -54,7 +54,7 @@ namespace FamTec.Server.Services.Building.Group
                 GroupTB.CreateUser = creater;
                 GroupTB.UpdateDt = DateTime.Now;
                 GroupTB.UpdateUser = creater;
-                GroupTB.BuildingTbId = dto.BuildingIdx; // 빌딩인덱스
+                GroupTB.BuildingTbId = dto.BuildingIdx.Value; // 빌딩인덱스
 
                 BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB);
                 if (AddGroupTable is not null)
@@ -130,7 +130,7 @@ namespace FamTec.Server.Services.Building.Group
                 List<GroupValueListDTO?> GroupValueList = new List<GroupValueListDTO?>(); // 값 [3]
 
 
-                List<BuildingItemGroupTb>? GroupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId);
+                List<BuildingItemGroupTb>? GroupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId.Value);
                 if (GroupListTB is [_, ..])
                 {
                     foreach (BuildingItemGroupTb Group in GroupListTB)
@@ -203,7 +203,7 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId);
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId.Value);
 
                 if (GroupTb is not null)
                 {
@@ -236,13 +236,11 @@ namespace FamTec.Server.Services.Building.Group
 
         // delete group  = group - itemkey - itemvalue 삭제
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext? context, int? groupid)
+        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext? context, int groupid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-                if (groupid is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -329,7 +327,7 @@ namespace FamTec.Server.Services.Building.Group
                 GroupTb.CreateUser = creater;
                 GroupTb.UpdateDt = DateTime.Now;
                 GroupTb.UpdateUser = creater;
-                GroupTb.BuildingTbId = dto.BuildingIdx;
+                GroupTb.BuildingTbId = dto.BuildingIdx.Value;
 
                 BuildingItemGroupTb? AddResult = await BuildingGroupItemInfoRepository.AddAsync(GroupTb);
                 if (AddResult is not null)

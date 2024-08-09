@@ -85,12 +85,12 @@ namespace FamTec.Server.Services.Voc
 
                 CommentTb? comment = new CommentTb();
                 comment.Content = dto.Content;
-                comment.Status = dto.Status;
+                comment.Status = dto.Status.Value;
                 comment.CreateDt = DateTime.Now;
                 comment.CreateUser = Creater;
                 comment.UpdateDt = DateTime.Now;
                 comment.UpdateUser = Creater;
-                comment.VocTbId = dto.VocTbId;
+                comment.VocTbId = dto.VocTbId.Value;
                 comment.UserTbId = Convert.ToInt32(Useridx);
 
                 // 파일이 있으면
@@ -121,7 +121,7 @@ namespace FamTec.Server.Services.Voc
                             VocTB.DurationDt = (model.CreateDt - VocTB.CreateDt).ToString(); // 댓글등록시간 - VOC 등록시간 ==> 소요시간
                         }
 
-                        VocTB.Status = dto.Status;
+                        VocTB.Status = dto.Status.Value;
                         VocTB.UpdateDt = DateTime.Now;
                         VocTB.UpdateUser = Creater;
                         bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
@@ -242,7 +242,7 @@ namespace FamTec.Server.Services.Voc
                 if(vocid is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = new List<VocCommentListDTO>(), code = 404 };
 
-                List<CommentTb>? model = await VocCommentRepository.GetCommentList(vocid);
+                List<CommentTb>? model = await VocCommentRepository.GetCommentList(vocid.Value);
                 if(model is [_, ..])
                 {
                     return new ResponseList<VocCommentListDTO>()
@@ -291,7 +291,7 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeId))
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = new VocCommentDetailDTO(), code = 404 };
 
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid.Value);
                 if(model is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -357,7 +357,7 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 내가 쓴건지 확인
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId.Value);
                 if(model!.UserTbId != Convert.ToInt32(Useridx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

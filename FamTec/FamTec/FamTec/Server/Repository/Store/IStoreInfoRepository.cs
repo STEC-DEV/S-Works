@@ -5,15 +5,14 @@ namespace FamTec.Server.Repository.Store
 {
     public interface IStoreInfoRepository
     {
-        ValueTask<StoreTb?> AddAsync(StoreTb? model);
+        ValueTask<StoreTb?> AddAsync(StoreTb model);
 
         /// <summary>
         /// 사업장별 INOUT 리스트 반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<InOutHistoryListDTO>?> GetInOutList(int? placeid);
+        ValueTask<List<InOutHistoryListDTO>?> GetInOutList(int placeid);
 
-        ValueTask<List<InventoryTb>?> GetOutList(int? placeid, int? roomid);
     }
 }

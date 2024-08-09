@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +21,14 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemValueTb?> AddAsync(BuildingItemValueTb? model)
+        public async ValueTask<BuildingItemValueTb?> AddAsync(BuildingItemValueTb model)
         {
             try
             {
-                if(model is not null)
+                context.BuildingItemValueTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.BuildingItemValueTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -49,23 +48,18 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemValueTb>?> GetAllValueList(int? keyid)
+        public async ValueTask<List<BuildingItemValueTb>?> GetAllValueList(int keyid)
         {
             try
             {
-                if(keyid is not null)
-                {
-                    List<BuildingItemValueTb>? model = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == keyid && m.DelYn != true).ToListAsync();
+                List<BuildingItemValueTb>? model = await context.BuildingItemValueTbs
+                    .Where(m => m.BuildingKeyTbId == keyid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -79,23 +73,18 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemValueTb?> GetValueInfo(int? valueid)
+        public async ValueTask<BuildingItemValueTb?> GetValueInfo(int valueid)
         {
             try
             {
-                if(valueid is not null)
-                {
-                    BuildingItemValueTb? model = await context.BuildingItemValueTbs.FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
+                BuildingItemValueTb? model = await context.BuildingItemValueTbs
+                    .FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
+                
             }
             catch(Exception ex)
             {
@@ -109,19 +98,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateValueInfo(BuildingItemValueTb? model)
+        public async ValueTask<bool?> UpdateValueInfo(BuildingItemValueTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.BuildingItemValueTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingItemValueTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -135,19 +117,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteValueInfo(BuildingItemValueTb? model)
+        public async ValueTask<bool?> DeleteValueInfo(BuildingItemValueTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.BuildingItemValueTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.BuildingItemValueTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -160,7 +135,10 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         {
             try
             {
-                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs.Where(e => KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
+                    .Where(e => KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
+                    .ToListAsync();
+
                 if (keytb is [_, ..])
                     return keytb;
                 else
@@ -177,7 +155,10 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         {
             try
             {
-                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs.Where(e => !KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true).ToListAsync();
+                List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
+                    .Where(e => !KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
+                    .ToListAsync();
+
                 if (keytb is [_, ..])
                     return keytb;
                 else

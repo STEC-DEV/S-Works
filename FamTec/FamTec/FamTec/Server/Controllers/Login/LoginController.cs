@@ -41,6 +41,12 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+                /* 필수값 검사 */
+                if (String.IsNullOrWhiteSpace(dto.UserID))
+                    return Ok($"아이디를 입력해주세요. {StatusCodes.Status204NoContent}");
+                if (String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return Ok($"비밀번호를 입력해주세요. {StatusCodes.Status204NoContent}");
+
                 ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto);
                 if (model is null)
                     return BadRequest(model);
@@ -102,7 +108,7 @@ namespace FamTec.Server.Controllers.Login
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO>? model = await AdminPlaceService.GetMyWorksList(HttpContext);
+                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.GetMyWorksList(HttpContext);
                 if (model is null)
                     return BadRequest();
 

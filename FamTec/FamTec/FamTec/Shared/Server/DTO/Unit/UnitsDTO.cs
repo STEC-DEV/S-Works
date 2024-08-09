@@ -5,7 +5,7 @@
         /// <summary>
         /// 인덱스
         /// </summary>
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 단위명

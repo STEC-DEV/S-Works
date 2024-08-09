@@ -98,7 +98,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 model.CreateUser = creator;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creator;
-                model.RoomTbId = dto.RoomTbId; // 공간 ID
+                model.RoomTbId = dto.RoomTbId.Value; // 공간 ID
 
                 if(files is not null)
                 {
@@ -194,7 +194,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId.Value);
                 if(model is not null)
                 {
                     RoomTb? room = await RoomInfoRepository.GetRoomInfo(model.RoomTbId);
@@ -281,7 +281,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID.Value);
                 
                 if (model is not null)
                 {
@@ -299,7 +299,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     model.ChangeDt = dto.ChangeDT;
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
-                    model.RoomTbId = dto.RoomTbId;
+                    model.RoomTbId = dto.RoomTbId.Value;
 
                     // 이미지 변경 or 삭제
                     if (files is not null)

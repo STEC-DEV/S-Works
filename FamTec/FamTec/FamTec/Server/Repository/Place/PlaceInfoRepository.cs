@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FamTec.Server.Repository.Place
 {
@@ -22,14 +23,14 @@ namespace FamTec.Server.Repository.Place
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<PlaceTb?> AddPlaceInfo(PlaceTb? model)
+        public async ValueTask<PlaceTb?> AddPlaceInfo(PlaceTb model)
         {
             try
             {
-                if (model is not null)
+                context.PlaceTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.PlaceTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -53,7 +54,9 @@ namespace FamTec.Server.Repository.Place
         {
             try
             {
-                List<PlaceTb>? model = await context.PlaceTbs.Where(m => m.DelYn != true).ToListAsync();
+                List<PlaceTb>? model = await context.PlaceTbs
+                    .Where(m => m.DelYn != true)
+                    .ToListAsync();
 
                 if (model is [_, ..])
                     return model;
@@ -72,25 +75,43 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<PlaceTb?> GetByPlaceInfo(int? id)
+        public async ValueTask<PlaceTb?> GetByPlaceInfo(int id)
         {
             try
             {
-                if (id is not null)
-                {
-                    PlaceTb? model = await context.PlaceTbs
-                        .FirstOrDefaultAsync(m => m.Id.Equals(id) &&
-                        m.DelYn != true);
+                PlaceTb? model = await context.PlaceTbs
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id) &&
+                    m.DelYn != true);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
+               
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사업장 코드로 사업장 검색
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> PlaceUKCheck(string Code)
+        {
+            try
+            {
+                PlaceTb? PlaceTB = await context.PlaceTbs
+                    .FirstOrDefaultAsync(m => m.PlaceCd == Code);
+
+                if (PlaceTB is null)
+                    return true;
+                else
+                    return false;
             }
             catch(Exception ex)
             {
@@ -104,24 +125,17 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<PlaceTb?> GetDeletePlaceInfo(int? id)
+        public async ValueTask<PlaceTb?> GetDeletePlaceInfo(int id)
         {
             try
             {
-                if (id is not null)
-                {
-                    PlaceTb? model = await context.PlaceTbs
-                        .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                PlaceTb? model = await context.PlaceTbs
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch (Exception ex)
             {
@@ -135,30 +149,28 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<PlaceTb?> GetBuildingPlace(int? buildingid)
+        public async ValueTask<PlaceTb?> GetBuildingPlace(int buildingid)
         {
             try
             {
-                if(buildingid is not null)
+                BuildingTb? builingTB = await context.BuildingTbs
+                    .FirstOrDefaultAsync(m => m.Id == buildingid && m.DelYn != true);
+
+                if(builingTB is not null)
                 {
-                    BuildingTb? builingTB = await context.BuildingTbs.FirstOrDefaultAsync(m => m.Id == buildingid && m.DelYn != true);
-                    if(builingTB is not null)
-                    {
-                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == builingTB.PlaceTbId && m.DelYn != true);
-                        if (PlaceTB is not null)
-                            return PlaceTB;
-                        else
-                            return null;
-                    }
+                    PlaceTb? PlaceTB = await context.PlaceTbs
+                        .FirstOrDefaultAsync(m => m.Id == builingTB.PlaceTbId && m.DelYn != true);
+
+                    if (PlaceTB is not null)
+                        return PlaceTB;
                     else
-                    {
                         return null;
-                    }
                 }
                 else
                 {
                     return null;
                 }
+               
             }
             catch(Exception ex)
             {
@@ -173,19 +185,12 @@ namespace FamTec.Server.Repository.Place
         /// <param name="placecd"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeletePlace(PlaceTb? model)
+        public async ValueTask<bool?> DeletePlace(PlaceTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.PlaceTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.PlaceTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -200,40 +205,22 @@ namespace FamTec.Server.Repository.Place
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> DeletePlaceList(string? Name, List<int>? placeidx)
+        public async ValueTask<bool?> DeletePlaceList(string Name, List<int> placeidx)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (String.IsNullOrWhiteSpace(Name))
-                        return null;
-                    
-                    if(placeidx is [_, ..])
+                    foreach(int PlaceID in placeidx)
                     {
-                        foreach(int PlaceID in placeidx)
+                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == PlaceID && m.DelYn != true);
+                        if(PlaceTB is not null)
                         {
-                            PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == PlaceID && m.DelYn != true);
-                            if(PlaceTB is not null)
-                            {
-                                PlaceTB.DelYn = true;
-                                PlaceTB.DelDt = DateTime.Now;
-                                PlaceTB.DelUser = Name;
+                            PlaceTB.DelYn = true;
+                            PlaceTB.DelDt = DateTime.Now;
+                            PlaceTB.DelUser = Name;
 
-                                context.PlaceTbs.Update(PlaceTB);
-                            }
-                            else
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
-                        }
-
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
+                            context.PlaceTbs.Update(PlaceTB);
                         }
                         else
                         {
@@ -241,9 +228,17 @@ namespace FamTec.Server.Repository.Place
                             return false;
                         }
                     }
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
                     else
                     {
-                        return null;
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -260,19 +255,12 @@ namespace FamTec.Server.Repository.Place
         /// <param name="model"></param>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> EditPlaceInfo(PlaceTb? model)
+        public async ValueTask<bool?> EditPlaceInfo(PlaceTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.PlaceTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.PlaceTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -281,6 +269,6 @@ namespace FamTec.Server.Repository.Place
             }
         }
 
- 
+
     }
 }

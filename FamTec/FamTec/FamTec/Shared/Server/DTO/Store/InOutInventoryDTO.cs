@@ -15,6 +15,6 @@
         /// </summary>
         public int MaterialID { get; set; }
 
-        public AddStoreDTO AddStore { get; set; } = new AddStoreDTO();
+        public AddStoreDTO? AddStore { get; set; } = new AddStoreDTO();
     }
 }

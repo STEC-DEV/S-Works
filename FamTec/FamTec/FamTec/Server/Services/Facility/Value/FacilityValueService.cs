@@ -37,7 +37,7 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
-                FacilityItemKeyTb? KeyTb = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.KeyID);
+                FacilityItemKeyTb? KeyTb = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.KeyID.Value);
                 if (KeyTb is null)
                     return new ResponseUnit<AddValueDTO?>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
@@ -47,7 +47,7 @@ namespace FamTec.Server.Services.Facility.Value
                 ValueTb.CreateUser = creater;
                 ValueTb.UpdateDt = DateTime.Now;
                 ValueTb.UpdateUser = creater;
-                ValueTb.FacilityItemKeyTbId = dto.KeyID;
+                ValueTb.FacilityItemKeyTbId = dto.KeyID.Value;
 
                 FacilityItemValueTb? AddValueResult = await FacilityItemValueInfoRepository.AddAsync(ValueTb);
                 if(AddValueResult is not null)
@@ -80,7 +80,7 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateValueDTO?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(dto.ID);
+                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(dto.ID.Value);
                 if(ItemValueTb is not null)
                 {
                     ItemValueTb.ItemValue = dto.ItemValue;
@@ -123,7 +123,7 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(valueid);
+                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(valueid.Value);
                 if(ItemValueTb is not null)
                 {
                     ItemValueTb.DelDt = DateTime.Now;

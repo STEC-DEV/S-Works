@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace FamTec.Shared.Server.DTO.Admin.Place
 {
@@ -8,32 +7,25 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// <summary>
         /// 사업장ID
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장ID는 공백일 수 없습니다.")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 선택여부
         /// </summary>
-        [NotNull]
         [Display(Name = "선택")]
-        public bool IsSelect { get; set; } = false;
+        public bool? IsSelect { get; set; } = false;
 
         /// <summary>
         /// 사업장코드
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장코드는 공백일 수 없습니다.")]
         [Display(Name = "사업장 코드")]
-        public string PlaceCd { get; set; } = null!;
+        public string? PlaceCd { get; set; }
 
         /// <summary>
         /// 사업장명
         /// </summary>
-        [NotNull]
-        [Required(ErrorMessage = "사업장명은 공백일 수 없습니다.")]
         [Display(Name = "사업장명")]
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// 비고
@@ -58,8 +50,6 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         [Display(Name = "계약상태")]
         public bool Status { get; set; }
-
-       
         
     }
 }

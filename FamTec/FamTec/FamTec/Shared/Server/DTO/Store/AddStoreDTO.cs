@@ -20,7 +20,7 @@
         /// <summary>
         /// 입-출고 수량
         /// </summary>
-        public int Num { get; set; }
+        public int? Num { get; set; }
 
         /// <summary>
         /// 합계 가격

@@ -30,19 +30,12 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO? dto, string? creater, int placeid, string? GUID)
+        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid, string GUID)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
-                    if (dto is null)
-                        return null;
-                    if (String.IsNullOrWhiteSpace(creater))
-                        return null;
-                    if (String.IsNullOrWhiteSpace(GUID))
-                        return null;
-
                     // [1]. 토큰체크
                     foreach (InOutInventoryDTO InventoryDTO in dto.Inventory)
                     {
@@ -70,7 +63,7 @@ namespace FamTec.Server.Repository.Maintenence
                         int? result = 0;
 
                         // 출고할게 여러곳에 있으니 전체 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
                         if (InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과한거임.
                         {
                             foreach (InventoryTb? inventory in InventoryList)
@@ -98,16 +91,16 @@ namespace FamTec.Server.Repository.Maintenence
                     // 유지보수 이력에 추가.
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
                     MaintenenceHistory.Name = dto.Name; // 작업명
-                    MaintenenceHistory.Type = dto.Type; // 작업구분 (자체작업 / 외주작업 ..)
+                    MaintenenceHistory.Type = dto.Type.Value; // 작업구분 (자체작업 / 외주작업 ..)
                     MaintenenceHistory.Worker = dto.Worker; // 작업자
-                    MaintenenceHistory.UnitPrice = dto.UnitPrice; // 단가
-                    MaintenenceHistory.Num = dto.Num; // 수량
-                    MaintenenceHistory.TotalPrice = dto.TotalPrice; // 소요비용
+                    MaintenenceHistory.UnitPrice = dto.UnitPrice.Value; // 단가
+                    MaintenenceHistory.Num = dto.Num.Value; // 수량
+                    MaintenenceHistory.TotalPrice = dto.TotalPrice.Value; // 소요비용
                     MaintenenceHistory.CreateDt = DateTime.Now; // 생성일자
                     MaintenenceHistory.CreateUser = creater; // 생성자
                     MaintenenceHistory.UpdateDt = DateTime.Now; // 수정일자
                     MaintenenceHistory.UpdateUser = creater; // 수정자
-                    MaintenenceHistory.FacilityTbId = dto.FacilityID; // 설비 ID
+                    MaintenenceHistory.FacilityTbId = dto.FacilityID.Value; // 설비 ID
 
                     context.MaintenenceHistoryTbs.Add(MaintenenceHistory);
                     bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; // 저장
@@ -125,7 +118,7 @@ namespace FamTec.Server.Repository.Maintenence
                         int? result = 0;
 
                         // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
                         if (InventoryList is [_, ..])
                         {
                             foreach (InventoryTb? inventory in InventoryList)
@@ -175,7 +168,7 @@ namespace FamTec.Server.Repository.Maintenence
                                         }
                                         else
                                         {
-                                            outresult -= model.AddStore.Num;
+                                            outresult -= model.AddStore.Num.Value;
                                             OutInventoryTb.Num = outresult;
                                             OutInventoryTb.UpdateDt = DateTime.Now;
                                             OutInventoryTb.UpdateUser = creater;
@@ -272,25 +265,18 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaintenenceHistoryTb>?> GetFacilityHistoryList(int? facilityid)
+        public async ValueTask<List<MaintenenceHistoryTb>?> GetFacilityHistoryList(int facilityid)
         {
             try
             {
-                if(facilityid is not null)
-                {
-                    List<MaintenenceHistoryTb>? model = await context.MaintenenceHistoryTbs
-                        .Where(m => m.FacilityTbId == facilityid && m.DelYn != true)
-                        .ToListAsync();
+                List<MaintenenceHistoryTb>? model = await context.MaintenenceHistoryTbs
+                    .Where(m => m.FacilityTbId == facilityid && m.DelYn != true)
+                    .ToListAsync();
 
-                    if (model is [_, ..])
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is [_, ..])
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -308,21 +294,10 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="delCount"></param>
         /// <param name="Guid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int? placeid, int? roomid, int? materialid, int? delCount, string? Guid)
+        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount, string Guid)
         {
             try
             {
-                if (materialid is null)
-                    return null;
-                if (roomid is null)
-                    return null;
-                if (placeid is null)
-                    return null;
-                if (delCount is null)
-                    return null;
-                if (String.IsNullOrWhiteSpace(Guid))
-                    return null;
-
                 // 선입선출
                 List<InventoryTb>? model = await context.InventoryTbs
                     .Where(m => m.MaterialTbId == materialid &&
@@ -370,17 +345,10 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="materialid"></param>
         /// <param name="guid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> SetOccupantToken(int? placeid, AddMaintanceDTO? dto, string? guid)
+        public async ValueTask<bool?> SetOccupantToken(int placeid, AddMaintanceDTO dto, string guid)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                if (dto is null)
-                    return null;
-                if (String.IsNullOrWhiteSpace(guid))
-                    return null;
-
                 using var transaction = context.Database.BeginTransaction();
 
                 foreach(InOutInventoryDTO inventoryDTO in dto.Inventory)
@@ -486,7 +454,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int? placeid, string? date)
+        public ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int placeid, string date)
         {
             throw new NotImplementedException();
         }
@@ -496,7 +464,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ValueTask<MaintenenceHistoryTb>? GetDetailHistoryInfo(int? id)
+        public ValueTask<MaintenenceHistoryTb>? GetDetailHistoryInfo(int id)
         {
             throw new NotImplementedException();
         }

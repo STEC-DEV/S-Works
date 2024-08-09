@@ -22,14 +22,14 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<VocTb?> AddAsync(VocTb? model)
+        public async ValueTask<VocTb?> AddAsync(VocTb model)
         {
             try
             {
-                if (model is not null)
+                context.VocTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.VocTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -49,20 +49,20 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<VocListDTO>?> GetVocList(int? placeid)
+        public async ValueTask<List<VocListDTO>?> GetVocList(int placeid)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-
-                List<int>? buildingidx = await context.BuildingTbs.Where(m => m.PlaceTbId == placeid)
+                List<int>? buildingidx = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid)
                     .Select(m => m.Id)
                     .ToListAsync();
 
                 if (buildingidx is [_, ..])
                 {
-                    List<VocTb>? VocModel = await context.VocTbs.Where(m => buildingidx.Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
+                    List<VocTb>? VocModel = await context.VocTbs
+                        .Where(m => buildingidx.Contains(m.BuildingTbId) && m.DelYn != true)
+                        .ToListAsync();
 
                     if(VocModel is [_, ..])
                     {
@@ -84,11 +84,11 @@ namespace FamTec.Server.Repository.Voc
                         if (dto is not null)
                             return dto;
                         else
-                            return new List<VocListDTO>();
+                            return null;
                     }
                     else
                     {
-                        return new List<VocListDTO>();
+                        return null;
                     }
 
                 }
@@ -97,8 +97,6 @@ namespace FamTec.Server.Repository.Voc
                     // 건물이 없음
                     return null;
                 }
-
-
             }
             catch(Exception ex)
             {
@@ -113,21 +111,10 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="buildinglist"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async ValueTask<List<VocListDTO>?> GetVocFilterList(int? placeid, DateTime? StartDate, DateTime? EndDate, int? Type, int? status,int? BuildingID)
+        public async ValueTask<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, int Type, int status,int BuildingID)
         {
             try
             {
-                if (placeid is null)
-                    return null;
-                if(StartDate is null)
-                    return null;
-                if(EndDate is null)
-                    return null;
-                if(Type is null)
-                    return null;
-                if(BuildingID is null)
-                    return null;
-
                 List<int>? buildingidx = await context.BuildingTbs
                     .Where(m => m.PlaceTbId == placeid)
                     .Select(m => m.Id)
@@ -136,7 +123,7 @@ namespace FamTec.Server.Repository.Voc
                 if(buildingidx is [_, ..])
                 {
                     // 해당 사업장에 넘어온 건물인덱스의 건물이 있는지?
-                    bool buildingChk = buildingidx.Contains(BuildingID.Value);
+                    bool buildingChk = buildingidx.Contains(BuildingID);
                     if(buildingChk)
                     {
                         List<VocTb>? VocModel = null;
@@ -206,14 +193,14 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<VocTb?> GetVocInfoById(int? vocid)
+        public async ValueTask<VocTb?> GetVocInfoById(int vocid)
         {
             try
             {
-                if (vocid is null)
-                    return null;
 
-                VocTb? model = await context.VocTbs.FirstOrDefaultAsync(m => m.Id == vocid && m.DelYn != true);
+                VocTb? model = await context.VocTbs
+                    .FirstOrDefaultAsync(m => m.Id == vocid && m.DelYn != true);
+
                 if(model is not null)
                     return model;
                 else
@@ -234,14 +221,14 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="code"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<VocTb?> GetVocInfoByCode(string? code)
+        public async ValueTask<VocTb?> GetVocInfoByCode(string code)
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(code))
-                    return null;
 
-                VocTb? model = await context.VocTbs.FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true);
+                VocTb? model = await context.VocTbs
+                    .FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true);
+
                 if (model is not null)
                     return model;
                 else
@@ -254,19 +241,12 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
-        public async ValueTask<bool> UpdateVocInfo(VocTb? model)
+        public async ValueTask<bool> UpdateVocInfo(VocTb model)
         {
             try
             {
-                if (model is not null)
-                {
-                    context.VocTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return false;
-                }
+                context.VocTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (Exception ex)
             {
