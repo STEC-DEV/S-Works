@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Login
 @using System.Text.Json
@@ -11,7 +12,8 @@
 @using System.IdentityModel.Tokens.Jwt
 @inject IJSRuntime IJSRuntime
 @inject HttpClient HttpClient
-
+@inject ILocalStorageService _localStorageService;
+@inject AuthenticationStateProvider _authStateProvider;
 
 <div class="signup-container">
     <div class="signup-wrap">
@@ -81,12 +83,53 @@
                 return;
             }
             string? token = response.data;
-            await sessionStorage.SetItemAsStringAsync("SWORKSSESSION", token);
-            await sessionStorage.SetItemAsync("LoginMode", LoginMode);
+            // await sessionStorage.SetItemAsStringAsync("SWORKSSESSION", token);
+            // await sessionStorage.SetItemAsync("LoginMode", LoginMode);
+
+
+            
+
+
 
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            // /* SIGNAL R */
+            
+
+            if(response.code == 201)
+            {
+                Navigation.NavigateTo($"/select/{token}");
+                return;
+            }
+            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+            await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
+            (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+
+            if (response.code == 200)
+            {
+                if (LoginMode)
+                {
+                    Navigation.NavigateTo("/admin/place");
+                }
+                else
+                {
+                    Navigation.NavigateTo("/user");
+                }
+                // // 인증 상태 업데이트
+                // customStateProvider.NotifyUserAuthentication(token);
+                // Navigation.NavigateTo("/");
+                // return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
+        }
+        Console.WriteLine(user.UserID);
+        Console.WriteLine(user.UserPassword);
+    }
+}
+
+@* // /* SIGNAL R */
             // var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
             // var tokenHandler = new JwtSecurityTokenHandler();
             // tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -124,7 +167,7 @@
 
             // JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
             // string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
-            
+
             // if (Int32.Parse(UserVoc) > 0 && jobj["PlacePerms"] is not null)
             // {
             //     JObject? VocPerms = new JObject(JObject.Parse(jobj["VocPerms"]!.ToString()));
@@ -180,28 +223,4 @@
             //     string? UserPerm_Default = Convert.ToString(VocPerms["VocDefault"]!);
             //     if (!String.IsNullOrWhiteSpace(UserPerm_Default) && Int32.Parse(UserPerm_Default) > 0)
             //         await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_DefaultRoom");
-            // }
-           
-            if(response.code == 201)
-            {
-                Navigation.NavigateTo("/select");
-                return;
-            }
-
-            if (response.code == 200)
-            {
-                // 인증 상태 업데이트
-                customStateProvider.NotifyUserAuthentication(token);
-                Navigation.NavigateTo("/");
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
-        }
-        Console.WriteLine(user.UserID);
-        Console.WriteLine(user.UserPassword);
-    }
-}
-
+            // } *@

@@ -1,0 +1,53 @@
+﻿@using System.Security.Claims
+@inherits LayoutComponentBase
+
+
+
+<div class="page">
+    <div class="inner">
+    <AuthorizeView>
+        <Authorized>
+                <Nav 
+                    UserName="@UserDisplayName(context.User.Claims.ToList())"
+                     UserType="@UserDisplayType(context.User.Claims.ToList())" />
+                <main>
+                    <Drawer />
+                    <div class="content">
+                        @Body
+                    </div>
+                </main>
+        </Authorized>
+        <NotAuthorized>
+            <main>
+                <div class="content">
+                        @if (!Navigation.Uri.EndsWith("/login") && !Navigation.Uri.Contains("/select/"))
+                        {
+                            Navigation.NavigateTo("/login", forceLoad: true);
+                        }
+                        else
+                        {
+                            @Body
+                        }
+                </div>
+            </main>
+            
+        </NotAuthorized>
+    </AuthorizeView>
+    
+    </div>
+</div>
+
+@code {
+    private string UserDisplayName(List<Claim> claims)
+    {
+        var Name = claims.Where(_ => _.Type == "Name").Select(_ => _.Value).FirstOrDefault();
+        return Name;
+    }
+
+
+    private string UserDisplayType(List<Claim> claims)
+    {
+        var Name = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
+        return Name;
+    }
+}

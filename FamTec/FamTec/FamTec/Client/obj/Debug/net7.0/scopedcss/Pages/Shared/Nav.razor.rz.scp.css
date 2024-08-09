@@ -1,0 +1,104 @@
+
+.nav-container[b-8yesx05ag3] {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: min-content auto max-content;
+    grid-template-areas: "logo ctrl tab";
+    padding: 0.5rem 2rem;
+    width: 100%;
+    /*border-radius: 5px;*/
+    /*border-bottom: 1px solid #d3d3d3;*/
+    background-color:var(--main-color);
+    font-weight: bold;
+    /*box-shadow: 3px 3px 8px 0px rgb(201, 201, 201);*/
+    position: sticky;
+}
+
+/* nav logo */
+
+.nav-container .nav-logo[b-8yesx05ag3] {
+    grid-area: logo;
+    place-self: center;
+    margin-right: 1rem;
+    /*padding: 0.25rem;*/
+    border-radius: var(--default-rd);
+    /*color: #00cc8f;
+    font-size: 1.5rem;
+    font-weight: bold;*/
+    cursor: pointer;
+}
+
+/*.nav-container ::deep .active {
+    display: flex;
+    align-items: center;
+}*/
+
+.nav-container .nav-logo img[b-8yesx05ag3] {
+    display: flex;
+    align-items: center;
+    width: 150px;
+}
+
+/* nav ctrl-btn */
+.nav-container .nav-ctrl[b-8yesx05ag3] {
+    grid-area: ctrl;
+    place-self: center;
+}
+
+
+.nav-container .nav-ctrl-wrap[b-8yesx05ag3] {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 2rem;
+    padding: var(--half-pd);
+}
+
+.nav-container .nav-ctrl-item[b-8yesx05ag3] {
+}
+
+.nav-container .nav-ctrl-item button[b-8yesx05ag3] {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #d3d3d3;
+    background-color: white;
+    font-size: 1rem;
+    font-weight: bold;
+
+
+}
+
+
+/* nav tab */
+
+.nav-container .nav-tab[b-8yesx05ag3] {
+    grid-area: tab;
+    place-self: center end;
+}
+
+
+.nav-container .nav-divider[b-8yesx05ag3]{
+    color : var(--default-color);
+}
+.nav-container .nav-usertype[b-8yesx05ag3] {
+    font-size: 0.7rem;
+    color: var(--main-light);
+}
+.nav-container .nav-username[b-8yesx05ag3] {
+    font-size: var(--normal-size);
+    color: var(--default-color);
+}
+
+.nav-container .nav-tab-wrap[b-8yesx05ag3] {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 2rem;
+    font-size: 0.9rem;
+    color: var(--daflut-color);
+}
+
+.nav-container[b-8yesx05ag3]  .nav-tab-link {
+    cursor : pointer;
+    color: var(--default-color);
+}

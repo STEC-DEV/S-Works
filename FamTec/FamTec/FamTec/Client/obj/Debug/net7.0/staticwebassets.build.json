@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Hkmsd+mEQdg3IwA4Kp+Q1KGKmw/jPc6Eg3iVqhjB+kM=",
+  "Hash": "nUIJRXNUVU5LoEC6YM8prnW3bIaLXPrH+2qUYqn3Yn8=",
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -148,6 +148,25 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\stec\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly\\7.0.18\\build\\net7.0\\blazor.webassembly.js"
+    },
+    {
+      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\Blazored.LocalStorage.dll",
+      "SourceId": "FamTec.Client",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "_framework/Blazored.LocalStorage.dll",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "WasmResource",
+      "AssetTraitValue": "runtime",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "C:\\Users\\stec\\.nuget\\packages\\blazored.localstorage\\4.5.0\\lib\\net7.0\\Blazored.LocalStorage.dll"
     },
     {
       "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\Blazored.SessionStorage.dll",
@@ -8660,6 +8679,25 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\System.Runtime.Intrinsics.dll"
+    },
+    {
+      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\nyfgjd8x0y.gz",
+      "SourceId": "FamTec.Client",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "_framework/Blazored.LocalStorage.dll.gz",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\Blazored.LocalStorage.dll",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "CopyToOutputDirectory": "PreserveNewest",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\Blazored.LocalStorage.dll"
     },
     {
       "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\o4gwrk1klb.gz",

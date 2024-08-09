@@ -1,8 +1,8 @@
-﻿/*.drawer-container {
+﻿.drawer-container {
     min-width: min-content;
-    width: 20%;
+    width: 15%;
     border-right: 1px solid #d3d3d3;
-}*/
+}
 
 .drawer-container .drawer-wrap {
     display: flex;

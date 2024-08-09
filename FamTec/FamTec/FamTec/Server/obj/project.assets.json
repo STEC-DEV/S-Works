@@ -46,6 +46,18 @@
           }
         }
       },
+      "Blazored.LocalStorage/4.5.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.Web": "7.0.0"
+        },
+        "compile": {
+          "lib/net7.0/Blazored.LocalStorage.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/Blazored.LocalStorage.dll": {}
+        }
+      },
       "Blazored.SessionStorage/2.4.0": {
         "type": "package",
         "dependencies": {
@@ -3122,9 +3134,11 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+          "Blazored.LocalStorage": "4.5.0",
           "Blazored.SessionStorage": "2.4.0",
           "ClosedXML": "0.102.2",
           "FamTec.Shared": "1.0.0",
+          "Microsoft.AspNetCore.Components.Authorization": "7.0.20",
           "Microsoft.AspNetCore.Components.WebAssembly": "7.0.18",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "7.0.20",
           "Microsoft.AspNetCore.SignalR.Client": "7.0.18",
@@ -3200,6 +3214,22 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "Blazored.LocalStorage/4.5.0": {
+      "sha512": "6nZuJwA7zNIKx83IsObiHXZb09ponJOpCClU3en+hI8ZFvrOKXeOw+H7TegQZQrvdR1n9fkrVkEBQZg8vx6ZTw==",
+      "type": "package",
+      "path": "blazored.localstorage/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "blazored.localstorage.4.5.0.nupkg.sha512",
+        "blazored.localstorage.nuspec",
+        "icon.png",
+        "lib/net6.0/Blazored.LocalStorage.dll",
+        "lib/net7.0/Blazored.LocalStorage.dll",
+        "lib/net8.0/Blazored.LocalStorage.dll"
       ]
     },
     "Blazored.SessionStorage/2.4.0": {

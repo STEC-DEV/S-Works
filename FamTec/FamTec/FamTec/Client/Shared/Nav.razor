@@ -1,8 +1,11 @@
 ﻿@using FamTec.Client.Middleware
+@using FamTec.Client.Shared.Provider
 @using Microsoft.AspNetCore.SignalR.Client
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject SessionService SessionService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider _authStateProvider;
+@inject ILocalStorageService _localStorageService;
 
 <div class="nav-container">
     <div class="nav-logo">
@@ -18,12 +21,12 @@
             @* <li class="nav-tab-item">
                 <button disabled="@(!IsConnected)">@MessageCount</button>
             </li> *@
-            @if(_userType != null)
+            @if (UserType != null)
             {
                 <li class="nav-tab-item">
-                    <span class="nav-usertype">@_userType</span>
+                    <span class="nav-usertype">@UserType</span>
                     <span class="nav-divider">|</span>
-                    <span class="nav-username">@_userName</span>
+                    <span class="nav-username">@UserName</span>
                 </li>
                 @* <li class="nav-tab-item">
                     
@@ -47,17 +50,23 @@
     [Parameter] public string? UserName { get; set; }
     [Parameter] public string? UserType  { get; set; }
     private int MessageCount { get; set; }
-    private string? _userType;
-    private string? _userName;
+    // private string? _userType;
+    // private string? _userName;
     private bool LoginMode;
     private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
-        var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-        _userType = await SessionService.GetClaimValue(session, "Role");
-        _userName = await SessionService.GetClaimValue(session, "Name");
+        // LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
+        await OnLoginMode();
+        // var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+        // _userType = await SessionService.GetClaimValue(session, "Role");
+        // _userName = await SessionService.GetClaimValue(session, "Name");
+    }
+
+    private async Task OnLoginMode()
+    {
+        LoginMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -85,10 +94,18 @@
     private async Task OnLogOut()
     {
         Console.WriteLine("로그아웃 동작");
-        await sessionStorage.RemoveItemAsync("SWORKSSESSION");
-        await sessionStorage.RemoveItemAsync("LoginMode");
-        await sessionStorage.RemoveItemAsync("IsLogin");
-        StateHasChanged();
+        // await sessionStorage.RemoveItemAsync("SWORKSSESSION");
+        // await sessionStorage.RemoveItemAsync("LoginMode");
+        // await sessionStorage.RemoveItemAsync("IsLogin");
+        // StateHasChanged();
+
+        await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+
+        // 로그인 모드 정보 제거
+        await _localStorageService.RemoveItemAsync("loginMode");
+
+        // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+        (_authStateProvider as CustomAuthProvider).NotifyLogout();
 
         NavigationManager.NavigateTo("/");
     }

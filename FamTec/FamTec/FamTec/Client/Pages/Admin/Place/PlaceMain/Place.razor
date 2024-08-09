@@ -9,6 +9,7 @@
 @using System.Reflection
 @using System.ComponentModel.DataAnnotations
 @using FamTec.Client.Pages.CommonComponents
+@using System.Security.Claims
 @inject HttpClient HttpClient
 
 <div class="place-container yappear">
@@ -83,6 +84,11 @@
         var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
         _Role = await SessionService.GetClaimValue(session, "Role");
         LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
+    }
+
+    private async Task OnLoadStorage(List<Claim> claims)
+    {
+        var Role = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
     }
 
 

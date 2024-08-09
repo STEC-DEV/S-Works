@@ -9,6 +9,8 @@ using Tewr.Blazor.FileReader;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
+using FamTec.Client.Shared.Provider;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,11 +29,15 @@ builder.Services.AddFileReaderService(options =>
 
 builder.Services.AddScoped<SessionService>();
 
+
 builder.Services.AddScoped<ApiManager>();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+builder.Services.AddAuthorizationCore();
 
 
 // 연결 -- 아래 코드 (게시용)

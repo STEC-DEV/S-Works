@@ -5591,7 +5591,7 @@
 /* /Pages/Sign/SignIn/SignIn.razor.rz.scp.css */
 .signup-container[b-hbi4667qfr]{
     width:100%;
-
+    height:100%;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -6077,11 +6077,11 @@
     color: var(--main-color);
 }
 /* /Shared/Drawer.razor.rz.scp.css */
-/*.drawer-container {
+.drawer-container[b-rriyx9tl3w] {
     min-width: min-content;
-    width: 20%;
+    width: 15%;
     border-right: 1px solid #d3d3d3;
-}*/
+}
 
 .drawer-container .drawer-wrap[b-rriyx9tl3w] {
     display: flex;
@@ -6465,4 +6465,36 @@ main[b-7s48qd2tqg] {
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
+}
+/* /Shared/TestMainLayout.razor.rz.scp.css */
+.page[b-epzcebx71e]{
+    display : flex;
+    flex-direction : column;
+    min-height : 100vh;
+    
+}
+
+.inner[b-epzcebx71e]{
+    flex : 1 1;
+    inline-size: min(100%, 1920px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    overflow:hidden;
+
+}
+
+main[b-epzcebx71e] {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+
+
+.content[b-epzcebx71e] {
+    background-color: var(--content-back-color);
+    flex:1;
+    overflow: auto;
+    padding: 1rem;
 }

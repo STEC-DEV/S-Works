@@ -2,8 +2,10 @@
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
+using FamTec.Client.Shared.Provider;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
@@ -16,17 +18,19 @@ using System.Text.Json;
 using System.Web;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+
 namespace FamTec.Client.Middleware
 {
     public class ApiManager
     {
         private readonly HttpClient _httpClient;
-        private readonly CustomAuthenticationStateProvider _authStateProvider;
+        //private readonly CustomAuthenticationStateProvider _authStateProvider;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
-        public ApiManager(CustomAuthenticationStateProvider authStateProvider)
+        public ApiManager(AuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -34,10 +38,17 @@ namespace FamTec.Client.Middleware
 
         private async Task AddAuthorizationHeader()
         {
-            var token = await _authStateProvider.GetTokenAsync();
-            if (!string.IsNullOrEmpty(token))
+            //var token = await _authStateProvider.GetTokenAsync();
+            string jwtClaim = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
+
+            if (!string.IsNullOrEmpty(jwtClaim))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtClaim);
+            }
+            else
+            {
+                
+                _httpClient.DefaultRequestHeaders.Authorization = null;
             }
         }
 

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "sUM6uH4kuc7Z/p8sPt0cAHLrfY4c0ZXCPkcaF0FlzI8nH/zTIzexaMdsAnVeQV2Hh1l2LUEs2bGdzFLM2VsHOA==",
+  "dgSpecHash": "sjUY8L5eYIkMfFokUfPpok/mNIJ0JjOTL84usnSIcO8+b2gO1iRfwLqp+ZCj26sMVZtVyJ6oBrFMBzMcUuTR7A==",
   "success": true,
   "projectFilePath": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\stec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
+    "C:\\Users\\stec\\.nuget\\packages\\blazored.localstorage\\4.5.0\\blazored.localstorage.4.5.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\blazored.sessionstorage\\2.4.0\\blazored.sessionstorage.2.4.0.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\closedxml\\0.102.2\\closedxml.0.102.2.nupkg.sha512",
     "C:\\Users\\stec\\.nuget\\packages\\documentformat.openxml\\2.16.0\\documentformat.openxml.2.16.0.nupkg.sha512",

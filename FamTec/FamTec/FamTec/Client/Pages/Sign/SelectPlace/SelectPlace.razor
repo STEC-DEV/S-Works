@@ -1,4 +1,4 @@
-﻿@page "/select"
+﻿@page "/select/{token}"
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.CommonComponents
@@ -29,6 +29,8 @@
 
 
 @code {
+    [Parameter] public string token { get; set; }
+    // [Parameter] public bool Admin { get; set; }
     List<PlaceTableDTO> placeData = new List<PlaceTableDTO>();
     int SelectPlaceId;
 

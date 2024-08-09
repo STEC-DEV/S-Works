@@ -1206,3 +1206,8 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Select\Components\Content.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\InputImages.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Voc\Add\VocAddResult.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net7.0\wwwroot\_framework\Blazored.LocalStorage.dll
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net7.0\wwwroot\_framework\Blazored.LocalStorage.dll.gz
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net7.0\Blazored.LocalStorage.dll
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\compressed\nyfgjd8x0y.gz
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Shared\TestMainLayout.razor.rz.scp.css

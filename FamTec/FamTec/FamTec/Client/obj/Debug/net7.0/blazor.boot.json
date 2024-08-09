@@ -1,7 +1,7 @@
 {
   "entryAssembly": "FamTec.Client",
   "resources": {
-    "hash": "sha256-lzh/18CXu/eFBqAFAc9IjDUBLRVn1voJ/CvZ3r8T6Ds=",
+    "hash": "sha256-w7vwwAv8rKVnMcJRAVpMWx66JoSwFs4N4764gmogdKI=",
     "runtime": {
       "dotnet.7.0.16.v4x92qokea.js": "sha256-4BiArKugJJtpQrznGF5zWfmJ2TB98+p6rKsyoqhtMk4=",
       "dotnet.timezones.blat": "sha256-rwyJqJu36keQwNmm/O1XV7tnkkVldIOK8GIjn4gTUt4=",
@@ -13,6 +13,7 @@
     "assembly": {
       "Azure.Core.dll": "sha256-n99lo2Sb2Qmi7GGC7Veocf+M704XRp8f+PBXlpt9W8w=",
       "Azure.Identity.dll": "sha256-/CphBnWxgDF2cG5+//jGJC2gguTfTv47O/N9ZeR2U10=",
+      "Blazored.LocalStorage.dll": "sha256-xcO4wZtFwM5I9DIZf1sZpOdcsaTjw1HyqJ5AWciMDAk=",
       "Blazored.SessionStorage.dll": "sha256-zB1Pp8w/ys0ZXs5YTb/t+cNAnJQcBDXxTtF3gtgpXT8=",
       "ClosedXML.dll": "sha256-89k5fIYzAhyZlGWeIJkKIqsfhIWIQWnS9wFzYnsJe+s=",
       "DocumentFormat.OpenXml.dll": "sha256-WI0HvcDdgox9sH0Er0LEfUiwktks7Lt/9uY/l0G0iXQ=",
@@ -267,11 +268,11 @@
       "netstandard.dll": "sha256-c9xgB5oQro5/rBTTHeD+4cqLi9QOB+6fhaP3jmkeGo4=",
       "System.Private.CoreLib.dll": "sha256-FGXoQzMt7mcWfUZbWXoXgg8tPIt7PF+QZoXXBQWegAQ=",
       "FamTec.Shared.dll": "sha256-ZTOWS6xpyQyHyLvCeSWplCbvRgDGzCVLdeoGnDlksl4=",
-      "FamTec.Client.dll": "sha256-QWLf4gwCzjPC9KrGdkZ5dQuqreYg1tuqz4kDE53OBTc="
+      "FamTec.Client.dll": "sha256-kujgulqNeaD0QohkLu00NhswfNCwhOCJleIS9edBaRs="
     },
     "pdb": {
       "FamTec.Shared.pdb": "sha256-PQTdzPfxqxKhAqwpTMsOMYQVgbdz5qMNaqYuuCPeM9I=",
-      "FamTec.Client.pdb": "sha256-rKZ/zPZAGz+enPQGMomb7hBEow3ZoWW4n86sg3CoJnk="
+      "FamTec.Client.pdb": "sha256-/PLm89cHiYmJRxR2I6fyOb7tdN4EgScevhE63Y7Em3c="
     },
     "runtimeAssets": {
       "dotnet.wasm": {
