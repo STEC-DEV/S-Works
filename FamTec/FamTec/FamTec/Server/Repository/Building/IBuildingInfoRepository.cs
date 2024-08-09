@@ -25,6 +25,12 @@ namespace FamTec.Server.Repository.Building
         /// <returns></returns>
         ValueTask<BuildingTb?> GetBuildingInfo(int buildingId);
 
+        /// <summary>
+        /// 사용가능한 건물코드인지 검사
+        /// </summary>
+        /// <param name="buildingcode"></param>
+        /// <returns></returns>
+        ValueTask<bool?> CheckBuildingCD(string buildingcode);
 
         /// <summary>
         /// 건물정보 수정

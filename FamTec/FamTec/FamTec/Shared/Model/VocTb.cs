@@ -36,6 +36,17 @@ public partial class VocTb
     [StringLength(255)]
     public string Content { get; set; } = null!;
 
+    /// <summary>
+    /// 0 : 미분류
+    /// 1 : 기계
+    /// 2 : 전기
+    /// 3 : 승강
+    /// 4 : 소방
+    /// 5 : 건축
+    /// 6 : 통신
+    /// 7 : 미화
+    /// 8 : 보안
+    /// </summary>
     [Column("TYPE", TypeName = "int(11)")]
     public int Type { get; set; }
 

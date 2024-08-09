@@ -15,24 +15,41 @@
         /// <param name="folderpath"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<string?> AddImageFile(string folderpath, IFormFile files)
+        public async Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files)
         {
             try
             {
-                string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(files.FileName)}";
+                //string newFileName = $"{files.FileName}";
                 string filePath = Path.Combine(folderpath, newFileName);
-
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     await files.CopyToAsync(fileStream);
-                    return newFileName;
+                    return true;
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// 새로운 파일명 생성
+        /// </summary>
+        /// <returns></returns>
+        public string SetNewFileName(IFormFile files)
+        {
+            try
+            {
+                string NewFileName = $"{Guid.NewGuid()}{Path.GetExtension(files.FileName)}";
+                return NewFileName;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
             }
         }
 
@@ -130,6 +147,11 @@
                 LogService.LogMessage(ex.ToString());
                 return null;
             }
+        }
+
+        public Task<string?> AddImageFile(string folderpath, IFormFile files)
+        {
+            throw new NotImplementedException();
         }
     }
 }

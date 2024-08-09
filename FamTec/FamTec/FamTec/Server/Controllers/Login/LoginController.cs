@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.Login
         }
 
         /// <summary>
-        /// 관리자 화면 로그인
+        /// 관리자 화면 로그인 [OK]
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -43,9 +43,9 @@ namespace FamTec.Server.Controllers.Login
             {
                 /* 필수값 검사 */
                 if (String.IsNullOrWhiteSpace(dto.UserID))
-                    return Ok($"아이디를 입력해주세요. {StatusCodes.Status204NoContent}");
+                    return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
-                    return Ok($"비밀번호를 입력해주세요. {StatusCodes.Status204NoContent}");
+                    return NoContent();
 
                 ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto);
                 if (model is null)
@@ -75,7 +75,13 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
-                ResponseUnit<string>? model = await UserService.UserLoginService(dto);
+                if (String.IsNullOrWhiteSpace(dto.UserID))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return NoContent();
+
+                ResponseUnit<string?> model = await UserService.UserLoginService(dto);
 
                 if (model is null)
                     return BadRequest();
@@ -108,7 +114,7 @@ namespace FamTec.Server.Controllers.Login
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.GetMyWorksList(HttpContext);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext);
                 if (model is null)
                     return BadRequest();
 
@@ -140,7 +146,7 @@ namespace FamTec.Server.Controllers.Login
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<string>? model = await UserService.LoginSelectPlaceService(HttpContext, placeid);
+                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(HttpContext, placeid);
 
                 if (model is null)
                     return BadRequest();

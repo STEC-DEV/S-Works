@@ -5,6 +5,6 @@ namespace FamTec.Server.Services.Admin.Maintenance
 {
     public interface IMaintanceService
     {
-        public ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext? context, AddMaintanceDTO? dto);
+        public ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto);
     }
 }

@@ -26,34 +26,27 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<AdminPlaceTb>? model)
+        public async ValueTask<bool?> AddAsync(List<AdminPlaceTb> model)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    if (model is [_, ..])
+                    foreach(AdminPlaceTb AdminPlaceTB in model)
                     {
-                        foreach(AdminPlaceTb AdminPlaceTB in model)
-                        {
-                            context.AdminPlaceTbs.Add(AdminPlaceTB);
-                        }
+                        context.AdminPlaceTbs.Add(AdminPlaceTB);
+                    }
 
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(AddResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
+                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(AddResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
                     }
                     else
                     {
-                        return null;
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -70,23 +63,16 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceTb>?> GetMyWorksList(int? adminid)
+        public async ValueTask<List<AdminPlaceTb>?> GetMyWorksList(int adminid)
         {
             try
             {
-                if(adminid is not null)
-                {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
 
-                    if(adminplacetb is [_, ..])
-                        return adminplacetb;
-                    else
-                        return null;
-                }
+                if(adminplacetb is [_, ..])
+                    return adminplacetb;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -100,42 +86,35 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceDTO>?> GetMyWorks(int? adminid)
+        public async ValueTask<List<AdminPlaceDTO>?> GetMyWorks(int adminid)
         {
             try
             {
-                if(adminid is not null)
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
+
+                if(adminplacetb is [_, ..])
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
-
-                    if(adminplacetb is [_, ..])
+                    List<PlaceTb>? placetb = await context.PlaceTbs.ToListAsync();
+                    if(placetb is [_, ..])
                     {
-                        List<PlaceTb>? placetb = await context.PlaceTbs.ToListAsync();
-                        if(placetb is [_, ..])
-                        {
 
-                            List<AdminPlaceDTO>? result = (from admin in adminplacetb
-                                                   join place in placetb
-                                                   on admin.PlaceTbId equals place.Id
-                                                   where place.DelYn != true
-                                                           select new AdminPlaceDTO
-                                                   {
-                                                      Id = place.Id,
-                                                      PlaceCd = place.PlaceCd,
-                                                      Name = place.Name,
-                                                      Note = place.Note,
-                                                      ContractNum = place.ContractNum,
-                                                      ContractDt = place.ContractDt,
-                                                      Status = place.Status
-                                                   }).ToList();
-                            if(result is [_, ..])
-                            {
-                                return result;
-                            }
-                            else
-                            {
-                                return null;
-                            }
+                        List<AdminPlaceDTO>? result = (from admin in adminplacetb
+                                                join place in placetb
+                                                on admin.PlaceTbId equals place.Id
+                                                where place.DelYn != true
+                                                        select new AdminPlaceDTO
+                                                {
+                                                    Id = place.Id,
+                                                    PlaceCd = place.PlaceCd,
+                                                    Name = place.Name,
+                                                    Note = place.Note,
+                                                    ContractNum = place.ContractNum,
+                                                    ContractDt = place.ContractDt,
+                                                    Status = place.Status
+                                                }).ToList();
+                        if(result is [_, ..])
+                        {
+                            return result;
                         }
                         else
                         {
@@ -165,41 +144,34 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<DManagerDTO?> GetManagerDetails(int? adminidx)
+        public async ValueTask<DManagerDTO?> GetManagerDetails(int adminidx)
         {
             try
             {
-                if (adminidx is not null)
+                AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != true);
+
+                if (admintb is not null)
                 {
-                    AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != true);
+                    DepartmentsTb? departmenttb = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != true);
 
-                    if (admintb is not null)
+                    if (departmenttb is not null)
                     {
-                        DepartmentsTb? departmenttb = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && m.DelYn != true);
+                        UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
 
-                        if (departmenttb is not null)
+                        if (usertb is not null)
                         {
-                            UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
-
-                            if (usertb is not null)
+                            DManagerDTO dto = new DManagerDTO
                             {
-                                DManagerDTO dto = new DManagerDTO
-                                {
-                                    UserId = usertb.UserId,
-                                    Name = usertb.Name,
-                                    Password = usertb.Password,
-                                    Phone = usertb.Phone,
-                                    Email = usertb.Email,
-                                    Type = admintb.Type,
-                                    Department = departmenttb.Name
-                                };
+                                UserId = usertb.UserId,
+                                Name = usertb.Name,
+                                Password = usertb.Password,
+                                Phone = usertb.Phone,
+                                Email = usertb.Email,
+                                Type = admintb.Type,
+                                Department = departmenttb.Name
+                            };
 
-                                return dto;
-                            }
-                            else
-                            {
-                                return null;
-                            }
+                            return dto;
                         }
                         else
                         {
@@ -229,19 +201,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> DeleteMyWorks(AdminPlaceTb? model)
+        public async ValueTask<bool?> DeleteMyWorks(AdminPlaceTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.AdminPlaceTbs.Update(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.AdminPlaceTbs.Update(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -256,56 +221,49 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<List<PlaceTb>?> GetMyWorksDetails(List<AdminPlaceTb>? model)
+        public async ValueTask<List<PlaceTb>?> GetMyWorksDetails(List<AdminPlaceTb> model)
         {
             try
             {
-                if(model is [_, ..])
-                {
-                    List<PlaceTb>? result =  (from adminplacetb in model
-                                            join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
-                                            on adminplacetb.PlaceTbId equals placetb.Id
-                                            where adminplacetb.DelYn != true && placetb.DelYn != true
-                                              select new PlaceTb
-                                            {
-                                                Id = placetb.Id,
-                                                PlaceCd = placetb.PlaceCd,
-                                                ContractNum = placetb.ContractNum,
-                                                Name = placetb.Name,
-                                                Tel = placetb.Tel,
-                                                Note = placetb.Note,
-                                                Address = placetb.Address,
-                                                ContractDt = placetb.ContractDt,
-                                                PermMachine = placetb.PermMachine,
-                                                PermLift = placetb.PermLift,
-                                                PermFire = placetb.PermFire,
-                                                PermConstruct = placetb.PermConstruct,
-                                                PermNetwork = placetb.PermNetwork,
-                                                PermBeauty = placetb.PermBeauty,
-                                                PermSecurity = placetb.PermSecurity,
-                                                PermMaterial = placetb.PermMaterial,
-                                                PermEnergy = placetb.PermEnergy,
-                                                PermVoc = placetb.PermVoc,
-                                                CancelDt = placetb.CancelDt,
-                                                Status = placetb.Status,
-                                                CreateDt = placetb.CreateDt,
-                                                CreateUser = placetb.CreateUser,
-                                                UpdateDt = placetb.UpdateDt,
-                                                UpdateUser = placetb.UpdateUser,
-                                                DelYn = placetb.DelYn,
-                                                DelDt = placetb.DelDt,
-                                                DelUser = placetb.DelUser
-                                            }).ToList();
+                List<PlaceTb>? result =  (from adminplacetb in model
+                                        join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
+                                        on adminplacetb.PlaceTbId equals placetb.Id
+                                        where adminplacetb.DelYn != true && placetb.DelYn != true
+                                            select new PlaceTb
+                                        {
+                                            Id = placetb.Id,
+                                            PlaceCd = placetb.PlaceCd,
+                                            ContractNum = placetb.ContractNum,
+                                            Name = placetb.Name,
+                                            Tel = placetb.Tel,
+                                            Note = placetb.Note,
+                                            Address = placetb.Address,
+                                            ContractDt = placetb.ContractDt,
+                                            PermMachine = placetb.PermMachine,
+                                            PermLift = placetb.PermLift,
+                                            PermFire = placetb.PermFire,
+                                            PermConstruct = placetb.PermConstruct,
+                                            PermNetwork = placetb.PermNetwork,
+                                            PermBeauty = placetb.PermBeauty,
+                                            PermSecurity = placetb.PermSecurity,
+                                            PermMaterial = placetb.PermMaterial,
+                                            PermEnergy = placetb.PermEnergy,
+                                            PermVoc = placetb.PermVoc,
+                                            CancelDt = placetb.CancelDt,
+                                            Status = placetb.Status,
+                                            CreateDt = placetb.CreateDt,
+                                            CreateUser = placetb.CreateUser,
+                                            UpdateDt = placetb.UpdateDt,
+                                            UpdateUser = placetb.UpdateUser,
+                                            DelYn = placetb.DelYn,
+                                            DelDt = placetb.DelDt,
+                                            DelUser = placetb.DelUser
+                                        }).ToList();
 
-                    if (result is [_, ..])
-                        return result;
-                    else
-                        return null;
-                }
+                if (result is [_, ..])
+                    return result;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -319,80 +277,75 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<PlaceDetailDTO?> GetWorksInfo(int? placeid)
+        public async ValueTask<PlaceDetailDTO?> GetWorksInfo(int placeid)
         {
             try
             {
-                if (placeid is not null)
+                
+                PlaceTb? place = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != true);
+
+                if (place is not null)
                 {
-                    PlaceTb? place = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != true);
 
-                    if (place is not null)
+                    List<ManagerListDTO>? ManagerDTO = (from admintb in context.AdminTbs.ToList()
+                                                        join adminplacetb in context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid).ToList()
+                                                        on admintb.Id equals adminplacetb.AdminTbId
+                                                        join usertb in context.UsersTbs.ToList()
+                                                        on admintb.UserTbId equals usertb.Id
+                                                        join departmenttb in context.DepartmentsTbs.ToList()
+                                                        on admintb.DepartmentTbId equals departmenttb.Id
+                                                        where (admintb.DelYn != true && adminplacetb.DelYn != true)
+                                                        select new ManagerListDTO
+                                                        {
+                                                            Id = admintb.Id,
+                                                            UserId = usertb.UserId,
+                                                            Name = usertb.Name,
+                                                            Department = departmenttb.Name
+                                                        }).ToList();
+
+                    PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();
+                    PlaceDetail.PlaceInfo!.Id = place.Id;
+                    PlaceDetail.PlaceInfo.PlaceCd = place.PlaceCd;
+                    PlaceDetail.PlaceInfo.Name = place.Name;
+                    PlaceDetail.PlaceInfo.Tel = place.Tel;
+                    PlaceDetail.PlaceInfo.ContractNum = place.ContractNum;
+                    PlaceDetail.PlaceInfo.ContractDt = place.ContractDt;
+                    PlaceDetail.PlaceInfo.CancelDt = place.CancelDt;
+                    PlaceDetail.PlaceInfo.Status = place.Status;
+                    PlaceDetail.PlaceInfo.Note = place.Note;
+                        
+                    DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+                        .FirstOrDefaultAsync(m => m.Id == place.DepartmentTbId);
+                        
+                    if (DepartmentTB is not null)
                     {
-
-                        List<ManagerListDTO>? ManagerDTO = (from admintb in context.AdminTbs.ToList()
-                                                            join adminplacetb in context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid).ToList()
-                                                            on admintb.Id equals adminplacetb.AdminTbId
-                                                            join usertb in context.UsersTbs.ToList()
-                                                            on admintb.UserTbId equals usertb.Id
-                                                            join departmenttb in context.DepartmentsTbs.ToList()
-                                                            on admintb.DepartmentTbId equals departmenttb.Id
-                                                            where (admintb.DelYn != true && adminplacetb.DelYn != true)
-                                                            select new ManagerListDTO
-                                                            {
-                                                                Id = admintb.Id,
-                                                                UserId = usertb.UserId,
-                                                                Name = usertb.Name,
-                                                                Department = departmenttb.Name
-                                                            }).ToList();
-
-                        PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();
-                        PlaceDetail.PlaceInfo.Id = place.Id;
-                        PlaceDetail.PlaceInfo.PlaceCd = place.PlaceCd;
-                        PlaceDetail.PlaceInfo.Name = place.Name;
-                        PlaceDetail.PlaceInfo.Tel = place.Tel;
-                        PlaceDetail.PlaceInfo.ContractNum = place.ContractNum;
-                        PlaceDetail.PlaceInfo.ContractDt = place.ContractDt;
-                        PlaceDetail.PlaceInfo.CancelDt = place.CancelDt;
-                        PlaceDetail.PlaceInfo.Status = place.Status;
-                        PlaceDetail.PlaceInfo.Note = place.Note;
-                        
-                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-                            .FirstOrDefaultAsync(m => m.Id == place.DepartmentTbId);
-                        
-                        if (DepartmentTB is not null)
-                        {
-                            PlaceDetail.PlaceInfo.DepartmentID = DepartmentTB.Id;
-                            PlaceDetail.PlaceInfo.DepartmentName = DepartmentTB.Name;
-                        }
-
-                        PlaceDetail.PlacePerm.Id = place.Id;
-                        PlaceDetail.PlacePerm.PermMachine = place.PermMachine;
-                        PlaceDetail.PlacePerm.PermElec = place.PermElec;
-                        PlaceDetail.PlacePerm.PermLift = place.PermLift;
-                        PlaceDetail.PlacePerm.PermFire = place.PermFire;
-                        PlaceDetail.PlacePerm.PermConstruct = place.PermConstruct;
-                        PlaceDetail.PlacePerm.PermNetwork = place.PermNetwork;
-                        PlaceDetail.PlacePerm.PermBeauty = place.PermBeauty;
-                        PlaceDetail.PlacePerm.PermSecurity = place.PermSecurity;
-                        PlaceDetail.PlacePerm.PermMaterial = place.PermMaterial;
-                        PlaceDetail.PlacePerm.PermEnergy = place.PermEnergy;
-                        PlaceDetail.PlacePerm.PermVoc = place.PermVoc;
-
-                        PlaceDetail.ManagerList = ManagerDTO;
-                        
-                        return PlaceDetail;
-                        
+                        PlaceDetail.PlaceInfo.DepartmentID = DepartmentTB.Id;
+                        PlaceDetail.PlaceInfo.DepartmentName = DepartmentTB.Name;
                     }
-                    else
-                    {
-                        return null;
-                    }
+
+                    PlaceDetail.PlacePerm!.Id = place.Id;
+                    PlaceDetail.PlacePerm.PermMachine = place.PermMachine;
+                    PlaceDetail.PlacePerm.PermElec = place.PermElec;
+                    PlaceDetail.PlacePerm.PermLift = place.PermLift;
+                    PlaceDetail.PlacePerm.PermFire = place.PermFire;
+                    PlaceDetail.PlacePerm.PermConstruct = place.PermConstruct;
+                    PlaceDetail.PlacePerm.PermNetwork = place.PermNetwork;
+                    PlaceDetail.PlacePerm.PermBeauty = place.PermBeauty;
+                    PlaceDetail.PlacePerm.PermSecurity = place.PermSecurity;
+                    PlaceDetail.PlacePerm.PermMaterial = place.PermMaterial;
+                    PlaceDetail.PlacePerm.PermEnergy = place.PermEnergy;
+                    PlaceDetail.PlacePerm.PermVoc = place.PermVoc;
+
+                    PlaceDetail.ManagerList = ManagerDTO;
+                        
+                    return PlaceDetail;
+                        
                 }
                 else
                 {
                     return null;
                 }
+                
             }
             catch(Exception ex)
             {
@@ -406,22 +359,16 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> GetWorksModelInfo(int? placeid)
+        public async ValueTask<AdminPlaceTb?> GetWorksModelInfo(int placeid)
         {
             try
             {
-                if(placeid is not null)
-                {
-                    AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid);
+                AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs
+                    .FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid);
 
-                    if(adminplacetb is not null)
-                    {
-                        return adminplacetb;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                if(adminplacetb is not null)
+                {
+                    return adminplacetb;
                 }
                 else
                 {
@@ -449,7 +396,9 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     foreach (int id in adminid)
                     {
-                        AdminPlaceTb? admintb = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
+                        AdminPlaceTb? admintb = await context.AdminPlaceTbs
+                            .FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
+                        
                         if (admintb is null)
                         {
                             await transaction.RollbackAsync();
@@ -461,6 +410,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             await context.SaveChangesAsync();
                         }
                     }
+
                     await transaction.CommitAsync();
                     return true;
                 }
@@ -478,23 +428,17 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="admintbid"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> GetPlaceAdminInfo(int? admintbid, int? placeid)
+        public async ValueTask<AdminPlaceTb?> GetPlaceAdminInfo(int admintbid, int placeid)
         {
             try
             {
-                if(admintbid is not null && placeid is not null)
-                {
-                    AdminPlaceTb? model = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceTbId == placeid);
+                AdminPlaceTb? model = await context.AdminPlaceTbs
+                    .FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceTbId == placeid);
 
-                    if (model is not null)
-                        return model;
-                    else
-                        return null;
-                }
+                if (model is not null)
+                    return model;
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -509,19 +453,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> DeleteAdminPlaceManager(AdminPlaceTb? model)
+        public async ValueTask<bool?> DeleteAdminPlaceManager(AdminPlaceTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.AdminPlaceTbs.Remove(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.AdminPlaceTbs.Remove(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -536,26 +473,23 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<AdminPlaceTb>?> SelectPlaceAdminList(List<int>? placeidx)
+        public async ValueTask<List<AdminPlaceTb>?> SelectPlaceAdminList(List<int> placeidx)
         {
             try
             {
-                if(placeidx is [_, ..])
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
+                    .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (adminplacetb is [_, ..])
                 {
-                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true).ToListAsync();
-                    if (adminplacetb is [_, ..])
-                    {
-                        return adminplacetb;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return adminplacetb;
                 }
                 else
                 {
                     return null;
                 }
+               
             }
             catch(Exception ex)
             {
@@ -570,7 +504,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int? adminid, List<int> placeidx)
+        public async ValueTask<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int adminid, List<int> placeidx)
         {
             try
             {
@@ -578,9 +512,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 List<int>? insertplaceidx = null;
                 List<int>? deleteplaceidx = null;
                 
-                if (adminid is null)
-                    return null;
-
                 List<int> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceTbId).ToListAsync();
 
                 if (placeidx is [_, ..])
@@ -630,14 +561,14 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> AddAdminPlaceInfo(AdminPlaceTb? model)
+        public async ValueTask<AdminPlaceTb?> AddAdminPlaceInfo(AdminPlaceTb model)
         {
             try
             {
-                if (model is not null)
+                context.AdminPlaceTbs.Add(model);
+                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                if (AddResult)
                 {
-                    context.AdminPlaceTbs.Add(model);
-                    await context.SaveChangesAsync();
                     return model;
                 }
                 else
@@ -657,19 +588,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteAdminPlaceInfo(AdminPlaceTb? model)
+        public async ValueTask<bool?> DeleteAdminPlaceInfo(AdminPlaceTb model)
         {
             try
             {
-                if(model is not null)
-                {
-                    context.AdminPlaceTbs.Remove(model);
-                    return await context.SaveChangesAsync() > 0 ? true : false;
-                }
-                else
-                {
-                    return null;
-                }
+                context.AdminPlaceTbs.Remove(model);
+                return await context.SaveChangesAsync() > 0 ? true : false;
             }
             catch(Exception ex)
             {
@@ -683,13 +607,10 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceDTO?>> GetNotContainsPlaceList(int? adminid)
+        public async ValueTask<List<AdminPlaceDTO>?> GetNotContainsPlaceList(int adminid)
         {
             try
             {
-                if (adminid is null)
-                    return null;
-
                 // 관리자 있는지 Check
                 AdminTb? AdminCheck = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
                 if (AdminCheck is null)

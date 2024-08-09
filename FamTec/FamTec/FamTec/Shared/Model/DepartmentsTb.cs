@@ -10,6 +10,7 @@ namespace FamTec.Shared.Model;
 /// 부서
 /// </summary>
 [Table("departments_tb")]
+[Index("Name", Name = "uk_Name", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class DepartmentsTb
 {
@@ -24,7 +25,6 @@ public partial class DepartmentsTb
     /// 부서명
     /// </summary>
     [Column("NAME")]
-    [StringLength(255)]
     public string Name { get; set; } = null!;
 
     [Column("CREATE_DT", TypeName = "datetime")]

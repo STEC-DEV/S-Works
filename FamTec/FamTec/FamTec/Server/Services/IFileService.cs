@@ -3,13 +3,22 @@
     public interface IFileService
     {
         /// <summary>
+        /// 새 파일명 생성
+        /// </summary>
+        /// <returns></returns>
+        public string SetNewFileName(IFormFile files);
+
+        /// <summary>
         /// 이미지 등록
         /// </summary>
         /// <param name="folderpath">이미지 등록할 폴더경로</param>
         /// <param name="files">파일 원본</param>
         /// <returns></returns>
-        public Task<string?> AddImageFile(string folderpath, IFormFile files);
+        public Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files);
 
+        // 여끼 주석시켜서 에러뜨는부분 다바꿔야함. -- 건물 업데이트 참고하여 수정하면 될듯.
+        public Task<string?> AddImageFile(string folderpath, IFormFile files); 
+       
         /// <summary>
         /// 이미지 추출
         /// </summary>

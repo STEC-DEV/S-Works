@@ -28,7 +28,7 @@ public partial class StoreTb
     /// 수량
     /// </summary>
     [Column("NUM", TypeName = "int(11)")]
-    public int? Num { get; set; }
+    public int Num { get; set; }
 
     /// <summary>
     /// 단가

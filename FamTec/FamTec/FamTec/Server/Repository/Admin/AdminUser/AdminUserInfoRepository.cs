@@ -339,7 +339,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto,string creater, IFormFile? files)
+        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string creater, IFormFile? files)
         {
             string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
 
@@ -356,33 +356,39 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     if(userTB is null)
                         return null;
 
-                    userTB.Name = dto.Name; // 이름
-                    userTB.Phone = dto.Phone; // 전화번호
-                    userTB.Email = dto.Email; // 이메일
-                    userTB.UserId = dto.UserId!; // 로그인ID
-                    userTB.Password = dto.Password!; // 비밀번호
-                    userTB.UpdateDt = DateTime.Now;
-                    userTB.UpdateUser = creater;
-                    context.UsersTbs.Update(userTB);
-
-                    bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
-                    
-                    if(!UserUpdate) // 업데이트 실패 - 롤백
+                    if (!adminTB.Type.Equals("시스템관리자"))
                     {
-                        await transaction.RollbackAsync();
-                        return false;
+                        userTB.Name = dto.Name; // 이름
+                        userTB.Phone = dto.Phone; // 전화번호
+                        userTB.Email = dto.Email; // 이메일
+                        userTB.UserId = dto.UserId!; // 로그인ID
+                        userTB.Password = dto.Password!; // 비밀번호
+                        userTB.UpdateDt = DateTime.Now;
+                        userTB.UpdateUser = creater;
+                        context.UsersTbs.Update(userTB);
+
+                        bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+
+                        if (!UserUpdate) // 업데이트 실패 - 롤백
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
                     }
 
-                    adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
-                    adminTB.UpdateDt = DateTime.Now;
-                    adminTB.UpdateUser = creater;
-                    context.AdminTbs.Update(adminTB);
-                    
-                    bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(!AdminUpdate) // 업데이트 실패 - 롤백
+                    if (!adminTB.Type.Equals("시스템관리자"))
                     {
-                        await transaction.RollbackAsync();
-                        return false;
+                        adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
+                        adminTB.UpdateDt = DateTime.Now;
+                        adminTB.UpdateUser = creater;
+                        context.AdminTbs.Update(adminTB);
+
+                        bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!AdminUpdate) // 업데이트 실패 - 롤백
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
                     }
 
                     // DTO의 PlaceID -- 최종 결과물이 되야할 것들

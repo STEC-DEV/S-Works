@@ -213,7 +213,7 @@ namespace FamTec.Server.Repository.Place
                 {
                     foreach(int PlaceID in placeidx)
                     {
-                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == PlaceID && m.DelYn != true);
+                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
                         if(PlaceTB is not null)
                         {
                             PlaceTB.DelYn = true;

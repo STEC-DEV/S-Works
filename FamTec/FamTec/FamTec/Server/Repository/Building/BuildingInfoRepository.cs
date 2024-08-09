@@ -11,7 +11,8 @@ namespace FamTec.Server.Repository.Building
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public BuildingInfoRepository(WorksContext _context, ILogService _logservice)
+        public BuildingInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;
@@ -86,6 +87,28 @@ namespace FamTec.Server.Repository.Building
                     return model;
                 else
                     return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사용가능한 건물코드인지 검사
+        /// </summary>
+        /// <param name="buildingcode"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> CheckBuildingCD(string buildingcode)
+        {
+            try
+            {
+                BuildingTb? model = await context.BuildingTbs.FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode));
+                if (model is null)
+                    return true;
+                else
+                    return false;
             }
             catch(Exception ex)
             {
@@ -281,7 +304,10 @@ namespace FamTec.Server.Repository.Building
                                             await context.Database.RollbackTransactionAsync();
                                             return false;
                                         }
-                                        List<BuildingItemKeyTb>? KeyList = await context.BuildingItemKeyTbs.Where(m => m.BuildingGroupTbId == GroupTB.Id && m.DelYn != true).ToListAsync();
+                                        List<BuildingItemKeyTb>? KeyList = await context.BuildingItemKeyTbs
+                                            .Where(m => m.BuildingGroupTbId == GroupTB.Id && m.DelYn != true)
+                                            .ToListAsync();
+
                                         if(KeyList is [_, ..])
                                         {
                                             foreach(BuildingItemKeyTb KeyTB in KeyList)
@@ -349,5 +375,7 @@ namespace FamTec.Server.Repository.Building
                 }
             }
         }
+
+    
     }
 }

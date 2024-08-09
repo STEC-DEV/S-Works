@@ -49,7 +49,7 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// 계약상태
         /// </summary>
         [Display(Name = "계약상태")]
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
         
     }
 }

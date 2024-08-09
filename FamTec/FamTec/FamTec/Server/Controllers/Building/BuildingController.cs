@@ -38,7 +38,7 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<BuildinglistDTO>? model = await BuildingService.GetBuilidngListService(HttpContext);
+                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuilidngListService(HttpContext);
 
                 if (model is null)
                     return BadRequest(model);
@@ -65,7 +65,7 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<PlaceBuildingListDTO>? model = await BuildingService.GetPlaceBuildingService(HttpContext);
+                ResponseList<PlaceBuildingListDTO> model = await BuildingService.GetPlaceBuildingService(HttpContext);
                 if (model is null)
                     return BadRequest();
                 
@@ -96,6 +96,11 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (String.IsNullOrWhiteSpace(dto.Code))
+                    return NoContent();
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_1)
@@ -118,7 +123,7 @@ namespace FamTec.Server.Controllers.Building
                     }
                 }
 
-                ResponseUnit<AddBuildingDTO?> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
+                ResponseUnit<AddBuildingDTO> model = await BuildingService.AddBuildingService(HttpContext, dto, files);
 
                 if (model is null)
                     return BadRequest(model);
@@ -150,7 +155,7 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailBuildingDTO>? model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
+                ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid);
 
                 if (model is null)
                     return BadRequest();
@@ -175,8 +180,15 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
+                //List<int> buildingidx = new List<int>() { 7, 9 };
+
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (buildingidx is null)
+                    return NoContent();
+                if(buildingidx.Count() == 0)
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await BuildingService.DeleteBuildingService(HttpContext, buildingidx);
                 if (model is null)
@@ -204,6 +216,15 @@ namespace FamTec.Server.Controllers.Building
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.ID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Code))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
 
                 if (files is not null)
                 {

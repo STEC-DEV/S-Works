@@ -314,7 +314,7 @@ namespace FamTec.Server.Repository.Inventory
                         else
                         {
                             InventoryTb Inventorytb = new InventoryTb();
-                            Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
+                            Inventorytb.Num = InventoryDTO.AddStore.Num;
                             Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice;
                             Inventorytb.CreateDt = DateTime.Now;
                             Inventorytb.CreateUser = creater;
@@ -333,7 +333,7 @@ namespace FamTec.Server.Repository.Inventory
                             m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                             m.PlaceTbId == placeid).Sum(m => m.Num);
 
-                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num.Value;
+                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num;
                             context.Update(Storetb);
                             bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
                             if (UpdateStoreTB != true)
@@ -557,7 +557,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 출고할게 여러곳에 있으니 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID, model.MaterialID, model.AddStore.Num, GUID);
                         if(InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -588,7 +588,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 추가해야함
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
                         if(InventoryList is [_, ..])
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -638,7 +638,7 @@ namespace FamTec.Server.Repository.Inventory
                                         }
                                         else
                                         {
-                                            outresult -= model.AddStore.Num.Value;
+                                            outresult -= model.AddStore.Num;
                                             OutInventoryTb.Num = outresult;
                                             OutInventoryTb.UpdateDt = DateTime.Now;
                                             OutInventoryTb.UpdateUser = creater;

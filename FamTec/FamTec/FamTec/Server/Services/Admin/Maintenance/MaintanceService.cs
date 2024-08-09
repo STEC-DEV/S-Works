@@ -16,7 +16,7 @@ namespace FamTec.Server.Services.Admin.Maintenance
             this.LogService = _logservice;
         }
 
-        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext? context, AddMaintanceDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto)
         {
             try
             {

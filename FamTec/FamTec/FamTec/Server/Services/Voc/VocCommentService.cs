@@ -99,11 +99,14 @@ namespace FamTec.Server.Services.Voc
                     for (int i = 0; i < files.Count(); i++)
                     {
                         if (i is 0)
-                            comment.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
-                        if (i is 1)
-                            comment.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
-                        if (i is 2)
-                            comment.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                        { }
+                            //comment.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                            if (i is 1)
+                            { }
+                                //comment.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                                if (i is 2)
+                                { }
+                            //comment.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
                     }
                 }
 
@@ -399,15 +402,15 @@ namespace FamTec.Server.Services.Voc
                     {
                         if(i is 0)
                         {
-                            model.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                            //model.Image1 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
                         }
                         if(i is 1)
                         {
-                            model.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                            //model.Image2 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
                         }
                         if(i is 2)
                         {
-                            model.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
+                            //model.Image3 = await FileService.AddImageFile(VocCommentFileFolderPath, files[i]);
                         }
                     }
                 }

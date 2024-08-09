@@ -221,7 +221,7 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://123.2.156.148:5245","https://123.2.156.148:5246")
+        policy.WithOrigins("http://123.2.156.148:5245","https://123.2.156.148:5246", "http://123.2.156.229:5245","https://123.2.156.229:5246")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()

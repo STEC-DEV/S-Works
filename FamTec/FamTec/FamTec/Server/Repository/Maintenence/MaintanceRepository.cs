@@ -63,7 +63,7 @@ namespace FamTec.Server.Repository.Maintenence
                         int? result = 0;
 
                         // 출고할게 여러곳에 있으니 전체 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
                         if (InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과한거임.
                         {
                             foreach (InventoryTb? inventory in InventoryList)
@@ -118,7 +118,7 @@ namespace FamTec.Server.Repository.Maintenence
                         int? result = 0;
 
                         // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
                         if (InventoryList is [_, ..])
                         {
                             foreach (InventoryTb? inventory in InventoryList)
@@ -168,7 +168,7 @@ namespace FamTec.Server.Repository.Maintenence
                                         }
                                         else
                                         {
-                                            outresult -= model.AddStore.Num.Value;
+                                            outresult -= model.AddStore.Num;
                                             OutInventoryTb.Num = outresult;
                                             OutInventoryTb.UpdateDt = DateTime.Now;
                                             OutInventoryTb.UpdateUser = creater;

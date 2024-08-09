@@ -25,7 +25,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 전체 사업장 리스트 조회
+        /// 전체 사업장 리스트 조회 [OK]
         /// [매니저는 본인이 할당된 것 만 출력]
         /// [토큰 적용완료]
         /// </summary>
@@ -58,7 +58,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         }
 
         /// <summary>
-        /// 관리자정보 전체조회
+        /// 관리자정보 전체조회 [OK]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
@@ -71,7 +71,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ManagerListDTO?> model = await AdminPlaceService.GetAllManagerListService();
+                ResponseList<ManagerListDTO> model = await AdminPlaceService.GetAllManagerListService();
 
                 if (model is null)
                     return BadRequest(model);
@@ -103,7 +103,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.GetMyWorksService(adminid);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksService(adminid);
 
                 if (model is null)
                     return BadRequest();
@@ -166,27 +166,27 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         {
             try
             {
-                /*
-                AddPlaceDTO dto = new AddPlaceDTO();
-                dto.PlaceCd = "AB000000003"; // 사업장코드
-                dto.Name = "C사업장"; // 사업장명
-                dto.Tel = "02-0000-0000"; // 사업장 전화번호
-                dto.Address = "서울시 강서구"; // 사업장 주소
-                dto.ContractNum = "00054487"; // 계약번호
-                dto.ContractDT = DateTime.Now; // 계약일자
-                dto.PermMachine = true; // 설비메뉴 권한
-                dto.PermLift = true; // 승강메뉴 권한
-                dto.PermFire = true; // 소방메뉴 권한
-                dto.PermConstruct = true; // 건축메뉴 권한
-                dto.PermNetwork = true; // 통신메뉴 권한
-                dto.PermBeauty = false; // 미화메뉴 권한
-                dto.PermSecurity = false; // 보안메뉴 권한
-                dto.PermMaterial = false; // 자재메뉴 권한
-                dto.PermEnergy = false; // 에너지 메뉴 권한
-                dto.PermVoc = false; // VOC 권한
-                dto.Status = true; // 계약상태
-                dto.Note = "테스트데이터";
-                */
+                
+                //AddPlaceDTO dto = new AddPlaceDTO();
+                //dto.PlaceCd = "AB000000004"; // 사업장코드
+                //dto.Name = "C사업장"; // 사업장명
+                //dto.Tel = "02-0000-0000"; // 사업장 전화번호
+                //dto.Address = "서울시 강서구"; // 사업장 주소
+                //dto.ContractNum = "00054487"; // 계약번호
+                //dto.ContractDT = DateTime.Now; // 계약일자
+                //dto.PermMachine = true; // 설비메뉴 권한
+                //dto.PermLift = true; // 승강메뉴 권한
+                //dto.PermFire = true; // 소방메뉴 권한
+                //dto.PermConstruct = true; // 건축메뉴 권한
+                //dto.PermNetwork = true; // 통신메뉴 권한
+                //dto.PermBeauty = false; // 미화메뉴 권한
+                //dto.PermSecurity = false; // 보안메뉴 권한
+                //dto.PermMaterial = false; // 자재메뉴 권한
+                //dto.PermEnergy = false; // 에너지 메뉴 권한
+                //dto.PermVoc = false; // VOC 권한
+                //dto.Status = true; // 계약상태
+                //dto.Note = "테스트데이터";
+                
 
                 if (String.IsNullOrWhiteSpace(dto.PlaceCd))
                     return NoContent();
@@ -260,12 +260,17 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteWorks")]
+        
         public async ValueTask<IActionResult> DeleteWorks([FromBody]List<int> placeidx)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
+                if (placeidx is null)
+                    return NoContent();
+                if (placeidx.Count == 0)
+                    return NoContent();
 
                 ResponseUnit<bool> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
 
@@ -384,7 +389,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UpdatePlaceDTO?> model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
+                ResponseUnit<UpdatePlaceDTO> model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -418,7 +423,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ManagerListDTO?> model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
+                ResponseList<ManagerListDTO> model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
 
                 if (model is null)
                     return BadRequest();
@@ -450,7 +455,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO?> model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
 
                 if (model is null)
                     return BadRequest();
@@ -492,6 +497,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if(placemanager.PlaceId is null)
                     return NoContent();
+                
                 if(placemanager.PlaceManager is null)
                     return NoContent();
                 
@@ -500,7 +506,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                     if(ManagerInfo.Id is null)
                         return NoContent();
                 }
-                
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -558,7 +563,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                     if(ManagerList.Id is null)
                         return NoContent();
                 }
-                
 
                 if (HttpContext is null)
                     return BadRequest();

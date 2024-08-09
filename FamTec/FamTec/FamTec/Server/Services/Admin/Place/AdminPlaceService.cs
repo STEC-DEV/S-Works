@@ -45,15 +45,15 @@ namespace FamTec.Server.Services.Admin.Place
             try
             {
                 if(context is null)
-                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = new List<AllPlaceDTO>(), code = 404 };
+                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? AdminId = Convert.ToString(context.Items["AdminIdx"]);
                 if(String.IsNullOrWhiteSpace(AdminId))
-                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = new List<AllPlaceDTO>(), code = 404 };
+                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Role = Convert.ToString(context.Items["Role"]);
                 if(String.IsNullOrWhiteSpace(Role))
-                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = new List<AllPlaceDTO>(), code = 404 };
+                    return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 if(Role == "매니저")
                 {
@@ -89,12 +89,12 @@ namespace FamTec.Server.Services.Admin.Place
                         }
                         else
                         {
-                            return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<AllPlaceDTO>(), code = 200 };
+                            return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                         }
                     }
                     else
                     {
-                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<AllPlaceDTO>(), code = 200 };
+                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                     }
                 }
                 else
@@ -120,14 +120,14 @@ namespace FamTec.Server.Services.Admin.Place
                     }
                     else
                     {
-                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<AllPlaceDTO>(), code = 200 };
+                        return new ResponseList<AllPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                     }
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<AllPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<AllPlaceDTO>(), code = 500 };
+                return new ResponseList<AllPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -153,13 +153,13 @@ namespace FamTec.Server.Services.Admin.Place
                 }
                 else
                 {
-                    return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<AdminPlaceDTO>(), code = 200 };
+                    return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<AdminPlaceDTO>(), code = 500 };
+                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -173,11 +173,11 @@ namespace FamTec.Server.Services.Admin.Place
             try
             {
                 if (context is null)
-                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = new List<AdminPlaceDTO>(), code = 404 };
+                    return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
                 if(String.IsNullOrWhiteSpace(adminidx))
-                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 잘못되었습니다.", data = new List<AdminPlaceDTO>(), code = 404 };
+                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<AdminPlaceDTO>? model = await AdminPlaceInfoRepository.GetMyWorks(Int32.Parse(adminidx));
 
@@ -192,13 +192,13 @@ namespace FamTec.Server.Services.Admin.Place
                 }
                 else
                 {
-                    return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<AdminPlaceDTO>(), code = 200 };
+                    return new ResponseList<AdminPlaceDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<AdminPlaceDTO>(), code = 500 };
+                return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -214,14 +214,14 @@ namespace FamTec.Server.Services.Admin.Place
                 List<ManagerListDTO>? model = await AdminUserInfoRepository.GetAllAdminUserList();
 
                 if(model is [_, ..])
-                    return new ResponseList<ManagerListDTO?> { message = "데이터가 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<ManagerListDTO> { message = "데이터가 정상 처리되었습니다.", data = model, code = 200 };
                 else 
-                    return new ResponseList<ManagerListDTO?> { message = "조회된 결과가 없습니다.", data = null, code = 200 };
+                    return new ResponseList<ManagerListDTO> { message = "조회된 결과가 없습니다.", data = null, code = 200 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<ManagerListDTO?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<ManagerListDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -243,14 +243,14 @@ namespace FamTec.Server.Services.Admin.Place
                     return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // UK 검사
-                bool? UKCheck = await PlaceInfoRepository.PlaceUKCheck(dto.PlaceCd);
+                bool? UKCheck = await PlaceInfoRepository.PlaceUKCheck(dto.PlaceCd!);
                 if (UKCheck != true)
-                    return new ResponseUnit<int?> { message = "이미 사용한 이력이 있는 코드입니다.", data = null, code = 204 };
+                    return new ResponseUnit<int?> { message = "이미 사용한 이력이 있는 코드입니다.", data = null, code = 202 };
 
                 PlaceTb? place = new PlaceTb();
                 place.PlaceCd = dto.PlaceCd!;
                 place.Name = dto.Name!;
-                place.Tel = dto.Tel;
+                place.Tel = dto.Tel!;
                 place.Address = dto.Address;
                 place.ContractNum = dto.ContractNum;
                 place.ContractDt = Convert.ToDateTime(dto.ContractDT);
@@ -307,7 +307,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceInfo.Id.Value);
+                PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceInfo.Id!.Value);
                 if(model is not null)
                 {
                     model.PlaceCd = dto.PlaceInfo.PlaceCd!;
@@ -372,13 +372,13 @@ namespace FamTec.Server.Services.Admin.Place
                 if (model is not null)
                     return new ResponseUnit<PlaceDetailDTO> { message = "요청이 정상 처리되었습니다.", data = model, code = 200};
                 else
-                    return new ResponseUnit<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = new PlaceDetailDTO(), code = 404 };
+                    return new ResponseUnit<PlaceDetailDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
                
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<PlaceDetailDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new PlaceDetailDTO(), code = 500 };
+                return new ResponseUnit<PlaceDetailDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -412,7 +412,7 @@ namespace FamTec.Server.Services.Admin.Place
                     // 중복검사
                     foreach(var manager in placeManagers)
                     {
-                        AdminPlaceTb? alreadyCheck = await AdminPlaceInfoRepository.GetPlaceAdminInfo(manager.Id, placeid);
+                        AdminPlaceTb? alreadyCheck = await AdminPlaceInfoRepository.GetPlaceAdminInfo(manager.Id!.Value, placeid);
                         if(alreadyCheck is not null)
                         {
                             return new ResponseUnit<bool?>() { message = "해당 관리자는 이미 포함되어있습니다.", data = false, code = 202 };
@@ -498,7 +498,7 @@ namespace FamTec.Server.Services.Admin.Place
                         {
                             placeadmintb.Add(new AdminPlaceTb
                             {
-                                AdminTbId = dto.AdminID.Value,
+                                AdminTbId = dto.AdminID!.Value,
                                 CreateDt = DateTime.Now,
                                 CreateUser = creater,
                                 UpdateDt = DateTime.Now,
@@ -602,12 +602,6 @@ namespace FamTec.Server.Services.Admin.Place
                 if (context is null)
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                if (placeidx is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-
-                if (placeidx.Count == 0)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
@@ -622,7 +616,6 @@ namespace FamTec.Server.Services.Admin.Place
                 if(buildingtb is not null)
                     return new ResponseUnit<bool>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 204 };
 
-
                 bool? DeleteResult = await PlaceInfoRepository.DeletePlaceList(creater, placeidx);
                 if(DeleteResult == true)
                 {
@@ -634,7 +627,7 @@ namespace FamTec.Server.Services.Admin.Place
                 }
                 else
                 {
-                    return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 }
             }
             catch(Exception ex)
@@ -688,15 +681,17 @@ namespace FamTec.Server.Services.Admin.Place
                 if (context is null)
                     return new ResponseList<AdminPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                // 관리자 인지 검사
                 AdminTb? adminTB = await AdminUserInfoRepository.GetAdminIdInfo(adminid);
                 if(adminTB is null)
                     return new ResponseList<AdminPlaceDTO>() { message = "없는 관리자입니다.", data = null, code = 404 };
 
-                List<AdminPlaceDTO?> SelectList = await AdminPlaceInfoRepository.GetNotContainsPlaceList(adminid);
+                List<AdminPlaceDTO>? SelectList = await AdminPlaceInfoRepository.GetNotContainsPlaceList(adminid);
+                
                 if (SelectList is [_, ..])
                     return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
                 else
-                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = SelectList, code = 200 };
+                    return new ResponseList<AdminPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
             }
             catch(Exception ex)
             {

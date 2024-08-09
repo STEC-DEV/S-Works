@@ -1,9 +1,5 @@
 ﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Building.SubItem.Group;
-using FamTec.Server.Repository.Building.SubItem.ItemKey;
-using FamTec.Server.Repository.Building.SubItem.ItemValue;
 using FamTec.Server.Repository.Floor;
-using FamTec.Server.Repository.Material;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
@@ -42,35 +38,38 @@ namespace FamTec.Server.Services.Building
         /// <param name="dto"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddBuildingDTO?>> AddBuildingService(HttpContext? context, AddBuildingDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<AddBuildingDTO>> AddBuildingService(HttpContext? context, AddBuildingDTO dto, IFormFile? files)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 if (dto is null)
-                    return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<AddBuildingDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-               // 건물 관련한 폴더 없으면 만들기
+                bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
+                if(BuildingCodeCheck != true)
+                    return new ResponseUnit<AddBuildingDTO>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
+
+                // 건물 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
 
-               di = new DirectoryInfo(PlaceFileFolderPath);
-               if (!di.Exists) di.Create();
-
+                di = new DirectoryInfo(PlaceFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 BuildingTb? model = new BuildingTb();
-                model.BuildingCd = dto.Code; // 건물코드
-                model.Name = dto.Name; // 건물명
+                model.BuildingCd = dto.Code!; // 건물코드
+                model.Name = dto.Name!; // 건물명
                 model.Address = dto.Address; // 주소
                 model.Tel = dto.Tel; // 전화번호
                 model.Usage = dto.Usage; // 건물용도
@@ -129,7 +128,7 @@ namespace FamTec.Server.Services.Building
                 
                 if(buildingtb is not null)
                 {
-                    return new ResponseUnit<AddBuildingDTO?>()
+                    return new ResponseUnit<AddBuildingDTO>()
                     {
                         message = "요청이 정상 처리되었습니다.",
                         data = new AddBuildingDTO()
@@ -189,13 +188,13 @@ namespace FamTec.Server.Services.Building
                         bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
                     }
 
-                    return new ResponseUnit<AddBuildingDTO?>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBuildingDTO>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddBuildingDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<AddBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -204,16 +203,16 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext? context)
+        public async ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context)
         {
             try
             {
                 if(context is null)
-                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = new List<BuildinglistDTO>(), code = 404 };
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = new List<BuildinglistDTO>(), code = 404 };
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
 
@@ -236,13 +235,13 @@ namespace FamTec.Server.Services.Building
                 }
                 else
                 {
-                    return new ResponseList<BuildinglistDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = new List<BuildinglistDTO>(), code = 200 };
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = null, code = 200 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<BuildinglistDTO>(), code = 500 };
+                return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -251,23 +250,18 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DetailBuildingDTO>?> GetDetailBuildingService(HttpContext? context, int? buildingId)
+        public async ValueTask<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId)
         {
             try
             {
                if (context is null)
-                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                
-                if (buildingId is null)
-                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
-
                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                if(String.IsNullOrWhiteSpace(placeid))
-                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = new DetailBuildingDTO(), code = 404 };
+                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId.Value);
-
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
                 if (model is not null)
                 {
                     DetailBuildingDTO dto = new DetailBuildingDTO();
@@ -326,13 +320,13 @@ namespace FamTec.Server.Services.Building
                 }
                 else
                 {
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "데이터가 존재하지 않습니다.", data = new DetailBuildingDTO(), code = 404 };
+                    return new ResponseUnit<DetailBuildingDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<DetailBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DetailBuildingDTO(), code = 500 };
+                return new ResponseUnit<DetailBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -342,13 +336,18 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateBuildingService(HttpContext? context, DetailBuildingDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> UpdateBuildingService(HttpContext context, DetailBuildingDTO dto, IFormFile? files)
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -359,11 +358,11 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID.Value);
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value);
                 if (model is not null)
                 {
-                    model.BuildingCd = dto.Code; // 건물코드
-                    model.Name = dto.Name; // 건물명
+                    model.BuildingCd = dto.Code!; // 건물코드
+                    model.Name = dto.Name!; // 건물명
                     model.Address = dto.Address; // 건물주소
                     model.Tel = dto.Tel; // 전화번호
                     model.Usage = dto.Usage; // 건물용도
@@ -408,45 +407,58 @@ namespace FamTec.Server.Services.Building
                     model.SepticTankCapacity = dto.SeptictankCapacity; // 정화조용량
                     model.UpdateDt = DateTime.Now; // 수정일자
                     model.UpdateUser = creater; // 수정자
+                    model.PlaceTbId = Convert.ToInt32(placeid);
 
                     string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
-
+                    
                     if (files is not null) // 파일이 공백이 아닌 경우
                     {
                         if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을경우
                         {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image); // 파일삭제
-                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files); // 파일추가
+                            deleteFileName = model.Image; // 삭제할 이름에 넣는다.
+                            model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
                         }
                         else // DB엔 없는경우
                         {
-                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files); // 파일추가
+                            model.Image = NewFileName; // 새파일명을 모델에 넣는다.
                         }
                     }
                     else // 파일이 공백인 경우
                     {
                         if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
                         {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image); // 파일삭제
-                            if (result)
-                                model.Image = null;
+                            deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
+                            model.Image = null; // 모델의 파일명을 비운다.
                         }
                     }
 
                     bool? updateBuilding = await BuildingInfoRepository.UpdateBuildingInfo(model);
                     if(updateBuilding == true)
                     {
-                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                    }
-                    else
-                    {
-                        if(!String.IsNullOrWhiteSpace(model.Image))
+                        if(files is not null) // 파일이 공백이 아닌경우
                         {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                            if(!String.IsNullOrWhiteSpace(model.Image))
+                            {
+                                // 파일 넣기
+                                bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
+                            }
+                            if(!String.IsNullOrWhiteSpace(deleteFileName))
+                            {
+                                // 파일 삭제
+                                bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
+                            }
                         }
+                        else // 파일이 공백인 경우
+                        {
+                            if(!String.IsNullOrWhiteSpace(deleteFileName))
+                            {
+                                // 삭제할거
+                                bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
+                            }
 
-                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
                     }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
@@ -466,13 +478,11 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext? context, List<int>? buildingid)
+        public async ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext context, List<int> buildingid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (buildingid is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]); // 토큰 로그인 사용자 검사
@@ -520,7 +530,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext? context)
+        public async ValueTask<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext context)
         {
             try
             {

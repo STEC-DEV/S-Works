@@ -49,7 +49,7 @@ namespace FamTec.Server.Services.User
             this.LogService = _logservice;
         }
 
-        public async ValueTask<ResponseUnit<string>?> LoginSelectPlaceService(HttpContext context, int? placeid)
+        public async ValueTask<ResponseUnit<string?>> LoginSelectPlaceService(HttpContext context, int placeid)
         {
             List<Claim> authClaims = new List<Claim>();
             string? jsonConvert = String.Empty;
@@ -58,19 +58,15 @@ namespace FamTec.Server.Services.User
             {
                 string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
                 if(adminidx is null)
-                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
-                if(placeid is null)
-                    return new ResponseUnit<string>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-
-
                 List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx));
                 if(adminplace is [_, ..])
                 {
                     AdminPlaceTb? select = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
                     if (select is not null)
                     {
-                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid.Value);
+                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid);
                         if(placetb is not null)
                         {
                             authClaims.Add(new Claim("UserIdx", context.Items["UserIdx"].ToString())); // USER 인덱스
@@ -164,26 +160,27 @@ namespace FamTec.Server.Services.User
                                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                             string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                            return new ResponseUnit<string>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
+                            return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
                         }
                         else
                         {
-                            return new ResponseUnit<string>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
+                            return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
                         }
                     }
                     else
                     {
-                        return new ResponseUnit<string>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+                        return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<string>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)
             {
-                return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -192,209 +189,195 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string>?> UserLoginService(LoginDTO? dto)
+        public async ValueTask<ResponseUnit<string?>> UserLoginService(LoginDTO dto)
         {
             List<Claim> authClaims = new List<Claim>();
             string? jsonConvert = String.Empty;
 
             try
             {
-                if (dto?.UserID is null)
-                    return new ResponseUnit<string>() { message = "아이디를 입력해주세요.", data = null, code = 200 };
-                if(dto?.UserPassword is null)
-                    return new ResponseUnit<string>() { message = "비밀번호를 입력해주세요.", data = null, code = 200 };
+                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!);
+                if (usertb is null)
+                    return new ResponseUnit<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 200 };
 
-                if (!String.IsNullOrWhiteSpace(dto?.UserID) && !String.IsNullOrWhiteSpace(dto?.UserPassword))
+                bool? AdminYN = usertb.AdminYn;
+                if(AdminYN == false) // 일반유저
                 {
-                    UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID, dto.UserPassword);
-                    
-                    if(usertb is not null)
-                    {
-                        bool? AdminYN = usertb.AdminYn;
-                        if(AdminYN == false) // 일반유저
-                        {
-                            PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId.Value);
+                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value);
                             
-                            if(placetb is not null)
-                            {
-                                authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // + USERID
-                                authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // + USERID
-                                authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                                authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
-                                authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
-                                authClaims.Add(new Claim("UserType", "User"));
-                                authClaims.Add(new Claim("Role", "User"));
-                                authClaims.Add(new Claim(ClaimTypes.Role, "User"));
+                    if(placetb is not null)
+                    {
+                        authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // + USERID
+                        authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // + USERID
+                        authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                        authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
+                        authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
+                        authClaims.Add(new Claim("UserType", "User"));
+                        authClaims.Add(new Claim("Role", "User"));
+                        authClaims.Add(new Claim(ClaimTypes.Role, "User"));
 
-                                JObject items = new JObject();
+                        JObject items = new JObject();
 
-                                /* 메뉴 접근권한 */
-                                items.Add("UserPerm_Basic", usertb.PermBasic);
-                                items.Add("UserPerm_Machine", usertb.PermMachine);
-                                items.Add("UserPerm_Elec", usertb.PermElec);
-                                items.Add("UserPerm_Lift", usertb.PermLift);
-                                items.Add("UserPerm_Fire", usertb.PermFire);
-                                items.Add("UserPerm_Construct", usertb.PermConstruct);
-                                items.Add("UserPerm_Network", usertb.PermNetwork);
-                                items.Add("UserPerm_Beauty", usertb.PermBeauty);
-                                items.Add("UserPerm_Security", usertb.PermSecurity);
-                                items.Add("UserPerm_Material", usertb.PermMaterial);
-                                items.Add("UserPerm_Energy", usertb.PermEnergy);
-                                items.Add("UserPerm_User", usertb.PermUser);
-                                items.Add("UserPerm_Voc", usertb.PermVoc);
-                                jsonConvert = JsonConvert.SerializeObject(items);
-                                authClaims.Add(new Claim("UserPerms", jsonConvert));
+                        /* 메뉴 접근권한 */
+                        items.Add("UserPerm_Basic", usertb.PermBasic);
+                        items.Add("UserPerm_Machine", usertb.PermMachine);
+                        items.Add("UserPerm_Elec", usertb.PermElec);
+                        items.Add("UserPerm_Lift", usertb.PermLift);
+                        items.Add("UserPerm_Fire", usertb.PermFire);
+                        items.Add("UserPerm_Construct", usertb.PermConstruct);
+                        items.Add("UserPerm_Network", usertb.PermNetwork);
+                        items.Add("UserPerm_Beauty", usertb.PermBeauty);
+                        items.Add("UserPerm_Security", usertb.PermSecurity);
+                        items.Add("UserPerm_Material", usertb.PermMaterial);
+                        items.Add("UserPerm_Energy", usertb.PermEnergy);
+                        items.Add("UserPerm_User", usertb.PermUser);
+                        items.Add("UserPerm_Voc", usertb.PermVoc);
+                        jsonConvert = JsonConvert.SerializeObject(items);
+                        authClaims.Add(new Claim("UserPerms", jsonConvert));
                                 
-                                items = new JObject();
-                                /* VOC 권한 */
-                                items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
-                                items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
-                                items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
-                                items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
-                                items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
-                                items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
-                                items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
-                                items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                                items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
-                                jsonConvert = JsonConvert.SerializeObject(items);
-                                authClaims.Add(new Claim("VocPerms", jsonConvert));
+                        items = new JObject();
+                        /* VOC 권한 */
+                        items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
+                        items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
+                        items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
+                        items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
+                        items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
+                        items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
+                        items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
+                        items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
+                        items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
+                        jsonConvert = JsonConvert.SerializeObject(items);
+                        authClaims.Add(new Claim("VocPerms", jsonConvert));
 
-                                /* 사업장 권한 */
-                                items.Add("PlaceIdx", usertb.PlaceTbId.ToString()); // 사업장 인덱스
-                                items.Add("PlaceName", placetb.Name.ToString()); // 사업장 이름
-                                items.Add("PlacePerm_Machine", placetb.PermMachine.ToString()); // 사업장 기계메뉴 권한
-                                items.Add("PlacePerm_Elec", placetb.PermElec.ToString()); // 사업장 전기메뉴 권한
-                                items.Add("PlacePerm_Lift", placetb.PermLift.ToString()); // 사업장 승강메뉴 권한
-                                items.Add("PlacePerm_Fire", placetb.PermFire.ToString()); // 사업장 소방메뉴 권한
-                                items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString()); // 사업장 건축메뉴 권한
-                                items.Add("PlacePerm_Network", placetb.PermNetwork.ToString()); // 사업장 통신메뉴 권한
-                                items.Add("PlacePerm_Beauty", placetb.PermBeauty.ToString()); // 사업장 미화메뉴 권한
-                                items.Add("PlacePerm_Security", placetb.PermSecurity.ToString()); // 사업장 보안메뉴 권한
-                                items.Add("PlacePerm_Material", placetb.PermMaterial.ToString()); // 사업장 자재메뉴 권한
-                                items.Add("PlacePerm_Energy", placetb.PermEnergy.ToString()); // 사업장 전기메뉴 권한
-                                items.Add("PlacePerm_Voc", placetb.PermVoc.ToString()); // 사업장 VOC 권한
+                        /* 사업장 권한 */
+                        items.Add("PlaceIdx", usertb.PlaceTbId.ToString()); // 사업장 인덱스
+                        items.Add("PlaceName", placetb.Name.ToString()); // 사업장 이름
+                        items.Add("PlacePerm_Machine", placetb.PermMachine.ToString()); // 사업장 기계메뉴 권한
+                        items.Add("PlacePerm_Elec", placetb.PermElec.ToString()); // 사업장 전기메뉴 권한
+                        items.Add("PlacePerm_Lift", placetb.PermLift.ToString()); // 사업장 승강메뉴 권한
+                        items.Add("PlacePerm_Fire", placetb.PermFire.ToString()); // 사업장 소방메뉴 권한
+                        items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString()); // 사업장 건축메뉴 권한
+                        items.Add("PlacePerm_Network", placetb.PermNetwork.ToString()); // 사업장 통신메뉴 권한
+                        items.Add("PlacePerm_Beauty", placetb.PermBeauty.ToString()); // 사업장 미화메뉴 권한
+                        items.Add("PlacePerm_Security", placetb.PermSecurity.ToString()); // 사업장 보안메뉴 권한
+                        items.Add("PlacePerm_Material", placetb.PermMaterial.ToString()); // 사업장 자재메뉴 권한
+                        items.Add("PlacePerm_Energy", placetb.PermEnergy.ToString()); // 사업장 전기메뉴 권한
+                        items.Add("PlacePerm_Voc", placetb.PermVoc.ToString()); // 사업장 VOC 권한
                                 
-                                jsonConvert = JsonConvert.SerializeObject(items);
-                                authClaims.Add(new Claim("PlacePerms", jsonConvert));
+                        jsonConvert = JsonConvert.SerializeObject(items);
+                        authClaims.Add(new Claim("PlacePerms", jsonConvert));
 
 
 
-                                // JWT 인증 페이로드 사인 비밀키
-                                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+                        // JWT 인증 페이로드 사인 비밀키
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
 
-                                JwtSecurityToken token = new JwtSecurityToken(
-                                    issuer: Configuration["JWT:Issuer"],
-                                    audience: Configuration["JWT:Audience"],
-                                    expires: DateTime.Now.AddDays(1),
-                                    claims: authClaims,
-                                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+                        JwtSecurityToken token = new JwtSecurityToken(
+                            issuer: Configuration["JWT:Issuer"],
+                            audience: Configuration["JWT:Audience"],
+                            expires: DateTime.Now.AddDays(1),
+                            claims: authClaims,
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
-                                string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                                return new ResponseUnit<string>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
-                            }
-                            else // 잘못된 요청입니다.
-                            {
-                                return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                            }
-                        }
-                        else // 관리자
+                        string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                        return new ResponseUnit<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
+                    }
+                    else // 잘못된 요청입니다.
+                    {
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    }
+                }
+                else // 관리자
+                {
+                    // 위에만큼 담는데 (사업장 은 빼고)
+                    // Return 201
+                    AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
+
+                    if (admintb is not null)
+                    {
+                        authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // USER 인덱스
+                        authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // 이름
+                        authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                        authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
+                        authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
+                        authClaims.Add(new Claim("UserType", "ADMIN"));
+                        authClaims.Add(new Claim("AdminIdx", admintb.Id!.ToString())); // 관리자 인덱스
+
+                        if (admintb.Type == "시스템관리자")
                         {
-                            // 위에만큼 담는데 (사업장 은 빼고)
-                            // Return 201
-                            AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
-
-                            if (admintb is not null)
-                            {
-                                authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // USER 인덱스
-                                authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // 이름
-                                authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                                authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
-                                authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
-                                authClaims.Add(new Claim("UserType", "ADMIN"));
-                                authClaims.Add(new Claim("AdminIdx", admintb.Id!.ToString())); // 관리자 인덱스
-
-                                if (admintb.Type == "시스템관리자")
-                                {
-                                    authClaims.Add(new Claim("Role", "시스템관리자"));
-                                    authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
-                                }
-                                if (admintb.Type == "마스터")
-                                {
-                                    authClaims.Add(new Claim("Role", "마스터"));
-                                    authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
-                                }
-                                if (admintb.Type == "매니저")
-                                {
-                                    authClaims.Add(new Claim("Role", "매니저"));
-                                    authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
-                                }
-
-                                JObject items = new JObject();
-
-                                /* 메뉴 접근권한 */
-                                items.Add("UserPerm_Basic", usertb.PermBasic);
-                                items.Add("UserPerm_Machine", usertb.PermMachine);
-                                items.Add("UserPerm_Elec", usertb.PermElec);
-                                items.Add("UserPerm_Lift", usertb.PermLift);
-                                items.Add("UserPerm_Fire", usertb.PermFire);
-                                items.Add("UserPerm_Construct", usertb.PermConstruct);
-                                items.Add("UserPerm_Network", usertb.PermNetwork);
-                                items.Add("UserPerm_Beauty", usertb.PermBeauty);
-                                items.Add("UserPerm_Security", usertb.PermSecurity);
-                                items.Add("UserPerm_Material", usertb.PermMaterial);
-                                items.Add("UserPerm_Energy", usertb.PermEnergy);
-                                items.Add("UserPerm_User", usertb.PermUser);
-                                items.Add("UserPerm_Voc", usertb.PermVoc);
-                                jsonConvert = JsonConvert.SerializeObject(items);
-                                authClaims.Add(new Claim("UserPerms", jsonConvert));
-
-                                items = new JObject();
-                                /* VOC 권한 */
-                                items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
-                                items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
-                                items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
-                                items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
-                                items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
-                                items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
-                                items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
-                                items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                                items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
-                                jsonConvert = JsonConvert.SerializeObject(items);
-                                authClaims.Add(new Claim("VocPerms", jsonConvert));
-
-
-                                // JWT 인증 페이로드 사인 비밀키
-                                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
-
-                                JwtSecurityToken token = new JwtSecurityToken(
-                                    issuer: Configuration["JWT:Issuer"],
-                                    audience: Configuration["JWT:Audience"],
-                                    expires: DateTime.Now.AddDays(1),
-                                    claims: authClaims,
-                                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
-
-                                string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                                return new ResponseUnit<string>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
-                            }
-                            else
-                            {
-                                return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                            }
+                            authClaims.Add(new Claim("Role", "시스템관리자"));
+                            authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
                         }
+                        if (admintb.Type == "마스터")
+                        {
+                            authClaims.Add(new Claim("Role", "마스터"));
+                            authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
+                        }
+                        if (admintb.Type == "매니저")
+                        {
+                            authClaims.Add(new Claim("Role", "매니저"));
+                            authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        }
+
+                        JObject items = new JObject();
+
+                        /* 메뉴 접근권한 */
+                        items.Add("UserPerm_Basic", usertb.PermBasic);
+                        items.Add("UserPerm_Machine", usertb.PermMachine);
+                        items.Add("UserPerm_Elec", usertb.PermElec);
+                        items.Add("UserPerm_Lift", usertb.PermLift);
+                        items.Add("UserPerm_Fire", usertb.PermFire);
+                        items.Add("UserPerm_Construct", usertb.PermConstruct);
+                        items.Add("UserPerm_Network", usertb.PermNetwork);
+                        items.Add("UserPerm_Beauty", usertb.PermBeauty);
+                        items.Add("UserPerm_Security", usertb.PermSecurity);
+                        items.Add("UserPerm_Material", usertb.PermMaterial);
+                        items.Add("UserPerm_Energy", usertb.PermEnergy);
+                        items.Add("UserPerm_User", usertb.PermUser);
+                        items.Add("UserPerm_Voc", usertb.PermVoc);
+                        jsonConvert = JsonConvert.SerializeObject(items);
+                        authClaims.Add(new Claim("UserPerms", jsonConvert));
+
+                        items = new JObject();
+                        /* VOC 권한 */
+                        items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
+                        items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
+                        items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
+                        items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
+                        items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
+                        items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
+                        items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
+                        items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
+                        items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
+                        jsonConvert = JsonConvert.SerializeObject(items);
+                        authClaims.Add(new Claim("VocPerms", jsonConvert));
+
+
+                        // JWT 인증 페이로드 사인 비밀키
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                        JwtSecurityToken token = new JwtSecurityToken(
+                            issuer: Configuration["JWT:Issuer"],
+                            audience: Configuration["JWT:Audience"],
+                            expires: DateTime.Now.AddDays(1),
+                            claims: authClaims,
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                        string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                        return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
                     }
                     else
                     {
-                        return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                     }
                 }
-                else
-                {
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                
+               
             }
             catch (Exception ex)
             {
-                return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
         
@@ -404,7 +387,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<ListUser>> GetPlaceUserList(HttpContext? context)
+        public async ValueTask<ResponseList<ListUser>> GetPlaceUserList(HttpContext context)
         {
             try
             {
@@ -412,39 +395,36 @@ namespace FamTec.Server.Services.User
                     return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
-                if (placeidx is not null)
+               
+                List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx));
+
+                if (model is [_, ..])
                 {
-                    List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx));
-
-                    if (model is [_, ..])
+                    return new ResponseList<ListUser>()
                     {
-                        return new ResponseList<ListUser>()
+                        message = "요청이 정상 처리되었습니다",
+                        data = model.Select(e => new ListUser()
                         {
-                            message = "요청이 정상 처리되었습니다",
-                            data = model.Select(e => new ListUser()
-                            {
-                                Id = e.Id,
-                                UserId = e.UserId,
-                                Name = e.Name,
-                                Type = e.Job,
-                                Email = e.Email,
-                                Phone = e.Phone,
-                                Created = e.CreateDt.ToString(),
-                                Status = e.Status
-                            }).ToList(),
-                            code = 200
-                        };
-                    }
-                    else
-                    {
-                        return new ResponseList<ListUser>() { message = "데이터가 존재하지 않습니다.", data = new List<ListUser>(), code = 200 };
-                    }
+                            Id = e.Id,
+                            UserId = e.UserId,
+                            Name = e.Name,
+                            Type = e.Job,
+                            Email = e.Email,
+                            Phone = e.Phone,
+                            Created = e.CreateDt.ToString(),
+                            Status = e.Status
+                        }).ToList(),
+                        code = 200
+                    };
                 }
                 else
                 {
-                    return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
+                    return new ResponseList<ListUser>() { message = "데이터가 존재하지 않습니다.", data = new List<ListUser>(), code = 200 };
                 }
+               
             }
             catch(Exception ex)
             {
@@ -459,16 +439,12 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext? context, UsersDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext context, UsersDTO dto, IFormFile? files)
         {
             try
             {
-                string? FileName = String.Empty;
-                string? FileExtenstion = String.Empty;
 
                 if (context is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-                if (dto is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -499,8 +475,8 @@ namespace FamTec.Server.Services.User
 
                 UsersTb model = new UsersTb();
 
-                model.UserId = dto.USERID; // 사용자아이디
-                model.Password = dto.PASSWORD; // 비밀번호
+                model.UserId = dto.USERID!; // 사용자아이디
+                model.Password = dto.PASSWORD!; // 비밀번호
                 model.Name = dto.NAME; // 이름
                 model.Email = dto.EMAIL; // 이메일
                 model.Phone = dto.PHONE; // 전화번호
@@ -519,7 +495,7 @@ namespace FamTec.Server.Services.User
                 model.PermVoc = dto.PERM_VOC; // VOC메뉴 권한
                 model.AdminYn = false; // 관리자 아님
                 model.AlarmYn = dto.ALRAM_YN; // 알람 여부
-                model.Status = 1; // 재직여부
+                model.Status = 2; // 재직여부
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = Creater; // 생성자
                 model.UpdateDt = DateTime.Now;
@@ -582,13 +558,11 @@ namespace FamTec.Server.Services.User
         }
 
 
-        public async ValueTask<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext? context, int? id)
+        public async ValueTask<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
-                if (id is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
@@ -606,7 +580,7 @@ namespace FamTec.Server.Services.User
                 if (TokenChk.PermUser < 1)
                     return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id.Value);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id);
 
                 // 조회내용이 있으면 반환
                 if (model is not null)
@@ -675,7 +649,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteUserService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<bool?>> DeleteUserService(HttpContext context, List<int> del)
         {
             try
             {
@@ -683,17 +657,12 @@ namespace FamTec.Server.Services.User
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                if (del is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                if (del.Count == 0)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater);
+                
                 if (DeleteResult == true)
                 {
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -720,16 +689,13 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext? context, UsersDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext context, UsersDTO dto, IFormFile? files)
         {
             try
             {
-                //string? FileName = null;
-                //string? FileExtenstion = null;
-                //string? PlaceFileFolderPath = null;
-
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                
                 if(dto is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 
@@ -741,11 +707,11 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID.Value);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value);
                 if (model is not null)
                 {
-                    model.UserId = dto.USERID;
-                    model.Password = dto.PASSWORD;
+                    model.UserId = dto.USERID!;
+                    model.Password = dto.PASSWORD!;
                     model.Name = dto.NAME;
                     model.Email = dto.EMAIL;
                     model.Phone = dto.PHONE;
@@ -837,24 +803,24 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string>> ImportUserService(HttpContext? context, IFormFile? file)
+        public async ValueTask<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (file is null)
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (file.Length == 0)
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<string>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<ExcelUserInfo> userlist = new List<ExcelUserInfo>();
 
@@ -909,7 +875,7 @@ namespace FamTec.Server.Services.User
                         var duple = userlist.GroupBy(x => x.ID).Where(p => p.Count() > 1).ToList();
                         if (duple.Count() > 0) // 엑셀에 중복된 데이터를 기입했는지 검사
                         {
-                            return new ResponseUnit<string>
+                            return new ResponseUnit<string?>
                             {
                                 message = $"시트에 {duple.Count}개의 중복이 있습니다. 중복 제거후 다시 시도하세요.",
                                 data = duple.Count.ToString(),
@@ -928,7 +894,7 @@ namespace FamTec.Server.Services.User
                                 if (result.Count() > 0)
                                 {
                                     // DB에 중복된 데이터가 하나 이상 있음. -- 해결하고 넣어야함.
-                                    return new ResponseUnit<string>() { message = $"이미 사용중인 아이디가 {result.Count()}개 있습니다.", data = result.Count().ToString(), code = 200 };
+                                    return new ResponseUnit<string?>() { message = $"이미 사용중인 아이디가 {result.Count()}개 있습니다.", data = result.Count().ToString(), code = 200 };
                                 }
                                 else
                                 {
@@ -978,11 +944,11 @@ namespace FamTec.Server.Services.User
 
                                         if (insert is null)
                                         {
-                                            return new ResponseUnit<string>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
+                                            return new ResponseUnit<string?>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
                                         }
                                     }
 
-                                    return new ResponseUnit<string>
+                                    return new ResponseUnit<string?>
                                     {
                                         message = "요청이 정상 처리되었습니다.",
                                         data = $"{total - 1}",
@@ -995,8 +961,8 @@ namespace FamTec.Server.Services.User
                                 // 모델 클래스로 변환해서 디비에 넣어야함.
                                 List<UsersTb> model = userlist.Select(m => new UsersTb
                                 {
-                                    UserId = m.ID,
-                                    Password = m.PassWord,
+                                    UserId = m.ID!,
+                                    Password = m.PassWord!,
                                     Phone = m.PhoneNumber,
                                     Email = m.Email,
                                     Name = m.Name,
@@ -1037,11 +1003,11 @@ namespace FamTec.Server.Services.User
 
                                     if (insert is null)
                                     {
-                                        return new ResponseUnit<string>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
+                                        return new ResponseUnit<string?>() { message = $"데이터를 처리하지 못하였습니다.", data = insert.UserId, code = 201 };
                                     }
                                 }
 
-                                return new ResponseUnit<string>
+                                return new ResponseUnit<string?>
                                 {
                                     message = "요청이 정상 처리되었습니다.",
                                     data = $"{total - 1}",
@@ -1058,7 +1024,7 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<string>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

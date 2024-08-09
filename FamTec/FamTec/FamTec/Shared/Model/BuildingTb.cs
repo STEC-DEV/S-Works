@@ -29,13 +29,6 @@ public partial class BuildingTb
     public string BuildingCd { get; set; } = null!;
 
     /// <summary>
-    /// 이미지
-    /// </summary>
-    [Column("IMAGE")]
-    [StringLength(255)]
-    public string? Image { get; set; }
-
-    /// <summary>
     /// 건물명
     /// </summary>
     [Column("NAME")]
@@ -380,6 +373,13 @@ public partial class BuildingTb
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
+
+    /// <summary>
+    /// 이미지
+    /// </summary>
+    [Column("IMAGE")]
+    [StringLength(255)]
+    public string? Image { get; set; }
 
     /// <summary>
     /// 사업장 인덱스

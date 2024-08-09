@@ -8,7 +8,6 @@ namespace FamTec.Shared.Model;
 
 [Table("place_tb")]
 [Index("DepartmentTbId", Name = "FK_departmenttb_20240806")]
-[Index("Name", Name = "uk_Name", IsUnique = true)]
 [Index("PlaceCd", Name = "uk_code", IsUnique = true)]
 public partial class PlaceTb
 {
@@ -29,6 +28,7 @@ public partial class PlaceTb
     /// 사업장명
     /// </summary>
     [Column("NAME")]
+    [StringLength(255)]
     public string Name { get; set; } = null!;
 
     /// <summary>
@@ -50,7 +50,7 @@ public partial class PlaceTb
     /// </summary>
     [Column("TEL")]
     [StringLength(255)]
-    public string? Tel { get; set; }
+    public string Tel { get; set; } = null!;
 
     /// <summary>
     /// 주소

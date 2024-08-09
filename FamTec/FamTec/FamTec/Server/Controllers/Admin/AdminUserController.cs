@@ -55,19 +55,16 @@ namespace FamTec.Server.Controllers.Admin
 
                 if (HttpContext is null)
                     return BadRequest();
-
-                if (String.IsNullOrWhiteSpace(dto.UserId))
+                
+                // * ID 필수
+                if (String.IsNullOrWhiteSpace(dto.UserId)) 
                     return NoContent();
                 
-                if(String.IsNullOrWhiteSpace(dto.Password))
+                // * 비밀번호 필수
+                if (String.IsNullOrWhiteSpace(dto.Password)) 
                     return NoContent();
                 
-                if(!String.IsNullOrWhiteSpace(dto.Name))
-                {
-                    if (dto.UserId.Equals("Admin"))
-                        return Ok(new ResponseUnit<int?>() { message = "해당 아이디는 사용하실 수 없습니다.", data = null, code = 404 });
-                }
-                
+                // * 부서필수
                 if (dto.DepartmentId is null)
                     return NoContent();
 
@@ -92,7 +89,6 @@ namespace FamTec.Server.Controllers.Admin
                         }
                     }
                 }
-
 
                 ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
 
@@ -192,6 +188,12 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (adminidx is null)
+                    return NoContent();
+                
+                if (adminidx.Count == 0)
+                    return NoContent();
+
                 ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
 
                 if (model is null)
@@ -216,11 +218,27 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManager")]
-        //public async ValueTask<IActionResult> UpdateManager(IFormFile? files)
         public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto, IFormFile? files)
         {
             try
             {
+                /*
+                UpdateManagerDTO dto = new UpdateManagerDTO();
+                dto.AdminIndex = 10;
+                dto.Name = "용";
+                dto.DepartmentId = 5;
+                dto.UserId = "Master";
+                dto.Password = "123";
+                dto.PlaceList.Add(new AdminPlaceDTO
+                {
+                    Id = 11
+                });
+                dto.PlaceList.Add(new AdminPlaceDTO
+                {
+                    Id = 3
+                });
+               */
+
                 if (HttpContext is null)
                     return BadRequest();
 

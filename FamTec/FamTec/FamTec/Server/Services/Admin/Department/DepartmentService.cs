@@ -24,22 +24,22 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddDepartmentDTO?>> AddDepartmentService(HttpContext? context, AddDepartmentDTO? dto)
+        public async ValueTask<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto)
         {
             try
             {
                 if(context is null)
-                    return new ResponseUnit<AddDepartmentDTO?> { message = "잘못된 요청입니다..", data = null, code = 404 };
+                    return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다..", data = null, code = 404 };
                 if(dto is null)
-                    return new ResponseUnit<AddDepartmentDTO?> { message = "잘못된 요청입니다..", data = null, code = 404 };
+                    return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다..", data = null, code = 404 };
                 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<AddDepartmentDTO?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                DepartmentsTb? model = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
-                if(model is not null)
-                    return new ResponseUnit<AddDepartmentDTO?> { message = "이미 해당 부서가 존재합니다.", data = new AddDepartmentDTO(), code = 202 };
+                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!);
+                if (AlreadyCheck is not null)
+                    return new ResponseUnit<AddDepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
                 DepartmentsTb? DepartmentTB = new DepartmentsTb();
                 DepartmentTB.Name = dto.Name!;
@@ -53,7 +53,7 @@ namespace FamTec.Server.Services.Admin.Department
 
                 if (result is not null)
                 {
-                    return new ResponseUnit<AddDepartmentDTO?>
+                    return new ResponseUnit<AddDepartmentDTO>
                     {
                         message = "데이터가 정상 처리되었습니다.",
                         data = new AddDepartmentDTO
@@ -66,14 +66,14 @@ namespace FamTec.Server.Services.Admin.Department
                 }
                 else
                 {
-                    return new ResponseUnit<AddDepartmentDTO?> { message = "데이터가 처리되지 않았습니다.", data = new AddDepartmentDTO(), code = 404 };
+                    return new ResponseUnit<AddDepartmentDTO> { message = "데이터가 처리되지 않았습니다.", data = new AddDepartmentDTO(), code = 404 };
                 }
                
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddDepartmentDTO?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddDepartmentDTO(), code = 404 };
+                return new ResponseUnit<AddDepartmentDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddDepartmentDTO(), code = 404 };
             }
         }
 
@@ -158,7 +158,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="index"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> DeleteDepartmentService(HttpContext? context, List<int>? departmentidx)
+        public async ValueTask<ResponseUnit<bool>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
         {
             try
             {
@@ -225,25 +225,25 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DepartmentDTO>?> UpdateDepartmentService(HttpContext? context,DepartmentDTO? dto)
+        public async ValueTask<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context,DepartmentDTO dto)
         {
             try
             {
                 if(dto is null)
-                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = new DepartmentDTO(), code = 404 };
+                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if(context is null)
-                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = new DepartmentDTO(), code = 404 };
+                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(updater))
-                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = new DepartmentDTO(), code = 404 };
+                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
-                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name);
+                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!);
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<DepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
-                DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id.Value);
+                DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id!.Value);
                 if (DepartmentTB is not null)
                 {
                     DepartmentTB.Name = dto.Name!;
@@ -258,12 +258,12 @@ namespace FamTec.Server.Services.Admin.Department
                     }
                     else
                     {
-                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 처리되지 않았습니다.", data = new DepartmentDTO(), code = 200 };
+                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 처리되지 않았습니다.", data = null, code = 200 };
                     }
                 }
                 else
                 {
-                    return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = new DepartmentDTO(), code = 404 };
+                    return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = null, code = 404 };
                 }   
               
             }

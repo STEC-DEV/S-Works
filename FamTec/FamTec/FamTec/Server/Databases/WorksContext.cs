@@ -91,6 +91,7 @@ public partial class WorksContext : DbContext
             entity.HasNoDiscriminator();
         });
 
+
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -821,6 +822,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.ReplyYn).HasComment("답변회신여부");
             entity.Property(e => e.Status).HasComment("민원처리상태");
             entity.Property(e => e.Title).HasComment("민원제목");
+            entity.Property(e => e.Type).HasComment("0 : 미분류\r\n1 : 기계\r\n2 : 전기\r\n3 : 승강\r\n4 : 소방\r\n5 : 건축\r\n6 : 통신\r\n7 : 미화\r\n8 : 보안");
 
             entity.HasOne(d => d.BuildingTb).WithMany(p => p.VocTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
