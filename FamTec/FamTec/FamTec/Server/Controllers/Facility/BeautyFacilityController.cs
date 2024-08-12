@@ -40,6 +40,15 @@ namespace FamTec.Server.Controllers.Facility
                 if(HttpContext is null)
                     return BadRequest();
 
+                if (String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.RoomTbId is null)
+                    return NoContent();
+
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_1)
@@ -127,7 +136,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO?> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid);
                 if (model is null)
                     return BadRequest();
 
@@ -159,11 +168,37 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is not null) // 파일이 있으면 1MB 제한
+                if (dto.ID is null)
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.RoomTbId is null)
+                    return NoContent();
+
+                if (files is not null) // 파일이 있으면 1MB 제한
                 {
                     if(files.Length > Common.MEGABYTE_1)
                     {
                         return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if(String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if(!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
                     }
                 }
 
@@ -198,7 +233,14 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await BeautyFacilityService.DeleteBeautyFacilityService(HttpContext, delIdx);
+                if (delIdx is null)
+                    return NoContent();
+
+                if(delIdx.Count() == 0)
+                    return NoContent();
+
+
+                ResponseUnit<bool?> model = await BeautyFacilityService.DeleteBeautyFacilityService(HttpContext, delIdx);
                 if (model is null)
                     return BadRequest();
 

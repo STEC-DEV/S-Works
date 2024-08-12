@@ -38,7 +38,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddGroupInfoDTO?> model = await GroupService.AddBuildingGroupInfoService(HttpContext, dto);
+                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddBuildingGroupInfoService(HttpContext, dto);
                 
                 if (model is null)
                     return BadRequest();
@@ -129,7 +129,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddGroupDTO?> model = await GroupService.AddBuildingGroupService(HttpContext, dto);
+                ResponseUnit<AddGroupDTO> model = await GroupService.AddBuildingGroupService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();

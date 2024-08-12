@@ -39,5 +39,13 @@ namespace FamTec.Server.Repository.Facility.Group
         /// <returns></returns>
         ValueTask<bool?> DeleteGroupInfo(FacilityItemGroupTb model);
 
+        /// <summary>
+        /// 그룹 삭제 -2
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteGroupInfo(int groupid, string deleter);
+
     }
 }

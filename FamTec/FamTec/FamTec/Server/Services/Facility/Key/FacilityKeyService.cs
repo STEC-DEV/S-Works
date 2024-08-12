@@ -30,26 +30,26 @@ namespace FamTec.Server.Services.Facility.Key
         }
 
 
-        public async ValueTask<ResponseUnit<AddKeyDTO?>> AddKeyService(HttpContext? context, AddKeyDTO? dto)
+        public async ValueTask<ResponseUnit<AddKeyDTO>> AddKeyService(HttpContext context, AddKeyDTO dto)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
                 if (dto is null)
-                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(dto.GroupID.Value);
                 if(GroupTb is null) // 기존의 GroupTB가 존재하는지 Check
-                    return new ResponseUnit<AddKeyDTO?>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 FacilityItemKeyTb KeyTb = new FacilityItemKeyTb();
-                KeyTb.Name = dto.Name;
-                KeyTb.Unit = dto.Unit;
+                KeyTb.Name = dto.Name!; // 키 명칭
+                KeyTb.Unit = dto.Unit!; // 단위
                 KeyTb.CreateDt = DateTime.Now;
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;
@@ -64,7 +64,7 @@ namespace FamTec.Server.Services.Facility.Key
                         foreach(AddGroupItemValueDTO GroupDTO in dto.ItemValues)
                         {
                             FacilityItemValueTb ValueTB = new FacilityItemValueTb();
-                            ValueTB.ItemValue = GroupDTO.Values;
+                            ValueTB.ItemValue = GroupDTO.Values!;
                             ValueTB.CreateDt = DateTime.Now;
                             ValueTB.CreateUser = creater;
                             ValueTB.UpdateDt = DateTime.Now;
@@ -74,127 +74,81 @@ namespace FamTec.Server.Services.Facility.Key
                             FacilityItemValueTb? result = await FacilityItemValueInfoRepository.AddAsync(ValueTB);
                             if(result is null)
                             {
-                                return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                                return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
                             }
                         }
                     }
 
-                    return new ResponseUnit<AddKeyDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                    return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
+                return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
             }
         }
 
-        public async ValueTask<ResponseUnit<UpdateKeyDTO?>> UpdateKeyService(HttpContext? context, UpdateKeyDTO? dto)
+        public async ValueTask<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(HttpContext context, UpdateKeyDTO dto)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 
                 if (dto is null)
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
-                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID.Value);
+                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID!.Value);
                 if (KeyTB is not null)
                 {
-                    KeyTB.Name = dto.Itemkey;
-                    KeyTB.Unit = dto.Unit;
-                    KeyTB.UpdateDt = DateTime.Now;
-                    KeyTB.UpdateUser = creater;
-
-                    bool? UpdateKeyResult = await FacilityItemKeyInfoRepository.UpdateKeyInfo(KeyTB);
-                    if(UpdateKeyResult != true)
+                    bool? UpdateResult = await FacilityItemKeyInfoRepository.UpdateKeyInfo(dto, creater);
+                    if(UpdateResult == true)
                     {
-                        return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
+                        return new ResponseUnit<UpdateKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
-
-                    List<FacilityItemValueTb>? ValueTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyTB.Id);
-                    if(ValueTB is [_, ..])
+                    else if(UpdateResult == false)
                     {
-                        if(ValueTB.Count() != dto.ValueList.Count())
-                        {
-                            // 개수가 다름 -- 요청이 잘못됨
-                            return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                        }
-
-                        // 혹시모를 DTO안의 ID 개수와 내용이 실제 DB의 ID 개수의 내용과 같은지
-                        List<int> dtoList = dto.ValueList.Select(m => m.ID).Where(x => x.HasValue).Select(x => x.Value).ToList();
-                        dtoList.Sort();
-                        List<int> dbList = ValueTB.Select(m => m.Id).ToList();
-                        dbList.Sort();
-
-                        bool eqauls = dtoList.SequenceEqual(dbList);
-                        if(eqauls)
-                        {
-                            foreach(GroupValueListDTO value in dto.ValueList)
-                            {
-                                FacilityItemValueTb? valuetb = await FacilityItemValueInfoRepository.GetValueInfo(value.ID.Value);
-                                if(valuetb is not null)
-                                {
-                                    valuetb.ItemValue = value.ItemValue;
-                                    valuetb.UpdateDt = DateTime.Now;
-                                    valuetb.UpdateUser = creater;
-
-                                    bool? ValueUpdateResult = await FacilityItemValueInfoRepository.UpdateValueInfo(valuetb);
-                                    if(ValueUpdateResult != true)
-                                    {
-                                        return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
-                                    }
-                                }
-                                else
-                                {
-                                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                                }
-
-                            }
-
-                        }
-
+                        return new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
                     }
-
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    else
+                    {
+                        return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    }
                 }
                 else
                 {
-                    return new ResponseUnit<UpdateKeyDTO?>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
+                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<UpdateKeyDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
+                return new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
             }
         }
 
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteKeyService(HttpContext? context, int? KeyId)
+        public async ValueTask<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-
-                if (KeyId is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId.Value);
+                FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId);
 
                 if(KeyTB is not null)
                 {
@@ -209,7 +163,7 @@ namespace FamTec.Server.Services.Facility.Key
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                     }
 
-                    List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId.Value);
+                    List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId);
                     if(ItemTB is [_, ..])
                     {
                         foreach(FacilityItemValueTb Item in ItemTB)

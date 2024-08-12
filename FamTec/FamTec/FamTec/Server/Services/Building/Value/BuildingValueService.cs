@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Building.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
-                BuildingItemKeyTb? KeyTb = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.KeyID.Value);
+                BuildingItemKeyTb? KeyTb = await BuildingItemKeyInfoRepository.GetKeyInfo(dto.KeyID!.Value);
                 if (KeyTb is null) // 기존의 KEYTB가 존재하는지 Check
                     return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 

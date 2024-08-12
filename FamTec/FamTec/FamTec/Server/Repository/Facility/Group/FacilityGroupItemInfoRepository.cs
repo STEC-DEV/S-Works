@@ -113,7 +113,7 @@ namespace FamTec.Server.Repository.Facility.Group
         }
 
         /// <summary>
-        /// 그룹사겢
+        /// 그룹삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -131,8 +131,80 @@ namespace FamTec.Server.Repository.Facility.Group
             }
         }
 
-    
+        /// <summary>
+        /// 그룹삭제 -2
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteGroupInfo(int groupid, string deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
+                        .FirstOrDefaultAsync(m => m.Id == groupid);
 
-      
+                    if(GroupTB is not null)
+                    {
+                        GroupTB.DelDt = DateTime.Now;
+                        GroupTB.DelUser = deleter;
+                        GroupTB.DelYn = true;
+
+                        context.FacilityItemGroupTbs.Update(GroupTB);
+
+                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
+                        
+                        if(KeyTB is [_, ..])
+                        {
+                            foreach(FacilityItemKeyTb KeyModel in KeyTB)
+                            {
+                                KeyModel.DelDt = DateTime.Now;
+                                KeyModel.DelUser = deleter;
+                                KeyModel.DelYn = true;
+
+                                context.FacilityItemKeyTbs.Update(KeyModel);
+
+                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
+                                if(ValueTB is [_, ..])
+                                {
+                                    foreach(FacilityItemValueTb ValueModel in ValueTB)
+                                    {
+                                        ValueModel.DelDt = DateTime.Now;
+                                        ValueModel.DelUser = deleter;
+                                        ValueModel.DelYn = true;
+
+                                        context.FacilityItemValueTbs.Update(ValueModel);
+                                    }
+                                }
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+
+        }
     }
 }

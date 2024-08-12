@@ -56,43 +56,46 @@ namespace FamTec.Server.Services.Building.Group
                 BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB);
                 if (AddGroupTable is not null)
                 {
-                    foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey!)
+                    if (dto.AddGroupKey is [_, ..])
                     {
-                        BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
-                        KeyTB.Name = KeyDTO.Name!; // 키명칭
-                        KeyTB.Unit = KeyDTO.Unit!; // 키단위
-                        KeyTB.CreateDt = DateTime.Now;
-                        KeyTB.CreateUser = creater;
-                        KeyTB.UpdateDt = DateTime.Now;
-                        KeyTB.UpdateUser = creater;
-                        KeyTB.BuildingGroupTbId = AddGroupTable.Id;
-
-                        BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB);
-                        if (AddKeyTable is not null)
+                        foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
                         {
-                            if (KeyDTO.ItemValues is [_, ..])
-                            {
-                                foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
-                                {
-                                    BuildingItemValueTb ValueTB = new BuildingItemValueTb();
-                                    ValueTB.ItemValue = ValueDTO.Values!;
-                                    ValueTB.CreateDt = DateTime.Now;
-                                    ValueTB.CreateUser = creater;
-                                    ValueTB.UpdateDt = DateTime.Now;
-                                    ValueTB.UpdateUser = creater;
-                                    ValueTB.BuildingKeyTbId = AddKeyTable.Id;
+                            BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
+                            KeyTB.Name = KeyDTO.Name!; // 키명칭
+                            KeyTB.Unit = KeyDTO.Unit!; // 키단위
+                            KeyTB.CreateDt = DateTime.Now;
+                            KeyTB.CreateUser = creater;
+                            KeyTB.UpdateDt = DateTime.Now;
+                            KeyTB.UpdateUser = creater;
+                            KeyTB.BuildingGroupTbId = AddGroupTable.Id;
 
-                                    BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
-                                    if (AddValueTable is null)
+                            BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB);
+                            if (AddKeyTable is not null)
+                            {
+                                if (KeyDTO.ItemValues is [_, ..])
+                                {
+                                    foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
                                     {
-                                        return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
+                                        BuildingItemValueTb ValueTB = new BuildingItemValueTb();
+                                        ValueTB.ItemValue = ValueDTO.Values!;
+                                        ValueTB.CreateDt = DateTime.Now;
+                                        ValueTB.CreateUser = creater;
+                                        ValueTB.UpdateDt = DateTime.Now;
+                                        ValueTB.UpdateUser = creater;
+                                        ValueTB.BuildingKeyTbId = AddKeyTable.Id;
+
+                                        BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
+                                        if (AddValueTable is null)
+                                        {
+                                            return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
+                                        }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
+                            else
+                            {
+                                return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
+                            }
                         }
                     }
 

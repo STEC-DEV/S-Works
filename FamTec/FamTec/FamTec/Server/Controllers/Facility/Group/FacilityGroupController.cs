@@ -22,7 +22,39 @@ namespace FamTec.Server.Controllers.Facility.Group
             this.LogService = _logservice;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/AddGroup")]
+        public async ValueTask<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
 
+                if (dto.FacilityIdx is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddFacilityGroupInfoService(HttpContext, dto);
+                
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+        
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddFacilityGroup")]
@@ -31,31 +63,37 @@ namespace FamTec.Server.Controllers.Facility.Group
             try
             {
                 //AddGroupDTO dto = new AddGroupDTO();
-                //dto.FacilityIdx = 2;
+                //dto.FacilityIdx = 4;
                 //dto.Name = "송풍기";
 
-                //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
-                //key.Name = "모터용량";
-
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //dto.AddGroupKey.Add(new AddGroupItemKeyDTO()
                 //{
-                //    Values = "15KW x 2EA"
+                //    Name = "모터용량",
+                //    Unit = "RPM",
+                //    ItemValues = new List<AddGroupItemValueDTO>()
+                //    {
+                //        new AddGroupItemValueDTO()
+                //        {
+                //            Values = "15KW x 3EA"
+                //        },
+                //        new AddGroupItemValueDTO()
+                //        {
+                //            Values = "20KW x 2EA"
+                //        }
+                //    }
                 //});
-                //dto.AddGroupKey.Add(key);
-
-                //key = new AddGroupItemKeyDTO();
-                //key.Name = "정압";
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
-                //{
-                //    Values = "120",
-                //    Unit = "mmAq"
-                //});
-                //dto.AddGroupKey.Add(key);
+                
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddGroupDTO?> model = await GroupService.AddFacilityGroupService(HttpContext, dto);
+                if (dto.FacilityIdx is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                ResponseUnit<AddGroupDTO> model = await GroupService.AddFacilityGroupService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -82,7 +120,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<GroupListDTO?> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid);
+                ResponseList<GroupListDTO> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid);
                 if (model is null)
                     return BadRequest();
 
@@ -98,6 +136,11 @@ namespace FamTec.Server.Controllers.Facility.Group
             }
         }
 
+        /// <summary>
+        /// 그룹명 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
@@ -107,6 +150,13 @@ namespace FamTec.Server.Controllers.Facility.Group
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.GroupId is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.GroupName))
+                    return NoContent();
+
 
                 ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
                 if (model is null)
@@ -124,10 +174,15 @@ namespace FamTec.Server.Controllers.Facility.Group
             }
         }
 
+        /// <summary>
+        /// 그룹 삭제
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteFacilityGroup([FromBody]int groupid)
+        public async ValueTask<IActionResult> DeleteFacilityGroup([FromQuery]int groupid)
         {
             try
             {

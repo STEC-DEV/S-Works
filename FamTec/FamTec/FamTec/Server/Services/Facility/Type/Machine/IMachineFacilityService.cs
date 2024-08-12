@@ -43,7 +43,5 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteMachineFacilityService(HttpContext context, List<int> delIdx);
 
-        // 사업장에 설치되어있는 기계설비 List 조회
-
     }
 }

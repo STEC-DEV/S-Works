@@ -1,9 +1,4 @@
-﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Facility;
-using FamTec.Server.Repository.Facility.Group;
-using FamTec.Server.Repository.Facility.ItemKey;
-using FamTec.Server.Repository.Facility.ItemValue;
-using FamTec.Server.Repository.Floor;
+﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -16,10 +11,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
 
-        private readonly IFacilityGroupItemInfoRepository FacilityGroupItemInfoRepository;
-        private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
-        private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
-
         private readonly ILogService LogService;
         private IFileService FileService;
 
@@ -27,22 +18,13 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         private string? MachineFileFolderPath;
 
         public MachineFacilityService(
-            
             IFacilityInfoRepository _facilityinforepository,
             IRoomInfoRepository _roominforepository,
-            
-            IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
-            IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
-            IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
             IFileService _fileservice,
             ILogService _logService)
         {
             this.FacilityInfoRepository = _facilityinforepository;
             this.RoomInfoRepository = _roominforepository;
-
-            this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
-            this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
-            this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
 
             this.FileService = _fileservice;
             this.LogService = _logService;
@@ -122,10 +104,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                         // 파일 넣기
                         bool? AddFile = await FileService.AddImageFile(NewFileName, MachineFileFolderPath, files);
                     }
-
                     return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
-                    
                 else
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
             }
@@ -234,8 +214,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         {
             try
             {
-                string NewFileName = String.Empty;
-                string deleteFileName = String.Empty;
+                string? NewFileName = String.Empty;
+                string? deleteFileName = String.Empty;
 
                 if(files is not null)
                 {
@@ -256,7 +236,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID.Value);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
 
                 if (model is not null)
                 {
@@ -349,7 +329,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         {
             try
             {
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 

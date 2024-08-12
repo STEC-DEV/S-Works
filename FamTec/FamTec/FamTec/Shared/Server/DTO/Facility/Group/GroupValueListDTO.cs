@@ -12,10 +12,6 @@
         /// </summary>
         public string? ItemValue { get; set; }
 
-        /// <summary>
-        /// 아이템 단위
-        /// </summary>
-
-        public string? Unit { get; set; }
+  
     }
 }

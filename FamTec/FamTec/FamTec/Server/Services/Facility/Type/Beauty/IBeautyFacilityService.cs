@@ -11,21 +11,21 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<FacilityDTO>?> AddBeautyFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<FacilityDTO>> AddBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 해당 사업장의 모든 설비 리스트 조회
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<FacilityListDTO>?> GetBeautyFacilityListService(HttpContext? context);
+        public ValueTask<ResponseList<FacilityListDTO>> GetBeautyFacilityListService(HttpContext context);
 
         /// <summary>
         /// 설비ID의 설비 모델 조회
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<FacilityDetailDTO?>> GetBeautyDetailFacilityService(HttpContext? context, int? facilityId);
+        public ValueTask<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId);
 
         /// <summary>
         /// 설비 정보 수정
@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext? context, FacilityDTO? dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files);
 
         /// <summary>
         /// 설비 정보 삭제
@@ -41,6 +41,6 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// <param name="context"></param>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteBeautyFacilityService(HttpContext? context, List<int> delIdx);
+        public ValueTask<ResponseUnit<bool?>> DeleteBeautyFacilityService(HttpContext context, List<int> delIdx);
     }
 }

@@ -31,6 +31,12 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (dto.KeyID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Value))
+                    return NoContent();
+
                 ResponseUnit<AddValueDTO?> model = await FacilityValueService.AddValueService(HttpContext, dto);
 
                 if (model is null)
@@ -57,6 +63,12 @@ namespace FamTec.Server.Controllers.Facility.Group
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.ID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.ItemValue))
+                    return NoContent();
 
                 ResponseUnit<UpdateValueDTO?> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
                 if (model is null)

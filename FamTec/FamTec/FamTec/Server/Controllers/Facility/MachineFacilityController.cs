@@ -177,7 +177,7 @@ namespace FamTec.Server.Controllers.Facility
                 {
                     if (files.Length > Common.MEGABYTE_1)
                     {
-                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
 
                     string? extension = FileService.GetExtension(files);
@@ -190,27 +190,19 @@ namespace FamTec.Server.Controllers.Facility
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
 
                 ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files);
-                if (model is not null)
-                {
-                    if (model.code == 200)
-                    {
-                        return Ok(model);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-                else
-                {
+                if (model is null)
                     return BadRequest();
-                }
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {
@@ -220,34 +212,36 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteMachineFacility")]
         public async ValueTask<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
         {
-            if (HttpContext is null)
-                return BadRequest();
-            
-            if (delIdx is null)
-                return NoContent();
+            //List<int> delIdx = new List<int>() { 3, 4 };
 
-            if (delIdx.Count() == 0)
-                return NoContent();
-
-            ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
-            if(model is not null)
+            try
             {
-                if(model.code == 200)
-                {
-                    return Ok(model);
-                }
-                else
-                {
+                if (HttpContext is null)
                     return BadRequest();
-                }
+
+                if (delIdx is null)
+                    return NoContent();
+
+                if (delIdx.Count() == 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest();
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 

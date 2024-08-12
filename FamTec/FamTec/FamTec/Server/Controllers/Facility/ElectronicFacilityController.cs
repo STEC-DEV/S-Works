@@ -4,7 +4,7 @@ using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
-using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -34,6 +34,15 @@ namespace FamTec.Server.Controllers.Facility
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.RoomTbId is null)
+                    return NoContent();
 
                 if (files is not null)
                 {
@@ -111,7 +120,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO?> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
                 if (model is null)
                     return BadRequest();
 
@@ -136,6 +145,19 @@ namespace FamTec.Server.Controllers.Facility
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.ID is null)
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.RoomTbId is null)
+                    return NoContent();
+
 
                 if (files is not null)
                 {
@@ -185,7 +207,13 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
+                if (delIdx is null)
+                    return NoContent();
+
+                if(delIdx.Count() == 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
                 if (model is null)
                     return BadRequest();
 

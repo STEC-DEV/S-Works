@@ -1912,16 +1912,32 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
+    "Method": "AddGroup",
+    "RelativePath": "api/FacilityGroup/sign/AddGroup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Facility.Group.AddGroupInfoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
     "Method": "DeleteFacilityGroup",
     "RelativePath": "api/FacilityGroup/sign/DeleteGroup",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "groupid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -1994,16 +2010,10 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupKeyController",
     "Method": "UpdateGroupKey",
     "RelativePath": "api/FacilityGroupKey/sign/UpdateKey",
-    "HttpMethod": "PUT",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Facility.Group.UpdateKeyDTO",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -2804,7 +2814,7 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
     "Method": "DeleteMachineFacility",
     "RelativePath": "api/MachineFacility/sign/DeleteMachineFacility",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
