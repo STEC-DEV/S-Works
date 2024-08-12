@@ -101,6 +101,35 @@ namespace FamTec.Server.Controllers.Login
         }
 
         /// <summary>
+        /// 사업장 리스트 반환
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("sign/AdminSelectList")]
+        public async ValueTask<IActionResult> AdminSelectList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
         /// 관리자 들만 접근가능 할당된 사업장 LIST 반환
         /// </summary>
         /// <returns></returns>

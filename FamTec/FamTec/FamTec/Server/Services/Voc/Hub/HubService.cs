@@ -68,6 +68,17 @@ namespace FamTec.Server.Services.Voc.Hub
         {
             try
             {
+                List<string> newFileName = new List<string>();
+                List<string> deleteFileName = new List<string>();
+
+                if (files is not null)
+                {
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        newFileName.Add(FileService.SetNewFileName(files[i]));
+                    }
+                }
+
                 if (dto is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -86,7 +97,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
                 
 
-                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid.Value);
+                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid!.Value);
                 if (buildingtb is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
 
@@ -135,17 +146,26 @@ namespace FamTec.Server.Services.Voc.Hub
                     for (int i = 0; i < files.Count(); i++)
                     {
                         if (i is 0)
-                            model.Image1 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
+                            model.Image1 = newFileName[i];
+                            //model.Image1 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
                         if (i is 1)
-                            model.Image2 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
+                            model.Image2 = newFileName[i];
                         if (i is 2)
-                            model.Image3 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
+                            model.Image3 = newFileName[i];
                     }
                 }
 
                 VocTb? result = await VocInfoRepository.AddAsync(model);
                 if (result is not null)
                 {
+                    if(files is not null) // 파일 넣기
+                    {
+                        for (int i = 0; i < files.Count; i++) 
+                        {
+                            bool? AddFile = await FileService.AddImageFile(newFileName[i], VocFileFolderPath, files[i]);
+                        }
+                    }
+
                     // 소켓알림! + 카카오 API 알림
                     //if (result.ReplyYn == true)
                     //{
