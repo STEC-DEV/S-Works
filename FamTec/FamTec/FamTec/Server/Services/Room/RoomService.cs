@@ -37,7 +37,7 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<RoomDTO>?> AddRoomService(HttpContext? context, RoomDTO? dto)
+        public async ValueTask<ResponseUnit<RoomDTO>> AddRoomService(HttpContext context, RoomDTO dto)
         {
             try
             {
@@ -52,8 +52,8 @@ namespace FamTec.Server.Services.Room
                     return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
                 RoomTb roomtb = new RoomTb();
-                roomtb.Name = dto.Name;
-                roomtb.FloorTbId = dto.FloorID.Value;
+                roomtb.Name = dto.Name!;
+                roomtb.FloorTbId = dto.FloorID!.Value;
                 roomtb.CreateDt = DateTime.Now;
                 roomtb.CreateUser = creater;
                 roomtb.UpdateDt = DateTime.Now;
@@ -84,7 +84,7 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<RoomListDTO>> GetRoomListService(HttpContext? context)
+        public async ValueTask<ResponseList<RoomListDTO>> GetRoomListService(HttpContext context)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateRoomService(HttpContext? context, UpdateRoomDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateRoomService(HttpContext context, UpdateRoomDTO dto)
         {
             try
             {
@@ -172,10 +172,10 @@ namespace FamTec.Server.Services.Room
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId);
+                RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value);
                 if(model is not null)
                 {
-                    model.Name = dto.Name;
+                    model.Name = dto.Name!;
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
 
@@ -193,8 +193,6 @@ namespace FamTec.Server.Services.Room
                 {
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
-
-
             }
             catch(Exception ex)
             {
@@ -209,7 +207,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext context, List<int> del)
         {
             try
             {
@@ -231,7 +229,6 @@ namespace FamTec.Server.Services.Room
                     List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(del[i]);
                     if (FacilityList is [_, ..])
                         return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
-
 
                     bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), del[i]);
                     if(Inventory != true)

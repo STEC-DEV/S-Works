@@ -30,7 +30,14 @@ namespace FamTec.Server.Controllers.Floor
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FloorDTO>? model = await FloorService.AddFloorService(HttpContext, dto);
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.BuildingTBID is null)
+                    return NoContent();
+
+                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(HttpContext, dto);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -56,7 +63,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FloorDTO>? model = await FloorService.GetFloorListService(buildingid);
+                ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid);
                 if (model is null)
                     return BadRequest();
 
@@ -81,6 +88,12 @@ namespace FamTec.Server.Controllers.Floor
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.FloorID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto);
                 if (model is null)

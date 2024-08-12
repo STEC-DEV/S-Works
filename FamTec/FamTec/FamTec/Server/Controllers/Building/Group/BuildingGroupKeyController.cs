@@ -1,7 +1,8 @@
-﻿using FamTec.Server.Repository.Building.SubItem.ItemKey;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Building;
+using FamTec.Shared.Server.DTO.Building.Group;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +13,21 @@ namespace FamTec.Server.Controllers.Building.Group
     [ApiController]
     public class BuildingGroupKeyController : ControllerBase
     {
-        private IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private IBuildingKeyService BuildingKeyService;
         private ILogService LogService;
 
-        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice, IBuildingItemKeyInfoRepository ib, ILogService _logservice)
+        public BuildingGroupKeyController(IBuildingKeyService _buildingkeyservice,
+            ILogService _logservice)
         {
             this.BuildingKeyService = _buildingkeyservice;
-            this.BuildingItemKeyInfoRepository = ib;
             this.LogService = _logservice;
         }
 
-        // 추가
+        /// <summary>
+        /// Key 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddKey")]
@@ -32,23 +36,41 @@ namespace FamTec.Server.Controllers.Building.Group
             try
             {
                 //AddKeyDTO dto = new AddKeyDTO();
-                //dto.GroupID = 1;
+                //dto.GroupID = 10;
                 //dto.Name = "추가키";
+                //dto.Unit = "단위1";
                 //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
                 //{
                 //    Values = "값1",
-                //    Unit = "단위1"
+                    
                 //});
                 //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
                 //{
-                //    Values = "값2",
-                //    Unit = "단위2"
+                //    Values = "값2"
                 //});
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddKeyDTO?> model = await BuildingKeyService.AddKeyService(HttpContext, dto);
+                if (dto.GroupID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Unit))
+                    return NoContent();
+
+                if(dto.ItemValues is [_, ..])
+                {
+                    foreach(AddGroupItemValueDTO ValueDTO in dto.ItemValues)
+                    {
+                        if (String.IsNullOrWhiteSpace(ValueDTO.Values))
+                            return NoContent();
+                    }
+                }
+
+                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -76,24 +98,33 @@ namespace FamTec.Server.Controllers.Building.Group
             try
             {
                 //UpdateKeyDTO dto = new UpdateKeyDTO();
-                //dto.ID = 9;
+                //dto.ID = 14;
                 //dto.Itemkey = "추가_수정1";
                 //dto.Unit = "수정";
                 //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
                 //{
-                //    ID = 17,
-                //    ItemValue = "수정값1",
+                //    ID = 38,
+                //    ItemValue = "수정값11",
                 //});
                 //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
                 //{
-                //    ItemValue = "추가값",
+                //    ItemValue = "추가값1",
                 //});
-                //var model = await BuildingItemKeyInfoRepository.UpdateKeyInfo(dto, "테스트");
+                
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UpdateKeyDTO?> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
+                if (dto.ID is null)
+                    return NoContent();
+                
+                if (String.IsNullOrWhiteSpace(dto.Itemkey))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Unit))
+                    return NoContent();
+
+                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
@@ -110,7 +141,11 @@ namespace FamTec.Server.Controllers.Building.Group
             }
         }
 
-        // 삭제
+        /// <summary>
+        /// 키 삭제
+        /// </summary>
+        /// <param name="keyid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteKey")]

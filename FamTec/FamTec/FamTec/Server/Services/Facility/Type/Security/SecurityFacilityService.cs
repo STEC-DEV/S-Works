@@ -61,7 +61,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if (string.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
-                RoomTb? tokenck = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId);
+                RoomTb? tokenck = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId!.Value);
                 if (tokenck is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -195,6 +195,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                         dto.RoomId = model.RoomTbId;
                         dto.RoomName = room.Name;
 
+                        /*
                         string? Image = model.Image;
                         if (!String.IsNullOrWhiteSpace(Image))
                         {
@@ -220,6 +221,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                         {
                             dto.Image = model.Image;
                         }
+                        */
 
                         return new ResponseUnit<FacilityDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                     }
@@ -367,6 +369,8 @@ namespace FamTec.Server.Services.Facility.Type.Security
         {
             try
             {
+                return null;
+                /*
                 int delCount = 0;
 
                 if (context is null)
@@ -459,6 +463,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                     delCount++;
                 }
                 return new ResponseUnit<int?>() { message = $"{delCount}건 삭제 성공", data = delCount, code = 200 };
+                */
             }
             catch (Exception ex)
             {

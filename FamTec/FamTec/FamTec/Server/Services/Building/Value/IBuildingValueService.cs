@@ -6,13 +6,29 @@ namespace FamTec.Server.Services.Building.Value
     public interface IBuildingValueService
     {
 
-        public ValueTask<ResponseUnit<AddValueDTO?>> AddValueService(HttpContext? context, AddValueDTO? dto);
+        /// <summary>
+        /// 값 추가
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto);
 
-        // value - 업데이트 (단일)
-        public ValueTask<ResponseUnit<UpdateValueDTO?>> UpdateValueService(HttpContext? context, UpdateValueDTO? dto);
+        /// <summary>
+        /// value - 업데이트 (단일)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto);
 
 
-        // Value - 삭제 (단일)
-        public ValueTask<ResponseUnit<bool?>> DeleteValueService(HttpContext? context, int? valueid);
+        /// <summary>
+        /// Value - 삭제 (단일)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="valueid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid);
     }
 }

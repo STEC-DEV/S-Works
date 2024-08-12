@@ -35,7 +35,7 @@ namespace FamTec.Server.Controllers.Unit
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<UnitsDTO>? model = await UnitService.GetUnitList(HttpContext);
+                ResponseList<UnitsDTO> model = await UnitService.GetUnitList(HttpContext);
                 if (model is null)
                     return BadRequest();
 
@@ -65,6 +65,9 @@ namespace FamTec.Server.Controllers.Unit
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Unit))
+                    return NoContent();
 
                 ResponseUnit<UnitsDTO>? model = await UnitService.AddUnitService(HttpContext, dto);
 
@@ -119,7 +122,13 @@ namespace FamTec.Server.Controllers.Unit
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UnitsDTO?> model = await UnitService.UpdateUnitService(HttpContext, dto);
+                if (dto.Id is null)
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Unit))
+                    return NoContent();
+
+                ResponseUnit<UnitsDTO> model = await UnitService.UpdateUnitService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 

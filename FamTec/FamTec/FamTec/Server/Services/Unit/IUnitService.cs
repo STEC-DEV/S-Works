@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Unit
         /// </summary>
         /// <param name="sessioninfo"></param>
         /// <returns></returns>
-        ValueTask<ResponseList<UnitsDTO>?> GetUnitList(HttpContext? context);
+        ValueTask<ResponseList<UnitsDTO>> GetUnitList(HttpContext context);
 
         /// <summary>
         /// 단위정보 추가
@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Unit
         /// <param name="dto"></param>
         /// <param name="sessioninfo"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext? context, UnitsDTO? dto);
+        public ValueTask<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext context, UnitsDTO dto);
 
         /// <summary>
         /// 단위정보 삭제
@@ -28,7 +28,7 @@ namespace FamTec.Server.Services.Unit
         /// <param name="dto"></param>
         /// <param name="sessioninfo"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext? context, int? unitid);
+        public ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext context, int unitid);
 
         /// <summary>
         /// 단위정보 수정
@@ -36,7 +36,7 @@ namespace FamTec.Server.Services.Unit
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UnitsDTO?>> UpdateUnitService(HttpContext? context, UnitsDTO? dto);
+        public ValueTask<ResponseUnit<UnitsDTO>> UpdateUnitService(HttpContext context, UnitsDTO dto);
 
     }
 }

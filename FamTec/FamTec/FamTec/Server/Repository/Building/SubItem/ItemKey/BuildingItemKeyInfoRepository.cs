@@ -150,98 +150,103 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                             .ToListAsync();
 
 
-
-                        // NULL 인값 - INSERT - 시키면되는 리스트
-                        List<GroupValueListDTO> INSERTLIST = dto.ValueList!.Where(m => m.ID == null).ToList();
-
-
-                        // DTO IDList 중 NULL이 아닌것 -- 수정대상
-                        List<GroupValueListDTO> UPDATELIST = dto.ValueList!.Where(m => m.ID != null)
-                            .ToList();
-
-
-                        // DB IDList
-                        List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
-
-                        List<int> updateidx = UPDATELIST.Select(m => m.ID!.Value).ToList();
-                        // 삭제대상 (디비 인덱스 - DTO 인덱스 = 남는 DB 인덱스)
-                        List<int> delIdx = db_valueidx.Except(updateidx).ToList(); // list1에만 있는 값 -- DB에만있는값 (삭제할값)
-
-                        
-                        //추가작업
-                        foreach(GroupValueListDTO InsertInfo in INSERTLIST)
+                        // NULL 인값 INSERT OR UPDATE OR DELETE
+                        if (dto.ValueList is [_, ..])
                         {
-                            BuildingItemValueTb InsertTB = new BuildingItemValueTb();
-                            InsertTB.ItemValue = InsertInfo.ItemValue!;
-                            InsertTB.CreateDt = DateTime.Now;
-                            InsertTB.CreateUser = updater;
-                            InsertTB.UpdateDt = DateTime.Now;
-                            InsertTB.UpdateUser = updater;
-                            context.BuildingItemValueTbs.Add(InsertTB);
-                        }
-                        bool InsertResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(!InsertResult)
-                        {
-                            // ADD 실패
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
+                            List<GroupValueListDTO> INSERTLIST = dto.ValueList.Where(m => m.ID == null).ToList();
 
-                        // 업데이트 작업
-                        foreach(GroupValueListDTO UpdateInfo in UPDATELIST)
-                        {
-                            BuildingItemValueTb? UpdateTB = await context.BuildingItemValueTbs
-                                .FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
 
-                            if(UpdateTB is not null)
+                            // DTO IDList 중 NULL이 아닌것 -- 수정대상
+                            List<GroupValueListDTO> UPDATELIST = dto.ValueList!.Where(m => m.ID != null)
+                                .ToList();
+
+                            // DB IDList
+                            List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
+
+                            List<int> updateidx = UPDATELIST.Select(m => m.ID!.Value).ToList();
+                            // 삭제대상 (디비 인덱스 - DTO 인덱스 = 남는 DB 인덱스)
+                            List<int> delIdx = db_valueidx.Except(updateidx).ToList(); // list1에만 있는 값 -- DB에만있는값 (삭제할값)
+
+                            //추가작업
+                            foreach (GroupValueListDTO InsertInfo in INSERTLIST)
                             {
-                                UpdateTB.ItemValue = UpdateInfo.ItemValue!;
-                                UpdateTB.UpdateDt = DateTime.Now;
-                                UpdateTB.UpdateUser = updater;
-                                context.BuildingItemValueTbs.Update(UpdateTB);
+                                BuildingItemValueTb InsertTB = new BuildingItemValueTb();
+                                InsertTB.ItemValue = InsertInfo.ItemValue!;
+                                InsertTB.CreateDt = DateTime.Now;
+                                InsertTB.CreateUser = updater;
+                                InsertTB.UpdateDt = DateTime.Now;
+                                InsertTB.UpdateUser = updater;
+                                InsertTB.BuildingKeyTbId = dto.ID!.Value;
+                                context.BuildingItemValueTbs.Add(InsertTB);
                             }
-                            else
+                            
+                            // 업데이트 작업
+                            foreach (GroupValueListDTO UpdateInfo in UPDATELIST)
                             {
-                                await transaction.RollbackAsync();
-                                return false;
+                                BuildingItemValueTb? UpdateTB = await context.BuildingItemValueTbs
+                                    .FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
+
+                                if (UpdateTB is not null)
+                                {
+                                    UpdateTB.ItemValue = UpdateInfo.ItemValue!;
+                                    UpdateTB.UpdateDt = DateTime.Now;
+                                    UpdateTB.UpdateUser = updater;
+                                    context.BuildingItemValueTbs.Update(UpdateTB);
+                                }
+                                else
+                                {
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            
                             }
+                            
+                            // 삭제작업
+                            foreach (int DelID in delIdx)
+                            {
+                                BuildingItemValueTb? DeleteTB = await context.BuildingItemValueTbs
+                                    .FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
+
+                                if (DeleteTB is not null)
+                                {
+                                    DeleteTB.DelDt = DateTime.Now;
+                                    DeleteTB.DelYn = true;
+                                    DeleteTB.DelUser = updater;
+                                    context.BuildingItemValueTbs.Update(DeleteTB);
+                                }
+                                else
+                                {
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            
                         }
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(!UpdateResult)
+                        else // DELETE
                         {
-                            // UPDATE 실패
-                            await transaction.RollbackAsync();
-                            return false;
+                            if(ValueList is [_, ..])
+                            {
+                                foreach(BuildingItemValueTb ValueTB in ValueList)
+                                {
+                                    ValueTB.DelDt = DateTime.Now;
+                                    ValueTB.DelYn = true;
+                                    ValueTB.DelUser = updater;
+                                    context.BuildingItemValueTbs.Update(ValueTB);
+                                }
+                            }
                         }
 
-                        // 삭제작업
-                        foreach(int DelID in delIdx)
-                        {
-                            BuildingItemValueTb? DeleteTB = await context.BuildingItemValueTbs
-                                .FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
-
-                            if(DeleteTB is not null)
-                            {
-                                DeleteTB.DelDt = DateTime.Now;
-                                DeleteTB.DelYn = true;
-                                DeleteTB.DelUser = updater;
-                                context.BuildingItemValueTbs.Update(DeleteTB);
-                            }
-                            else
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
-                        }
                         bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!DeleteResult)
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
                         {
                             await transaction.RollbackAsync();
                             return false;
                         }
-
-                        await transaction.CommitAsync();
-                        return true;
                     }
                     else
                     {

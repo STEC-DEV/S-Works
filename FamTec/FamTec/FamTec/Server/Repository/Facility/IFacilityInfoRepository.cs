@@ -95,7 +95,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteFacilityInfo(FacilityTb model);
+        ValueTask<bool?> DeleteFacilityInfo(List<int> facilityid, string deleter);
 
     }
 }

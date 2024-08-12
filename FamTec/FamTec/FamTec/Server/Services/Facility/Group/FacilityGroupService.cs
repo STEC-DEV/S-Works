@@ -28,19 +28,19 @@ namespace FamTec.Server.Services.Facility.Group
         }
 
 
-        public async ValueTask<ResponseUnit<AddGroupDTO?>> AddFacilityGroupService(HttpContext? context, AddGroupDTO? dto)
+        public async ValueTask<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(HttpContext context, AddGroupDTO dto)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<AddGroupDTO?>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
                 if (dto is null)
-                    return new ResponseUnit<AddGroupDTO?>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (string.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddGroupDTO?>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
                 FacilityItemGroupTb GroupTB = new FacilityItemGroupTb();
                 GroupTB.Name = dto.Name; // 그룹이름
@@ -82,48 +82,47 @@ namespace FamTec.Server.Services.Facility.Group
                                     FacilityItemValueTb? AddValueTable = await FacilityItemValueInfoRepository.AddAsync(ValueTB);
                                     if (AddValueTable is null)
                                     {
-                                        return new ResponseUnit<AddGroupDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 404 };
+                                        return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 404 };
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            return new ResponseUnit<AddGroupDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 404 };
+                            return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 404 };
                         }
                     }
 
-                    return new ResponseUnit<AddGroupDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseUnit<AddGroupDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<AddGroupDTO?>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddGroupDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
 
 
-        public async ValueTask<ResponseList<GroupListDTO?>> GetFacilityGroupListService(HttpContext? context, int? facilityid)
+        public async ValueTask<ResponseList<GroupListDTO>> GetFacilityGroupListService(HttpContext context, int facilityid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<GroupListDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-                if (facilityid is null)
-                    return new ResponseList<GroupListDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseList<GroupListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                
 
                 List<GroupListDTO?> GroupList = new List<GroupListDTO?>(); // 그룹 [1]
                 List<GroupKeyListDTO?> GroupKeyList = new List<GroupKeyListDTO?>(); // 그룹 [2]
                 List<GroupValueListDTO?> GroupValueList = new List<GroupValueListDTO?>(); // 그룹 [3]
 
 
-                List<FacilityItemGroupTb>? GroupListTB = await FacilityGroupItemInfoRepository.GetAllGroupList(facilityid.Value);
+                List<FacilityItemGroupTb>? GroupListTB = await FacilityGroupItemInfoRepository.GetAllGroupList(facilityid);
                 if (GroupListTB is [_, ..])
                 {
                     foreach (FacilityItemGroupTb Group in GroupListTB)
@@ -167,21 +166,21 @@ namespace FamTec.Server.Services.Facility.Group
                         GroupKeyList = new List<GroupKeyListDTO?>();
                     }
 
-                    return new ResponseList<GroupListDTO?>() { message = "요청이 정상 처리되었습니다.", data = GroupList, code = 200 };
+                    return new ResponseList<GroupListDTO>() { message = "요청이 정상 처리되었습니다.", data = GroupList, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<GroupListDTO?>() { message = "요청이 정상 처리되었습니다", data = GroupList, code = 200 };
+                    return new ResponseList<GroupListDTO>() { message = "요청이 정상 처리되었습니다", data = GroupList, code = 200 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<GroupListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<GroupListDTO?>(), code = 500 };
+                return new ResponseList<GroupListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<GroupListDTO?>(), code = 500 };
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext? context, UpdateGroupDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
         {
             try
             {
@@ -226,21 +225,18 @@ namespace FamTec.Server.Services.Facility.Group
         }
 
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext? context, int? groupid)
+        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
         {
             try
             {
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
-                if (groupid is null)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(groupid.Value);
+                FacilityItemGroupTb? GroupTb = await FacilityGroupItemInfoRepository.GetGroupInfo(groupid);
                 
                 if(GroupTb is not null)
                 {
@@ -253,7 +249,7 @@ namespace FamTec.Server.Services.Facility.Group
                     if (DeleteGroupResult != true)
                         return new ResponseUnit<bool?>() { message = "요청이 처리되지 않았습니다.", data = false, code = 500 };
 
-                    List<FacilityItemKeyTb>? KeyTb = await FacilityItemKeyInfoRepository.GetAllKeyList(groupid.Value);
+                    List<FacilityItemKeyTb>? KeyTb = await FacilityItemKeyInfoRepository.GetAllKeyList(groupid);
                     if(KeyTb is [_, ..])
                     {
                         foreach(FacilityItemKeyTb KeyModel in KeyTb)
@@ -302,8 +298,9 @@ namespace FamTec.Server.Services.Facility.Group
             }
         }
 
-
-
-
+        public ValueTask<ResponseUnit<AddGroupInfoDTO>> AddFacilityGroupInfoService(HttpContext context, AddGroupInfoDTO dto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

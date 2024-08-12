@@ -32,7 +32,7 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FloorDTO>?> AddFloorService(HttpContext? context, FloorDTO? dto)
+        public async ValueTask<ResponseUnit<FloorDTO>> AddFloorService(HttpContext context, FloorDTO dto)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace FamTec.Server.Services.Floor
                 if (dto is null)
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
-                BuildingTb? tokenck = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID.Value);
+                BuildingTb? tokenck = await BuildingInfoRepository.GetBuildingInfo(dto.BuildingTBID!.Value);
                 if (tokenck is null)
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
@@ -50,7 +50,7 @@ namespace FamTec.Server.Services.Floor
                     return new ResponseUnit<FloorDTO>() { message = "잘못된 요청입니다.", data = new FloorDTO(), code = 404 };
 
                 FloorTb? model = new FloorTb();
-                model.Name = dto.Name;
+                model.Name = dto.Name!;
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = creator;
                 model.UpdateDt = DateTime.Now;
@@ -75,37 +75,32 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FloorDTO>?> GetFloorListService(int? buildingtbid)
+        public async ValueTask<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid)
         {
             try
             {
-                if(buildingtbid is not null)
-                {
-                    List<FloorTb>? model = await FloorInfoRepository.GetFloorList(buildingtbid.Value);
+               
+                List<FloorTb>? model = await FloorInfoRepository.GetFloorList(buildingtbid);
 
-                    if(model is [_, ..])
+                if(model is [_, ..])
+                {
+                    return new ResponseList<FloorDTO>()
                     {
-                        return new ResponseList<FloorDTO>()
+                        message = "요청이 정상 처리되었습니다.",
+                        data = model.Select(e => new FloorDTO
                         {
-                            message = "요청이 정상 처리되었습니다.",
-                            data = model.Select(e => new FloorDTO
-                            {
-                                FloorID = e.Id,
-                                Name = e.Name,
-                                BuildingTBID = e.BuildingTbId
-                            }).ToList(),
-                            code = 200
-                        };
-                    }
-                    else
-                    {
-                        return new ResponseList<FloorDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FloorDTO>(), code = 200 };
-                    }
+                            FloorID = e.Id,
+                            Name = e.Name,
+                            BuildingTBID = e.BuildingTbId
+                        }).ToList(),
+                        code = 200
+                    };
                 }
                 else
                 {
-                    return new ResponseList<FloorDTO>() { message = "잘못된 요청입니다.", data = new List<FloorDTO>(), code = 404 };
+                    return new ResponseList<FloorDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FloorDTO>(), code = 200 };
                 }
+               
             }
             catch(Exception ex)
             {
@@ -122,7 +117,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext? context, UpdateFloorDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext context, UpdateFloorDTO dto)
         {
             try
             {
@@ -136,10 +131,10 @@ namespace FamTec.Server.Services.Floor
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FloorTb? model = await FloorInfoRepository.GetFloorInfo(dto.FloorID.Value);
+                FloorTb? model = await FloorInfoRepository.GetFloorInfo(dto.FloorID!.Value);
                 if(model is not null)
                 {
-                    model.Name = dto.Name;
+                    model.Name = dto.Name!;
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
 
@@ -168,7 +163,7 @@ namespace FamTec.Server.Services.Floor
 
         // 층삭제
         // 층에 물려있는 공간이 있으면 삭제 XX
-        public async ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext? context, List<int>? del)
+        public async ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext context, List<int> del)
         {
             try
             {

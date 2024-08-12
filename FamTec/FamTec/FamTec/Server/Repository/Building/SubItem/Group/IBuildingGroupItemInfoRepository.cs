@@ -41,6 +41,14 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         ValueTask<bool?> DeleteGroupInfo(BuildingItemGroupTb model);
 
         /// <summary>
+        /// 그룹삭제
+        /// </summary>
+        /// <param name="groupid"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteGroupInfo(int groupid, string deleter);
+
+        /// <summary>
         /// 넘어온 Id에 포함되어있는 GroupTb 반환
         /// </summary>
         /// <param name="KeyId"></param>

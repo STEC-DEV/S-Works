@@ -12,14 +12,14 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<FloorDTO>?> AddFloorService(HttpContext? context, FloorDTO? dto);
+        public ValueTask<ResponseUnit<FloorDTO>> AddFloorService(HttpContext context, FloorDTO dto);
 
         /// <summary>
         /// 건물에 속해있는 층 리스트 반환
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<FloorDTO>?> GetFloorListService(int? buildingtbid);
+        public ValueTask<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid);
 
         /// <summary>
         /// 층 수정
@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext? context, UpdateFloorDTO? dto);
+        public ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext context, UpdateFloorDTO dto);
 
         /// <summary>
         /// 층 삭제
@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext? context, List<int>? del);
+        ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext context, List<int> del);
 
     }
 }

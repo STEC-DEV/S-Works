@@ -440,8 +440,7 @@ namespace FamTec.Server.Services.User
             try
             {
                 string NewFileName = String.Empty;
-                string deleteFileName = String.Empty;
-
+                
                 if(files is not null)
                 {
                     NewFileName = FileService.SetNewFileName(files);
@@ -458,7 +457,7 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(PlaceIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                // context에서 UserId가 --> context의 사업장에 있는지 검사 1.
+                // context에서 UserId(만든이)가 --> context의 사업장에 있는지 검사 1.
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 if (String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
@@ -470,6 +469,10 @@ namespace FamTec.Server.Services.User
                 if (TokenChk.PermUser != 2)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
+                UsersTb? CheckUserId = await UserInfoRepository.UserIdCheck(dto.USERID!);
+                if (CheckUserId is not null)
+                    return new ResponseUnit<UsersDTO>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+
                 // 사용자 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, PlaceIdx.ToString());
 
@@ -477,42 +480,41 @@ namespace FamTec.Server.Services.User
                 if (!di.Exists) di.Create();
 
                 UsersTb model = new UsersTb();
-
                 model.UserId = dto.USERID!; // 사용자아이디
                 model.Password = dto.PASSWORD!; // 비밀번호
                 model.Name = dto.NAME; // 이름
                 model.Email = dto.EMAIL; // 이메일
                 model.Phone = dto.PHONE; // 전화번호
-                model.PermBasic = dto.PERM_BASIC; // 기본정보메뉴 권한
-                model.PermMachine = dto.PERM_MACHINE; // 기계메뉴 권한
-                model.PermElec = dto.PERM_ELEC; // 전기메뉴 권한
-                model.PermLift = dto.PERM_LIFT; // 승강메뉴 권한
-                model.PermFire = dto.PERM_FIRE; // 소방메뉴 권한
-                model.PermConstruct = dto.PERM_CONSTRUCT; // 건축메뉴 권한
-                model.PermNetwork = dto.PERM_NETWORK; // 통신메뉴 권한
-                model.PermBeauty = dto.PERM_BEAUTY; // 미화메뉴 권한
-                model.PermSecurity = dto.PERM_SECURITY; // 보안메뉴 권한
-                model.PermMaterial = dto.PERM_MATERIAL; // 자재메뉴 권한
-                model.PermEnergy = dto.PERM_ENERGY; // 에너지메뉴 권한
-                model.PermUser = dto.PERM_USER; // 사용자메뉴 권한
-                model.PermVoc = dto.PERM_VOC; // VOC메뉴 권한
+                model.PermBasic = dto.PERM_BASIC!.Value; // 기본정보메뉴 권한
+                model.PermMachine = dto.PERM_MACHINE!.Value; // 기계메뉴 권한
+                model.PermElec = dto.PERM_ELEC!.Value; // 전기메뉴 권한
+                model.PermLift = dto.PERM_LIFT!.Value; // 승강메뉴 권한
+                model.PermFire = dto.PERM_FIRE!.Value; // 소방메뉴 권한
+                model.PermConstruct = dto.PERM_CONSTRUCT!.Value; // 건축메뉴 권한
+                model.PermNetwork = dto.PERM_NETWORK!.Value; // 통신메뉴 권한
+                model.PermBeauty = dto.PERM_BEAUTY!.Value; // 미화메뉴 권한
+                model.PermSecurity = dto.PERM_SECURITY!.Value; // 보안메뉴 권한
+                model.PermMaterial = dto.PERM_MATERIAL!.Value; // 자재메뉴 권한
+                model.PermEnergy = dto.PERM_ENERGY!.Value; // 에너지메뉴 권한
+                model.PermUser = dto.PERM_USER!.Value; // 사용자메뉴 권한
+                model.PermVoc = dto.PERM_VOC!.Value; // VOC메뉴 권한
                 model.AdminYn = false; // 관리자 아님
-                model.AlarmYn = dto.ALRAM_YN; // 알람 여부
+                model.AlarmYn = dto.ALRAM_YN!.Value; // 알람 여부
                 model.Status = 2; // 재직여부
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = Creater; // 생성자
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = Creater; // 수정자
                 model.Job = dto.JOB;
-                model.VocMachine = dto.VOC_MACHINE; // VOC 기계권한
-                model.VocElec = dto.VOC_ELEC; // VOC 전기권한
-                model.VocLift = dto.VOC_LIFT; // VOC 승강권한
-                model.VocFire = dto.VOC_FIRE; // VOC 소방권한
-                model.VocConstruct = dto.VOC_CONSTRUCT; // VOC 건축권한
-                model.VocNetwork = dto.VOC_NETWORK; // VOC 통신권한
-                model.VocBeauty = dto.VOC_BEAUTY; // VOC 미화권한
-                model.VocSecurity = dto.VOC_SECURITY; // VOC 보안권한
-                model.VocEtc = dto.VOC_ETC; // VOC 기타권한
+                model.VocMachine = dto.VOC_MACHINE!.Value; // VOC 기계권한
+                model.VocElec = dto.VOC_ELEC!.Value; // VOC 전기권한
+                model.VocLift = dto.VOC_LIFT!.Value; // VOC 승강권한
+                model.VocFire = dto.VOC_FIRE!.Value; // VOC 소방권한
+                model.VocConstruct = dto.VOC_CONSTRUCT!.Value; // VOC 건축권한
+                model.VocNetwork = dto.VOC_NETWORK!.Value; // VOC 통신권한
+                model.VocBeauty = dto.VOC_BEAUTY!.Value; // VOC 미화권한
+                model.VocSecurity = dto.VOC_SECURITY!.Value; // VOC 보안권한
+                model.VocEtc = dto.VOC_ETC!.Value; // VOC 기타권한
                 model.PlaceTbId = Int32.Parse(PlaceIdx);
                 
                 if(files is not null)
@@ -720,31 +722,31 @@ namespace FamTec.Server.Services.User
                 model.Phone = dto.PHONE;
                 model.Job = dto.JOB;
                 /* 메뉴권한 */
-                model.PermBasic = dto.PERM_BASIC;
-                model.PermMachine = dto.PERM_MACHINE;
-                model.PermElec = dto.PERM_ELEC;
-                model.PermLift = dto.PERM_LIFT;
-                model.PermFire = dto.PERM_FIRE;
-                model.PermConstruct = dto.PERM_CONSTRUCT;
-                model.PermNetwork = dto.PERM_NETWORK;
-                model.PermBeauty = dto.PERM_BEAUTY;
-                model.PermSecurity = dto.PERM_SECURITY;
-                model.PermMaterial = dto.PERM_MATERIAL;
-                model.PermEnergy = dto.PERM_ENERGY;
-                model.PermUser = dto.PERM_USER;
-                model.PermVoc = dto.PERM_VOC;
+                model.PermBasic = dto.PERM_BASIC!.Value;
+                model.PermMachine = dto.PERM_MACHINE!.Value;
+                model.PermElec = dto.PERM_ELEC!.Value;
+                model.PermLift = dto.PERM_LIFT!.Value;
+                model.PermFire = dto.PERM_FIRE!.Value;
+                model.PermConstruct = dto.PERM_CONSTRUCT!.Value;
+                model.PermNetwork = dto.PERM_NETWORK!.Value;
+                model.PermBeauty = dto.PERM_BEAUTY!.Value;
+                model.PermSecurity = dto.PERM_SECURITY!.Value;
+                model.PermMaterial = dto.PERM_MATERIAL!.Value;
+                model.PermEnergy = dto.PERM_ENERGY!.Value;
+                model.PermUser = dto.PERM_USER!.Value;
+                model.PermVoc = dto.PERM_VOC!.Value;
                 /* VOC권한 */
-                model.VocMachine = dto.VOC_MACHINE;
-                model.VocElec = dto.VOC_ELEC;
-                model.VocLift = dto.VOC_LIFT;
-                model.VocFire = dto.VOC_FIRE;
-                model.VocConstruct = dto.VOC_CONSTRUCT;
-                model.VocNetwork = dto.VOC_NETWORK;
-                model.VocBeauty = dto.VOC_BEAUTY;
-                model.VocSecurity = dto.VOC_SECURITY;
-                model.VocEtc = dto.VOC_ETC;
-                model.AlarmYn = dto.ALRAM_YN;
-                model.Status = dto.STATUS;
+                model.VocMachine = dto.VOC_MACHINE!.Value;
+                model.VocElec = dto.VOC_ELEC!.Value;
+                model.VocLift = dto.VOC_LIFT!.Value;
+                model.VocFire = dto.VOC_FIRE!.Value;
+                model.VocConstruct = dto.VOC_CONSTRUCT!.Value;
+                model.VocNetwork = dto.VOC_NETWORK!.Value;
+                model.VocBeauty = dto.VOC_BEAUTY!.Value;
+                model.VocSecurity = dto.VOC_SECURITY!.Value;
+                model.VocEtc = dto.VOC_ETC!.Value;
+                model.AlarmYn = dto.ALRAM_YN!.Value;
+                model.Status = dto.STATUS!.Value;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = Name;
                     

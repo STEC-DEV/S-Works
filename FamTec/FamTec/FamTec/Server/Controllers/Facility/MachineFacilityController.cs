@@ -32,8 +32,25 @@ namespace FamTec.Server.Controllers.Facility
         {
             try
             {
+                //FacilityDTO dto = new FacilityDTO();
+                //dto.Category = "기계";
+                //dto.Name = "기계설비A_1";
+                //dto.Type = "형식1";
+                //dto.Num = 30;
+                //dto.Unit = "개";
+                //dto.RoomTbId = 10;
+
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.RoomTbId is null)
+                    return NoContent();
 
                 if (files is not null)
                 {
@@ -57,7 +74,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO> model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
 
                 if (model is null)
                     return BadRequest();
@@ -111,7 +128,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO?> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid);
                 if (model is null)
                     return BadRequest();
 
@@ -128,14 +145,33 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/UpdateMachineFacility")]
         public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO dto, IFormFile? files)
         {
             try
             {
+                //FacilityDTO dto = new FacilityDTO();
+                //dto.ID = 4;
+                //dto.Category = "기계";
+                //dto.Name = "기계수정설비A_1";
+                //dto.Type = "형식1";
+                //dto.RoomTbId = 10;
+
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.ID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Category))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.RoomTbId is null)
+                    return NoContent();
 
                 if (files is not null)
                 {
@@ -188,7 +224,16 @@ namespace FamTec.Server.Controllers.Facility
         [Route("sign/DeleteMachineFacility")]
         public async ValueTask<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
         {
-            ResponseUnit<int?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
+            if (HttpContext is null)
+                return BadRequest();
+            
+            if (delIdx is null)
+                return NoContent();
+
+            if (delIdx.Count() == 0)
+                return NoContent();
+
+            ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
             if(model is not null)
             {
                 if(model.code == 200)

@@ -22,6 +22,11 @@ namespace FamTec.Server.Controllers.Room
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 공간정보 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddRoom")]
@@ -31,8 +36,14 @@ namespace FamTec.Server.Controllers.Room
             {
                 if (HttpContext is null)
                     return BadRequest();
-                
-                ResponseUnit<RoomDTO>? model = await RoomService.AddRoomService(HttpContext, dto);
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.FloorID is null)
+                    return NoContent();
+
+                ResponseUnit<RoomDTO> model = await RoomService.AddRoomService(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest();
@@ -49,6 +60,10 @@ namespace FamTec.Server.Controllers.Room
             }
         }
 
+        /// <summary>
+        /// 공간정보 전체조회
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllRoomList")]
@@ -59,8 +74,7 @@ namespace FamTec.Server.Controllers.Room
                 if (HttpContext is null)
                     return BadRequest();
 
-
-                ResponseList<RoomListDTO>? model = await RoomService.GetRoomListService(HttpContext);
+                ResponseList<RoomListDTO> model = await RoomService.GetRoomListService(HttpContext);
 
                 if (model is null)
                     return BadRequest();
@@ -77,8 +91,13 @@ namespace FamTec.Server.Controllers.Room
             }
         }
 
+        /// <summary>
+        /// 공간정보 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/UpdateRoom")]
         public async ValueTask<IActionResult> UpdateRoom([FromBody] UpdateRoomDTO dto)
         {
@@ -86,6 +105,12 @@ namespace FamTec.Server.Controllers.Room
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.RoomId is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await RoomService.UpdateRoomService(HttpContext, dto);
                 if (model is null)
@@ -103,6 +128,11 @@ namespace FamTec.Server.Controllers.Room
             }
         }
 
+        /// <summary>
+        /// 공간정보 삭제
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteRoom")]
@@ -112,6 +142,12 @@ namespace FamTec.Server.Controllers.Room
             {
                 if (HttpContext is null)
                     return BadRequest();
+                
+                if (idx is null)
+                    return NoContent();
+                
+                if (idx.Count() == 0)
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await RoomService.DeleteRoomService(HttpContext, idx);
                 if (model is null)

@@ -32,7 +32,13 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddValueDTO?> model = await BuildingValueService.AddValueService(HttpContext, dto);
+                if (dto.KeyID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Value))
+                    return NoContent();
+
+                ResponseUnit<AddValueDTO> model = await BuildingValueService.AddValueService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
@@ -58,7 +64,13 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UpdateValueDTO?> model = await BuildingValueService.UpdateValueService(HttpContext, dto);
+                if (dto.ID is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.ItemValue))
+                    return NoContent();
+
+                ResponseUnit<UpdateValueDTO> model = await BuildingValueService.UpdateValueService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
@@ -75,9 +87,9 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("sign/DeleteValue")]
-        public async ValueTask<IActionResult> DeleteGroupValue([FromBody]int valueid)
+        public async ValueTask<IActionResult> DeleteGroupValue([FromQuery]int valueid)
         {
             try
             {

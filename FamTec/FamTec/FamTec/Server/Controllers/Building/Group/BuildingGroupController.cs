@@ -1,5 +1,6 @@
 ﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Group;
+using FamTec.Shared.Client.DTO;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Group;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,12 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (dto.BuildingIdx is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
                 ResponseUnit<AddGroupInfoDTO?> model = await GroupService.AddBuildingGroupInfoService(HttpContext, dto);
                 
                 if (model is null)
@@ -48,52 +55,76 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        //[HttpPost]
+        [HttpPost]
         [Route("sign/AddBuildingGroup")]
-        public async ValueTask<IActionResult> AddBuildingGroup()
-        //public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
+        public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
-                AddGroupDTO dto = new AddGroupDTO();
-                dto.BuildingIdx = 6;
-                dto.Name = "옥상주차장";
+                //AddGroupDTO dto = new AddGroupDTO();
+                //dto.BuildingIdx = 12;
+                //dto.Name = "옥상주차장";
 
-                AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
-                key.Name = "전기차";
-                key.Unit = "대";
+                //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
+                //key.Name = "전기차";
+                //key.Unit = "대";
 
-                key.ItemValues.Add(new AddGroupItemValueDTO()
-                {
-                    Values = "3",
-                });
+                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //{
+                //    Values = "3",
+                //});
 
-                dto.AddGroupKey.Add(key);
+                //dto.AddGroupKey.Add(key);
 
-                key = new AddGroupItemKeyDTO();
-                key.Name = "수소차";
-                key.Unit = "대";
+                //key = new AddGroupItemKeyDTO();
+                //key.Name = "수소차";
+                //key.Unit = "대";
 
-                key.ItemValues.Add(new AddGroupItemValueDTO()
-                {
-                    Values = "5"
-                });
-                key.ItemValues.Add(new AddGroupItemValueDTO()
-                {
-                    Values = "8"
-                });
+                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //{
+                //    Values = "5"
+                //});
+                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //{
+                //    Values = "8"
+                //});
 
-                dto.AddGroupKey.Add(key);
+                //dto.AddGroupKey.Add(key);
 
+                // ------------- DTO 검사
                 if (dto is null)
                     return NoContent();
 
-                //foreach(AddGroupDTO Group in dto)
-                //{
-                   
-                //}
+                if(dto.BuildingIdx is null)
+                    return NoContent();
 
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.AddGroupKey is null)
+                    return NoContent();
+                if(dto.AddGroupKey.Count == 0)
+                    return NoContent();
+
+                foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
+                {
+                    if (String.IsNullOrWhiteSpace(KeyDTO.Name))
+                        return NoContent();
+                    if (String.IsNullOrWhiteSpace(KeyDTO.Unit))
+                        return NoContent();
+
+                    if(KeyDTO.ItemValues is null)
+                        return NoContent();
+                    if(KeyDTO.ItemValues.Count == 0)
+                        return NoContent();
+
+                    foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
+                    {
+                        if(String.IsNullOrWhiteSpace(ValueDTO.Values))
+                            return NoContent();
+                    }
+                    
+                }
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -115,6 +146,11 @@ namespace FamTec.Server.Controllers.Building.Group
             }
         }
 
+        /// <summary>
+        /// 건물의 하위정보 전체조회
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetBuildingGroup")]
@@ -142,6 +178,11 @@ namespace FamTec.Server.Controllers.Building.Group
             }
         }
 
+        /// <summary>
+        /// 건물 그룹정보 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
@@ -151,6 +192,12 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.GroupId is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.GroupName))
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
                 
@@ -170,9 +217,9 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteBuildingGroup([FromBody]int groupid)
+        public async ValueTask<IActionResult> DeleteBuildingGroup([FromQuery]int groupid)
         {
             try
             {
