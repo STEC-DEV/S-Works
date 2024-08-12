@@ -42,6 +42,14 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+
+                if(files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 if (context is null)
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -117,7 +125,7 @@ namespace FamTec.Server.Services.Building
 
                 if(files is not null)
                 {
-                    model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
+                    model.Image = NewFileName;
                 }
                 else
                 {
@@ -128,6 +136,12 @@ namespace FamTec.Server.Services.Building
                 
                 if(buildingtb is not null)
                 {
+                    if(files is not null)
+                    {
+                        // 파일 넣기
+                        bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
+                    }
+
                     return new ResponseUnit<AddBuildingDTO>()
                     {
                         message = "요청이 정상 처리되었습니다.",
@@ -151,7 +165,7 @@ namespace FamTec.Server.Services.Building
                             BuildingHeight = buildingtb.BuildingHeight, // 건물높이
                             GroundHeight = buildingtb.GroundHeight, // 지상높이
                             BasementHeight = buildingtb.BasementHeight, // 지하깊이
-                            ParkingNum =  buildingtb.ParkingNum, // 주차장 대수
+                            ParkingNum = buildingtb.ParkingNum, // 주차장 대수
                             InnerParkingNum = buildingtb.InnerParkingNum, // 옥내 대수
                             OuterParkingNum = buildingtb.OuterParkingNum, // 옥외 대수
                             ElecCapacity = buildingtb.ElecCapacity, // 전기용량
@@ -183,11 +197,6 @@ namespace FamTec.Server.Services.Building
                 }
                 else
                 {
-                    if(!String.IsNullOrWhiteSpace(model.Image))
-                    {
-                        bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
-                    }
-
                     return new ResponseUnit<AddBuildingDTO>() { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }

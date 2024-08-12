@@ -39,6 +39,14 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+
+                if(files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 if (context is null)
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
                 if (dto is null)
@@ -73,7 +81,7 @@ namespace FamTec.Server.Services.Material
 
                 if(files is not null)
                 {
-                    matertialtb.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
+                    matertialtb.Image = NewFileName;
                 }
                 else
                 {
@@ -82,8 +90,15 @@ namespace FamTec.Server.Services.Material
                
                 MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
                 
+
                 if(model is not null)
                 {
+                    if(files is not null)
+                    {
+                        // 파일 넣기
+                        bool? AddFile = await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
+                    }
+
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
                     {
                         Code = model.Code, // 품목코드
@@ -97,10 +112,6 @@ namespace FamTec.Server.Services.Material
                 }
                 else
                 {
-                    if(!String.IsNullOrWhiteSpace(matertialtb.Image))
-                    {
-                        bool result = FileService.DeleteImageFile(MaterialFileFolderPath, matertialtb.Image); // 파일삭제
-                    }
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 처리되지 않았습니다.", data = new AddMaterialDTO(), code = 404 };
                 }
             }
@@ -235,6 +246,14 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+
+                if(files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 if (dto is null)
@@ -251,8 +270,8 @@ namespace FamTec.Server.Services.Material
                 MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id.Value);
                 if(model is not null)
                 {
-                    model.Code = dto.Code; // 품목코드
-                    model.Name = dto.Name; // 품목명
+                    model.Code = dto.Code!; // 품목코드
+                    model.Name = dto.Name!; // 품목명
                     model.Unit = dto.Unit; // 단위
                     model.Standard = dto.Standard; // 규격
                     model.ManufacturingComp = dto.ManufacturingComp; // 제조사
@@ -267,36 +286,52 @@ namespace FamTec.Server.Services.Material
                     {
                         if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
                         {
-                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
-                            model.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
+                            deleteFileName = model.Image; // 삭제할 이름을 넣는다.
+                            model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
                         }
                         else // DB엔 없는 경우
                         {
-                            model.Image = await FileService.AddImageFile(MaterialFileFolderPath, files);
+                            model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
                         }
                     }
                     else // 파일이 공백인 경우
                     {
                         if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
                         {
-                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
-                            if (result)
-                                model.Image = null;
+                            deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
+                            model.Image = null; // 모델의 파일명을 비운다.
                         }
                     }
 
                     bool? updateMaterial = await MaterialInfoRepository.UpdateMaterialInfo(model);
                     if(updateMaterial == true)
                     {
+                        if(files is not null) // 파일이 공백이 아닌경우
+                        {
+                            if(!String.IsNullOrWhiteSpace(model.Image))
+                            {
+                                // 파일넣기
+                                bool? AddFile = await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
+                            }
+                            if(!String.IsNullOrWhiteSpace(deleteFileName))
+                            {
+                                // 파일 삭제
+                                bool DeleteFile = FileService.DeleteImageFile(MaterialFileFolderPath, deleteFileName);
+                            }
+                        } // 파일이 공백인경우
+                        else
+                        {
+                            if(!String.IsNullOrWhiteSpace(deleteFileName))
+                            {
+                                // 삭제할거
+                                bool DeleteFile = FileService.DeleteImageFile(MaterialFileFolderPath, deleteFileName);
+                            }
+                        }
+
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else
                     {
-                        if (!String.IsNullOrWhiteSpace(model.Image))
-                        {
-                            bool result = FileService.DeleteImageFile(MaterialFileFolderPath, model.Image);
-                        }
-
                         return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                     }
                 }

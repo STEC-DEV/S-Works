@@ -76,6 +76,8 @@ namespace FamTec.Server.Services.User
                             authClaims.Add(new Claim("AdminYN", context.Items["AdminYN"].ToString())); // 관리자 여부
                             authClaims.Add(new Claim("UserType", context.Items["UserType"].ToString()));
                             authClaims.Add(new Claim("AdminIdx", context.Items["AdminIdx"].ToString())); // 관리자 인덱스
+                            authClaims.Add(new Claim("PlaceIdx", placetb.Id!.ToString()));// 사업장 인덱스
+                            authClaims.Add(new Claim("PlaceName", placetb.Name!.ToString()));// 사업장 이름
 
                             if (context.Items["Role"].ToString() == "시스템관리자")
                             {
@@ -133,8 +135,6 @@ namespace FamTec.Server.Services.User
                             
                             /* PLACE 권한 */
                             items = new JObject();
-                            items.Add("PlaceIdx", placetb.Id.ToString());
-                            items.Add("PlaceName", placetb.Name.ToString());
                             items.Add("PlacePerm_Machine", placetb.PermMachine.ToString());
                             items.Add("PlacePerm_Elec", placetb.PermElec.ToString());
                             items.Add("PlacePerm_Lift", placetb.PermLift.ToString());
@@ -215,7 +215,9 @@ namespace FamTec.Server.Services.User
                         authClaims.Add(new Claim("UserType", "User"));
                         authClaims.Add(new Claim("Role", "User"));
                         authClaims.Add(new Claim(ClaimTypes.Role, "User"));
-
+                        authClaims.Add(new Claim("PlaceIdx", placetb.Id!.ToString()));// 사업장 인덱스
+                        authClaims.Add(new Claim("PlaceName", placetb.Name!.ToString()));// 사업장 이름
+                        
                         JObject items = new JObject();
 
                         /* 메뉴 접근권한 */
@@ -250,8 +252,6 @@ namespace FamTec.Server.Services.User
                         authClaims.Add(new Claim("VocPerms", jsonConvert));
 
                         /* 사업장 권한 */
-                        items.Add("PlaceIdx", usertb.PlaceTbId.ToString()); // 사업장 인덱스
-                        items.Add("PlaceName", placetb.Name.ToString()); // 사업장 이름
                         items.Add("PlacePerm_Machine", placetb.PermMachine.ToString()); // 사업장 기계메뉴 권한
                         items.Add("PlacePerm_Elec", placetb.PermElec.ToString()); // 사업장 전기메뉴 권한
                         items.Add("PlacePerm_Lift", placetb.PermLift.ToString()); // 사업장 승강메뉴 권한
@@ -302,7 +302,7 @@ namespace FamTec.Server.Services.User
                         authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
                         authClaims.Add(new Claim("UserType", "ADMIN"));
                         authClaims.Add(new Claim("AdminIdx", admintb.Id!.ToString())); // 관리자 인덱스
-
+                        
                         if (admintb.Type == "시스템관리자")
                         {
                             authClaims.Add(new Claim("Role", "시스템관리자"));
@@ -443,6 +443,13 @@ namespace FamTec.Server.Services.User
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+
+                if(files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
 
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
@@ -514,7 +521,7 @@ namespace FamTec.Server.Services.User
                 
                 if(files is not null)
                 {
-                    model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
+                    model.Image = NewFileName;
                 }
                 else
                 {
@@ -524,30 +531,21 @@ namespace FamTec.Server.Services.User
                 bool? result = await UserInfoRepository.AddUserAsync(model);
                 if (result == true)
                 {
-                    return new ResponseUnit<UsersDTO>()
+                    if(files is not null)
                     {
-                        message = "요청이 정상 처리되었습니다.",
-                        data = dto,
-                        code = 200
-                    };
+                        // 파일 넣기
+                        bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
+                    }
+
+                    return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else if(result == false)
                 {
-                    return new ResponseUnit<UsersDTO>()
-                    {
-                        message = "중복된 아이디입니다.",
-                        data = dto,
-                        code = 204
-                    };
+                    return new ResponseUnit<UsersDTO>() { message = "중복된 아이디입니다.", data = dto, code = 204 };
                 }
                 else
                 {
-                    return new ResponseUnit<UsersDTO>()
-                    {
-                        message = "잘못된 요청입니다.",
-                        data = new UsersDTO(),
-                        code = 404
-                    };
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 }
             }
             catch(Exception ex)
@@ -693,6 +691,14 @@ namespace FamTec.Server.Services.User
         {
             try
             {
+                string NewFileName = String.Empty;
+                string deleteFileName = String.Empty;
+
+                if(files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 
@@ -708,87 +714,99 @@ namespace FamTec.Server.Services.User
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value);
-                if (model is not null)
+                if(model is null)
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                model.UserId = dto.USERID!;
+                model.Password = dto.PASSWORD!;
+                model.Name = dto.NAME;
+                model.Email = dto.EMAIL;
+                model.Phone = dto.PHONE;
+                model.Job = dto.JOB;
+                /* 메뉴권한 */
+                model.PermBasic = dto.PERM_BASIC;
+                model.PermMachine = dto.PERM_MACHINE;
+                model.PermElec = dto.PERM_ELEC;
+                model.PermLift = dto.PERM_LIFT;
+                model.PermFire = dto.PERM_FIRE;
+                model.PermConstruct = dto.PERM_CONSTRUCT;
+                model.PermNetwork = dto.PERM_NETWORK;
+                model.PermBeauty = dto.PERM_BEAUTY;
+                model.PermSecurity = dto.PERM_SECURITY;
+                model.PermMaterial = dto.PERM_MATERIAL;
+                model.PermEnergy = dto.PERM_ENERGY;
+                model.PermUser = dto.PERM_USER;
+                model.PermVoc = dto.PERM_VOC;
+                /* VOC권한 */
+                model.VocMachine = dto.VOC_MACHINE;
+                model.VocElec = dto.VOC_ELEC;
+                model.VocLift = dto.VOC_LIFT;
+                model.VocFire = dto.VOC_FIRE;
+                model.VocConstruct = dto.VOC_CONSTRUCT;
+                model.VocNetwork = dto.VOC_NETWORK;
+                model.VocBeauty = dto.VOC_BEAUTY;
+                model.VocSecurity = dto.VOC_SECURITY;
+                model.VocEtc = dto.VOC_ETC;
+                model.AlarmYn = dto.ALRAM_YN;
+                model.Status = dto.STATUS;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = Name;
+                    
+                PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                    
+                if(files is not null) // 파일이 공백이 아닌경우
                 {
-                    model.UserId = dto.USERID!;
-                    model.Password = dto.PASSWORD!;
-                    model.Name = dto.NAME;
-                    model.Email = dto.EMAIL;
-                    model.Phone = dto.PHONE;
-                    model.Job = dto.JOB;
-                    /* 메뉴권한 */
-                    model.PermBasic = dto.PERM_BASIC;
-                    model.PermMachine = dto.PERM_MACHINE;
-                    model.PermElec = dto.PERM_ELEC;
-                    model.PermLift = dto.PERM_LIFT;
-                    model.PermFire = dto.PERM_FIRE;
-                    model.PermConstruct = dto.PERM_CONSTRUCT;
-                    model.PermNetwork = dto.PERM_NETWORK;
-                    model.PermBeauty = dto.PERM_BEAUTY;
-                    model.PermSecurity = dto.PERM_SECURITY;
-                    model.PermMaterial = dto.PERM_MATERIAL;
-                    model.PermEnergy = dto.PERM_ENERGY;
-                    model.PermUser = dto.PERM_USER;
-                    model.PermVoc = dto.PERM_VOC;
-                    /* VOC권한 */
-                    model.VocMachine = dto.VOC_MACHINE;
-                    model.VocElec = dto.VOC_ELEC;
-                    model.VocLift = dto.VOC_LIFT;
-                    model.VocFire = dto.VOC_FIRE;
-                    model.VocConstruct = dto.VOC_CONSTRUCT;
-                    model.VocNetwork = dto.VOC_NETWORK;
-                    model.VocBeauty = dto.VOC_BEAUTY;
-                    model.VocSecurity = dto.VOC_SECURITY;
-                    model.VocEtc = dto.VOC_ETC;
-                    model.AlarmYn = dto.ALRAM_YN;
-                    model.Status = dto.STATUS;
+                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을 경우
+                    {
+                        deleteFileName = model.Image; // 삭제할 이름을 넣는다.
+                        model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                    }
+                    else // DB엔 없는경우
+                    {
+                        model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                    }
+                }
+                else // 파일이 공백인경우
+                {
+                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
+                    {
+                        deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
+                        model.Image = null; // 모델의 파일명을 비운다.
+                    }
+                }
 
-                    model.UpdateDt = DateTime.Now;
-                    model.UpdateUser = Name;
-                    
-                    PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
-                    
+                UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
+                if (updatemodel is not null)
+                {
                     if(files is not null) // 파일이 공백이 아닌경우
-                    {
-                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을 경우
-                        {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
-                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
-                        }
-                        else // DB엔 없는경우
-                        {
-                            model.Image = await FileService.AddImageFile(PlaceFileFolderPath, files);
-                        }
-                    }
-                    else // 파일이 공백인경우
-                    {
-                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는 경우
-                        {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
-                            if (result)
-                                model.Image = null;
-                        }
-                    }
-
-                    UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
-                    if (updatemodel is not null)
-                    {
-                        return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                    }
-                    else
                     {
                         if(!String.IsNullOrWhiteSpace(model.Image))
                         {
-                            bool result = FileService.DeleteImageFile(PlaceFileFolderPath, model.Image);
+                            // 파일 넣기
+                            bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
                         }
-
-                        return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
+                        {
+                            // 파일 삭제
+                            bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
+                        }
                     }
+                    else // 파일이 공백인 경우
+                    {
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
+                        {
+                            // 삭제할거
+                            bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
+                        }
+                    }
+
+                    return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+                    return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
                 }
+              
             }
             catch(Exception ex)
             {

@@ -341,6 +341,14 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string creater, IFormFile? files)
         {
+            string NewFileName = String.Empty;
+            string deleteFileName = String.Empty;
+
+            if(files is not null)
+            {
+                NewFileName = FileService.SetNewFileName(files);
+            }
+
             string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
 
             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -365,10 +373,31 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         userTB.Password = dto.Password!; // 비밀번호
                         userTB.UpdateDt = DateTime.Now;
                         userTB.UpdateUser = creater;
+
+                        if(files is not null) // 파일이 공백이 아닌경우
+                        {
+                            if (!String.IsNullOrWhiteSpace(userTB.Image)) // DB에 파일이 있을경우
+                            {
+                                deleteFileName = userTB.Image; // 삭제할 이름에 넣는다.
+                                userTB.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                            }
+                            else // DB엔 없는경우
+                            {
+                                userTB.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                            }
+                        }
+                        else // 파일이 공백인 경우
+                        {
+                            if (!String.IsNullOrWhiteSpace(userTB.Image)) // DB에 파일이 있는 경우
+                            {
+                                deleteFileName = userTB.Image; // 모델의 파일명을 삭제 명단에 넣는다.
+                                userTB.Image = null; // 모델의 파일명을 비운다.
+                            }
+                        }
+
                         context.UsersTbs.Update(userTB);
 
                         bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
-
                         if (!UserUpdate) // 업데이트 실패 - 롤백
                         {
                             await transaction.RollbackAsync();
@@ -404,7 +433,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                     if (DTOPlaceIdx is [_, ..]) // 넘어온 사업장이 있으면
                     {
-                        
                         if(AdminPlaceIdx is [_, ..]) // 해당 관리자의 사업장이 있으면
                         {
                             // 내가갖고 있는것
@@ -496,48 +524,31 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     }
 
                     
-                    // 파일 갈아끼우기 작업.
-                    if (files is not null) // 파일이 있는데
+
+                    if(files is not null) // 파일이 공백이 아닌경우
                     {
-                        if(!String.IsNullOrWhiteSpace(userTB.Image)) // DB에는 있다
+                        if(!String.IsNullOrWhiteSpace(userTB.Image))
                         {
-                            // DB삭제 + 파일삭제
-                            bool result = FileService.DeleteImageFile(AdminFileFolderPath, userTB.Image);
-                            if (result)
-                                userTB.Image = null;
+                            // 파일넣기
+                            bool? AddFile = await FileService.AddImageFile(NewFileName, AdminFileFolderPath, files);
                         }
-                        // 파일추가
-                        userTB.Image = await FileService.AddImageFile(AdminFileFolderPath, files);
-                    }
-                    else // 파일이 없다
-                    {
-                        if(!String.IsNullOrWhiteSpace(userTB.Image)) // DB엔 있다
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {
-                            // DB삭제 + 파일삭제
-                            bool result = FileService.DeleteImageFile(AdminFileFolderPath, userTB.Image);
-                            if (result)
-                                userTB.Image = null;
+                            // 파일삭제
+                            bool DeleteFIle = FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
+                        }
+                    }
+                    else // 파일이 공백인 경우
+                    {
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
+                        {
+                            // 삭제할거
+                            bool DeleteFile = FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
                         }
                     }
 
-                    context.UsersTbs.Update(userTB);
-                    bool UpdateUser = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(UpdateUser)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        // Rollback시 파일삭제
-                        if (!String.IsNullOrWhiteSpace(userTB.Image))
-                        {
-                            FileService.DeleteImageFile(AdminFileFolderPath, userTB.Image);
-                        }
-
-                        await transaction.RollbackAsync();
-                        return false;
-                    }
+                    await transaction.CommitAsync();
+                    return true;
                 }
                 catch (Exception ex)
                 {
