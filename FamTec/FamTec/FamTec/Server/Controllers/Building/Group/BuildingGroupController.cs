@@ -48,41 +48,52 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
+        //[HttpPost]
         [Route("sign/AddBuildingGroup")]
-        public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
+        public async ValueTask<IActionResult> AddBuildingGroup()
+        //public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
-                //AddGroupDTO dto = new AddGroupDTO();
-                //dto.BuildingIdx = 6;
-                //dto.Name = "옥상주차장";
+                AddGroupDTO dto = new AddGroupDTO();
+                dto.BuildingIdx = 6;
+                dto.Name = "옥상주차장";
 
-                //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
-                //key.Name = "전기차";
+                AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
+                key.Name = "전기차";
+                key.Unit = "대";
 
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                key.ItemValues.Add(new AddGroupItemValueDTO()
+                {
+                    Values = "3",
+                });
+
+                dto.AddGroupKey.Add(key);
+
+                key = new AddGroupItemKeyDTO();
+                key.Name = "수소차";
+                key.Unit = "대";
+
+                key.ItemValues.Add(new AddGroupItemValueDTO()
+                {
+                    Values = "5"
+                });
+                key.ItemValues.Add(new AddGroupItemValueDTO()
+                {
+                    Values = "8"
+                });
+
+                dto.AddGroupKey.Add(key);
+
+                if (dto is null)
+                    return NoContent();
+
+                //foreach(AddGroupDTO Group in dto)
                 //{
-                //    Values = "3",
-                //    Unit = "대"
-                //});
+                   
+                //}
 
-                //dto.AddGroupKey.Add(key);
-
-                //key = new AddGroupItemKeyDTO();
-                //key.Name = "수소차";
-
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
-                //{
-                //    Values = "5",
-                //    Unit = "대"
-                //});
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
-                //{
-                //    Values = "8",
-                //    Unit = "대"
-                //});
-                //dto.AddGroupKey.Add(key);
 
                 if (HttpContext is null)
                     return BadRequest();

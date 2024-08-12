@@ -97,7 +97,6 @@ namespace FamTec.Server.Services.User
                                 authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
                             }
 
-
                             JObject items = new JObject();
 
                             /* 메뉴 접근권한 */
@@ -290,9 +289,8 @@ namespace FamTec.Server.Services.User
                 else // 관리자
                 {
                     // 위에만큼 담는데 (사업장 은 빼고)
-                    // Return 201
                     AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
-
+                    
                     if (admintb is not null)
                     {
                         authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // USER 인덱스
@@ -321,7 +319,7 @@ namespace FamTec.Server.Services.User
 
                         JObject items = new JObject();
 
-                        /* 메뉴 접근권한 */
+                        // 메뉴 접근권한
                         items.Add("UserPerm_Basic", usertb.PermBasic);
                         items.Add("UserPerm_Machine", usertb.PermMachine);
                         items.Add("UserPerm_Elec", usertb.PermElec);
@@ -339,7 +337,7 @@ namespace FamTec.Server.Services.User
                         authClaims.Add(new Claim("UserPerms", jsonConvert));
 
                         items = new JObject();
-                        /* VOC 권한 */
+                        // VOC 권한
                         items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
                         items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
                         items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
@@ -371,8 +369,6 @@ namespace FamTec.Server.Services.User
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                     }
                 }
-                
-               
             }
             catch (Exception ex)
             {

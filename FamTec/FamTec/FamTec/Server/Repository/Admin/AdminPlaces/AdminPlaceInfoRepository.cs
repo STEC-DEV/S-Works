@@ -67,7 +67,9 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             try
             {
-                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
+                    .Where(m => m.AdminTbId == adminid && m.DelYn != true)
+                    .ToListAsync();
 
                 if(adminplacetb is [_, ..])
                     return adminplacetb;

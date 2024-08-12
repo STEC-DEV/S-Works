@@ -2632,6 +2632,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "AdminSelectList",
+    "RelativePath": "api/Login/AdminSelectList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
     "Method": "Login",
     "RelativePath": "api/Login/Login",
     "HttpMethod": "POST",

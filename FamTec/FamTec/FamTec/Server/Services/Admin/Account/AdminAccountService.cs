@@ -128,6 +128,12 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
+                string NewFileName = String.Empty;
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(files);
+                }
+
                 string? useridx = Convert.ToString(context.Items["UserIdx"]);
                 if(String.IsNullOrWhiteSpace(useridx))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -193,7 +199,7 @@ namespace FamTec.Server.Services.Admin.Account
                 
                 if (files is not null)
                 {
-                    //model.Image = await FileService.AddImageFile(AdminFileFolderPath, files);
+                    model.Image = NewFileName;
                 }
                 else
                 {
@@ -203,6 +209,12 @@ namespace FamTec.Server.Services.Admin.Account
                 UsersTb? userresult = await UserInfoRepository.AddAsync(model);
                 if (userresult is not null)
                 {
+                    if(files is not null)
+                    {
+                        // 파일넣기
+                        bool? AddFile = await FileService.AddImageFile(NewFileName, AdminFileFolderPath, files);
+                    }
+
                     AdminTb? adminmodel = new AdminTb();
                         
                     if (UserType == "시스템관리자")
@@ -238,12 +250,6 @@ namespace FamTec.Server.Services.Admin.Account
                 }
                 else
                 {
-                    // 파일삭제
-                    if (!String.IsNullOrWhiteSpace(model.Image))
-                    {
-                        FileService.DeleteImageFile(AdminFileFolderPath, model.Image);
-                    }
-
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 }
             }
@@ -426,11 +432,6 @@ namespace FamTec.Server.Services.Admin.Account
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                 if(usertb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                UsersTb? UserIdcheck = await UserInfoRepository.UserIdCheck(dto.UserId!);
-                if (UserIdcheck is not null)
-                    return new ResponseUnit<bool?>() { message = "이미 사용중인 아이디입니다.", data = null, code = 200 };
-
 
                 bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, creater, files);
 

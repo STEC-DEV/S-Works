@@ -43,7 +43,6 @@ namespace FamTec.Server.Services.Building
             try
             {
                 string NewFileName = String.Empty;
-                string deleteFileName = String.Empty;
 
                 if(files is not null)
                 {
@@ -520,7 +519,7 @@ namespace FamTec.Server.Services.Building
                 }
                 else if(DeleteResult == false)
                 {
-                    return new ResponseUnit<bool?>() { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                 }
                 else
                 {

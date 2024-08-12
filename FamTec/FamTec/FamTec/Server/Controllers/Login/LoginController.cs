@@ -7,6 +7,7 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Controllers.Login
 {
@@ -89,7 +90,14 @@ namespace FamTec.Server.Controllers.Login
                 if (model.code == 200)
                     return Ok(model); // 유저
                 else if (model.code == 201)
-                    return Ok(model); // 관리자
+                {
+                    /*
+                    JObject temp = JObject.Parse(model.data);
+                    var Jtoken = JToken.Parse(temp["AdminIdx"].ToString());
+                    return Ok(new ResponseUnit<string>() { message = "OK", data = Jtoken.ToString(), code = 200 }); // 관리자
+                    */
+                    return Ok(model);
+                }
                 else
                     return Ok(model); // 유저
             }
@@ -104,9 +112,10 @@ namespace FamTec.Server.Controllers.Login
         /// 사업장 리스트 반환
         /// </summary>
         /// <returns></returns>
+        
         [HttpGet]
-        [Route("sign/AdminSelectList")]
-        public async ValueTask<IActionResult> AdminSelectList()
+        [Route("AdminSelectList")]
+        public async ValueTask<IActionResult> AdminSelectList([FromQuery]string token)
         {
             try
             {

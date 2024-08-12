@@ -73,7 +73,6 @@ namespace FamTec.Server.Middleware
                 context.Items.Add("jti", jobj["jti"]!.ToString());
                 context.Items.Add("Role", jobj["Role"]!.ToString()); // Role 검사
 
-
                 JObject parse = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
 
                 /* 사용자 권한 */
@@ -107,10 +106,10 @@ namespace FamTec.Server.Middleware
                 if (!string.IsNullOrWhiteSpace(PlaceIdx))
                 {
                     // 사업장 까지 선택한 상태
-                    parse = new JObject(JObject.Parse(jobj["PlacePerms"].ToString()));
+                    context.Items.Add("PlaceIdx", jobj["PlaceIdx"]!.ToString()); // 사업장ID
+                    context.Items.Add("PlaceName", jobj["PlaceName"]!.ToString()); // 사업장이름
 
-                    context.Items.Add("PlaceIdx", parse["PlaceIdx"].ToString());
-                    context.Items.Add("PlaceName", parse["PlaceName"].ToString());
+                    parse = new JObject(JObject.Parse(jobj["PlacePerms"].ToString()));
                     context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
                     context.Items.Add("PlacePerm_Elec", parse["PlacePerm_Elec"].ToString());
                     context.Items.Add("PlacePerm_Lift", parse["PlacePerm_Lift"].ToString());
@@ -133,8 +132,7 @@ namespace FamTec.Server.Middleware
                 context.Items.Add("UserType", jobj["UserType"].ToString());
                 context.Items.Add("jti", jobj["jti"].ToString());
                 context.Items.Add("Role", jobj["Role"].ToString());
-
-
+                
                 JObject parse = new JObject(JObject.Parse(jobj["UserPerms"].ToString()));
 
                 /* 사용자 권한 */
@@ -152,8 +150,6 @@ namespace FamTec.Server.Middleware
                 context.Items.Add("UserPerm_User", parse["UserPerm_User"].ToString());
                 context.Items.Add("UserPerm_Voc", parse["UserPerm_Voc"].ToString());
 
-
-
                 parse = new JObject(JObject.Parse(jobj["VocPerms"].ToString()));
                 /* VOC 권한 */
                 context.Items.Add("VocMachine", parse["VocMachine"].ToString());
@@ -167,10 +163,10 @@ namespace FamTec.Server.Middleware
                 context.Items.Add("VocDefault", parse["VocDefault"].ToString());
 
                 /* 사업장 권한 */
+                context.Items.Add("PlaceIdx", jobj["PlaceIdx"]!.ToString()); // 사업장ID
+                context.Items.Add("PlaceName", jobj["PlaceName"]!.ToString()); // 사업장이름
 
                 parse = new JObject(JObject.Parse(jobj["PlacePerms"].ToString()));
-                context.Items.Add("PlaceIdx", parse["PlaceIdx"].ToString());
-                context.Items.Add("PlaceName", parse["PlaceName"].ToString());
                 context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
                 context.Items.Add("PlacePerm_Elec", parse["PlacePerm_Elec"].ToString());
                 context.Items.Add("PlacePerm_Lift", parse["PlacePerm_Lift"].ToString());

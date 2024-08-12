@@ -341,26 +341,33 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string creater, IFormFile? files)
         {
-            string NewFileName = String.Empty;
-            string deleteFileName = String.Empty;
-
-            if(files is not null)
-            {
-                NewFileName = FileService.SetNewFileName(files);
-            }
-
-            string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
-
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    AdminTb? adminTB = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
+                    string NewFileName = String.Empty; // 새로운 파일명
+                    string deleteFileName = String.Empty; // 삭제할 파일명
+                     
+                    // 파일이 있을경우
+                    if (files is not null)
+                    {
+                        // 새로운 파일명 생성
+                        NewFileName = FileService.SetNewFileName(files);
+                    }
+
+                    // 관리자 이미지 저장할 공간
+                    string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+
+                    AdminTb? adminTB = await context.AdminTbs
+                        .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
+                    
                     if (adminTB is null)
                         return null;
 
                     // 계정정보 변경을 위해 조회
-                    UsersTb? userTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
+                    UsersTb? userTB = await context.UsersTbs
+                        .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
+
                     if(userTB is null)
                         return null;
 
@@ -371,14 +378,15 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         userTB.Email = dto.Email; // 이메일
                         userTB.UserId = dto.UserId!; // 로그인ID
                         userTB.Password = dto.Password!; // 비밀번호
-                        userTB.UpdateDt = DateTime.Now;
-                        userTB.UpdateUser = creater;
+                        userTB.UpdateDt = DateTime.Now; // 수정시간
+                        userTB.UpdateUser = creater; // 수정자
 
-                        if(files is not null) // 파일이 공백이 아닌경우
+                        if(files is not null) // 넘어온 파일이 공백이 아닌경우
                         {
-                            if (!String.IsNullOrWhiteSpace(userTB.Image)) // DB에 파일이 있을경우
+                            // DB에 파일이 있을경우
+                            if (!String.IsNullOrWhiteSpace(userTB.Image))
                             {
-                                deleteFileName = userTB.Image; // 삭제할 이름에 넣는다.
+                                deleteFileName = userTB.Image; // DB의 파일명 -> 삭제할 이름에 넣는다.
                                 userTB.Image = NewFileName; // 새 파일명을 모델에 넣는다.
                             }
                             else // DB엔 없는경우
@@ -522,8 +530,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             }
                         }
                     }
-
-                    
 
                     if(files is not null) // 파일이 공백이 아닌경우
                     {

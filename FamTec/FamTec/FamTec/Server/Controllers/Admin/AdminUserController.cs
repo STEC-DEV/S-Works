@@ -42,12 +42,13 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager,Master")]
         [HttpPost]
         [Route("sign/AddManager")]
+        //public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm] IFormFile? files)
         public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
                 //AddManagerDTO dto = new AddManagerDTO();
-                //dto.UserId = "MASTER0001";
+                //dto.UserId = "MASTER0002";
                 //dto.Password = "123";
                 //dto.Name = "테스트이름";
                 //dto.Phone = "0123";
@@ -224,10 +225,10 @@ namespace FamTec.Server.Controllers.Admin
             {
                 /*
                 UpdateManagerDTO dto = new UpdateManagerDTO();
-                dto.AdminIndex = 10;
+                dto.AdminIndex = 37;
                 dto.Name = "용";
                 dto.DepartmentId = 5;
-                dto.UserId = "Master";
+                dto.UserId = "MASTER0003";
                 dto.Password = "123";
                 dto.PlaceList.Add(new AdminPlaceDTO
                 {
@@ -279,27 +280,6 @@ namespace FamTec.Server.Controllers.Admin
                     }
                 }
                
-
-                //UpdateManagerDTO dto = new UpdateManagerDTO();
-                //dto.AdminIndex = 10;
-                //dto.UserId = "Master";
-                //dto.Password = "123";
-                //dto.Email = "123123";
-                //dto.DepartmentId = 5;
-
-                //dto.PlaceList.Add(new AdminPlaceDTO()
-                //{
-                //    Id = 3
-                //});
-                //dto.PlaceList.Add(new AdminPlaceDTO()
-                //{
-                //    Id = 5
-                //});
-                //dto.PlaceList.Add(new AdminPlaceDTO()
-                //{
-                //    Id = 4,
-                //});
-
                 ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext,dto, files);
                 if (model is null)
                     return BadRequest();
@@ -308,17 +288,6 @@ namespace FamTec.Server.Controllers.Admin
                     return Ok(model);
                 else
                     return BadRequest();
-
-                /*
-                ResponseUnit<int?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto, files);
-                if (model is null)
-                    return BadRequest();
-
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
-                */
 
             }
             catch(Exception ex)
