@@ -76,8 +76,8 @@ namespace FamTec.Server.Repository.Voc
                                                     Type = VocTB.Type, // 유형
                                                     Title = VocTB.Title, // 제목
                                                     Status = VocTB.Status, // 처리상태
-                                                    CreateDT = VocTB.CreateDt, // 민원 요청시간
-                                                    CompleteDT = VocTB.CompleteDt, // 민원처리 완료시간
+                                                    CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
+                                                    CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
                                                     DurationDT = VocTB.DurationDt // 민원처리 소요시간
                                                 }).ToList();
 
@@ -146,13 +146,13 @@ namespace FamTec.Server.Repository.Voc
                                                 on Voc.BuildingTbId equals Building.Id
                                                 select new VocListDTO
                                                 {
-                                                    CreateDT = Voc.CreateDt, // 요청일시
+                                                    CreateDT = Voc.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
                                                     Id = Voc.Id, // VOC ID
                                                     BuildingName = Building.Name, // 건물명
                                                     Type = Voc.Type, // 유형
                                                     Title = Voc.Title, // 민원제목
                                                     Status = Voc.Status, // 민원상태
-                                                    CompleteDT = Voc.CompleteDt, // 처리일시
+                                                    CompleteDT = Voc.CompleteDt?.ToString("yyyy-MM-ddd HH:mm:ss"), // 처리일시
                                                     DurationDT = Voc.DurationDt // 소요시간
                                                 }).ToList();
 

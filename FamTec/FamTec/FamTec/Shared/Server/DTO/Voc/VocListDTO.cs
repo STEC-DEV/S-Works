@@ -30,7 +30,7 @@
         /// <summary>
         /// 민원처리 완료 시간
         /// </summary>
-        public DateTime? CompleteDT { get; set; }
+        public string? CompleteDT { get; set; }
 
         /// <summary>
         /// 민원처리 소요 시간
@@ -40,6 +40,6 @@
         /// <summary>
         /// 요청일시
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        public string? CreateDT { get; set; }
     }
 }

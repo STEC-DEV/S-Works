@@ -695,7 +695,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category">설비유형</param>
         /// <param name="type">작업구분</param>
         /// <returns></returns>
-        public async ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string Category, int type)
+        public async ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string? Category, int? type)
         {
             try
             {
@@ -715,6 +715,59 @@ namespace FamTec.Server.Repository.Maintenence
 
                 List<RoomTb>? RoomTB = await context.RoomTbs.Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
                 
+                // 설비유형
+                List<FacilityTb>? FacilityList;
+                if(Category is null)  // 전체
+                {
+                    FacilityList = await context.FacilityTbs
+                       .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
+                       .ToListAsync();
+                }
+                else // 그외 모두
+                {
+                    FacilityList = await context.FacilityTbs
+                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true && m.Category.Equals(Category))
+                      .ToListAsync();
+                }
+                
+                List<MaintenenceHistoryTb>? HistoryList;
+                // 작업구분
+                if (type is null) // 전체
+                {
+                    HistoryList = await context.MaintenenceHistoryTbs.Where
+                      (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                      m.CreateDt >= StartDate &&
+                      m.CreateDt <= EndDate &&
+                      m.DelYn != true).ToListAsync();
+                }
+                else // 그외 모두
+                {
+                    HistoryList = await context.MaintenenceHistoryTbs.Where
+                        (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                        m.CreateDt >= StartDate &&
+                        m.CreateDt <= EndDate &&
+                        m.DelYn != true &&
+                        m.Type == type)
+                        .ToListAsync();
+                }
+
+                // 반복문에서
+                // 설비유형 일자 이력 작업구분 작업자 사용자재 소요비용
+                foreach (MaintenenceHistoryTb HistoryTB in HistoryList)
+                {
+                    FacilityTb? FacilityModel = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
+                    
+                    // 설비유형 --> FacilityTB 조회
+                    // 일자 CreateDT 그냥
+                    // 이력 Name 그냥
+                    // 작업구분 Type 그냥
+                    // 작업자 Worker 그냥
+                    // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고
+                    // 소요비용 - TotalPrice
+                }
+
+                
+
 
                 Console.WriteLine("asdg");
                 return null;

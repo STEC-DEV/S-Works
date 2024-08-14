@@ -202,9 +202,9 @@ namespace FamTec.Server.Controllers.Maintenance
         public async ValueTask<IActionResult> Temp()
         {
             int placeid = 3;
-            DateTime StartDate = DateTime.Now.AddDays(-30);
+            DateTime StartDate = DateTime.Now.AddDays(-11);
             DateTime EndDate = DateTime.Now;
-            string Category = "기계";
+            string Category = "전체";
             int type = 0;
             
             var temp = await MaintanceRepository.GetDateHistoryList(placeid, StartDate, EndDate, Category, type);
