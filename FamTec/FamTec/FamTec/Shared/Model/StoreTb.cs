@@ -86,6 +86,13 @@ public partial class StoreTb
     public string? Note { get; set; }
 
     /// <summary>
+    /// 유지보수취소_시스템설명
+    /// </summary>
+    [Column("NOTE2")]
+    [StringLength(255)]
+    public string? Note2 { get; set; }
+
+    /// <summary>
     /// 공간ID
     /// </summary>
     [Column("ROOM_TB_ID", TypeName = "int(11)")]

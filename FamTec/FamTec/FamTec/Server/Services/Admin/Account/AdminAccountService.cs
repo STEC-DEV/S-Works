@@ -128,12 +128,6 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                string NewFileName = String.Empty;
-                if (files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-
                 string? useridx = Convert.ToString(context.Items["UserIdx"]);
                 if(String.IsNullOrWhiteSpace(useridx))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -145,6 +139,12 @@ namespace FamTec.Server.Services.Admin.Account
                 string? UserType = Convert.ToString(context.Items["Role"]);
                 if (String.IsNullOrWhiteSpace(UserType))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string NewFileName = String.Empty;
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(useridx, files);
+                }
 
                 // 관리자 관련한 폴더가 없으면 만듬
                 string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
@@ -424,6 +424,10 @@ namespace FamTec.Server.Services.Admin.Account
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (string.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value);
                 if(admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -433,7 +437,9 @@ namespace FamTec.Server.Services.Admin.Account
                 if(usertb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, creater, files);
+
+
+                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater, files);
 
                 if(UpdateResult == true)
                 {

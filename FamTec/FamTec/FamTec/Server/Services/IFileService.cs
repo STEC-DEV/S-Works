@@ -6,7 +6,7 @@
         /// 새 파일명 생성
         /// </summary>
         /// <returns></returns>
-        public string SetNewFileName(IFormFile files);
+        public string SetNewFileName(string useridx, IFormFile files);
 
         /// <summary>
         /// 이미지 등록

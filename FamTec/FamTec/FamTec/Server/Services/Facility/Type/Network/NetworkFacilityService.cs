@@ -1,9 +1,4 @@
-﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Facility.Group;
-using FamTec.Server.Repository.Facility.ItemKey;
-using FamTec.Server.Repository.Facility.ItemValue;
-using FamTec.Server.Repository.Facility;
-using FamTec.Server.Repository.Floor;
+﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
@@ -41,10 +36,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
             {
                 string? NewFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
+               
 
                 if (context is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
@@ -63,6 +55,15 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 string? creator = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
 
 
                 // 전기설비 관련한 폴더 없으면 만들기 
@@ -215,11 +216,6 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 string? NewFileName = String.Empty;
                 string? deleteFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -234,7 +230,16 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID.Value);
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
                 
                 if (model is not null)
                 {

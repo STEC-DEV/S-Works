@@ -12,24 +12,22 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> AddInStoreService(HttpContext? context, List<InOutInventoryDTO>? dto);
+        public ValueTask<ResponseUnit<bool?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 입출고 이력
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext? context);
+        public ValueTask<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context);
 
         /// <summary>
-        /// 삭제대상 갯수 구하기
+        /// 출고 등록
         /// </summary>
-        /// <param name="materialid"></param>
-        /// <param name="roomid"></param>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> GetOutCountService(HttpContext? context, int? materialid, int? roomid);
-
-        public ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext? context, List<InOutInventoryDTO>? dto);
+        public ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 품목별 기간별 입출고내역
@@ -39,7 +37,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<PeriodicInventoryRecordDTO>> PeriodicInventoryRecordService(HttpContext? context, int? materialid, DateTime? startDate, DateTime? endDate);
+        public ValueTask<ResponseList<PeriodicInventoryRecordDTO>> PeriodicInventoryRecordService(HttpContext context, int materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 사업장별 재고 현황
@@ -48,12 +46,6 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<MaterialHistory>?> GetPlaceInventoryRecordService(HttpContext? context, List<int>? materialid, bool? type);
+        public ValueTask<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type);
     }
 }
-
-
-// 품목코드
-// 품목이름
-// 제조사
-// 규격

@@ -211,7 +211,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<int?> model = await NetworkFacilityService.DeleteNetworkFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await NetworkFacilityService.DeleteNetworkFacilityService(HttpContext, delIdx);
                 if (model is null)
                     return BadRequest();
 

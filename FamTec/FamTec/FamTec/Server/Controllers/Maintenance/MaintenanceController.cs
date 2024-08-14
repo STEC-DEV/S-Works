@@ -1,5 +1,6 @@
-﻿using FamTec.Server.Services;
-using FamTec.Server.Services.Admin.Maintenance;
+﻿using FamTec.Server.Repository.Maintenence;
+using FamTec.Server.Services;
+using FamTec.Server.Services.Maintenance;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +14,13 @@ namespace FamTec.Server.Controllers.Maintenance
     {
         private IMaintanceService MaintanceService;
         private ILogService LogService;
+        private IMaintanceRepository MaintanceRepository;
 
-
-        public MaintenanceController(IMaintanceService _maintanceservice, ILogService _logservice)
+        public MaintenanceController(IMaintanceService _maintanceservice, ILogService _logservice, IMaintanceRepository _main)
         {
             this.MaintanceService = _maintanceservice;
             this.LogService = _logservice;
+            this.MaintanceRepository = _main;
         }
 
         /// <summary>
@@ -73,6 +75,22 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    }
                 //});
 
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.Type is null)
+                    return NoContent();
+
+                if (dto.UnitPrice is null)
+                    return NoContent();
+
+                if(dto.Num is null)
+                    return NoContent();
+
+
                 ResponseUnit<bool?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
@@ -89,6 +107,110 @@ namespace FamTec.Server.Controllers.Maintenance
             }
         }
 
+        /// <summary>
+        /// 해당 설비의 유지보수 이력 조회
+        /// </summary>
+        /// <param name="facilityid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMaintanceHistory")]
+        public async ValueTask<IActionResult> GetMaintanceHistory(int facilityid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(HttpContext, facilityid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+
+        }
+
+        /// <summary>
+        /// 유지보수 이력 삭제
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/DeleteMaintanceHistory")]
+        public async ValueTask<IActionResult> DeleteMaintanceHistory([FromBody]DeleteMaintanceDTO dto)
+        {
+            try
+            {
+                //DeleteMaintanceDTO dto = new DeleteMaintanceDTO();
+                //dto.ID = 65;
+                //dto.StoreID = 472;
+                //dto.RoomTBID = 1;
+                //dto.PlaceTBID = 3;
+                //dto.MaterialTBID = 5;
+                //dto.Note = "테스트";
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (dto.ID is null)
+                    return NoContent();
+
+                if (dto.StoreID is null)
+                    return NoContent();
+
+                if (dto.RoomTBID is null)
+                    return NoContent();
+
+                if (dto.PlaceTBID is null)
+                    return NoContent();
+
+                if(dto.MaterialTBID is null)
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Note))
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await MaintanceService.DeletemaintanceHistoryService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/Temp")]
+        public async ValueTask<IActionResult> Temp()
+        {
+            int placeid = 3;
+            DateTime StartDate = DateTime.Now.AddDays(-30);
+            DateTime EndDate = DateTime.Now;
+            string Category = "기계";
+            int type = 0;
+            
+            var temp = await MaintanceRepository.GetDateHistoryList(placeid, StartDate, EndDate, Category, type);
+
+            return Ok();
+        }
     }
 
 }

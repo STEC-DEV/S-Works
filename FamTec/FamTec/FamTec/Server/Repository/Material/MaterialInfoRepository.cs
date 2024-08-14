@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Databases;
+using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Material;
@@ -10,7 +11,7 @@ namespace FamTec.Server.Repository.Material
     {
         private readonly WorksContext context;
         private ILogService LogService;
-
+        
         public MaterialInfoRepository(WorksContext _context, ILogService _logservice)
         {
             this.context = _context;
@@ -127,7 +128,9 @@ namespace FamTec.Server.Repository.Material
                 {
                     foreach(int delId in delidx)
                     {
-                        MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                        MaterialTb? MaterialTB = await context.MaterialTbs
+                            .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                        
                         if(MaterialTB is not null)
                         {
                             MaterialTB.DelYn = true;

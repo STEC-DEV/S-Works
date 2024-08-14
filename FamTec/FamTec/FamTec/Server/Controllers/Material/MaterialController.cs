@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Maintenence;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
@@ -14,7 +15,6 @@ namespace FamTec.Server.Controllers.Material
         private IMaterialService MaterialService;
         private IFileService FileService;
         private ILogService LogService;
-
 
         public MaterialController(IMaterialService _materialservice,
             IFileService _fileservice,
@@ -41,6 +41,15 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (String.IsNullOrWhiteSpace(dto.Code))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(dto.DefaultLocation is null)
+                    return NoContent();
+
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_1)
@@ -63,7 +72,7 @@ namespace FamTec.Server.Controllers.Material
                     }
                 }
 
-                ResponseUnit<AddMaterialDTO>? model = await MaterialService.AddMaterialService(HttpContext, dto, files);
+                ResponseUnit<AddMaterialDTO> model = await MaterialService.AddMaterialService(HttpContext, dto, files);
 
                 if (model is null)
                     return BadRequest();
@@ -94,7 +103,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaterialListDTO>? model = await MaterialService.GetPlaceMaterialListService(HttpContext);
+                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(HttpContext);
                 if (model is null)
                     return BadRequest();
 
@@ -125,7 +134,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailMaterialDTO>? model = await MaterialService.GetDetailMaterialService(HttpContext, materialid);
+                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(HttpContext, materialid);
                 if (model is null)
                     return BadRequest();
 
@@ -157,11 +166,23 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
+                if (dto.Id is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Code))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if (dto.RoomID is null)
+                    return NoContent();
+
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_1)
                     {
-                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
                     }
 
                     string? extension = FileService.GetExtension(files);
@@ -174,7 +195,7 @@ namespace FamTec.Server.Controllers.Material
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
@@ -209,6 +230,12 @@ namespace FamTec.Server.Controllers.Material
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (delIdx is null)
+                    return NoContent();
+                
+                if(delIdx.Count() == 0)
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx);
                 if (model is null)

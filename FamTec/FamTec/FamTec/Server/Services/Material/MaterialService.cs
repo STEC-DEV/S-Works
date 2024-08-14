@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Material;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Services.Material
@@ -35,17 +36,14 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddMaterialDTO>?> AddMaterialService(HttpContext? context, AddMaterialDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<AddMaterialDTO>> AddMaterialService(HttpContext context, AddMaterialDTO dto, IFormFile? files)
         {
             try
             {
                 string NewFileName = String.Empty;
                 string deleteFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
+               
 
                 if (context is null)
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
@@ -60,19 +58,28 @@ namespace FamTec.Server.Services.Material
                 if(String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
 
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeidx);
 
                 di = new DirectoryInfo(MaterialFileFolderPath);
                 if (!di.Exists) di.Create();
 
                 MaterialTb matertialtb = new MaterialTb();
-                matertialtb.Code = dto.Code; // 품목코드
-                matertialtb.Name = dto.Name; // 자재명
+                matertialtb.Code = dto.Code!; // 품목코드
+                matertialtb.Name = dto.Name!; // 자재명
                 matertialtb.Unit = dto.Unit; // 단위
                 matertialtb.Standard = dto.Standard; // 규격
                 matertialtb.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 matertialtb.SafeNum = dto.SafeNum; // 안전재고수량
-                matertialtb.DefaultLocation = dto.DefaultLocation.Value; // 공간위치 인덱스
+                matertialtb.DefaultLocation = dto.DefaultLocation!.Value; // 공간위치 인덱스
                 matertialtb.CreateDt = DateTime.Now;
                 matertialtb.CreateUser = Creater;
                 matertialtb.UpdateDt = DateTime.Now;
@@ -89,8 +96,6 @@ namespace FamTec.Server.Services.Material
                 }
                
                 MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
-                
-
                 if(model is not null)
                 {
                     if(files is not null)
@@ -98,7 +103,6 @@ namespace FamTec.Server.Services.Material
                         // 파일 넣기
                         bool? AddFile = await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
                     }
-
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
                     {
                         Code = model.Code, // 품목코드
@@ -127,7 +131,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialListDTO>?> GetPlaceMaterialListService(HttpContext? context)
+        public async ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context)
         {
             try
             {
@@ -188,21 +192,18 @@ namespace FamTec.Server.Services.Material
         /// <param name="materialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<DetailMaterialDTO>?> GetDetailMaterialService(HttpContext? context, int? materialid)
+        public async ValueTask<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid)
         {
             try
             {
                 if (context is null)
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                if (materialid is null)
-                    return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
-
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid.Value);
+                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid);
                 if(model is not null)
                 {
                     DetailMaterialDTO dto = new DetailMaterialDTO();
@@ -242,17 +243,12 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<bool?>> UpdateMaterialService(HttpContext? context, UpdateMaterialDTO? dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> UpdateMaterialService(HttpContext context, UpdateMaterialDTO dto, IFormFile? files)
         {
             try
             {
                 string NewFileName = String.Empty;
                 string deleteFileName = String.Empty;
-
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
 
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -267,7 +263,16 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id.Value);
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
+                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id!.Value);
                 if(model is not null)
                 {
                     model.Code = dto.Code!; // 품목코드
@@ -276,7 +281,7 @@ namespace FamTec.Server.Services.Material
                     model.Standard = dto.Standard; // 규격
                     model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                     model.SafeNum = dto.SafeNum; // 안전재고수량
-                    model.DefaultLocation = dto.RoomID.Value; // 공간위치
+                    model.DefaultLocation = dto.RoomID!.Value; // 공간위치
                     model.UpdateDt = DateTime.Now;
                     model.UpdateUser = creater;
 
@@ -353,7 +358,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext? context, List<int>? delIdx)
+        public async ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx)
         {
             try
             {

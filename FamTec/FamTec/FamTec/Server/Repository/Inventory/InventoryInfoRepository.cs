@@ -27,6 +27,118 @@ namespace FamTec.Server.Repository.Inventory
         }
 
         /// <summary>
+        /// 입고로직
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="creater"></param>
+        /// <param name="placeid"></param>
+        /// <param name="GUID"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // [1] 토큰체크
+                    foreach (InOutInventoryDTO InventoryDTO in dto)
+                    {
+                        List<InventoryTb>? Occupant = await context.InventoryTbs
+                            .Where(m => m.PlaceTbId == placeid &&
+                            m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
+                            m.DelYn != true).ToListAsync();
+
+                        List<InventoryTb>? check = Occupant
+                            .Where(m =>
+                            !String.IsNullOrWhiteSpace(m.Occupant) ||
+                            !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
+                            .ToList().Where(m => m.Occupant != GUID).ToList();
+
+                        if (check is [_, ..]) // 다른곳에서 해당항목 사용중
+                        {
+                            Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
+                            return false;
+                        }
+                    }
+
+                    // ADD 작업
+                    foreach (InOutInventoryDTO InventoryDTO in dto)
+                    {
+                        StoreTb Storetb = new StoreTb();
+                        Storetb.Inout = InventoryDTO.InOut!.Value;
+                        Storetb.Num = InventoryDTO.AddStore!.Num!.Value;
+                        Storetb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
+                        Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice!.Value;
+                        Storetb.InoutDate = InventoryDTO.AddStore.InOutDate;
+                        Storetb.CreateDt = DateTime.Now;
+                        Storetb.CreateUser = creater;
+                        Storetb.UpdateDt = DateTime.Now;
+                        Storetb.UpdateUser = creater;
+                        Storetb.Note = InventoryDTO.AddStore.Note;
+                        Storetb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
+                        Storetb.PlaceTbId = placeid;
+                        Storetb.MaterialTbId = InventoryDTO.MaterialID!.Value;
+                        Storetb.MaintenenceHistoryTbId = null;
+                        context.StoreTbs.Add(Storetb);
+                        bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (AddStoreResult != true)
+                        {
+                            transaction.Rollback();
+                            return null;
+                        }
+                        else
+                        {
+                            InventoryTb Inventorytb = new InventoryTb();
+                            Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
+                            Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
+                            Inventorytb.CreateDt = DateTime.Now;
+                            Inventorytb.CreateUser = creater;
+                            Inventorytb.UpdateDt = DateTime.Now;
+                            Inventorytb.UpdateUser = creater;
+                            Inventorytb.TimeStamp = DateTime.Now;
+                            Inventorytb.Occupant = GUID;
+                            Inventorytb.PlaceTbId = placeid;
+                            Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
+                            Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
+                            context.InventoryTbs.Add(Inventorytb);
+
+
+                            int thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
+                            m.MaterialTbId == InventoryDTO.MaterialID &&
+                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
+                            m.PlaceTbId == placeid).Sum(m => m.Num);
+
+                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
+                            context.Update(Storetb);
+                            bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (UpdateStoreTB != true)
+                            {
+                                transaction.Rollback();
+                                return null;
+                            }
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    transaction.Rollback();
+                    //await RoolBackOccupant(GUID);
+                    LogService.LogMessage($"동시성 에러 {ex.Message}");
+                    throw new ArgumentNullException();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    //await RoolBackOccupant(GUID);
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+        /// <summary>
         /// 기간별 입출고내역 뽑는 로직 -- 쿼리까지 완성
         /// </summary>
         /// <param name="placeid"></param>
@@ -226,7 +338,7 @@ namespace FamTec.Server.Repository.Inventory
                                 RoomDTO dto = new RoomDTO();
                                 dto.Name = model[resultCount + j].R_NM;
                                 dto.Num = model[resultCount + j].TOTAL;
-                                material.RoomHistory.Add(dto);
+                                material.RoomHistory!.Add(dto);
                             }
                             resultCount += roomlist.Count();
                             history.Add(material);
@@ -251,117 +363,7 @@ namespace FamTec.Server.Repository.Inventory
         }
 
 
-        /// <summary>
-        /// 입고로직 - 다시짜야함.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="creater"></param>
-        /// <param name="placeid"></param>
-        /// <param name="GUID"></param>
-        /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater,int placeid, string GUID)
-        {
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                try
-                {
-                    // [1] 토큰체크
-                    foreach(InOutInventoryDTO InventoryDTO in dto)
-                    {
-                        List<InventoryTb>? Occupant = await context.InventoryTbs
-                            .Where(m => m.PlaceTbId == placeid &&
-                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
-                            m.DelYn != true).ToListAsync();
-
-                        List<InventoryTb>? check = Occupant
-                            .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.Occupant) ||
-                            !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
-                            .ToList().Where(m => m.Occupant != GUID).ToList();
-
-                        if(check is [_, ..]) // 다른곳에서 해당항목 사용중
-                        {
-                            Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
-                            return false;
-                        }
-                    }
-
-                    // ADD 작업
-                    foreach (InOutInventoryDTO InventoryDTO in dto)
-                    {
-                        StoreTb Storetb = new StoreTb();
-                        Storetb.Inout = InventoryDTO.InOut;
-                        Storetb.Num = InventoryDTO.AddStore!.Num;
-                        Storetb.UnitPrice = InventoryDTO.AddStore.UnitPrice;
-                        Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice;
-                        Storetb.InoutDate = InventoryDTO.AddStore.InOutDate;
-                        Storetb.CreateDt = DateTime.Now;
-                        Storetb.CreateUser = creater;
-                        Storetb.UpdateDt = DateTime.Now;
-                        Storetb.UpdateUser = creater;
-                        Storetb.Note = InventoryDTO.AddStore.Note;
-                        Storetb.RoomTbId = InventoryDTO.AddStore.RoomID;
-                        Storetb.PlaceTbId = placeid;
-                        Storetb.MaterialTbId = InventoryDTO.MaterialID;
-                        Storetb.MaintenenceHistoryTbId = null;
-                        context.StoreTbs.Add(Storetb);
-                        bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (AddStoreResult != true)
-                        {
-                            transaction.Rollback();
-                            return null;
-                        }
-                        else
-                        {
-                            InventoryTb Inventorytb = new InventoryTb();
-                            Inventorytb.Num = InventoryDTO.AddStore.Num;
-                            Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice;
-                            Inventorytb.CreateDt = DateTime.Now;
-                            Inventorytb.CreateUser = creater;
-                            Inventorytb.UpdateDt = DateTime.Now;
-                            Inventorytb.UpdateUser = creater;
-                            Inventorytb.TimeStamp = DateTime.Now;
-                            Inventorytb.Occupant = GUID;
-                            Inventorytb.PlaceTbId = placeid;
-                            Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID;
-                            Inventorytb.MaterialTbId = InventoryDTO.MaterialID;
-                            context.InventoryTbs.Add(Inventorytb);
-
-
-                            int thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
-                            m.MaterialTbId == InventoryDTO.MaterialID &&
-                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
-                            m.PlaceTbId == placeid).Sum(m => m.Num);
-
-                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num;
-                            context.Update(Storetb);
-                            bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (UpdateStoreTB != true)
-                            {
-                                transaction.Rollback();
-                                return null;
-                            }
-                        }
-                    }
-                    transaction.Commit();
-                    return true;
-                }
-                catch(DBConcurrencyException ex)
-                {
-                    transaction.Rollback();
-                    //await RoolBackOccupant(GUID);
-                    LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    throw new ArgumentNullException();
-                }
-                catch(Exception ex)
-                {
-                    transaction.Rollback();
-                    //await RoolBackOccupant(GUID);
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-        }
+       
 
         /// <summary>
         /// 가지고 있는 개수가 삭제할 개수보다 많은지 검사
@@ -454,7 +456,7 @@ namespace FamTec.Server.Repository.Inventory
                         List<InventoryTb>? Occupant = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                             m.MaterialTbId == inventoryDTO.MaterialID &&
-                            m.RoomTbId == inventoryDTO.AddStore.RoomID &&
+                            m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
                             m.DelYn != true).ToListAsync();
 
                         if(Occupant is [_, ..])
@@ -557,7 +559,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 출고할게 여러곳에 있으니 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
                         if(InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -588,7 +590,7 @@ namespace FamTec.Server.Repository.Inventory
                         int? result = 0;
 
                         // 추가해야함
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID, model.MaterialID, model.AddStore.Num, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
                         if(InventoryList is [_, ..])
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -638,7 +640,7 @@ namespace FamTec.Server.Repository.Inventory
                                         }
                                         else
                                         {
-                                            outresult -= model.AddStore.Num;
+                                            outresult -= model.AddStore.Num!.Value;
                                             OutInventoryTb.Num = outresult;
                                             OutInventoryTb.UpdateDt = DateTime.Now;
                                             OutInventoryTb.UpdateUser = creater;
@@ -677,17 +679,17 @@ namespace FamTec.Server.Repository.Inventory
 
 
                             StoreTb store = new StoreTb();
-                            store.Inout = model.InOut;
-                            store.Num = model.AddStore.Num;
-                            store.UnitPrice = model.AddStore.UnitPrice;
-                            store.TotalPrice = model.AddStore.TotalPrice;
+                            store.Inout = model.InOut!.Value;
+                            store.Num = model.AddStore.Num!.Value;
+                            store.UnitPrice = model.AddStore.UnitPrice!.Value;
+                            store.TotalPrice = model.AddStore.TotalPrice!.Value;
                             store.InoutDate = model.AddStore.InOutDate;
                             store.CreateDt = DateTime.Now;
                             store.CreateUser = creater;
                             store.UpdateDt = DateTime.Now;
                             store.UpdateUser = creater;
-                            store.RoomTbId = model.AddStore.RoomID;
-                            store.MaterialTbId = model.MaterialID;
+                            store.RoomTbId = model.AddStore.RoomID!.Value;
+                            store.MaterialTbId = model.MaterialID!.Value;
                             store.CurrentNum = thisCurrentNum;
                             store.Note = model.AddStore.Note;
                             store.PlaceTbId = placeid;

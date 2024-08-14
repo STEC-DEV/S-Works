@@ -441,10 +441,7 @@ namespace FamTec.Server.Services.User
             {
                 string NewFileName = String.Empty;
                 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
+             
 
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
@@ -472,6 +469,11 @@ namespace FamTec.Server.Services.User
                 UsersTb? CheckUserId = await UserInfoRepository.UserIdCheck(dto.USERID!);
                 if (CheckUserId is not null)
                     return new ResponseUnit<UsersDTO>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
 
                 // 사용자 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, PlaceIdx.ToString());
@@ -692,11 +694,6 @@ namespace FamTec.Server.Services.User
                 string NewFileName = String.Empty;
                 string deleteFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
                 
@@ -710,6 +707,16 @@ namespace FamTec.Server.Services.User
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
 
                 UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value);
                 if(model is null)

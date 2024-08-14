@@ -41,10 +41,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             {
                 string? NewFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
+               
 
                 if (context is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
@@ -64,6 +61,14 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if (String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
 
                 // 전기설비 관련한 폴더 없으면 만들기 
                 FireFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Fire", Common.FileServer, placeidx);
@@ -215,11 +220,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 string? NewFileName = String.Empty;
                 string? deleteFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-                
+            
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -234,8 +235,17 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID.Value);
-                
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
+
                 if (model is not null)
                 {
                     if (model!.Category != "소방")

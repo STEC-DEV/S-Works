@@ -83,6 +83,13 @@ public partial class MaintenenceHistoryTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    /// <summary>
+    /// 유지보수 취소사유 설명
+    /// </summary>
+    [Column("NOTE")]
+    [StringLength(50)]
+    public string? Note { get; set; }
+
     [Column("FACILITY_TB_ID", TypeName = "int(11)")]
     public int FacilityTbId { get; set; }
 

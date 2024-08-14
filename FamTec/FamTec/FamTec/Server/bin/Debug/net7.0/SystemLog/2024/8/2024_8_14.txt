@@ -1,0 +1,18 @@
+[2024-08-14 오후 1:01:31]	Object reference not set to an instance of an object.
+[2024-08-14 오후 1:03:11]	Object reference not set to an instance of an object.
+[2024-08-14 오후 1:03:14]	Object reference not set to an instance of an object.
+[2024-08-14 오후 1:05:13]	Object reference not set to an instance of an object.
+[2024-08-14 오후 1:53:30]	System.IO.IOException: 파일 이름, 디렉터리 이름 또는 볼륨 레이블 구문이 잘못되었습니다. : 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Building\10_2024-08-14 오후 1:53:30_files'
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.FileService.AddImageFile(String newFileName, String folderpath, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 25
+[2024-08-14 오후 1:54:33]	System.IO.IOException: 파일 이름, 디렉터리 이름 또는 볼륨 레이블 구문이 잘못되었습니다. : 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Building\10_2024-08-14 오후 1:54:33_files.png'
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access)
+   at FamTec.Server.Services.FileService.AddImageFile(String newFileName, String folderpath, IFormFile files) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 25

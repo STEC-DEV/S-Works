@@ -22,11 +22,11 @@ public partial class FacilityTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 카테고리
+    /// 카테고리 (설비유형)
     /// </summary>
     [Column("CATEGORY")]
     [StringLength(255)]
-    public string? Category { get; set; }
+    public string Category { get; set; } = null!;
 
     /// <summary>
     /// 설비명칭

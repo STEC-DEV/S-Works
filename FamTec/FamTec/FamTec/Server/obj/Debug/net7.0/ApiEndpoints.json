@@ -2010,10 +2010,16 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupKeyController",
     "Method": "UpdateGroupKey",
     "RelativePath": "api/FacilityGroupKey/sign/UpdateKey",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Facility.Group.UpdateKeyDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -2937,6 +2943,48 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "DeleteMaintanceHistory",
+    "RelativePath": "api/Maintenance/sign/DeleteMaintanceHistory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetMaintanceHistory",
+    "RelativePath": "api/Maintenance/sign/GetMaintanceHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "facilityid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "Temp",
+    "RelativePath": "api/Maintenance/sign/Temp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

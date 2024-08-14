@@ -41,6 +41,6 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// <param name="context"></param>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> DeleteNetworkFacilityService(HttpContext context, List<int> delIdx);
+        public ValueTask<ResponseUnit<bool?>> DeleteNetworkFacilityService(HttpContext context, List<int> delIdx);
     }
 }

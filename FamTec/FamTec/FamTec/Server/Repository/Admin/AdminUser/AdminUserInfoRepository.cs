@@ -339,7 +339,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string creater, IFormFile? files)
+        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string UserIdx, string creater, IFormFile? files)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
@@ -352,7 +352,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     if (files is not null)
                     {
                         // 새로운 파일명 생성
-                        NewFileName = FileService.SetNewFileName(files);
+                        NewFileName = FileService.SetNewFileName(UserIdx, files);
                     }
 
                     // 관리자 이미지 저장할 공간

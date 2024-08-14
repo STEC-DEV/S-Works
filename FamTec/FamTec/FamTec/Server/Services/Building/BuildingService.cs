@@ -44,11 +44,6 @@ namespace FamTec.Server.Services.Building
             {
                 string NewFileName = String.Empty;
 
-                if(files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-
                 if (context is null)
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
@@ -63,6 +58,14 @@ namespace FamTec.Server.Services.Building
                 if(String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
 
                 bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
                 if(BuildingCodeCheck != true)
@@ -350,11 +353,7 @@ namespace FamTec.Server.Services.Building
             {
                 string NewFileName = String.Empty;
                 string deleteFileName = String.Empty;
-                if (files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(files);
-                }
-
+            
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -365,6 +364,16 @@ namespace FamTec.Server.Services.Building
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+                if(String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if (files is not null)
+                {
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
+                }
+
 
                 BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value);
                 if (model is not null)
@@ -416,7 +425,7 @@ namespace FamTec.Server.Services.Building
                     model.UpdateDt = DateTime.Now; // 수정일자
                     model.UpdateUser = creater; // 수정자
                     model.PlaceTbId = Convert.ToInt32(placeid);
-
+                    
                     string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
                     
                     if (files is not null) // 파일이 공백이 아닌 경우

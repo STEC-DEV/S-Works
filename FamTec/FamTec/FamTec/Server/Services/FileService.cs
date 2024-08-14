@@ -39,14 +39,14 @@
         /// 새로운 파일명 생성
         /// </summary>
         /// <returns></returns>
-        public string SetNewFileName(IFormFile files)
+        public string SetNewFileName(string useridx, IFormFile files)
         {
             try
             {
-                string NewFileName = $"{Guid.NewGuid()}{Path.GetExtension(files.FileName)}";
+                string NewFileName = $"{useridx}_{DateTime.Now.ToString("yyyyMMddHHmmss")}_{files.Name}{Path.GetExtension(files.FileName)}";
                 return NewFileName;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();

@@ -91,7 +91,6 @@ public partial class WorksContext : DbContext
             entity.HasNoDiscriminator();
         });
 
-
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -472,7 +471,7 @@ public partial class WorksContext : DbContext
             entity.ToTable("facility_tb", tb => tb.HasComment("설비"));
 
             entity.Property(e => e.Id).HasComment("설비 인덱스");
-            entity.Property(e => e.Category).HasComment("카테고리");
+            entity.Property(e => e.Category).HasComment("카테고리 (설비유형)");
             entity.Property(e => e.ChangeDt).HasComment("교체년월");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
@@ -576,6 +575,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Name).HasComment("이력명");
+            entity.Property(e => e.Note).HasComment("유지보수 취소사유 설명");
             entity.Property(e => e.Num).HasComment("수량");
             entity.Property(e => e.TotalPrice).HasComment("소요비용");
             entity.Property(e => e.Type).HasComment("작업구분");
@@ -699,6 +699,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.MaintenenceHistoryTbId).HasComment("유지보수이력ID");
             entity.Property(e => e.MaterialTbId).HasComment("품목ID");
             entity.Property(e => e.Note).HasComment("비고");
+            entity.Property(e => e.Note2).HasComment("유지보수취소_시스템설명");
             entity.Property(e => e.Num).HasComment("수량");
             entity.Property(e => e.PlaceTbId).HasComment("사업장ID");
             entity.Property(e => e.RoomTbId).HasComment("공간ID");

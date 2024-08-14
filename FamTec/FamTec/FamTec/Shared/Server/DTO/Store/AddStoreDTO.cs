@@ -10,22 +10,22 @@
         /// <summary>
         /// 창고ID
         /// </summary>
-        public int RoomID { get; set; }
+        public int? RoomID { get; set; }
 
         /// <summary>
         /// 단가
         /// </summary>
-        public float UnitPrice { get; set; }
+        public float? UnitPrice { get; set; }
 
         /// <summary>
         /// 입-출고 수량
         /// </summary>
-        public int Num { get; set; }
+        public int? Num { get; set; }
 
         /// <summary>
         /// 합계 가격
         /// </summary>
-        public float TotalPrice { get; set; }
+        public float? TotalPrice { get; set; }
 
         /// <summary>
         /// 비고

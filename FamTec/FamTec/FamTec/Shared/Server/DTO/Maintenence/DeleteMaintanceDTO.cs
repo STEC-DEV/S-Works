@@ -1,0 +1,37 @@
+﻿namespace FamTec.Shared.Server.DTO.Maintenence
+{
+    public class DeleteMaintanceDTO
+    {
+        /// <summary>
+        /// 유지보수 이력ID
+        /// </summary>
+        public int? ID { get; set; }
+
+        /// <summary>
+        /// 입출고 이력 ID
+        /// </summary>
+        public int? StoreID { get; set; }
+
+        /// <summary>
+        /// 공간 ID - 재입고시 필요
+        /// </summary>
+        public int? RoomTBID { get; set; }
+
+        /// <summary>
+        /// 사업장ID - 재입고시 필요
+        /// </summary>
+        public int? PlaceTBID { get; set; }
+
+        /// <summary>
+        /// 자재ID - 재입고시 필요
+        /// </summary>
+        public int? MaterialTBID { get; set; }
+
+
+        /// <summary>
+        /// 취소사유
+        /// </summary>
+        public string? Note { get; set; }
+
+    }
+}

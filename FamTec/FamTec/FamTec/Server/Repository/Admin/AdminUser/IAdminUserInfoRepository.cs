@@ -63,6 +63,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         ValueTask<AdminTb?> UpdateAdminInfo(AdminTb model);
 
-        ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string creater, IFormFile? files);
+        ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string UserIdx, string creater, IFormFile? files);
     }
 }

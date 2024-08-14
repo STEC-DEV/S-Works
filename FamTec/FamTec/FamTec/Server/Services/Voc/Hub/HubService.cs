@@ -75,7 +75,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 {
                     for (int i = 0; i < files.Count; i++)
                     {
-                        newFileName.Add(FileService.SetNewFileName(files[i]));
+                        newFileName.Add(FileService.SetNewFileName(dto.Name!, files[i]));
                     }
                 }
 
