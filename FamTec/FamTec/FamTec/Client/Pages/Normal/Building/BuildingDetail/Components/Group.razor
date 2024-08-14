@@ -23,7 +23,7 @@
     <div class="content">
         @foreach(var item in GroupData.keyListDTO)
         {
-            <SubItem item="item" EditMode=EditMode />
+            <SubItem item="item" EditMode=EditMode OnLoad="LoadGroup" />
         }
     </div>
     @if (IsModal)

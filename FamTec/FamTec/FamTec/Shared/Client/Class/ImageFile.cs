@@ -10,5 +10,6 @@ namespace FamTec.Shared.Client.Class
     {
         public string Name { get; set; }
         public byte[] Image { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

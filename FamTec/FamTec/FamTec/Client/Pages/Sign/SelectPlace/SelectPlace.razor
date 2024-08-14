@@ -1,8 +1,9 @@
-﻿@page "/select/{token}"
+﻿@page "/select"
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Sign.SelectPlace.Components
+@inject ILocalStorageService _localStorageService
 
 <div class="selectplace-container">
     <div class="selectplace-wrap">
@@ -41,8 +42,21 @@
 
     private async Task OnLoadPlaceList()
     {
-        ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("Login/sign/AdminPlaceList");
-        if (res.code == 200) placeData = res.data;
+        try
+        {
+            ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>($"Login/sign/AdminPlaceList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+            }
+
+            placeData = res.data;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+        }
+
     }
 
     private void HandlePlaceSelected(int selectedId)
@@ -58,8 +72,9 @@
 
         if(res.code == 200)
         {
-            customStateProvider.UpdateTokenAsync(res.data);
-            Navigation.NavigateTo("/");
+            // customStateProvider.UpdateTokenAsync(res.data);
+            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
+            Navigation.NavigateTo("/user");
             return;
         }
 

@@ -2594,6 +2594,47 @@
     grid-row-gap : var(--wide-pd);
     grid-column-gap : calc(var(--default-pd) + var(--half-pd));
 }
+/* /Pages/Normal/Building/BuildingDetail/Components/Form.razor.rz.scp.css */
+.form[b-y1t13l8wvx]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--wide-pd);
+}
+
+.buildinginfo-contents[b-y1t13l8wvx] {
+    display: flex;
+    gap: var(--wide-pd);
+    width: 100%;
+    height: 100%;
+}
+
+.building-img[b-y1t13l8wvx] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 400px;
+    max-width: 100%;
+}
+
+.infosection-1[b-y1t13l8wvx] {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-column-gap: var(--default-pd);
+    grid-row-gap: var(--default-pd);
+    width: 100%;
+    background-color: var(--default-color);
+}
+
+.infosection-2[b-y1t13l8wvx] {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /*grid-column-gap : var(--wide-pd);
+    grid-row-gap : var(--default-pd);*/
+
+    grid-row-gap: var(--wide-pd);
+    grid-column-gap: calc(var(--default-pd) + var(--half-pd));
+}
 /* /Pages/Normal/Building/BuildingDetail/Components/Group.razor.rz.scp.css */
 .group[b-1iwoq2861v]{
     display :flex;
@@ -2989,6 +3030,110 @@
 }
 
 .btns[b-1fl9yy64cm]{
+    display :flex;
+    gap:var(--default-pd);
+}
+/* /Pages/Normal/Building/BuildingDetail/Modal/UpdateSubItemModal.razor.rz.scp.css */
+.modal[b-3h2bkj76e0]{
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.header[b-3h2bkj76e0] {
+    
+}
+
+.title[b-3h2bkj76e0] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input[b-3h2bkj76e0]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>label[b-3h2bkj76e0]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input[b-3h2bkj76e0]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus[b-3h2bkj76e0]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+
+.content[b-3h2bkj76e0]{
+    display : fle
+}
+
+.item-header[b-3h2bkj76e0]{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.item-header >span[b-3h2bkj76e0]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+}
+
+
+.value-ul[b-3h2bkj76e0]{
+    display : flex;
+    flex-direction:column;
+    gap :var(--half-pd);
+}
+
+.value-li[b-3h2bkj76e0]{
+    display:flex;
+    gap: var(--default-pd)
+}
+
+.value-input[b-3h2bkj76e0]{
+    width:100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.value-input:focus[b-3h2bkj76e0]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns[b-3h2bkj76e0]{
     display :flex;
     gap:var(--default-pd);
 }
@@ -5508,12 +5653,14 @@
 
 /* /Pages/Sign/SelectPlace/SelectPlace.razor.rz.scp.css */
 .selectplace-container[b-bmph7up56n] {
+    margin-left: calc(-50vw + 50%);
+    margin-top: calc(-50vw + 50%);
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
-    
+    width: 100vw;
+    height: 100vh;
     /*background-color: var(--content-back-color);*/
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
@@ -6017,8 +6164,8 @@
     flex: 0 0 100px; /* 여기를 수정했습니다 */
     padding: var(--half-pd) var(--default-pd);
     font-weight: bold;
-    color: var(--default-color);
-    background-color: var(--main-color);
+    color: var(--main-color);
+    background-color: var(--color-1);
     white-space: normal; /* 텍스트가 넘치지 않도록 */
     overflow: hidden; /* 넘치는 텍스트 숨기기 */
     text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
@@ -6497,4 +6644,10 @@ main[b-epzcebx71e] {
     flex:1;
     overflow: auto;
     padding: 1rem;
+}
+
+.wrap[b-epzcebx71e] {
+    flex: 1;
+    overflow: auto;
+    
 }

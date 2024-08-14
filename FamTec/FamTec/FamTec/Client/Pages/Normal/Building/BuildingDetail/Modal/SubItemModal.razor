@@ -42,6 +42,7 @@
 </div>
 
 @code {
+    [Parameter] public int ItemId { get; set; }
     [Parameter] public int GroupId { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public AddItemDTO Item { get; set; } = new AddItemDTO();

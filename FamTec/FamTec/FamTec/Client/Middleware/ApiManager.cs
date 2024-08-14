@@ -30,7 +30,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -64,7 +64,13 @@ namespace FamTec.Client.Middleware
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<T>();
+            //return await response.Content.ReadFromJsonAsync<T>();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return await response.Content.ReadFromJsonAsync<T>(options);
         }
 
         /*
@@ -151,7 +157,7 @@ namespace FamTec.Client.Middleware
         /*
          * Put 요청
          */
-        private async Task<string> PutSendRequestAsync(string endpoint, object data)
+        private async Task<string> PutSendRequestAsync(string endpoint, object data, bool isMultipart)
         {
             await AddAuthorizationHeader();
 
@@ -159,8 +165,33 @@ namespace FamTec.Client.Middleware
 
             if (data != null)
             {
-                string json = JsonSerializer.Serialize(data);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                if (isMultipart)
+                {
+                    var content = new MultipartFormDataContent();
+                    foreach(var item in data.GetType().GetProperties())
+                    {
+                        Console.WriteLine(item.Name);
+                        var value = item.GetValue(data);
+                        var imageName = data.GetType().GetProperty("ImageName").GetValue(data);
+                          if(value is byte[] fileBytes)
+                        {
+                            var fileContent = new ByteArrayContent(fileBytes);
+                            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                            content.Add(fileContent, "files", $"{imageName}");
+                        }
+                        else
+                        {
+                            content.Add(new StringContent(value?.ToString() ?? ""), item.Name);
+                        }
+                    }
+                    request.Content = content;
+                }
+                else
+                {
+                    string json = JsonSerializer.Serialize(data);
+                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                }
+                
             }
 
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -249,9 +280,9 @@ namespace FamTec.Client.Middleware
         
 
         //put 공통
-        public async Task<ResponseUnit<T>> PutAsync<T>(string endpoint, object data)
+        public async Task<ResponseUnit<T>> PutAsync<T>(string endpoint, object data, bool isMultipart = false)
         {
-            string jsonResponse = await PutSendRequestAsync(endpoint, data);
+            string jsonResponse = await PutSendRequestAsync(endpoint, data, isMultipart);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
         }
 
@@ -267,13 +298,14 @@ namespace FamTec.Client.Middleware
         //ResponseList Get
         public async Task<ResponseList<T>> GetListAsync<T>(string endpoint)
         {
+           
             return await GetSendRequestAsync<ResponseList<T>> (HttpMethod.Get, endpoint);
         }
 
         // 사업장 삭제 (PUT 요청)
-        public async Task<ResponseUnit<T>> DeletePlaceAsync<T>(string endpoint, object data)
+        public async Task<ResponseUnit<T>> DeletePlaceAsync<T>(string endpoint, object data, bool isMultipart = false)
         {
-            string jsonResponse =  await PutSendRequestAsync(endpoint, data);
+            string jsonResponse =  await PutSendRequestAsync(endpoint, data, isMultipart);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
                 
         }

@@ -1,31 +1,40 @@
 ﻿@using System.Security.Claims
+@using FamTec.Client.Shared.Provider
 @inherits LayoutComponentBase
-
-
+@inject AuthenticationStateProvider _authStateProvider
+@inject ILocalStorageService _localStorageService
 
 <div class="page">
     <div class="inner">
     <AuthorizeView>
         <Authorized>
-                <Nav 
-                    UserName="@UserDisplayName(context.User.Claims.ToList())"
-                     UserType="@UserDisplayType(context.User.Claims.ToList())" />
+                @if (!Navigation.Uri.Contains("/select"))
+                {
+                    <Nav UserName="@UserDisplayName(context.User.Claims.ToList())"
+                         UserType="@UserDisplayType(context.User.Claims.ToList())" />
+                }
                 <main>
+                    @if (!Navigation.Uri.Contains("/select"))
+                    {
                     <Drawer />
+                    }
                     <div class="content">
                         @Body
                     </div>
                 </main>
         </Authorized>
         <NotAuthorized>
+                
             <main>
-                <div class="content">
-                        @if (!Navigation.Uri.EndsWith("/login") && !Navigation.Uri.Contains("/select/"))
+                <div class="wrap">
+                        @if (!Navigation.Uri.Contains("/login") && !Navigation.Uri.Contains("/select"))
                         {
+                            Console.WriteLine("12");
                             Navigation.NavigateTo("/login", forceLoad: true);
                         }
                         else
                         {
+                            Console.WriteLine("34");
                             @Body
                         }
                 </div>
@@ -38,6 +47,15 @@
 </div>
 
 @code {
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private bool isAdminMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnUserCheck();
+    }
+
+
     private string UserDisplayName(List<Claim> claims)
     {
         var Name = claims.Where(_ => _.Type == "Name").Select(_ => _.Value).FirstOrDefault();
@@ -49,5 +67,68 @@
     {
         var Name = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
         return Name;
+    }
+
+
+    private async Task OnUserCheck()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        var userPlace = user.Claims.FirstOrDefault(c => c.Type == "PlaceIdx")?.Value;
+
+        Console.WriteLine("선택 사업장"+userPlace);
+        Console.WriteLine(userPlace==null);
+        
+        // 비로그인 시 리턴
+        if (!user.Identity.IsAuthenticated) return;
+
+        var isAdmin = user.IsInRole("SystemManager") || user.IsInRole("Master") || user.IsInRole("Manager");
+        isAdminMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
+        Console.WriteLine(isAdmin);
+
+        if (Navigation.Uri.Contains("/admin"))
+        {
+            if (!isAdmin || !isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+        }
+        else if (Navigation.Uri.Contains("/select"))
+        {
+            if (!isAdmin || isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+        }
+        else if (Navigation.Uri.Contains("/user"))
+        {
+            if (isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+            if (isAdmin && string.IsNullOrEmpty(userPlace))
+            {
+                Console.WriteLine("관리자 사업장 미선택");
+                await ShowAlertAndNavigate("사업장을 선택해주세요", "/select");
+                return;
+            }
+        }
+    }
+
+    private async Task ShowAlertAndNavigate(string message, string navigateTo)
+    {
+        await JS.InvokeVoidAsync("alert", message);
+        Navigation.NavigateTo(navigateTo);
+    }
+
+    private async Task ClearUserSessionAndLogout()
+    {
+        await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+        await _localStorageService.RemoveItemAsync("loginMode");
+        (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");
     }
 }

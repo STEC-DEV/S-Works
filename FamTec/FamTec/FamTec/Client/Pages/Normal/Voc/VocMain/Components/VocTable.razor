@@ -63,25 +63,25 @@
 
                 <tr class="tbody-tr" @onclick="() => OnDeatail(id)">
                     <td class="td">
-                        @typeof(T).GetProperty("Location")?.GetValue(row)?.ToString()
+                        @typeof(T).GetProperty("BuildingName")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
                         @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
                     </td>
-                    <td class="td">
+                    @* <td class="td">
                         @typeof(T).GetProperty("Writer")?.GetValue(row)?.ToString()
-                    </td>
+                    </td> *@
                     <td class="td">
                         @typeof(T).GetProperty("Title")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("Occur_DT")?.GetValue(row)?.ToString()
+                        @typeof(T).GetProperty("CreateDT")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("Compelete_DT")?.GetValue(row)?.ToString()
+                        @typeof(T).GetProperty("CompleteDT")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("Total_DT")?.GetValue(row)?.ToString()
+                        @typeof(T).GetProperty("DurationDT")?.GetValue(row)?.ToString()
                     </td>
                     <td class="td">
                         <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />

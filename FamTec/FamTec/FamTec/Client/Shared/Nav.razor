@@ -55,10 +55,15 @@
     private bool LoginMode;
     private HubConnection hubConnection;
 
+
+
     protected override async Task OnInitializedAsync()
     {
         // LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
         await OnLoginMode();
+
+        Socket();
+
         // var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
         // _userType = await SessionService.GetClaimValue(session, "Role");
         // _userName = await SessionService.GetClaimValue(session, "Name");
@@ -81,15 +86,15 @@
             });
         }
         #endregion
-            
+
         // 다시재연결 필요하면 이거 쓰면될듯
-      
+
         HubObject.hubConnection!.Closed += async (exception) =>
         {
             await HubObject.hubConnection.StartAsync(); // 다시재연결
         };
     }
-    
+
 
     private async Task OnLogOut()
     {
@@ -138,7 +143,22 @@
         _ = hubConnection.DisposeAsync();
     }
 
+    private void Socket()
+    {
+        int PlaceIdx = 3;
+        HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_BEAUTYRoom");
 
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/broadcastHub"))
+            .Build();
+
+
+        hubConnection.On<string>("ReceiveVoc", (message) =>
+        {
+            Console.WriteLine(message);
+        });
+
+    }
 
 
 }

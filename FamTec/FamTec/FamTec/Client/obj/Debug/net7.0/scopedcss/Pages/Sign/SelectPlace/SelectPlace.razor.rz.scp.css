@@ -1,10 +1,12 @@
 .selectplace-container[b-bmph7up56n] {
+    margin-left: calc(-50vw + 50%);
+    margin-top: calc(-50vw + 50%);
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
-    
+    width: 100vw;
+    height: 100vh;
     /*background-color: var(--content-back-color);*/
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;

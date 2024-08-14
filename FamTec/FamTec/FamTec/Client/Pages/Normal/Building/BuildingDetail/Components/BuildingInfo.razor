@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
+@using FamTec.Shared.Server.DTO
 <div class="buildinginfo yappear">
     <div class="buildinginfo-header">
         <span class="title">
@@ -9,7 +11,7 @@
         <div class="header-btns">
             @if (EditMode)
             {
-                <Button Name="저장" Width=true Type="0" OnClick="OnEditMode" />
+                <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
                 <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
                 
             }
@@ -21,130 +23,81 @@
         </div>
 
     </div>
-    <div class="buildinginfo-contents">
-        <div class="building-img">
-            <InputFile type="file" OnChange="OnUploadFiles" />
-            <PreviewBox ImageUrl="@ImageUrl" />
-        </div>
-        <div class="infosection-1">
-            <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@Building.Code"/>
-            <InputFieldSmall InputType="text" Label="건물이름" EditMode=EditMode @bind-Value="@Building.Name"/>
-            <InputFieldSmall InputType="text" Label="건물주소" EditMode=EditMode @bind-Value="@Building.Address" />
-            <InputFieldSmall InputType="text" Label="대표전화" EditMode=EditMode @bind-Value="@Building.Tel" />
-            <InputFieldSmall InputType="text" Label="건물구조" EditMode=EditMode @bind-Value="@Building.BuildingStructure" />
-            <InputFieldSmall InputType="text" Label="건물용도" EditMode=EditMode @bind-Value="@Building.Usage" />
-            <InputFieldSmall InputType="text" Label="시공업체" EditMode=EditMode @bind-Value="@Building.ConstCompany" />
-            <InputFieldSmall InputType="text" Label="준공년월" EditMode=EditMode @bind-Value="@Building.CompleteDT" />
-            <InputFieldSmall InputType="text" Label="지붕구조" EditMode=EditMode @bind-Value="@Building.RoofStructure" />
-            <InputFieldSmall InputType="text" Label="소방등급" EditMode=EditMode @bind-Value="@Building.FireRating" />
-            <InputFieldSmall InputType="text" Label="정화조용량" EditMode=EditMode @bind-Value="@Building.SepticTankCapacity" />
-        </div>
-    </div>
-    <div class="infosection-2">
-        <GroupField 
-            Title="면적" 
-            Sub1="연면적" 
-            Sub2="대지면적" 
-            Sub3="건축면적"
-            @bind-Data1="@Building.GrossFloorArea"
-            @bind-Data2="@Building.LandArea"
-            @bind-Data3="@Building.BuildingArea"
-            />
-        <GroupField Title="층" Sub1="전체" Sub2="지상" Sub3="지하"
-                    @bind-Data1="@Building.FloorNum"
-                    @bind-Data2="@Building.GroundFloorNum"
-                    @bind-Data3="@Building.BasementFloorNum" 
-                    EditMode=EditMode
-                    />
-        <GroupField Title="높이" Sub1="전체" Sub2="지상" Sub3="지하"
-                    @bind-Data1="@Building.BuildingHeight"
-                    @bind-Data2="@Building.GroundHeight"
-                    @bind-Data3="@Building.BasementHeight" 
-                    EditMode=EditMode
-                    />
+    <Form 
+        Building=@(EditMode ? _editBuilding : Building )
+        Image=@(EditMode ? EditImage : OriginalImage)
+        EditMode=EditMode />
 
-        <GroupField Title="주차장" Sub1="대수" Sub2="옥내" Sub3="옥외"
-                    @bind-Data1="@Building.ParkingNum"
-                    @bind-Data2="@Building.InnerParkingNum"
-                    @bind-Data3="@Building.OutterParkingNum" 
-                    EditMode=EditMode
-                    />
-        <GroupField Title="용량" Sub1="전기" Sub2="수전" Sub3="발전"
-                    @bind-Data1="@Building.ElecCapacity"
-                    @bind-Data2="@Building.FaucetCapacity"
-                    @bind-Data3="@Building.GenerationCapacity"
-                    EditMode=EditMode />
-                    
-        <GroupField Title="물" Sub1="급수용량" Sub2="고가수조" Sub3="저수조"
-                    @bind-Data1="@Building.WaterCapacity"
-                    @bind-Data2="@Building.ElevWaterCapacity"
-                    @bind-Data3="@Building.WaterTank"
-                    EditMode=EditMode />
-        <GroupField Title="가스" Sub1="용량" Sub2="보일러" Sub3="냉온수기"
-                    @bind-Data1="@Building.GasCapacity"
-                    @bind-Data2="@Building.Boiler"
-                    @bind-Data3="@Building.Water_Dispenser"
-                    EditMode=EditMode />
-        <GroupField Title="승강기" Sub1="대수" Sub2="인승용" Sub3="화물용"
-                    @bind-Data1="@Building.LiftNum"
-                    @bind-Data2="@Building.PeopleLiftNum"
-                    @bind-Data3="@Building.CargoLiftNum"
-                    EditMode=EditMode />
-        <GroupField Title="냉·난방" Sub1="용량" Sub2="난방용량" Sub3="냉방용량"
-                    @bind-Data1="@Building.CoolHeatCapacity"
-                    @bind-Data2="@Building.HeatCapacity"
-                    @bind-Data3="@Building.CoolCapacity"
-                    EditMode=EditMode />
-        <GroupField Title="조경" Sub1="조경면적" Sub2="지상" Sub3="옥상"
-                    @bind-Data1="@Building.LandScapeArea"
-                    @bind-Data2="@Building.GroundArea"
-                    @bind-Data3="@Building.RoofTopArea"
-                    EditMode=EditMode />
-        <GroupField Title="화장실" Sub1="전체" Sub2="남자" Sub3="여자"
-                    @bind-Data1="@Building.ToiletNum"
-                    @bind-Data2="@Building.MenToiletNum"
-                    @bind-Data3="@Building.WomenToiletNum"
-                    EditMode=EditMode />
-    </div>
 </div>
 
 @code {
     // [CascadingParameter] public BuildingDTO? Building { get; set; }
     [Parameter] public BuildingDTO? Building { get; set; }
-    private string ImageUrl;
+    [Parameter] public EventCallback OnLoad { get; set; }
 
+    private BuildingDTO _editBuilding;
+
+    private List<string> OriginalImage = new List<string>();
+    private List<string> EditImage = new List<string>();
     bool EditMode= false;
-    protected override void OnInitialized()
+
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(Building.LandArea);
-        Console.WriteLine(Building.Address);
-        //base.OnInitialized();
-        Console.WriteLine(Building.ParkingNum);
+        ConvertToImageUrl();
     }
 
-    private void changetest(ChangeEventArgs e)
+
+    //최초 건물객체가 가지고 있는 이미지 로드
+    private void ConvertToImageUrl()
     {
-        Console.WriteLine(e.Value);
+        Console.WriteLine("여기 탐");
+        if (Building.Image == null)
+        {
+            OriginalImage.Clear();
+            return;
+        }
+
+        OriginalImage.Add($"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}");
+        // OriginalImage[0] = $"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}";
+        EditImage = new List<string>(OriginalImage);
+        Console.WriteLine(Building.Image);
     }
 
-    private async void OnUploadFiles(InputFileChangeEventArgs e)
-    {
-        Console.WriteLine(e.File.Name);
-        Console.WriteLine(e.File.ContentType);
-        Console.WriteLine(e.GetMultipleFiles());
-
-        var file = e.File;
-        var buffer = new byte[file.Size];
-        await file.OpenReadStream().ReadAsync(buffer);
-        ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
-        Console.WriteLine(Convert.ToBase64String(buffer));
-        Building.Image = buffer;
-        Building.ImageName = e.File.Name;
-        StateHasChanged();
-    }
 
     private void OnEditMode()
     {
         EditMode = !EditMode;
+        _editBuilding = Building.DeepCopy();
+
+        if (!EditMode)
+        {
+            EditImage = new List<string>(OriginalImage);
+        }
+        StateHasChanged();
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            Console.WriteLine(_editBuilding.Image);
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Building/sign/UpdateBuilding",_editBuilding, true);
+            // ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Building/sign/UpdateBuilding",_editBuilding);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "[건물][수정] 기본정보 수정 실패!");
+            }
+
+            await OnLoad.InvokeAsync();
+            OnEditMode();
+            OriginalImage = new List<string>(EditImage);
+            
+            
+            StateHasChanged();
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[건물][수정] 기본정보 수정"+ ex);
+            await JS.InvokeVoidAsync("alert", "[건물][수정] 기본정보 수정 실패!");
+        }
     }
 }

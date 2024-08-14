@@ -43,12 +43,37 @@
 @code {
     LoginDTO user = new LoginDTO();
     bool LoginMode=false;
-    private HubConnection? hubConnection;
-    private List<string> messages = new List<string>();
+    
+    
 
     protected async override Task OnInitializedAsync()
     {
+        await OnValidationUser();
+    }
 
+
+    private async Task OnValidationUser()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+            await _localStorageService.RemoveItemAsync("loginMode");
+            (_authStateProvider as CustomAuthProvider).NotifyLogout();
+            // // 이미 로그인된 사용자는 적절한 페이지로 리다이렉트 
+            // var isAdminMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
+            // await JS.InvokeVoidAsync("alert", "이미 로그인된 사용자입니다.");
+            // if (isAdminMode)
+            // {
+                
+            //     Navigation.NavigateTo("/admin/place");
+            // }
+            // else
+            // {
+            //     Navigation.NavigateTo("/user");
+            // }
+        }
     }
 
     private async Task OnSignUp()
@@ -83,87 +108,12 @@
                 return;
             }
             string? token = response.data;
-            // await sessionStorage.SetItemAsStringAsync("SWORKSSESSION", token);
-            // await sessionStorage.SetItemAsync("LoginMode", LoginMode);
-
 
             
 
-
-
-            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
             
 
-            if(response.code == 201)
-            {
-                Navigation.NavigateTo($"/select/{token}");
-                return;
-            }
-            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
-            await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
-            (_authStateProvider as CustomAuthProvider).NotifyAuthState();
-
-            if (response.code == 200)
-            {
-                if (LoginMode)
-                {
-                    Navigation.NavigateTo("/admin/place");
-                }
-                else
-                {
-                    Navigation.NavigateTo("/user");
-                }
-                // // 인증 상태 업데이트
-                // customStateProvider.NotifyUserAuthentication(token);
-                // Navigation.NavigateTo("/");
-                // return;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
-        }
-        Console.WriteLine(user.UserID);
-        Console.WriteLine(user.UserPassword);
-    }
-}
-
-@* // /* SIGNAL R */
-            // var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
-            // var tokenHandler = new JwtSecurityTokenHandler();
-            // tokenHandler.ValidateToken(token, new TokenValidationParameters
-            //     {
-            //         ValidateIssuerSigningKey = true,
-            //         IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
-            //         ValidateIssuer = false,
-            //         ValidateAudience = false,
-            //         // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-            //         ClockSkew = TimeSpan.Zero
-            //     }, out SecurityToken validatedToken);
-
-            // int split = validatedToken.ToString()!.IndexOf('.') + 1;
-
-            // string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
-            // JObject? jobj = JObject.Parse(payload.ToString());
-
-
-            // int PlaceIdx = 3;
-            // await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_ETCRoom");
-
-            // hubConnection = new HubConnectionBuilder()
-            //     .WithUrl(Navigation.ToAbsoluteUri("/broadcastHub"))
-            //     .Build();
-
-
-            // hubConnection.On<string>("ReceiveVoc", (message) =>
-            // {
-            //     messages.Add(message);
-            //     // StateHasChanged();
-            // });
-
-
-            // // 권한 JOIN
+            // 권한 JOIN
 
             // JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
             // string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
@@ -223,4 +173,51 @@
             //     string? UserPerm_Default = Convert.ToString(VocPerms["VocDefault"]!);
             //     if (!String.IsNullOrWhiteSpace(UserPerm_Default) && Int32.Parse(UserPerm_Default) > 0)
             //         await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_DefaultRoom");
-            // } *@
+            // }
+
+
+
+
+            HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            
+
+            if(response.code == 201)
+            {
+                // Navigation.NavigateTo($"/select/{token}");
+                Navigation.NavigateTo($"/select");
+                await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+                await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
+                (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+                return;
+            }
+            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+            await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
+            (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+
+            if (response.code == 200)
+            {
+                if (LoginMode)
+                {
+                    Navigation.NavigateTo("/admin/place");
+                }
+                else
+                {
+                    Navigation.NavigateTo("/user");
+                }
+                // // 인증 상태 업데이트
+                // customStateProvider.NotifyUserAuthentication(token);
+                // Navigation.NavigateTo("/");
+                // return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
+        }
+        Console.WriteLine(user.UserID);
+        Console.WriteLine(user.UserPassword);
+    }
+}
+
+@* *@

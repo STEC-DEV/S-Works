@@ -22,19 +22,19 @@
 </div>
 
 @code {
-    BuildingDTO Building;
+    AddBuildingDTO Building;
     List<string> BuildingProperties;
 
     protected override Task OnInitializedAsync()
     {
-        Building = new BuildingDTO();
+        Building = new AddBuildingDTO();
         return base.OnInitializedAsync();
     }
 
     private async void OnAdd()
     {
 
-        ResponseUnit<BuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<BuildingDTO>("building/sign/addbuilding", Building);
+        ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
         if(ResAdd.code != 200)
         {
             await JS.InvokeVoidAsync("alert", "건물 생성 실패");

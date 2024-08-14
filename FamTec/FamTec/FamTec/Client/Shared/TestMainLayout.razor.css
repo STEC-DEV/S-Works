@@ -29,3 +29,9 @@ main {
     overflow: auto;
     padding: 1rem;
 }
+
+.wrap {
+    flex: 1;
+    overflow: auto;
+    
+}

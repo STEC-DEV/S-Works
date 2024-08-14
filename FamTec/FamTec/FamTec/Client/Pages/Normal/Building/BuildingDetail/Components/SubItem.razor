@@ -1,9 +1,10 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 @using FamTec.Shared.Client.DTO.Normal.Buildings.Group
 
 
 <div class="item-container">
-    <div class="item-wrap">
+    <div class="item-wrap" @onclick=@OnItemEdit>
         @if (EditMode)
         {
             <input type="checkbox" />
@@ -20,10 +21,24 @@
             }
         </div>
     </div>
-    
+    @if (ItemEdit)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <UpdateSubItemModal OnClose="OnItemEdit" Data="item" LoadGroup="OnLoad" />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
     [Parameter] public ItemDTO item { get; set; }
     [Parameter] public bool EditMode { get; set; } = false;
+    [Parameter] public EventCallback OnLoad { get; set; }
+    private bool ItemEdit = false;
+
+    private void OnItemEdit()
+    {
+        ItemEdit = !ItemEdit;
+    }
 }

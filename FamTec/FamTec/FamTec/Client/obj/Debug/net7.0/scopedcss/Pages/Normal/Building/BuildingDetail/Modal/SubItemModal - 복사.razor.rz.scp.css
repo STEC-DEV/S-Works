@@ -1,0 +1,103 @@
+.modal[b-bt9136nhru]{
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.header[b-bt9136nhru] {
+    
+}
+
+.title[b-bt9136nhru] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input[b-bt9136nhru]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>label[b-bt9136nhru]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input[b-bt9136nhru]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus[b-bt9136nhru]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+
+.content[b-bt9136nhru]{
+    display : fle
+}
+
+.item-header[b-bt9136nhru]{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.item-header >span[b-bt9136nhru]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+}
+
+
+.value-ul[b-bt9136nhru]{
+    display : flex;
+    flex-direction:column;
+    gap :var(--half-pd);
+}
+
+.value-li[b-bt9136nhru]{
+    display:flex;
+    gap: var(--default-pd)
+}
+
+.value-input[b-bt9136nhru]{
+    width:100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.value-input:focus[b-bt9136nhru]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns[b-bt9136nhru]{
+    display :flex;
+    gap:var(--default-pd);
+}

@@ -1,20 +1,41 @@
 ﻿@page "/voc"
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
 
 <div class="voc-container yappear">
     <div class="condition-container">
 
     </div>
     <div class="content-container">
-        <VocHIstory />
+        <VocHIstory ListData="VocData" />
     </div>
 </div>
 
 @code {
-    
+    List<ListVocDTO> VocData = new List<ListVocDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadVoc();
+
+    }
+
+    private async Task OnLoadVoc()
+    {
+        try
+        {
+            ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>("Voc/sign/GetVocList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원 조회 실패");
+            }
+            VocData = resGet.data;
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "민원 조회 실패");
+        }
+    }
 
 
-   
-
-    
 }

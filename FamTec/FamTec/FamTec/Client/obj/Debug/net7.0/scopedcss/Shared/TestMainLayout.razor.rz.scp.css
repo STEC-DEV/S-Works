@@ -29,3 +29,9 @@ main[b-epzcebx71e] {
     overflow: auto;
     padding: 1rem;
 }
+
+.wrap[b-epzcebx71e] {
+    flex: 1;
+    overflow: auto;
+    
+}

@@ -7,7 +7,7 @@
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 
 <div class="container">
-    <BuildingInfo Building="Building" />
+    <BuildingInfo Building="Building" OnLoad="@OnLoadBuilding" />
     @foreach(var group in Group)
     {
         <Group GroupData="@group" LoadGroup="OnLoadGroup" />

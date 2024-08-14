@@ -42,8 +42,8 @@
             var buffer = new byte[image.Size];
             await using var stream = image.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
             await stream.ReadAsync(buffer);
-
-            images.Add(new ImageFile {Name = image.Name, Image = buffer});
+            string ImageUrl = $"data:{image.ContentType};base64,{Convert.ToBase64String(buffer)}";
+            images.Add(new ImageFile { Name = image.Name, Image = buffer, ImageUrl = ImageUrl });
         }
 
         await OnChange.InvokeAsync(images);

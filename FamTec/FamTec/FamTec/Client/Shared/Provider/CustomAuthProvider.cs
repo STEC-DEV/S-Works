@@ -28,6 +28,8 @@ namespace FamTec.Client.Shared.Provider
             return new AuthenticationState(new ClaimsPrincipal(
                 new ClaimsIdentity(ParseClaimsFromJwt(jwtToken),"JwtAuth")));
         }
+
+
         private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var payload = jwt.Split('.')[1];
