@@ -31,6 +31,9 @@
         /// 작업자
         /// </summary>
         public string? Worker { get; set; }
+
+        public float? TotalPrice { get; set; }
+        
     }
 
     /// <summary>

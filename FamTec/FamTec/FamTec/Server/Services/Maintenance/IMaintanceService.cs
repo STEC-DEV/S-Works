@@ -28,5 +28,16 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeletemaintanceHistoryService(HttpContext context, DeleteMaintanceDTO dto);
+
+        /// <summary>
+        /// 속한 사업장 유지보수 이력 날짜기간 전체
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <param name="category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, int category, int type);
     }
 }

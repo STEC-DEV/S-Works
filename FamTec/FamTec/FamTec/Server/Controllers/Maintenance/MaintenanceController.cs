@@ -196,21 +196,58 @@ namespace FamTec.Server.Controllers.Maintenance
             }
         }
 
+        /// <summary>
+        /// 유지보수 이력 사업장별 날짜기간 전체
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <param name="category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/Temp")]
-        public async ValueTask<IActionResult> Temp()
+        [Route("sign/GetDateHistoryList")]
+        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]int category, [FromQuery]int type)
         {
-            int placeid = 3;
-            DateTime StartDate = DateTime.Now.AddDays(-11);
-            DateTime EndDate = DateTime.Now;
-            string Category = "전체";
-            int type = 0;
-            
-            var temp = await MaintanceRepository.GetDateHistoryList(placeid, StartDate, EndDate, Category, type);
+            try
+            {
+                //DateTime StartDate = DateTime.Now.AddDays(-30);
+                //DateTime EndDate = DateTime.Now;
+                //int Category = 0; // 전체
+                //int type = 0; // 전체
 
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/temp")]
+
+        public async ValueTask<IActionResult> GetAllHistoryList()
+        {
+            var temp = await MaintanceRepository.GetAllHistoryList(3, 0, 0);
             return Ok();
         }
+
+
+        
+
     }
 
 }

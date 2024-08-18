@@ -695,13 +695,10 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category">설비유형</param>
         /// <param name="type">작업구분</param>
         /// <returns></returns>
-        public async ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string? Category, int? type)
+        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, int Category, int type)
         {
             try
             {
-                // 사업장 - 층 - 공간<리스트>
-                // 위에서 뽑은 공간ID에서 Category(기계,미화) 에 해당하는 FacilityID를 List타입으로 뽑은뒤
-                // 그 FacilityID에 외래키를 갖고있는 Type의 날짜에 해당하는 List를 뽑아내면 된다.
                 List<BuildingTb>? BuildingTB = await context.BuildingTbs
                     .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
                     .ToListAsync();
@@ -714,10 +711,12 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
 
                 List<RoomTb>? RoomTB = await context.RoomTbs.Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
-                
+                if (RoomTB is not [_, ..])
+                    return null;
+
                 // 설비유형
                 List<FacilityTb>? FacilityList;
-                if(Category is null)  // 전체
+                if(Category.Equals(0))  // 전체
                 {
                     FacilityList = await context.FacilityTbs
                        .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
@@ -726,13 +725,14 @@ namespace FamTec.Server.Repository.Maintenence
                 else // 그외 모두
                 {
                     FacilityList = await context.FacilityTbs
-                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true && m.Category.Equals(Category))
+                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true &&
+                      m.Category.Equals(Category))
                       .ToListAsync();
                 }
                 
                 List<MaintenenceHistoryTb>? HistoryList;
                 // 작업구분
-                if (type is null) // 전체
+                if (type.Equals(0)) // 전체
                 {
                     HistoryList = await context.MaintenenceHistoryTbs.Where
                       (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
@@ -751,27 +751,42 @@ namespace FamTec.Server.Repository.Maintenence
                         .ToListAsync();
                 }
 
+                List<MaintanceHistoryDTO> HistoryDTO = new List<MaintanceHistoryDTO>();
                 // 반복문에서
                 // 설비유형 일자 이력 작업구분 작업자 사용자재 소요비용
                 foreach (MaintenenceHistoryTb HistoryTB in HistoryList)
                 {
+                    MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
+
                     FacilityTb? FacilityModel = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
-                    
-                    // 설비유형 --> FacilityTB 조회
-                    // 일자 CreateDT 그냥
-                    // 이력 Name 그냥
-                    // 작업구분 Type 그냥
-                    // 작업자 Worker 그냥
-                    // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고
-                    // 소요비용 - TotalPrice
+
+                    HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
+                    HistoryModel.CreateDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
+                    HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
+                    HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
+                    HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
+
+                    List<StoreTb> StoreList = await context.StoreTbs
+                        .Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id).ToListAsync();
+                    foreach(StoreTb StoreTB in StoreList)
+                    {
+                        // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고    
+                        MaterialTb? MaterialTB = await context.MaterialTbs
+                            .FirstOrDefaultAsync(m => m.Id == StoreTB.MaterialTbId);
+
+                        HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                        {
+                            MaterialID = MaterialTB!.Id,
+                            MaterialName = MaterialTB.Name
+                        });
+                    }
+
+                    HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
+                    HistoryDTO.Add(HistoryModel);
                 }
 
-                
 
-
-                Console.WriteLine("asdg");
-                return null;
-
+                return HistoryDTO;
             }
             catch(Exception ex)
             {
@@ -780,13 +795,17 @@ namespace FamTec.Server.Repository.Maintenence
             }
         }
 
-       
+
+        public async ValueTask<List<MaintanceHistoryDTO>?> GetAllHistoryList(int placeid, int Category, int type)
+        {
+            return null;    
+        }
 
 
-      
 
 
 
-   
+
+
     }
 }

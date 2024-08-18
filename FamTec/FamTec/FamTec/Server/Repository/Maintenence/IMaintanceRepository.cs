@@ -33,7 +33,8 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<MaintenenceHistoryTb>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string? Category, int? type);
+        ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, int Category, int type);
+        ValueTask<List<MaintanceHistoryDTO>?> GetAllHistoryList(int placeid, int Category, int type);
 
         /// <summary>
         /// 동시성 토큰 추가
