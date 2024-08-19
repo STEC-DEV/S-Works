@@ -1,13 +1,14 @@
 ﻿@using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
 <div class="processcard ">
     <div class="header">
         <div class="writer-wrap">
             <span class="writer">
-                @Writer
+                @Data.CreateUser
             </span>
             <span class="date">
-                @DateTime.Now
+                @Data.CreateDT
             </span>
         </div>
             
@@ -15,7 +16,7 @@
     </div>
     <div class="content">
         <div class="content-text">
-            <TextField Label="처리 일시" Context="@DateTime.Now.ToString()" />
+            <TextField Label="처리 일시" Context="@Data.CreateDT" />
             <TextField Label="처리 내용" Context="해당 타일 교체 완료" Type="textarea"/>
         </div>
         <div class="img">
@@ -24,6 +25,7 @@
 </div>
 
 @code {
+    [Parameter] public VocCommentListDTO Data{ get; set; }
     [Parameter] public string Status { get; set; }
     [Parameter] public string Writer { get; set; } = "홍길동";
 }

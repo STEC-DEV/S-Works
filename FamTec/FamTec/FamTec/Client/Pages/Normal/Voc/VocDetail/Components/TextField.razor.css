@@ -31,6 +31,7 @@
 
 .height{
     height : 100%;
+    max-height: calc(var(--wide-pd) * 6);
 }
 
  ::deep textarea {

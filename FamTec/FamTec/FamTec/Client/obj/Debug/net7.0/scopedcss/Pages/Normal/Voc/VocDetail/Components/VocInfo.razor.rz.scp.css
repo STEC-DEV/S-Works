@@ -1,11 +1,17 @@
 .vocinfo-container[b-exbaw6icmy] {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
     height: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--back-default-color);
     padding: var(--default-pd);
+}
+
+.vocinfo-wrap[b-exbaw6icmy] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .vocinfo-container .vocinfo-title[b-exbaw6icmy]{
@@ -35,4 +41,11 @@
     gap: var(--default-pd);
     height: 100%;
     padding: var(--default-pd);
+}
+
+
+.vocinfo-container .content-grid[b-exbaw6icmy]{
+    display : grid;
+    grid-template-columns : repeat(2, 1fr);
+    gap : var(--default-pd);
 }

@@ -5135,6 +5135,7 @@
     height:100%;
     width:100%;
     display: flex;
+    flex-direction : column;
     gap: var(--half-pd);
     background-color: #ffffff;
 }
@@ -5185,6 +5186,7 @@
 
 .height[b-e5d0ioy9t2]{
     height : 100%;
+    max-height: calc(var(--wide-pd) * 6);
 }
 
  [b-e5d0ioy9t2] textarea {
@@ -5239,13 +5241,19 @@
 }
 /* /Pages/Normal/Voc/VocDetail/Components/VocInfo.razor.rz.scp.css */
 .vocinfo-container[b-exbaw6icmy] {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
     height: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--back-default-color);
     padding: var(--default-pd);
+}
+
+.vocinfo-wrap[b-exbaw6icmy] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .vocinfo-container .vocinfo-title[b-exbaw6icmy]{
@@ -5275,6 +5283,13 @@
     gap: var(--default-pd);
     height: 100%;
     padding: var(--default-pd);
+}
+
+
+.vocinfo-container .content-grid[b-exbaw6icmy]{
+    display : grid;
+    grid-template-columns : repeat(2, 1fr);
+    gap : var(--default-pd);
 }
 /* /Pages/Normal/Voc/VocDetail/Modal/AddModal.razor.rz.scp.css */
 .addmodal[b-prp9p1j9tr] {

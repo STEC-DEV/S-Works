@@ -1,4 +1,5 @@
-﻿@* @using FamTec.Shared.Client.DTO.Normal.Voc
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Client.Pages.Normal.Voc.Components
 
 <div class="vocinfo-container">
@@ -7,22 +8,111 @@
             <span class="title">
                 민원 내용
             </span>
-            <StatusCard Status=@Data.Status.ToString()/>
+            <div class="option">
+                <StatusCard Status=@Data.Status.ToString() />
+                @if (EditPerm)
+                {
+                    @if (EditMode)
+                    {
+                        <Button Name="저장" Width=true Type="0" />
+                        <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    }
+                    else
+                    {
+                        <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                    }
+                }
+            </div>
+            
         </div>
         <div class="vocinfo-content">
-            <TextField Label="위치" Context=@Data.BuildingName/>
-            <TextField Label="작성자" Context=@Data.Writer />
-            <TextField Label="전화번호" Context=@Data.Tel />
-            <TextField Label="제목" Context=@Data.Title/>
-            <TextField Label="내용" Context=@Data.Context />
-            <TextField Label="발생 시각" Context=@Data.Occur_DT.ToString()/>
+            <div class="content-grid">
+                <TextField Label="접수 번호" Context=@Data.Code />
+                <TextField Label="발생 시각" Context=@Data.CreateDT />
+                <TextField Label="위치" Context=@Data.BuildingName />
+                @if (EditMode)
+                {
+                    <InputSelectField 
+                        Label="담당 부서"
+                        SelectData="@Departments"
+                        />
+                }
+                else
+                {
+                    <TextField Label="담당 부서" Context=@Data.Type />
+                }
+                <TextField Label="작성자" Context=@Data.CreateUser />
+                <TextField Label="전화번호" Context=@Data.Phone />
+            </div>
+            <TextField Label="제목" Context=@Data.Title />
+            <TextField Label="내용" Context=@Data.Contents Type="textarea" />
+            
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public ListVocDTO Data { get; set; }
+    [Parameter] public DetailVocDTO Data { get; set; }
+    [Parameter] public bool EditPerm {get;set;}
+    bool EditMode = false;
 
-    string context = "지금 A건물 3층 화장실을 사용했는데 바닥에 타일이 깨져있더라구요 순간적으로 발을 삐끗해서 이거 사람들이 다칠수 있을것같아요 빠른조치 부탁드립니다.";
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine("분류 권한" + EditPerm);
+        return base.OnInitializedAsync();
+    }
+
+    List<object> Departments = new List<object>()
+    {
+        new
+        {
+            Name = "미분류",
+            Id = 0,
+        },
+        new
+        {
+            Name = "기계",
+            Id = 1,
+        },
+        new
+        {
+            Name = "전기",
+            Id = 2,
+        },
+        new
+        {
+            Name = "승강",
+            Id = 3,
+        },
+        new
+        {
+            Name = "소방",
+            Id = 4,
+        },
+        new
+        {
+            Name = "건축",
+            Id = 5,
+        },
+        new
+        {
+            Name = "통신",
+            value = 6,
+        },
+        new
+        {
+            Name = "미화",
+            Id = 7,
+        },
+        new
+        {
+            Name = "보안",
+            Id = 8,
+        },
+    };
+
+    private void OnEdit()
+    {
+        EditMode = !EditMode;
+    }
 }
- *@

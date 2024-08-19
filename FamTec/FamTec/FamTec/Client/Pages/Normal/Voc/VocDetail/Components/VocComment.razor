@@ -1,6 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using System.IdentityModel.Tokens.Jwt
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Modal
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
 <div class="voccomment-container">
     <div class="voccomment-title">
@@ -8,30 +9,29 @@
             처리 내역
         </span>
         <div class="option">
-            @if (AddComment)
+            @if (EditMode)
             {
-                <Button Name="저장" Width=true  Type=0/>
-                <Button Name="취소" Width=true Type=1 OnClick="@OnAddComment" />
-            }
-            else
-            {
-                @* <Button Name="추가" Width=true Type=0 OnClick="@OnAddComment" /> *@
                 <Button Name="추가" Width=true Type=0 OnClick="@OnAddMode" />
             }
+            
         </div>
     </div>
     <div class="voccomment-content">
         <div class="voccomment-overflow">
-            @if(AddComment)
+            @* @if(AddComment)
             {
                 <div class="yappear">
                     <ProcessCard  />
                 </div>
                 
+            } *@
+            @foreach(var comment in ListData)
+            {
+                <ProcessCard Status="0" Data="@comment" />
             }
-            <ProcessCard Status="0" />
+            @* <ProcessCard Status="0" />
             <ProcessCard Status="1" />
-            <ProcessCard Status="1" />
+            <ProcessCard Status="1" /> *@
             
         </div>
     </div>
@@ -47,10 +47,20 @@
 </div>
 
 @code {
-    [Parameter] public bool EditMode { get; set; } = false;
+    [Parameter] public List<VocCommentListDTO> ListData { get; set; } 
+    [Parameter] public bool EditMode { get; set; }
     bool AddMode = false;
     bool AddComment = false;
     string WriterName;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine("ss"+EditMode);
+        return base.OnInitializedAsync();
+    }
+
+
 
 
     /*
