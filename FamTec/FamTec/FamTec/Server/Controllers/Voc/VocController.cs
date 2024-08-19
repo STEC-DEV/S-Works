@@ -35,7 +35,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocListDTO?> model = await VocService.GetVocList(HttpContext);
+                ResponseList<AllVocListDTO?> model = await VocService.GetVocList(HttpContext);
                 if (model is null)
                     return BadRequest();
 
@@ -136,6 +136,12 @@ namespace FamTec.Server.Controllers.Voc
             {
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (dto.VocID is null)
+                    return NoContent();
+
+                if (dto.Type is null)
+                    return NoContent();
 
                 ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(HttpContext, dto);
 

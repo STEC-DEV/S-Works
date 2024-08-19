@@ -69,28 +69,28 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocListDTO?>> GetVocList(HttpContext? context)
+        public async ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<VocListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<AllVocListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<VocListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<AllVocListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<VocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid));
+                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid));
 
                 if (model is [_, ..])
-                    return new ResponseList<VocListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<AllVocListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<VocListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<AllVocListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<VocListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<AllVocListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -100,21 +100,11 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext? context, DateTime? startdate, DateTime? enddate, int? type, int? status,int? buildingid)
+        public async ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, int type, int status,int buildingid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
-                if (startdate is null)
-                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
-                if (enddate is null)
-                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
-                if (type is null)
-                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
-                if (status is null)
-                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
-                if (buildingid is null)
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
@@ -122,7 +112,7 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
 
-                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate.Value, enddate.Value, type.Value, status.Value, buildingid.Value);
+                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid);
                 if (model is [_, ..])
                     return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -144,20 +134,18 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<VocEmployeeDetailDTO?>> GetVocDetail(HttpContext? context, int? vocid)
+        public async ValueTask<ResponseUnit<VocEmployeeDetailDTO?>> GetVocDetail(HttpContext context, int vocid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<VocEmployeeDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (vocid is null)
                     return new ResponseUnit<VocEmployeeDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(PlaceIdx))
                     return new ResponseUnit<VocEmployeeDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid.Value);
+                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid);
                 if(model is not null)
                 {
                     BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(model.BuildingTbId);
@@ -231,12 +219,13 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext? context, UpdateVocDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto)
         {
             try
             {
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                
                 if (dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -248,10 +237,10 @@ namespace FamTec.Server.Services.Voc
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID!.Value);
                 if(VocTB is not null)
                 {
-                    VocTB.Type = dto.Type.Value;
+                    VocTB.Type = dto.Type!.Value;
                     VocTB.UpdateDt = DateTime.Now;
                     VocTB.UpdateUser = creater;
 

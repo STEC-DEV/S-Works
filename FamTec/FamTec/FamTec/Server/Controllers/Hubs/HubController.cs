@@ -12,16 +12,13 @@ namespace FamTec.Server.Controllers.Hubs
     [ApiController]
     public class HubController : ControllerBase
     {
-        private readonly IHubContext<BroadcastHub> HubContext;
         private IHubService HubService;
         private ILogService LogService;
        
-
-        public HubController(IHubContext<BroadcastHub> _hubcontext,
+        public HubController(
             IHubService _hubservice,
             ILogService _logservice)
         {
-            this.HubContext = _hubcontext;
             this.HubService = _hubservice;
             this.LogService = _logservice;
         }
@@ -38,8 +35,23 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try 
             {
+                if (String.IsNullOrWhiteSpace(dto.Title)) // 민원 제목 NULL CHECK
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Contents)) // 민원 내용 NULL CHECK
+                    return NoContent();
+
+                if (dto.Placeid is null)
+                    return NoContent();
+
+                if(dto.Buildingid is null)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Name)) // 작성자 이름 NULL CHECK
+                    return NoContent();
+
                 // 확장자 검사
-                if(files is [_, ..])
+                if (files is [_, ..])
                 {
                     foreach(IFormFile file in files)
                     {
@@ -93,6 +105,9 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
+                if (String.IsNullOrWhiteSpace(voccode))
+                    return NoContent();
+
                 ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode);
                 if (model is null)
                     return BadRequest();
@@ -121,6 +136,9 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
+                if (String.IsNullOrWhiteSpace(voccode))
+                    return NoContent();
+
                 ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode);
                 if (model is null)
                     return BadRequest();
@@ -148,9 +166,6 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
-                if (HttpContext is null)
-                    return BadRequest();
-
                 ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid);
                 if (model is null)
                     return BadRequest();

@@ -56,16 +56,6 @@ namespace FamTec.Shared.Server.DTO.Voc
         public string? Phone { get; set; }
 
         /// <summary>
-        /// 완료시간
-        /// </summary>
-        //public string? CompleteDT { get; set; }
-
-        /// <summary>
-        /// 소요시간
-        /// </summary>
-        //public string? DurationDT { get; set; }
-
-        /// <summary>
         /// 이미지
         /// </summary>
         public List<byte[]>? Images { get; set; } = new List<byte[]>();

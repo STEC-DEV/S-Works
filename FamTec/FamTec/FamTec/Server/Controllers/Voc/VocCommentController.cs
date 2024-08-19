@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office.Word;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
@@ -42,7 +41,16 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                if(files is [_, ..])
+                if (String.IsNullOrWhiteSpace(dto.Content))
+                    return NoContent();
+
+                if(dto.Status is null)
+                    return NoContent();
+
+                if (dto.VocTbId is null)
+                    return NoContent();
+
+                if (files is [_, ..])
                 {
                     foreach(IFormFile file in files)
                     {
@@ -167,8 +175,18 @@ namespace FamTec.Server.Controllers.Voc
                 //dto.Status = 2;
                 //dto.Userid = 10;
 
-                if (HttpContext is null)
+                if (HttpContext is null) // NULL CHECK
                     return BadRequest();
+
+                if (dto.VocCommentId is null) // NULL CHECK
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.Content)) // NULL CHECK
+                    return NoContent();
+
+                if (dto.Status is null) // NULL CHECK
+                    return NoContent();
+
 
                 if (files is [_, ..])
                 {

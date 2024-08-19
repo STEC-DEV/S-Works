@@ -1,5 +1,16 @@
 ﻿namespace FamTec.Shared.Server.DTO.Voc
 {
+    /// <summary>
+    /// VOC 월별 조회
+    /// </summary>
+    public class AllVocListDTO
+    {
+        public int? Years { get; set; }
+        public int? Month { get; set; }
+
+        public List<VocListDTO> VocList { get; set; } = new List<VocListDTO>();
+    }
+
     public class VocListDTO
     {
         /// <summary>

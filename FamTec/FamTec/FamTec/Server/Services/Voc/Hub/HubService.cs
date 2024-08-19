@@ -69,7 +69,6 @@ namespace FamTec.Server.Services.Voc.Hub
             try
             {
                 List<string> newFileName = new List<string>();
-                List<string> deleteFileName = new List<string>();
 
                 if (files is not null)
                 {
@@ -96,22 +95,17 @@ namespace FamTec.Server.Services.Voc.Hub
                         return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
                 
-
                 BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid!.Value);
                 if (buildingtb is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
 
-                // VOC관련한 폴더 없으면 만들기
-                VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, dto.Placeid);
-
-                di = new DirectoryInfo(VocFileFolderPath);
-                if (!di.Exists) di.Create();
+                
 
                 VocTb? model = new VocTb();
                 model.Title = dto.Title;
                 model.Content = dto.Contents;
                 model.Type = 0; // 처음은 미분류
-                model.Phone = dto.PhoneNumber; // 전화번호;
+                model.Phone = dto.PhoneNumber; // 전화번호
                 model.Status = 0; // 미처리
 
                 if (dto.PhoneNumber is null) // 전화번호 있으면 회신True / 없으면False
@@ -147,7 +141,6 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         if (i is 0)
                             model.Image1 = newFileName[i];
-                            //model.Image1 = await FileService.AddImageFile(VocFileFolderPath, files[i]);
                         if (i is 1)
                             model.Image2 = newFileName[i];
                         if (i is 2)
@@ -155,10 +148,17 @@ namespace FamTec.Server.Services.Voc.Hub
                     }
                 }
 
+                
                 VocTb? result = await VocInfoRepository.AddAsync(model);
                 if (result is not null)
                 {
-                    if(files is not null) // 파일 넣기
+                    // VOC관련한 폴더 없으면 만들기 - bin/fileserevice/3/Voc/1
+                    VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, dto.Placeid, result.Id);
+
+                    di = new DirectoryInfo(VocFileFolderPath);
+                    if (!di.Exists) di.Create();
+
+                    if (files is not null) // 파일 넣기
                     {
                         for (int i = 0; i < files.Count; i++) 
                         {
@@ -167,74 +167,74 @@ namespace FamTec.Server.Services.Voc.Hub
                     }
 
                     // 소켓알림! + 카카오 API 알림
-                    //if (result.ReplyYn == true)
-                    //{
-                    //    // 여기서 블랙리스트 조회 
-                    //    BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(model.Phone);
+                    if (result.ReplyYn == true)
+                    {
+                        // 여기서 블랙리스트 조회 
+                        BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(model.Phone!);
 
-                    //    if (BlackListTB is null) // 블랙리스트가 아닌사람
-                    //    {
-                    //        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId);
+                        if (BlackListTB is null) // 블랙리스트가 아닌사람
+                        {
+                            PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId);
 
-                    //        if (placeTB is null)
-                    //            return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                            if (placeTB is null)
+                                return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                    //        // 제목
-                    //        string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
+                            // 제목
+                            string Title = model.Title.Length > 8 ? model.Title.Substring(0, 8) + "..." : model.Title;
 
-                    //        DateTime DateNow = DateTime.Now;
+                            DateTime DateNow = DateTime.Now;
 
-                    //        // 전화번호
-                    //        string receiver = model.Phone!;
+                            // 전화번호
+                            string receiver = model.Phone!;
 
-                    //        // 사업장 전화번호
-                    //        string placetel = placeTB.Tel!;
+                            // 사업장 전화번호
+                            string placetel = placeTB.Tel!;
 
-                    //        // URL 파라미터 인코딩ㅠ
-                    //        byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
-                    //        string base64 = Convert.ToBase64String(bytes);
+                            // URL 파라미터 인코딩ㅠ
+                            byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
+                            string base64 = Convert.ToBase64String(bytes);
 
-                    //        string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+                            string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
 
-                    //        // 카카오 API 전송
-                    //        // 보낸 USER 휴대폰번호에 전송.
-                    //        KakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
-                    //        if (LogDTO is not null)
-                    //        {
-                    //            // 카카오 메시지 성공
-                    //            KakaoLogTb LogTB = new KakaoLogTb();
-                    //            LogTB.Code = LogDTO.Code;
-                    //            LogTB.Message = LogDTO.Message;
-                    //            LogTB.CreateDt = DateTime.Now;
-                    //            LogTB.CreateUser = model.CreateUser;
-                    //            LogTB.UpdateDt = DateTime.Now;
-                    //            LogTB.UpdateUser = model.UpdateUser;
-                    //            LogTB.VocTbId = model.Id; // 민원ID
-                    //            LogTB.PlaceTbId = dto.Placeid; // 사업장ID
-                    //            LogTB.BuildingTbId = dto.Buildingid; // 건물ID
+                            // 카카오 API 전송
+                            // 보낸 USER 휴대폰번호에 전송.
+                            KakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
+                            if (LogDTO is not null)
+                            {
+                                // 카카오 메시지 성공
+                                KakaoLogTb LogTB = new KakaoLogTb();
+                                LogTB.Code = LogDTO.Code!;
+                                LogTB.Message = LogDTO.Message!;
+                                LogTB.CreateDt = DateTime.Now;
+                                LogTB.CreateUser = model.CreateUser;
+                                LogTB.UpdateDt = DateTime.Now;
+                                LogTB.UpdateUser = model.UpdateUser;
+                                LogTB.VocTbId = model.Id; // 민원ID
+                                LogTB.PlaceTbId = dto.Placeid!.Value; // 사업장ID
+                                LogTB.BuildingTbId = dto.Buildingid!.Value; // 건물ID
 
-                    //            // 카카오API 로그 테이블에 쌓아야함.
-                    //            KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
-                    //        }
-                    //        else
-                    //        {
-                    //            // 카카오 메시지 에러
-                    //            KakaoLogTb LogTB = new KakaoLogTb();
-                    //            LogTB.Code = "ERROR";
-                    //            LogTB.Message = "ERROR";
-                    //            LogTB.CreateDt = DateTime.Now;
-                    //            LogTB.CreateUser = model.CreateUser;
-                    //            LogTB.UpdateDt = DateTime.Now;
-                    //            LogTB.UpdateUser = model.UpdateUser;
-                    //            LogTB.VocTbId = model.Id; // 민원ID
-                    //            LogTB.PlaceTbId = dto.Placeid; // 사업장ID
-                    //            LogTB.BuildingTbId = dto.Buildingid; // 건물ID
+                                // 카카오API 로그 테이블에 쌓아야함.
+                                KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                            }
+                            else
+                            {
+                                // 카카오 메시지 에러
+                                KakaoLogTb LogTB = new KakaoLogTb();
+                                LogTB.Code = "ERROR";
+                                LogTB.Message = "ERROR";
+                                LogTB.CreateDt = DateTime.Now;
+                                LogTB.CreateUser = model.CreateUser;
+                                LogTB.UpdateDt = DateTime.Now;
+                                LogTB.UpdateUser = model.UpdateUser;
+                                LogTB.VocTbId = model.Id; // 민원ID
+                                LogTB.PlaceTbId = dto.Placeid!.Value; // 사업장ID
+                                LogTB.BuildingTbId = dto.Buildingid!.Value; // 건물ID
 
-                    //            // 카카오API 로그 테이블에 쌓아야함.
-                    //            KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
-                    //        }
-                    //    }
-                    //}
+                                // 카카오API 로그 테이블에 쌓아야함.
+                                KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                            }
+                        }
+                    }
 
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO
@@ -298,37 +298,22 @@ namespace FamTec.Server.Services.Voc.Hub
                 dto.Contents = VocModel.Content; // 민원 제목
                 dto.CreateUser = VocModel.CreateUser; // 민원 신청자 이름
                 dto.Phone = VocModel.Phone; // 민원인 전화번호
-                /*
-                if(!String.IsNullOrWhiteSpace(VocModel.CompleteDt.ToString()))
-                {
-                    dto.CompleteDT = VocModel.CompleteDt!.Value.ToString("yyyy-MM-dd HH:mm:ss"); // 완료시간
-                }
-                */
 
-                //if (!String.IsNullOrWhiteSpace(VocModel.DurationDt))
-                //{
-                //    TimeSpan? DurationTime = TimeSpan.Parse(VocModel.DurationDt);
-                //    dto.DurationDT = $"{DurationTime.Value.Days}일{DurationTime.Value.Hours}시{DurationTime.Value.Minutes}분";
-                //}
-                //else
-                //{
-                //    dto.DurationDT = null;
-                //}
 
-                string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, BuildingModel.PlaceTbId);
+                VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, BuildingModel.PlaceTbId, VocModel.Id);
                 if (!String.IsNullOrWhiteSpace(VocModel.Image1))
                 {
-                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, VocModel.Image1);
+                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, VocModel.Image1);
                     dto.Images.Add(ImageBytes);
                 }
                 if (!String.IsNullOrWhiteSpace(VocModel.Image2))
                 {
-                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, VocModel.Image2);
+                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, VocModel.Image2);
                     dto.Images.Add(ImageBytes);
                 }
                 if (!String.IsNullOrWhiteSpace(VocModel.Image3))
                 {
-                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, VocModel.Image3);
+                    byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, VocModel.Image3);
                     dto.Images.Add(ImageBytes);
                 }
 
@@ -356,24 +341,49 @@ namespace FamTec.Server.Services.Voc.Hub
 
                 VocTb? VocTB = await VocInfoRepository.GetVocInfoByCode(voccode);
                 if(VocTB is null)
-                    return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
+                    return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
                 List<CommentTb>? model = await VocCommentRepository.GetCommentList(VocTB.Id);
                 if(model is [_, ..])
                 {
-                    return new ResponseList<VocCommentListDTO>()
+                    BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId);
+                    if(BuildingTB is null)
+                        return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
+
+                    List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
+                    for (int i = 0; i < model.Count; i++)
                     {
-                        message = "요청이 정상 처리되었습니다.",
-                        data = model.Select(e => new VocCommentListDTO
+                        VocCommentListDTO dtoModel = new VocCommentListDTO();
+                        dtoModel.Id = model[i].Id;
+                        dtoModel.status = model[i].Status; // 댓글상태
+                        dtoModel.Comment = model[i].Content; // 내용
+                        dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
+                        dtoModel.CreateUser = model[i].CreateUser;
+                        dtoModel.VocTbId = model[i].VocTbId;
+                        
+                        if (!String.IsNullOrWhiteSpace(model[i].Image1))
                         {
-                            Id = e.Id,
-                            Comment = e.Content,
-                            CreateDT = e.CreateDt,
-                            CreateUser = e.CreateUser,
-                            VocTbId = e.VocTbId
-                        }).ToList(),
-                        code = 200
-                    };
+                            byte[]? images = await FileService.GetImageFile(VocCommentFileFolderPath, model[i].Image1);
+                            dtoModel.Images.Add(images);
+                        }
+
+                        if (!String.IsNullOrWhiteSpace(model[i].Image2))
+                        {
+                            byte[]? images = await FileService.GetImageFile(VocCommentFileFolderPath, model[i].Image2);
+                            dtoModel.Images.Add(images);
+                        }
+
+                        if (!String.IsNullOrWhiteSpace(model[i].Image3))
+                        {
+                            byte[]? images = await FileService.GetImageFile(VocCommentFileFolderPath, model[i].Image3);
+                            dtoModel.Images.Add(images);
+                        }
+                        dto.Add(dtoModel);
+                    }
+
+                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
                 {
@@ -418,7 +428,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 dto.CreateDT = model.CreateDt; // VOC 댓글 작성시간
                 dto.CreateUser = model.CreateUser; // 댓글 작성자
 
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, PlaceTB.Id);
+                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, PlaceTB.Id, VocTB.Id);
                 if (!String.IsNullOrWhiteSpace(model.Image1))
                 {
                     byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, model.Image1);

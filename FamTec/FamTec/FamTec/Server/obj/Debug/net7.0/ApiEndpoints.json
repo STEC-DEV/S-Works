@@ -2963,6 +2963,27 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetAllHistoryList",
+    "RelativePath": "api/Maintenance/sign/GetAllHistoryList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "GetDateHistoryList",
     "RelativePath": "api/Maintenance/sign/GetDateHistoryList",
     "HttpMethod": "GET",
@@ -3006,16 +3027,6 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "GetAllHistoryList",
-    "RelativePath": "api/Maintenance/sign/temp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   },
   {

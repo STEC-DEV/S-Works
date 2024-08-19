@@ -43,7 +43,7 @@
         {
             try
             {
-                string NewFileName = $"{useridx}_{DateTime.Now.ToString("yyyyMMddHHmmss")}_{files.Name}{Path.GetExtension(files.FileName)}";
+                string NewFileName = $"{useridx}_{DateTime.Now.ToString("yyyyMMddHHmmFFFFFFF")}_{files.Name}{Path.GetExtension(files.FileName)}";
                 return NewFileName;
             }
             catch (Exception ex)
