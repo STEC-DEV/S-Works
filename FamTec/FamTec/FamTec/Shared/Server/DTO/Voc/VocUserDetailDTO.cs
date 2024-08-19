@@ -58,12 +58,12 @@ namespace FamTec.Shared.Server.DTO.Voc
         /// <summary>
         /// 완료시간
         /// </summary>
-        public string? CompleteDT { get; set; }
+        //public string? CompleteDT { get; set; }
 
         /// <summary>
         /// 소요시간
         /// </summary>
-        public string? DurationDT { get; set; }
+        //public string? DurationDT { get; set; }
 
         /// <summary>
         /// 이미지

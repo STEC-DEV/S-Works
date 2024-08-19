@@ -1,5 +1,27 @@
 ﻿namespace FamTec.Shared.Server.DTO.Maintenence
 {
+    public class AllMaintanceHistoryDTO
+    {
+        /// <summary>
+        /// 년
+        /// </summary>
+        public int? Years { get; set; }
+
+        /// <summary>
+        /// 월
+        /// </summary>
+        public int? Month { get; set; }
+
+        /// <summary>
+        /// 유지보수 이력 DTO
+        /// </summary>
+        public List<MaintanceHistoryDTO> HistoryList { get; set; } = new List<MaintanceHistoryDTO>();
+
+    }
+
+    /// <summary>
+    /// 유지보수 이력 List
+    /// </summary>
     public class MaintanceHistoryDTO
     {
         /// <summary>
@@ -32,6 +54,9 @@
         /// </summary>
         public string? Worker { get; set; }
 
+        /// <summary>
+        /// 금액
+        /// </summary>
         public float? TotalPrice { get; set; }
         
     }

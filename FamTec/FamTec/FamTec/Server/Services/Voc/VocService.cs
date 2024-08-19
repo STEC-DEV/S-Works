@@ -166,10 +166,23 @@ namespace FamTec.Server.Services.Voc
                         VocEmployeeDetailDTO dto = new VocEmployeeDetailDTO();
                         dto.Id = model.Id; // 민원 인덱스
                         dto.Code = model.Code; // 접수코드
-                        dto.CreateDT = model.CreateDt; // 민원 신청일
+                        dto.CreateDT = model.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 민원 신청일
                         dto.Status = model.Status; // 민원상태
                         dto.BuildingName = building.Name; // 건물명
-                        dto.Type = model.Type; // 민원유형
+
+                        switch (model.Type)
+                        {
+                            case 0: dto.Type = "미분류"; break;
+                            case 1: dto.Type = "기계민원"; break;
+                            case 2: dto.Type = "전기민원"; break;
+                            case 3: dto.Type = "승강민원"; break;
+                            case 4: dto.Type = "소방민원"; break;
+                            case 5: dto.Type = "건축민원"; break;
+                            case 6: dto.Type = "통신민원"; break;
+                            case 7: dto.Type = "미화민원"; break;
+                            case 8: dto.Type = "보안민원"; break;
+                        }
+
                         dto.Title = model.Title; // 민원제목
                         dto.Contents = model.Content; // 민원내용
                         dto.CreateUser = model.CreateUser; // 민원인
@@ -179,17 +192,17 @@ namespace FamTec.Server.Services.Voc
                         if (!String.IsNullOrWhiteSpace(model.Image1))
                         {
                             byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image1);
-                            dto.Images.Add(ImageBytes);
+                            dto.Images!.Add(ImageBytes);
                         }
                         if (!String.IsNullOrWhiteSpace(model.Image2))
                         {
                             byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image2);
-                            dto.Images.Add(ImageBytes);
+                            dto.Images!.Add(ImageBytes);
                         }
                         if (!String.IsNullOrWhiteSpace(model.Image3))
                         {
                             byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, model.Image3);
-                            dto.Images.Add(ImageBytes);
+                            dto.Images!.Add(ImageBytes);
                         }
 
                         return new ResponseUnit<VocEmployeeDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };

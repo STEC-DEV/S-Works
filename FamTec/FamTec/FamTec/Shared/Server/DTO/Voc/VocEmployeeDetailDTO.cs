@@ -15,7 +15,7 @@
         /// <summary>
         /// 민원 신청일
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        public string? CreateDT { get; set; }
 
         /// <summary>
         /// 민원 상태
@@ -30,7 +30,7 @@
         /// <summary>
         /// 민원 유형
         /// </summary>
-        public int? Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// 민원 제목

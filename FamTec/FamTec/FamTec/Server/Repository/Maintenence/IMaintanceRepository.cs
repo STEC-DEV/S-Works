@@ -1,6 +1,4 @@
-﻿
-using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO.Maintenence;
+﻿using FamTec.Shared.Server.DTO.Maintenence;
 
 namespace FamTec.Server.Repository.Maintenence
 {
@@ -33,8 +31,16 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, int Category, int type);
-        ValueTask<List<MaintanceHistoryDTO>?> GetAllHistoryList(int placeid, int Category, int type);
+        ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string Category, int type);
+
+        /// <summary>
+        /// 유지보수 이력 사업장별 전체
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="Category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type);
 
         /// <summary>
         /// 동시성 토큰 추가

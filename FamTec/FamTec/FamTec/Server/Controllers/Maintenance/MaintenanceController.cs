@@ -14,13 +14,11 @@ namespace FamTec.Server.Controllers.Maintenance
     {
         private IMaintanceService MaintanceService;
         private ILogService LogService;
-        private IMaintanceRepository MaintanceRepository;
 
-        public MaintenanceController(IMaintanceService _maintanceservice, ILogService _logservice, IMaintanceRepository _main)
+        public MaintenanceController(IMaintanceService _maintanceservice, ILogService _logservice)
         {
             this.MaintanceService = _maintanceservice;
             this.LogService = _logservice;
-            this.MaintanceRepository = _main;
         }
 
         /// <summary>
@@ -207,13 +205,13 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]int category, [FromQuery]int type)
+        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]string category, [FromQuery]int type)
         {
             try
             {
                 //DateTime StartDate = DateTime.Now.AddDays(-30);
                 //DateTime EndDate = DateTime.Now;
-                //int Category = 0; // 전체
+                //int Category = "전체"; // 전체
                 //int type = 0; // 전체
 
                 if (HttpContext is null)
@@ -235,14 +233,37 @@ namespace FamTec.Server.Controllers.Maintenance
             }
         }
 
+        /// <summary>
+        /// 유지보수 이력 사업장별 전체
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/temp")]
+        [Route("sign/GetAllHistoryList")]
 
-        public async ValueTask<IActionResult> GetAllHistoryList()
+        public async ValueTask<IActionResult> GetAllHistoryList([FromQuery]string category, [FromQuery]int type)
         {
-            var temp = await MaintanceRepository.GetAllHistoryList(3, 0, 0);
-            return Ok();
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+                
+                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, "전체", 0);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
         }
 
 

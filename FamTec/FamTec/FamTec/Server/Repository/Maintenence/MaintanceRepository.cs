@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FamTec.Client.Pages.Admin.Place.PlaceMain;
 using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
@@ -695,7 +697,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category">설비유형</param>
         /// <param name="type">작업구분</param>
         /// <returns></returns>
-        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, int Category, int type)
+        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string Category, int type)
         {
             try
             {
@@ -716,7 +718,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                 // 설비유형
                 List<FacilityTb>? FacilityList;
-                if(Category.Equals(0))  // 전체
+                if(Category.Equals("전체"))  // 전체
                 {
                     FacilityList = await context.FacilityTbs
                        .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
@@ -796,9 +798,118 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
 
-        public async ValueTask<List<MaintanceHistoryDTO>?> GetAllHistoryList(int placeid, int Category, int type)
+        public async ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type)
         {
-            return null;    
+            try
+            {
+                List<BuildingTb>? BuildingTB = await context.BuildingTbs
+                        .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                        .ToListAsync();
+
+                if (BuildingTB is not [_, ..])
+                    return null;
+
+                List<FloorTb>? FloorTB = await context.FloorTbs.Where(m => BuildingTB.Select(m => m.Id).Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
+                if (FloorTB is not [_, ..])
+                    return null;
+
+                List<RoomTb>? RoomTB = await context.RoomTbs.Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
+                if (RoomTB is not [_, ..])
+                    return null;
+
+                // 설비유형
+                List<FacilityTb>? FacilityList;
+                if (Category.Equals("전체"))  // 전체
+                {
+                    FacilityList = await context.FacilityTbs
+                       .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
+                       .ToListAsync();
+                }
+                else // 그외 모두
+                {
+                    FacilityList = await context.FacilityTbs
+                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true &&
+                      m.Category.Equals(Category))
+                      .ToListAsync();
+                }
+
+                List<MaintenenceHistoryTb>? HistoryList;
+                // 작업구분
+                if (type.Equals(0)) // 전체
+                {
+                    HistoryList = await context.MaintenenceHistoryTbs.Where
+                      (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                      m.DelYn != true).ToListAsync();
+                }
+                else // 그외 모두
+                {
+                    HistoryList = await context.MaintenenceHistoryTbs.Where
+                       (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                       m.DelYn != true &&
+                       m.Type == type)
+                       .ToListAsync();
+                }
+
+                var GroupHistory = HistoryList
+                  .GroupBy(history => new { history.CreateDt.Year, history.CreateDt.Month })
+                  .Select(group => new
+                  {
+                      Year = group.Key.Year,
+                      Month = group.Key.Month,
+                      Histories = group.ToList()
+                  })
+                  .ToList();
+
+
+                List<AllMaintanceHistoryDTO> AllMaintanceList = new List<AllMaintanceHistoryDTO>();
+                foreach (var Group in GroupHistory)
+                {
+                    AllMaintanceHistoryDTO GroupItem = new AllMaintanceHistoryDTO();
+                    GroupItem.Years = Group.Year;
+                    GroupItem.Month = Group.Month;
+
+                    foreach (MaintenenceHistoryTb HistoryTB in Group.Histories)
+                    {
+                        MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
+
+                        FacilityTb? FacilityModel = await context.FacilityTbs
+                            .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
+
+                        HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
+                        HistoryModel.CreateDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
+                        HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
+                        HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
+                        HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
+
+                        List<StoreTb> StoreList = await context.StoreTbs
+                            .Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id).ToListAsync();
+                        foreach (StoreTb StoreTB in StoreList)
+                        {
+                            // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고    
+                            MaterialTb? MaterialTB = await context.MaterialTbs
+                                .FirstOrDefaultAsync(m => m.Id == StoreTB.MaterialTbId);
+
+                            HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                            {
+                                MaterialID = MaterialTB!.Id,
+                                MaterialName = MaterialTB.Name
+                            });
+                        }
+
+                        HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
+                        GroupItem.HistoryList.Add(HistoryModel);
+                    }
+
+                    AllMaintanceList.Add(GroupItem);
+                }
+
+                return AllMaintanceList;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
         }
 
 

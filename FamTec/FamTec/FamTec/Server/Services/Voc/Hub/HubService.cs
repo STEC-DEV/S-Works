@@ -305,15 +305,15 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
                 */
 
-                if (!String.IsNullOrWhiteSpace(VocModel.DurationDt))
-                {
-                    TimeSpan? DurationTime = TimeSpan.Parse(VocModel.DurationDt);
-                    dto.DurationDT = $"{DurationTime.Value.Days}일{DurationTime.Value.Hours}시{DurationTime.Value.Minutes}분";
-                }
-                else
-                {
-                    dto.DurationDT = null;
-                }
+                //if (!String.IsNullOrWhiteSpace(VocModel.DurationDt))
+                //{
+                //    TimeSpan? DurationTime = TimeSpan.Parse(VocModel.DurationDt);
+                //    dto.DurationDT = $"{DurationTime.Value.Days}일{DurationTime.Value.Hours}시{DurationTime.Value.Minutes}분";
+                //}
+                //else
+                //{
+                //    dto.DurationDT = null;
+                //}
 
                 string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, BuildingModel.PlaceTbId);
                 if (!String.IsNullOrWhiteSpace(VocModel.Image1))
