@@ -63,6 +63,7 @@ using FamTec.Server.Services.Alarm;
 using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using FamTec.Server.Services.Maintenance;
+using FamTec.Server.Services.BlackList;
 
 
 
@@ -129,6 +130,7 @@ builder.Services.AddTransient<IStoreInfoRepository, StoreInfoRepository>();
 builder.Services.AddTransient<IMaintanceRepository, MaintanceRepository>();
 builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
 builder.Services.AddTransient<IKakaoLogInfoRepository, KakaoLogInfoRepository>();
+builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
 
 // Add services to the container. - Logic
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -164,6 +166,7 @@ builder.Services.AddTransient<IMaintanceService, MaintanceService>();
 builder.Services.AddTransient<ITokenComm, TokenComm>();
 builder.Services.AddTransient<IKakaoService, KakaoService>();
 builder.Services.AddTransient<IAlarmService, AlarmService>();
+builder.Services.AddTransient<IBlackListService, BlackListService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -482,6 +485,12 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Maintenance
 
 // Alarm 값 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+// BlackList 값 컨트롤러 미들웨어 추가
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BlackList/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });

@@ -22,22 +22,22 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddBlackListDTO?>> AddBlackList(HttpContext? context, AddBlackListDTO? dto)
+        public async ValueTask<ResponseUnit<AddBlackListDTO>> AddBlackList(HttpContext context, AddBlackListDTO dto)
         {
             try
             {
                 if(context is null)
-                    return new ResponseUnit<AddBlackListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (dto is null)
-                    return new ResponseUnit<AddBlackListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddBlackListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 BlacklistTb model = new BlacklistTb();
-                model.Phone = dto.PhoneNumber;
+                model.Phone = dto.PhoneNumber!;
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = creater;
                 model.UpdateDt = DateTime.Now;
@@ -46,7 +46,7 @@ namespace FamTec.Server.Services.BlackList
                 BlacklistTb? AddResult = await BlackListInfoRepository.AddAsync(model);
                 if(AddResult is not null)
                 {
-                    return new ResponseUnit<AddBlackListDTO?>() 
+                    return new ResponseUnit<AddBlackListDTO>() 
                     { 
                         message = "요청이 정상 처리되었습니다.",
                         data = new AddBlackListDTO 
@@ -58,13 +58,13 @@ namespace FamTec.Server.Services.BlackList
                 }
                 else
                 {
-                    return new ResponseUnit<AddBlackListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseUnit<AddBlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddBlackListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<AddBlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -72,12 +72,12 @@ namespace FamTec.Server.Services.BlackList
         /// 블랙리스트 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BlackListDTO?>> GetAllBlackList(HttpContext? context)
+        public async ValueTask<ResponseList<BlackListDTO>> GetAllBlackList(HttpContext context)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<BlackListDTO?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackList();
                 if(model is [_, ..])
@@ -87,17 +87,17 @@ namespace FamTec.Server.Services.BlackList
                         ID = e.Id,
                         PhoneNumber = e.Phone
                     }).ToList();
-                    return new ResponseList<BlackListDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto!, code = 200 };
+                    return new ResponseList<BlackListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto!, code = 200 };
                 }
                 else
                 {
-                    return new ResponseList<BlackListDTO?>() { message = "데이터가 존재하지 않습니다.", data = new List<BlackListDTO?>(), code = 200 };
+                    return new ResponseList<BlackListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<BlackListDTO?>(), code = 200 };
                 }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<BlackListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<BlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -106,7 +106,7 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateBlackList(HttpContext? context, BlackListDTO? dto)
+        public async ValueTask<ResponseUnit<bool?>> UpdateBlackList(HttpContext context, BlackListDTO dto)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace FamTec.Server.Services.BlackList
                 if (model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                model.Phone = dto.PhoneNumber;
+                model.Phone = dto.PhoneNumber!;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = updater;
 
@@ -154,7 +154,7 @@ namespace FamTec.Server.Services.BlackList
         /// <param name="delIdx"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteBlackList(HttpContext? context, List<int>? delIdx)
+        public async ValueTask<ResponseUnit<bool?>> DeleteBlackList(HttpContext context, List<int> delIdx)
         {
             try
             {

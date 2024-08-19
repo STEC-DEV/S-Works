@@ -3,7 +3,6 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace FamTec.Server.Repository.Voc
 {
@@ -90,19 +89,19 @@ namespace FamTec.Server.Repository.Voc
                             VocItem.Month = Group.Month;
 
                             List<VocListDTO> dto = (from VocTB in Group.VocList
-                                        join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
-                                        on VocTB.BuildingTbId equals BuildingTB.Id
-                                        select new VocListDTO
-                                        {
-                                            Id = VocTB.Id, // VOCID
-                                            BuildingName = BuildingTB.Name, // 건물명
-                                            Type = VocTB.Type, // 유형
-                                            Title = VocTB.Title, // 제목
-                                            Status = VocTB.Status, // 처리상태
-                                            CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
-                                            CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
-                                            DurationDT = VocTB.DurationDt // 민원처리 소요시간
-                                        }).ToList();
+                                                    join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
+                                                    on VocTB.BuildingTbId equals BuildingTB.Id
+                                                    select new VocListDTO
+                                                    {
+                                                        Id = VocTB.Id, // VOCID
+                                                        BuildingName = BuildingTB.Name, // 건물명
+                                                        Type = VocTB.Type, // 유형
+                                                        Title = VocTB.Title, // 제목
+                                                        Status = VocTB.Status, // 처리상태
+                                                        CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
+                                                        CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
+                                                        DurationDT = VocTB.DurationDt // 민원처리 소요시간
+                                                    }).OrderBy(m => m.CreateDT).ToList();
 
                             VocItem.VocList = dto;
                             AllVocList.Add(VocItem);
@@ -168,21 +167,21 @@ namespace FamTec.Server.Repository.Voc
                         if(VocModel is [_, ..]) // 해당조건의 모델이 있는지?
                         {
                             // DTO JOIN
-                            
+
                             List<VocListDTO> dto = (from Voc in VocModel
-                                                join Building in context.BuildingTbs.Where(m => m.DelYn != true && m.Id == BuildingID)
-                                                on Voc.BuildingTbId equals Building.Id
-                                                select new VocListDTO
-                                                {
-                                                    CreateDT = Voc.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
-                                                    Id = Voc.Id, // VOC ID
-                                                    BuildingName = Building.Name, // 건물명
-                                                    Type = Voc.Type, // 유형
-                                                    Title = Voc.Title, // 민원제목
-                                                    Status = Voc.Status, // 민원상태
-                                                    CompleteDT = Voc.CompleteDt?.ToString("yyyy-MM-ddd HH:mm:ss"), // 처리일시
-                                                    DurationDT = Voc.DurationDt // 소요시간
-                                                }).ToList();
+                                                    join Building in context.BuildingTbs.Where(m => m.DelYn != true && m.Id == BuildingID)
+                                                    on Voc.BuildingTbId equals Building.Id
+                                                    select new VocListDTO
+                                                    {
+                                                        CreateDT = Voc.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
+                                                        Id = Voc.Id, // VOC ID
+                                                        BuildingName = Building.Name, // 건물명
+                                                        Type = Voc.Type, // 유형
+                                                        Title = Voc.Title, // 민원제목
+                                                        Status = Voc.Status, // 민원상태
+                                                        CompleteDT = Voc.CompleteDt?.ToString("yyyy-MM-ddd HH:mm:ss"), // 처리일시
+                                                        DurationDT = Voc.DurationDt // 소요시간
+                                                    }).OrderBy(m => m.CreateDT).ToList();
                             if (dto is [_, ..])
                                 return dto;
                             else

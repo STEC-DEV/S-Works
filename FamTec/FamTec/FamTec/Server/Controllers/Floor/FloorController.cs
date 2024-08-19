@@ -13,6 +13,7 @@ namespace FamTec.Server.Controllers.Floor
     {
         private IFloorService FloorService;
         private ILogService LogService;
+
         public FloorController(IFloorService _floorservice,
             ILogService _logservice)
         {

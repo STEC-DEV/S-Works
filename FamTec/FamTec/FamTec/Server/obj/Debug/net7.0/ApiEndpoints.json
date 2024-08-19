@@ -649,6 +649,64 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.BlackList.BlackListController",
+    "Method": "AddBlackList",
+    "RelativePath": "api/BlackList/sign/AddBlackList",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.BlackList.AddBlackListDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.BlackList.BlackListController",
+    "Method": "DeleteBlackList",
+    "RelativePath": "api/BlackList/sign/DeleteBlackList",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "delIdx",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.BlackList.BlackListController",
+    "Method": "GetAllBlackList",
+    "RelativePath": "api/BlackList/sign/GetAllBlackList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.BlackList.BlackListController",
+    "Method": "UpdateBlackList",
+    "RelativePath": "api/BlackList/sign/UpdateBlackList",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.BlackList.BlackListDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "AddBuilding",
     "RelativePath": "api/Building/sign/AddBuilding",

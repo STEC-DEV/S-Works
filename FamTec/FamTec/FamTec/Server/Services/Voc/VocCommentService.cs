@@ -1,14 +1,11 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
-using FamTec.Server.Repository.BlackList;
+﻿using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
-using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
-using System.ComponentModel;
 using System.Text;
 
 namespace FamTec.Server.Services.Voc
@@ -424,7 +421,7 @@ namespace FamTec.Server.Services.Voc
                 model.UpdateUser = creater;
 
                 // VOC관련한 폴더 경로
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\VocComment", Common.FileServer, placeId);
+                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, model.VocTbId);
 
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {
@@ -498,20 +495,19 @@ namespace FamTec.Server.Services.Voc
                             }
                         }
 
-                        for (int i = 0; i < deleteFileName.Count; i++)
+                        for (int i = 0; i < deleteFileName.Count; i++) // 삭제할거
                         {
-                            
+                            bool DeleteFile = FileService.DeleteImageFile(VocCommentFileFolderPath, deleteFileName[i]); // 삭제
                         }
-                        return null;
-
                     }
                     else // 파일이 공백인 경우
                     {
-
+                        for (int i = 0; i < deleteFileName.Count; i++) // 삭제
+                        {
+                            bool DeleteFile = FileService.DeleteImageFile(VocCommentFileFolderPath, deleteFileName[i]);
+                        }
                     }
-                    // 알림톡으로 내용바꿧다는거 알려줄것인지 ?
-
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
@@ -523,8 +519,6 @@ namespace FamTec.Server.Services.Voc
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
-
         }
-
     }
 }
