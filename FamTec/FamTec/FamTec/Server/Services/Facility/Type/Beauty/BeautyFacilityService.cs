@@ -1,9 +1,4 @@
-﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Facility.Group;
-using FamTec.Server.Repository.Facility.ItemKey;
-using FamTec.Server.Repository.Facility.ItemValue;
-using FamTec.Server.Repository.Facility;
-using FamTec.Server.Repository.Floor;
+﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
@@ -15,7 +10,6 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
     {
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
-
         private readonly ILogService LogService;
         private IFileService FileService;
 
@@ -28,9 +22,10 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
            IFileService _fileservice,
            ILogService _logService)
         {
-            FacilityInfoRepository = _facilityinforepository;
-            RoomInfoRepository = _roominforepository;
-            LogService = _logService;
+            this.FacilityInfoRepository = _facilityinforepository;
+            this.RoomInfoRepository = _roominforepository;
+            this.FileService = _fileservice;
+            this.LogService = _logService;
         }
 
 

@@ -10,7 +10,6 @@ namespace FamTec.Server.Services.Facility.Value
     {
         private readonly IFacilityItemKeyInfoRepository FacilityItemKeyInfoRepository;
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
-
         private ILogService LogService;
 
         public FacilityValueService(IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,

@@ -10,7 +10,6 @@ namespace FamTec.Server.Services.Facility.Type.Network
     {
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
-
         private readonly ILogService LogService;
         private IFileService FileService;
 

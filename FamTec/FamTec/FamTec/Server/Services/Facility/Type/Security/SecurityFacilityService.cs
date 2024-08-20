@@ -1,9 +1,4 @@
-﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Facility.Group;
-using FamTec.Server.Repository.Facility.ItemKey;
-using FamTec.Server.Repository.Facility.ItemValue;
-using FamTec.Server.Repository.Facility;
-using FamTec.Server.Repository.Floor;
+﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
