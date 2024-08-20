@@ -55,6 +55,37 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
+        /// <summary>
+        /// 로그인한 아이디의 사업장의 건물명 조회
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetPlaceBuilding")]
+        public async ValueTask<IActionResult> PlaceBuildingList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<PlaceBuildingNameDTO> model = await BuildingService.GetPlaceBuildingNameService(HttpContext);
+
+                if (model is null)
+                    return BadRequest(model);
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/PlaceBuildingList")]

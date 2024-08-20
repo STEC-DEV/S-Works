@@ -71,7 +71,36 @@ namespace FamTec.Server.Repository.Room
             }
         }
 
-    
+        /// <summary>
+        /// 층 List에 해당하는 공간 List 정보 조회
+        /// </summary>
+        /// <param name="FloorList"></param>
+        /// <returns></returns>
+        public async ValueTask<List<RoomTb>?> GetFloorRoomList(List<FloorTb> FloorList)
+        {
+            try
+            {
+                // 층 INDEX 뽑아냄
+                List<int> FloorIdx = FloorList.Select(m => m.Id)
+                    .ToList();
+
+                List<RoomTb>? RoomList = await context.RoomTbs
+                    .Where(m => FloorIdx.Contains(m.FloorTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (RoomList is [_, ..])
+                    return RoomList;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+
+        }
+
 
         /// <summary>
         /// 공간 인덱스로 공간 검색

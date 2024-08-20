@@ -20,6 +20,13 @@ namespace FamTec.Server.Repository.Room
         ValueTask<List<RoomTb>?> GetRoomList(int flooridx);
 
         /// <summary>
+        /// 층에 해당하는 공간 List 조회
+        /// </summary>
+        /// <param name="FloorList"></param>
+        /// <returns></returns>
+        ValueTask<List<RoomTb>?> GetFloorRoomList(List<FloorTb> FloorList);
+
+        /// <summary>
         /// 공간 인덱스로 공간 검색
         /// </summary>
         /// <param name="roomidx"></param>

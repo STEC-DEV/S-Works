@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.AccessControl;
 
 namespace FamTec.Server.Controllers.Material
 {
@@ -238,6 +239,52 @@ namespace FamTec.Server.Controllers.Material
                     return NoContent();
 
                 ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportMaterial")]
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files); // 파일 확장자 추출
+                if(String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensionCheck = Common.XlsxAllowedExtensions.Contains(extension); // 파일 확장자 검사 xlsx or xlx 만 허용
+                    if(!extensionCheck)
+                    {
+                        return Ok(new ResponseUnit<string?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                    }
+                }
+
+                ResponseUnit<string?> model = await MaterialService.ImportMaterialService(HttpContext, files);
                 if (model is null)
                     return BadRequest();
 

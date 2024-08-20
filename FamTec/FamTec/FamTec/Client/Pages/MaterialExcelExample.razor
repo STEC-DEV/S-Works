@@ -1,10 +1,78 @@
 ﻿@layout MainLayout2
 
 @page "/materialexcel"
+@using ClosedXML.Excel
+@using System.Drawing
 
+<h3>자재 엑셀 예시</h3>
 
-<h3>MaterialExcelExample</h3>
+<input type="button" value="자재 등록 엑셀양식 다운로드" @onclick="(() => btnClick())" />
+
+<script src="js/excel.js"></script>
 
 @code {
 
+
+    protected async Task btnClick()
+    {
+        // 엑셀 파일 만듬
+        var workbook = new XLWorkbook();
+
+        var worksheet = workbook.Worksheets.Add("자재등록");
+
+        List<string> Title = new List<string>()
+        {
+            "자재코드",
+            "자재명",
+            "단위",
+            "규격",
+            "제조사",
+            "안전재고수량",
+            "위치"
+        };
+
+        worksheet = CreateCell(worksheet, Title.Count(), Title);
+
+        MemoryStream XLSStream = new();
+        workbook.SaveAs(XLSStream, false);
+        byte[] byteData = XLSStream.ToArray();
+
+
+        await JS.InvokeAsync<object>("saveAsFile", "자재정보.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+    }
+
+    private IXLWorksheet CreateCell(IXLWorksheet sheet, int colNum, List<string> title)
+    {
+        // 반복문은 돌려쓰면됨.
+        for (int i = 0; i < colNum; i++)
+        {
+            sheet.Cell(1, i + 1).Value = title[i].ToString();
+            sheet.Column(i + 1).Width = 15; // 너비
+            sheet.Row(1).Height = 15; // 높이
+
+            var cell = sheet.Cell(1, i + 1); // A1,A2,A3 .. 셀 선택
+            cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // Vertial 중앙정렬
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Double;
+            cell.Style.Border.OutsideBorderColor = XLColor.White;
+        }
+
+        // 여기부터는 계산해서 넣어야할듯.
+        var range = sheet.Range(sheet.Cell("A1"), sheet.Cell("G1"));
+        // 범위 내의 모든 셀의 배경색을 에스텍색으로 설정
+        Color color = Color.FromArgb(2241348);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.White;
+
+        var mergerange = sheet.Range(sheet.Cell("I1"), sheet.Cell("N5"));
+        mergerange.Merge(); // Merge ()에서 범위의 셀을 결합하는
+
+        mergerange.Value = $"*[해당내용은 참고사항입니다]\n공간명칭은 등록되어있는 공간을 의미합니다.\n확인 후 입력바랍니다.";
+        mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+        return sheet;
+    }
 }

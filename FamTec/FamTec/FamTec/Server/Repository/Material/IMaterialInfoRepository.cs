@@ -12,6 +12,13 @@ namespace FamTec.Server.Repository.Material
         public ValueTask<MaterialTb?> AddAsync(MaterialTb model);
 
         /// <summary>
+        /// 엑셀 IMPORT 추가
+        /// </summary>
+        /// <param name="MaterialList"></param>
+        /// <returns></returns>
+        public ValueTask<bool?> AddMaterialList(List<MaterialTb> MaterialList);
+
+        /// <summary>
         /// 사업장에 속해있는 자재 리스트들 출력
         /// </summary>
         /// <param name="placeid"></param>

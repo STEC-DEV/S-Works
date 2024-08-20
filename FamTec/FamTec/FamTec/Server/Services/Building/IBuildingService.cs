@@ -19,6 +19,13 @@ namespace FamTec.Server.Services.Building
         public ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context);
 
         /// <summary>
+        /// 로그인한 아이디의 사업장의 건물명 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService(HttpContext context);
+
+        /// <summary>
         /// 사업장에 속한 건물-층 리스트 반환
         /// </summary>
         /// <param name="context"></param>

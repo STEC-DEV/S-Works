@@ -5,10 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Pages\MaterialExcelExample.razor" />
-  </ItemGroup>
 	
 	
   <ItemGroup>
@@ -43,18 +39,6 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Manager\ManagerDetail\Modal\" />
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\MaterialExcelExample.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\MaterialExcelExample.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Pages\MaterialExcelExample.razor" />
   </ItemGroup>
 
 </Project>

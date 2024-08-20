@@ -47,6 +47,42 @@ namespace FamTec.Server.Repository.Material
         }
 
         /// <summary>
+        /// 엑셀 IMPORT
+        /// </summary>
+        /// <param name="MaterialList"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> AddMaterialList(List<MaterialTb> MaterialList)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach(MaterialTb MaterialTB in MaterialList)
+                    {
+                        context.MaterialTbs.Add(MaterialTB);
+                    }
+
+                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(AddResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+        /// <summary>
         /// 사업장에 속해있는 자재 리스트들 반환
         /// </summary>
         /// <param name="placeid"></param>
@@ -164,5 +200,7 @@ namespace FamTec.Server.Repository.Material
                 }
             }
         }
+
+      
     }
 }

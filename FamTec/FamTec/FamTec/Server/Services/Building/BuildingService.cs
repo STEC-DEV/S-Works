@@ -257,6 +257,50 @@ namespace FamTec.Server.Services.Building
         }
 
         /// <summary>
+        /// 로그인한 아이디의 사업장의 건물명 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
+
+                if (model is [_, ..])
+                {
+                    return new ResponseList<PlaceBuildingNameDTO>()
+                    {
+                        message = "요청이 정상적으로 처리되었습니다.",
+                        data = model.Select(e => new PlaceBuildingNameDTO
+                        {
+                            ID = e.Id,
+                            Name = e.Name,
+                        }).ToList(),
+                        code = 200
+                    };
+                }
+                else
+                {
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = null, code = 200 };
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<PlaceBuildingNameDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+
+        /// <summary>
         /// 건물 상세정보 보기
         /// </summary>
         /// <param name="buildingId"></param>
@@ -599,5 +643,7 @@ namespace FamTec.Server.Services.Building
                 return new ResponseList<PlaceBuildingListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+
     }
 }

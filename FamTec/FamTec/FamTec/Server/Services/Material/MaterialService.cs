@@ -1,9 +1,14 @@
-﻿using FamTec.Server.Repository.Inventory;
+﻿using ClosedXML.Excel;
+using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Floor;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
+using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO.Material;
+using FamTec.Shared.Server.DTO.User;
 
 namespace FamTec.Server.Services.Material
 {
@@ -11,6 +16,10 @@ namespace FamTec.Server.Services.Material
     {
         private readonly IMaterialInfoRepository MaterialInfoRepository;
         private readonly IInventoryInfoRepository InventoryInfoRepository;
+        private readonly IRoomInfoRepository RoomInfoRepository;
+        private readonly IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IFloorInfoRepository FloorInfoRepository;
+
         private IFileService FileService;
         private ILogService LogService;
 
@@ -19,11 +28,18 @@ namespace FamTec.Server.Services.Material
 
         public MaterialService(IMaterialInfoRepository _materialinforepository,
             IInventoryInfoRepository _inventoryinforepository,
+            IRoomInfoRepository _roominforepository,
+            IBuildingInfoRepository _buildinginforepository,
+            IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaterialInfoRepository = _materialinforepository;
             this.InventoryInfoRepository = _inventoryinforepository;
+            this.RoomInfoRepository = _roominforepository;
+            this.BuildingInfoRepository = _buildinginforepository;
+            this.FloorInfoRepository = _floorinforepository;
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
 
@@ -426,7 +442,127 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
-                return null;
+                if (context is null)
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<ExcelMaterialInfo> materiallist = new List<ExcelMaterialInfo>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await files!.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+
+                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
+
+                        for (int i = 2; i <= total; i++)
+                        {
+                            var Data = new ExcelMaterialInfo();
+
+                            Data.Code = Convert.ToString(worksheet.Cell("A" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Code))
+                                return new ResponseUnit<string?>() { message = "자재코드는 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.Name = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Name))
+                                return new ResponseUnit<string?>() { message = "자재명은 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.Unit = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Unit))
+                                return new ResponseUnit<string?>() { message = "단위는 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.Standard = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Standard))
+                                return new ResponseUnit<string?>() { message = "규격은 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.MFC = Convert.ToString(worksheet.Cell("E" + i).GetValue<string>().Trim());
+                            if (string.IsNullOrWhiteSpace(Data.MFC))
+                                return new ResponseUnit<string?>() { message = "제조사는 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.SafeNum = Convert.ToString(worksheet.Cell("F" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.SafeNum))
+                                return new ResponseUnit<string?>() { message = "안전재고 수량은 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+                            Data.Location = Convert.ToString(worksheet.Cell("G" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Location))
+                                return new ResponseUnit<string?>() { message = "위치는 공백을 입력할 수 없습니다.", data = null, code = 200 };
+
+
+                            materiallist.Add(Data);
+                        }
+
+                        if (materiallist is not [_, ..])
+                            return new ResponseUnit<string?>() { message = "등록할 자재 정보가 없습니다.", data = null, code = 200 };
+
+                        // 사업장 -빌딩
+                        // 빌딩- 층
+                        // 층 - 룸 List
+                        List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx));
+                        if (BuildingList is not [_, ..])
+                            return new ResponseUnit<string?>() { message = "건물정보가 존재하지 않습니다.", data = null, code = 200 };
+
+
+                        List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(BuildingList);
+                        if (FloorList is not [_, ..])
+                            return new ResponseUnit<string?>() { message = "층정보가 존재하지 않습니다.", data = null, code = 200 };
+
+                        List<RoomTb>? RoomList = await RoomInfoRepository.GetFloorRoomList(FloorList);
+                        if (RoomList is not [_, ..])
+                            return new ResponseUnit<string?>() { message = "공간 정보가 존재하지 않습니다.", data = null, code = 200 };
+
+                        // 공간 이름만 뽑아온다.
+                        List<string> DBRoomName = RoomList.Select(m => m.Name).ToList();
+                        List<string> ExcelRoomName = materiallist.Select(m => m.Location!).ToList();
+                        ExcelRoomName = ExcelRoomName.Distinct().ToList(); // 이름 중복제거
+
+                        List<string> NotContainName = ExcelRoomName.Except(DBRoomName).ToList();
+                        if (NotContainName is [_, ..])
+                            return new ResponseUnit<string?>() { message = "올바르지 않는 공간 명칭이 입력되었습니다.", data = null, code = 200 };
+
+
+                        List<MaterialTb> model = (from ExcelList in materiallist
+                                                  join Room in RoomList
+                                                  on ExcelList.Location equals Room.Name
+                                                  select new MaterialTb
+                                                  {
+                                                      Code = ExcelList.Code!,
+                                                      Name = ExcelList.Name!,
+                                                      Unit = ExcelList.Unit,
+                                                      Standard = ExcelList.Standard,
+                                                      ManufacturingComp = ExcelList.MFC,
+                                                      SafeNum = Convert.ToInt32(ExcelList.SafeNum),
+                                                      CreateDt = DateTime.Now,
+                                                      CreateUser = creater,
+                                                      UpdateDt = DateTime.Now,
+                                                      UpdateUser = creater,
+                                                      DefaultLocation = Room.Id,
+                                                      PlaceTbId = Convert.ToInt32(placeidx)
+                                                  }).ToList();
+
+                        bool? AddResult = await MaterialInfoRepository.AddMaterialList(model);
+                        if(AddResult == true)
+                        {
+                            return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Count.ToString(), code = 200 };
+                        }
+                        else if(AddResult == false)
+                        {
+                            return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
+                        else
+                        {
+                            return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        }
+                    }
+                }
             }
             catch(Exception ex)
             {
