@@ -5,7 +5,7 @@
     /// </summary>
     public class ExcelUserInfo
     {
-        public string? ID { get; set; }
+        public string? UserID { get; set; }
         public string? PassWord { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }

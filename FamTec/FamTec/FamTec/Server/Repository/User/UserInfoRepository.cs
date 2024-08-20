@@ -69,6 +69,42 @@ namespace FamTec.Server.Repository.User
             }
         }
 
+        /// <summary>
+        /// 엑셀 IMPORT
+        /// </summary>
+        /// <param name="UserList"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> AddUserList(List<UsersTb> UserList)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach(UsersTb UserTB in UserList)
+                    {
+                        context.UsersTbs.Add(UserTB);
+                    }
+
+                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(AddResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
 
         /// <summary>
         /// 유저 INDEX로 유저테이블 조회
@@ -657,6 +693,6 @@ namespace FamTec.Server.Repository.User
             }
         }
 
-   
+       
     }
 }

@@ -416,6 +416,23 @@ namespace FamTec.Server.Services.Material
             }
         }
 
-        
+        /// <summary>
+        /// 자재정보 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files)
+        {
+            try
+            {
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

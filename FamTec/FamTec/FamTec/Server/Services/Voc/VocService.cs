@@ -100,7 +100,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, int type, int status,int buildingid)
+        public async ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid)
         {
             try
             {

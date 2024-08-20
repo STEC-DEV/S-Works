@@ -16,6 +16,11 @@
         public static readonly string[] ImageAllowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg" };
 
         /// <summary>
+        /// 엑셀 확장자
+        /// </summary>
+        public static readonly string[] XlsxAllowedExtensions = { ".xlsx", ".xls" };
+
+        /// <summary>
         /// 1MB
         /// </summary>
         public static readonly int MEGABYTE_1 = 1048576;

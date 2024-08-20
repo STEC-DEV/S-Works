@@ -71,6 +71,6 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> ImportUserService(HttpContext? context, IFormFile file);
+        public ValueTask<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file);
     }
 }

@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, int type, int status, int buildingid);
+        public ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status, List<int> buildingid);
 
         /// <summary>
         /// VOC 상세보기

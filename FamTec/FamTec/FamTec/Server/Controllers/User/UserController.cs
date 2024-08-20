@@ -337,21 +337,41 @@ namespace FamTec.Server.Controllers.User
         }
 
         /// <summary>
-        /// 엑셀 IMPORT -- 형식에 맞게 차후수정
+        /// 엑셀 IMPORT
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/ImportUser")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile? file)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile files)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<string>? model = await UserService.ImportUserService(HttpContext, file);
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files); // 파일 확장자 추출
+                if(String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension); // 파일 확장자 검사 xlsx or xls 만 허용
+                    if(!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<string?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                    }
+                }
+
+                ResponseUnit<string?> model = await UserService.ImportUserService(HttpContext, files);
                 if (model is null)
                     return BadRequest();
 

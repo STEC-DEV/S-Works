@@ -63,12 +63,33 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
-        public async ValueTask<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] int type, [FromQuery] int status, [FromQuery] int buildingid)
+        public async ValueTask<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
+                //DateTime StartDate = DateTime.Now.AddDays(-30);
+                //DateTime EndDate = DateTime.Now;
+                //List<int> type = new List<int>() { 0,1, 7 };
+                //List<int> status = new List<int>() { 1, 2 };
+                //List<int> buildingid = new List<int>() { 1 };
+
                 if (HttpContext is null)
                     return BadRequest();
+
+                if (type is null)
+                    return NoContent();
+                if (type.Count == 0)
+                    return NoContent();
+
+                if (status is null)
+                    return NoContent();
+                if (status.Count == 0)
+                    return NoContent();
+
+                if (buildingid is null)
+                    return NoContent();
+                if (buildingid.Count == 0)
+                    return NoContent();
 
                 ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid);
 

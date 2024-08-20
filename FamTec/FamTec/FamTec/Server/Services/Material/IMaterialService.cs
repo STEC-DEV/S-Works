@@ -1,6 +1,4 @@
-﻿using FamTec.Shared;
-using FamTec.Shared.DTO;
-using FamTec.Shared.Server.DTO;
+﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Services.Material
@@ -42,5 +40,13 @@ namespace FamTec.Server.Services.Material
         /// <param name="delIdx"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx);
+
+        /// <summary>
+        /// 자재정보 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files);
     }
 }

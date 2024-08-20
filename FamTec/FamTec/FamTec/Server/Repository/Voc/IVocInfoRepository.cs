@@ -26,7 +26,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, int Type, int status, int BuildingID);
+        ValueTask<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingID);
 
         /// <summary>
         /// ID로 민원 상세조회
