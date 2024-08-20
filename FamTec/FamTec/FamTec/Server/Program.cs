@@ -320,233 +320,248 @@ app.UseRouting();
 
 #region MiddleWare
 
-//string[]? adminPaths = new string[]
-//{
-//    "/api/AdminUser/sign",
-//    "/api/Department/sign",
-//    "/api/AdminPlace/sign"
-//};
+string[]? adminPaths = new string[]
+{
+    "/api/AdminUser/sign",
+    "/api/Department/sign",
+    "/api/AdminPlace/sign"
+};
 
-//string[]? userPaths = new string[]
-//{
-//    "/api/Login/sign",
-//    "/api/Voc/sign",
-//    "/api/Building/sign",
-//    "/api/Unit/sign",
-//    "/api/Room/sign",
-//    "/api/User/sign",
-//    "/api/Floor/sign",
-//    "/api/Material/sign",
-//    "/api/VocComment/sign",
-//    "/api/BuildingGroup/sign",
-//    "/api/BuildingGroupKey/sign",
-//    "/api/BuildingGroupValue/sign",
-//    "/api/MachineFacility/sign",
-//    "/api/ElectronicFacility/sign",
-//    "/api/LiftFacility/sign",
-//    "/api/FireFacility/sign",
-//    "/api/ConstructFacility/sign",
-//    "/api/NetworkFacility/sign",
-//    "/api/BeautyFacility/sign",
-//    "/api/SecurityFacility/sign",
-//    "/api/FacilityGroup/sign",
-//    "/api/FacilityGroupKey/sign",
-//    "/api/FacilityGroupValue/sign",
-//    "/api/Store/sign",
-//    "/api/Maintenance/sign",
-//    "/api/Alarm/sign",
+string[]? userPaths = new string[]
+{
+    "/api/Login/sign",
+    "/api/Voc/sign",
+    "/api/Building/sign",
+    "/api/Unit/sign",
+    "/api/Room/sign",
+    "/api/User/sign",
+    "/api/Floor/sign",
+    "/api/Material/sign",
+    "/api/VocComment/sign",
+    "/api/BuildingGroup/sign",
+    "/api/BuildingGroupKey/sign",
+    "/api/BuildingGroupValue/sign",
+    "/api/MachineFacility/sign",
+    "/api/ElectronicFacility/sign",
+    "/api/LiftFacility/sign",
+    "/api/FireFacility/sign",
+    "/api/ConstructFacility/sign",
+    "/api/NetworkFacility/sign",
+    "/api/BeautyFacility/sign",
+    "/api/SecurityFacility/sign",
+    "/api/FacilityGroup/sign",
+    "/api/FacilityGroupKey/sign",
+    "/api/FacilityGroupValue/sign",
+    "/api/Store/sign",
+    "/api/Maintenance/sign",
+    "/api/Alarm/sign",
+    "/api/BlackList/sign",
+    "/api/KakaoLog/sign"
+};
 
-//};
+foreach (var path in adminPaths)
+{
+    app.UseWhen(context => context.Request.Path.StartsWithSegments(path), appBuilder =>
+    {
+        appBuilder.UseMiddleware<AdminMiddleware>();
+    });
+}
 
-
+foreach (var path in userPaths)
+{
+    app.UseWhen(context => context.Request.Path.StartsWithSegments(path), appBuilder =>
+    {
+        appBuilder.UseMiddleware<UserMiddleware>();
+    });
+}
 
 // [설정] AdminUser 컨트롤러 미들웨어 추가
 
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminUser/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<AdminMiddleware>();
-});
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminUser/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<AdminMiddleware>();
+//});
 
 
-// [설정] Department 컨트롤러 미들웨어 추가
+//// [설정] Department 컨트롤러 미들웨어 추가
 
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Department/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<AdminMiddleware>();
-});
-
-
-
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminPlace/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<AdminMiddleware>();
-});
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Department/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<AdminMiddleware>();
+//});
 
 
-// Login 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Login/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
 
-// Voc 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Voc/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-
-// Building 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Building/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-
-// Unit 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Unit/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-
-// Room 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Room/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-
-// User 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/User/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-
-// Floor 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminPlace/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<AdminMiddleware>();
+//});
 
 
-// Material 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Login 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Login/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// VocComment 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/VocComment/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Voc 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Voc/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Group 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroup/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Building 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Building/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// GroupKey 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupKey/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Unit 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Unit/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// GroupValue 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupValue/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Room 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Room/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 기계 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/MachineFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-// Facility 전기 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ElectronicFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// User 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/User/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 승강 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/LiftFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Floor 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Floor/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 소방 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FireFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
 
-// Facility 건축 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ConstructFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Material 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Material/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 통신 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/NetworkFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// VocComment 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/VocComment/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 미화 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BeautyFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Group 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroup/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 보안 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/SecurityFacility/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// GroupKey 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupKey/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Facility 그룹 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroup/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-// Facility 키 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupKey/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
-// Facility 값 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupValue/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// GroupValue 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BuildingGroupValue/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// InStore 값 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Store/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Facility 기계 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/MachineFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+//// Facility 전기 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ElectronicFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Maintenence 값 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Maintenance/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Facility 승강 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/LiftFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// Alarm 값 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Facility 소방 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FireFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-// BlackList 값 컨트롤러 미들웨어 추가
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BlackList/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Facility 건축 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/ConstructFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/KakaoLog/sign"), appBuilder =>
-{
-    appBuilder.UseMiddleware<UserMiddleware>();
-});
+//// Facility 통신 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/NetworkFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// Facility 미화 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BeautyFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// Facility 보안 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/SecurityFacility/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// Facility 그룹 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroup/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+//// Facility 키 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupKey/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+//// Facility 값 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/FacilityGroupValue/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// InStore 값 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Store/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// Maintenence 값 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Maintenance/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// Alarm 값 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//// BlackList 값 컨트롤러 미들웨어 추가
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BlackList/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
+
+//app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/KakaoLog/sign"), appBuilder =>
+//{
+//    appBuilder.UseMiddleware<UserMiddleware>();
+//});
 
 #endregion
 
