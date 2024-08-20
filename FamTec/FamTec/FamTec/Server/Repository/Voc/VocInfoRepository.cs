@@ -54,8 +54,7 @@ namespace FamTec.Server.Repository.Voc
         {
             try
             {
-                List<VocTb>? VocList = await context.VocTbs
-                    .Where(m => type.Contains(m.Type) &&
+                List<VocTb>? VocList = await context.VocTbs.Where(m => type.Contains(m.Type) &&
                     status.Contains(m.Status) && 
                     buildingid.Contains(m.BuildingTbId))
                     .OrderBy(m => m.CreateDt)
