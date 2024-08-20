@@ -24,35 +24,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             this.LogService = _logservice;
         }
 
-        /// <summary>
-        /// 사업장 총 개수 반환
-        /// </summary>
-        /// <returns></returns>
-        [Authorize(Roles = "SystemManager, Master, Manager")]
-        [HttpGet]
-        [Route("sign/TotalPlaceCount")]
-        public async ValueTask<IActionResult> GetTotalPlaceCount()
-        {
-            try
-            {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                ResponseUnit<int?> model = await AdminPlaceService.TotalPlaceCount(HttpContext);
-                if (model is null)
-                    return BadRequest();
-
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
-            }
-        }
+ 
 
         /// <summary>
         /// 전체 사업장 리스트 조회 [OK]

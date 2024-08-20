@@ -8,13 +8,6 @@ namespace FamTec.Server.Services.Admin.Place
     public interface IAdminPlaceService
     {
         /// <summary>
-        /// 사업장 총 개수 조회
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> TotalPlaceCount(HttpContext context);
-
-        /// <summary>
         /// 사업장에 포함되어있지 않은 관리자 리스트 조회
         /// </summary>
         /// <param name="context">JWT 토큰</param>

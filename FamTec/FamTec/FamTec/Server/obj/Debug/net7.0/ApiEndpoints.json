@@ -233,16 +233,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
-    "Method": "GetTotalPlaceCount",
-    "RelativePath": "api/AdminPlace/sign/TotalPlaceCount",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
     "Method": "UpdateWorks",
     "RelativePath": "api/AdminPlace/sign/UpdateWorks",
     "HttpMethod": "PUT",

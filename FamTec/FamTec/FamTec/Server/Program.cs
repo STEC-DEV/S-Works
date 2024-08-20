@@ -320,22 +320,68 @@ app.UseRouting();
 
 #region MiddleWare
 
+//string[]? adminPaths = new string[]
+//{
+//    "/api/AdminUser/sign",
+//    "/api/Department/sign",
+//    "/api/AdminPlace/sign"
+//};
+
+//string[]? userPaths = new string[]
+//{
+//    "/api/Login/sign",
+//    "/api/Voc/sign",
+//    "/api/Building/sign",
+//    "/api/Unit/sign",
+//    "/api/Room/sign",
+//    "/api/User/sign",
+//    "/api/Floor/sign",
+//    "/api/Material/sign",
+//    "/api/VocComment/sign",
+//    "/api/BuildingGroup/sign",
+//    "/api/BuildingGroupKey/sign",
+//    "/api/BuildingGroupValue/sign",
+//    "/api/MachineFacility/sign",
+//    "/api/ElectronicFacility/sign",
+//    "/api/LiftFacility/sign",
+//    "/api/FireFacility/sign",
+//    "/api/ConstructFacility/sign",
+//    "/api/NetworkFacility/sign",
+//    "/api/BeautyFacility/sign",
+//    "/api/SecurityFacility/sign",
+//    "/api/FacilityGroup/sign",
+//    "/api/FacilityGroupKey/sign",
+//    "/api/FacilityGroupValue/sign",
+//    "/api/Store/sign",
+//    "/api/Maintenance/sign",
+//    "/api/Alarm/sign",
+
+//};
+
+
+
 // [설정] AdminUser 컨트롤러 미들웨어 추가
+
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminUser/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<AdminMiddleware>();
 });
 
+
 // [설정] Department 컨트롤러 미들웨어 추가
+
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Department/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<AdminMiddleware>();
 });
 
+
+
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/AdminPlace/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<AdminMiddleware>();
 });
+
 
 // Login 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Login/sign"), appBuilder =>

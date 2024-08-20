@@ -33,28 +33,7 @@ namespace FamTec.Server.Services.Admin.Place
             this.LogService = _logservice;
         }
 
-        /// <summary>
-        /// 사업장 총 개수 조회
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> TotalPlaceCount(HttpContext context)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                int? Count = await AdminPlaceInfoRepository.TotalPlaceCount();
-                return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = Count, code = 200 };
-
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
+        
 
         /// <summary>
         /// 전체사업장 조회 
