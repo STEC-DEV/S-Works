@@ -54,6 +54,7 @@ namespace FamTec.Server.Repository.KakaoLog
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
                     //.Take(1000)
                     .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -80,7 +81,8 @@ namespace FamTec.Server.Repository.KakaoLog
             {
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
                     .Where(m => m.DelYn != true && m.CreateDt >= StartDate && m.CreateDt <= EndDate)
-                    .OrderBy(m => m.CreateDt).ToListAsync();
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
 
                 if (model is [_, ..])
                     return model;

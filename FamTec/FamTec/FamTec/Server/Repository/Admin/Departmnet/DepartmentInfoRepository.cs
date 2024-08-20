@@ -76,6 +76,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             {
                 List<DepartmentsTb>? model = await context.DepartmentsTbs
                     .Where(m => m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -100,6 +101,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             {
                 List<DepartmentsTb>? model = await context.DepartmentsTbs
                     .Where(m => m.DelYn != true && m.ManagementYn == true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -174,6 +176,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             {
                 List<AdminTb>? model = await context.AdminTbs
                     .Where(m => departmentidx.Contains(Convert.ToInt32(m.DepartmentTbId)) && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

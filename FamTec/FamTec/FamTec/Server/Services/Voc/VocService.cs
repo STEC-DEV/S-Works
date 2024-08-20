@@ -69,7 +69,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context)
+        public async ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<AllVocListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid));
+                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid);
 
                 if (model is [_, ..])
                     return new ResponseList<AllVocListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };

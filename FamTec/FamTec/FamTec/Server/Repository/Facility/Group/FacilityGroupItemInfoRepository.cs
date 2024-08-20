@@ -55,6 +55,7 @@ namespace FamTec.Server.Repository.Facility.Group
             {
                 List<FacilityItemGroupTb>? model = await context.FacilityItemGroupTbs
                     .Where(m => m.FacilityTbId == facilityId && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

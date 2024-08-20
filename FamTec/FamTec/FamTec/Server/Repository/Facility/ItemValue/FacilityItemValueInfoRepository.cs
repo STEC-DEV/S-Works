@@ -54,6 +54,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             {
                 List<FacilityItemValueTb>? model = await context.FacilityItemValueTbs
                     .Where(m => m.FacilityItemKeyTbId == keyid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

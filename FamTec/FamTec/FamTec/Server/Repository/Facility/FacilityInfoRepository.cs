@@ -55,6 +55,7 @@ namespace FamTec.Server.Repository.Facility
             {
                 List<FacilityTb>? model = await context.FacilityTbs
                     .Where(m => m.RoomTbId == roomid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -235,7 +236,8 @@ namespace FamTec.Server.Repository.Facility
                                                                 EquipDT = facilitytb.EquipDt,
                                                                 LifeSpan = facilitytb.Lifespan,
                                                                 ChangeDT = facilitytb.ChangeDt
-                                                            }).ToList();
+                                                            }).OrderBy(m => m.Id)
+                                                            .ToList();
 
                 if (machinelist is [_, ..])
                 {
@@ -282,7 +284,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if(electlist is [_, ..])
                 {
@@ -328,7 +331,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {
@@ -374,7 +378,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {
@@ -401,7 +406,7 @@ namespace FamTec.Server.Repository.Facility
         {
             try
             {
-                List<FacilityListDTO> electlist = (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
+                List<FacilityListDTO> electlist =  (from building in context.BuildingTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true).ToList()
                                                     join floortb in context.FloorTbs.Where(m => m.DelYn != true).ToList()
                                                     on building.Id equals floortb.BuildingTbId
                                                     join roomtb in context.RoomTbs.Where(m => m.DelYn != true).ToList()
@@ -420,7 +425,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {
@@ -466,7 +472,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {
@@ -512,7 +519,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {
@@ -558,7 +566,8 @@ namespace FamTec.Server.Repository.Facility
                                                         EquipDT = facilitytb.EquipDt,
                                                         LifeSpan = facilitytb.Lifespan,
                                                         ChangeDT = facilitytb.ChangeDt
-                                                    }).ToList();
+                                                    }).OrderBy(m => m.Id)
+                                                    .ToList();
 
                 if (electlist is [_, ..])
                 {

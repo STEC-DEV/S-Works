@@ -69,6 +69,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
                     .Where(m => m.AdminTbId == adminid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if(adminplacetb is [_, ..])
@@ -104,7 +105,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                 join place in placetb
                                                 on admin.PlaceTbId equals place.Id
                                                 where place.DelYn != true
-                                                        select new AdminPlaceDTO
+                                                select new AdminPlaceDTO
                                                 {
                                                     Id = place.Id,
                                                     PlaceCd = place.PlaceCd,
@@ -231,7 +232,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                         join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
                                         on adminplacetb.PlaceTbId equals placetb.Id
                                         where adminplacetb.DelYn != true && placetb.DelYn != true
-                                            select new PlaceTb
+                                        select new PlaceTb
                                         {
                                             Id = placetb.Id,
                                             PlaceCd = placetb.PlaceCd,
@@ -260,7 +261,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                             DelYn = placetb.DelYn,
                                             DelDt = placetb.DelDt,
                                             DelUser = placetb.DelUser
-                                        }).ToList();
+                                        }).OrderBy(m => m.CreateDt)
+                                        .ToList();
 
                 if (result is [_, ..])
                     return result;
@@ -481,6 +483,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
                     .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (adminplacetb is [_, ..])
@@ -676,5 +679,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 throw new ArgumentNullException();
             }
         }
+
+
     }
 }

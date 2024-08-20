@@ -1,7 +1,6 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Repository.Building
@@ -16,6 +15,27 @@ namespace FamTec.Server.Repository.Building
         {
             this.context = _context;
             this.LogService = _logservice;
+        }
+
+        /// <summary>
+        /// 사업장에 속한 건물 총 개수 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<int?> TotalBuildingCount(int placeid)
+        {
+            try
+            {
+                int totalCount = await context.BuildingTbs
+                    .CountAsync(m => m.PlaceTbId == placeid && m.DelYn != true);
+
+                return totalCount;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
         }
 
         /// <summary>
@@ -57,6 +77,37 @@ namespace FamTec.Server.Repository.Building
             {
                 List<BuildingTb>? model = await context.BuildingTbs
                     .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
+
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 해당 사업장의 건물조회 - 페이지네이션
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        public async ValueTask<List<BuildingTb>?> GetAllBuildingPageList(int placeid, int skip, int take)
+        {
+            try
+            {
+                List<BuildingTb>? model = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .Skip(skip) // 건너뛸 개수
+                    .Take(take) // 출력할 개수
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -189,7 +240,11 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                List<BuildingTb>? model = await context.BuildingTbs.Where(m => buildingid.Contains(m.Id)).ToListAsync();
+                List<BuildingTb>? model = await context.BuildingTbs
+                    .Where(m => buildingid.Contains(m.Id))
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
+
                 if (model is [_, ..])
                 {
                     return model;
@@ -231,6 +286,7 @@ namespace FamTec.Server.Repository.Building
             {
                 List<BuildingTb>? buildingtb = await context.BuildingTbs
                     .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if(buildingtb is [_, ..])
@@ -356,9 +412,7 @@ namespace FamTec.Server.Repository.Building
                                 await context.Database.RollbackTransactionAsync(); // 롤백
                                 return null;
                             }
-
                         }
-
                         await context.Database.CommitTransactionAsync(); // 커밋
                         return true;
                     }

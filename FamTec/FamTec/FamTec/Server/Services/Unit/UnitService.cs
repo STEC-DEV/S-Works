@@ -21,7 +21,6 @@ namespace FamTec.Server.Services.Unit
         /// 단위정보 추가
         /// </summary>
         /// <param name="dto"></param>
-        /// <param name="sessioninfo"></param>
         /// <returns></returns>
         public async ValueTask<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext context, UnitsDTO dto)
         {
@@ -81,7 +80,6 @@ namespace FamTec.Server.Services.Unit
         /// <summary>
         /// 해당 사업장의 단위리스트 조회
         /// </summary>
-        /// <param name="sessioninfo"></param>
         /// <returns></returns>
         public async ValueTask<ResponseList<UnitsDTO>> GetUnitList(HttpContext context)
         {
@@ -125,7 +123,6 @@ namespace FamTec.Server.Services.Unit
         /// 단위정보 삭제
         /// </summary>
         /// <param name="dto"></param>
-        /// <param name="sessioninfo"></param>
         /// <returns></returns>
         public async ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext context, int unitid)
         {

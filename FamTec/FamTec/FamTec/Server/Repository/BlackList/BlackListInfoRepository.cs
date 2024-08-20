@@ -53,6 +53,7 @@ namespace FamTec.Server.Repository.BlackList
             {
                 List<BlacklistTb>? model = await context.BlacklistTbs
                     .Where(m => m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

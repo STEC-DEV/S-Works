@@ -34,6 +34,29 @@ namespace FamTec.Server.Services.Admin.Place
         }
 
         /// <summary>
+        /// 사업장 총 개수 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> TotalPlaceCount(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                int? Count = await AdminPlaceInfoRepository.TotalPlaceCount();
+                return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = Count, code = 200 };
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
         /// 전체사업장 조회 
         ///     - 시스템관리자, 관리자 => 전체 사업장 조회
         ///     - 매니저 => 할당된 사업장 조회
@@ -699,6 +722,7 @@ namespace FamTec.Server.Services.Admin.Place
                 return new ResponseList<AdminPlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
 
     }
 }

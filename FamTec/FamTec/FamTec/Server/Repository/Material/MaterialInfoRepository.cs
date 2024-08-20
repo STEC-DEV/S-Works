@@ -1,8 +1,6 @@
 ﻿using FamTec.Server.Databases;
-using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
-using FamTec.Shared.Server.DTO.Material;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Repository.Material
@@ -93,6 +91,7 @@ namespace FamTec.Server.Repository.Material
             {
                 List<MaterialTb>? model = await context.MaterialTbs
                     .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if(model is [_, ..])

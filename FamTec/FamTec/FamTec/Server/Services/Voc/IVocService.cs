@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -11,7 +12,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context);
+        public ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid);
 
         /// <summary>
         /// 조건별 민원 리스트 조회

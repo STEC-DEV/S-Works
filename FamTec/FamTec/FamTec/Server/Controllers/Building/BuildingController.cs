@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Building;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
@@ -24,8 +25,34 @@ namespace FamTec.Server.Controllers.Building
             this.LogService = _logservice;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/TotalBuildingCount")]
+        public async ValueTask<IActionResult> GetTotalBuildingCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<int?> model = await BuildingService.TotalBuildingCount(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
-        /// 사업장에 해당하는 건물리스트 출력 [수정완료]
+        /// 사업장에 해당하는 건물리스트 출력 
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -49,6 +76,39 @@ namespace FamTec.Server.Controllers.Building
                     return BadRequest(model);
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 사업장에 해당하는 건물리스트 출력 - 서버 페이지 네이션
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/MyBuildingPage")]
+        public async ValueTask<IActionResult> SelectMyBuildingPage([FromQuery]int skip, [FromQuery]int take)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<BuildinglistDTO> model = await BuildingService.GetBuildingListPageService(HttpContext, skip, take);
+
+                if (model is null)
+                    return BadRequest(model);
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest(model);
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);

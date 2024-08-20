@@ -36,8 +36,6 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             {
                 string? NewFileName = String.Empty;
 
-               
-
                 if (context is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 

@@ -55,6 +55,7 @@ namespace FamTec.Server.Repository.Unit
             {
                 List<UnitTb>? model = await context.UnitTbs
                     .Where(m => m.PlaceTbId == null || m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

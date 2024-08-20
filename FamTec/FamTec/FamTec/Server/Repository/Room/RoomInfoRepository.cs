@@ -57,6 +57,7 @@ namespace FamTec.Server.Repository.Room
             {
                 List<RoomTb>? model = await context.RoomTbs
                     .Where(m => m.DelYn != true && m.FloorTbId == flooridx)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -86,6 +87,7 @@ namespace FamTec.Server.Repository.Room
 
                 List<RoomTb>? RoomList = await context.RoomTbs
                     .Where(m => FloorIdx.Contains(m.FloorTbId) && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (RoomList is [_, ..])

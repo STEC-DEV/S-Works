@@ -58,6 +58,7 @@ namespace FamTec.Server.Repository.Alarm
             {
                 List<AlarmTb>? AlarmTB = await context.AlarmTbs
                     .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (AlarmTB is [_, ..])
@@ -101,6 +102,7 @@ namespace FamTec.Server.Repository.Alarm
                 {
                     List<AlarmTb>? AlarmList = await context.AlarmTbs
                         .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                        .OrderBy(m => m.CreateDt)
                         .ToListAsync();
 
                     if (AlarmList is [_, ..])

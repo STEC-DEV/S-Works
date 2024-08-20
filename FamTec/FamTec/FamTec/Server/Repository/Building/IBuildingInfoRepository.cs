@@ -12,11 +12,26 @@ namespace FamTec.Server.Repository.Building
         ValueTask<BuildingTb?> AddAsync(BuildingTb model);
 
         /// <summary>
+        /// 사업장에 속한 건물 총 개수 반환
+        /// </summary>
+        /// <returns></returns>
+        ValueTask<int?> TotalBuildingCount(int placeid);
+
+        /// <summary>
         /// 해당사업장의 건물조회
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
         ValueTask<List<BuildingTb>?> GetAllBuildingList(int placeid);
+
+        /// <summary>
+        /// 해당 사업장의 건물조회 - 페이지네이션
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        ValueTask<List<BuildingTb>?> GetAllBuildingPageList(int placeid, int skip, int take);
 
         /// <summary>
         /// 빌딩인덱스로 빌딩검색

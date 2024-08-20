@@ -22,20 +22,24 @@ namespace FamTec.Server.Controllers.Voc
         }
 
         /// <summary>
-        /// 사업장 민원 전체보기 - 직원용
+        /// 사업장 민원 전체보기 - 직원용 (월간)
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
-        public async ValueTask<IActionResult> GetVocList()
+        public async ValueTask<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
+                //List<int> type = new List<int>() { 0,1, 7 };
+                //List<int> status = new List<int>() { 1, 2 };
+                //List<int> buildingid = new List<int>() { 1 };
+
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllVocListDTO?> model = await VocService.GetVocList(HttpContext);
+                ResponseList<AllVocListDTO?> model = await VocService.GetVocList(HttpContext, type, status, buildingid);
                 if (model is null)
                     return BadRequest();
 
@@ -52,7 +56,7 @@ namespace FamTec.Server.Controllers.Voc
         }
 
         /// <summary>
-        /// 사업장 민원 필터 전체보기 - 직원용
+        /// 사업장 민원 필터 전체보기 - 직원용 (기간)
         /// </summary>
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>

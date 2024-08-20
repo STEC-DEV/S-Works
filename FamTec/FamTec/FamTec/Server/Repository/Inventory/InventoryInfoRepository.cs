@@ -174,7 +174,8 @@ namespace FamTec.Server.Repository.Inventory
                                                                 InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
                                                                 CurrentNum = StoreTB.CurrentNum,
                                                                 Note = StoreTB.Note // 비고
-                                                            }).ToList();
+                                                            }).OrderBy(m => m.INOUT_DATE)
+                                                            .ToList();
                     
                     return dto;
                 }
@@ -239,7 +240,8 @@ namespace FamTec.Server.Repository.Inventory
                                                   DelDt = room.DelDt,
                                                   DelUser = room.DelUser,
                                                   FloorTbId = room.FloorTbId
-                                              }).ToList();
+                                              }).OrderBy(m => m.CreateDt)
+                                              .ToList();
                     if (roomlist is null)
                         return null;
 
@@ -320,7 +322,8 @@ namespace FamTec.Server.Repository.Inventory
                                                       DelDt = room.DelDt,
                                                       DelUser = room.DelUser,
                                                       FloorTbId = room.FloorTbId
-                                                  }).ToList();
+                                                  }).OrderBy(m => m.CreateDt)
+                                                  .ToList();
 
                         int materialcount = model.GroupBy(m => m.M_ID).Count();
 
@@ -538,13 +541,17 @@ namespace FamTec.Server.Repository.Inventory
                         List<InventoryTb>? Occupant = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                             m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true).ToListAsync();
+                            m.DelYn != true)
+                            .OrderBy(m => m.CreateDt)
+                            .ToListAsync();
 
                         List<InventoryTb>? check = Occupant
                             .Where(m =>
                             !String.IsNullOrWhiteSpace(m.Occupant) ||
                             !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
-                            .ToList().Where(m => m.Occupant != GUID).ToList();
+                            .ToList()
+                            .OrderBy(m => m.CreateDt)
+                            .Where(m => m.Occupant != GUID).ToList();
 
                         if(check is [_, ..]) // 다른곳에서 해당항목 사용중
                         {
@@ -805,6 +812,7 @@ namespace FamTec.Server.Repository.Inventory
                     .Where(m => m.PlaceTbId == placeid && 
                     m.MaterialTbId == materialid && 
                     m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (InventoryList is [_, ..])

@@ -56,6 +56,7 @@ namespace FamTec.Server.Repository.Place
             {
                 List<PlaceTb>? model = await context.PlaceTbs
                     .Where(m => m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])

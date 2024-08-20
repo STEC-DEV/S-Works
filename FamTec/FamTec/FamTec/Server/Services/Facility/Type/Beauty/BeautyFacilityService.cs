@@ -59,7 +59,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
 
                 if (files is not null)
                 {
-                    NewFileName = FileService.SetNewFileName(UserIdx,files);
+                    NewFileName = FileService.SetNewFileName(UserIdx, files);
                 }
 
 
@@ -206,7 +206,6 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 return new ResponseUnit<FacilityDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
      
 
         public async ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)

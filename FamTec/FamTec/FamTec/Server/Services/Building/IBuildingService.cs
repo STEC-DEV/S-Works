@@ -6,6 +6,13 @@ namespace FamTec.Server.Services.Building
     public interface IBuildingService
     {
         /// <summary>
+        /// 사업장에 속한 건물 총 개수 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> TotalBuildingCount(HttpContext context);
+
+        /// <summary>
         /// 건물추가
         /// </summary>
         /// <returns></returns>
@@ -17,6 +24,15 @@ namespace FamTec.Server.Services.Building
         /// <param name="session"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context);
+
+        /// <summary>
+        /// 로그인한 아이디의 사업장의 건물리스트 조회 - 페이지네이션
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<BuildinglistDTO>> GetBuildingListPageService(HttpContext context, int skip, int take);
 
         /// <summary>
         /// 로그인한 아이디의 사업장의 건물명 조회

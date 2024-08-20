@@ -54,6 +54,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             {
                 List<BuildingItemValueTb>? model = await context.BuildingItemValueTbs
                     .Where(m => m.BuildingKeyTbId == keyid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -137,6 +138,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             {
                 List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
                     .Where(e => KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (keytb is [_, ..])
@@ -157,6 +159,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             {
                 List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
                     .Where(e => !KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (keytb is [_, ..])

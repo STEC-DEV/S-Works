@@ -147,6 +147,7 @@ namespace FamTec.Server.Repository.Floor
             {
                 List<FloorTb>? model = await context.FloorTbs
                     .Where(m => m.BuildingTbId == buildingtbid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -192,7 +193,8 @@ namespace FamTec.Server.Repository.Floor
                                                     DelDt = floortb.DelDt,
                                                     DelUser = floortb.DelUser,
                                                     BuildingTbId = floortb.BuildingTbId
-                                                }).ToList();
+                                                }).OrderBy(m => m.CreateDt)
+                                                .ToList();
 
                     if (result is [_, ..])
                         return result;

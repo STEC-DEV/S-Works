@@ -1,6 +1,4 @@
-﻿using FamTec.Shared;
-using FamTec.Shared.DTO;
-using FamTec.Shared.Server.DTO;
+﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Floor;
 
 namespace FamTec.Server.Services.Floor

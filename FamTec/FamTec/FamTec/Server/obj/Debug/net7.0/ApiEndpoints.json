@@ -233,6 +233,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
+    "Method": "GetTotalPlaceCount",
+    "RelativePath": "api/AdminPlace/sign/TotalPlaceCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
     "Method": "UpdateWorks",
     "RelativePath": "api/AdminPlace/sign/UpdateWorks",
     "HttpMethod": "PUT",
@@ -1011,6 +1021,27 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "SelectMyBuildingPage",
+    "RelativePath": "api/Building/sign/MyBuildingPage",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "SelectMyBuilding",
     "RelativePath": "api/Building/sign/MyBuildings",
     "HttpMethod": "GET",
@@ -1023,6 +1054,16 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "SelectPlaceBuilding",
     "RelativePath": "api/Building/sign/PlaceBuildingList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "GetTotalBuildingCount",
+    "RelativePath": "api/Building/sign/TotalBuildingCount",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -4508,7 +4549,23 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "buildingid",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

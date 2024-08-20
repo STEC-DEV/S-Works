@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Repository.Admin.AdminPlaces;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -30,6 +31,32 @@ namespace FamTec.Server.Services.Building
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+        }
+
+        /// <summary>
+        /// 사업장에 속한 건물 총 개수 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> TotalBuildingCount(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                int? Count = await BuildingInfoRepository.TotalBuildingCount(Convert.ToInt32(placeid));
+                return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = Count, code = 200 };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
         }
 
         /// <summary>
@@ -250,6 +277,55 @@ namespace FamTec.Server.Services.Building
                 }
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 로그인한 아이디의 사업장의 건물리스트 조회 - 페이지네이션
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<BuildinglistDTO>> GetBuildingListPageService(HttpContext context, int skip, int take)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingPageList(Int32.Parse(placeidx), skip, take);
+
+                if (model is [_, ..])
+                {
+                    return new ResponseList<BuildinglistDTO>()
+                    {
+                        message = "요청이 정상적으로 처리되었습니다.",
+                        data = model.Select(e => new BuildinglistDTO
+                        {
+                            ID = e.Id,
+                            BuildingCD = e.BuildingCd,
+                            Name = e.Name,
+                            Address = e.Address,
+                            CompletionDT = e.CompletionDt,
+                            CreateDT = e.CreateDt
+                        }).ToList(),
+                        code = 200
+                    };
+                }
+                else
+                {
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = null, code = 200 };
+                }
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
@@ -644,6 +720,6 @@ namespace FamTec.Server.Services.Building
             }
         }
 
-
+       
     }
 }

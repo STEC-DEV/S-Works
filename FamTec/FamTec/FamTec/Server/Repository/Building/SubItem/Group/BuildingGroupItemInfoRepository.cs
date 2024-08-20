@@ -56,6 +56,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                 
                 List<BuildingItemGroupTb>? model = await context.BuildingItemGroupTbs
                     .Where(m => m.BuildingTbId == buildingid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (model is [_, ..])
@@ -218,6 +219,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs
                     .Where(e => GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
                 if (grouptb is [_, ..])
@@ -242,7 +244,9 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             try
             {
                 List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs
-                    .Where(e => !GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true).ToListAsync();
+                    .Where(e => !GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
 
                 if (grouptb is [_, ..])
                     return grouptb;
