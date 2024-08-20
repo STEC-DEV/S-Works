@@ -15,7 +15,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// 카카오 알림톡 발송로그 리스트 전체조회
         /// </summary>
         /// <returns></returns>
-        ValueTask<List<KakaoLogTb>?> GetKakaoLogList();
+        ValueTask<List<KakaoLogTb>?> GetKakaoLogList(int placeid);
 
         /// <summary>
         /// 카카오 알림톡 발송로그 기간별 조회

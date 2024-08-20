@@ -47,13 +47,13 @@ namespace FamTec.Server.Repository.KakaoLog
         /// 카카오 알림톡 발송로그 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList()
+        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList(int placeid)
         {
             try
             {
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
-                    .Take(1000)
-                    .Where(m => m.DelYn != true)
+                    //.Take(1000)
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
                     .ToListAsync();
 
                 if (model is [_, ..])

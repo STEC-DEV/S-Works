@@ -7,6 +7,7 @@ using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
@@ -198,7 +199,7 @@ namespace FamTec.Server.Services.Voc.Hub
 
                             // 카카오 API 전송
                             // 보낸 USER 휴대폰번호에 전송.
-                            KakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
+                            AddKakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
                             if (LogDTO is not null)
                             {
                                 // 카카오 메시지 성공

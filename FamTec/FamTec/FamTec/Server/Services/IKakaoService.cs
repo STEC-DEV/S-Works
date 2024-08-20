@@ -1,4 +1,4 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Shared.Server.DTO.KakaoLog;
 
 namespace FamTec.Server.Services
 {
@@ -14,7 +14,7 @@ namespace FamTec.Server.Services
         /// <param name="url">링크 URL</param>
         /// <param name="placetel">사업장 전화번호</param>
         /// <returns></returns>
-        public Task<KakaoLogDTO?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel);
+        public Task<AddKakaoLogDTO?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel);
 
         /// <summary>
         /// 민원인 전용 VOC 상태변경 메시지
@@ -25,7 +25,7 @@ namespace FamTec.Server.Services
         /// <param name="url">링크 URL</param>
         /// <param name="placetel">사업장 전화번호</param>
         /// <returns></returns>
-        public Task<KakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel);
+        public Task<AddKakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel);
 
         /// <summary>
         /// 랜덤코드 생성

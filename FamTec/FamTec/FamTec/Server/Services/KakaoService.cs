@@ -1,4 +1,4 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -23,7 +23,7 @@ namespace FamTec.Server.Services
         /// 민원인 전용 VOC 등록 확인메시지
         /// </summary>
         /// <returns></returns>
-        public async Task<KakaoLogDTO?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel)
+        public async Task<AddKakaoLogDTO?> AddVocAnswer(string title, string receiptnum, DateTime receiptdate, string receiver, string url, string placetel)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace FamTec.Server.Services
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
                 Jobj = JObject.Parse(HttpResponseResult);
                 
-                KakaoLogDTO LogDTO = new KakaoLogDTO();
+                AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
                 LogDTO.Message = Convert.ToString(Jobj["message"]);
                 return LogDTO;
@@ -105,7 +105,7 @@ namespace FamTec.Server.Services
         /// <param name="url">링크 URL</param>
         /// <param name="placetel">상버장 전화번호</param>
         /// <returns></returns>
-        public async Task<KakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
+        public async Task<AddKakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace FamTec.Server.Services
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
                 Jobj = JObject.Parse(HttpResponseResult);
 
-                KakaoLogDTO LogDTO = new KakaoLogDTO();
+                AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
                 LogDTO.Message = Convert.ToString(Jobj["message"]);
                 return LogDTO;

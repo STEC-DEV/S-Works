@@ -87,6 +87,7 @@ namespace FamTec.Server.Repository.Voc
                             AllVocListDTO VocItem = new AllVocListDTO();
                             VocItem.Years = Group.Year;
                             VocItem.Month = Group.Month;
+                            VocItem.Dates = $"{Group.Year}-{Group.Month}";
 
                             List<VocListDTO> dto = (from VocTB in Group.VocList
                                                     join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()

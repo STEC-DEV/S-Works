@@ -2496,6 +2496,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.KakaoLog.KakaoLogController",
+    "Method": "GetKakaoLogList",
+    "RelativePath": "api/KakaoLog/sign/GetKakaoLogList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.LiftFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/LiftFacility/sign/AddLiftFacility",

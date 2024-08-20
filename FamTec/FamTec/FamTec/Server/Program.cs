@@ -64,6 +64,7 @@ using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
+using FamTec.Server.Services.KakaoLog;
 
 
 
@@ -167,6 +168,7 @@ builder.Services.AddTransient<ITokenComm, TokenComm>();
 builder.Services.AddTransient<IKakaoService, KakaoService>();
 builder.Services.AddTransient<IAlarmService, AlarmService>();
 builder.Services.AddTransient<IBlackListService, BlackListService>();
+builder.Services.AddTransient<IKakaoLogService, KakaoLogService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -491,6 +493,11 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Alarm/sign"
 
 // BlackList 값 컨트롤러 미들웨어 추가
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/BlackList/sign"), appBuilder =>
+{
+    appBuilder.UseMiddleware<UserMiddleware>();
+});
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/KakaoLog/sign"), appBuilder =>
 {
     appBuilder.UseMiddleware<UserMiddleware>();
 });

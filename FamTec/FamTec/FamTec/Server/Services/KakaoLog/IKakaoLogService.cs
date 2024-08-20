@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 
 namespace FamTec.Server.Services.KakaoLog
 {
@@ -7,7 +8,11 @@ namespace FamTec.Server.Services.KakaoLog
     /// </summary>
     public interface IKakaoLogService
     {
-
-        //public ValueTask<ResponseList<>>
+        /// <summary>
+        /// 해당 사업장의 카카오 로그 리스트 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<KakaoLogListDTO>?> GetKakaoLogListService(HttpContext context);
     }
 }

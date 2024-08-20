@@ -5,6 +5,7 @@ using FamTec.Server.Repository.Place;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using System.Text;
 
@@ -181,7 +182,7 @@ namespace FamTec.Server.Services.Voc
                                     }
 
                                     // 카카오 API 전송
-                                    KakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
+                                    AddKakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
 
                                     if(LogDTO is not null)
                                     {

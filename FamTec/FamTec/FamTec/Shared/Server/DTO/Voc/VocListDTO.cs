@@ -7,6 +7,7 @@
     {
         public int? Years { get; set; }
         public int? Month { get; set; }
+        public string? Dates { get; set; }
 
         public List<VocListDTO> VocList { get; set; } = new List<VocListDTO>();
     }
