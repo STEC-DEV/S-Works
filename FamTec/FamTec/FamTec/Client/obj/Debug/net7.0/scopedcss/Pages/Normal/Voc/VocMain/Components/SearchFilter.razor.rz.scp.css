@@ -1,0 +1,74 @@
+
+
+.filter[b-y76zd9c9py] {
+    padding: var(--default-pd);
+    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.filter-wrap[b-y76zd9c9py] {
+    background-color: var(--default-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
+    min-height: 100%;
+    height: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    box-shadow: var(--shadow-1);
+}
+
+.header[b-y76zd9c9py] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
+}
+
+.title[b-y76zd9c9py] {
+    white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.content[b-y76zd9c9py]{
+    display :grid;
+    grid-template-columns : repeat(2, 1fr);
+    gap : var(--default-pd);
+}
+
+.filter-date[b-y76zd9c9py]{
+    display : flex;
+    flex-direction : column;
+
+}
+
+.filter-date .filter-date-title[b-y76zd9c9py]{
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.filter-date-content[b-y76zd9c9py]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.filter-date-item[b-y76zd9c9py]{
+    display : flex;
+    align-items :center;
+    gap : var(--one-q-pd);
+}
+
+.filter-date .label[b-y76zd9c9py] {
+    color: var(--main-color);
+
+}
+
+.none[b-y76zd9c9py]{
+    display : none;
+}

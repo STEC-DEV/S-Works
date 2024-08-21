@@ -6,101 +6,156 @@
                 민원 내역
             </span>
         </div>
-        <div class="vochistory-slider">
-            <DateSlider CreateDate="createdate" />
+        <div class="option">
+            @if (DefaultOption == 0)
+            {
+                <div class="vochistory-slider">
+                    <DateSlider CreateDate="createdate" OnChanged="OnSelectDate" />
+                </div>
+            }
+            <div class="option-page">
+                <Viewer OnChanged="OnChangeViewNum" />
+                <Pagenation TotalPage="@totalPage" CurrentPage="@currentPage" OnChanged="OnMovePage" />
+            </div>
+            
         </div>
+       
         <div class="vochistory-content">
-            <VocTable ListData=@ListData />
+            <VocTable ListData="filterData"/>
         </div>
     </div>
 </div>
 
 @code {
     [Parameter] public List<ListVocDTO> ListData { get; set; }
+    [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
+    [Parameter] public int DefaultOption { get; set; }
+    //사업장 생성일자 필요함
     public DateTime createdate = new DateTime(2023, 11, 4, 12, 0, 0, 0, 0);
+
     List<ListVocDTO> listvoc = new List<ListVocDTO>();
+    List<ListVocDTO> originalData = new List<ListVocDTO>();
+    List<ListVocDTO> filterData = new List<ListVocDTO>();
+    string curDate;
+    int viewNum;
+    private int currentPage = 1;
+    private int totalPage; //전체 페이지 수
+
+
+
 
     protected async override Task OnInitializedAsync()
     {
-        await OnLoadVocList();
+        DateTime date = DateTime.Now;
+        curDate = date.ToString("yyyy-M");
+        viewNum = 25;
+
     }
 
-    private async Task OnLoadVocList()
+    protected override async Task OnParametersSetAsync()
     {
-        // listvoc = new List<ListVocDTO>
-        // {
-        //     new ListVocDTO
-        //     {
-        //         Id =1,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 0,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =2,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 0,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =3,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 1,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =4,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 2,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =5,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 1,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =6,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 0,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        //     new ListVocDTO
-        //     {
-        //         Id =7,
-        //         Location = "A건물",
-        //         Type = 1,
-        //         Writer = "김권후",
-        //         Title = "3층 화장실 타일",
-        //         Status = 0,
-        //         Occur_DT = new DateTime(2024,5,11),
-        //     },
-        // };
+        if (DefaultOption == 0)
+        {
+            await MonthDecideData();
+        }
+        else
+        {
+
+        }
+
+
     }
 
+
+    //페이지 필터링
+    private async Task Paging()
+    {
+        Console.WriteLine("페이징 실행");
+        if (MonthListData == null || string.IsNullOrEmpty(curDate))
+        {
+            filterData.Clear();
+            return;
+        }
+        totalPage = (int)Math.Ceiling((double)originalData.Count / viewNum);
+        int skip = (currentPage -1) * viewNum;
+        filterData = originalData.Skip(skip).Take(viewNum).ToList();
+
+        Console.WriteLine("[페이징]데이터 수 : "+filterData.Count);
+        Console.WriteLine("[페이징]볼 데이터 수 : " + viewNum);
+        StateHasChanged();
+    }
+
+
+
+
+    //월별 필더링
+    private async Task MonthDecideData()
+    {
+        Console.WriteLine("실행됨");
+        if (MonthListData == null || string.IsNullOrEmpty(curDate))
+        {
+            return;
+        }
+
+        // curDate 값을 DateTime 형식으로 변환
+        int year = int.Parse(curDate.Substring(0, 4));
+        int month = int.Parse(curDate.Substring(4, 2));
+        DateTime selectedDate = new DateTime(year, month, 1);
+
+        var selectedMonth = MonthListData.FirstOrDefault(m => m.Dates == selectedDate.ToString("yyyy-M"));
+        Console.WriteLine(selectedMonth);
+        if (selectedMonth != null)
+        {
+            filterData = selectedMonth.VocList;
+            originalData = selectedMonth.VocList;
+        }
+        else
+        {
+            filterData.Clear();
+        }
+        StateHasChanged();
+        await Paging();
+    }
+
+    //현재 선택한 년월
+    private async Task OnSelectDate(string date)
+    {
+        Console.WriteLine("hh"+MonthListData.Count);
+        //202408, 202407 이런 형식으로 들고옴
+        curDate = date;
+        await MonthDecideData();
+    }
+
+
+    //viewr
+    private async Task OnChangeViewNum(int value)
+    {
+        Console.WriteLine(value);
+        viewNum = value;
+        currentPage = 1;
+        await Paging();
+    }
+
+
+    //페이지 이동 핸들링
+    private async Task OnMovePage(int num)
+    {
+        if (num == -2)
+        {
+            currentPage += 1;
+
+        }
+        else if(num == -1)
+        {
+            currentPage += num;
+        }
+        else
+        {
+            currentPage = num;
+        }
+        Console.WriteLine("현재 페이지"+currentPage);
+        await Paging();
+        StateHasChanged();
+    }
 
 }

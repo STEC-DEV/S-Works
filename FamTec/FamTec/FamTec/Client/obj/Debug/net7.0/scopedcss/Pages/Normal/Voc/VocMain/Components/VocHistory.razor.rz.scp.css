@@ -37,4 +37,15 @@
 .vochistory-container .vochistory-content[b-i7u2all02v]{
 }
 
+.vochistory-container .option[b-i7u2all02v]{
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+}
+
+.vochistory-container .option-page[b-i7u2all02v]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
 

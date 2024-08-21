@@ -1,0 +1,72 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
+
+
+<div class="filter-item">
+    <span class="title">
+        @Name
+    </span>
+    <ul class="items">
+        <li class="item">
+            
+            <input 
+                class="checkbox"
+                name="item"
+                type="checkbox"
+                checked="@OnAllSync()"
+                @onchange="e => OnAllSelectItem((bool)e.Value)" />
+            <span class="label">
+                전체
+            </span>
+        </li>
+        @foreach(var item in Items)
+        {
+            <li class="item">
+                
+                <input 
+                    class="checkbox"
+                    name="item"
+                    type="checkbox"
+                    checked="@item.IsChecked"
+                    @onchange="e => OnChange(item,(bool)e.Value)"
+                    />
+                <span class="label">
+                    @item.Name
+                </span>
+            </li>
+        }
+    </ul>
+    @* <Button Name="check" OnClick="OnAllSync" /> *@
+</div>
+
+@code {
+    [Parameter] public string Name { get; set; }
+    [Parameter] public List<FilterItem> Items { get; set; }
+    [Parameter] public EventCallback<List<int>> OnChage { get; set; }
+
+    //전체선택 시 일부해제 또는 일부선택으로 전체선택 동기화
+    private bool OnAllSync()
+    {
+        bool IsCheck = Items.All(i => i.IsChecked);
+
+        return IsCheck;
+    }
+
+    //일반선택
+    private void OnChange(FilterItem item, bool isChecked)
+    {
+        item.IsChecked = isChecked;
+        StateHasChanged();
+    }
+
+    //전체 선택
+    private void OnAllSelectItem(bool isChecked)
+    {
+        foreach (var item in Items)
+        {
+            item.IsChecked = isChecked;
+        }
+        StateHasChanged();
+    }
+
+}

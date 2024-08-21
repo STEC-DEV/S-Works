@@ -16,6 +16,7 @@
 
 @code {
     [Parameter] public DateTime CreateDate { get; set; }
+    [Parameter] public EventCallback<string> OnChanged { get; set; }
 
     private DateTime CurrentDate = DateTime.Now;
     private string currentDate;
@@ -29,9 +30,10 @@
     {
         currentDate = CurrentDate.ToString("yyyyMM");
         createDate = CreateDate.ToString("yyyyMM");
-        DisplayYear = CreateDate.ToString("yyyy");
-        DisplayMonth = CreateDate.ToString("MM");
-        DisplayDate = createDate; // 초기화
+        DisplayYear = CurrentDate.ToString("yyyy");
+        DisplayMonth = CurrentDate.ToString("MM");
+        DisplayDate = currentDate; // 초기화
+        OnChanged.InvokeAsync(DisplayDate);
     }
 
     private void OnUpdateDisplayDate()
@@ -45,8 +47,9 @@
         {
             DisplayMonth = DisplayMonth == "01" ? "12" : (int.Parse(DisplayMonth) - 1).ToString("00");
             DisplayYear = DisplayMonth == "12" ? (int.Parse(DisplayYear) - 1).ToString() : DisplayYear;
-            
+
             OnUpdateDisplayDate();
+            OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {
@@ -62,6 +65,7 @@
             DisplayYear = DisplayMonth == "01" ? (int.Parse(DisplayYear) + 1).ToString() : DisplayYear;
 
             OnUpdateDisplayDate();
+            OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {

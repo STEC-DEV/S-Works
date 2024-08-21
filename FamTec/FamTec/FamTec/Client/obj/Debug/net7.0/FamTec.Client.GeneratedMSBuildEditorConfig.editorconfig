@@ -494,9 +494,29 @@ build_metadata.AdditionalFiles.CssScope = b-prp9p1j9tr
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NEZXRhaWxcVm9jRGV0YWlsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-yy3bwhdjh0
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/CheckBoxVocType.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcQ2hlY2tCb3hWb2NUeXBlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-l2ti6qg0e0
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/DateSlider.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcRGF0ZVNsaWRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-4z1wntt3bs
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/InputDuration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcSW5wdXREdXJhdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-ypemx6a8xy
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/Pagenation.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcUGFnZW5hdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-vebw2pb2rq
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/SearchFilter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcU2VhcmNoRmlsdGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-y76zd9c9py
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/Viewer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcVmlld2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-e3l01sqxie
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/Components/VocHIstory.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcVm9jSElzdG9yeS5yYXpvcg==

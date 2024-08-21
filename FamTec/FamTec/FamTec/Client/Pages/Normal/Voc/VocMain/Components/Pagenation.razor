@@ -1,0 +1,38 @@
+﻿
+
+<div class="pagenation">
+    @if (CurrentPage != 1)
+    {
+        <label class="move" @onclick="()=>OnMove(-1)">
+            이전
+        </label>
+    }
+    <ul class="page-wrap">
+        @for(var i=1; i <= TotalPage; i++)
+        {
+            int pageNumber = i;
+            <li class="page" @onclick="()=>OnMove(pageNumber)">
+                @i
+            </li>
+        }
+    </ul>
+    @if (CurrentPage !=TotalPage)
+    {
+        <label class="move" @onclick="()=>OnMove(-2)">
+            다음
+        </label>
+    }
+    
+</div>
+
+@code {
+    [Parameter] public int TotalPage { get; set; }
+    [Parameter] public int CurrentPage { get; set; }
+    [Parameter] public EventCallback<int> OnChanged { get; set; }
+
+
+    private async Task OnMove(int num)
+    {
+        await OnChanged.InvokeAsync(num);
+    }
+}

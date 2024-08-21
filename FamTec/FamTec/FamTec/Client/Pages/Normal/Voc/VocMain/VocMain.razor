@@ -5,37 +5,51 @@
 
 <div class="voc-container yappear">
     <div class="condition-container">
-
+        <SearchFilter 
+            DefaultOption="@DefaultOption"
+            MonthListData="@MonthVocData"
+            OnDataChanged="OnDataChanged"
+            OnMonthDataChanged="OnMonthDataChanged"
+            OnSearchClicked="OnSearch"
+            ListData="@VocData"
+            />
     </div>
-    <div class="content-container">
-        <VocHIstory ListData="VocData" />
-    </div>
+    @if (IsSearch)
+    {
+        <div class="content-container">
+            <VocHIstory ListData="VocData" MonthListData="MonthVocData" DefaultOption=@DefaultOption />
+        </div>
+    }
 </div>
 
 @code {
     List<ListVocDTO> VocData = new List<ListVocDTO>();
+    List<MonthVocListDTO> MonthVocData = new List<MonthVocListDTO>();
+    int DefaultOption = 0;
+    bool IsSearch = false;
+
     protected override async Task OnInitializedAsync()
     {
-        await OnLoadVoc();
 
     }
 
-    private async Task OnLoadVoc()
+
+    private async Task OnMonthDataChanged(List<MonthVocListDTO> data)
     {
-        try
-        {
-            ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>("Voc/sign/GetVocList");
-            if(resGet.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "민원 조회 실패");
-            }
-            VocData = resGet.data;
+        MonthVocData = data;
+        StateHasChanged();
+    }
 
-        }catch(Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", "민원 조회 실패");
-        }
+    private async Task OnDataChanged(List<ListVocDTO> data)
+    {
+        VocData = data;
+        StateHasChanged();
     }
 
 
+    private async Task OnSearch()
+    {
+        IsSearch = true;
+        StateHasChanged();
+    }
 }

@@ -37,4 +37,15 @@
 .vochistory-container .vochistory-content{
 }
 
+.vochistory-container .option{
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+}
+
+.vochistory-container .option-page{
+    display : flex;
+    gap : var(--default-pd);
+}
+
 

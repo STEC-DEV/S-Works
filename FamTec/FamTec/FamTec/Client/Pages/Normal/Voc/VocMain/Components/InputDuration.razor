@@ -1,0 +1,39 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="duration">
+    <input 
+        class="dt"
+        type="date" 
+        max="@EndDT.ToString("yyyy-MM-dd")" 
+        @bind=StartDT 
+        @bind:after="UpdateDates" />
+    <span class="text"> ~ </span>
+    <input 
+        class="dt"
+        type="date" 
+        min="@StartDT.ToString("yyyy-MM-dd")" 
+        @bind=EndDT 
+        @bind:after="UpdateDates" />
+</div>
+
+@code {
+    [Parameter] public DateOnly StartDT { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    [Parameter] public DateOnly EndDT{ get; set; } = DateOnly.FromDateTime(DateTime.Today);
+
+    private DateOnly startDt = DateOnly.FromDateTime(DateTime.Today);
+    private DateOnly endDt = DateOnly.FromDateTime(DateTime.Today);
+
+    private void UpdateDates()
+    {
+        if (StartDT > EndDT)
+        {
+            EndDT = StartDT;
+        }
+    }
+
+    private void Check()
+    {
+        Console.WriteLine("시작" + StartDT);
+        Console.WriteLine("끝" + EndDT);
+    }
+}
