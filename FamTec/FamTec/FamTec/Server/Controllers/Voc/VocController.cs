@@ -90,7 +90,7 @@ namespace FamTec.Server.Controllers.Voc
                 //List<int> buildingid = new List<int>() { 1 };
 
                 if (HttpContext is null)
-                    return BadRequest();
+                   return BadRequest();
 
                 if (type is null)
                     return NoContent();
