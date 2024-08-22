@@ -17,7 +17,12 @@
     @if (IsSearch)
     {
         <div class="content-container">
-            <VocHIstory ListData="VocData" MonthListData="MonthVocData" DefaultOption=@DefaultOption />
+            <VocHIstory 
+                ListData="VocData" 
+                MonthListData="MonthVocData" 
+                DefaultOption=@DefaultOption 
+                IsLoading=@IsLoading
+                />
         </div>
     }
 </div>
@@ -25,8 +30,9 @@
 @code {
     List<ListVocDTO> VocData = new List<ListVocDTO>();
     List<MonthVocListDTO> MonthVocData = new List<MonthVocListDTO>();
-    int DefaultOption = 0;
+    int DefaultOption;
     bool IsSearch = false;
+    bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,22 +40,30 @@
     }
 
 
-    private async Task OnMonthDataChanged(List<MonthVocListDTO> data)
+    private async Task OnMonthDataChanged((List<MonthVocListDTO> data, int option) changed)
     {
-        MonthVocData = data;
+        Console.WriteLine("월간 1번");
+        MonthVocData = changed.data;
+        DefaultOption = changed.option;
+        IsLoading = false;
         StateHasChanged();
     }
 
-    private async Task OnDataChanged(List<ListVocDTO> data)
+    private async Task OnDataChanged((List<ListVocDTO> data, int option) changed)
     {
-        VocData = data;
+        Console.WriteLine("기간 1번");
+        VocData = changed.data;
+        DefaultOption = changed.option;
+        IsLoading = false;
         StateHasChanged();
     }
 
 
     private async Task OnSearch()
     {
+        
         IsSearch = true;
+        
         StateHasChanged();
     }
 }

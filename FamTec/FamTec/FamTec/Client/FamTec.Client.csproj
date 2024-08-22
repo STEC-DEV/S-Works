@@ -41,6 +41,7 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
     <Folder Include="Pages\Normal\Voc\VocCreate\" />
+    <Folder Include="wwwroot\css\open-iconic\NewFolder\" />
   </ItemGroup>
 
 </Project>

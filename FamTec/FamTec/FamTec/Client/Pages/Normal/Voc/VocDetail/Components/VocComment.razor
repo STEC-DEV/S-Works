@@ -18,20 +18,11 @@
     </div>
     <div class="voccomment-content">
         <div class="voccomment-overflow">
-            @* @if(AddComment)
-            {
-                <div class="yappear">
-                    <ProcessCard  />
-                </div>
-                
-            } *@
             @foreach(var comment in ListData)
             {
                 <ProcessCard Status="0" Data="@comment" />
             }
-            @* <ProcessCard Status="0" />
-            <ProcessCard Status="1" />
-            <ProcessCard Status="1" /> *@
+
             
         </div>
     </div>
@@ -39,7 +30,7 @@
     {
         <ModalBackground>
             <ChildComponent>
-                <AddModal CloseModal="@OnAddMode" />
+                <AddModal CloseModal="@OnAddMode" Id="@Id" OnChanged="OnUpdate" />
             </ChildComponent>
         </ModalBackground>
     }
@@ -47,8 +38,12 @@
 </div>
 
 @code {
+    [Parameter] public int Id {get;set;}
     [Parameter] public List<VocCommentListDTO> ListData { get; set; } 
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback OnLoadComment{ get; set; }
+    [Parameter] public EventCallback OnLoadInfo { get; set; }
+
     bool AddMode = false;
     bool AddComment = false;
     string WriterName;
@@ -64,8 +59,8 @@
 
 
     /*
-       * Session 조회
-       */
+    * Session 조회
+    */
     private async Task LoadsessionData()
     {
         var handler = new JwtSecurityTokenHandler();
@@ -81,6 +76,12 @@
 
         }
 
+    }
+
+    private async void OnUpdate()
+    {
+        await OnLoadComment.InvokeAsync();
+        await OnLoadInfo.InvokeAsync();
     }
 
     private void OnChangeEditMode()

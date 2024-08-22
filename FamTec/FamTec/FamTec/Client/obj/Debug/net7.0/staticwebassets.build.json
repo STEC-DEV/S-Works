@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nUIJRXNUVU5LoEC6YM8prnW3bIaLXPrH+2qUYqn3Yn8=",
+  "Hash": "mYlCAbPva+SVAPUPyKixnkAfahMXrkr4TTynhr0JRqA=",
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -10788,6 +10788,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\icon-192.png"
+    },
+    {
+      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\empty-box.png",
+      "SourceId": "FamTec.Client",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "img/empty-box.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\empty-box.png"
     },
     {
       "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\Stec_Logo.png",

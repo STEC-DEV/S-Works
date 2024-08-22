@@ -121,6 +121,10 @@
       "PackagePath": "staticwebassets\\img\\Stec_Logo.png"
     },
     {
+      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\empty-box.png",
+      "PackagePath": "staticwebassets\\img\\empty-box.png"
+    },
+    {
       "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\steclogo.png",
       "PackagePath": "staticwebassets\\img\\steclogo.png"
     },

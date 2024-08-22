@@ -48,4 +48,8 @@
     gap : var(--default-pd);
 }
 
+.vochistory-container .date-none{
+    display : none;
+}
+
 

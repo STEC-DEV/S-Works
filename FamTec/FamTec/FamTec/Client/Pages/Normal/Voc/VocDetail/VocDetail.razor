@@ -12,7 +12,13 @@
             <VocInfo Data="VocData" EditPerm=IsEditPerm/>
         </div>
         <div class="vocdetail-comment">
-            <VocComment ListData="@VocCommentData" EditMode=@IsEditCommnet/>
+            <VocComment 
+                Id="Id" 
+                ListData="@VocCommentData" 
+                EditMode=@IsEditCommnet
+                OnLoadComment="OnLoadVocComment"
+                OnLoadInfo="OnLoadVocDetail"
+                />
         </div>
     </div>
 </div>

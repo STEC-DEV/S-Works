@@ -1,13 +1,13 @@
 .table[b-on0bmwg9js] {
     border-collapse: separate;
     width: 100%;
-    /*table-layout: fixed;*/
+    table-layout: fixed;
     height: 100%;
 }
 
 .table .thead[b-on0bmwg9js]{
     background-color : var(--main-color);
-    position:sticky;
+    /*position:sticky;*/
     top:0;
     box-shadow: 0 8px 12px -2px #a1a1a1;
 }
@@ -46,7 +46,9 @@
 }
 
 .table .tbody[b-on0bmwg9js]{
-    overflow:auto;
+    /*min-height : 500px;
+    height : 300px;*/
+    /*overflow:auto;*/
 }
 
 .table .tbody-tr[b-on0bmwg9js]{

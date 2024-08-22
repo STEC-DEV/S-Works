@@ -26,7 +26,12 @@
                         <input type="radio" name="date" value=1 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==1)">
                         <span class="label">기간 설정</span>
                         <div class="@(selectDefaultOption != 1 ? "none" : "") ">
-                            <InputDuration StartDT="@startDt" EndDT="@endDt" />
+                            <InputDuration 
+                                StartDT="@startDt" 
+                                EndDT="@endDt" 
+                                StartDTChanged="@(newDate => startDt = newDate)"
+                                EndDTChanged="@(newDate => endDt = newDate)"
+                                />
                         </div>
                     </div>
                 </div>
@@ -43,13 +48,13 @@
     [Parameter] public int DefaultOption { get; set; }
     [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
     [Parameter] public List<ListVocDTO> ListData { get; set; }
-    [Parameter] public EventCallback<List<MonthVocListDTO>> OnMonthDataChanged { get; set; }
-    [Parameter] public EventCallback<List<ListVocDTO>> OnDataChanged { get; set; }
+    [Parameter] public EventCallback<(List<MonthVocListDTO>,int)> OnMonthDataChanged { get; set; }
+    [Parameter] public EventCallback<(List<ListVocDTO>,int)> OnDataChanged { get; set; }
     [Parameter] public EventCallback OnSearchClicked { get; set; } // 검색 버튼 이벤트
 
     private int selectDefaultOption = 0;
-    DateOnly startDt = DateOnly.FromDateTime(DateTime.Today);
-    DateOnly endDt = DateOnly.FromDateTime(DateTime.Today);
+    private DateTime startDt = DateTime.Now;
+    private DateTime endDt = DateTime.Now;
     List<int> types;
     List<int> status;
     List<int> location;
@@ -186,6 +191,8 @@
 
     private async Task OnRequest()
     {
+        Console.WriteLine("시작날짜" + startDt);
+        Console.WriteLine("끝날짜" + endDt);
         try
         {
             types = CheckDate(type);
@@ -212,24 +219,27 @@
                     return;
                 }
                 DefaultOption = 0;
-                await OnMonthDataChanged.InvokeAsync(resGet.data);                
+                await OnMonthDataChanged.InvokeAsync((resGet.data, 0));                
                 await OnSearchClicked.InvokeAsync();
             }
             //기간별 조회
             else
             {
-                ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"sign/GetVocList?StartDate={startDt}&EndDate={endDt}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+                // ResponseUnit<DateTime> resGet1 = await apiManager.GetUnitAsync<DateTime>($"Voc/sign/tempp?time={DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}");
+                Console.WriteLine(DateTime.Now);
+
+
+                ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"Voc/sign/GetVocFilterList?StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
                 if (resGet.code != 200)
                 {
                     await JS.InvokeVoidAsync("alert", "기간조회 실패");
                     return;
                 }
                 DefaultOption = 1;
-                await OnDataChanged.InvokeAsync(resGet.data);
+                await OnDataChanged.InvokeAsync((resGet.data,1));
                 await OnSearchClicked.InvokeAsync();
             }
 
-            Console.WriteLine(selectDefaultOption);
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
