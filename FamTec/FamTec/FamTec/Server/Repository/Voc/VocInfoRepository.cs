@@ -206,7 +206,8 @@ namespace FamTec.Server.Repository.Voc
                 List<VocTb>? VocList = await context.VocTbs
                     .Where(m => Type.Contains(m.Type) &&
                     status.Contains(m.Status) && 
-                    BuildingID.Contains(m.BuildingTbId))
+                    BuildingID.Contains(m.BuildingTbId) &&
+                    m.CreateDt >= StartDate && m.CreateDt <= EndDate)
                     .ToListAsync();
 
                 if (VocList is [_, ..])

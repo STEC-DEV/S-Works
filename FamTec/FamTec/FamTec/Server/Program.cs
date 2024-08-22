@@ -65,6 +65,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
+using Microsoft.AspNetCore.HttpOverrides;
 
 
 
@@ -289,6 +290,14 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 var app = builder.Build();
 //app.UseHttpsRedirection();
+
+#region 역방향 프록시 서버 사용
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+#endregion
 
 #region CORS 사용
 app.UseCors();
