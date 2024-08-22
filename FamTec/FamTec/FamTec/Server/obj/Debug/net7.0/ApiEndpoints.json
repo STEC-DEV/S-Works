@@ -4576,6 +4576,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetTemp",
+    "RelativePath": "api/Voc/sign/tempp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "time",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "UpdateVocType",
     "RelativePath": "api/Voc/sign/UpdateVocType",
     "HttpMethod": "PUT",

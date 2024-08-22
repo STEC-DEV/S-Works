@@ -66,15 +66,20 @@ using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+string? Http = builder.Configuration["Kestrel:Endpoints:Http:Url"]; // HTTP
+string? Https = builder.Configuration["Kestrel:Endpoints:Https:Url"]; // HTTPS
+
 #region Kestrel 서버
 builder.WebHost.UseKestrel((context, options) =>
 {
     options.Configure(context.Configuration.GetSection("Kestrel"));
+    //options.Configure(context.Configuration.GetSection("Kestrel"));
     // Keep-Alive TimeOut 3분설정 Keep-Alive 타임아웃: 일반적으로 2~5분. 너무 짧으면 연결이 자주 끊어질 수 있고, 너무 길면 리소스가 낭비될 수 있음.
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(3);
     // 최대 동시 업그레이드 연결 수:  일반적으로 1000 ~ 5000 사이로 설정하는 것이 좋음
@@ -190,8 +195,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = "https://localhost:5245/",
-        ValidIssuer = "https://localhost:5245/",
+        ValidAudience = "https://sws.s-tec.co.kr/",
+        ValidIssuer = "https://sws.s-tec.co.kr/",
+        //ValidAudience = "https://localhost:5245/",
+        //ValidIssuer = "https://localhost:5245/",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:authSigningKey"]!))
     };
 });

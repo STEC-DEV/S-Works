@@ -195,7 +195,9 @@ namespace FamTec.Server.Services.Voc.Hub
                             byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
                             string base64 = Convert.ToBase64String(bytes);
 
-                            string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+                            /* 테스트 */
+                            //string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+                            string url = $"https://sws.s-tec.co.kr/vocinfo?vocid={base64}";
 
                             // 카카오 API 전송
                             // 보낸 USER 휴대폰번호에 전송.

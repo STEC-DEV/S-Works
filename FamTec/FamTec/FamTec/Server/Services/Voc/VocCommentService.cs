@@ -301,7 +301,7 @@ namespace FamTec.Server.Services.Voc
                         dto.Add(dtoModel);
                     }
 
-                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto.OrderByDescending(m => m.CreateDT).ToList(), code = 200 };
                 }
                 else
                 {

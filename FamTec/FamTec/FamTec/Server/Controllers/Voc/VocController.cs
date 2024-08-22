@@ -67,6 +67,16 @@ namespace FamTec.Server.Controllers.Voc
             }
         }
 
+        //2024-08-22 06:12:00
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/tempp")]
+        public async ValueTask<IActionResult> GetTemp([FromQuery]DateTime time)
+        {
+            var temp = time.GetDateTimeFormats();
+            return Ok(time.GetDateTimeFormats());
+        }
+
         /// <summary>
         /// 사업장 민원 필터 전체보기 - 직원용 (기간)
         /// </summary>

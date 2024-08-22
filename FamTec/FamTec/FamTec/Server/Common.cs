@@ -64,7 +64,7 @@
         /// 카카오톡 알림톡 발신번호
         ///  * 알리고에 등록된 발신번호만 등록가능
         /// </summary>
-        public static readonly string KakaoSenders = "01091189308";
+        public static readonly string KakaoSenders = "15770722";
 
         /// <summary>
         /// 카카오톡 알림톡 발신자 Key
