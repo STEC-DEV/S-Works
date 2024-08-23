@@ -11,7 +11,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Location
         /// <summary>
         /// 층 인덱스
         /// </summary>
-        public int? FloorId { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 층 명

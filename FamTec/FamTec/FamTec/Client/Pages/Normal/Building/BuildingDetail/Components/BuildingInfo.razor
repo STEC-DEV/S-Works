@@ -46,6 +46,12 @@
         ConvertToImageUrl();
     }
 
+    // protected override Task OnParametersSetAsync()
+    // {
+        
+    //     return base.OnParametersSetAsync();
+    // }
+
 
     //최초 건물객체가 가지고 있는 이미지 로드
     private void ConvertToImageUrl()
@@ -91,7 +97,7 @@
             await OnLoad.InvokeAsync();
             OnEditMode();
             OriginalImage = new List<string>(EditImage);
-            
+
             
             StateHasChanged();
         }catch(Exception ex)

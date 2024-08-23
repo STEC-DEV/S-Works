@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
 @using FamTec.Shared.Client.DTO.Normal.Location
 
 
@@ -13,14 +14,29 @@
             <FloorList Buildings=@ListData />
         </div>
         <div class="floor-btns">
-            <Button Name="편집" Type="0"/>
+            <Button 
+                Name="편집" 
+                Type="0" 
+                OnClick=OnEdit />
         </div>
     </div>
+    @if (_editMode)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <AddFloor
+                    OnClose="OnEdit"
+                    />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
 </div>
 
 @code {
     [Parameter] public List<BuildingFloorListDTO> ListData { get; set; }
 
+    private bool _editMode = false;
 
     private List<BuildingDTO> Buildings = new List<BuildingDTO>
     {
@@ -51,4 +67,10 @@
             }
         },
     };
+
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
+    }
+
 }

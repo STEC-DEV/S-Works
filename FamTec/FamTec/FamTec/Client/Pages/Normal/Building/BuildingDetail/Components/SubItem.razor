@@ -4,15 +4,15 @@
 
 
 <div class="item-container">
-    <div class="item-wrap" @onclick=@OnItemEdit>
+    <div class="item-wrap" >
         @if (EditMode)
         {
             <input type="checkbox" />
         }
-        <label class="item-label">
+        <label class="item-label" @onclick=@OnItemEdit>
             @item.ItemKey
         </label>
-        <div class="item-values">
+        <div class="item-values" @onclick=@OnItemEdit>
             @foreach (var i in item.valueList)
             {
                 <span class="value">

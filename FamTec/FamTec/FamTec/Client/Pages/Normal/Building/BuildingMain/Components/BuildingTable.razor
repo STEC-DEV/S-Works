@@ -78,7 +78,10 @@
                     <td class="td">
                     </td>
                     <td class="td text-right">
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox" 
+                            checked="@checkedItems.Contains(id)"
+                            @onchange="(e)=>OnChecked(e,id)" />
                     </td>
                 </tr>
             }
@@ -89,10 +92,36 @@
 
 @code {
     [Parameter] public List<BuildingListDTO>  ListData { get; set; }
+    [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
+
     private DateTime currentDateTime = DateTime.Now;
+    private HashSet<int> checkedItems = new HashSet<int>();
+
 
     private void OnDetail(int id)
     {
         Navigation.NavigateTo($"/basic/buildings/{id}");
     }
+
+    private async Task OnChecked(ChangeEventArgs e, int id)
+    {
+
+        bool isChecked = (bool)e.Value;
+        if (isChecked)
+        {
+            checkedItems.Add(id);
+        }
+        else
+        {
+            checkedItems.Remove(id);
+        }
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
+    }
+
+    public void ResetChecks()
+    {
+        checkedItems.Clear();
+        StateHasChanged();
+    }
+
 }

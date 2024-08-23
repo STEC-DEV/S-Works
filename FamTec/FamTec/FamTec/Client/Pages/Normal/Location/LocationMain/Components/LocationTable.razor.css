@@ -76,3 +76,17 @@
 .location-table .text-right{
     text-align : right;
 }
+
+.location-table .input{
+    outline : none;
+    padding : var(--default-pd);
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    transition : all .3s;
+}
+
+
+
+.location-table .input:hover, .location-table .input:focus{
+    border : var(--default-bd);
+}

@@ -12,11 +12,15 @@
             </span>
             <div class="btns">
                 <Button Name="추가" Width=true Type=0 OnClick="@OnMoveAdd" />
-                <Button Name="삭제" Width=true Type=1 />
+                <Button Name="삭제" Width=true Type=1 OnClick="OnDeleteBuilding" />
             </div>
         </div>
         <div class="building-contents">
-            <BuildingTable ListData="@BuildingList" />
+            <BuildingTable 
+                @ref="@buildingTable"
+                ListData="@BuildingList" 
+                OnCheck="OnCheckBuilding"
+                />
         </div>
     </div>
 </div>
@@ -24,11 +28,13 @@
 
 @code {
     List<BuildingListDTO> BuildingList;
-
+    List<int> DelList = new List<int>();
+    private BuildingTable buildingTable;
 
     protected override async Task OnInitializedAsync()
     {
         await OnLoadBuilding();
+
     }
 
     private async Task OnLoadBuilding()
@@ -39,12 +45,47 @@
             await JS.InvokeVoidAsync("alert", "건물 조회 실패");
         }
         BuildingList = resGet.data;
-
+        DelList.Clear();
+        buildingTable.ResetChecks();
     }
 
 
     private void OnMoveAdd()
     {
         Navigation.NavigateTo("/basic/buildings/add");
+    }
+
+
+    private async Task OnDeleteBuilding()
+    {
+        try
+        {
+            //Put으로 변경해야함
+            ResponseUnit<bool> resDelete = await apiManager.PutAsync<bool>("Building/sign/DeleteBuilding", DelList);
+            if(resDelete.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제 불가 건물이 존재합니다.");
+                return;
+            }
+            await OnLoadBuilding();
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert","삭제실패");
+        }
+    }
+
+
+    //리스트 체크 반환
+    private void OnCheckBuilding((bool isCheck, int buildingId)data)
+    {
+        if (data.isCheck)
+        {
+            DelList.Add(data.buildingId);
+        }
+        else
+        {
+            DelList.Remove(data.buildingId);
+        }
     }
 }

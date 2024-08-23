@@ -42,18 +42,33 @@
 </ul>
 
 @code {
+    [Parameter] public string Key { get; set; }
     [Parameter] public List<T> SelectData { get; set; }
     [Parameter] public int Value{ get; set; }
     [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
     [Parameter] public bool EditMode {get;set;}
 
 
-    public string SelectName { get; set; }
+    public string SelectName = "Select";
     public bool IsActive { get; set; } = false;
+
+
+    protected override Task OnParametersSetAsync()
+    {        
+
+        return base.OnParametersSetAsync();
+    }
+
+    public void Reset()
+    {
+        SelectName = "Select";
+        StateHasChanged();
+    }
 
     //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
     public void OnSelectRow(object row)
     {
+        
         if(row == null)
         {
             SelectName = "Select";
@@ -61,7 +76,7 @@
             OnActive();
             return;
         }
-        int id = (int)row.GetType().GetProperty("BuildingId").GetValue(row);
+        int id = (int)row.GetType().GetProperty("Id").GetValue(row);
         SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
 
         OnChange.InvokeAsync(id);

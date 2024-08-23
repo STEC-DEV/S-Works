@@ -76,3 +76,17 @@
 .location-table .text-right[b-quwuwxajie]{
     text-align : right;
 }
+
+.location-table .input[b-quwuwxajie]{
+    outline : none;
+    padding : var(--default-pd);
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    transition : all .3s;
+}
+
+
+
+.location-table .input:hover[b-quwuwxajie], .location-table .input:focus[b-quwuwxajie]{
+    border : var(--default-bd);
+}
