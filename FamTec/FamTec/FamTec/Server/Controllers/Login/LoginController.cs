@@ -6,6 +6,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -64,6 +65,13 @@ namespace FamTec.Server.Controllers.Login
             }
         }
 
+        
+        [HttpGet]
+        [Route("temp")]
+        public async ValueTask<IActionResult> Temp()
+        {
+            return Ok("OK");
+        }
 
         /// <summary>
         /// 로그인 API - 모든사람 접근가능

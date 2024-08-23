@@ -971,7 +971,7 @@
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "DeleteBuilding",
     "RelativePath": "api/Building/sign/DeleteBuilding",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -2827,6 +2827,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "Temp",
+    "RelativePath": "api/Login/temp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

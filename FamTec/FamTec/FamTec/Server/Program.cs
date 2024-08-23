@@ -60,13 +60,11 @@ using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Server.Services.Alarm;
-using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
 
 
 
@@ -228,6 +226,7 @@ builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 
 #region SIGNAL R CORS 등록
 
+
 #if DEBUG
 // 개발용
 builder.Services.AddCors(opts =>
@@ -243,27 +242,22 @@ builder.Services.AddCors(opts =>
 });
 #else
 // 배포용
-string? HostUrl = builder.Configuration["Kestrel:Endpoints:Http:Url"];
-if (!String.IsNullOrWhiteSpace(HostUrl))
+var MyAllowSpectificOrigins = "MyPolicy";
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddCors(opts =>
-    {
-        opts.AddDefaultPolicy(policy =>
-        {
-            policy.WithOrigins(HostUrl)
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .SetIsOriginAllowed((host) => true);
-        });
-    });
-}
-else
-{
-    // 예외를 던져 프로그램이 시작되지 않도록 함.
-    throw new InvalidOperationException("HostUrl is null or empty.");
-}
+    options.AddPolicy(name: MyAllowSpectificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://123.2.156.229:5245")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .WithMethods("PUT", "DELETE", "GET", "POST")
+                          .AllowCredentials();
+                      });
+
+});
 #endif
+
 
 builder.Services.AddResponseCompression(opts =>
 {
@@ -306,9 +300,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 #endregion
 
-#region CORS 사용
-app.UseCors();
-#endregion
+
 
 #region SIGNALR HUB 사용
 app.UseResponseCompression();
@@ -328,10 +320,20 @@ else
     app.UseHttpsRedirection(); // 위치변경
 }
 
+
+
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+#region CORS 사용
+#if DEBUG
+app.UseCors();
+#else
+app.UseCors(MyAllowSpectificOrigins);
+#endif
+#endregion
 
 #region MiddleWare
 
@@ -374,6 +376,8 @@ string[]? userPaths = new string[]
     "/api/KakaoLog/sign"
 };
 
+
+
 foreach (var path in adminPaths)
 {
     app.UseWhen(context => context.Request.Path.StartsWithSegments(path), appBuilder =>
@@ -398,6 +402,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+/*
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+*/
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

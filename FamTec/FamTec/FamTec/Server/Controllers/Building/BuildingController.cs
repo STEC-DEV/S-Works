@@ -265,7 +265,7 @@ namespace FamTec.Server.Controllers.Building
 
         // 건물 삭제
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteBuilding")]
         public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
