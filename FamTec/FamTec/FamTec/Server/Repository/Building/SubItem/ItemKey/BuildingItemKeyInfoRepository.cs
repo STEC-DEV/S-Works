@@ -282,6 +282,65 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         }
 
         /// <summary>
+        /// 그룹 KEY 리스트 삭제 - Value 까지 삭제됨
+        /// </summary>
+        /// <param name="KeyList"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach(int KeyId in KeyList)
+                    {
+                        BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs.FirstOrDefaultAsync(m => m.Id == KeyId && m.DelYn != true);
+                        if (KeyTB is null)
+                            return null;
+
+                        KeyTB.DelDt = DateTime.Now;
+                        KeyTB.DelUser = deleter;
+                        KeyTB.DelYn = true;
+
+                        context.BuildingItemKeyTbs.Update(KeyTB);
+
+                        List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyTB.Id && m.DelYn != true).ToListAsync();
+                        if(ValueList is [_, ..])
+                        {
+                            foreach(BuildingItemValueTb ValueTB in ValueList)
+                            {
+                                ValueTB.DelDt = DateTime.Now;
+                                ValueTB.DelUser = deleter;
+                                ValueTB.DelYn = true;
+
+                                context.BuildingItemValueTbs.Update(ValueTB);
+                            }
+                        }
+                    }
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+
+                    if (DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+
+        /// <summary>
         /// 넘어온 GroupItemId에 포함되어있는 KeyTb 반환
         /// </summary>
         /// <param name="KeyId"></param>
@@ -333,6 +392,6 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
             }
         }
 
-    
+   
     }
 }

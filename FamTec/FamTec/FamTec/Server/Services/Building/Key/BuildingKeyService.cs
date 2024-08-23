@@ -150,6 +150,39 @@ namespace FamTec.Server.Services.Building.Key
             }
         }
 
+        public async ValueTask<ResponseUnit<bool?>> DeleteKeyListService(HttpContext context, List<int> KeyId)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                
+                string? creater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(creater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                bool? DeleteResult = await BuildingItemKeyInfoRepository.DeleteKeyList(KeyId, creater);
+
+                if(DeleteResult == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다", data = true, code = 200 };
+                }
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         public async ValueTask<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId)
         {
             try

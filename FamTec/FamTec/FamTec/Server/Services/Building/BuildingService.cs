@@ -689,7 +689,7 @@ namespace FamTec.Server.Services.Building
                     foreach(BuildingTb Building in buildinglist)
                     {
                         PlaceBuildingListDTO buidlingDTO = new PlaceBuildingListDTO();
-                        buidlingDTO.BuildingId = Building.Id; // 건물ID
+                        buidlingDTO.Id = Building.Id; // 건물ID
                         buidlingDTO.Name = Building.Name; // 건물명
 
                         List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id);
@@ -699,7 +699,7 @@ namespace FamTec.Server.Services.Building
                             {
                                 buidlingDTO.FloorList.Add(new BuildingFloor
                                 {
-                                    FloorId = Floor.Id,
+                                    Id = Floor.Id,
                                     Name = Floor.Name
                                 });
                             }

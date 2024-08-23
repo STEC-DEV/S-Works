@@ -356,19 +356,19 @@ string[]? userPaths = new string[]
     "/api/Material/sign", // Material 컨트롤러 미들웨어 추가
     "/api/VocComment/sign", // VocComment 컨트롤러 미들웨어 추가
     "/api/BuildingGroup/sign", // BuildingGroup 컨트롤러 미들웨어 추가
-    "/api/BuildingGroupKey/sign",
-    "/api/BuildingGroupValue/sign",
-    "/api/MachineFacility/sign",
-    "/api/ElectronicFacility/sign",
-    "/api/LiftFacility/sign",
-    "/api/FireFacility/sign",
-    "/api/ConstructFacility/sign",
-    "/api/NetworkFacility/sign",
-    "/api/BeautyFacility/sign",
-    "/api/SecurityFacility/sign",
-    "/api/FacilityGroup/sign",
-    "/api/FacilityGroupKey/sign",
-    "/api/FacilityGroupValue/sign",
+    "/api/BuildingGroupKey/sign", // BuildingGroupKey 컨트롤러 미들웨어 추가
+    "/api/BuildingGroupValue/sign", // BuildingGroupValue 컨트롤러 미들웨어 추가
+    "/api/MachineFacility/sign", // 기계설비 컨트롤러 미들웨어 추가
+    "/api/ElectronicFacility/sign", // 전기설비 컨트롤러 미들웨어 추가
+    "/api/LiftFacility/sign", // 승강설비 컨트롤러 미들웨어 추가
+    "/api/FireFacility/sign", // 소방설비 컨트롤러 미들웨어 추가
+    "/api/ConstructFacility/sign", // 건축설비 컨트롤러 미들웨어 추가
+    "/api/NetworkFacility/sign", // 통신설비 컨트롤러 미들웨어 추가
+    "/api/BeautyFacility/sign", // 미화설비 컨트롤러 미들웨어 추가
+    "/api/SecurityFacility/sign", // 보안설비 컨트롤러 미들웨어 추가
+    "/api/FacilityGroup/sign", // 설비그룹 컨트롤러 미들웨어 추가
+    "/api/FacilityGroupKey/sign", // 설비그룹 Key 컨트롤러 미들에어 추가
+    "/api/FacilityGroupValue/sign", // 설비그룹 Value 컨트롤러 미들웨어 추가
     "/api/Store/sign",
     "/api/Maintenance/sign",
     "/api/Alarm/sign",

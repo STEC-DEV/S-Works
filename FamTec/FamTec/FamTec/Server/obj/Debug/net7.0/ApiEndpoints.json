@@ -1431,14 +1431,30 @@
     "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
     "Method": "DeleteGroupKey",
     "RelativePath": "api/BuildingGroupKey/sign/DeleteKey",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "keyid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.Group.BuildingGroupKeyController",
+    "Method": "DeleteGroupKeyList",
+    "RelativePath": "api/BuildingGroupKey/sign/DeleteKeyList",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keylist",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -2093,14 +2109,30 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupKeyController",
     "Method": "DeleteGroupKey",
     "RelativePath": "api/FacilityGroupKey/sign/DeleteKey",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "keyid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupKeyController",
+    "Method": "DeleteGroupKeyList",
+    "RelativePath": "api/FacilityGroupKey/sign/DeleteKeyList",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keylist",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -2141,14 +2173,14 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupValueController",
     "Method": "DeleteGroupValue",
     "RelativePath": "api/FacilityGroupValue/sign/DeleteValue",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "valueid",
         "Type": "System.Int32",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

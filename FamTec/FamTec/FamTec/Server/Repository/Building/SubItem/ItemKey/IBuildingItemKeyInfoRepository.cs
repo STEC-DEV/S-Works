@@ -49,6 +49,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         ValueTask<bool?> DeleteKeyInfo(BuildingItemKeyTb model);
 
         /// <summary>
+        /// 그룹 KEY 리스트 삭제 - Value 까지 삭제됨
+        /// </summary>
+        /// <param name="KeyList"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter);
+
+        /// <summary>
         /// 넘어온 GroupItemId에 포함되어있는 KeyTb 반환
         /// </summary>
         /// <param name="KeyId"></param>

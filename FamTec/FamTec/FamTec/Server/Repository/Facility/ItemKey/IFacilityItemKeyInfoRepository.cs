@@ -47,6 +47,14 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// <param name="model"></param>
         /// <returns></returns>
         ValueTask<bool?> DeleteKeyInfo(FacilityItemKeyTb model);
-        
+
+        /// <summary>
+        /// Key List삭제 - Value까지
+        /// </summary>
+        /// <param name="KeyList"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter);
+
     }
 }

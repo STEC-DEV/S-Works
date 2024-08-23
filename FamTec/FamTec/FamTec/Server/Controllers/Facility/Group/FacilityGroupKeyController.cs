@@ -1,4 +1,6 @@
-﻿using FamTec.Server.Services;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using FamTec.Client.Pages.Admin.Manager.ManagerDetail.Components;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Key;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
@@ -117,9 +119,41 @@ namespace FamTec.Server.Controllers.Facility.Group
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
+        [Route("sign/DeleteKeyList")]
+        public async ValueTask<IActionResult> DeleteGroupKeyList([FromQuery]List<int> keylist)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (keylist is null)
+                    return NoContent();
+                if(keylist.Count() == 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(HttpContext, keylist);
+                
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut]
         [Route("sign/DeleteKey")]
-        public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
+        public async ValueTask<IActionResult> DeleteGroupKey([FromQuery]int keyid)
         {
             try
             {

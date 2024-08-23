@@ -30,5 +30,12 @@ namespace FamTec.Server.Services.Building.Key
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId);
 
+        /// <summary>
+        /// 키 List - Value 삭제 리스트 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="KeyId"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> DeleteKeyListService(HttpContext context, List<int> KeyId);
     }
 }

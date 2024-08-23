@@ -278,6 +278,62 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             }
         }
 
-      
+        /// <summary>
+        /// 그룹 Key 리스트 삭제 - Value 까지 삭제됨
+        /// </summary>
+        /// <param name="KeyList"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    foreach (int KeyId in KeyList)
+                    {
+                        FacilityItemKeyTb? KeyTB = await context.FacilityItemKeyTbs.FirstOrDefaultAsync(m => m.Id == KeyId && m.DelYn != true);
+                        if (KeyTB is null)
+                            return null;
+
+                        KeyTB.DelDt = DateTime.Now;
+                        KeyTB.DelUser = deleter;
+                        KeyTB.DelYn = true;
+
+                        context.FacilityItemKeyTbs.Update(KeyTB);
+
+                        List<FacilityItemValueTb>? ValueList = await context.FacilityItemValueTbs.Where(m => m.Id == KeyTB.Id && m.DelYn != true).ToListAsync();
+                        if (ValueList is [_, ..])
+                        {
+                            foreach(FacilityItemValueTb ValueTB in ValueList)
+                            {
+                                ValueTB.DelDt = DateTime.Now;
+                                ValueTB.DelUser = deleter;
+                                ValueTB.DelYn = true;
+
+                                context.FacilityItemValueTbs.Update(ValueTB);
+                            }
+                        }
+                    }
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
     }
 }

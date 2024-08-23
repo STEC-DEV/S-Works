@@ -141,15 +141,46 @@ namespace FamTec.Server.Controllers.Building.Group
             }
         }
 
+        [AllowAnonymous]
+        [HttpPut]
+        [Route("sign/DeleteKeyList")]
+        public async ValueTask<IActionResult> DeleteGroupKeyList([FromQuery]List<int> keylist)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+                if (keylist is null)
+                    return NoContent();
+                if (keylist.Count() == 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(HttpContext, keylist);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 키 삭제
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteKey")]
-        public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
+        public async ValueTask<IActionResult> DeleteGroupKey([FromQuery]int keyid)
         {
             try
             {
