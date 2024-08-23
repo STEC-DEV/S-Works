@@ -67,7 +67,6 @@ using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
 
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 string? Http = builder.Configuration["Kestrel:Endpoints:Http:Url"]; // HTTP

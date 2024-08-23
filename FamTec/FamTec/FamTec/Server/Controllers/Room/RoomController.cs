@@ -133,7 +133,7 @@ namespace FamTec.Server.Controllers.Room
         /// <param name="idx"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteRoom")]
         public async ValueTask<IActionResult> DeleteRoom([FromBody]List<int> idx)
         {
