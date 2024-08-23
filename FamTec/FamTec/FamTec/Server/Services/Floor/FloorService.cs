@@ -186,7 +186,7 @@ namespace FamTec.Server.Services.Floor
                     List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(del[i]);
 
                     if (roomtb is [_, ..])
-                        return new ResponseUnit<bool?>() { message = "해당 층에 속한 공간정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "해당 층에 속한 공간정보가 있어 삭제가 불가능합니다.", data = null, code = 201 };
                 }
 
                 bool? DeleteResult = await FloorInfoRepository.DeleteFloorInfo(del, creater);
