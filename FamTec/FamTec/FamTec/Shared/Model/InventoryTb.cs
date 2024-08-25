@@ -48,7 +48,11 @@ public partial class InventoryTb
 
     [Column(TypeName = "datetime")]
     public DateTime? TimeStamp { get; set; }
-
+    
+    /// <summary>
+    /// 동시성 충돌체크 토큰
+    /// </summary>
+    [ConcurrencyCheck]
     [StringLength(255)]
     public string? Occupant { get; set; }
 

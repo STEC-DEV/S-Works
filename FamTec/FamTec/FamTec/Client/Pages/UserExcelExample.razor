@@ -41,6 +41,8 @@
         workbook.SaveAs(XLSStream, false);
         byte[] byteData = XLSStream.ToArray();
 
+       
+
         await JS.InvokeAsync<object>("saveAsFile", "사용자정보.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
     }
 
