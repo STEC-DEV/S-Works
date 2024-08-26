@@ -31,7 +31,7 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteUnitInfo(UnitTb model);
+        ValueTask<bool?> DeleteUnitInfo(List<int> idx, string deleter);
 
         /// <summary>
         /// 단위정보 수정

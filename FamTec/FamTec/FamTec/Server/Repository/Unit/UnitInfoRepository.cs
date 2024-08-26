@@ -103,18 +103,47 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteUnitInfo(UnitTb model)
+        public async ValueTask<bool?> DeleteUnitInfo(List<int> idx, string deleter)
         {
-            try
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                context.UnitTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                try
+                {
+                    foreach(int unitid in idx) 
+                    {
+                        UnitTb? UserModel = await context.UnitTbs.FirstOrDefaultAsync(m => m.Id == unitid && m.DelYn != true);
+
+                        if (UserModel is null)
+                            return null;
+
+                        UserModel.DelDt = DateTime.Now;
+                        UserModel.DelUser = deleter;
+                        UserModel.DelYn = true;
+
+                        context.UnitTbs.Update(UserModel);
+                    }
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
             }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
+               
         }
 
         /// <summary>

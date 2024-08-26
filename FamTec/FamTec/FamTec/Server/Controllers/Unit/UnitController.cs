@@ -87,16 +87,22 @@ namespace FamTec.Server.Controllers.Unit
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteUnitInfo")]
-        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody] int unitid)
+        public async ValueTask<IActionResult> DeleteUnitInfo([FromQuery] List<int> unitid)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<string?> model = await UnitService.DeleteUnitService(HttpContext, unitid);
+                if (unitid is null)
+                    return NoContent();
+
+                if (unitid.Count == 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await UnitService.DeleteUnitService(HttpContext, unitid);
                 if (model is null)
                     return BadRequest();
 

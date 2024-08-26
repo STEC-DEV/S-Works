@@ -73,7 +73,7 @@ namespace FamTec.Server.Repository.Maintenence
                     MaintenenceHistory.UpdateUser = creater; // 수정자
                     MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; // 설비 ID
 
-                    context.MaintenenceHistoryTbs.Add(MaintenenceHistory);
+                    await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
                     bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; // 저장
 
                     if (!AddHistoryResult)
@@ -132,7 +132,6 @@ namespace FamTec.Server.Repository.Maintenence
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
                                         }
-
                                         context.Update(OutInventoryTb);
                                     }
                                     else
@@ -182,7 +181,7 @@ namespace FamTec.Server.Repository.Maintenence
                         store.PlaceTbId = placeid;
                         store.MaintenenceHistoryTbId = MaintenenceHistory.Id;
 
-                        context.StoreTbs.Add(store);
+                        await context.StoreTbs.AddAsync(store);
                     }
 
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;

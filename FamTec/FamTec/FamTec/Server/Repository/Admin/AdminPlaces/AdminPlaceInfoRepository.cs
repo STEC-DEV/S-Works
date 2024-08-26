@@ -1,5 +1,4 @@
-﻿using FamTec.Client.Pages.Admin.Manager.ManagerMain.Components;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Admin;
@@ -34,7 +33,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     foreach(AdminPlaceTb AdminPlaceTB in model)
                     {
-                        context.AdminPlaceTbs.Add(AdminPlaceTB);
+                        await context.AdminPlaceTbs.AddAsync(AdminPlaceTB);
                     }
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;

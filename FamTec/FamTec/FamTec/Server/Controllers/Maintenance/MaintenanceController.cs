@@ -28,52 +28,52 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddMaintenance")]
-        public async ValueTask<IActionResult> AddMaintenence()
-        //public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintanceDTO dto)
+        //public async ValueTask<IActionResult> AddMaintenence()
+        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintanceDTO dto)
         {
             try
             {
-                AddMaintanceDTO dto = new AddMaintanceDTO();
-                dto.Name = "유지보수이력_1";
-                dto.Type = 0;
-                dto.Worker = "테스트";
-                dto.UnitPrice = 500;
-                dto.Num = 30;
-                dto.TotalPrice = 30 * 500;
-                dto.FacilityID = 1;
-
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 10,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 2,
-                        Num = 10,
-                        UnitPrice = 100,
-                        TotalPrice = 10 * 100,
-                        Note = "출고등록"
-                    }
-                });
-
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 11,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 3,
-                        Num = 3,
-                        UnitPrice = 200,
-                        TotalPrice = 3 * 200,
-                        Note = "출고등록"
-                    }
-                });
+                //AddMaintanceDTO dto = new AddMaintanceDTO();
+                //dto.Name = "유지보수이력_1";
+                //dto.Type = 0;
+                //dto.Worker = "테스트";
+                //dto.UnitPrice = 500;
+                //dto.Num = 30;
+                //dto.TotalPrice = 30 * 500;
+                //dto.FacilityID = 1;
+                //
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 10,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 2,
+                //        Num = 10,
+                //        UnitPrice = 100,
+                //        TotalPrice = 10 * 100,
+                //        Note = "출고등록"
+                //    }
+                //});
+                //
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 11,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 3,
+                //        Num = 3,
+                //        UnitPrice = 200,
+                //        TotalPrice = 3 * 200,
+                //        Note = "출고등록"
+                //    }
+                //});
 
                 if (HttpContext is null)
                     return BadRequest();

@@ -23,7 +23,7 @@ namespace FamTec.Server.Services.Unit
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext context, int unitid);
+        public ValueTask<ResponseUnit<bool?>> DeleteUnitService(HttpContext context, List<int> unitid);
 
         /// <summary>
         /// 단위정보 수정

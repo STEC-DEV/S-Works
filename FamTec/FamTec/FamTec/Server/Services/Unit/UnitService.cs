@@ -125,45 +125,54 @@ namespace FamTec.Server.Services.Unit
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> DeleteUnitService(HttpContext context, int unitid)
+        public async ValueTask<ResponseUnit<bool?>> DeleteUnitService(HttpContext context, List<int> unitid)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
+                if(unitid is null)
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                UnitTb? model = await UnitInfoRepository.GetUnitInfo(unitid);
+                if(unitid.Count == 0)
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                if(model is not null)
+                foreach (int id in unitid)
                 {
-                    model.DelYn = true;
-                    model.DelDt = DateTime.Now;
-                    model.DelUser = creater;
+                    UnitTb? model = await UnitInfoRepository.GetUnitInfo(id);
+                    if(model is null)
+                        return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                    bool? result = await UnitInfoRepository.DeleteUnitInfo(model);
-                    if(result == true)
-                    {
-                        return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Unit, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<string?>() { message = "요청을 처리하지 못하였습니다.", data = model.Unit, code = 404 };
-                    }
+                    if (model.PlaceTbId == null)
+                        return new ResponseUnit<bool?>() { message = "삭제할 수 없는 정보입니다.", data = null, code = 404 };
+                }
+
+
+                bool? result = await UnitInfoRepository.DeleteUnitInfo(unitid, creater);
+
+                if(result == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if(result == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
                 }
                 else
                 {
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
+               
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 404 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 

@@ -64,7 +64,7 @@ namespace FamTec.Server.Repository.Inventory
                         Storetb.PlaceTbId = placeid;
                         Storetb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                         Storetb.MaintenenceHistoryTbId = null;
-                        context.StoreTbs.Add(Storetb);
+                        await context.StoreTbs.AddAsync(Storetb);
 
                         bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
                         if (AddStoreResult != true)
@@ -84,7 +84,7 @@ namespace FamTec.Server.Repository.Inventory
                         Inventorytb.PlaceTbId = placeid;
                         Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
                         Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
-                        context.InventoryTbs.Add(Inventorytb);
+                        await context.InventoryTbs.AddAsync(Inventorytb);
 
 
                         int thisCurrentNum = await context.InventoryTbs
