@@ -723,9 +723,14 @@ public partial class WorksContext : DbContext
 
         modelBuilder.Entity<UnitTb>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.HasKey(e => new { e.Id, e.Unit })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-            entity.Property(e => e.Id).HasComment("단위 인덱스");
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasComment("단위 인덱스");
+            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("생성일자");
@@ -736,7 +741,6 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.PlaceTbId).HasComment("사업장 인덱스");
-            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
@@ -830,6 +834,7 @@ public partial class WorksContext : DbContext
                 .HasConstraintName("building_tb_202407250842");
         });
 
+
         OnModelCreatingPartial(modelBuilder);
     }
 
@@ -845,31 +850,3 @@ public partial class WorksContext : DbContext
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
 
-[Keyless]
-public partial class MaterialInventory
-{
-    /// <summary>
-    /// 창고 ID
-    /// </summary>
-    public int? R_ID { get; set; }
-
-    /// <summary>
-    /// 창고명
-    /// </summary>
-    public string? R_NM { get; set; }
-
-    /// <summary>
-    /// 자재ID
-    /// </summary>
-    public int? M_ID { get; set; }
-
-    /// <summary>
-    /// 자재명
-    /// </summary>
-    public string? M_NM { get; set; }
-
-    /// <summary>
-    /// 자재수량
-    /// </summary>
-    public int? TOTAL { get; set; }
-}

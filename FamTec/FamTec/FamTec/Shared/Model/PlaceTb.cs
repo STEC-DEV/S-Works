@@ -8,7 +8,7 @@ namespace FamTec.Shared.Model;
 
 [Table("place_tb")]
 [Index("DepartmentTbId", Name = "FK_departmenttb_20240806")]
-[Index("PlaceCd", Name = "uk_code", IsUnique = true)]
+[Index("PlaceCd", Name = "uk_check", IsUnique = true)]
 public partial class PlaceTb
 {
     /// <summary>

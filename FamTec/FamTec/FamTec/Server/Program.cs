@@ -65,6 +65,7 @@ using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -177,6 +178,21 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 
+/*
+#region 속도제한 LIMIT 
+// Fixed windoww limit 알고리즘 방식으로 속도 제한 처리
+builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "LimiterPolicy", options =>
+{
+    // 요청 허용 갯수 :1
+    options.PermitLimit = 1;
+    // 창 이동시간 5초 [5초 동안 최대 1개의 요청만 처리 가능]
+    options.Window = TimeSpan.FromSeconds(5);
+    options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    // 제한 시 10개의 요청만 대기열에 추가
+    options.QueueLimit = 10;
+}));
+#endregion
+*/
 #region JWT
 builder.Services.AddAuthentication(options =>
 {
@@ -289,6 +305,12 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 #endregion
 
 var app = builder.Build();
+/*
+#region 속도제한 사용
+app.UseRateLimiter();
+#endregion
+*/
+
 //app.UseHttpsRedirection();
 
 #region 역방향 프록시 서버 사용

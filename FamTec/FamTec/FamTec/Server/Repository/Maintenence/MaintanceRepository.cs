@@ -50,14 +50,13 @@ namespace FamTec.Server.Repository.Maintenence
 
                         List<InventoryTb>? check = Occupant
                             .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.Occupant) ||
-                            !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
-                            .ToList().Where(m => m.Occupant != GUID).ToList();
+                            !String.IsNullOrWhiteSpace(m.RowVersion))
+                            .ToList().Where(m => m.RowVersion != GUID).ToList();
 
                         if (check is [_, ..]) // 다른곳에서 해당항목 사용중
                         {
                             Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
-                            return false;
+                            return false; // 다른곳에서 해당 품목을 사용중입니다.
                         }
                     }
 
@@ -161,8 +160,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                                             if (OutInventoryTb.Num == 0)
                                             {
-                                                OutInventoryTb.TimeStamp = null;
-                                                OutInventoryTb.Occupant = null;
+                                                OutInventoryTb.RowVersion = null;
                                                 OutInventoryTb.DelYn = true;
                                                 OutInventoryTb.DelDt = DateTime.Now;
                                                 OutInventoryTb.DelUser = creater;
@@ -179,8 +177,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                                             if (OutInventoryTb.Num == 0)
                                             {
-                                                OutInventoryTb.TimeStamp = null;
-                                                OutInventoryTb.Occupant = null;
+                                                OutInventoryTb.RowVersion = null;
                                                 OutInventoryTb.DelYn = true;
                                                 OutInventoryTb.DelDt = DateTime.Now;
                                                 OutInventoryTb.DelUser = creater;
@@ -196,7 +193,7 @@ namespace FamTec.Server.Repository.Maintenence
                             {
                                 //await RoolBackOccupant(GUID);
                                 transaction.Rollback();
-                                return null;
+                                return false; // 다른곳에서 해당 품목을 사용중입니다.
                             }
 
                             // Inventory 테이블에서 해당 품목의 개수 Sum
@@ -231,7 +228,7 @@ namespace FamTec.Server.Repository.Maintenence
                             {
                                 //await RoolBackOccupant(GUID);
                                 transaction.Rollback();
-                                return null;
+                                return false; // 다른곳에서 해당 품목을 사용중입니다.
                             }
                         }
                         else // 출고개수가 부족함
@@ -246,13 +243,13 @@ namespace FamTec.Server.Repository.Maintenence
                     transaction.Commit();
                     return true;
                 }
-                catch (DBConcurrencyException ex)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     transaction.Rollback();
                     // 해당 GUID 찾아서 TiemStamp / 토큰 null 해줘야함.
-                    //await RoolBackOccupant(GUID);
+                    await RoolBackOccupant(GUID);
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    throw new ArgumentNullException();
+                    return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch (Exception ex)
                 {
@@ -465,7 +462,7 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => m.MaterialTbId == materialid &&
                     m.RoomTbId == roomid &&
                     m.PlaceTbId == placeid &&
-                    m.Occupant == Guid &&
+                    m.RowVersion == Guid &&
                     m.DelYn != true).OrderBy(m => m.CreateDt).ToListAsync();
 
                 // 개수가 뭐라도 있으면
@@ -523,10 +520,9 @@ namespace FamTec.Server.Repository.Maintenence
                     if(Occupant is [_, ..])
                     {
                         List<InventoryTb>? check = Occupant
-                            .Where(m => !String.IsNullOrWhiteSpace(m.Occupant) ||
-                            !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
+                            .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion))
                             .ToList()
-                            .Where(m => m.Occupant != guid).ToList();
+                            .Where(m => m.RowVersion != guid).ToList();
 
                         if (check is [_, ..])
                         {
@@ -536,8 +532,7 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             foreach(InventoryTb OccModel in Occupant)
                             {
-                                OccModel.TimeStamp = DateTime.Now;
-                                OccModel.Occupant = guid;
+                                OccModel.RowVersion = guid;
                                 context.Update(OccModel);
                             }
                         }
@@ -562,10 +557,12 @@ namespace FamTec.Server.Repository.Maintenence
                 }
                 catch(DbUpdateConcurrencyException ex) // 동시성 에러
                 {
+                    transaction.Rollback();
+
                     // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야 함.
                     await RoolBackOccupant(guid);
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    throw new ArgumentNullException();
+                    return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch(Exception ex)
                 {
@@ -603,10 +600,9 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             List<InventoryTb>? check = Occupant
                             .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.Occupant) ||
-                            !String.IsNullOrWhiteSpace(m.TimeStamp.ToString()))
+                            !String.IsNullOrWhiteSpace(m.RowVersion))
                             .ToList()
-                            .Where(m => m.Occupant != guid).ToList();
+                            .Where(m => m.RowVersion != guid).ToList();
 
                             if (check is [_, ..])
                             {
@@ -616,8 +612,7 @@ namespace FamTec.Server.Repository.Maintenence
                             {
                                 foreach (InventoryTb OccModel in Occupant)
                                 {
-                                    OccModel.TimeStamp = DateTime.Now;
-                                    OccModel.Occupant = guid;
+                                    OccModel.RowVersion = guid;
                                     context.Update(OccModel);
                                 }
                             }
@@ -642,10 +637,12 @@ namespace FamTec.Server.Repository.Maintenence
                 }
                 catch (DbUpdateConcurrencyException ex) // 동시성 에러
                 {
+                    transaction.Rollback();
+
                     // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야함.
                     await RoolBackOccupant(guid);
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    throw new ArgumentNullException();
+                    return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch (Exception ex)
                 {
@@ -663,17 +660,22 @@ namespace FamTec.Server.Repository.Maintenence
                 if (GUID is null)
                     return null;
 
+                // 해당 코드가 없으면 RollBack Update도 ERROR
+                foreach (var entry in context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
+                {
+                    //추적 안함으로 변경
+                    entry.State = EntityState.Detached;
+                }
+
                 List<InventoryTb>? Occupant = await context.InventoryTbs
-                    .Where(m => m.DelYn != true && m.Occupant == GUID)
+                    .Where(m => m.DelYn != true && m.RowVersion == GUID)
                     .ToListAsync();
 
                 if (Occupant is [_, ..])
                 {
                     foreach (InventoryTb model in Occupant)
                     {
-                        model.Occupant = null;
-                        model.TimeStamp = null;
-
+                        model.RowVersion = null;
                         context.InventoryTbs.Update(model);
                     }
                 }

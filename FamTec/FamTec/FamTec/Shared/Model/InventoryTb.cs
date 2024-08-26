@@ -16,6 +16,7 @@ public partial class InventoryTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }
 
@@ -46,15 +47,9 @@ public partial class InventoryTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime? TimeStamp { get; set; }
-    
-    /// <summary>
-    /// 동시성 충돌체크 토큰
-    /// </summary>
-    [ConcurrencyCheck]
+    [Column("ROW_VERSION")]
     [StringLength(255)]
-    public string? Occupant { get; set; }
+    public string? RowVersion { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }

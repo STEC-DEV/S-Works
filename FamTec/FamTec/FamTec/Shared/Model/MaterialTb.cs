@@ -10,6 +10,7 @@ namespace FamTec.Shared.Model;
 /// 자재
 /// </summary>
 [Table("material_tb")]
+[Index("PlaceTbId", "Code", Name = "UK_PlaceCode", IsUnique = true)]
 [Index("PlaceTbId", Name = "fk_material_tb_place_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MaterialTb
@@ -22,7 +23,6 @@ public partial class MaterialTb
     /// 품목코드
     /// </summary>
     [Column("CODE")]
-    [StringLength(255)]
     public string Code { get; set; } = null!;
 
     /// <summary>
