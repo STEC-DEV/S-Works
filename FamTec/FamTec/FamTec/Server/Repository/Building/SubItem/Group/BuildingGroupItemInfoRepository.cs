@@ -26,7 +26,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             try
             {
                 
-                context.BuildingItemGroupTbs.Add(model);
+                await context.BuildingItemGroupTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

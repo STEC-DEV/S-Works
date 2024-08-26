@@ -25,16 +25,14 @@ namespace FamTec.Server.Repository.Unit
         {
             try
             {
-                context.UnitTbs.Add(model);
+                await context.UnitTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -111,7 +109,9 @@ namespace FamTec.Server.Repository.Unit
                 {
                     foreach(int unitid in idx) 
                     {
-                        UnitTb? UserModel = await context.UnitTbs.FirstOrDefaultAsync(m => m.Id == unitid && m.DelYn != true);
+                        UnitTb? UserModel = await context.UnitTbs
+                            .FirstOrDefaultAsync(m => m.Id == unitid &&
+                                                      m.DelYn != true);
 
                         if (UserModel is null)
                             return null;

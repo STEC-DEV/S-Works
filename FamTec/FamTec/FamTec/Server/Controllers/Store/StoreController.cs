@@ -119,33 +119,33 @@ namespace FamTec.Server.Controllers.Store
                 //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
                 //dto.Add(new InOutInventoryDTO()
                 //{
-                //    InOut = 0,
-                //    MaterialID = 10,
-                //    AddStore = new AddStoreDTO()
-                //    {
-                //    InOutDate = DateTime.Now,
-                //    Note = "출고데이터_1",
-                //    Num = 10,
-                //    RoomID = 2,
-                //    UnitPrice = 300,
-                //    TotalPrice = 10 * 300
-                //    }
+                    //InOut = 0,
+                    //MaterialID = 10,
+                    //AddStore = new AddStoreDTO()
+                    //{
+                    //InOutDate = DateTime.Now,
+                    //Note = "출고데이터_1",
+                    //Num = 10,
+                    //RoomID = 2,
+                    //UnitPrice = 300,
+                    //TotalPrice = 10 * 300
+                    //}
                 //});
 
 
                 //dto.Add(new InOutInventoryDTO()
                 //{
-                //    InOut = 0,
-                //    MaterialID = 11,
-                //    AddStore = new AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now,
-                //        Note = "출고데이터_1",
-                //        Num = 10,
-                //        RoomID = 3,
-                //        UnitPrice = 100,
-                //        TotalPrice = 100 * 10
-                //    }
+                    //InOut = 0,
+                    //MaterialID = 11,
+                    //AddStore = new AddStoreDTO()
+                    //{
+                        //InOutDate = DateTime.Now,
+                        //Note = "출고데이터_1",
+                        //Num = 10,
+                        //RoomID = 3,
+                        //UnitPrice = 100,
+                        //TotalPrice = 100 * 10
+                    //}
                 //});
 
                 if (HttpContext is null)

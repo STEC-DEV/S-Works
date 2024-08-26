@@ -27,16 +27,14 @@ namespace FamTec.Server.Repository.Voc
         {
             try
             {
-                context.VocTbs.Add(model);
+                await context.VocTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch (Exception ex)
             {
@@ -112,79 +110,6 @@ namespace FamTec.Server.Repository.Voc
                 {
                     return null;
                 }
-                
-
-                //List<int>? buildingidx = await context.BuildingTbs
-                //    .Where(m => m.PlaceTbId == placeid)
-                //    .Select(m => m.Id)
-                //    .ToListAsync();
-
-                //if (buildingidx is [_, ..])
-                //{
-                //    List<VocTb>? VocModel = await context.VocTbs
-                //        .Where(m => buildingidx.Contains(m.BuildingTbId) && m.DelYn != true)
-                //        .ToListAsync();
-
-                //    if(VocModel is [_, ..])
-                //    {
-                //        var grouplist = VocModel.GroupBy(voc => new
-                //        {
-                //            voc.CreateDt.Year,
-                //            voc.CreateDt.Month
-                //        }).Select(group => new
-                //        {
-                //            Year = group.Key.Year,
-                //            Month = group.Key.Month,
-                //            VocList = group.ToList()
-                //        })
-                //        .ToList();
-
-                //        if (grouplist is not [_, ..])
-                //            return null;
-
-                //        List<AllVocListDTO> AllVocList = new List<AllVocListDTO>();
-                //        foreach(var Group in grouplist)
-                //        {
-                //            AllVocListDTO VocItem = new AllVocListDTO();
-                //            VocItem.Years = Group.Year;
-                //            VocItem.Month = Group.Month;
-                //            VocItem.Dates = $"{Group.Year}-{Group.Month}";
-
-                //            List<VocListDTO> dto = (from VocTB in Group.VocList
-                //                                    join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
-                //                                    on VocTB.BuildingTbId equals BuildingTB.Id
-                //                                    select new VocListDTO
-                //                                    {
-                //                                        Id = VocTB.Id, // VOCID
-                //                                        BuildingName = BuildingTB.Name, // 건물명
-                //                                        Type = VocTB.Type, // 유형
-                //                                        Title = VocTB.Title, // 제목
-                //                                        Status = VocTB.Status, // 처리상태
-                //                                        CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
-                //                                        CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
-                //                                        DurationDT = VocTB.DurationDt // 민원처리 소요시간
-                //                                    }).OrderBy(m => m.CreateDT).ToList();
-
-                //            VocItem.VocList = dto;
-                //            AllVocList.Add(VocItem);
-                //        }
-
-                //        if (AllVocList is [_, ..])
-                //            return AllVocList;
-                //        else
-                //            return null;
-                //    }
-                //    else
-                //    {
-                //        return null;
-                //    }
-
-                //}
-                //else
-                //{
-                //    // 건물이 없음
-                //    return null;
-                //}
             }
             catch(Exception ex)
             {

@@ -47,7 +47,7 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                context.BuildingTbs.Add(model);
+                await context.BuildingTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

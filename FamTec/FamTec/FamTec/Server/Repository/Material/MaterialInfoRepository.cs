@@ -26,16 +26,13 @@ namespace FamTec.Server.Repository.Material
         {
             try
             {
-                context.MaterialTbs.Add(model);
+                await context.MaterialTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -55,10 +52,13 @@ namespace FamTec.Server.Repository.Material
             {
                 try
                 {
+                    /*
                     foreach(MaterialTb MaterialTB in MaterialList)
                     {
-                        context.MaterialTbs.Add(MaterialTB);
+                        await context.MaterialTbs.AddAsync(MaterialTB);
                     }
+                    */
+                    await context.MaterialTbs.AddRangeAsync(MaterialList);
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if(AddResult)
@@ -116,7 +116,9 @@ namespace FamTec.Server.Repository.Material
             try
             {
                 MaterialTb? model = await context.MaterialTbs
-                    .FirstOrDefaultAsync(m => m.Id == materialId && m.PlaceTbId == placeid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == materialId && 
+                                              m.PlaceTbId == placeid &&
+                                              m.DelYn != true);
 
                 if (model is not null)
                     return model;

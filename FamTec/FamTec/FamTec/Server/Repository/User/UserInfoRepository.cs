@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
@@ -26,16 +27,14 @@ namespace FamTec.Server.Repository.User
         {
             try
             {
-                context.UsersTbs.Add(model);
+                await context.UsersTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -80,10 +79,12 @@ namespace FamTec.Server.Repository.User
             {
                 try
                 {
-                    foreach(UsersTb UserTB in UserList)
-                    {
-                        context.UsersTbs.Add(UserTB);
-                    }
+                    //foreach(UsersTb UserTB in UserList)
+                    //{
+                    //    context.UsersTbs.Add(UserTB);
+                    //}
+                    
+                    await context.UsersTbs.AddRangeAsync(UserList);
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if(AddResult)

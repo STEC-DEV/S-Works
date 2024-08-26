@@ -26,17 +26,14 @@ namespace FamTec.Server.Repository.Voc
         {
             try
             {
-                context.CommentTbs.Add(model);
+                await context.CommentTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 
                 if(AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {

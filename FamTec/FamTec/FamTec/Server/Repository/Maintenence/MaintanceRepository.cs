@@ -158,11 +158,12 @@ namespace FamTec.Server.Repository.Maintenence
                         }
 
                         // Inventory 테이블에서 해당 품목의 개수 Sum
-                        int thisCurrentNum = context.InventoryTbs.Where(m =>
-                        m.DelYn != true &&
-                        m.MaterialTbId == model.MaterialID &&
-                        m.RoomTbId == model.AddStore.RoomID &&
-                        m.PlaceTbId == placeid).Sum(m => m.Num);
+                        int thisCurrentNum = context.InventoryTbs
+                            .Where(m => m.DelYn != true &&
+                                        m.MaterialTbId == model.MaterialID &&
+                                        m.RoomTbId == model.AddStore.RoomID &&
+                                        m.PlaceTbId == placeid)
+                            .Sum(m => m.Num);
 
                         StoreTb store = new StoreTb();
                         store.Inout = model.InOut!.Value;
@@ -417,10 +418,10 @@ namespace FamTec.Server.Repository.Maintenence
                 // 선입선출
                 List<InventoryTb>? model = await context.InventoryTbs
                     .Where(m => m.MaterialTbId == materialid &&
-                    m.RoomTbId == roomid &&
-                    m.PlaceTbId == placeid &&
-                    m.RowVersion == Guid &&
-                    m.DelYn != true)
+                                m.RoomTbId == roomid &&
+                                m.PlaceTbId == placeid &&
+                                m.RowVersion == Guid &&
+                                m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
@@ -471,9 +472,10 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     List<InventoryTb>? Occupant = await context.InventoryTbs
                         .Where(m => m.PlaceTbId == placeid &&
-                        m.MaterialTbId == materialid &&
-                        m.RoomTbId == roomid &&
-                        m.DelYn != true).ToListAsync();
+                                    m.MaterialTbId == materialid &&
+                                    m.RoomTbId == roomid &&
+                                    m.DelYn != true)
+                        .ToListAsync();
 
                     if(Occupant is [_, ..])
                     {

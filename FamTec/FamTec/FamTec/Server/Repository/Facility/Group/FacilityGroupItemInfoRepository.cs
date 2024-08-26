@@ -26,7 +26,7 @@ namespace FamTec.Server.Repository.Facility.Group
         {
             try
             {
-                context.FacilityItemGroupTbs.Add(model);
+                await context.FacilityItemGroupTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

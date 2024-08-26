@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.KakaoLog
         {
             try
             {
-                context.KakaoLogTbs.Add(model);
+                await context.KakaoLogTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

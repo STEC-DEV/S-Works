@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         {
             try
             {
-                context.DepartmentsTbs.Add(model);
+                await context.DepartmentsTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {
@@ -249,7 +249,9 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 {
                     foreach(int dpId in idx)
                     {
-                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+                            .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+
                         if(DepartmentTB is not null)
                         {
                             DepartmentTB.DelYn = true;

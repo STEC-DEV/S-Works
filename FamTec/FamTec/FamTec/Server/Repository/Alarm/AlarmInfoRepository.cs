@@ -27,7 +27,7 @@ namespace FamTec.Server.Repository.Alarm
         {
             try
             {
-                context.AlarmTbs.Add(model);
+                await context.AlarmTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 
                 if (AddResult)

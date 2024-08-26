@@ -3084,10 +3084,16 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddMaintenence",
     "RelativePath": "api/Maintenance/sign/AddMaintenance",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.AddMaintanceDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3894,10 +3900,16 @@
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "AddInStore",
     "RelativePath": "api/Store/sign/AddInStore",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Store.InOutInventoryDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3987,14 +3999,14 @@
     "ContainingType": "FamTec.Server.Controllers.Unit.UnitController",
     "Method": "DeleteUnitInfo",
     "RelativePath": "api/Unit/sign/DeleteUnitInfo",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "unitid",
-        "Type": "System.Int32",
-        "IsRequired": true
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

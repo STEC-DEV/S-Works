@@ -26,16 +26,14 @@ namespace FamTec.Server.Repository.Room
         {
             try
             {
-                context.RoomTbs.Add(model);
+                await context.RoomTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+             
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {

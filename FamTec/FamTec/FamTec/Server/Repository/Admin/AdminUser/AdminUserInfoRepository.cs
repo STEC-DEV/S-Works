@@ -31,7 +31,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         {
             try
             {
-                context.AdminTbs.Add(model);
+                await context.AdminTbs.AddAsync(model);
                 bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
                 if(Addresult)
                 {
@@ -283,8 +283,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 else
                 {
                     // 이사업장에 아무도 포함되어있지 않음
-                    //List<AdminTb>? alladmin = await context.AdminTbs.Where(m => m.DelYn != true).ToListAsync();
-
                     List<ManagerListDTO>? model = (from Admin in context.AdminTbs.Where(m => m.DelYn != true).ToList()
                                                     join User in context.UsersTbs.Where(m => m.DelYn != true).ToList()
                                                     on Admin.UserTbId equals User.Id

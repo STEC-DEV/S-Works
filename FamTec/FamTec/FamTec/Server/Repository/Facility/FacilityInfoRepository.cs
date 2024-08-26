@@ -26,7 +26,7 @@ namespace FamTec.Server.Repository.Facility
         {
             try
             {
-                context.FacilityTbs.Add(model);
+                await context.FacilityTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

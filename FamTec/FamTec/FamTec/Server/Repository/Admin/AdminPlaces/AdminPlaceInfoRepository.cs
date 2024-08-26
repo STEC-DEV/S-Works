@@ -114,7 +114,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                     ContractDt = place.ContractDt,
                                                     Status = place.Status
                                                 }).ToList();
-                        if(result is [_, ..])
+              
+                        if (result is [_, ..])
                         {
                             return result;
                         }

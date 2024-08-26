@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.BlackList
         {
             try
             {
-                context.BlacklistTbs.Add(model);
+                await context.BlacklistTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

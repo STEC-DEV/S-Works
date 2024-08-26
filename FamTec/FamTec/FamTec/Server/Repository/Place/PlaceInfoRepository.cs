@@ -27,16 +27,14 @@ namespace FamTec.Server.Repository.Place
         {
             try
             {
-                context.PlaceTbs.Add(model);
+                await context.PlaceTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+             
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch (Exception ex)
             {

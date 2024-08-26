@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         {
             try
             {
-                context.FacilityItemValueTbs.Add(model);
+                await context.FacilityItemValueTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

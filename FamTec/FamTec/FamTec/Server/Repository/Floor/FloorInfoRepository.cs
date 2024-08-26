@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Floor
         {
             try
             {
-                context.FloorTbs.Add(model);
+                await context.FloorTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

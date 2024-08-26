@@ -20,16 +20,14 @@ namespace FamTec.Server.Repository.Store
         {
             try
             {
-                context.StoreTbs.Add(model);
+                await context.StoreTbs.AddAsync(model);
+                
                 bool AddResult =await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -42,7 +40,7 @@ namespace FamTec.Server.Repository.Store
         {
             try
             {
-                List<InOutHistoryListDTO> model = (from Store in context.StoreTbs.Where(m => m.DelYn != true)
+                List<InOutHistoryListDTO> model =  (from Store in context.StoreTbs.Where(m => m.DelYn != true)
                                                     join Material in context.MaterialTbs.Where(m => m.DelYn != true)
                                                     on Store.MaterialTbId equals Material.Id
                                                     join Room in context.RoomTbs.Where(m => m.DelYn != true)

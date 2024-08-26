@@ -136,10 +136,10 @@ namespace FamTec.Server.Repository.Inventory
             {
                 List<StoreTb>? StoreList = await context.StoreTbs
                 .Where(m => m.DelYn != true &&
-                m.PlaceTbId == placeid &&
-                m.MaterialTbId == materialid &&
-                m.CreateDt >= startDate &&
-                m.CreateDt <= endDate)
+                            m.PlaceTbId == placeid &&
+                            m.MaterialTbId == materialid &&
+                            m.CreateDt >= startDate &&
+                            m.CreateDt <= endDate)
                 .OrderBy(m => m.CreateDt)
                 .ToListAsync();
 
@@ -160,7 +160,8 @@ namespace FamTec.Server.Repository.Inventory
                                                                 InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
                                                                 CurrentNum = StoreTB.CurrentNum,
                                                                 Note = StoreTB.Note // 비고
-                                                            }).OrderBy(m => m.INOUT_DATE)
+                                                            })
+                                                            .OrderBy(m => m.INOUT_DATE)
                                                             .ToList();
                     
                     return dto;
@@ -375,7 +376,8 @@ namespace FamTec.Server.Repository.Inventory
                         m.PlaceTbId == placeid &&
                         m.RowVersion == GUID &&
                         m.DelYn != true)
-                .OrderBy(m => m.CreateDt).ToListAsync();
+                .OrderBy(m => m.CreateDt)
+                .ToListAsync();
 
                 // 개수가 뭐라도 있으면
                 if (model is [_, ..])
@@ -643,7 +645,7 @@ namespace FamTec.Server.Repository.Inventory
                         store.Note = model.AddStore.Note;
                         store.PlaceTbId = placeid;
 
-                        context.StoreTbs.Add(store);
+                        await context.StoreTbs.AddAsync(store);
                     }
 
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
