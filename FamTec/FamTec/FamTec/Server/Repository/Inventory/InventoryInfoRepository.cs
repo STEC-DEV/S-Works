@@ -5,8 +5,6 @@ using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-
-
 namespace FamTec.Server.Repository.Inventory
 {
     public class InventoryInfoRepository : IInventoryInfoRepository
@@ -37,21 +35,15 @@ namespace FamTec.Server.Repository.Inventory
                     // [1] 토큰체크
                     foreach (InOutInventoryDTO InventoryDTO in dto)
                     {
-                        List<InventoryTb>? Occupant = await context.InventoryTbs
+                        bool isAlreadyInUser = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
-                            m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true).ToListAsync();
+                                        m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
+                                        m.DelYn != true &&
+                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
+                                        m.RowVersion != GUID).AnyAsync();
 
-                        List<InventoryTb>? check = Occupant
-                            .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .Where(m => m.RowVersion != GUID).ToList();
-
-                        if (check is [_, ..]) // 다른곳에서 해당항목 사용중
-                        {
-                            Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
-                            return false;
-                        }
+                        if (isAlreadyInUser)
+                            return false;  // 다른곳에서 이미 사용중
                     }
 
                     // ADD 작업
@@ -73,44 +65,46 @@ namespace FamTec.Server.Repository.Inventory
                         Storetb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                         Storetb.MaintenenceHistoryTbId = null;
                         context.StoreTbs.Add(Storetb);
+
                         bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
                         if (AddStoreResult != true)
                         {
                             await transaction.RollbackAsync();
                             return false; // 다른곳에서 해당 품목을 사용중입니다.
                         }
-                        else
+                       
+                        InventoryTb Inventorytb = new InventoryTb();
+                        Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
+                        Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
+                        Inventorytb.CreateDt = DateTime.Now;
+                        Inventorytb.CreateUser = creater;
+                        Inventorytb.UpdateDt = DateTime.Now;
+                        Inventorytb.UpdateUser = creater;
+                        Inventorytb.RowVersion = GUID;
+                        Inventorytb.PlaceTbId = placeid;
+                        Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
+                        Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
+                        context.InventoryTbs.Add(Inventorytb);
+
+
+                        int thisCurrentNum = await context.InventoryTbs
+                            .Where(m => m.DelYn != true &&
+                                        m.MaterialTbId == InventoryDTO.MaterialID &&
+                                        m.RoomTbId == InventoryDTO.AddStore.RoomID &&
+                                        m.PlaceTbId == placeid)
+                            .SumAsync(m => m.Num);
+
+                        Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
+                        context.Update(Storetb);
+                        bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (UpdateStoreTB != true)
                         {
-                            InventoryTb Inventorytb = new InventoryTb();
-                            Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
-                            Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
-                            Inventorytb.CreateDt = DateTime.Now;
-                            Inventorytb.CreateUser = creater;
-                            Inventorytb.UpdateDt = DateTime.Now;
-                            Inventorytb.UpdateUser = creater;
-                            Inventorytb.RowVersion = GUID;
-                            Inventorytb.PlaceTbId = placeid;
-                            Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
-                            Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
-                            context.InventoryTbs.Add(Inventorytb);
-
-
-                            int thisCurrentNum = context.InventoryTbs.Where(m => m.DelYn != true &&
-                            m.MaterialTbId == InventoryDTO.MaterialID &&
-                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
-                            m.PlaceTbId == placeid).Sum(m => m.Num);
-
-                            Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
-                            context.Update(Storetb);
-                            bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (UpdateStoreTB != true)
-                            {
-                                await transaction.RollbackAsync();
-                                return false; // 다른곳에서 해당 품목을 사용중입니다.
-                            }
+                            await transaction.RollbackAsync();
+                            return false; // 다른곳에서 해당 품목을 사용중입니다.
                         }
                     }
-                    transaction.Commit();
+
+                    await transaction.CommitAsync();
                     return true;
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -449,36 +443,30 @@ namespace FamTec.Server.Repository.Inventory
                 {
                     foreach(InOutInventoryDTO inventoryDTO in dto)
                     {
-                        List<InventoryTb>? Occupant = await context.InventoryTbs
+                        bool ItemsInUse = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                             m.MaterialTbId == inventoryDTO.MaterialID &&
                             m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true).ToListAsync();
+                            m.DelYn != true &&
+                            !String.IsNullOrWhiteSpace(m.RowVersion) &&
+                            m.RowVersion != guid)
+                            .AnyAsync();
 
-                        if(Occupant is [_, ..])
+                        if (ItemsInUse)
+                            return false; // 다른곳에서 해당 품목을 사용중입니다.
+
+                        // GUID 토큰 넣을 List 조회
+                        List<InventoryTb> itemsToUpdate = await context.InventoryTbs
+                                             .Where(m => m.PlaceTbId == placeid &&
+                                                         m.MaterialTbId == inventoryDTO.MaterialID &&
+                                                         m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
+                                                         m.DelYn != true)
+                                             .ToListAsync();
+
+                        foreach (InventoryTb item in itemsToUpdate)
                         {
-                            List<InventoryTb>? check = Occupant
-                            .Where(m =>!String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .Where(m => m.RowVersion != guid).ToList();
-
-
-                            if (check is [_, ..])
-                            {
-                                return false; // 다른데서 품목 사용중
-                            }
-                            else // 여기는 FALSE 여야 됨
-                            {
-                                foreach (InventoryTb OccModel in Occupant)
-                                {
-                                    OccModel.RowVersion = guid;
-                                    context.Update(OccModel);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            return null;
+                            item.RowVersion = guid; // GUID 토큰 SET
+                            context.Update(item);
                         }
                     }
 
@@ -491,13 +479,13 @@ namespace FamTec.Server.Repository.Inventory
                     else
                     {
                         await transaction.RollbackAsync();
+                        await RoolBackOccupant(guid); // 토큰 RESET
                         return false;
                     }
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    // 해당 GUID 찾아서 TiemStamp / 토큰 null 해줘야함.
-                    await RoolBackOccupant(guid);
+                    await RoolBackOccupant(guid); // 토큰 RESET
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
                     return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
@@ -528,22 +516,16 @@ namespace FamTec.Server.Repository.Inventory
                     // [1] 토큰 체크
                     foreach(InOutInventoryDTO InventoryDTO in dto)
                     {
-                        List<InventoryTb>? InventoryList = await context.InventoryTbs
+                        // 해당 토큰 외 다른토큰이 해당품목에 박혀있는지 검사
+                        bool isAlreadyInUse = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                                         m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true)
-                                        .OrderBy(m => m.CreateDt)
-                                        .ToListAsync();
+                                        m.DelYn != true &&
+                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
+                                        m.RowVersion != GUID).AnyAsync();
 
-                        List<InventoryTb>? RowVersionCheck = InventoryList
-                                .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion))
-                                .ToList()
-                                .Where(m => m.RowVersion != GUID).ToList();
-
-                        if (RowVersionCheck.Count > 0)
-                        {
-                            return false; // 다른곳에서 해당 품목을 사용중입니다.
-                        }
+                        if (isAlreadyInUse)
+                            return false; // 다른곳에서 사용중
                     }
 
                     // [2]. 수량체크
@@ -638,12 +620,12 @@ namespace FamTec.Server.Repository.Inventory
                         }
 
                         // Inventory 테이블에서 해당 품목의 개수 Sum
-                        int thisCurrentNum = context.InventoryTbs.Where(m =>
-                        m.DelYn != true &&
-                        m.MaterialTbId == model.MaterialID &&
-                        m.RoomTbId == model.AddStore.RoomID &&
-                        m.PlaceTbId == placeid)
-                            .Sum(m => m.Num);
+                        int thisCurrentNum = await context.InventoryTbs
+                            .Where(m => m.DelYn != true &&
+                                        m.MaterialTbId == model.MaterialID &&
+                                        m.RoomTbId == model.AddStore.RoomID &&
+                                        m.PlaceTbId == placeid)
+                                        .SumAsync(m => m.Num);
 
                         StoreTb store = new StoreTb();
                         store.Inout = model.InOut!.Value;
@@ -715,8 +697,7 @@ namespace FamTec.Server.Repository.Inventory
                 // 해당 코드가 없으면 RollBack Update도 ERROR
                 foreach(var entry in context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
                 {
-                    //추적 안함으로 변경
-                    entry.State = EntityState.Detached;
+                    entry.State = EntityState.Detached; //추적 안함으로 변경
                 }
 
                 List<InventoryTb>? Occupant = await context.InventoryTbs

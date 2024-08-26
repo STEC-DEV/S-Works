@@ -8,9 +8,6 @@ using System.Data;
 
 namespace FamTec.Server.Repository.Maintenence
 {
-    /// <summary>
-    /// 유지보수 이력을 하려면 자재부터 해야함.
-    /// </summary>
     public class MaintanceRepository : IMaintanceRepository
     {
         private readonly WorksContext context;
@@ -36,24 +33,15 @@ namespace FamTec.Server.Repository.Maintenence
                     // [1]. 토큰체크
                     foreach (InOutInventoryDTO InventoryDTO in dto.Inventory!)
                     {
-                        List<InventoryTb>? InventoryList = await context.InventoryTbs
+                        bool isAlreadyInuser = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
-                            m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true)
-                            .OrderBy(m => m.CreateDt)
-                            .ToListAsync();
+                                        m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
+                                        m.DelYn != true &&
+                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
+                                        m.RowVersion != GUID).AnyAsync();
 
-                        List<InventoryTb>? RowVersionCheck = InventoryList
-                            .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .Where(m => m.RowVersion != GUID)
-                            .ToList();
-
-                        if (RowVersionCheck.Count > 0) 
-                        {
-                            return false; // 다른곳에서 해당 품목을 사용중입니다.
-                        }
+                        if (isAlreadyInuser)
+                            return false; // 다른곳에서 이미 사용중
                     }
 
                     // [2]. 수량체크
@@ -367,12 +355,12 @@ namespace FamTec.Server.Repository.Maintenence
                     }
 
                     // 현재개수 가져와야함.
-                    int thisCurrentNum = context.InventoryTbs.Where(m =>
-                    m.DelYn != true &&
-                    m.MaterialTbId == DeleteDTO.MaterialTBID &&
-                    m.RoomTbId == DeleteDTO.RoomTBID &&
-                    m.PlaceTbId == DeleteDTO.PlaceTBID)
-                        .Sum(m => m.Num);
+                    int thisCurrentNum = await context.InventoryTbs
+                        .Where(m => m.DelYn != true &&
+                                    m.MaterialTbId == DeleteDTO.MaterialTBID &&
+                                    m.RoomTbId == DeleteDTO.RoomTBID &&
+                                    m.PlaceTbId == DeleteDTO.PlaceTBID)
+                        .SumAsync(m => m.Num);
 
                     // 새로 재입고
                     StoreTb NewStoreTB = new StoreTb
@@ -392,6 +380,7 @@ namespace FamTec.Server.Repository.Maintenence
                         RoomTbId = DeleteDTO.RoomTBID!.Value,
                         MaterialTbId = DeleteDTO.MaterialTBID!.Value
                     };
+
                     context.StoreTbs.Add(NewStoreTB);
                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if (UpdateResult)
@@ -432,7 +421,9 @@ namespace FamTec.Server.Repository.Maintenence
                     m.RoomTbId == roomid &&
                     m.PlaceTbId == placeid &&
                     m.RowVersion == Guid &&
-                    m.DelYn != true).OrderBy(m => m.CreateDt).ToListAsync();
+                    m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
 
                 // 개수가 뭐라도 있으면
                 if (model is [_, ..])
@@ -473,7 +464,6 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="materialid"></param>
         /// <param name="guid"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> SetOccupantToken(int placeid, int roomid, int materialid, string guid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -489,9 +479,8 @@ namespace FamTec.Server.Repository.Maintenence
                     if(Occupant is [_, ..])
                     {
                         List<InventoryTb>? check = Occupant
-                            .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .Where(m => m.RowVersion != guid).ToList();
+                            .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion) && m.RowVersion != guid)
+                            .ToList();
 
                         if (check is [_, ..])
                         {
@@ -499,10 +488,10 @@ namespace FamTec.Server.Repository.Maintenence
                         }
                         else // 여기는 FALSE 여야 함.
                         {
-                            foreach(InventoryTb OccModel in Occupant)
+                            foreach(InventoryTb item in Occupant)
                             {
-                                OccModel.RowVersion = guid;
-                                context.Update(OccModel);
+                                item.RowVersion = guid;
+                                context.Update(item);
                             }
                         }
                     }
@@ -510,7 +499,6 @@ namespace FamTec.Server.Repository.Maintenence
                     {
                         return null;
                     }
-
 
                     bool result = await context.SaveChangesAsync() > 0 ? true : false;
                     if(result)
@@ -537,6 +525,7 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     await transaction.RollbackAsync();
 
+                    // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야 함.
                     await RoolBackOccupant(guid);
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
@@ -559,38 +548,30 @@ namespace FamTec.Server.Repository.Maintenence
             {
                 try
                 {
-                    foreach (InOutInventoryDTO inventoryDTO in dto.Inventory!)
+                    foreach(InOutInventoryDTO inventoryDTO in dto.Inventory!)
                     {
-                        List<InventoryTb>? Occupant = await context.InventoryTbs
-                        .Where(m => m.PlaceTbId == placeid &&
-                        m.MaterialTbId == inventoryDTO.MaterialID &&
-                        m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                        m.DelYn != true).ToListAsync();
+                        bool ItemInUse = await context.InventoryTbs
+                            .Where(m => m.PlaceTbId == placeid &&
+                            m.MaterialTbId == inventoryDTO.MaterialID &&
+                            m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
+                            m.DelYn != true &&
+                            !String.IsNullOrWhiteSpace(m.RowVersion) &&
+                            m.RowVersion != guid)
+                            .AnyAsync();
 
-                        if (Occupant is [_, ..]) // 여기는 TRUE 여야 됨.
-                        {
-                            List<InventoryTb>? check = Occupant
-                            .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .Where(m => m.RowVersion != guid).ToList();
+                        if (ItemInUse)
+                            return false; // 다른곳에서 해당 품목을 사용중입니다.
 
-                            if (check is [_, ..])
-                            {
-                                return false; // 다른데서 품목 사용중
-                            }
-                            else // 여기는 FALSE 여야 됨.
-                            {
-                                foreach (InventoryTb OccModel in Occupant)
-                                {
-                                    OccModel.RowVersion = guid;
-                                    context.Update(OccModel);
-                                }
-                            }
-                        }
-                        else
+                        List<InventoryTb> itemsToUpdate = await context.InventoryTbs
+                            .Where(m => m.PlaceTbId == placeid &&
+                                        m.MaterialTbId == inventoryDTO.MaterialID &&
+                                        m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
+                                        m.DelYn != true).ToListAsync();
+
+                        foreach(InventoryTb item in itemsToUpdate)
                         {
-                            return null;
+                            item.RowVersion = guid; // GUID 토큰 SET
+                            context.Update(item);
                         }
                     }
 

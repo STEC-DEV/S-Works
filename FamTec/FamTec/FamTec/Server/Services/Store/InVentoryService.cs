@@ -14,7 +14,6 @@ namespace FamTec.Server.Services.Store
         private ILogService LogService;
 
         public InVentoryService(IInventoryInfoRepository _inventoryinforepository,
-            IMaterialInfoRepository _materialinforepository,
             IStoreInfoRepository _storeinforepository,
             ILogService _logservice)
         {
