@@ -41,14 +41,15 @@ namespace FamTec.Server.Controllers.Admin
         /// <returns></returns>
         [Authorize(Roles = "SystemManager,Master")]
         [HttpPost]
+        //[HttpGet]
         [Route("sign/AddManager")]
-        //public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm] IFormFile? files)
+        //public async ValueTask<IActionResult> AddManager( [FromForm] IFormFile? files)
         public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
                 //AddManagerDTO dto = new AddManagerDTO();
-                //dto.UserId = "MASTER0002";
+                //dto.UserId = "MASTER0005";
                 //dto.Password = "123";
                 //dto.Name = "테스트이름";
                 //dto.Phone = "0123";

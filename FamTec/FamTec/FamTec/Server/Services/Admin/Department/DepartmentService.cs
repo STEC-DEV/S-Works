@@ -28,9 +28,7 @@ namespace FamTec.Server.Services.Admin.Department
         {
             try
             {
-                if(context is null)
-                    return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다..", data = null, code = 404 };
-                if(dto is null)
+                if(context is null || dto is null)
                     return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다..", data = null, code = 404 };
                 
                 string? Creater = Convert.ToString(context.Items["Name"]);
@@ -41,13 +39,15 @@ namespace FamTec.Server.Services.Admin.Department
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<AddDepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
-                DepartmentsTb? DepartmentTB = new DepartmentsTb();
-                DepartmentTB.Name = dto.Name!;
-                DepartmentTB.CreateDt = DateTime.Now;
-                DepartmentTB.CreateUser = Creater;
-                DepartmentTB.UpdateDt = DateTime.Now;
-                DepartmentTB.UpdateUser = Creater;
-                DepartmentTB.ManagementYn = dto.ManagerYN!.Value;
+                DepartmentsTb? DepartmentTB = new DepartmentsTb
+                {
+                    Name = dto.Name!,
+                    CreateDt = DateTime.Now,
+                    CreateUser = Creater,
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = Creater,
+                    ManagementYn = dto.ManagerYN!.Value
+                };
 
                 DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(DepartmentTB);
 
@@ -158,64 +158,46 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="index"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
+        public async ValueTask<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                
-                if (departmentidx is null)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                 
-                if (departmentidx.Count() == 0)
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                if (context is null || departmentidx is null || !departmentidx.Any())
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 // 해당 부서 인덱스와 AdminTb의 DepartmentID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
                 List<AdminTb>? admintb = await DepartmentInfoRepository.SelectDepartmentAdminList(departmentidx);
-                if (admintb is not null)
-                    return new ResponseUnit<bool>() { message = "해당 부서에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                if (admintb is not null && admintb.Any())
+                    return new ResponseUnit<bool?>() { message = "해당 부서에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
 
                 // 부서존재하는지 + 시스템 부서가 있는지 검사
                 foreach(int DepartmentID in departmentidx)
                 {
                     DepartmentsTb? CheckTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(DepartmentID);
                     if(CheckTB is null)
-                    {
-                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                    }
-                    else
-                    {
-                        if (CheckTB.Name.Equals("에스텍시스템"))
-                        {
-                            return new ResponseUnit<bool>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 404 };
-                        }
-                    }
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                    
+                    if (CheckTB.Name.Equals("에스텍시스템"))
+                        return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 404 };
                 }
 
                 // 부서삭제
                 bool? DeleteResult = await DepartmentInfoRepository.DeleteDepartmentInfo(departmentidx, creater);
-                if (DeleteResult == true)
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다", data = true, code = 200 };
-                }
-                else if (DeleteResult == false)
-                {
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 404 };
+                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 404 };
             }
         }
 
@@ -229,10 +211,7 @@ namespace FamTec.Server.Services.Admin.Department
         {
             try
             {
-                if(dto is null)
-                    return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-
-                if(context is null)
+                if(dto is null || context is null)
                     return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 string? updater = Convert.ToString(context.Items["Name"]);
@@ -244,28 +223,22 @@ namespace FamTec.Server.Services.Admin.Department
                     return new ResponseUnit<DepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
                 DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id!.Value);
-                if (DepartmentTB is not null)
-                {
-                    DepartmentTB.Name = dto.Name!;
-                    DepartmentTB.UpdateUser = updater;
-                    DepartmentTB.UpdateDt = DateTime.Now;
-                    DepartmentTB.ManagementYn = dto.ManageYN!.Value;
-
-                    bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB);
-                    if (result == true)
-                    {
-                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 정상 처리되었습니다.", data = new DepartmentDTO { Id = DepartmentTB.Id, Name = dto.Name }, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<DepartmentDTO>() { message = "요청이 처리되지 않았습니다.", data = null, code = 200 };
-                    }
-                }
-                else
-                {
+                if(DepartmentTB is null)
                     return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = null, code = 404 };
-                }   
-              
+
+               
+                DepartmentTB.Name = dto.Name!;
+                DepartmentTB.UpdateUser = updater;
+                DepartmentTB.UpdateDt = DateTime.Now;
+                DepartmentTB.ManagementYn = dto.ManageYN!.Value;
+
+                bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB);
+                return result switch
+                {
+                    true => new ResponseUnit<DepartmentDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
+                    false => new ResponseUnit<DepartmentDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<DepartmentDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {

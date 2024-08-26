@@ -29,7 +29,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> DeleteDepartmentService(HttpContext context, List<int> index);
+        public ValueTask<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> index);
 
         /// <summary>
         /// 부서수정

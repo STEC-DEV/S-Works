@@ -88,7 +88,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto);
+        public ValueTask<ResponseUnit<bool?>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto);
 
         /// <summary>
         /// 사업장에 할당된 관리자 삭제
@@ -106,7 +106,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
-        public ValueTask<ResponseUnit<bool>> DeletePlaceService(HttpContext context, List<int> placeidx);
+        public ValueTask<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx);
 
 
     }
