@@ -1,4 +1,5 @@
 ﻿@page "/basic/buildings/{id:int}"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using FamTec.Shared.Client.DTO.Normal.Buildings.Group
@@ -7,15 +8,21 @@
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 
 <div class="container">
-    <BuildingInfo Building="Building" OnLoad="@OnLoadBuilding" />
+    <BuildingInfo 
+        Building="Building" 
+        OnLoad="@OnLoadBuilding" 
+
+        />
     @foreach(var group in Group)
     {
         <Group GroupData="@group" LoadGroup="OnLoadGroup" />
 
     }
-    <label class="sub-btn" @onclick=@OnModal>
-        항목 추가
-    </label>
+    @if(USEREDIT){
+        <label class="sub-btn" @onclick=@OnModal>
+            항목 추가
+        </label>
+    }
     @if (IsModal)
     {
         <ModalBackground>
@@ -36,6 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadBuilding();
         await OnLoadGroup();
     }

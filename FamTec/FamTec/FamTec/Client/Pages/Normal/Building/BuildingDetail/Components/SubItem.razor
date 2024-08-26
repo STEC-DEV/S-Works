@@ -1,7 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
 @using FamTec.Shared.Client.DTO.Normal.Buildings.Group
-
+@inherits PermissionComponentBase
 
 <div class="item-container">
     <div class="item-wrap" >
@@ -21,7 +21,7 @@
             }
         </div>
     </div>
-    @if (ItemEdit)
+    @if (USEREDIT&& ItemEdit &&EditMode)
     {
         <ModalBackground>
             <ChildComponent>
@@ -39,6 +39,9 @@
 
     private void OnItemEdit()
     {
-        ItemEdit = !ItemEdit;
+        if (EditMode)
+        {
+            ItemEdit = !ItemEdit;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
 @using FamTec.Shared.Client.DTO.Normal.Location
 
@@ -26,20 +27,23 @@
                     층
                 </span>
             </th>
-            <th class="th">
-                <span>
-                    
-                </span>
-            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+                    <span>
+
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
-        @if (isAddingRow)
+        @if (isAddingRow && USEREDIT)
         {
-            Console.WriteLine("aa");
             <tr class="tbody-tr">
                 <td class="td text-left">
-                    @(@BuildingFloor.Count + 1)
+                    @(ListData.Count + 1)
                 </td>
                 <td class="td">
                     <input 
@@ -71,29 +75,34 @@
         }
         @foreach (var location in ListData.Select((value, idx) => (value, idx)))
         {
-            <tr class="tbody-tr">
-                <td class="td text-left" @onclick=OnEditLocation>@(location.idx + 1)</td>
-                <td class="td" @onclick=OnEditLocation>@location.value.RoomName</td>
-                <td class="td" @onclick=OnEditLocation>@location.value.BuildingName</td>
-                <td class="td" @onclick=OnEditLocation>@location.value.FloorName</td>
-                <td class="td text-right" @onclick=OnEditLocation>
-                    <input 
-                        type="checkbox" 
-                        checked="@checkedItems.Contains(location.value.RoomID)" 
-                        @onchange="(e)=>OnChecked(e,location.value.RoomID)"
-                        />
-                </td>
+            var currentLocation = location.value;
+            bool _isEditing = false;
+            <tr @key="@currentLocation.RoomID" class="tbody-tr">
+                <td class="td text-left" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@(location.idx + 1)</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td>
+                @if (USEREDIT)
+                {
+                    <td class="td text-right">
+                        <input type="checkbox"
+                               checked="@checkedItems.Contains(location.value.RoomID)"
+                               @onchange="(e)=>OnChecked(e,location.value.RoomID)" />
+                    </td>
+                }
+                
             </tr>
+            @if (_isEditing && USEREDIT)
+            {
+                <ModalBackground>
+                    <ChildComponent>
+                        <UpdateModal OnClose="OnEditLocation" />
+                    </ChildComponent>
+                </ModalBackground>
+            }
         }
     </tbody>
-    @if (_itemEdit)
-    {
-        <ModalBackground>
-            <ChildComponent>
-                <UpdateModal OnClose="OnEditLocation" />
-            </ChildComponent>
-        </ModalBackground>
-    }
+
 </table>
 
 @code {
@@ -186,6 +195,10 @@
         await OnAdd.InvokeAsync();
     }
 
+    // private bool OnEditLocation(bool edit)
+    // {
+    //     return !edit;
+    // }
     private void OnEditLocation()
     {
         _itemEdit = !_itemEdit;

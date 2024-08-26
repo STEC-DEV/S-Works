@@ -1,9 +1,8 @@
 ﻿@using FamTec.Shared.Client.DTO.Normal.Buildings
-
+@inherits PermissionComponentBase
 
 <table class="building-table">
     <thead class="thead">
-
         <tr class="th-tr">
             <th class="th">
                 <span>
@@ -38,9 +37,13 @@
                 <span>민원 QR</span>
                 
             </th>
-            <th class="th">
-                
-            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
@@ -77,12 +80,15 @@
                     </td>
                     <td class="td">
                     </td>
-                    <td class="td text-right">
-                        <input 
-                            type="checkbox" 
-                            checked="@checkedItems.Contains(id)"
-                            @onchange="(e)=>OnChecked(e,id)" />
-                    </td>
+                    @if (USEREDIT)
+                    {
+                        <td class="td text-right">
+                            <input type="checkbox"
+                                   checked="@checkedItems.Contains(id)"
+                                   @onchange="(e)=>OnChecked(e,id)" />
+                        </td>
+                    }
+                    
                 </tr>
             }
         }
@@ -93,6 +99,7 @@
 @code {
     [Parameter] public List<BuildingListDTO>  ListData { get; set; }
     [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
+
 
     private DateTime currentDateTime = DateTime.Now;
     private HashSet<int> checkedItems = new HashSet<int>();

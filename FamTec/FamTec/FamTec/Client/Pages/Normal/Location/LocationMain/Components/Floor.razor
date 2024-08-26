@@ -1,9 +1,10 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
 @using FamTec.Shared.Client.DTO.Normal.Location
 
 
-<div class="floor">
+<div class="floor yappear">
     <div class="floor-wrap">
         <div class="floor-title">
             <span class="title">
@@ -13,14 +14,18 @@
         <div class="floor-contents">
             <FloorList Buildings=@ListData />
         </div>
-        <div class="floor-btns">
+        @if (USEREDIT)
+        {
+            <div class="floor-btns">
             <Button 
                 Name="편집" 
                 Type="0" 
                 OnClick=OnEdit />
         </div>
+        }
+
     </div>
-    @if (_editMode)
+    @if (USEREDIT && _editMode)
     {
         <ModalBackground>
             <ChildComponent>
@@ -37,6 +42,11 @@
     [Parameter] public List<BuildingFloorListDTO> ListData { get; set; }
 
     private bool _editMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
 
     private List<BuildingDTO> Buildings = new List<BuildingDTO>
     {

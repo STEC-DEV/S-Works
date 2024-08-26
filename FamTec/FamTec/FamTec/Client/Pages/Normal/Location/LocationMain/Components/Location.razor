@@ -1,29 +1,30 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using FamTec.Shared.Client.DTO.Normal.Location
 @using FamTec.Shared.Server.DTO
 
-<div class="location-container">
+<div class="location-container yappear">
     <div class="location-wrap">
         <div class="location-header">
             <span class="title">
                 위치 목록
             </span>
-            <div class="location=options">
-                <Button 
-                    Name="@(isAddingRow ?"취소" :  "추가")" 
-                    Width=true
-                    OnClick="@OnAddMode"
-                    Type="0"
-                    />
-                <Button 
-                    Name="삭제" 
-                    Width=true 
-                    Type="1"
-                    OnClick="OnDelete"
-                    />
-            </div>
+            @if (USEREDIT)
+            {
+                <div class="location=options">
+                    <Button Name="@(isAddingRow ?"취소" :  "추가")"
+                            Width=true
+                            OnClick="@OnAddMode"
+                            Type="0" />
+                    <Button Name="삭제"
+                            Width=true
+                            Type="1"
+                            OnClick="OnDelete" />
+                </div>
+            }
+            
         </div>
         <div class="location-contents">
             <LocationTable 
@@ -57,6 +58,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         AddLocation = new AddLoactionDTO();
         // await OnLoadBuilding();
         await OnLoadLaction();

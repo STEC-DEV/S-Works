@@ -1,8 +1,11 @@
 ﻿@page "/basic/buildings"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BuildingMain.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using FamTec.Shared.Server.DTO
+
 
 <div class="building-container yappear">
     <div class="building-wrap">
@@ -10,10 +13,14 @@
             <span class="title">
                 건물 목록
             </span>
-            <div class="btns">
-                <Button Name="추가" Width=true Type=0 OnClick="@OnMoveAdd" />
-                <Button Name="삭제" Width=true Type=1 OnClick="OnDeleteBuilding" />
-            </div>
+            @if (USEREDIT)
+            {
+                <div class="btns">
+                    <Button Name="추가" Width=true Type=0 OnClick="@OnMoveAdd" />
+                    <Button Name="삭제" Width=true Type=1 OnClick="OnDeleteBuilding" />
+                </div>
+            }
+            
         </div>
         <div class="building-contents">
             <BuildingTable 
@@ -30,12 +37,23 @@
     List<BuildingListDTO> BuildingList;
     List<int> DelList = new List<int>();
     private BuildingTable buildingTable;
-
+    // private bool USEREDIT = false;
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadBuilding();
 
     }
+
+    // private async Task OnLoadPerms()
+    // {
+    //     //관리자 권한
+    //     bool isAdmin = await (_authStateProvider as CustomAuthProvider).IsAdminAsync();
+    //     //사용자 권한
+    //     int userPerm = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Basic");
+    //     USEREDIT = isAdmin || userPerm == 2;
+    //     Console.WriteLine("수정 권한"+USEREDIT);
+    // }
 
     private async Task OnLoadBuilding()
     {

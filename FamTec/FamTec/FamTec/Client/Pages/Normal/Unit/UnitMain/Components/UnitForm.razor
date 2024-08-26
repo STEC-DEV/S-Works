@@ -1,0 +1,118 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using System.Text.RegularExpressions
+@using FamTec.Shared.Client.DTO.Normal.Unit
+@using FamTec.Shared.Server.DTO
+
+<div class="unitform yappear">
+    <div class="unitform-wrap">
+        <div class="unitform-header">
+            <span class="title">
+                단위 등록
+            </span>
+        </div>
+        <div class="contents">
+            <div class="input-item">
+                <label class="label">
+                    입력
+                </label>
+                <input 
+                    class="input"
+                    type="text" 
+                    placeholder="입력해주세요" 
+                    @oninput="(e)=>OnConvert(e)" 
+                    @bind-value="_userInput"
+                    />
+            </div>
+            <div class="input-item">
+                <label class="label">
+                    변환
+                </label>
+                <span class="display">
+                    @((MarkupString)ConvertInput)
+                </span>
+            </div>
+              
+        </div>
+        <div class="btn">
+            <Button 
+                Name="등록" 
+                Type=0 
+                OnClick="OnAdd" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnLoadUnit { get; set; }
+    AddUnitDTO Unit = new AddUnitDTO();
+    string _userInput = "";
+    string ConvertInput = "";
+
+
+    //단위 등록
+    private async Task OnAdd()
+    {
+        try
+        {
+            Unit.Unit = ConvertInput;
+            if(ConvertInput == "")
+            {
+                await JS.InvokeVoidAsync("alert", "내용을 입력해주세요.");
+                return;
+            }
+            ResponseUnit<AddUnitDTO> resPost = await apiManager.PostAsync<AddUnitDTO>("Unit/sign/AddUnitinfo",Unit);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            OnClearObject();
+            await OnLoadedUnit();
+            
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "단위 등록 에러");
+        }
+    }
+
+
+    private void OnConvert(ChangeEventArgs e)
+    {
+        _userInput = e.Value?.ToString() ?? "";
+        ConvertInput = ConvertToSuperscript(_userInput);
+        Console.WriteLine(ConvertInput);
+    }
+
+
+    private string ConvertToSuperscript(string input)
+    {
+        return Regex.Replace(input, @"(\D+)(\d+)", (match) =>
+        {
+            string text = match.Groups[1].Value;
+            string numbers = match.Groups[2].Value;
+            return $"{text}{ToSuperscript(numbers)}";
+        });
+    }
+
+    private string ToSuperscript(string number)
+    {
+        var superscriptDigits = new[] { '⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹' };
+        return new string(number.Select(c => char.IsDigit(c) ? superscriptDigits[c - '0'] : c).ToArray());
+    }
+
+
+    private void OnClearObject()
+    {
+        Unit = new AddUnitDTO();
+        _userInput = "";
+        ConvertInput = "";
+    }
+
+    //단위 로드
+    private async Task OnLoadedUnit()
+    {
+        await OnLoadUnit.InvokeAsync();
+        StateHasChanged();
+    }
+}

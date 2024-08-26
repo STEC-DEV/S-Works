@@ -48,6 +48,42 @@ namespace FamTec.Client.Shared.Provider
             return Convert.FromBase64String(base64);
         }
 
+        public async Task<bool> IsAdminAsync()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            return user.Claims.Any(c => c.Type == "AdminYN" && c.Value == "True");
+        }
+
+        public async Task<int> GetUserPermission(string permName)
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userPerms = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
+            if (string.IsNullOrEmpty(userPerms)) return 0;
+
+            try
+            {
+                var perms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerms);
+                if (perms != null && perms.ContainsKey(permName))
+                {
+                    if (int.TryParse(perms[permName], out int permValue))
+                    {
+                        Console.WriteLine(permName);
+                        Console.WriteLine(permValue);
+                        return permValue;
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing UserPerms: {ex.Message}");
+            }
+
+            return 0; // 권한이 없거나 파싱할 수 없는 경우 0 반환
+        }
+        
+
         public async Task<bool> GetLoginMode()
         {
             bool loginMode = await _localStorageService.GetItemAsync<bool>("loginMode");

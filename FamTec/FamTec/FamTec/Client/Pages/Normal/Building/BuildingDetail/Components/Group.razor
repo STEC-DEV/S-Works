@@ -1,24 +1,32 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Buildings.Group
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
+
+
 
 <div class="group yappear">
     <div class="header">
         <span class="title">
             @GroupData.Name
         </span>
-        <div class="options">
-        @if (EditMode)
+        @if (USEREDIT)
         {
-                <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-                <Button Name="삭제" Width=true Type="1" />
-                <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+            <div class="options">
+
+                @if (EditMode)
+                {
+                    <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+                    <Button Name="삭제" Width=true Type="1" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+                }
+            </div>
         }
-        else
-        {
-                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
-        }
-        </div>
+        
     </div>
     <div class="content">
         @foreach(var item in GroupData.keyListDTO)
@@ -43,6 +51,14 @@
     [Parameter] public EventCallback LoadGroup { get; set; }
     bool IsModal = false;
     bool EditMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+    }
+
+
 
     private void OnModal()
     {

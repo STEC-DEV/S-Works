@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
@@ -8,19 +9,23 @@
         <span class="title">
             건물 정보
         </span>
-        <div class="header-btns">
-            @if (EditMode)
-            {
-                <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-                <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
-                
-            }
-            else
-            {
-                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
-            }
-            
-        </div>
+        @if (USEREDIT)
+        {
+            <div class="header-btns">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+                }
+
+            </div>
+        }
+
 
     </div>
     <Form 
@@ -43,6 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         ConvertToImageUrl();
     }
 

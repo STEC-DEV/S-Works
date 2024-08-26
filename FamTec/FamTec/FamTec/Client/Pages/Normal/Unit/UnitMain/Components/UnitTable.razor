@@ -1,0 +1,76 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Shared.Client.DTO.Normal.Unit
+
+<table class="table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th text-left">
+                <span>
+                    No.
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    구분
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+                    <span>
+
+                    </span>
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var unit in ListData.Select((value,idx) => (value,idx)))
+        {
+            <tr class="tbody-tr">
+                <td class="td text-left">
+                    @unit.idx
+                </td>
+                <td class="td">
+                    @(unit.value.SystemCreate ? "시스템" : "사용자 정의")
+                </td>
+                <td class="td">
+                    @unit.value.Unit
+                </td>
+                @if (USEREDIT)
+                {
+                    <td class="td text-right">
+                        @if (!unit.value.SystemCreate)
+                        {
+                            <input type="checkbox" @onchange="(e)=>OnChecked(e, unit.value.Id)" />
+                        }
+                    </td>
+                }
+                
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<UnitDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool,int)> OnCheck { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+
+    private async void OnChecked(ChangeEventArgs e, int id)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
+    }
+}

@@ -1,0 +1,75 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Unit
+@using FamTec.Shared.Server.DTO
+
+
+<div class="unit yappear">
+    <div class="unit-wrap">
+        <div class="unit-header">
+            <span class="title">
+                단위 목록
+            </span>
+            @if (USEREDIT)
+            {
+                <Button 
+                    Name="삭제"
+                    Width=true
+                    Type="1"
+                    OnClick="OnDelete" />
+            }
+            
+        </div>
+        <div class="contents">
+            <UnitTable 
+                ListData="@ListData" 
+                OnCheck="OnChecked"
+                />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public List<UnitDTO> ListData { get; set; }
+    [Parameter] public EventCallback OnLoadUnit { get; set; }
+    List<int> DelUnits = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    //체크 선수 목록
+    private void OnChecked((bool isCheck, int id)data)
+    {
+        if (data.isCheck)
+        {
+            DelUnits.Add(data.id);
+        }
+        else
+        {
+            DelUnits.Remove(data.id);
+        }
+    }
+
+    private async Task OnDelete()
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Unit/sign/SelectUnitinfo",DelUnits);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoadUnit.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("단위 삭제 에러 발생");
+            await JS.InvokeVoidAsync("alert", "단위 삭제 에러");
+        }
+    }
+
+}

@@ -34,23 +34,23 @@
     private void OnSetBuilding(int id)
     {
 
-        if (id == 0)
-        {
-            Floor = null;
-            AddObject.BuildingId = 0;
-            AddObject.FloorId = 0;
-            return;
-        }
+        // if (id == 0)
+        // {
+        //     Floor = null;
+        //     AddObject.BuildingId = 0;
+        //     AddObject.FloorId = 0;
+        //     return;
+        // }
 
-        var selectBuliding = BuildingFloor.FirstOrDefault(f => f.Id == id);
-        if (selectBuliding == null)
-        {
-            return;
-        }
-        AddObject.BuildingId = id;
-        AddObject.FloorId = 0;
-        Floor = selectBuliding.FloorList;
-        floorSelectField?.Reset();
+        // var selectBuliding = BuildingFloor.FirstOrDefault(f => f.Id == id);
+        // if (selectBuliding == null)
+        // {
+        //     return;
+        // }
+        // AddObject.BuildingId = id;
+        // AddObject.FloorId = 0;
+        // Floor = selectBuliding.FloorList;
+        // floorSelectField?.Reset();
 
 
     }
