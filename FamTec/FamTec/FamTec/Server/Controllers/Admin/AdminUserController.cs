@@ -158,7 +158,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto);
+                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto);
 
                 if (model is null)
                     return BadRequest(model);

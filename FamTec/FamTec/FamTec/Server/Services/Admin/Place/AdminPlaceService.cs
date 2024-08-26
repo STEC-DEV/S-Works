@@ -522,7 +522,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<int> adminidx = dto.PlaceManager?.Select(m => m.Id!.Value).ToList() ?? new List<int>();
+                List<int> adminidx = dto.PlaceManager!.Select(m => m.Id!.Value).ToList();
 
                 bool? RemoveResult = await AdminPlaceInfoRepository.RemoveAdminPlace(adminidx, dto.PlaceId!.Value);
                 

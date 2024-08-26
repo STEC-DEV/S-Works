@@ -137,7 +137,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool>? model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
+                ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
 
                 if (model is null)
                     return BadRequest(model);

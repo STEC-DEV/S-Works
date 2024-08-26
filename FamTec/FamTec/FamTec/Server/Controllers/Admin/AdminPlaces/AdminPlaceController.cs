@@ -274,7 +274,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (placeidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
+                ResponseUnit<bool?> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
 
                 if (model is null)
                     return BadRequest();

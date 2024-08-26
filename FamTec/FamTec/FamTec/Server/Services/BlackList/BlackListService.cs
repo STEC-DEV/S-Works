@@ -26,22 +26,21 @@ namespace FamTec.Server.Services.BlackList
         {
             try
             {
-                if(context is null)
-                    return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                if (dto is null)
+                if(context is null || dto is null)
                     return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BlacklistTb model = new BlacklistTb();
-                model.Phone = dto.PhoneNumber!;
-                model.CreateDt = DateTime.Now;
-                model.CreateUser = creater;
-                model.UpdateDt = DateTime.Now;
-                model.UpdateUser = creater;
+                BlacklistTb model = new BlacklistTb()
+                {
+                    Phone = dto.PhoneNumber!,
+                    CreateDt = DateTime.Now,
+                    CreateUser = creater,
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = creater
+                };
 
                 BlacklistTb? AddResult = await BlackListInfoRepository.AddAsync(model);
                 if(AddResult is not null)
@@ -91,7 +90,7 @@ namespace FamTec.Server.Services.BlackList
                 }
                 else
                 {
-                    return new ResponseList<BlackListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<BlackListDTO?>(), code = 200 };
+                    return new ResponseList<BlackListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<BlackListDTO>(), code = 200 };
                 }
             }
             catch(Exception ex)
@@ -110,16 +109,14 @@ namespace FamTec.Server.Services.BlackList
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID.Value);
+                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID!.Value);
                 if (model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -128,18 +125,13 @@ namespace FamTec.Server.Services.BlackList
                 model.UpdateUser = updater;
 
                 bool? UpdateResult = await BlackListInfoRepository.UpdateBlackList(model);
-                if(UpdateResult == true)
+                
+                return UpdateResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(UpdateResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -170,19 +162,13 @@ namespace FamTec.Server.Services.BlackList
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? DeleteResult = await BlackListInfoRepository.DeleteBlackList(delIdx, deleter);
-                
-                if (DeleteResult == true)
+
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if (DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -190,9 +176,6 @@ namespace FamTec.Server.Services.BlackList
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
- 
-
    
     }
 }
