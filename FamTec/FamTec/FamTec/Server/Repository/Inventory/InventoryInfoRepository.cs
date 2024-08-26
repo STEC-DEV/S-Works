@@ -526,7 +526,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
         {
-            using (var transaction = context.Database.BeginTransaction())
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
@@ -535,32 +535,37 @@ namespace FamTec.Server.Repository.Inventory
                     {
                         List<InventoryTb>? Occupant = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
-                            m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true)
-                            .OrderBy(m => m.CreateDt)
-                            .ToListAsync();
+                                        m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
+                                        m.DelYn != true)
+                                        .OrderBy(m => m.CreateDt)
+                                        .ToListAsync();
 
-                        List<InventoryTb>? check = Occupant
-                            .Where(m =>
-                            !String.IsNullOrWhiteSpace(m.RowVersion))
-                            .ToList()
-                            .OrderBy(m => m.CreateDt)
-                            .Where(m => m.RowVersion != GUID).ToList();
-
-                        if(check is [_, ..]) // 다른곳에서 해당항목 사용중
+                        /*
+                        if(!Occupant.Any(m => m.RowVersion != GUID)) // 다른곳에서 해당항목 사용중
                         {
                             Console.WriteLine("다른곳에서 해당 품목을 사용중입니다.");
                             return false;
                         }
+                        */
                     }
 
                     // [2]. 수량체크
                     foreach(InOutInventoryDTO model in dto)
                     {
-                        int? result = 0;
+                        //int? result = 0;
 
                         // 출고할게 여러곳에 있으니 Check 개수 Check
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+
+                        if (InventoryList is not [_, ..])
+                            return null; // 수량이 아에 없음.
+
+                        if(InventoryList.Sum(i => i.Num) < model.AddStore.Num)
+                        {
+                            return null; // 수량이 없음
+                        }
+
+                        /*
                         if(InventoryList is [_, ..]) // 여기에 들어오면 개수는 통과
                         {
                             foreach(InventoryTb? inventory in InventoryList)
@@ -582,6 +587,7 @@ namespace FamTec.Server.Repository.Inventory
                             Console.WriteLine("수량이 부족합니다.");
                             return null;
                         }
+                        */
                     }
 
                     foreach (InOutInventoryDTO model in dto)
@@ -661,7 +667,7 @@ namespace FamTec.Server.Repository.Inventory
                             bool InventoryResult = await context.SaveChangesAsync() > 0 ? true : false;
                             if (!InventoryResult)
                             {
-                                transaction.Rollback();
+                                await transaction.RollbackAsync();
                                 return false;
                             }
 
@@ -695,24 +701,25 @@ namespace FamTec.Server.Repository.Inventory
                             bool StoreResult = await context.SaveChangesAsync() > 0 ? true : false;
                             if (!StoreResult)
                             {
-                                transaction.Rollback();
+                                await transaction.RollbackAsync();
                                 return false;
                             }
                         }
                         else
                         {
                             // 출고개수가 부족함
-                            transaction.Rollback();
+                            await transaction.RollbackAsync();
                             return null;
                         }
                     }
+
                     Console.WriteLine("출고완료");
                     transaction.Commit();
                     return true;
                 }
                 catch(DbUpdateConcurrencyException ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     // 해당 GUID 찾아서 TiemStamp / 토큰 null 해줘야함.
                     await RoolBackOccupant(GUID);
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
@@ -720,7 +727,7 @@ namespace FamTec.Server.Repository.Inventory
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     //await RoolBackOccupant(GUID);
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
@@ -733,8 +740,10 @@ namespace FamTec.Server.Repository.Inventory
         {
             try
             {
-                if (GUID is null)
+                if (string.IsNullOrWhiteSpace(GUID))
+                {
                     return null;
+                }
 
                 // 해당 코드가 없으면 RollBack Update도 ERROR
                 foreach(var entry in context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
@@ -747,7 +756,7 @@ namespace FamTec.Server.Repository.Inventory
                         .Where(m => m.DelYn != true && m.RowVersion == GUID)
                         .ToListAsync();
 
-                if (Occupant is [_, ..])
+                if (Occupant.Any())
                 {
                     foreach (InventoryTb model in Occupant)
                     {
@@ -761,7 +770,7 @@ namespace FamTec.Server.Repository.Inventory
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return null;
+                throw new ArgumentNullException();
             }
         }
 

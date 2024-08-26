@@ -657,8 +657,10 @@ namespace FamTec.Server.Repository.Maintenence
         {
             try
             {
-                if (GUID is null)
+                if (String.IsNullOrWhiteSpace(GUID))
+                {
                     return null;
+                }
 
                 // 해당 코드가 없으면 RollBack Update도 ERROR
                 foreach (var entry in context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
@@ -671,7 +673,7 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => m.DelYn != true && m.RowVersion == GUID)
                     .ToListAsync();
 
-                if (Occupant is [_, ..])
+                if (Occupant.Any())
                 {
                     foreach (InventoryTb model in Occupant)
                     {

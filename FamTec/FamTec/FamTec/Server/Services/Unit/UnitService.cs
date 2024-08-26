@@ -102,7 +102,8 @@ namespace FamTec.Server.Services.Unit
                         data = model.Select(e => new UnitsDTO
                         {
                             Id = e.Id,
-                            Unit = e.Unit
+                            Unit = e.Unit,
+                            SystemCreate = e.PlaceTbId == null ? true : false
                         }).ToList(),
                         code = 200
                     };
