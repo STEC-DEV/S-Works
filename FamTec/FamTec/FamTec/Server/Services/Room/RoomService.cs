@@ -60,13 +60,9 @@ namespace FamTec.Server.Services.Room
 
                 RoomTb? result = await RoomInfoRepository.AddAsync(roomtb);
                 if(result is not null)
-                {
                     return new ResponseUnit<RoomDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                }
                 else
-                {
                     return new ResponseUnit<RoomDTO>() { message = "요청이 처리되지 않았습니다.", data = new RoomDTO(), code = 404 };
-                }
             }
             catch(Exception ex)
             {

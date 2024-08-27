@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
-using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;

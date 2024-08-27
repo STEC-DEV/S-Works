@@ -6,10 +6,7 @@ using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO.Material;
-using FamTec.Shared.Server.DTO.User;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FamTec.Server.Services.Material
 {
@@ -43,7 +40,6 @@ namespace FamTec.Server.Services.Material
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
-
         }
         
         /// <summary>
@@ -103,7 +99,7 @@ namespace FamTec.Server.Services.Material
                 if(files is not null)
                 {
                     // 파일 넣기
-                    bool? AddFile = await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
+                    await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
                 }
 
                 return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
@@ -143,33 +139,27 @@ namespace FamTec.Server.Services.Material
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
                 
                 List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid));
-                
-                if (model is not null && model.Any())
-                {
-                    List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
-                    foreach (MaterialTb MaterialTB in model)
-                    {
-                        MaterialListDTO DTO = new MaterialListDTO()
-                        {
-                            ID = MaterialTB.Id, // 품목 인덱스
-                            Code = MaterialTB.Code, // 품목 코드
-                            Name = MaterialTB.Name, // 품목명
-                            Unit = MaterialTB.Unit, // 단위
-                            Standard = MaterialTB.Standard, // 규격
-                            ManufacturingComp = MaterialTB.ManufacturingComp, // 제조사
-                            SafeNum = MaterialTB.SafeNum, // 안전재고수량
-                            Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image) : null
-                        };
-
-                        ListDTO.Add(DTO);
-                    }
-
-                    return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
-                }
-                else
-                {
+                if(model is null || !model.Any())
                     return new ResponseList<MaterialListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialListDTO>(), code = 200 };
+            
+                List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
+                foreach (MaterialTb MaterialTB in model)
+                {
+                    MaterialListDTO DTO = new MaterialListDTO()
+                    {
+                        ID = MaterialTB.Id, // 품목 인덱스
+                        Code = MaterialTB.Code, // 품목 코드
+                        Name = MaterialTB.Name, // 품목명
+                        Unit = MaterialTB.Unit, // 단위
+                        Standard = MaterialTB.Standard, // 규격
+                        ManufacturingComp = MaterialTB.ManufacturingComp, // 제조사
+                        SafeNum = MaterialTB.SafeNum, // 안전재고수량
+                        Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image) : null
+                    };
+
+                    ListDTO.Add(DTO);
                 }
+                return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
             }
             catch (Exception ex)
             {

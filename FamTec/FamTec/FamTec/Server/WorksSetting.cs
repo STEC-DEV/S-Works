@@ -26,9 +26,10 @@ namespace FamTec.Server
         public async ValueTask DefaultSetting()
         {
             List<string>? unittb = await context.UnitTbs
-                .Where(m =>
-                m.DelYn != true
-                && m.PlaceTbId == null).Select(m => m.Unit).ToListAsync();
+                .Where(m => m.DelYn != true &&
+                       m.PlaceTbId == null)
+                .Select(m => m.Unit)
+                .ToListAsync();
 
             List<string>? compare = defaultUnit.Except(unittb).ToList();
 
