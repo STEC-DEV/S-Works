@@ -29,15 +29,13 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
             try
             {
                 await context.BuildingItemKeyTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -60,7 +58,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if(model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -354,7 +352,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (keytb is [_, ..])
+                if(keytb is not null && keytb.Any())
                     return keytb;
                 else
                     return null;
@@ -380,7 +378,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (keytb is [_, ..])
+                if (keytb is not null && keytb.Any())
                     return keytb;
                 else
                     return null;

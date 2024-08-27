@@ -26,15 +26,13 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             try
             {
                 await context.FacilityItemValueTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -57,7 +55,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if(model is not null && model.Any())
                     return model;
                 else
                     return null;

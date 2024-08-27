@@ -28,17 +28,13 @@ namespace FamTec.Server.Repository.Alarm
             try
             {
                 await context.AlarmTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
-               
             }
             catch(Exception ex)
             {
@@ -61,26 +57,22 @@ namespace FamTec.Server.Repository.Alarm
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (AlarmTB is [_, ..])
-                {
-                    List<AlarmDTO?> dto = (from Alarm in AlarmTB
-                                           join VocTB in context.VocTbs.Where(m => m.DelYn != true)
-                                           on Alarm.VocTbId equals VocTB.Id
-                                           select new AlarmDTO
-                                           {
-                                               AlarmID = Alarm.Id,
-                                               VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
-                                           }).ToList();
-
-                    if (dto is [_, ..])
-                        return dto;
-                    else
-                        return null;
-                }
-                else
-                {
+                if(!AlarmTB.Any())
                     return null;
-                }
+
+                List<AlarmDTO?> dto = (from Alarm in AlarmTB
+                                        join VocTB in context.VocTbs.Where(m => m.DelYn != true)
+                                        on Alarm.VocTbId equals VocTB.Id
+                                        select new AlarmDTO
+                                        {
+                                            AlarmID = Alarm.Id,
+                                            VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
+                                        }).ToList();
+
+                if (dto is [_, ..])
+                    return dto;
+                else
+                    return null;
             }
             catch(Exception ex)
             {
@@ -105,32 +97,28 @@ namespace FamTec.Server.Repository.Alarm
                         .OrderBy(m => m.CreateDt)
                         .ToListAsync();
 
-                    if (AlarmList is [_, ..])
+                    if(!AlarmList.Any())
+                        return true;
+
+                    foreach(AlarmTb AlarmTB in AlarmList)
                     {
-                        foreach(AlarmTb AlarmTB in AlarmList)
-                        {
-                            AlarmTB.DelYn = true;
-                            AlarmTB.DelDt = DateTime.Now;
-                            AlarmTB.DelUser = deleter;
+                        AlarmTB.DelYn = true;
+                        AlarmTB.DelDt = DateTime.Now;
+                        AlarmTB.DelUser = deleter;
 
-                            context.AlarmTbs.Update(AlarmTB);
-                        }
+                        context.AlarmTbs.Update(AlarmTB);
+                    }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
                     }
                     else
                     {
-                        return true;
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -164,14 +152,11 @@ namespace FamTec.Server.Repository.Alarm
                 context.AlarmTbs.Update(AlarmTB);
                 
                 bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (DeleteResult)
-                {
                     return true;
-                }
                 else
-                {
                     return false;
-                }
             }
             catch(Exception ex)
             {

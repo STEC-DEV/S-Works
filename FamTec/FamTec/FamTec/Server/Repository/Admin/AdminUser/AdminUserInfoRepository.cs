@@ -32,15 +32,13 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 await context.AdminTbs.AddAsync(model);
+                
                 bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+             
                 if(Addresult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -157,13 +155,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     .FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true);
                 
                 if (model is not null)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -188,13 +182,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     .FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true);
                 
                 if (model is not null)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch (Exception ex)
             {

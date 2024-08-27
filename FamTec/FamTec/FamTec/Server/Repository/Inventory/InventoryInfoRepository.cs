@@ -143,33 +143,29 @@ namespace FamTec.Server.Repository.Inventory
                 .OrderBy(m => m.CreateDt)
                 .ToListAsync();
 
-                if (StoreList is [_, ..])
-                {
-                    List<PeriodicInventoryRecordDTO> dto = (from StoreTB in StoreList
-                                                            join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
-                                                            on StoreTB.MaterialTbId equals MaterialTB.Id
-                                                            select new PeriodicInventoryRecordDTO
-                                                            {
-                                                                INOUT_DATE = StoreTB.CreateDt, // 거래일
-                                                                Type = StoreTB.Inout, // 입출고구분
-                                                                MaterialID = StoreTB.MaterialTbId, // 품목코드
-                                                                MaterialName = MaterialTB.Name, // 품목명
-                                                                MaterialUnit = MaterialTB.Unit, // 품목 단위
-                                                                InOutNum = StoreTB.Num, // 입출고 수량
-                                                                InOutUnitPrice = StoreTB.UnitPrice, // 입출고 단가
-                                                                InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
-                                                                CurrentNum = StoreTB.CurrentNum,
-                                                                Note = StoreTB.Note // 비고
-                                                            })
-                                                            .OrderBy(m => m.INOUT_DATE)
-                                                            .ToList();
-                    
-                    return dto;
-                }
-                else
-                {
+                if(StoreList is null || !StoreList.Any())
                     return null;
-                }
+
+                List<PeriodicInventoryRecordDTO> dto = (from StoreTB in StoreList
+                                                        join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
+                                                        on StoreTB.MaterialTbId equals MaterialTB.Id
+                                                        select new PeriodicInventoryRecordDTO
+                                                        {
+                                                            INOUT_DATE = StoreTB.CreateDt, // 거래일
+                                                            Type = StoreTB.Inout, // 입출고구분
+                                                            MaterialID = StoreTB.MaterialTbId, // 품목코드
+                                                            MaterialName = MaterialTB.Name, // 품목명
+                                                            MaterialUnit = MaterialTB.Unit, // 품목 단위
+                                                            InOutNum = StoreTB.Num, // 입출고 수량
+                                                            InOutUnitPrice = StoreTB.UnitPrice, // 입출고 단가
+                                                            InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
+                                                            CurrentNum = StoreTB.CurrentNum,
+                                                            Note = StoreTB.Note // 비고
+                                                        })
+                                                        .OrderBy(m => m.INOUT_DATE)
+                                                        .ToList();
+                    
+                return dto;
             }
             catch(Exception ex)
             {
@@ -351,9 +347,6 @@ namespace FamTec.Server.Repository.Inventory
                 return null;
             }
         }
-
-
-       
 
         /// <summary>
         /// 가지고 있는 개수가 삭제할 개수보다 많은지 검사

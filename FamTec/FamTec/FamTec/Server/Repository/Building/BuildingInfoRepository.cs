@@ -48,15 +48,13 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 await context.BuildingTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+             
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -80,7 +78,7 @@ namespace FamTec.Server.Repository.Building
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -110,7 +108,7 @@ namespace FamTec.Server.Repository.Building
                     .Take(take) // 출력할 개수
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -156,6 +154,7 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 BuildingTb? model = await context.BuildingTbs.FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode));
+                
                 if (model is null)
                     return true;
                 else
@@ -245,14 +244,10 @@ namespace FamTec.Server.Repository.Building
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
-                {
+                if (model is not null && model.Any())
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -289,14 +284,10 @@ namespace FamTec.Server.Repository.Building
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if(buildingtb is [_, ..])
-                {
+                if(buildingtb is not null && buildingtb.Any())
                     return buildingtb;
-                }
                 else
-                {
                     return null;
-                }
                
             }
             catch(Exception ex)
@@ -318,109 +309,103 @@ namespace FamTec.Server.Repository.Building
             {
                 try
                 {
-                    if (buildingid is [_, ..])
+                    if(buildingid is null || !buildingid.Any())
+                        return null;
+
+                    foreach(int bdid in buildingid)
                     {
-                        foreach(int bdid in buildingid)
+                        BuildingTb? BuildingTB = await context.BuildingTbs
+                            .FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true);
+
+                        if(BuildingTB is not null)
                         {
-                            BuildingTb? BuildingTB = await context.BuildingTbs
-                                .FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true);
+                            BuildingTB.DelYn = true;
+                            BuildingTB.DelDt = DateTime.Now;
+                            BuildingTB.DelUser = deleter;
 
-                            if(BuildingTB is not null)
+                            context.BuildingTbs.Update(BuildingTB);
+                            bool BuildingResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if(!BuildingResult)
                             {
-                                BuildingTB.DelYn = true;
-                                BuildingTB.DelDt = DateTime.Now;
-                                BuildingTB.DelUser = deleter;
+                                // 업데이트 실패시 롤백
+                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                return false;
+                            }
 
-                                context.BuildingTbs.Update(BuildingTB);
-                                bool BuildingResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if(!BuildingResult)
+                            List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs
+                                .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
+                                .ToListAsync();
+
+                            if(GroupList is [_, ..])
+                            {
+                                foreach(BuildingItemGroupTb GroupTB in GroupList)
                                 {
-                                    // 업데이트 실패시 롤백
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
-                                    return false;
-                                }
+                                    GroupTB.DelYn = true;
+                                    GroupTB.DelDt = DateTime.Now;
+                                    GroupTB.DelUser = deleter;
 
-                                List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs
-                                    .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
-                                    .ToListAsync();
-
-                                if(GroupList is [_, ..])
-                                {
-                                    foreach(BuildingItemGroupTb GroupTB in GroupList)
+                                    context.BuildingItemGroupTbs.Update(GroupTB);
+                                    bool GroupResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                    if(!GroupResult)
                                     {
-                                        GroupTB.DelYn = true;
-                                        GroupTB.DelDt = DateTime.Now;
-                                        GroupTB.DelUser = deleter;
+                                        // 업데이트 실패시 롤백
+                                        await context.Database.RollbackTransactionAsync();
+                                        return false;
+                                    }
+                                    List<BuildingItemKeyTb>? KeyList = await context.BuildingItemKeyTbs
+                                        .Where(m => m.BuildingGroupTbId == GroupTB.Id && m.DelYn != true)
+                                        .ToListAsync();
 
-                                        context.BuildingItemGroupTbs.Update(GroupTB);
-                                        bool GroupResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if(!GroupResult)
+                                    if(KeyList is [_, ..])
+                                    {
+                                        foreach(BuildingItemKeyTb KeyTB in KeyList)
                                         {
-                                            // 업데이트 실패시 롤백
-                                            await context.Database.RollbackTransactionAsync();
-                                            return false;
-                                        }
-                                        List<BuildingItemKeyTb>? KeyList = await context.BuildingItemKeyTbs
-                                            .Where(m => m.BuildingGroupTbId == GroupTB.Id && m.DelYn != true)
-                                            .ToListAsync();
+                                            KeyTB.DelYn = true;
+                                            KeyTB.DelDt = DateTime.Now;
+                                            KeyTB.DelUser = deleter;
 
-                                        if(KeyList is [_, ..])
-                                        {
-                                            foreach(BuildingItemKeyTb KeyTB in KeyList)
+                                            context.BuildingItemKeyTbs.Update(KeyTB);
+                                            bool KeyResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if(!KeyResult)
                                             {
-                                                KeyTB.DelYn = true;
-                                                KeyTB.DelDt = DateTime.Now;
-                                                KeyTB.DelUser = deleter;
+                                                // 업데이트 실패시 롤백
+                                                await context.Database.RollbackTransactionAsync();
+                                                return false;
+                                            }
 
-                                                context.BuildingItemKeyTbs.Update(KeyTB);
-                                                bool KeyResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                                if(!KeyResult)
+                                            List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyTB.Id && m.DelYn != true).ToListAsync();
+                                            if(ValueList is [_, ..])
+                                            {
+                                                foreach(BuildingItemValueTb ValueTB in ValueList)
                                                 {
-                                                    // 업데이트 실패시 롤백
-                                                    await context.Database.RollbackTransactionAsync();
-                                                    return false;
-                                                }
+                                                    ValueTB.DelYn = true;
+                                                    ValueTB.DelDt = DateTime.Now;
+                                                    ValueTB.DelUser = deleter;
 
-                                                List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyTB.Id && m.DelYn != true).ToListAsync();
-                                                if(ValueList is [_, ..])
-                                                {
-                                                    foreach(BuildingItemValueTb ValueTB in ValueList)
+                                                    context.BuildingItemValueTbs.Update(ValueTB);
+                                                    bool ValueResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                                    if(!ValueResult)
                                                     {
-                                                        ValueTB.DelYn = true;
-                                                        ValueTB.DelDt = DateTime.Now;
-                                                        ValueTB.DelUser = deleter;
-
-                                                        context.BuildingItemValueTbs.Update(ValueTB);
-                                                        bool ValueResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                                        if(!ValueResult)
-                                                        {
-                                                            // 업데이트 실패시 롤백
-                                                            await context.Database.RollbackTransactionAsync();
-                                                            return false;
-                                                        }
+                                                        // 업데이트 실패시 롤백
+                                                        await context.Database.RollbackTransactionAsync();
+                                                        return false;
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-
-
-                            }
-                            else
-                            {
-                                await context.Database.RollbackTransactionAsync(); // 롤백
-                                return null;
                             }
                         }
-                        await context.Database.CommitTransactionAsync(); // 커밋
-                        return true;
-                    }
-                    else
-                    {
-                        return null;
+                        else
+                        {
+                            await context.Database.RollbackTransactionAsync(); // 롤백
+                            return null;
+                        }
                     }
 
+                    await context.Database.CommitTransactionAsync(); // 커밋
+                    return true;
                 }
                 catch (Exception ex)
                 {

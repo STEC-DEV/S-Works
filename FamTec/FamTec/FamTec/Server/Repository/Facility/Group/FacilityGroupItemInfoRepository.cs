@@ -27,15 +27,13 @@ namespace FamTec.Server.Repository.Facility.Group
             try
             {
                 await context.FacilityItemGroupTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -58,7 +56,7 @@ namespace FamTec.Server.Repository.Facility.Group
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if(model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -147,56 +145,52 @@ namespace FamTec.Server.Repository.Facility.Group
                     FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
                         .FirstOrDefaultAsync(m => m.Id == groupid);
 
-                    if(GroupTB is not null)
-                    {
-                        GroupTB.DelDt = DateTime.Now;
-                        GroupTB.DelUser = deleter;
-                        GroupTB.DelYn = true;
+                    if(GroupTB is null)
+                        return null;
 
-                        context.FacilityItemGroupTbs.Update(GroupTB);
+                    GroupTB.DelDt = DateTime.Now;
+                    GroupTB.DelUser = deleter;
+                    GroupTB.DelYn = true;
 
-                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
+                    context.FacilityItemGroupTbs.Update(GroupTB);
+
+                    List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
                         
-                        if(KeyTB is [_, ..])
+                    if(KeyTB is [_, ..])
+                    {
+                        foreach(FacilityItemKeyTb KeyModel in KeyTB)
                         {
-                            foreach(FacilityItemKeyTb KeyModel in KeyTB)
+                            KeyModel.DelDt = DateTime.Now;
+                            KeyModel.DelUser = deleter;
+                            KeyModel.DelYn = true;
+
+                            context.FacilityItemKeyTbs.Update(KeyModel);
+
+                            List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
+                            if(ValueTB is [_, ..])
                             {
-                                KeyModel.DelDt = DateTime.Now;
-                                KeyModel.DelUser = deleter;
-                                KeyModel.DelYn = true;
-
-                                context.FacilityItemKeyTbs.Update(KeyModel);
-
-                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
-                                if(ValueTB is [_, ..])
+                                foreach(FacilityItemValueTb ValueModel in ValueTB)
                                 {
-                                    foreach(FacilityItemValueTb ValueModel in ValueTB)
-                                    {
-                                        ValueModel.DelDt = DateTime.Now;
-                                        ValueModel.DelUser = deleter;
-                                        ValueModel.DelYn = true;
+                                    ValueModel.DelDt = DateTime.Now;
+                                    ValueModel.DelUser = deleter;
+                                    ValueModel.DelYn = true;
 
-                                        context.FacilityItemValueTbs.Update(ValueModel);
-                                    }
+                                    context.FacilityItemValueTbs.Update(ValueModel);
                                 }
                             }
                         }
+                    }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DeleteResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
                     }
                     else
                     {
-                        return null;
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
                 catch(Exception ex)
@@ -205,7 +199,6 @@ namespace FamTec.Server.Repository.Facility.Group
                     throw new ArgumentNullException();
                 }
             }
-
         }
     }
 }

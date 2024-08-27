@@ -144,7 +144,7 @@ namespace FamTec.Server.Services.Voc
                         // 만약 처리결과를 받는다고 했었으면.
                         if(VocTB.ReplyYn == true)
                         {
-                            BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(VocTB.Phone);
+                            BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(VocTB.Phone!);
 
                             if(BlackListTB is null) // 블랙리스트가 아니면
                             {
@@ -226,8 +226,6 @@ namespace FamTec.Server.Services.Voc
                 {
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
-               
-               
             }
             catch(Exception ex)
             {

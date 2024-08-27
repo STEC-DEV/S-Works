@@ -26,15 +26,13 @@ namespace FamTec.Server.Repository.Floor
             try
             {
                 await context.FloorTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -150,7 +148,7 @@ namespace FamTec.Server.Repository.Floor
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -174,33 +172,30 @@ namespace FamTec.Server.Repository.Floor
             {
                 
                 List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != true).ToListAsync();
+                if(floor is null || !floor.Any())
+                    return null;
 
-                if (floor is [_, ..])
-                {
-                    List<FloorTb>? result = (from bdtb in model
-                                                join floortb in floor
-                                                on bdtb.Id equals floortb.BuildingTbId
-                                                where floortb.DelYn != true && bdtb.DelYn != true
-                                                select new FloorTb
-                                                {
-                                                    Id = floortb.Id,
-                                                    Name = floortb.Name,
-                                                    CreateDt = floortb.CreateDt,
-                                                    CreateUser = floortb.CreateUser,
-                                                    UpdateDt = floortb.UpdateDt,
-                                                    UpdateUser = floortb.UpdateUser,
-                                                    DelYn = floortb.DelYn,
-                                                    DelDt = floortb.DelDt,
-                                                    DelUser = floortb.DelUser,
-                                                    BuildingTbId = floortb.BuildingTbId
-                                                }).OrderBy(m => m.CreateDt)
-                                                .ToList();
+                List<FloorTb>? result = (from bdtb in model
+                                            join floortb in floor
+                                            on bdtb.Id equals floortb.BuildingTbId
+                                            where floortb.DelYn != true && bdtb.DelYn != true
+                                            select new FloorTb
+                                            {
+                                                Id = floortb.Id,
+                                                Name = floortb.Name,
+                                                CreateDt = floortb.CreateDt,
+                                                CreateUser = floortb.CreateUser,
+                                                UpdateDt = floortb.UpdateDt,
+                                                UpdateUser = floortb.UpdateUser,
+                                                DelYn = floortb.DelYn,
+                                                DelDt = floortb.DelDt,
+                                                DelUser = floortb.DelUser,
+                                                BuildingTbId = floortb.BuildingTbId
+                                            }).OrderBy(m => m.CreateDt)
+                                            .ToList();
 
-                    if (result is [_, ..])
-                        return result;
-                    else
-                        return null;
-                }
+                if (result is not null && result.Any())
+                    return result;
                 else
                     return null;
             }
