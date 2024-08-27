@@ -484,7 +484,6 @@ namespace FamTec.Server.Services.User
         {
             try
             {
-                
                 if (context is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
