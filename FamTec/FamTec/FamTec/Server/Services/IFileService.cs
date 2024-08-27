@@ -16,9 +16,15 @@
         /// <returns></returns>
         public Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files);
 
-        // 여끼 주석시켜서 에러뜨는부분 다바꿔야함. -- 건물 업데이트 참고하여 수정하면 될듯.
-        //public Task<string?> AddImageFile(string folderpath, IFormFile files);
-       
+        /// <summary>
+        /// 이밎지 비율축소 등록
+        /// </summary>
+        /// <param name="newFileName"></param>
+        /// <param name="folderpath"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files);
+
         /// <summary>
         /// 이미지 추출
         /// </summary>

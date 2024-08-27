@@ -1,4 +1,8 @@
-﻿namespace FamTec.Server.Services
+﻿using DocumentFormat.OpenXml.Packaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+
+namespace FamTec.Server.Services
 {
     public class FileService : IFileService
     {
@@ -19,7 +23,6 @@
         {
             try
             {
-                //string newFileName = $"{files.FileName}";
                 string filePath = Path.Combine(folderpath, newFileName);
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
@@ -29,6 +32,38 @@
                 }
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// 이미지 비율 축소 등록
+        /// </summary>
+        /// <param name="newFileName"></param>
+        /// <param name="folderpath"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public async Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files)
+        {
+            try
+            {
+                string filePath = Path.Combine(folderpath, newFileName);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await files.CopyToAsync(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    using (Image image = await Image.LoadAsync(memoryStream))
+                    {
+                        image.Mutate(x => x.Resize(300, 300));
+                        image.Save(filePath);
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return null;
