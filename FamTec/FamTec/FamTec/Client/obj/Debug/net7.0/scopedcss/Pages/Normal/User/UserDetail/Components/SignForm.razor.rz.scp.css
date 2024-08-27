@@ -47,6 +47,9 @@
 }
 
 .form-container .img-wrap[b-bmba3bkisf]{
+    display :flex;
+    flex-direction : column;
+    gap : var(--half-pd);
     width : 350px;
     height : 250px;
     background-color : var(--content-back-color);

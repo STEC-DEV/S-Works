@@ -1,4 +1,6 @@
-﻿@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.CommonComponents
 
@@ -9,7 +11,12 @@
     </div>
     <div class="form-area">
         <div class="img-wrap">
-            <img class="img" src="data:image/png;base64,@UserInfo.ImageName" />
+            <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" />
+            @if (USEREDIT && EditMode)
+            {
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            }
+            
         </div>
         <div class="form-input">
             <InputField InputType="text"
@@ -45,6 +52,7 @@
                         EditMode=EditMode />
             <Toggle Title="알람 수신"
                     @bind-Value="@UserInfo.AlarmYN"
+                    IsChecked="@UserInfo.AlarmYN"
                     EditMode=EditMode />
         </div>
         
@@ -55,29 +63,70 @@
 @code {
     [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
+
     private byte[] imageData;
+    private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
+    private List<string> updateImageUrl = new List<string>(); //이미지 프리뷰
 
 
-    private async Task LoadImage(InputFileChangeEventArgs e)
+
+    protected override async Task OnInitializedAsync()
     {
-        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+        await base.OnInitializedAsync();
+        // if (!EditMode)
+        // {
 
-        // 파일 확장자 추출
-        var extension = Path.GetExtension(e.File.Name).ToLowerInvariant();
+        //     ConverImage();
+        // }
+        ConverImage();
+        Console.WriteLine("다시그림");
 
-        // 확장자 검사
-        if (!allowedExtensions.Contains(extension))
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!EditMode)
         {
-            await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
-            return;
+            updateImageUrl.Clear();
         }
+        ConverImage();
+    }
 
+    private void ConverImage()
+    {
+        ImageUrl.Clear();
+        if (UserInfo.Image != null && UserInfo.Image.Length > 0)
+        {
+            ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
+        }
+        // Console.WriteLine("이미지"+ UserInfo.Image);
+        // ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
+    }
 
-        var buffer = new byte[e.File.Size];
-        await using var stream = e.File.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
-        await stream.ReadAsync(buffer);
-        imageData = buffer;
-        UserInfo.Image = buffer;
-        UserInfo.ImageName = e.File.Name;
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        updateImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            if (UserInfo.Image == null || UserInfo.Image.Length == 0)
+            {
+                // 기존 이미지가 없는 경우: 새 이미지 추가
+                UserInfo.Image = image.Image ;
+                UserInfo.ImageName =image.Name;
+            }
+            else
+            {
+                UserInfo.Image = image.Image;
+                UserInfo.ImageName = image.Name;
+            }
+            // UserInfo.Image = image.Image;
+            // UserInfo.ImageName = image.Name;
+            updateImageUrl.Add(image.ImageUrl);
+            break;
+        }
+        StateHasChanged();
     }
 }

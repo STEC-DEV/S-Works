@@ -1,4 +1,5 @@
 ﻿@page "/users/{Id:int}"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.Normal.User.UserDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Shared.Server.DTO
@@ -7,36 +8,41 @@
 <div class="detail-container">
     <div class="detail-wrap">
         <div class="detail-form">
-            <SignForm UserInfo="@User.UserInfo" EditMode=@EditMode />
+            <SignForm UserInfo="@(EditMode ? User.UserInfo : OriginalUser.UserInfo)" EditMode=@EditMode />
         </div>
         <div class="detail-perm">
-            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive=OnVocActive EditMode=@EditMode />
+            <UserPermComponent UserPerm="@(EditMode ? User.UserPerm : OriginalUser.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
         </div>
         @if (User.UserPerm.VocPerm >= 1)
         {
             <div class="useradd-sub yappear">
-                <UserVocPermComponent UserVocPerm="@User.UserVocPerm" EditMode=@EditMode />
+                <UserVocPermComponent UserVocPerm="@(EditMode ? User.UserVocPerm : OriginalUser.UserVocPerm)" EditMode=@EditMode />
             </div>
         }
     </div>
-    <div class="btns">
-        @if (!EditMode)
-        {
-            <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
-            <Button Name="나가기" Width=true Type="1" />
-        }
-        else
-        {
-            <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-            <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
-        }
+    @if (USEREDIT)
+    {
+        <div class="btns">
+            @if (!EditMode)
+            {
+                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+                <Button Name="나가기" Width=true Type="1" />
+            }
+            else
+            {
+                <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+            }
 
-    </div>
+        </div>
+    }
+
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
     UserDTO User;
+    UserDTO OriginalUser;
     UserTbDTO userTb;
     bool EditMode = false;
     bool isVocPerm = false;
@@ -44,6 +50,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         userTb = new UserTbDTO();
         await OnLoadDetail();
     }
@@ -51,7 +58,6 @@
 
     private void OnVocActive(UserPermDTO updatedPerm)
     {
-        Console.WriteLine("ㅁㄴㅇ");
         // User.UserPerm = updatedPerm;
         isVocPerm = !isVocPerm;
         StateHasChanged();
@@ -75,25 +81,33 @@
         try
         {
             OnUserUpdateConvert();
-            ResponseUnit<UserTbDTO> resUpdate = await apiManager.PostWithFilesAsync<UserTbDTO>("User/sign/UpdateUser", userTb);
+            Console.WriteLine("수정" + userTb.ImageName);
+            ResponseUnit<UserTbDTO> resUpdate = await apiManager.PutAsync<UserTbDTO>("User/sign/UpdateUser", userTb,true);
             if (resUpdate.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "정보 수정 실패");
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
                 OnEditMode();
+                return;
             }
             Console.WriteLine("성공");
             OnEditMode();
+            await OnLoadDetail();
             StateHasChanged();
 
         }catch(Exception ex)
         {
             Console.WriteLine($"[User][Detail][{User.UserInfo.UserId}] 정보 수정 에러 "+ex);
+            await JS.InvokeVoidAsync("alert", $"[User][Detail][{User.UserInfo.UserId}] 정보 수정 에러 ");
         }
     }
 
     private void OnEditMode()
     {
         EditMode = !EditMode;
+        if (!EditMode)
+        {
+            User = OriginalUser.Clone();
+        }
     }
 
     private void OnUserConvert()
@@ -105,6 +119,12 @@
             UserPerm = new UserPermDTO(),
             UserVocPerm = new UserVocPermDTO(),
         };
+        OriginalUser = new UserDTO
+            {
+                UserInfo = new UserInfoDTO(),
+                UserPerm = new UserPermDTO(),
+                UserVocPerm = new UserVocPermDTO(),
+            };
 
         User.Id = userTb.ID;
         User.UserInfo.Name = userTb.NAME;
@@ -115,6 +135,7 @@
         User.UserInfo.Job = userTb.JOB;
         User.UserInfo.Status = userTb.STATUS;
         User.UserInfo.AlarmYN = userTb.ALRAM_YN;
+        User.UserInfo.Image = userTb.Image;
         User.UserInfo.ImageName = userTb.ImageUrl;
 
         User.UserPerm.BasicPerm = userTb.PERM_BASIC;
@@ -140,6 +161,8 @@
         User.UserVocPerm.BeautyVoc = userTb.VOC_BEAUTY;
         User.UserVocPerm.SecurityVoc = userTb.VOC_SECURITY;
         User.UserVocPerm.ETCVoc = userTb.VOC_ETC;
+
+        OriginalUser = User.Clone();
     }
     private void OnUserUpdateConvert()
     {
@@ -152,7 +175,9 @@
         userTb.JOB = User.UserInfo.Job;
         userTb.STATUS = User.UserInfo.Status;
         userTb.ALRAM_YN = User.UserInfo.AlarmYN;
-        userTb.ImageUrl = User.UserInfo.ImageName;
+        userTb.Image = User.UserInfo.Image;
+        userTb.ImageName = User.UserInfo.ImageName;
+        // userTb.ImageUrl = User.UserInfo.ImageName;
 
         userTb.PERM_BASIC = User.UserPerm.BasicPerm;
         userTb.PERM_MACHINE = User.UserPerm.MachinPerm;

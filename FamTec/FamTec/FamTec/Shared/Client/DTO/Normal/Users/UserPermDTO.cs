@@ -37,5 +37,25 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public int VocPerm { get; set; }
 
 
+        public UserPermDTO Clone()
+        {
+            return new UserPermDTO
+            {
+                BasicPerm = this.BasicPerm,
+                MachinPerm = this.MachinPerm,
+                ElecPerm = this.ElecPerm,
+                LiftPerm = this.LiftPerm,
+                FirePerm = this.FirePerm,
+                ConstructPerm = this.ConstructPerm,
+                NetworkPerm = this.NetworkPerm,
+                BeautyPerm = this.BeautyPerm,
+                SecurityPerm = this.SecurityPerm,
+                MaterialPerm = this.MaterialPerm,
+                EnergyPerm = this.EnergyPerm,
+                UserPerm = this.UserPerm,
+                VocPerm = this.VocPerm
+            };
+        }
+
     }
 }

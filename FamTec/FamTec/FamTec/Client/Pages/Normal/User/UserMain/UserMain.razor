@@ -1,4 +1,5 @@
 ﻿@page "/users"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.Normal.User.UserMain.Components
@@ -11,11 +12,15 @@
             <span class="title">
                 사용자 목록
             </span>
-            <div class="user-options">
-                <Input Placeholder="search" Type="text" ValueChanged="OnSearchData" />
-                <Button Name="추가" Width=true OnClick=AddUser Type=0 />
-                <Button Name="삭제" Width=true Type=1 />
-            </div>
+            @if (USEREDIT)
+            {
+                <div class="user-options">
+                    <Input Placeholder="search" Type="text" ValueChanged="OnSearchData" />
+                    <Button Name="추가" Width=true OnClick=AddUser Type=0 />
+                    <Button Name="삭제" Width=true Type=1 />
+                </div>
+            }
+            
         </div>
         <div class="user-content">
             <UserTable Data=@FilterData Checkitem="@CheckItems" Select="@OnSelected" />
@@ -32,6 +37,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadTsetData();
     }
 

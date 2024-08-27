@@ -19,5 +19,21 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         public bool SecurityVoc { get; set; }
         public bool ETCVoc { get; set; }
 
+
+        public UserVocPermDTO Clone()
+        {
+            return new UserVocPermDTO
+            {
+                MachineVoc = this.MachineVoc,
+                ElecVoc = this.ElecVoc,
+                LiftVoc = this.LiftVoc,
+                FireVoc = this.FireVoc,
+                ConstructVoc = this.ConstructVoc,
+                NetworkVoc = this.NetworkVoc,
+                BeautyVoc = this.BeautyVoc,
+                SecurityVoc = this.SecurityVoc,
+                ETCVoc = this.ETCVoc
+            };
+        }
     }
 }

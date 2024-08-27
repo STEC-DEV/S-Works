@@ -1,0 +1,53 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Material
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            자재 등록
+        </span>
+    </div>
+    <div class="content">
+        <InputCol Label="자재코드" />
+        <InputCol Label="자재명" />
+        <InputCol Label="규격" />
+        <InputCol Label="단위" />
+        <InputCol Label="안전재고" />
+        <InputCol Label="재고위치" />
+        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+    </div>
+    <div class="btns">
+        <Button Name="등록" Type="0" />
+        <Button Name="닫기" Type="1" OnClick="OnClosed" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+    AddMaterialDTO AddMaterial = new AddMaterialDTO();
+
+
+    
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+        foreach (var image in images)
+        {
+            temp.Add(image.Image);
+            names.Add(image.Name);
+
+        }
+        AddMaterial.Image = temp;
+        AddMaterial.ImageName = names;
+    }
+
+}

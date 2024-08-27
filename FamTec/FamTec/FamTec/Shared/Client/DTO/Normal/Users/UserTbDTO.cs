@@ -25,6 +25,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
 
         /// <summary>
         /// 전화번호
+        /// 
+        /// 
         /// </summary>
         public string PHONE { get; set; }
 
@@ -49,6 +51,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         /// 사용자 이미지
         /// </summary>
         public byte[] Image { get; set; }
+        public string ImageName { get; set; }
 
         public string ImageUrl { get; set; }
 

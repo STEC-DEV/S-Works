@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.CommonComponents
 
@@ -9,7 +10,8 @@
     </div>
     <div class="form-area">
         <div class="img-wrap">
-            <img class="img" src="data:image/png;base64,@UserInfo.ImageName" />
+            <PreviewBox ImageUrls="@ImageUrl" />
+            <InputImages MaxFilesNum="1"OnChange="OnUploadImage"/>
         </div>
         <div class="form-input">
             <InputField InputType="text"
@@ -56,7 +58,7 @@
     [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
     private byte[] imageData;
-
+    private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
 
     private async Task LoadImage(InputFileChangeEventArgs e)
     {
@@ -79,5 +81,21 @@
         imageData = buffer;
         UserInfo.Image = buffer;
         UserInfo.ImageName = e.File.Name;
+    }
+
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        ImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            UserInfo.Image = image.Image;
+            UserInfo.ImageName = image.Name;
+            ImageUrl.Add(image.ImageUrl);
+        }
+        StateHasChanged();
     }
 }

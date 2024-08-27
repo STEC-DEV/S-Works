@@ -170,14 +170,23 @@ namespace FamTec.Client.Middleware
                     var content = new MultipartFormDataContent();
                     foreach(var item in data.GetType().GetProperties())
                     {
-                        Console.WriteLine(item.Name);
                         var value = item.GetValue(data);
-                        var imageName = data.GetType().GetProperty("ImageName").GetValue(data);
-                          if(value is byte[] fileBytes)
+                        var imageProperty = data.GetType().GetProperty("ImageName");
+                        var imageName = imageProperty != null ? imageProperty.GetValue(data)?.ToString() : null;
+                        
+                          if(value is byte[] fileBytes && fileBytes.Length > 0)
                         {
-                            var fileContent = new ByteArrayContent(fileBytes);
-                            fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                            content.Add(fileContent, "files", $"{imageName}");
+                            
+                            if (!string.IsNullOrEmpty(imageName))
+                            {
+                                var fileContent = new ByteArrayContent(fileBytes);
+                                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                                content.Add(fileContent, "files", imageName);
+                            }
+                            else { 
+                            }
+                            //fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                            //content.Add(fileContent, "files", $"{imageName}");
                         }
                         else
                         {

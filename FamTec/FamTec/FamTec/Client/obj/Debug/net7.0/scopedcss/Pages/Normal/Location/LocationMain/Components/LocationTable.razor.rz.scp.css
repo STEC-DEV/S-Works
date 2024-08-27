@@ -7,6 +7,7 @@
 .location-table .thead[b-quwuwxajie] {
     position: sticky;
     top: 0;
+    z-index:2;
 }
 
 .location-table .th-tr[b-quwuwxajie] {

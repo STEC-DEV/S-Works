@@ -15,12 +15,9 @@
 
     private async Task onChangeText(ChangeEventArgs e)
     {
-        Console.WriteLine("동작");
-       
         Value = e?.Value?.ToString();
         Console.WriteLine(Value);
         await ValueChanged.InvokeAsync(Value);
-        
     }
 
 }

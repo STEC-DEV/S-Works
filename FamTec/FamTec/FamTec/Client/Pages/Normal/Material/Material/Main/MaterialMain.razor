@@ -1,0 +1,122 @@
+﻿@page "/material/info"
+@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.Material.Main.Components
+@using FamTec.Shared.Client.DTO.Normal.Material
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.Normal.Material.Material.Main.Modal
+<div class="container">
+    <div class="wrap">
+        <div class="header">
+            <span class="title">
+                자재목록
+            </span>
+
+                <div class="options">
+                    <Input 
+                        Placeholder="search" 
+                        Type="text" 
+                        ValueChanged="OnSearch"
+                        />
+                    @if (USEREDIT)
+                    {
+                        <Button Name="등록"
+                                Type="0"
+                                Width=true 
+                                OnClick="OnEdit"
+                                />
+                        <Button Name="삭제"
+                                Type="1"
+                                Width=true />
+                    }
+                </div>
+            
+        </div>
+        <div class="content">
+            <MaterialTable 
+                ListData="@FilterData" 
+                OnCheck=OnCheck
+                />
+        </div>
+    </div>
+    @if (EditMode)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <MaterialAdd OnClose="OnEdit" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    List<MaterialListDTO> Material;
+    List<MaterialListDTO> FilterData = new List<MaterialListDTO>();
+    List<int> CheckList = new List<int>();
+    private string _searchText="";
+    private bool EditMode = false;
+    private bool isModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnLoadMaterial();
+        CheckList = new List<int>();
+    }
+
+    private async Task OnLoadMaterial()
+    {
+        try
+        {
+            ResponseList<MaterialListDTO> resGet = await apiManager.GetListAsync<MaterialListDTO>("Material/sign/GetAllMaterial");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "[Material][Info] 자재 조회 실패");
+                return;
+            }
+            Material = resGet.data;
+            FilterData = Material;
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[Material][Info] 자재 조회 에러" +ex);
+            await JS.InvokeVoidAsync("alert", "[Material][Info] 자재 조회 에러");
+        }
+    }
+
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        FilterData = String.IsNullOrEmpty(_searchText) 
+                                ? Material 
+                                : Material.Where(m => m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false ||
+                                                        (m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.Mfr?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                                        ).ToList();
+
+        foreach(var i in FilterData)
+        {
+            Console.WriteLine(i.Name);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void OnCheck((bool isCheck, int id)value)
+    {
+        if (value.isCheck)
+        {
+            CheckList.Add(value.id);
+        }
+        else
+        {
+            CheckList.Remove(value.id);
+        }
+    }
+
+    private void OnEdit()
+    {
+        EditMode =!EditMode ;
+    }
+
+}
