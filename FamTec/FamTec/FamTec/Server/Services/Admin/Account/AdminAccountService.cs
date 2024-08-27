@@ -285,11 +285,12 @@ namespace FamTec.Server.Services.Admin.Account
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 
       
+
 
         /// <summary>
         /// 매니저 상세보기 서비스
@@ -383,11 +384,9 @@ namespace FamTec.Server.Services.Admin.Account
             try
             {
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-                if (string.IsNullOrWhiteSpace(UserIdx))
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value);
@@ -413,6 +412,9 @@ namespace FamTec.Server.Services.Admin.Account
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+
+     
 
     }
 }

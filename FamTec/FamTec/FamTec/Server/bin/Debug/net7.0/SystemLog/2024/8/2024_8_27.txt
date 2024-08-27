@@ -1,0 +1,72 @@
+[2024-08-27 오후 2:25:27]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:25:27]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:25:27]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:26:03]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:26:03]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:26:03]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:26:43]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:27:09]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66
+[2024-08-27 오후 2:27:10]	System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FileServer\3\Voc\42\VocComment'.
+   at System.IO.Enumeration.FileSystemEnumerator`1.CreateDirectoryHandle(String path, Boolean ignoreNotFound)
+   at System.IO.Enumeration.FileSystemEnumerator`1.Init()
+   at System.IO.Enumeration.FileSystemEnumerable`1..ctor(String directory, FindTransform transform, EnumerationOptions options, Boolean isNormalized)
+   at System.IO.Enumeration.FileSystemEnumerableFactory.UserFiles(String directory, String expression, EnumerationOptions options)
+   at System.IO.Directory.InternalEnumeratePaths(String path, String searchPattern, SearchTarget searchTarget, EnumerationOptions options)
+   at System.IO.Directory.GetFiles(String path, String searchPattern, EnumerationOptions enumerationOptions)
+   at FamTec.Server.Services.FileService.GetImageFile(String folderpath, String filename) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\FileService.cs:line 66

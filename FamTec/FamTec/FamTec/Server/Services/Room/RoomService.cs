@@ -41,24 +41,23 @@ namespace FamTec.Server.Services.Room
         {
             try
             {
-                if (dto is null)
-                return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
-
-                if(context is null)
+                if (dto is null || context is null)
                     return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(creater))
+                if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
-                RoomTb roomtb = new RoomTb();
-                roomtb.Name = dto.Name!;
-                roomtb.FloorTbId = dto.FloorID!.Value;
-                roomtb.CreateDt = DateTime.Now;
-                roomtb.CreateUser = creater;
-                roomtb.UpdateDt = DateTime.Now;
-                roomtb.UpdateUser = creater;
-                
+                RoomTb roomtb = new RoomTb()
+                {
+                    Name = dto.Name!,
+                    FloorTbId = dto.FloorID!.Value,
+                    CreateDt = DateTime.Now,
+                    CreateUser = creater,
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = creater
+                };
+
                 RoomTb? result = await RoomInfoRepository.AddAsync(roomtb);
                 if(result is not null)
                 {
@@ -76,8 +75,6 @@ namespace FamTec.Server.Services.Room
             }
 
         }
-
-    
 
         /// <summary>
         /// 로그인한 사업장의 모든 공간정보 반환
@@ -162,10 +159,7 @@ namespace FamTec.Server.Services.Room
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                if (dto is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -173,26 +167,20 @@ namespace FamTec.Server.Services.Room
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value);
-                if(model is not null)
-                {
-                    model.Name = dto.Name!;
-                    model.UpdateDt = DateTime.Now;
-                    model.UpdateUser = creater;
-
-                    bool? UpdateRoomResult = await RoomInfoRepository.UpdateRoomInfo(model);
-                    if(UpdateRoomResult == true)
-                    {
-                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 };
-                    }
-                }
-                else
-                {
+                if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+
+                model.Name = dto.Name!;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creater;
+
+                bool? UpdateRoomResult = await RoomInfoRepository.UpdateRoomInfo(model);
+                return UpdateRoomResult switch
+                {
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = true, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -213,41 +201,34 @@ namespace FamTec.Server.Services.Room
             {
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (del is null)
+                if (del is null || del is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeid))
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                for (int i = 0; i < del.Count(); i++) 
+                foreach(int index in del)
                 {
-                    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(del[i]);
+                    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(index);
                     if (FacilityList is [_, ..])
                         return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
 
-                    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), del[i]);
-                    if(Inventory != true)
+                    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), index);
+                    if (Inventory != true)
                         return new ResponseUnit<bool?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
+
                 bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater);
-                if(DeleteResult == true)
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-                }
-                else if(DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {

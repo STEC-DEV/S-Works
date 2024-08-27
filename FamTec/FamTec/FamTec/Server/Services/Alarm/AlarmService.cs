@@ -110,9 +110,6 @@ namespace FamTec.Server.Services.Alarm
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-    
-
       
     }
 }

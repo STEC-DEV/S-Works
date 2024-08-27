@@ -34,9 +34,7 @@ namespace FamTec.Server.Services.Facility.Key
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
-                if (dto is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
@@ -57,34 +55,30 @@ namespace FamTec.Server.Services.Facility.Key
                 KeyTb.FacilityItemGroupTbId = dto.GroupID.Value;
 
                 FacilityItemKeyTb? AddKeyResult = await FacilityItemKeyInfoRepository.AddAsync(KeyTb);
-                if(AddKeyResult is not null)
-                {
-                    if(dto.ItemValues is [_, ..])
-                    {
-                        foreach(AddGroupItemValueDTO GroupDTO in dto.ItemValues)
-                        {
-                            FacilityItemValueTb ValueTB = new FacilityItemValueTb();
-                            ValueTB.ItemValue = GroupDTO.Values!;
-                            ValueTB.CreateDt = DateTime.Now;
-                            ValueTB.CreateUser = creater;
-                            ValueTB.UpdateDt = DateTime.Now;
-                            ValueTB.UpdateUser = creater;
-                            ValueTB.FacilityItemKeyTbId = AddKeyResult.Id;
+                if(AddKeyResult is null)
+                    return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
 
-                            FacilityItemValueTb? result = await FacilityItemValueInfoRepository.AddAsync(ValueTB);
-                            if(result is null)
-                            {
-                                return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
-                            }
+                if(dto.ItemValues is [_, ..])
+                {
+                    foreach(AddGroupItemValueDTO GroupDTO in dto.ItemValues)
+                    {
+                        FacilityItemValueTb ValueTB = new FacilityItemValueTb();
+                        ValueTB.ItemValue = GroupDTO.Values!;
+                        ValueTB.CreateDt = DateTime.Now;
+                        ValueTB.CreateUser = creater;
+                        ValueTB.UpdateDt = DateTime.Now;
+                        ValueTB.UpdateUser = creater;
+                        ValueTB.FacilityItemKeyTbId = AddKeyResult.Id;
+
+                        FacilityItemValueTb? result = await FacilityItemValueInfoRepository.AddAsync(ValueTB);
+                        if(result is null)
+                        {
+                            return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
                         }
                     }
+                }
 
-                    return new ResponseUnit<AddKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
-                }
+                return new ResponseUnit<AddKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch(Exception ex)
             {
@@ -97,37 +91,24 @@ namespace FamTec.Server.Services.Facility.Key
         {
             try
             {
-                if (context is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
                 
-                if (dto is null)
-                    return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
 
                 FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.ID!.Value);
-                if (KeyTB is not null)
-                {
-                    bool? UpdateResult = await FacilityItemKeyInfoRepository.UpdateKeyInfo(dto, creater);
-                    if(UpdateResult == true)
-                    {
-                        return new ResponseUnit<UpdateKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                    }
-                    else if(UpdateResult == false)
-                    {
-                        return new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                    }
-                }
-                else
-                {
+                if(KeyTB is null)
                     return new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 };
-                }
+                
+                bool? UpdateResult = await FacilityItemKeyInfoRepository.UpdateKeyInfo(dto, creater);
+                return UpdateResult switch
+                {
+                    true => new ResponseUnit<UpdateKeyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
+                    false => new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 },
+                    _ => new ResponseUnit<UpdateKeyDTO>() { message = "잘못된 요청입니다.", data = new UpdateKeyDTO(), code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -149,42 +130,38 @@ namespace FamTec.Server.Services.Facility.Key
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FacilityItemKeyTb? KeyTB = await FacilityItemKeyInfoRepository.GetKeyInfo(KeyId);
+                if(KeyTB is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                if(KeyTB is not null)
+                KeyTB.DelDt = DateTime.Now;
+                KeyTB.DelUser = creater;
+                KeyTB.DelYn = true;
+
+                bool? DeleteKeyResult = await FacilityItemKeyInfoRepository.DeleteKeyInfo(KeyTB);
+
+                if(DeleteKeyResult != true)
                 {
-                    KeyTB.DelDt = DateTime.Now;
-                    KeyTB.DelUser = creater;
-                    KeyTB.DelYn = true;
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
 
-                    bool? DeleteKeyResult = await FacilityItemKeyInfoRepository.DeleteKeyInfo(KeyTB);
-
-                    if(DeleteKeyResult != true)
+                List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId);
+                if(ItemTB is [_, ..])
+                {
+                    foreach(FacilityItemValueTb Item in ItemTB)
                     {
-                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                    }
+                        Item.DelDt = DateTime.Now;
+                        Item.DelUser = creater;
+                        Item.DelYn = true;
 
-                    List<FacilityItemValueTb>? ItemTB = await FacilityItemValueInfoRepository.GetAllValueList(KeyId);
-                    if(ItemTB is [_, ..])
-                    {
-                        foreach(FacilityItemValueTb Item in ItemTB)
+                        bool? DeleteValueResult = await FacilityItemValueInfoRepository.DeleteValueInfo(Item);
+                        if(DeleteValueResult != true)
                         {
-                            Item.DelDt = DateTime.Now;
-                            Item.DelUser = creater;
-                            Item.DelYn = true;
-
-                            bool? DeleteValueResult = await FacilityItemValueInfoRepository.DeleteValueInfo(Item);
-                            if(DeleteValueResult != true)
-                            {
-                                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                            }
+                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                         }
                     }
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+
             }
             catch(Exception ex)
             {
@@ -211,19 +188,12 @@ namespace FamTec.Server.Services.Facility.Key
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? DeleteResult = await FacilityItemKeyInfoRepository.DeleteKeyList(KeyId, creater);
-
-                if(DeleteResult == true)
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {

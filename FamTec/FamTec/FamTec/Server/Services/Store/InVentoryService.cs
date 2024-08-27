@@ -32,20 +32,13 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                if (dto is null)
+                
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string GUID = Guid.NewGuid().ToString();
@@ -94,17 +87,14 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
-                if (context is null)
+                if (context is null || dto is null)
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
-                    return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (placeid is null)
-                    return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (creater is null)
+
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string GUID = Guid.NewGuid().ToString();
@@ -224,10 +214,7 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
-                if(context is null)
-                    return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                if(materialid is null)
+                if(context is null || materialid is null)
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);

@@ -79,13 +79,14 @@ namespace FamTec.Server.Services.BlackList
                     return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackList();
-                if(model is [_, ..])
+                if(model is not null && model.Any())
                 {
                     List<BlackListDTO> dto = model.Select(e => new BlackListDTO
                     {
                         ID = e.Id,
                         PhoneNumber = e.Phone
                     }).ToList();
+
                     return new ResponseList<BlackListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto!, code = 200 };
                 }
                 else

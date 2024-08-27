@@ -53,16 +53,13 @@ namespace FamTec.Server.Services.Admin.Department
 
                 if (result is not null)
                 {
-                    return new ResponseUnit<AddDepartmentDTO>
+                    var DepartmentData = new AddDepartmentDTO
                     {
-                        message = "데이터가 정상 처리되었습니다.",
-                        data = new AddDepartmentDTO
-                        {
-                            Name = result.Name,
-                            ManagerYN = result.ManagementYn
-                        },
-                        code = 200
+                        Name = result.Name,
+                        ManagerYN = result.ManagementYn
                     };
+
+                    return new ResponseUnit<AddDepartmentDTO> { message = "데이터가 정상 처리되었습니다.", data = DepartmentData, code = 200 };
                 }
                 else
                 {
@@ -89,19 +86,16 @@ namespace FamTec.Server.Services.Admin.Department
             {
                 List<DepartmentsTb>? model = await DepartmentInfoRepository.GetAllList();
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                 {
-                    return new ResponseList<DepartmentDTO>
+                    var departmentData = model.Select(e => new DepartmentDTO
                     {
-                        message = "데이터가 정상 처리되었습니다.",
-                        data = model.Select(e => new DepartmentDTO
-                        {
-                            Id = e.Id,
-                            Name = e.Name,
-                            ManageYN = e.ManagementYn
-                        }).ToList(),
-                        code = 200
-                    };
+                        Id = e.Id,
+                        Name = e.Name,
+                        ManageYN = e.ManagementYn
+                    }).ToList();
+
+                    return new ResponseList<DepartmentDTO> { message = "데이터가 정상 처리되었습니다.", data = departmentData, code = 200 };
                 }
                 else
                 {
@@ -126,19 +120,16 @@ namespace FamTec.Server.Services.Admin.Department
             {
                 List<DepartmentsTb>? model = await DepartmentInfoRepository.GetManageDepartmentList();
 
-                if(model is [_, ..])
+                if(model is not null && model.Any())
                 {
-                    return new ResponseList<DepartmentDTO>
+                    var DepartmentData = model.Select(e => new DepartmentDTO()
                     {
-                        message = "데이터가 정상 처리되었습니다.",
-                        data = model.Select(e => new DepartmentDTO
-                        {
-                            Id = e.Id,
-                            Name = e.Name,
-                            ManageYN = e.ManagementYn
-                        }).ToList(),
-                        code = 200
-                    };
+                        Id = e.Id,
+                        Name = e.Name,
+                        ManageYN = e.ManagementYn
+                    }).ToList();
+
+                    return new ResponseList<DepartmentDTO> { message = "데이터가 정상 처리되었습니다.", data = DepartmentData, code = 200 };
                 }
                 else
                 {

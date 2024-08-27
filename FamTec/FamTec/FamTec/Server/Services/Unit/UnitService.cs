@@ -26,47 +26,41 @@ namespace FamTec.Server.Services.Unit
         {
             try
             {
-                if (context is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
-                if (dto is null)
-                    return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
+
 
                 string? creator = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(creator))
-                    return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
-
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeidx))
+
+                if (String.IsNullOrWhiteSpace(creator) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
-                UnitTb? model = new UnitTb();
-                model.Unit = dto.Unit;
-                model.CreateDt = DateTime.Now;
-                model.CreateUser = creator;
-                model.UpdateDt = DateTime.Now;
-                model.UpdateUser = creator;
-                model.PlaceTbId = Int32.Parse(placeidx);
+                UnitTb? model = new UnitTb()
+                {
+                    Unit = dto.Unit!,
+                    CreateDt = DateTime.Now,
+                    CreateUser = creator,
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = creator,
+                    PlaceTbId = Int32.Parse(placeidx)
+                };
 
                 UnitTb? result = await UnitInfoRepository.AddAsync(model);
-
-                if (result is not null)
-                {
-                    return new ResponseUnit<UnitsDTO>()
-                    {
-                        message = "데이터가 정상 처리되었습니다.",
-                        data = new UnitsDTO()
-                        {
-                            Id = result.Id,
-                            Unit = result.Unit,
-                        },
-                        code = 200
-                    };
-                }
-                else
-                {
+                if(result is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
-                }
-               
+
+                
+                return new ResponseUnit<UnitsDTO>()
+                {
+                    message = "데이터가 정상 처리되었습니다.",
+                    data = new UnitsDTO()
+                    {
+                        Id = result.Id,
+                        Unit = result.Unit,
+                    },
+                    code = 200
+                };
             }
             catch (Exception ex)
             {
@@ -94,19 +88,16 @@ namespace FamTec.Server.Services.Unit
 
                 List<UnitTb>? model = await UnitInfoRepository.GetUnitList(Int32.Parse(placeidx));
 
-                if(model is [_, ..])
+                if(model is not null && model.Any())
                 {
-                    return new ResponseList<UnitsDTO>()
+                    var unitsDtoList = model.Select(e => new UnitsDTO
                     {
-                        message = "요청이 정상 처리되었습니다.",
-                        data = model.Select(e => new UnitsDTO
-                        {
-                            Id = e.Id,
-                            Unit = e.Unit,
-                            SystemCreate = e.PlaceTbId == null ? true : false
-                        }).ToList(),
-                        code = 200
-                    };
+                        Id = e.Id,
+                        Unit = e.Unit,
+                        SystemCreate = e.PlaceTbId == null ? true : false
+                    }).ToList();
+
+                    return new ResponseList<UnitsDTO>() { message = "요청이 정상 처리되었습니다.", data = unitsDtoList, code = 200 };
                 }
                 else
                 {
@@ -136,11 +127,9 @@ namespace FamTec.Server.Services.Unit
                 if(String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                if(unitid is null)
+                if(unitid is null || unitid.Count == 0)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                if(unitid.Count == 0)
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 foreach (int id in unitid)
                 {
@@ -148,26 +137,19 @@ namespace FamTec.Server.Services.Unit
                     if(model is null)
                         return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                    if (model.PlaceTbId == null)
+                    if (model.PlaceTbId is null)
                         return new ResponseUnit<bool?>() { message = "삭제할 수 없는 정보입니다.", data = null, code = 404 };
                 }
 
 
                 bool? result = await UnitInfoRepository.DeleteUnitInfo(unitid, creater);
 
-                if(result == true)
+                return result switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(result == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
-               
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -186,35 +168,29 @@ namespace FamTec.Server.Services.Unit
         {
             try
             {
-                if (context is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
-                    return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
+                
                 string? creator = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 UnitTb? model = await UnitInfoRepository.GetUnitInfo(dto.Id!.Value);
-                if (model is not null)
-                {
-                    model.Unit = dto.Unit!;
-                    model.UpdateDt = DateTime.Now;
-                    model.UpdateUser = creator;
-
-                    bool? result = await UnitInfoRepository.UpdateUnitInfo(model);
-
-                    if (result != true)
-                    {
-                        return new ResponseUnit<UnitsDTO>() { message = "요청을 처리하지 못하였습니다.", data = new UnitsDTO(), code = 200 };
-                    }
-
-                    return new ResponseUnit<UnitsDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                }
-                else
-                {
+                if(model is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+           
+                model.Unit = dto.Unit!;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creator;
+
+                bool? result = await UnitInfoRepository.UpdateUnitInfo(model);
+
+                return result switch
+                {
+                    true => new ResponseUnit<UnitsDTO>() { message = "요청을 처리하지 못하였습니다.", data = new UnitsDTO(), code = 200 },
+                    false => new ResponseUnit<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {

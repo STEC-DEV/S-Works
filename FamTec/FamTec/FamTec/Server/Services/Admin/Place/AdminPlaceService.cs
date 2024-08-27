@@ -71,21 +71,18 @@ namespace FamTec.Server.Services.Admin.Place
 
                         if(placetb is [_, ..])
                         {
-                            return new ResponseList<AllPlaceDTO>()
+                            var PlaceData = placetb.Select(e => new AllPlaceDTO()
                             {
-                                message = "요청이 정상 처리되었습니다.",
-                                data = placetb.Select(e => new AllPlaceDTO
-                                {
-                                    Id = e.Id,
-                                    PlaceCd = e.PlaceCd,
-                                    Name = e.Name,
-                                    Note = e?.Note,
-                                    ContractNum = e?.ContractNum,
-                                    ContractDt = e?.ContractDt,
-                                    Status = e.Status
-                                }).ToList(),
-                                code = 200
-                            };
+                                Id = e.Id,
+                                PlaceCd = e.PlaceCd,
+                                Name = e.Name,
+                                Note = e?.Note,
+                                ContractNum = e?.ContractNum,
+                                ContractDt = e?.ContractDt,
+                                Status = e.Status
+                            }).ToList();
+
+                            return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
                         }
                         else
                         {
@@ -102,21 +99,18 @@ namespace FamTec.Server.Services.Admin.Place
                     List<PlaceTb>? model = await PlaceInfoRepository.GetAllList();
                     if (model is [_, ..])
                     {
-                        return new ResponseList<AllPlaceDTO>()
+                        var PlaceData = model.Select(e => new AllPlaceDTO()
                         {
-                            message = "요청이 정상 처리되었습니다.",
-                            data = model.Select(e => new AllPlaceDTO
-                            {
-                                Id = e.Id,
-                                PlaceCd = e.PlaceCd,
-                                Name = e.Name,
-                                Note = e.Note,
-                                ContractNum = e.ContractNum,
-                                ContractDt = e.ContractDt,
-                                Status = e.Status
-                            }).ToList(),
-                            code = 200
-                        };
+                            Id = e.Id,
+                            PlaceCd = e.PlaceCd,
+                            Name = e.Name,
+                            Note = e.Note,
+                            ContractNum = e.ContractNum,
+                            ContractDt = e.ContractDt,
+                            Status = e.Status
+                        }).ToList();
+
+                        return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
                     }
                     else
                     {
@@ -179,7 +173,7 @@ namespace FamTec.Server.Services.Admin.Place
 
                 List<AdminPlaceDTO>? model = await AdminPlaceInfoRepository.GetMyWorks(Int32.Parse(adminidx));
 
-                if (model is [_, ..])
+                if (model is not null &&  model.Any())
                 {
                     return new ResponseList<AdminPlaceDTO>()
                     {
@@ -209,7 +203,7 @@ namespace FamTec.Server.Services.Admin.Place
             {
                 List<ManagerListDTO>? model = await AdminUserInfoRepository.GetAllAdminUserList();
 
-                if(model is [_, ..])
+                if(model is not null && model.Any())
                     return new ResponseList<ManagerListDTO> { message = "데이터가 정상 처리되었습니다.", data = model, code = 200 };
                 else 
                     return new ResponseList<ManagerListDTO> { message = "조회된 결과가 없습니다.", data = null, code = 200 };
@@ -305,47 +299,41 @@ namespace FamTec.Server.Services.Admin.Place
                     return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 PlaceTb? model = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceInfo.Id!.Value);
-                if(model is not null)
-                {
-                    model.PlaceCd = dto.PlaceInfo.PlaceCd!;
-                    model.Name = dto.PlaceInfo.Name!;
-                    model.Tel = dto.PlaceInfo.Tel!;
-                    model.ContractNum = dto.PlaceInfo.ContractNum;
-                    model.ContractDt = dto.PlaceInfo.ContractDt;
-                    model.CancelDt = dto.PlaceInfo.CancelDt;
-                    model.Status = dto.PlaceInfo.Status!.Value;
-                    model.Note = dto.PlaceInfo.Note;
-                    model.PermMachine = dto.PlacePerm.PermMachine!.Value;
-                    model.PermElec = dto.PlacePerm.PermElec!.Value;
-                    model.PermLift = dto.PlacePerm.PermLift!.Value;
-                    model.PermFire = dto.PlacePerm.PermFire!.Value;
-                    model.PermConstruct = dto.PlacePerm.PermConstruct!.Value;
-                    model.PermNetwork = dto.PlacePerm.PermNetwork!.Value;
-                    model.PermBeauty = dto.PlacePerm.PermBeauty!.Value;
-                    model.PermSecurity = dto.PlacePerm.PermSecurity!.Value;
-                    model.PermMaterial = dto.PlacePerm.PermMaterial!.Value;
-                    model.PermEnergy = dto.PlacePerm.PermEnergy!.Value;
-                    model.PermVoc = dto.PlacePerm.PermVoc!.Value;
-                    model.CreateDt = DateTime.Now;
-                    model.CreateUser = creater;
-                    model.UpdateDt = DateTime.Now;
-                    model.UpdateUser = creater;
-                    model.DepartmentTbId = dto.PlaceInfo.DepartmentID;
-
-                    bool? UpdatePlaceResult = await PlaceInfoRepository.EditPlaceInfo(model);
-                    if(UpdatePlaceResult == true)
-                    {
-                        return new ResponseUnit<UpdatePlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                    }
-                }
-                else
-                {
+                if(model is null)
                     return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+
+                model.PlaceCd = dto.PlaceInfo.PlaceCd!;
+                model.Name = dto.PlaceInfo.Name!;
+                model.Tel = dto.PlaceInfo.Tel!;
+                model.ContractNum = dto.PlaceInfo.ContractNum;
+                model.ContractDt = dto.PlaceInfo.ContractDt;
+                model.CancelDt = dto.PlaceInfo.CancelDt;
+                model.Status = dto.PlaceInfo.Status!.Value;
+                model.Note = dto.PlaceInfo.Note;
+                model.PermMachine = dto.PlacePerm.PermMachine!.Value;
+                model.PermElec = dto.PlacePerm.PermElec!.Value;
+                model.PermLift = dto.PlacePerm.PermLift!.Value;
+                model.PermFire = dto.PlacePerm.PermFire!.Value;
+                model.PermConstruct = dto.PlacePerm.PermConstruct!.Value;
+                model.PermNetwork = dto.PlacePerm.PermNetwork!.Value;
+                model.PermBeauty = dto.PlacePerm.PermBeauty!.Value;
+                model.PermSecurity = dto.PlacePerm.PermSecurity!.Value;
+                model.PermMaterial = dto.PlacePerm.PermMaterial!.Value;
+                model.PermEnergy = dto.PlacePerm.PermEnergy!.Value;
+                model.PermVoc = dto.PlacePerm.PermVoc!.Value;
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = creater;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creater;
+                model.DepartmentTbId = dto.PlaceInfo.DepartmentID;
+
+                bool? UpdatePlaceResult = await PlaceInfoRepository.EditPlaceInfo(model);
+                return UpdatePlaceResult switch
+                {
+                    true => new ResponseUnit<UpdatePlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
+                    false => new ResponseUnit<UpdatePlaceDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
+                    _ => new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {

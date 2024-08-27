@@ -31,17 +31,13 @@ namespace FamTec.Server.Services.Maintenance
         {
             try
             {
-                if (context is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                if (dto is null)
+                if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (string.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (string.IsNullOrWhiteSpace(creater))
+
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? GUID = Guid.NewGuid().ToString();
@@ -164,7 +160,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid);
                 
-                if (dto is [_, ..])
+                if (dto is not null && dto.Any())
                     return new ResponseList<MaintanceListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
                     return new ResponseList<MaintanceListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -199,7 +195,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetDateHistoryList(Convert.ToInt32(placeid), StartDate, EndDate, category, type);
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                     return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
                     return new ResponseList<MaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
@@ -232,7 +228,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 List<AllMaintanceHistoryDTO>? model = await MaintanceRepository.GetAllHistoryList(Convert.ToInt32(placeid), category, type);
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };

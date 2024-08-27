@@ -51,132 +51,179 @@ namespace FamTec.Server.Services.User
 
         public async ValueTask<ResponseUnit<string?>> LoginSelectPlaceService(HttpContext context, int placeid)
         {
-            List<Claim> authClaims = new List<Claim>();
-            string? jsonConvert = String.Empty;
-
             try
             {
-                string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
-                if(adminidx is null)
+                if(context is null)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-                
+
+                string? adminidx = Convert.ToString(context.Items["AdminIdx"]);
+                if (adminidx is null)
+                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
                 List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx));
-                if(adminplace is [_, ..])
-                {
-                    AdminPlaceTb? select = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
-                    if (select is not null)
-                    {
-                        PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(placeid);
-                        if(placetb is not null)
-                        {
-                            authClaims.Add(new Claim("UserIdx", context.Items["UserIdx"].ToString())); // USER 인덱스
-                            authClaims.Add(new Claim("Name", context.Items["Name"].ToString())); // 이름
-                            authClaims.Add(new Claim("jti", context.Items["jti"].ToString()));
-                            authClaims.Add(new Claim("AlarmYN", context.Items["AlarmYN"].ToString())); // 알람 받을지 여부
-                            authClaims.Add(new Claim("AdminYN", context.Items["AdminYN"].ToString())); // 관리자 여부
-                            authClaims.Add(new Claim("UserType", context.Items["UserType"].ToString()));
-                            authClaims.Add(new Claim("AdminIdx", context.Items["AdminIdx"].ToString())); // 관리자 인덱스
-                            authClaims.Add(new Claim("PlaceIdx", placetb.Id!.ToString()));// 사업장 인덱스
-                            authClaims.Add(new Claim("PlaceName", placetb.Name!.ToString()));// 사업장 이름
-
-                            if (context.Items["Role"].ToString() == "시스템관리자")
-                            {
-                                authClaims.Add(new Claim("Role", "시스템관리자"));
-                                authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
-                            }
-
-                            if (context.Items["Role"].ToString() == "마스터")
-                            {
-                                authClaims.Add(new Claim("Role", "마스터"));
-                                authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
-                            }
-
-                            if (context.Items["Role"].ToString() == "매니저")
-                            {
-                                authClaims.Add(new Claim("Role", "매니저"));
-                                authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
-                            }
-
-                            JObject items = new JObject();
-
-                            /* 메뉴 접근권한 */
-                            items.Add("UserPerm_Basic", context.Items["UserPerm_Basic"].ToString());
-                            items.Add("UserPerm_Machine", context.Items["UserPerm_Machine"].ToString());
-                            items.Add("UserPerm_Elec", context.Items["UserPerm_Elec"].ToString());
-                            items.Add("UserPerm_Lift", context.Items["UserPerm_Lift"].ToString());
-                            items.Add("UserPerm_Fire", context.Items["UserPerm_Fire"].ToString());
-                            items.Add("UserPerm_Construct", context.Items["UserPerm_Construct"].ToString());
-                            items.Add("UserPerm_Network", context.Items["UserPerm_Network"].ToString());
-                            items.Add("UserPerm_Beauty", context.Items["UserPerm_Beauty"].ToString());
-                            items.Add("UserPerm_Security", context.Items["UserPerm_Security"].ToString());
-                            items.Add("UserPerm_Material", context.Items["UserPerm_Material"].ToString());
-                            items.Add("UserPerm_Energy", context.Items["UserPerm_Energy"].ToString());
-                            items.Add("UserPerm_User", context.Items["UserPerm_User"].ToString());
-                            items.Add("UserPerm_Voc", context.Items["UserPerm_Voc"].ToString());
-                            jsonConvert = JsonConvert.SerializeObject(items);
-                            authClaims.Add(new Claim("UserPerms", jsonConvert));
-
-                            /* VOC 권한 */
-                            
-                            items = new JObject();
-                            
-                            items.Add("VocMachine", context.Items["VocMachine"].ToString()); // 기계민원 처리권한
-                            items.Add("VocElec", context.Items["VocElec"].ToString()); // 전기민원 처리권한
-                            items.Add("VocLift", context.Items["VocLift"].ToString()); // 승강민원 처리권한
-                            items.Add("VocFire", context.Items["VocFire"].ToString()); // 소방민원 처리권한
-                            items.Add("VocConstruct", context.Items["VocConstruct"].ToString()); // 건축민원 처리권한
-                            items.Add("VocNetwork", context.Items["VocNetwork"].ToString()); // 통신민원 처리권한
-                            items.Add("VocBeauty", context.Items["VocBeauty"].ToString()); // 미화민원 처리권한
-                            items.Add("VocSecurity", context.Items["VocSecurity"].ToString()); // 보안민원 처리권한
-                            items.Add("VocDefault", context.Items["VocDefault"].ToString()); // 기타 처리권한
-                            jsonConvert = JsonConvert.SerializeObject(items);
-                            authClaims.Add(new Claim("VocPerms", jsonConvert));
-                            
-                            /* PLACE 권한 */
-                            items = new JObject();
-                            items.Add("PlacePerm_Machine", placetb.PermMachine.ToString());
-                            items.Add("PlacePerm_Elec", placetb.PermElec.ToString());
-                            items.Add("PlacePerm_Lift", placetb.PermLift.ToString());
-                            items.Add("PlacePerm_Fire", placetb.PermFire.ToString());
-                            items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString());
-                            items.Add("PlacePerm_Network", placetb.PermNetwork.ToString());
-                            items.Add("PlacePerm_Beauty", placetb.PermBeauty.ToString());
-                            items.Add("PlacePerm_Security", placetb.PermSecurity.ToString());
-                            items.Add("PlacePerm_Material", placetb.PermMaterial.ToString());
-                            items.Add("PlacePerm_Energy", placetb.PermEnergy.ToString());
-                            items.Add("PlacePerm_Voc", placetb.PermVoc.ToString());
-                            jsonConvert = JsonConvert.SerializeObject(items);
-                            authClaims.Add(new Claim("PlacePerms", jsonConvert));
-
-                            // JWT 인증 페이로드 사인 비밀키
-                            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
-
-                            JwtSecurityToken token = new JwtSecurityToken(
-                                issuer: Configuration["JWT:Issuer"],
-                                audience: Configuration["JWT:Audience"],
-                                expires: DateTime.Now.AddDays(1),
-                                claims: authClaims,
-                                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
-
-                            string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                            return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
-                        }
-                        else
-                        {
-                            return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
-                        }
-                    }
-                    else
-                    {
-                        return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
-                    }
-                }
-                else
-                {
+                if(adminplace is null || !adminplace.Any())
                     return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+
+                AdminPlaceTb? selectplace = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
+                if(selectplace is null)
+                    return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
+
+                PlaceTb? placeInfo = await PlaceInfoRepository.GetByPlaceInfo(placeid);
+                if(placeInfo is null || placeInfo.Name is null)
+                    return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
+
+                /* USER TOKEN 검사 */
+                var checkUserToken = new[]
+                {
+                    "UserIdx", "Name","jti","AlarmYN","UserType","AdminIdx","Role"
+                };
+
+                foreach (var key in checkUserToken)
+                {
+                    if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim("UserIdx", context.Items["UserIdx"]!.ToString()!), // USER 인덱스
+                    new Claim("Name", context.Items["Name"]!.ToString()!), // 이름
+                    new Claim("jti", context.Items["jti"]!.ToString()!), // JTI 
+                    new Claim("AlarmYN", context.Items["AlarmYN"]!.ToString()!), // 알람받을지 여부
+                    new Claim("AdminYN", context.Items["AdminYN"]!.ToString()!), // 관리자 여부
+                    new Claim("UserType", context.Items["UserType"]!.ToString()!), // 직책
+                    new Claim("AdminIdx", context.Items["AdminIdx"]!.ToString()!), // 관리자 인덱스
+                    new Claim("PlaceIdx", placeInfo.Id!.ToString()), // 사업장 인덱스
+                    new Claim("PlaceName", placeInfo.Name!.ToString()) // 사업장 명
+                };
+
+                //string? role = context.Items["Role"]?.ToString();
+                string? role = context.Items["Role"] switch
+                {
+                    "시스템관리자" => "SystemManager",
+                    "마스터" => "Master",
+                    "매니저" => "Manager",
+                    _ => null
+                };
+
+                if(String.IsNullOrWhiteSpace(role))
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                authClaims.Add(new Claim("Role", role));
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+
+                /* USER 권한 TOKEN 검사 */
+                var checkPermToken = new[]
+                {
+                    "UserPerm_Basic", 
+                    "UserPerm_Machine",
+                    "UserPerm_Elec",
+                    "UserPerm_Lift",
+                    "UserPerm_Fire",
+                    "UserPerm_Construct",
+                    "UserPerm_Network",
+                    "UserPerm_Beauty",
+                    "UserPerm_Security",
+                    "UserPerm_Material",
+                    "UserPerm_Energy",
+                    "UserPerm_User",
+                    "UserPerm_Voc"
+                };
+
+                foreach (var key in checkPermToken)
+                {
+                    if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+                var userPermissions = new JObject
+                {
+                    { "UserPerm_Basic", context.Items["UserPerm_Basic"]!.ToString() },
+                    { "UserPerm_Machine", context.Items["UserPerm_Machine"]!.ToString() },
+                    { "UserPerm_Elec", context.Items["UserPerm_Elec"]!.ToString() },
+                    { "UserPerm_Lift", context.Items["UserPerm_Lift"]!.ToString() },
+                    { "UserPerm_Fire", context.Items["UserPerm_Fire"]!.ToString() },
+                    { "UserPerm_Construct", context.Items["UserPerm_Construct"]!.ToString() },
+                    { "UserPerm_Network", context.Items["UserPerm_Network"]!.ToString() },
+                    { "UserPerm_Beauty", context.Items["UserPerm_Beauty"]!.ToString() },
+                    { "UserPerm_Security", context.Items["UserPerm_Security"]!.ToString() },
+                    { "UserPerm_Material", context.Items["UserPerm_Material"]!.ToString() },
+                    { "UserPerm_Energy", context.Items["UserPerm_Energy"]!.ToString() },
+                    { "UserPerm_User", context.Items["UserPerm_User"]!.ToString() },
+                    { "UserPerm_Voc", context.Items["UserPerm_Voc"]!.ToString() }
+                };
+                authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                /* USER VOC TOKEN 검사 */
+                var checkVocPermToken = new[]
+               {
+                    "VocMachine",
+                    "VocElec",
+                    "VocLift",
+                    "VocFire",
+                    "VocConstruct",
+                    "VocNetwork",
+                    "VocBeauty",
+                    "VocSecurity",
+                    "VocDefault"
+                };
+                foreach (var key in checkVocPermToken)
+                {
+                    if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+                var vocPermissions = new JObject
+                {
+                    { "VocMachine", context.Items["VocMachine"]!.ToString() },
+                    { "VocElec", context.Items["VocElec"]!.ToString() },
+                    { "VocLift", context.Items["VocLift"]!.ToString() },
+                    { "VocFire", context.Items["VocFire"]!.ToString() },
+                    { "VocConstruct", context.Items["VocConstruct"]!.ToString() },
+                    { "VocNetwork", context.Items["VocNetwork"]!.ToString() },
+                    { "VocBeauty", context.Items["VocBeauty"]!.ToString() },
+                    { "VocSecurity", context.Items["VocSecurity"]!.ToString() },
+                    { "VocDefault", context.Items["VocDefault"]!.ToString() }
+                };
+                authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermissions)));
+
+                foreach (var key in checkPermToken)
+                {
+                    if (String.IsNullOrWhiteSpace(context.Items[key]?.ToString()))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+                var placePermissions = new JObject
+                {
+                    { "PlacePerm_Machine", placeInfo.PermMachine.ToString() },
+                    { "PlacePerm_Elec", placeInfo.PermElec.ToString() },
+                    { "PlacePerm_Lift", placeInfo.PermLift.ToString() },
+                    { "PlacePerm_Fire", placeInfo.PermFire.ToString() },
+                    { "PlacePerm_Construct", placeInfo.PermConstruct.ToString() },
+                    { "PlacePerm_Network", placeInfo.PermNetwork.ToString() },
+                    { "PlacePerm_Beauty", placeInfo.PermBeauty.ToString() },
+                    { "PlacePerm_Security", placeInfo.PermSecurity.ToString() },
+                    { "PlacePerm_Material", placeInfo.PermMaterial.ToString() },
+                    { "PlacePerm_Energy", placeInfo.PermEnergy.ToString() },
+                    { "PlacePerm_Voc", placeInfo.PermVoc.ToString() }
+                };
+                authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(placePermissions)));
+
+
+                // JWT 인증 페이로드 사인 비밀키
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                JwtSecurityToken token = new JwtSecurityToken(
+                    issuer: Configuration["JWT:Issuer"],
+                    audience: Configuration["JWT:Audience"],
+                    expires: DateTime.Now.AddDays(1),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
@@ -190,9 +237,6 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public async ValueTask<ResponseUnit<string?>> UserLoginService(LoginDTO dto)
         {
-            List<Claim> authClaims = new List<Claim>();
-            string? jsonConvert = String.Empty;
-
             try
             {
                 UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!);
@@ -203,156 +247,164 @@ namespace FamTec.Server.Services.User
                 if(AdminYN == false) // 일반유저
                 {
                     PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value);
-                            
-                    if(placetb is not null)
-                    {
-                        authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // + USERID
-                        authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // + USERID
-                        authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                        authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
-                        authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
-                        authClaims.Add(new Claim("UserType", "User"));
-                        authClaims.Add(new Claim("Role", "User"));
-                        authClaims.Add(new Claim(ClaimTypes.Role, "User"));
-                        authClaims.Add(new Claim("PlaceIdx", placetb.Id!.ToString()));// 사업장 인덱스
-                        authClaims.Add(new Claim("PlaceName", placetb.Name!.ToString()));// 사업장 이름
-                        
-                        JObject items = new JObject();
-
-                        /* 메뉴 접근권한 */
-                        items.Add("UserPerm_Basic", usertb.PermBasic);
-                        items.Add("UserPerm_Machine", usertb.PermMachine);
-                        items.Add("UserPerm_Elec", usertb.PermElec);
-                        items.Add("UserPerm_Lift", usertb.PermLift);
-                        items.Add("UserPerm_Fire", usertb.PermFire);
-                        items.Add("UserPerm_Construct", usertb.PermConstruct);
-                        items.Add("UserPerm_Network", usertb.PermNetwork);
-                        items.Add("UserPerm_Beauty", usertb.PermBeauty);
-                        items.Add("UserPerm_Security", usertb.PermSecurity);
-                        items.Add("UserPerm_Material", usertb.PermMaterial);
-                        items.Add("UserPerm_Energy", usertb.PermEnergy);
-                        items.Add("UserPerm_User", usertb.PermUser);
-                        items.Add("UserPerm_Voc", usertb.PermVoc);
-                        jsonConvert = JsonConvert.SerializeObject(items);
-                        authClaims.Add(new Claim("UserPerms", jsonConvert));
-                                
-                        items = new JObject();
-                        /* VOC 권한 */
-                        items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
-                        items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
-                        items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
-                        items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
-                        items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
-                        items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
-                        items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
-                        items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                        items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
-                        jsonConvert = JsonConvert.SerializeObject(items);
-                        authClaims.Add(new Claim("VocPerms", jsonConvert));
-
-                        /* 사업장 권한 */
-                        items.Add("PlacePerm_Machine", placetb.PermMachine.ToString()); // 사업장 기계메뉴 권한
-                        items.Add("PlacePerm_Elec", placetb.PermElec.ToString()); // 사업장 전기메뉴 권한
-                        items.Add("PlacePerm_Lift", placetb.PermLift.ToString()); // 사업장 승강메뉴 권한
-                        items.Add("PlacePerm_Fire", placetb.PermFire.ToString()); // 사업장 소방메뉴 권한
-                        items.Add("PlacePerm_Construct", placetb.PermConstruct.ToString()); // 사업장 건축메뉴 권한
-                        items.Add("PlacePerm_Network", placetb.PermNetwork.ToString()); // 사업장 통신메뉴 권한
-                        items.Add("PlacePerm_Beauty", placetb.PermBeauty.ToString()); // 사업장 미화메뉴 권한
-                        items.Add("PlacePerm_Security", placetb.PermSecurity.ToString()); // 사업장 보안메뉴 권한
-                        items.Add("PlacePerm_Material", placetb.PermMaterial.ToString()); // 사업장 자재메뉴 권한
-                        items.Add("PlacePerm_Energy", placetb.PermEnergy.ToString()); // 사업장 전기메뉴 권한
-                        items.Add("PlacePerm_Voc", placetb.PermVoc.ToString()); // 사업장 VOC 권한
-                                
-                        jsonConvert = JsonConvert.SerializeObject(items);
-                        authClaims.Add(new Claim("PlacePerms", jsonConvert));
-
-
-
-                        // JWT 인증 페이로드 사인 비밀키
-                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
-
-                        JwtSecurityToken token = new JwtSecurityToken(
-                            issuer: Configuration["JWT:Issuer"],
-                            audience: Configuration["JWT:Audience"],
-                            expires: DateTime.Now.AddDays(1),
-                            claims: authClaims,
-                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
-
-                        string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-                        return new ResponseUnit<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
-                    }
-                    else // 잘못된 요청입니다.
-                    {
+                    if(placetb is null)
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                    }
+
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim("UserIdx", usertb.Id.ToString()), // USERID
+                        new Claim("Name", usertb.Name!.ToString()), // USERNAME
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", usertb.AlarmYn!.ToString()), // 알람 받을지 여부
+                        new Claim("AdminYN", usertb.AdminYn!.ToString()), // 관리자 여부
+                        new Claim("UserType", "User"),
+                        new Claim("Role", "User"),
+                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim("PlaceIdx", placetb.Id!.ToString()), // 사업장 인덱스
+                        new Claim("PlaceName", placetb.Name!.ToString()) // 사업장 명칭
+                    };
+
+
+                    /* 메뉴 접근권한 */
+                    var userPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", usertb.PermBasic},
+                        { "UserPerm_Machine", usertb.PermMachine},
+                        { "UserPerm_Elec", usertb.PermElec},
+                        { "UserPerm_Lift",usertb.PermLift},
+                        { "UserPerm_Fire",usertb.PermFire},
+                        { "UserPerm_Construct",usertb.PermConstruct},
+                        { "UserPerm_Network",usertb.PermNetwork },
+                        { "UserPerm_Beauty",usertb.PermBeauty},
+                        { "UserPerm_Security", usertb.PermSecurity},
+                        { "UserPerm_Material", usertb.PermMaterial},
+                        { "UserPerm_Energy", usertb.PermEnergy},
+                        { "UserPerm_User", usertb.PermUser},
+                        { "UserPerm_Voc", usertb.PermVoc}
+                    };
+
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
+
+                    /* VOC 권한 */
+                    var vocPermission = new JObject
+                    {
+                        { "VocMachine", usertb.VocMachine}, // 기계민원 처리권한
+                        { "VocElec", usertb.VocElec}, // 전기민원 처리권한
+                        { "VocLift",usertb.VocLift}, // 승강민원 처리권한
+                        { "VocFire", usertb.VocFire}, // 소방민원 처리권한
+                        { "VocConstruct", usertb.VocConstruct}, // 건축민원 처리권한
+                        { "VocNetwork", usertb.VocNetwork}, // 통신민원 처리권한
+                        { "VocBeauty", usertb.VocBeauty}, // 미화민원 처리권한
+                        { "VocSecurity", usertb.VocSecurity}, // 보안민원 처리권한
+                        { "VocDefault", usertb.VocEtc}, // 기타 처리권한
+                    };
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermission)));
+
+
+                    /* 사업장 권한 */
+                    var PlacePermission = new JObject
+                    {
+                        { "PlacePerm_Machine", placetb.PermMachine}, // 사업장 기계메뉴 권한
+                        { "PlacePerm_Elec",placetb.PermElec}, // 사업장 전기메뉴 권한
+                        { "PlacePerm_Lift", placetb.PermLift}, // 사업장 승강메뉴 권한
+                        { "PlacePerm_Fire", placetb.PermFire}, // 사업장 소방메뉴 권한
+                        {"PlacePerm_Construct", placetb.PermConstruct}, // 사업장 건축메뉴 권한
+                        { "PlacePerm_Network", placetb.PermNetwork}, // 사업장 통신메뉴 권한
+                        { "PlacePerm_Beauty", placetb.PermBeauty}, // 사업장 미화메뉴 권한
+                        { "PlacePerm_Security", placetb.PermSecurity}, // 사업장 보안메뉴 권한
+                        { "PlacePerm_Material", placetb.PermMaterial}, // 사업장 자재메뉴 권한
+                        { "PlacePerm_Energy", placetb.PermEnergy}, // 사업장 에너지메뉴 권한
+                        { "PlacePerm_Voc", placetb.PermVoc} // 사업장 VOC 권한
+                    };
+
+                    authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(PlacePermission)));
+
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+
+                    JwtSecurityToken token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuer"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddDays(1),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+
+                    string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                    return new ResponseUnit<string?>() { message = "로그인 성공(유저).", data = accessToken, code = 200 };
                 }
                 else // 관리자
                 {
                     // 위에만큼 담는데 (사업장 은 빼고)
                     AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
-                    
-                    if (admintb is not null)
+                    if(admintb is null || String.IsNullOrWhiteSpace(admintb.Type))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    var authClaims = new List<Claim>
                     {
-                        authClaims.Add(new Claim("UserIdx", usertb.Id.ToString())); // USER 인덱스
-                        authClaims.Add(new Claim("Name", usertb.Name!.ToString())); // 이름
-                        authClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                        authClaims.Add(new Claim("AlarmYN", usertb.AlarmYn!.ToString())); // 알람 받을지 여부
-                        authClaims.Add(new Claim("AdminYN", usertb.AdminYn!.ToString())); // 관리자 여부
-                        authClaims.Add(new Claim("UserType", "ADMIN"));
-                        authClaims.Add(new Claim("AdminIdx", admintb.Id!.ToString())); // 관리자 인덱스
+                        new Claim("UserIdx", usertb.Id.ToString()), // 인덱스
+                        new Claim("Name", usertb.Name!.ToString()), // 이름
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("AlarmYN", usertb.AlarmYn!.ToString()), // 알람 받을지 여부
+                        new Claim("AdminYN", usertb.AdminYn!.ToString()), // 관리자 여부
+                        new Claim("UserType", "ADMIN"), // 사용자 타입
+                        new Claim("AdminIdx", admintb.Id!.ToString()) // 관리자 인덱스
+                    };
+
+                    string? adminType = admintb.Type switch
+                    {
+                        "시스템관리자" => "SystemManager",
+                        "마스터" => "Master",
+                        "매니저" => "Manager",
+                        _ => null
+                    };
+                    if(String.IsNullOrWhiteSpace(adminType))
+                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    
+                    authClaims.Add(new Claim("Role", admintb.Type));
+                    authClaims.Add(new Claim(ClaimTypes.Role, adminType));
+
+
+
+                    // 메뉴 접근권한
+                    var UserPermissions = new JObject
+                    {
+                        { "UserPerm_Basic", usertb.PermBasic},
+                        { "UserPerm_Machine", usertb.PermMachine},
+                        { "UserPerm_Elec", usertb.PermElec},
+                        { "UserPerm_Lift", usertb.PermLift},
+                        { "UserPerm_Fire", usertb.PermFire},
+                        { "UserPerm_Construct", usertb.PermConstruct},
+                        { "UserPerm_Network", usertb.PermNetwork},
+                        {"UserPerm_Beauty" ,usertb.PermBeauty},
+                        { "UserPerm_Security", usertb.PermSecurity},
+                        { "UserPerm_Material", usertb.PermMaterial},
+                        { "UserPerm_Energy", usertb.PermEnergy},
+                        { "UserPerm_User", usertb.PermUser},
+                        { "UserPerm_Voc", usertb.PermVoc}
+                    };
+
                         
-                        if (admintb.Type == "시스템관리자")
-                        {
-                            authClaims.Add(new Claim("Role", "시스템관리자"));
-                            authClaims.Add(new Claim(ClaimTypes.Role, "SystemManager"));
-                        }
-                        if (admintb.Type == "마스터")
-                        {
-                            authClaims.Add(new Claim("Role", "마스터"));
-                            authClaims.Add(new Claim(ClaimTypes.Role, "Master"));
-                        }
-                        if (admintb.Type == "매니저")
-                        {
-                            authClaims.Add(new Claim("Role", "매니저"));
-                            authClaims.Add(new Claim(ClaimTypes.Role, "Manager"));
-                        }
+                    authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(UserPermissions)));
 
-                        JObject items = new JObject();
+                    // VOC 권한
+                    var VocPermissions = new JObject
+                    {
+                        { "VocMachine", usertb.VocMachine}, // 기계민원 처리권한
+                        { "VocElec", usertb.VocElec}, // 전기민원 처리권한
+                        { "VocLift", usertb.VocLift}, // 승강민원 처리권한
+                        { "VocFire", usertb.VocFire}, // 소방민원 처리권한
+                        { "VocConstruct", usertb.VocConstruct}, // 건축민원 처리권한
+                        { "VocNetwork", usertb.VocNetwork}, // 통신민원 처리권한
+                        { "VocBeauty", usertb.VocBeauty}, // 미화민원 처리권한
+                        { "VocSecurity", usertb.VocSecurity}, // 보안민원 처리권한
+                        { "VocDefault", usertb.VocEtc} // 기타 처리권한
+                    };
 
-                        // 메뉴 접근권한
-                        items.Add("UserPerm_Basic", usertb.PermBasic);
-                        items.Add("UserPerm_Machine", usertb.PermMachine);
-                        items.Add("UserPerm_Elec", usertb.PermElec);
-                        items.Add("UserPerm_Lift", usertb.PermLift);
-                        items.Add("UserPerm_Fire", usertb.PermFire);
-                        items.Add("UserPerm_Construct", usertb.PermConstruct);
-                        items.Add("UserPerm_Network", usertb.PermNetwork);
-                        items.Add("UserPerm_Beauty", usertb.PermBeauty);
-                        items.Add("UserPerm_Security", usertb.PermSecurity);
-                        items.Add("UserPerm_Material", usertb.PermMaterial);
-                        items.Add("UserPerm_Energy", usertb.PermEnergy);
-                        items.Add("UserPerm_User", usertb.PermUser);
-                        items.Add("UserPerm_Voc", usertb.PermVoc);
-                        jsonConvert = JsonConvert.SerializeObject(items);
-                        authClaims.Add(new Claim("UserPerms", jsonConvert));
-
-                        items = new JObject();
-                        // VOC 권한
-                        items.Add("VocMachine", usertb.VocMachine.ToString()); // 기계민원 처리권한
-                        items.Add("VocElec", usertb.VocElec.ToString()); // 전기민원 처리권한
-                        items.Add("VocLift", usertb.VocLift.ToString()); // 승강민원 처리권한
-                        items.Add("VocFire", usertb.VocFire.ToString()); // 소방민원 처리권한
-                        items.Add("VocConstruct", usertb.VocConstruct.ToString()); // 건축민원 처리권한
-                        items.Add("VocNetwork", usertb.VocNetwork.ToString()); // 통신민원 처리권한
-                        items.Add("VocBeauty", usertb.VocBeauty.ToString()); // 미화민원 처리권한
-                        items.Add("VocSecurity", usertb.VocSecurity.ToString()); // 보안민원 처리권한
-                        items.Add("VocDefault", usertb.VocEtc.ToString()); // 기타 처리권한
-                        jsonConvert = JsonConvert.SerializeObject(items);
-                        authClaims.Add(new Claim("VocPerms", jsonConvert));
+                    authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(VocPermissions)));
 
 
-                        // JWT 인증 페이로드 사인 비밀키
-                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+                    // JWT 인증 페이로드 사인 비밀키
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
 
                         JwtSecurityToken token = new JwtSecurityToken(
                             issuer: Configuration["JWT:Issuer"],
@@ -363,11 +415,7 @@ namespace FamTec.Server.Services.User
 
                         string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
                         return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                    }
+                   
                 }
             }
             catch (Exception ex)

@@ -38,11 +38,11 @@ namespace FamTec.Server.Services.KakaoLog
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid));
-                if(BuildingList is not [_, ..])
+                if(BuildingList is null || !BuildingList.Any())
                     return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
                 List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogList(Convert.ToInt32(placeid));
-                if (KakaoList is [_, ..])
+                if (KakaoList is not null && KakaoList.Any())
                 {
                     List<KakaoLogListDTO>? dto = (from LogTB in KakaoList
                                                   join BuildingTB in BuildingList

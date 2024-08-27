@@ -69,97 +69,77 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-                string NewFileName = String.Empty;
+                if (context is null || dto is null)
+                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                if (context is null)
-                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                
-                if (dto is null)
-                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? Creater = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(Creater))
-                    return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-                if(String.IsNullOrWhiteSpace(UserIdx))
+
+                if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                if (files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(UserIdx, files);
-                }
+                string NewFileName = files is not null ? FileService.SetNewFileName(UserIdx, files) : String.Empty;
 
                 bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
-                if(BuildingCodeCheck != true)
+                if (BuildingCodeCheck != true)
                     return new ResponseUnit<AddBuildingDTO>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
 
                 // 건물 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
-
                 di = new DirectoryInfo(PlaceFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                BuildingTb? model = new BuildingTb();
-                model.BuildingCd = dto.Code!; // 건물코드
-                model.Name = dto.Name!; // 건물명
-                model.Address = dto.Address; // 주소
-                model.Tel = dto.Tel; // 전화번호
-                model.Usage = dto.Usage; // 건물용도
-                model.ConstComp = dto.ConstCompany; // 시공업체
-                model.CompletionDt = dto.CompletionDT; // 준공년월
-                model.BuildingStruct = dto.BuildingStruct; // 건물구조
-                model.RoofStruct = dto.RoofStruct; // 지붕구조
-                model.GrossFloorArea = dto.GrossFloorArea; // 연면적
-                model.LandArea = dto.LandArea; // 대지면적
-                model.BuildingArea = dto.BuildingArea; // 건축면적
-                model.FloorNum = dto.FloorNum; // 건물층수
-                model.GroundFloorNum = dto.GroundFloorNum; // 지상층수
-                model.BasementFloorNum = dto.BasementFloorNum; // 지하층수
-                model.BuildingHeight = dto.BuildingHeight; // 건물높이
-                model.ParkingNum = dto.ParkingNum; // 지상높이
-                model.InnerParkingNum = dto.InnerParkingNum; // 옥내대수
-                model.OuterParkingNum = dto.OuterParkingNum; // 옥외대수
-                model.ElecCapacity = dto.ElecCapacity; // 전기용량
-                model.FaucetCapacity = dto.FaucetCapacity; // 수전용량
-                model.WaterCapacity = dto.WaterCapacity; // 급수용량
-                model.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
-                model.WaterTank = dto.WaterTank; // 저수조
-                model.GasCapacity = dto.GasCapacity; // 가스용량
-                model.Boiler = dto.Boiler; // 보일러
-                model.WaterDispenser = dto.WaterDispenser; // 냉온수기
-                model.LiftNum = dto.LiftNum; // 승강기대수
-                model.PeopleLiftNum = dto.PeopleLiftNum; // 인승용
-                model.CargoLiftNum = dto.CargoLiftNum; // 화물용
-                model.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
-                model.HeatCapacity = dto.HeatCapacity; // 난방용량
-                model.CoolCapacity = dto.CoolCapacity; // 냉방용량
-                model.LandscapeArea = dto.LandScapeArea; // 조경면적
-                model.GroundArea = dto.GroundArea; // 지상면적
-                model.RooftopArea = dto.RooftopArea; // 옥상면적
-                model.ToiletNum = dto.ToiletNum; // 화장실개수
-                model.MenToiletNum = dto.MenToiletNum; // 남자화장실 개소
-                model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
-                model.FireRating = dto.FireRating; // 소방등급
-                model.SepticTankCapacity = dto.SeptictankCapacity;
-                model.CreateDt = DateTime.Now;
-                model.CreateUser = Creater;
-                model.UpdateDt = DateTime.Now;
-                model.UpdateUser = Creater;
-                model.PlaceTbId = Int32.Parse(placeidx);
-
-                if(files is not null)
+                BuildingTb? model = new BuildingTb()
                 {
-                    model.Image = NewFileName;
-                }
-                else
-                {
-                    model.Image = null;
-                }
+                    BuildingCd = dto.Code!, // 건물코드
+                    Name = dto.Name!, // 건물명
+                    Address = dto.Address, // 주소
+                    Tel = dto.Tel, // 전화번호
+                    Usage = dto.Usage, // 건물용도
+                    ConstComp = dto.ConstCompany, // 시공업체
+                    CompletionDt = dto.CompletionDT, // 준공년월
+                    BuildingStruct = dto.BuildingStruct, // 건물구조
+                    RoofStruct = dto.RoofStruct, // 지붕구조
+                    GrossFloorArea = dto.GrossFloorArea, // 연면적
+                    LandArea = dto.LandArea, // 대지면적
+                    BuildingArea = dto.BuildingArea, // 건축면적
+                    FloorNum = dto.FloorNum, // 건물층수
+                    GroundFloorNum = dto.GroundFloorNum, // 지상층수
+                    BasementFloorNum = dto.BasementFloorNum, // 지하층수
+                    BuildingHeight = dto.BuildingHeight, // 건물높이
+                    ParkingNum = dto.ParkingNum, // 지상높이
+                    InnerParkingNum = dto.InnerParkingNum, // 옥내대수
+                    OuterParkingNum = dto.OuterParkingNum, // 옥외대수
+                    ElecCapacity = dto.ElecCapacity, // 전기용량
+                    FaucetCapacity = dto.FaucetCapacity, // 수전용량
+                    WaterCapacity = dto.WaterCapacity, // 급수용량
+                    ElevWaterCapacity = dto.ElevWaterCapacity, // 고가수조
+                    WaterTank = dto.WaterTank, // 저수조
+                    GasCapacity = dto.GasCapacity, // 가스용량
+                    Boiler = dto.Boiler, // 보일러
+                    WaterDispenser = dto.WaterDispenser, // 냉온수기
+                    LiftNum = dto.LiftNum, // 승강기대수
+                    PeopleLiftNum = dto.PeopleLiftNum, // 인승용
+                    CargoLiftNum = dto.CargoLiftNum, // 화물용
+                    CoolHeatCapacity = dto.CoolHeatCapacity, // 냉난방용량
+                    HeatCapacity = dto.HeatCapacity, // 난방용량
+                    CoolCapacity = dto.CoolCapacity, // 냉방용량
+                    LandscapeArea = dto.LandScapeArea, // 조경면적
+                    GroundArea = dto.GroundArea, // 지상면적
+                    RooftopArea = dto.RooftopArea, // 옥상면적
+                    ToiletNum = dto.ToiletNum, // 화장실개수
+                    MenToiletNum = dto.MenToiletNum, // 남자화장실 개소
+                    WomenToiletNum = dto.WomenToiletNum, // 여자화장실 개소
+                    FireRating = dto.FireRating, // 소방등급
+                    SepticTankCapacity = dto.SeptictankCapacity,
+                    CreateDt = DateTime.Now,
+                    CreateUser = Creater,
+                    UpdateDt = DateTime.Now,
+                    UpdateUser = Creater,
+                    PlaceTbId = Int32.Parse(placeidx),
+                    Image = files is not null ? NewFileName : null
+                };
 
                 BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model);
                 
@@ -254,22 +234,19 @@ namespace FamTec.Server.Services.Building
 
                 List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                 {
-                    return new ResponseList<BuildinglistDTO>()
+                    var BuildingData = model.Select(e => new BuildinglistDTO
                     {
-                        message = "요청이 정상적으로 처리되었습니다.",
-                        data = model.Select(e => new BuildinglistDTO
-                        {
-                            ID = e.Id,
-                            BuildingCD = e.BuildingCd,
-                            Name = e.Name,
-                            Address = e.Address,
-                            CompletionDT = e.CompletionDt,
-                            CreateDT = e.CreateDt
-                        }).ToList(),
-                        code = 200
-                    };
+                        ID = e.Id,
+                        BuildingCD = e.BuildingCd,
+                        Name = e.Name,
+                        Address = e.Address,
+                        CompletionDT = e.CompletionDt,
+                        CreateDT = e.CreateDt
+                    }).ToList();
+
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = BuildingData, code = 200 };
                 }
                 else
                 {
@@ -303,22 +280,19 @@ namespace FamTec.Server.Services.Building
 
                 List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingPageList(Int32.Parse(placeidx), skip, take);
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                 {
-                    return new ResponseList<BuildinglistDTO>()
+                    var BuildingData = model.Select(e => new BuildinglistDTO
                     {
-                        message = "요청이 정상적으로 처리되었습니다.",
-                        data = model.Select(e => new BuildinglistDTO
-                        {
-                            ID = e.Id,
-                            BuildingCD = e.BuildingCd,
-                            Name = e.Name,
-                            Address = e.Address,
-                            CompletionDT = e.CompletionDt,
-                            CreateDT = e.CreateDt
-                        }).ToList(),
-                        code = 200
-                    };
+                        ID = e.Id,
+                        BuildingCD = e.BuildingCd,
+                        Name = e.Name,
+                        Address = e.Address,
+                        CompletionDT = e.CompletionDt,
+                        CreateDT = e.CreateDt
+                    }).ToList();
+
+                    return new ResponseList<BuildinglistDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = BuildingData, code = 200 };
                 }
                 else
                 {
@@ -350,18 +324,15 @@ namespace FamTec.Server.Services.Building
 
                 List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
 
-                if (model is [_, ..])
+                if (model is not null && model.Any())
                 {
-                    return new ResponseList<PlaceBuildingNameDTO>()
+                    var PlaceBuildingNameData = model.Select(e => new PlaceBuildingNameDTO
                     {
-                        message = "요청이 정상적으로 처리되었습니다.",
-                        data = model.Select(e => new PlaceBuildingNameDTO
-                        {
-                            ID = e.Id,
-                            Name = e.Name,
-                        }).ToList(),
-                        code = 200
-                    };
+                        ID = e.Id,
+                        Name = e.Name
+                    }).ToList();
+
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 정상적으로 처리되었습니다.", data = PlaceBuildingNameData, code = 200 };
                 }
                 else
                 {
@@ -385,74 +356,74 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-               if (context is null)
-                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-               
-               string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-               if(String.IsNullOrWhiteSpace(placeid))
-                   return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                if (context is null)
+                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
-                if (model is not null)
-                {
-                    DetailBuildingDTO dto = new DetailBuildingDTO();
-                    dto.ID = model.Id; // 건물인덱스
-                    dto.Code = model.BuildingCd; // 건물코드
-                    dto.Name = model.Name; // 건물명
-                    dto.Address = model.Address; // 주소
-                    dto.Tel = model.Tel; // 전화번호
-                    dto.Usage = model.Usage; // 건물용도
-                    dto.ConstCompany = model.ConstComp; // 시공사
-                    dto.CompletionDT = model.CompletionDt; // 준공년월
-                    dto.BuildingStruct = model.BuildingStruct; // 건물구조
-                    dto.RoofStruct = model.RoofStruct; // 지붕구조
-                    dto.GrossFloorArea = model.GrossFloorArea; // 연면적
-                    dto.LandArea = model.LandArea; // 대지면적
-                    dto.BuildingArea = model.BuildingArea; // 건축면적
-                    dto.FloorNum = model.FloorNum; // 건물층수
-                    dto.GroundFloorNum = model.GroundFloorNum; // 지상층수
-                    dto.BasementFloorNum = model.BasementFloorNum; // 지하층수
-                    dto.BuildingHeight = model.BuildingHeight; // 건물높이
-                    dto.GroundHeight = model.GroundHeight; // 지상높이
-                    dto.BasementHeight = model.BasementHeight; // 지하깊이
-                    dto.ParkingNum = model.ParkingNum; // 주차장 대수
-                    dto.InnerParkingNum = model.InnerParkingNum; // 옥내 대수
-                    dto.OuterParkingNum = model.OuterParkingNum; // 옥외 대수
-                    dto.ElecCapacity = model.ElecCapacity; // 전기용량
-                    dto.FaucetCapacity = model.FaucetCapacity; // 수전용량
-                    dto.GenerationCapacity = model.GenerationCapacity; // 발전용량
-                    dto.WaterCapacity = model.WaterCapacity; // 급수용량
-                    dto.ElevWaterCapacity = model.ElevWaterCapacity; // 고가수조
-                    dto.WaterTank = model.WaterTank; // 저수조
-                    dto.GasCapacity = model.GasCapacity; // 가스용량
-                    dto.Boiler = model.Boiler; // 보일러
-                    dto.WaterDispenser = model.WaterDispenser; // 냉온수기
-                    dto.LiftNum = model.LiftNum; // 승강기 대수
-                    dto.PeopleLiftNum = model.PeopleLiftNum; // 인승용
-                    dto.CargoLiftNum = model.CargoLiftNum; // 화물용
-                    dto.CoolHeatCapacity = model.CoolHeatCapacity; // 냉난방용량
-                    dto.HeatCapacity = model.HeatCapacity; // 난방용량
-                    dto.CoolCapacity = model.CoolCapacity; // 냉방용량
-                    dto.LandScapeArea = model.LandscapeArea; // 조경면적
-                    dto.GroundArea = model.GroundArea; // 지상면적
-                    dto.RooftopArea = model.RooftopArea; // 옥상면적
-                    dto.ToiletNum = model.ToiletNum; // 화장실개소
-                    dto.MenToiletNum = model.MenToiletNum; // 남자화장실 개소
-                    dto.WomenToiletNum = model.WomenToiletNum; // 여자화장실 개소
-                    dto.FireRating = model.FireRating; // 소방등급
-                    dto.SeptictankCapacity = model.SepticTankCapacity; // 정화조 용량
-
-                    string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
-                    if(!String.IsNullOrWhiteSpace(model.Image))
-                    {
-                        dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image);
-                    }
-                    return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                }
-                else
-                {
+                if (model is null)
                     return new ResponseUnit<DetailBuildingDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
+
+
+                DetailBuildingDTO dto = new DetailBuildingDTO()
+                {
+                    ID = model.Id, // 건물인덱스
+                    Code = model.BuildingCd, // 건물코드
+                    Name = model.Name, // 건물명
+                    Address = model.Address, // 주소
+                    Tel = model.Tel, // 전화번호
+                    Usage = model.Usage, // 건물용도
+                    ConstCompany = model.ConstComp, // 시공사
+                    CompletionDT = model.CompletionDt, // 준공년월
+                    BuildingStruct = model.BuildingStruct, // 건물구조
+                    RoofStruct = model.RoofStruct, // 지붕구조
+                    GrossFloorArea = model.GrossFloorArea, // 연면적
+                    LandArea = model.LandArea, // 대지면적
+                    BuildingArea = model.BuildingArea, // 건축면적
+                    FloorNum = model.FloorNum, // 건물층수
+                    GroundFloorNum = model.GroundFloorNum, // 지상층수
+                    BasementFloorNum = model.BasementFloorNum, // 지하층수
+                    BuildingHeight = model.BuildingHeight, // 건물높이
+                    GroundHeight = model.GroundHeight, // 지상높이
+                    BasementHeight = model.BasementHeight, // 지하깊이
+                    ParkingNum = model.ParkingNum, // 주차장 대수
+                    InnerParkingNum = model.InnerParkingNum, // 옥내 대수
+                    OuterParkingNum = model.OuterParkingNum, // 옥외 대수
+                    ElecCapacity = model.ElecCapacity, // 전기용량
+                    FaucetCapacity = model.FaucetCapacity, // 수전용량
+                    GenerationCapacity = model.GenerationCapacity, // 발전용량
+                    WaterCapacity = model.WaterCapacity, // 급수용량
+                    ElevWaterCapacity = model.ElevWaterCapacity, // 고가수조
+                    WaterTank = model.WaterTank, // 저수조
+                    GasCapacity = model.GasCapacity, // 가스용량
+                    Boiler = model.Boiler, // 보일러
+                    WaterDispenser = model.WaterDispenser, // 냉온수기
+                    LiftNum = model.LiftNum, // 승강기 대수
+                    PeopleLiftNum = model.PeopleLiftNum, // 인승용
+                    CargoLiftNum = model.CargoLiftNum, // 화물용
+                    CoolHeatCapacity = model.CoolHeatCapacity, // 냉난방용량
+                    HeatCapacity = model.HeatCapacity, // 난방용량
+                    CoolCapacity = model.CoolCapacity, // 냉방용량
+                    LandScapeArea = model.LandscapeArea, // 조경면적
+                    GroundArea = model.GroundArea, // 지상면적
+                    RooftopArea = model.RooftopArea, // 옥상면적
+                    ToiletNum = model.ToiletNum, // 화장실개소
+                    MenToiletNum = model.MenToiletNum, // 남자화장실 개소
+                    WomenToiletNum = model.WomenToiletNum, // 여자화장실 개소
+                    FireRating = model.FireRating, // 소방등급
+                    SeptictankCapacity = model.SepticTankCapacity, // 정화조 용량
+                };
+
+                string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                if(!String.IsNullOrWhiteSpace(model.Image))
+                {
+                    dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image);
                 }
+
+                return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch (Exception ex)
             {
@@ -473,20 +444,15 @@ namespace FamTec.Server.Services.Building
             {
                 string NewFileName = String.Empty;
                 string deleteFileName = String.Empty;
-            
+
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-                if(String.IsNullOrWhiteSpace(UserIdx))
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 if (files is not null)
@@ -496,113 +462,109 @@ namespace FamTec.Server.Services.Building
 
 
                 BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value);
-                if (model is not null)
+                if(model is null)
+                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                
+                model.BuildingCd = dto.Code!; // 건물코드
+                model.Name = dto.Name!; // 건물명
+                model.Address = dto.Address; // 건물주소
+                model.Tel = dto.Tel; // 전화번호
+                model.Usage = dto.Usage; // 건물용도
+                model.ConstComp = dto.ConstCompany; // 시공사
+                model.CompletionDt = dto.CompletionDT; // 준공년월
+                model.BuildingStruct = dto.BuildingStruct; // 건물구조
+                model.RoofStruct = dto.RoofStruct; // 지붕구조
+                model.GrossFloorArea = dto.GrossFloorArea; // 연면적
+                model.LandArea = dto.LandArea; // 대지면적
+                model.BuildingArea = dto.BuildingArea; // 건축면적
+                model.FloorNum = dto.FloorNum; // 건물층수
+                model.GroundFloorNum = dto.GroundFloorNum; // 지상층수
+                model.BasementFloorNum = dto.BasementFloorNum; // 지하층수
+                model.BuildingHeight = dto.BuildingHeight; // 건물높이
+                model.GroundHeight = dto.GroundHeight; // 지상높이
+                model.BasementHeight = dto.BasementHeight; // 지하깊이
+                model.ParkingNum = dto.ParkingNum; // 주차대수
+                model.InnerParkingNum = dto.InnerParkingNum; // 옥내대수
+                model.OuterParkingNum = dto.OuterParkingNum; // 옥외대수
+                model.ElecCapacity = dto.ElecCapacity; // 전기용량
+                model.FaucetCapacity = dto.FaucetCapacity; // 수전용량
+                model.GenerationCapacity = dto.GenerationCapacity; // 발전용량
+                model.WaterCapacity = dto.WaterCapacity; // 급수용량
+                model.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
+                model.WaterTank = dto.WaterTank; // 저수조
+                model.GasCapacity = dto.GasCapacity; // 가스용량
+                model.Boiler = dto.Boiler; // 보일러
+                model.WaterDispenser = dto.WaterDispenser; // 냉온수기
+                model.LiftNum = dto.LiftNum; // 승강기대수
+                model.PeopleLiftNum = dto.PeopleLiftNum; // 인승용 대수
+                model.CargoLiftNum = dto.CargoLiftNum; // 화물용 대수
+                model.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
+                model.HeatCapacity = dto.HeatCapacity; // 난방용량
+                model.CoolCapacity = dto.CoolCapacity; // 냉방용량
+                model.LandscapeArea = dto.LandScapeArea; // 조경면적
+                model.GroundArea = dto.GroundArea; // 지상면적
+                model.RooftopArea = dto.RooftopArea; // 옥상면적
+                model.ToiletNum = dto.ToiletNum; // 화장실개수
+                model.MenToiletNum = dto.MenToiletNum; // 남자화장실 개소
+                model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
+                model.FireRating = dto.FireRating; // 소방등급
+                model.SepticTankCapacity = dto.SeptictankCapacity; // 정화조용량
+                model.UpdateDt = DateTime.Now; // 수정일자
+                model.UpdateUser = creater; // 수정자
+                model.PlaceTbId = Convert.ToInt32(placeid);
+                    
+                string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                    
+                if (files is not null) // 파일이 공백이 아닌 경우
                 {
-                    model.BuildingCd = dto.Code!; // 건물코드
-                    model.Name = dto.Name!; // 건물명
-                    model.Address = dto.Address; // 건물주소
-                    model.Tel = dto.Tel; // 전화번호
-                    model.Usage = dto.Usage; // 건물용도
-                    model.ConstComp = dto.ConstCompany; // 시공사
-                    model.CompletionDt = dto.CompletionDT; // 준공년월
-                    model.BuildingStruct = dto.BuildingStruct; // 건물구조
-                    model.RoofStruct = dto.RoofStruct; // 지붕구조
-                    model.GrossFloorArea = dto.GrossFloorArea; // 연면적
-                    model.LandArea = dto.LandArea; // 대지면적
-                    model.BuildingArea = dto.BuildingArea; // 건축면적
-                    model.FloorNum = dto.FloorNum; // 건물층수
-                    model.GroundFloorNum = dto.GroundFloorNum; // 지상층수
-                    model.BasementFloorNum = dto.BasementFloorNum; // 지하층수
-                    model.BuildingHeight = dto.BuildingHeight; // 건물높이
-                    model.GroundHeight = dto.GroundHeight; // 지상높이
-                    model.BasementHeight = dto.BasementHeight; // 지하깊이
-                    model.ParkingNum = dto.ParkingNum; // 주차대수
-                    model.InnerParkingNum = dto.InnerParkingNum; // 옥내대수
-                    model.OuterParkingNum = dto.OuterParkingNum; // 옥외대수
-                    model.ElecCapacity = dto.ElecCapacity; // 전기용량
-                    model.FaucetCapacity = dto.FaucetCapacity; // 수전용량
-                    model.GenerationCapacity = dto.GenerationCapacity; // 발전용량
-                    model.WaterCapacity = dto.WaterCapacity; // 급수용량
-                    model.ElevWaterCapacity = dto.ElevWaterCapacity; // 고가수조
-                    model.WaterTank = dto.WaterTank; // 저수조
-                    model.GasCapacity = dto.GasCapacity; // 가스용량
-                    model.Boiler = dto.Boiler; // 보일러
-                    model.WaterDispenser = dto.WaterDispenser; // 냉온수기
-                    model.LiftNum = dto.LiftNum; // 승강기대수
-                    model.PeopleLiftNum = dto.PeopleLiftNum; // 인승용 대수
-                    model.CargoLiftNum = dto.CargoLiftNum; // 화물용 대수
-                    model.CoolHeatCapacity = dto.CoolHeatCapacity; // 냉난방용량
-                    model.HeatCapacity = dto.HeatCapacity; // 난방용량
-                    model.CoolCapacity = dto.CoolCapacity; // 냉방용량
-                    model.LandscapeArea = dto.LandScapeArea; // 조경면적
-                    model.GroundArea = dto.GroundArea; // 지상면적
-                    model.RooftopArea = dto.RooftopArea; // 옥상면적
-                    model.ToiletNum = dto.ToiletNum; // 화장실개수
-                    model.MenToiletNum = dto.MenToiletNum; // 남자화장실 개소
-                    model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
-                    model.FireRating = dto.FireRating; // 소방등급
-                    model.SepticTankCapacity = dto.SeptictankCapacity; // 정화조용량
-                    model.UpdateDt = DateTime.Now; // 수정일자
-                    model.UpdateUser = creater; // 수정자
-                    model.PlaceTbId = Convert.ToInt32(placeid);
-                    
-                    string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
-                    
-                    if (files is not null) // 파일이 공백이 아닌 경우
+                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을경우
                     {
-                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있을경우
+                        deleteFileName = model.Image; // 삭제할 이름에 넣는다.
+                        model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                    }
+                    else // DB엔 없는경우
+                    {
+                        model.Image = NewFileName; // 새파일명을 모델에 넣는다.
+                    }
+                }
+                else // 파일이 공백인 경우
+                {
+                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
+                    {
+                        deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
+                        model.Image = null; // 모델의 파일명을 비운다.
+                    }
+                }
+
+                bool? updateBuilding = await BuildingInfoRepository.UpdateBuildingInfo(model);
+                if(updateBuilding == true)
+                {
+                    if(files is not null) // 파일이 공백이 아닌경우
+                    {
+                        if(!String.IsNullOrWhiteSpace(model.Image))
                         {
-                            deleteFileName = model.Image; // 삭제할 이름에 넣는다.
-                            model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                            // 파일 넣기
+                            bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
                         }
-                        else // DB엔 없는경우
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {
-                            model.Image = NewFileName; // 새파일명을 모델에 넣는다.
+                            // 파일 삭제
+                            bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
                         }
                     }
                     else // 파일이 공백인 경우
                     {
-                        if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
+                        if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {
-                            deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
-                            model.Image = null; // 모델의 파일명을 비운다.
+                            // 삭제할거
+                            bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
                         }
                     }
-
-                    bool? updateBuilding = await BuildingInfoRepository.UpdateBuildingInfo(model);
-                    if(updateBuilding == true)
-                    {
-                        if(files is not null) // 파일이 공백이 아닌경우
-                        {
-                            if(!String.IsNullOrWhiteSpace(model.Image))
-                            {
-                                // 파일 넣기
-                                bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
-                            }
-                            if(!String.IsNullOrWhiteSpace(deleteFileName))
-                            {
-                                // 파일 삭제
-                                bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
-                            }
-                        }
-                        else // 파일이 공백인 경우
-                        {
-                            if(!String.IsNullOrWhiteSpace(deleteFileName))
-                            {
-                                // 삭제할거
-                                bool DeleteFile = FileService.DeleteImageFile(PlaceFileFolderPath, deleteFileName);
-                            }
-                        }
-                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                    }
-                    else
-                    {
-                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                    }
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
             catch(Exception ex)
@@ -625,14 +587,12 @@ namespace FamTec.Server.Services.Building
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string? creater = Convert.ToString(context.Items["Name"]); // 토큰 로그인 사용자 검사
-                if (String.IsNullOrWhiteSpace(creater))
+                string? creater = Convert.ToString(context.Items["Name"]);
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                
+                // 토큰 로그인 사용자 검사 && 토큰 사업장 검사
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]); // 토큰 사업장 검사
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
 
                 // - 층이 있으면 삭제안됨
                 // - 건물 삭제시 하위 추가내용들 전체삭제
@@ -645,18 +605,12 @@ namespace FamTec.Server.Services.Building
                 }
 
                 bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater);
-                if(DeleteResult == true)
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -682,36 +636,34 @@ namespace FamTec.Server.Services.Building
                     return new ResponseList<PlaceBuildingListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx));
-                if(buildinglist is [_, ..])
-                {
-                    List<PlaceBuildingListDTO> dto = new List<PlaceBuildingListDTO>();
-
-                    foreach(BuildingTb Building in buildinglist)
-                    {
-                        PlaceBuildingListDTO buidlingDTO = new PlaceBuildingListDTO();
-                        buidlingDTO.Id = Building.Id; // 건물ID
-                        buidlingDTO.Name = Building.Name; // 건물명
-
-                        List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id);
-                        if(FloorList is [_, ..])
-                        {
-                            foreach(FloorTb Floor in FloorList)
-                            {
-                                buidlingDTO.FloorList.Add(new BuildingFloor
-                                {
-                                    Id = Floor.Id,
-                                    Name = Floor.Name
-                                });
-                            }
-                        }
-                        dto.Add(buidlingDTO);
-                    }
-                    return new ResponseList<PlaceBuildingListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
-                }
-                else
-                {
+                if(buildinglist is not { Count: > 0})
                     return new ResponseList<PlaceBuildingListDTO>() { message = "조회결과가 없습니다.", data = new List<PlaceBuildingListDTO>(), code = 200 };
+
+                
+                List<PlaceBuildingListDTO> dto = new List<PlaceBuildingListDTO>();
+
+                foreach(BuildingTb Building in buildinglist)
+                {
+                    PlaceBuildingListDTO buidlingDTO = new PlaceBuildingListDTO();
+                    buidlingDTO.Id = Building.Id; // 건물ID
+                    buidlingDTO.Name = Building.Name; // 건물명
+
+                    List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id);
+                    if(FloorList is not null && FloorList.Any())
+                    {
+                        foreach(FloorTb Floor in FloorList)
+                        {
+                            buidlingDTO.FloorList.Add(new BuildingFloor
+                            {
+                                Id = Floor.Id,
+                                Name = Floor.Name
+                            });
+                        }
+                    }
+                    dto.Add(buidlingDTO);
                 }
+                return new ResponseList<PlaceBuildingListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                
             }
             catch(Exception ex)
             {

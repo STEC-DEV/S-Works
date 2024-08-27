@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<AllVocListDTO?>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid);
+        public ValueTask<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid);
 
         /// <summary>
         /// 조건별 민원 리스트 조회
@@ -21,7 +21,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<VocListDTO>?> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status, List<int> buildingid);
+        public ValueTask<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status, List<int> buildingid);
 
         /// <summary>
         /// VOC 상세보기
@@ -29,7 +29,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<VocEmployeeDetailDTO?>> GetVocDetail(HttpContext context, int vocid);
+        public ValueTask<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid);
 
         /// <summary>
         /// VOC 유형 변경
