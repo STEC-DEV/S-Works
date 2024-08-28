@@ -48,7 +48,7 @@ namespace FamTec.Server.Repository.Alarm
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AlarmDTO?>?> GetAlarmList(int userid)
+        public async ValueTask<List<AlarmDTO>?> GetAlarmList(int userid)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace FamTec.Server.Repository.Alarm
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
-                if(!AlarmTB.Any())
+                if (AlarmTB is null || !AlarmTB.Any())
                     return null;
 
                 List<AlarmDTO?> dto = (from Alarm in AlarmTB
@@ -68,6 +68,47 @@ namespace FamTec.Server.Repository.Alarm
                                             AlarmID = Alarm.Id,
                                             VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
                                         }).ToList();
+
+                if (dto is [_, ..])
+                    return dto;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사용자의 안읽은 알람 조회 - 2주 이전건 출력안됨
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="StartDate"></param>
+        /// <returns></returns>
+        public async ValueTask<List<AlarmDTO>?> GetAlarmListByDate(int userid, DateTime StartDate)
+        {
+            try
+            {
+                List<AlarmTb>? AlarmTB = await context.AlarmTbs
+                   .Where(m => m.DelYn != true && 
+                               m.UsersTbId == userid && 
+                               m.CreateDt >= StartDate.AddDays(-14))
+                   .OrderBy(m => m.CreateDt)
+                   .ToListAsync();
+
+                if (AlarmTB is null || !AlarmTB.Any())
+                    return null;
+
+                List<AlarmDTO> dto = (from Alarm in AlarmTB
+                                       join VocTB in context.VocTbs.Where(m => m.DelYn != true)
+                                       on Alarm.VocTbId equals VocTB.Id
+                                       select new AlarmDTO
+                                       {
+                                           AlarmID = Alarm.Id,
+                                           VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
+                                       }).ToList();
 
                 if (dto is [_, ..])
                     return dto;
@@ -165,8 +206,6 @@ namespace FamTec.Server.Repository.Alarm
             }
         }
 
-
-
-    
+        
     }
 }

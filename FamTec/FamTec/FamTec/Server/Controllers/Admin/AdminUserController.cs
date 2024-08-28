@@ -18,7 +18,6 @@ namespace FamTec.Server.Controllers.Admin
         private IFileService FileService;
         private ILogService LogService;
 
-
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
             IFileService _fileservice,
@@ -27,8 +26,6 @@ namespace FamTec.Server.Controllers.Admin
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
             this.FileService = _fileservice;
-
-
 
             this.LogService = _logservice;
         }

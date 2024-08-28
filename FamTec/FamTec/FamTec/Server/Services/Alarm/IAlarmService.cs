@@ -10,7 +10,14 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<AlarmDTO?>> GetAllAlarmService(HttpContext? context);
+        public ValueTask<ResponseList<AlarmDTO>> GetAllAlarmService(HttpContext? context);
+
+        /// <summary>
+        /// 사용자의 안읽음 알람 조회 - 2주 이전건 출력안됨
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<AlarmDTO>> GetAllAlarmByDateService(HttpContext? context, DateTime StartDate);
 
         /// <summary>
         /// 사용자의 알람 전체 삭제
