@@ -150,7 +150,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         for (int i = 0; i < files.Count; i++) 
                         {
-                            await FileService.AddImageFile(newFileName[i], VocFileFolderPath, files[i]);
+                            await FileService.AddResizeImageFile(newFileName[i], VocFileFolderPath, files[i]);
                         }
                     }
 

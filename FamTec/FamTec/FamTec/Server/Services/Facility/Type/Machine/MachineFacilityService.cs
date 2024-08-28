@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     if(files is not null)
                     {
                         // 파일 넣기
-                        bool? AddFile = await FileService.AddImageFile(NewFileName, MachineFileFolderPath, files);
+                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, MachineFileFolderPath, files);
                     }
                     return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
@@ -264,7 +264,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                         if(!String.IsNullOrWhiteSpace(model.Image))
                         {
                             // 파일넣기
-                            bool? AddFile = await FileService.AddImageFile(NewFileName, MachineFileFolderPath, files);
+                            bool? AddFile = await FileService.AddResizeImageFile(NewFileName, MachineFileFolderPath, files);
                         }
                         if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {

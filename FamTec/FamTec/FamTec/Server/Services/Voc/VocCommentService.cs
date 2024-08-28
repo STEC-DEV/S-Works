@@ -120,7 +120,7 @@ namespace FamTec.Server.Services.Voc
                 {
                     for (int i = 0; i < files.Count; i++)
                     {
-                        await FileService.AddImageFile(newFileName[i], VocCommentFileFolderPath, files[i]);
+                        await FileService.AddResizeImageFile(newFileName[i], VocCommentFileFolderPath, files[i]);
                     }
                 }
 
@@ -457,15 +457,15 @@ namespace FamTec.Server.Services.Voc
                         {
                             if(i is 0)
                             {
-                                bool? AddFile = await FileService.AddImageFile(model.Image1!, VocCommentFileFolderPath, files[i]);
+                                bool? AddFile = await FileService.AddResizeImageFile(model.Image1!, VocCommentFileFolderPath, files[i]);
                             }
                             if(i is 1)
                             {
-                                bool? AddFile = await FileService.AddImageFile(model.Image2!, VocCommentFileFolderPath, files[i]);
+                                bool? AddFile = await FileService.AddResizeImageFile(model.Image2!, VocCommentFileFolderPath, files[i]);
                             }
                             if(i is 2)
                             {
-                                bool? AddFile = await FileService.AddImageFile(model.Image3!, VocCommentFileFolderPath, files[i]);
+                                bool? AddFile = await FileService.AddResizeImageFile(model.Image3!, VocCommentFileFolderPath, files[i]);
                             }
                         }
 

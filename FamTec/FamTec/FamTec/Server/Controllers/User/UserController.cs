@@ -72,7 +72,7 @@ namespace FamTec.Server.Controllers.User
             try
             {
                 UsersDTO dto = new UsersDTO();
-                dto.USERID = "TESTUSER0007";
+                dto.USERID = "TESTUSER0008";
                 dto.PASSWORD = "123";
                 dto.NAME = "테스트사용자";
                 dto.PERM_BASIC = 2; // 기본정보메뉴 권한

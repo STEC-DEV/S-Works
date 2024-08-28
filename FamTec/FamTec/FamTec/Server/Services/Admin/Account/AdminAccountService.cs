@@ -195,7 +195,7 @@ namespace FamTec.Server.Services.Admin.Account
                 if (files is not null)
                 {
                     // 파일넣기
-                    bool? AddFile = await FileService.AddImageFile(NewFileName, AdminFileFolderPath, files);
+                    bool? AddFile = await FileService.AddResizeImageFile(NewFileName, AdminFileFolderPath, files);
                 }
 
                 var adminModel = new AdminTb

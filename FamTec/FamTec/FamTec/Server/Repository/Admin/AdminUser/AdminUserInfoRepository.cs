@@ -524,7 +524,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         if(!String.IsNullOrWhiteSpace(userTB.Image))
                         {
                             // 파일넣기
-                            bool? AddFile = await FileService.AddImageFile(NewFileName, AdminFileFolderPath, files);
+                            bool? AddFile = await FileService.AddResizeImageFile(NewFileName, AdminFileFolderPath, files);
                         }
                         if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {

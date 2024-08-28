@@ -99,7 +99,7 @@ namespace FamTec.Server.Services.Material
                 if(files is not null)
                 {
                     // 파일 넣기
-                    await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
+                    await FileService.AddResizeImageFile(NewFileName, MaterialFileFolderPath, files);
                 }
 
                 return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
@@ -291,7 +291,7 @@ namespace FamTec.Server.Services.Material
                         if(!String.IsNullOrWhiteSpace(model.Image))
                         {
                             // 파일넣기
-                            bool? AddFile = await FileService.AddImageFile(NewFileName, MaterialFileFolderPath, files);
+                            bool? AddFile = await FileService.AddResizeImageFile(NewFileName, MaterialFileFolderPath, files);
                         }
                         if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {

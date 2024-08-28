@@ -148,7 +148,7 @@ namespace FamTec.Server.Services.Building
                     if(files is not null)
                     {
                         // 파일 넣기
-                        bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
+                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files);
                     }
 
                     return new ResponseUnit<AddBuildingDTO>()
@@ -544,7 +544,7 @@ namespace FamTec.Server.Services.Building
                         if(!String.IsNullOrWhiteSpace(model.Image))
                         {
                             // 파일 넣기
-                            bool? AddFile = await FileService.AddImageFile(NewFileName, PlaceFileFolderPath, files);
+                            bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files);
                         }
                         if(!String.IsNullOrWhiteSpace(deleteFileName))
                         {

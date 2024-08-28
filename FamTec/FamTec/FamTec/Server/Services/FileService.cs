@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+﻿using SkiaSharp;
 
 namespace FamTec.Server.Services
 {
@@ -11,7 +9,6 @@ namespace FamTec.Server.Services
         {
             this.LogService = _logservice;
         }
-
 
         /// <summary>
         /// 이미지 등록
@@ -49,17 +46,41 @@ namespace FamTec.Server.Services
         {
             try
             {
-                string filePath = Path.Combine(folderpath, newFileName);
+                string getExtension = Path.GetExtension(newFileName); // <- 파일확장자에 맞게 인코딩하기 위함.
+                string targetExtension = getExtension switch
+                {
+                    ".png" => ".png",
+                    ".bmp" => ".bmp",
+                    ".jpeg" => ".jpeg",
+                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
+                };
+                string All_newFileName = Path.ChangeExtension(newFileName, targetExtension);
+
+                string filePath = Path.Combine(folderpath, All_newFileName); // 파일경로 매핑
                 using (var memoryStream = new MemoryStream())
                 {
                     await files.CopyToAsync(memoryStream);
-                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    memoryStream.Position = 0;
 
-                    using (Image image = await Image.LoadAsync(memoryStream))
+                    using (var originalBitmap = SKBitmap.Decode(memoryStream))
                     {
-                        image.Mutate(x => x.Resize(300, 300));
-                        image.Save(filePath);
-                        return true;
+                        using (var resizedBitmap = originalBitmap.Resize(new SKImageInfo(300,300), SKFilterQuality.High))
+                        {
+                            if(resizedBitmap == null)
+                            {
+                                return null;
+                            }
+
+                            // 이미지 인코딩 형식 결정
+                            var encodedFormat = GetEncodedFormat(targetExtension);
+                            using (var image = SKImage.FromBitmap(resizedBitmap))
+                            using (var data = image.Encode(encodedFormat, 100)) // Quility 무시
+                            using (var outputStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                            {
+                                data.SaveTo(outputStream);
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -68,6 +89,18 @@ namespace FamTec.Server.Services
                 LogService.LogMessage(ex.ToString());
                 return null;
             }
+        }
+        
+        // 인코딩 형식을 결정
+        SKEncodedImageFormat GetEncodedFormat(string extension)
+        {
+            return extension switch
+            {
+                ".png" => SKEncodedImageFormat.Png,
+                ".bmp" => SKEncodedImageFormat.Bmp,
+                ".jpeg" => SKEncodedImageFormat.Jpeg,
+                _ => SKEncodedImageFormat.Png // 기본적으로 PNG로 처리
+            };
         }
 
         /// <summary>
@@ -78,7 +111,20 @@ namespace FamTec.Server.Services
         {
             try
             {
-                string NewFileName = $"{useridx}_{DateTime.Now.ToString("yyyyMMddHHmmFFFFFFF")}_{files.Name}{Path.GetExtension(files.FileName)}";
+                // 파일 확장자 가져오기 및 소문자로 변환
+                string? extension = Path.GetExtension(files.FileName)?.ToLowerInvariant();
+
+                // 기본 확장자는 .png로 설정
+                string newExtension = extension switch
+                {
+                    ".png" => ".png",
+                    ".bmp" => ".bmp",
+                    ".jpeg" => ".jpeg",
+                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본 설정
+                };
+
+                // 새 파일 이름 생성
+                string NewFileName = $"{useridx}_{DateTime.Now:yyyyMMddHHmmFFFFFFF}_{files.Name}{newExtension}";
                 return NewFileName;
             }
             catch (Exception ex)
@@ -116,7 +162,8 @@ namespace FamTec.Server.Services
                 {
                     return null;
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return null;

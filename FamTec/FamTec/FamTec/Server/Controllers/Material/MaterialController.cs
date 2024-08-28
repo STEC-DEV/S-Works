@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Maintenence;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
@@ -119,6 +120,51 @@ namespace FamTec.Server.Controllers.Material
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
+
+        // 일반 게시판 1,2,3,4 페이지 구분있음
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllPageNationMaterial")]
+        public async ValueTask<IActionResult> GetAllPageNationMaterial([FromQuery]int pagenum, [FromQuery]int pagesize)
+        {
+            if (pagesize > 100)
+                return BadRequest(); // 사이즈 초과
+
+            if (pagenum == 0)
+                return BadRequest(); // 잘못된 요청
+
+            if (pagesize == 0)
+                return BadRequest(); // 잘못된 요청
+
+            // Front 
+            //1 페이지 25 ==> 0
+            // 2 페이지 25 ==> 50
+            int offset = (pagenum - 1) * pagesize; // OFFSET 시작점
+            int limit = offset + pagesize; // LIMIT 끝점
+
+            // 리턴 - LIst<Data> 
+            return Ok();
+        }
+
+        // CURSOR 기반 - NEXT ID 반환 (ex 쿠팡, 네이버) 페이지 1,2,3,4 구분없음 STACK 식으로 보여주는 구조
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllCursorPageNationMaterial")]
+        public async ValueTask<IActionResult> GetAllCursorPageNationMaterial([FromQuery] int id, [FromQuery] int pagesize)// 조회ID - pagesize / return: nextid
+        {
+            if (pagesize > 20)
+                return BadRequest(); // 사이즈 초과
+
+            
+            if (pagesize == 0)
+                return BadRequest(); // 잘못된 요청
+
+            
+            
+            // return List<data> 와 next id를 주면됨
+            return Ok();
+        }
+
 
         /// <summary>
         /// 자재정보 상세조회

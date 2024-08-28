@@ -252,13 +252,13 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
-            "SixLabors.ImageSharp": {
+            "SkiaSharp": {
               "target": "Package",
-              "version": "[3.1.5, )"
+              "version": "[2.88.8, )"
             },
-            "SixLabors.ImageSharp.Drawing": {
+            "SkiaSharp.NativeAssets.Linux": {
               "target": "Package",
-              "version": "[2.1.4, )"
+              "version": "[2.88.8, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
