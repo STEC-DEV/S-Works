@@ -66,38 +66,38 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUser")]
-        public async ValueTask<IActionResult> AddUser([FromForm] IFormFile? files)
-        //public async ValueTask<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
+        //public async ValueTask<IActionResult> AddUser([FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
-                UsersDTO dto = new UsersDTO();
-                dto.USERID = "TESTUSER0008";
-                dto.PASSWORD = "123";
-                dto.NAME = "테스트사용자";
-                dto.PERM_BASIC = 2; // 기본정보메뉴 권한
-                dto.PERM_MACHINE = 2; // 기계메뉴 권한
-                dto.PERM_ELEC = 2; // 전기메뉴 권한
-                dto.PERM_LIFT = 2; // 승강메뉴 권한
-                dto.PERM_FIRE = 2; // 소방메뉴 권한
-                dto.PERM_CONSTRUCT = 2; // 건축메뉴 권한
-                dto.PERM_NETWORK = 2;
-                dto.PERM_BEAUTY = 2;
-                dto.PERM_SECURITY = 2;
-                dto.PERM_MATERIAL = 2;
-                dto.PERM_ENERGY = 2;
-                dto.PERM_USER = 2;
-                dto.PERM_VOC = 2;
-                dto.ALRAM_YN = true;
-                dto.STATUS = 2;
-                dto.VOC_MACHINE = true;
-                dto.VOC_ELEC = false;
-                dto.VOC_FIRE = true;
-                dto.VOC_CONSTRUCT = true;
-                dto.VOC_NETWORK = true;
-                dto.VOC_BEAUTY = true;
-                dto.VOC_SECURITY = true;
-                dto.VOC_ETC = true;
+                //UsersDTO dto = new UsersDTO();
+                //dto.USERID = "TESTUSER0008";
+                //dto.PASSWORD = "123";
+                //dto.NAME = "테스트사용자";
+                //dto.PERM_BASIC = 2; // 기본정보메뉴 권한
+                //dto.PERM_MACHINE = 2; // 기계메뉴 권한
+                //dto.PERM_ELEC = 2; // 전기메뉴 권한
+                //dto.PERM_LIFT = 2; // 승강메뉴 권한
+                //dto.PERM_FIRE = 2; // 소방메뉴 권한
+                //dto.PERM_CONSTRUCT = 2; // 건축메뉴 권한
+                //dto.PERM_NETWORK = 2;
+                //dto.PERM_BEAUTY = 2;
+                //dto.PERM_SECURITY = 2;
+                //dto.PERM_MATERIAL = 2;
+                //dto.PERM_ENERGY = 2;
+                //dto.PERM_USER = 2;
+                //dto.PERM_VOC = 2;
+                //dto.ALRAM_YN = true;
+                //dto.STATUS = 2;
+                //dto.VOC_MACHINE = true;
+                //dto.VOC_ELEC = false;
+                //dto.VOC_FIRE = true;
+                //dto.VOC_CONSTRUCT = true;
+                //dto.VOC_NETWORK = true;
+                //dto.VOC_BEAUTY = true;
+                //dto.VOC_SECURITY = true;
+                //dto.VOC_ETC = true;
            
                 if (HttpContext is null)
                     return BadRequest();

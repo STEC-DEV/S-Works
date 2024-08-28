@@ -70,7 +70,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.ItemValue))
                     return NoContent();
 
-                ResponseUnit<UpdateValueDTO?> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
+                ResponseUnit<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 

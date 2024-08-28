@@ -20,7 +20,10 @@ namespace FamTec.Server.Controllers.KakaoLog
             this.LogService = _logservice;
         }
 
-
+        /// <summary>
+        /// 카카오 로그 리스트 반환
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetKakaoLogList")]
@@ -41,6 +44,72 @@ namespace FamTec.Server.Controllers.KakaoLog
                 else
                     return BadRequest();
 
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 페이지네이션용 카카오 로그 카운트
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllKakaoLogCount")]
+        public async ValueTask<IActionResult> GetAllKakaoLogCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService(HttpContext);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 카카오 로그 리스트 페이지네이션 반환
+        /// </summary>
+        /// <param name="pagenum"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllPageNationKakaoLog")]
+        public async ValueTask<IActionResult> GetAllPageNationKakaoLog([FromQuery]int pagenum, [FromQuery]int pagesize)
+        {
+            try
+            {
+                if (pagesize == 0 || pagesize > 100)
+                    return BadRequest(); // 사이즈 초과
+
+                if (pagenum == 0)
+                    return BadRequest(); // 잘못된 요청
+
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(HttpContext, pagenum, pagesize);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {

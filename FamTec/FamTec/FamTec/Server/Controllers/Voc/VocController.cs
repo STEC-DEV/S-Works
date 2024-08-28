@@ -37,7 +37,6 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
-        //public async ValueTask<IActionResult> GetVocList([FromQuery] string type, [FromQuery] string status, [FromQuery] string buildingid)
         public async ValueTask<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
@@ -50,7 +49,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllVocListDTO?> model = await VocService.GetVocList(HttpContext, type, status, buildingid);
+                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid);
                 if (model is null)
                     return BadRequest();
 
@@ -65,16 +64,6 @@ namespace FamTec.Server.Controllers.Voc
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
-        }
-
-        //2024-08-22 06:12:00
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/tempp")]
-        public async ValueTask<IActionResult> GetTemp([FromQuery]DateTime time)
-        {
-            var temp = time.GetDateTimeFormats();
-            return Ok(time.GetDateTimeFormats());
         }
 
         /// <summary>
@@ -150,7 +139,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocEmployeeDetailDTO?> dto = await VocService.GetVocDetail(HttpContext, VocId);
+                ResponseUnit<VocEmployeeDetailDTO> dto = await VocService.GetVocDetail(HttpContext, VocId);
 
                 if (dto is null)
                     return BadRequest();

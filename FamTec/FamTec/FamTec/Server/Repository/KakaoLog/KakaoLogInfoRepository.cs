@@ -43,6 +43,8 @@ namespace FamTec.Server.Repository.KakaoLog
             }
         }
 
+        
+
         /// <summary>
         /// 카카오 알림톡 발송로그 전체 조회
         /// </summary>
@@ -95,5 +97,60 @@ namespace FamTec.Server.Repository.KakaoLog
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 사업장에 속해있는 카카오 알림톡 발송로그 카운트 개수 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<int?> GetKakaoLogCount(int placeid)
+        {
+            try
+            {
+                int count = await context.KakaoLogTbs
+                    .Where(m => m.PlaceTbId == placeid && 
+                                m.DelYn != true)
+                    .CountAsync();
+
+                return count;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 카카오 알림톡 발송로그 리스트 페이지네이션 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="pagenum"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogPageNationList(int placeid, int pagenumber, int pagesize)
+        {
+            try
+            {
+                List<KakaoLogTb>? model = await context.KakaoLogTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .Skip((pagenumber - 1) * pagesize)
+                    .Take(pagesize)
+                    .ToListAsync();
+
+                if (model is not null && model.Any())
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        
     }
 }

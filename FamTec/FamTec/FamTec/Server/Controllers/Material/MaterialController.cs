@@ -160,31 +160,39 @@ namespace FamTec.Server.Controllers.Material
         [Route("sign/GetAllPageNationMaterial")]
         public async ValueTask<IActionResult> GetAllPageNationMaterial([FromQuery]int pagenum, [FromQuery]int pagesize)
         {
-            if (pagesize > 100)
-                return BadRequest(); // 사이즈 초과
+            try
+            {
+                if (pagesize > 100)
+                    return BadRequest(); // 사이즈 초과
 
-            if (pagenum == 0)
-                return BadRequest(); // 잘못된 요청
+                if (pagenum == 0)
+                    return BadRequest(); // 잘못된 요청
 
-            if (pagesize == 0)
-                return BadRequest(); // 잘못된 요청
+                if (pagesize == 0)
+                    return BadRequest(); // 잘못된 요청
 
-            ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(HttpContext, pagenum, pagesize);
-            if (model is null)
-                return BadRequest();
+                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(HttpContext, pagenum, pagesize);
+                if (model is null)
+                    return BadRequest();
 
-            if (model.code == 200)
-                return Ok(model);
-            else
-                return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
 
-            // Front 
-            //1 페이지 25 ==> 0
-            // 2 페이지 25 ==> 50
-            //int offset = (pagenum - 1) * pagesize; // OFFSET 시작점
-            //int limit = offset + pagesize; // LIMIT 끝점
+                // Front 
+                //1 페이지 25 ==> 0
+                // 2 페이지 25 ==> 50
+                //int offset = (pagenum - 1) * pagesize; // OFFSET 시작점
+                //int limit = offset + pagesize; // LIMIT 끝점
 
-            // 리턴 - LIst<Data> 
+                // 리턴 - LIst<Data> 
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
         }
 
         // CURSOR 기반 - NEXT ID 반환 (ex 쿠팡, 네이버) 페이지 1,2,3,4 구분없음 STACK 식으로 보여주는 구조

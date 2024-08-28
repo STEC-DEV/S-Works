@@ -13,6 +13,23 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<KakaoLogListDTO>?> GetKakaoLogListService(HttpContext context);
+        public ValueTask<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context);
+
+        /// <summary>
+        /// 사업장 카카오 로그 리스트 카운트 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> GetKakaoLogCountService(HttpContext context);
+
+        /// <summary>
+        /// 사업장에 속해있는 카카오 로그 리스트 페이지네이션
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="pagenumber"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(HttpContext context, int pagenumber, int pagesize);
+
     }
 }
