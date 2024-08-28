@@ -1,0 +1,39 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
+
+<div class="m-search">
+    <div class="header">
+        <span class="title">
+            @(Tab==0 ? "입고 자재" : "출고 자재")
+        </span>
+        <Button Name="검색" Width=true Type="0"/>
+    </div>
+    <div class="content">
+        <TextField Label="자재 코드" Row=true />
+        <TextField Label="자재명" Row=true />
+        <TextField Label="자재 코드" Row=true />
+        <TextField Label="규격" Row=true />
+    </div>
+    @if (_isSearch)
+    {
+        <ModalBackground>
+            <ChildComponent>
+
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int Tab { get; set; }
+    private bool _isSearch = false;
+
+
+
+
+    private void OnSearch()
+    {
+        _isSearch = !_isSearch;
+    }
+}

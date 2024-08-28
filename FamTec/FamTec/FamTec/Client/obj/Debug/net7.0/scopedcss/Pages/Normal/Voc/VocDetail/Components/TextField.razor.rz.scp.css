@@ -1,8 +1,15 @@
 .textfield[b-e5d0ioy9t2]{
+    width : 100%;
     display : flex;
     gap : var(--half-pd);
     flex-direction : column;
+    
     background-color : var(--default-color);
+}
+
+.row[b-e5d0ioy9t2]{
+    flex-direction :row;
+    align-items:center;
 }
 
 .label[b-e5d0ioy9t2]{
@@ -14,6 +21,8 @@
 }
 
 .content[b-e5d0ioy9t2]{
+    width : 100%;
+    min-height :35px;
     height : 100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
@@ -22,7 +31,9 @@
     padding : var(--half-pd);
 }
 
+
 .text[b-e5d0ioy9t2]{
+    width : 100%;
     font-size : var(--normal-size);
     font-weight : var(--normal-wt);
     color : #333;

@@ -1,0 +1,23 @@
+﻿
+.tabs{
+    width :fit-content;
+    display : flex;
+    
+    transition : all .3s;
+    background-color : var(--default-color);
+}
+
+.tab {
+    transition: all .3s;
+    padding: var(--default-pd);
+    border-bottom: var(--comp-bd);
+    font-size: 1rem;
+    font-weight: var(--bold-wt);
+    color: darkgray;
+}
+
+.active {
+    color: var(--main-color);
+    transition: all .3s;
+    border-bottom : var(--default-bd);
+}

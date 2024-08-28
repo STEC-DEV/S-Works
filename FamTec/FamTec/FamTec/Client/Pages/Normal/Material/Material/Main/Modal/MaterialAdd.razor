@@ -1,6 +1,9 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Location
 @using FamTec.Shared.Client.DTO.Normal.Material
+@using FamTec.Shared.Server.DTO
 
 
 <div class="modal">
@@ -10,30 +13,128 @@
         </span>
     </div>
     <div class="content">
-        <InputCol Label="자재코드" />
-        <InputCol Label="자재명" />
-        <InputCol Label="규격" />
-        <InputCol Label="단위" />
-        <InputCol Label="안전재고" />
-        <InputCol Label="재고위치" />
+        <InputCol 
+            Label="자재코드" 
+            Placeholder="자재코드" 
+            ValueType="text"
+            @bind-Value="@AddMaterial.Code" 
+            />
+        <InputCol 
+            Label="자재명" 
+            Placeholder="자재명" 
+            ValueType="text" 
+            @bind-Value="@AddMaterial.Name" 
+            />
+        <InputCol 
+            Label="규격" 
+            Placeholder="규격" 
+            ValueType="text" 
+            @bind-Value="@AddMaterial.Standard" 
+            />
+        <InputCol 
+            Label="단위" 
+            Placeholder="단위" 
+            ValueType="text" 
+            @bind-Value="@AddMaterial.Unit" 
+            />
+        <InputCol 
+            Label="안전재고" 
+            Placeholder="안전재고" 
+            ValueType="number" 
+            Min="0"
+            @bind-Value="@AddMaterial.SafeNum" 
+            />
+        <div class="group">
+            <SelectField 
+                T="BuildingFloorListDTO" 
+                Key="building" 
+                SelectData="Locations" 
+                Value="SelectedBuildingId" 
+                OnChange="OnBuildingChange" 
+                Label="건물"
+                EditMode="true" />
+            @if (SelectedBuilding != null && SelectedBuilding.FloorList.Any())
+            {
+                <SelectField  
+                    Key="floor" 
+                    SelectData="SelectedBuilding.FloorList" 
+                    Value="SelectedFloorId" 
+                    Label="위치"
+                    OnChange="OnFloorChange" 
+                    EditMode="true" />
+            }
+        </div>
         <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
     </div>
     <div class="btns">
-        <Button Name="등록" Type="0" />
+        <Button Name="등록" Type="0" OnClick="OnAdd"/>
         <Button Name="닫기" Type="1" OnClick="OnClosed" />
     </div>
 </div>
 
 @code {
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnLoad { get; set; }
+
     AddMaterialDTO AddMaterial = new AddMaterialDTO();
+    List<BuildingFloorListDTO> Locations = new List<BuildingFloorListDTO>();
+    BuildingFloorListDTO SelectedBuilding;
+    int SelectedBuildingId;
+    int SelectedFloorId;
 
 
-    
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadLocation();
+
+    }
+
 
     private async void OnClosed()
     {
         await OnClose.InvokeAsync();
+    }
+
+    private async Task OnAdd()
+    {
+        try
+        {
+            ResponseUnit<AddMaterialDTO> resPost = await apiManager.PostWithFilesAsync<AddMaterialDTO>("Material/sign/AddMaterial",AddMaterial);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+
+            await  OnLoad.InvokeAsync();
+            OnClosed();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Material]자재 등록 에러");
+            await JS.InvokeVoidAsync("alert", "자재 등록 에러");
+
+        }
+    }
+
+    private async Task OnLoadLocation()
+    {
+        try
+        {
+            ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "위치 정보 조회 실패");
+                return;
+            }
+            Locations = resGet.data;
+
+
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
     private async void OnUploadImage(List<ImageFile> images)
@@ -48,6 +149,22 @@
         }
         AddMaterial.Image = temp;
         AddMaterial.ImageName = names;
+    }
+
+
+    private void OnBuildingChange(int buildingId)
+    {
+        SelectedBuildingId = buildingId;
+
+        SelectedBuilding = Locations.FirstOrDefault(b => b.Id == buildingId);
+        SelectedFloorId = 0; // Reset floor selection when building changes
+        StateHasChanged();
+    }
+
+    private void OnFloorChange(int floorId)
+    {
+        SelectedFloorId = floorId;
+        AddMaterial.DefaultLocation = floorId;
     }
 
 }

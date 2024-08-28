@@ -1,2 +1,26 @@
 ﻿
 
+.inputcol{
+    display : flex;
+    flex-direction :column;
+    gap: var(--half-pd);
+}
+
+.label{
+    font-size : var(--normal-size);
+    font-weight :var(--bold-wt);
+    color: var(--main-color);
+
+}
+
+.input {
+    transition : all .3s;
+    border:var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    outline :none;
+}
+
+.input:focus {
+    border:var(--default-bd);
+}

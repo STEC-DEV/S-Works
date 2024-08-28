@@ -1,45 +1,52 @@
 ﻿@typeparam T
 
+<div class="selectfield">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
 
-<ul class="selectbox @(EditMode ? "" : "none")">
-    <label 
-        class="display @(IsActive ? "active" : "")" 
-        @onclick=OnActive
-    >
-        @if(SelectName == null)
-        {
-            <span class="display-title">Select</span>
-        }
-        else
-        {
-            <span class="display-title">
-                @SelectName
-            </span>
-        }
-    </label>
-    <ul class="options @(IsActive && SelectData != null? "active" : "")">
-        <li class="option-item" @onclick="() => OnSelectRow(null)">
-            Select
-        </li>
-        @if (SelectData != null && SelectData.Any())
-        {
-            @foreach (var selectRow in SelectData)
+    <ul class="selectbox @(EditMode ? "" : "none")">
+        <label class="display @(IsActive ? "active" : "")"
+               @onclick=OnActive>
+            @if (SelectName == null)
             {
-                try
+                <span class="display-title">Select</span>
+            }
+            else
+            {
+                <span class="display-title">
+                    @SelectName
+                </span>
+            }
+        </label>
+        <ul class="options @(IsActive && SelectData != null? "active" : "")">
+            <li class="option-item" @onclick="() => OnSelectRow(null)">
+                Select
+            </li>
+            @if (SelectData != null && SelectData.Any())
+            {
+                @foreach (var selectRow in SelectData)
                 {
+                    try
+                    {
 
-                    <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
-                        @selectRow.GetType().GetProperty("Name").GetValue(selectRow)
-                    </li>
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error processing row: {ex.Message}");
+                        <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
+                            @selectRow.GetType().GetProperty("Name").GetValue(selectRow)
+                        </li>
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing row: {ex.Message}");
+                    }
                 }
             }
-        }
+        </ul>
     </ul>
-</ul>
+
+</div>
 
 @code {
     [Parameter] public string Key { get; set; }
@@ -47,7 +54,7 @@
     [Parameter] public int Value{ get; set; }
     [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
     [Parameter] public bool EditMode {get;set;}
-
+    [Parameter] public string? Label { get; set; }
 
     public string SelectName = "Select";
     public bool IsActive { get; set; } = false;

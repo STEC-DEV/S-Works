@@ -21,29 +21,43 @@
 
 
 .content {
+    width: 100%;
     height: 100%;
-    display : flex;
-    flex-direction : column;
-    gap : var(--default-pd);
+    display: flex;
+    flex-direction: column;
+    justify-content :center;
+    gap: var(--default-pd);
     overflow: auto;
 }
 
-.col{
+.group{
+    width:100%;
     display : flex;
-    flex-direction : column;
-    gap : var(--half-pd);
+    gap : var(--default-pd);
+    transition :all .3s;
+}
 
-    font-size : var(--normal-size);
-    font-weight : var(--bold-wt);
+
+.btns{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+/*
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
 }
 
 .height {
-    height : 100%;
+    height: 100%;
 }
 
 .col label {
-    color : var(--main-color);
-    
+    color: var(--main-color);
 }
 
 .col span {
@@ -51,23 +65,18 @@
 }
 
 
-.col ::deep textarea{
-    width : 100%;
-    height : 100%;
-    resize :none;
-    outline : none;
-    border : var(--input-bd);
-    border-radius : var(--default-rd);
-    padding : var(--default-pd);
-    transition : all .3s
+.col ::deep textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    outline: none;
+    border: var(--input-bd);
+    border-radius: var(--default-rd);
+    padding: var(--default-pd);
+    transition: all .3s
 }
 
 
-.col ::deep textarea:focus{
-    border : var(--default-bd);
-}
-
-.btns{
-    display : flex;
-    gap : var(--default-pd);
-}
+    .col ::deep textarea:focus {
+        border: var(--default-bd);
+    }*/

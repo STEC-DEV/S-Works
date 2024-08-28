@@ -13,7 +13,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Material
         public string Standard { get; set; }
         public string Unit { get; set; }
         public int SafeNum { get; set; }
-        public int Location { get; set; }
+        public int DefaultLocation { get; set; }
         public List<byte[]> Image { get; set; }
         public List<string> ImageName { get; set; }
 

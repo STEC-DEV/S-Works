@@ -1,2 +1,26 @@
 
 
+.inputcol[b-shu98f9syi]{
+    display : flex;
+    flex-direction :column;
+    gap: var(--half-pd);
+}
+
+.label[b-shu98f9syi]{
+    font-size : var(--normal-size);
+    font-weight :var(--bold-wt);
+    color: var(--main-color);
+
+}
+
+.input[b-shu98f9syi] {
+    transition : all .3s;
+    border:var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    outline :none;
+}
+
+.input:focus[b-shu98f9syi] {
+    border:var(--default-bd);
+}

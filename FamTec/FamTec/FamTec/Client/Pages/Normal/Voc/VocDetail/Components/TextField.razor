@@ -1,5 +1,5 @@
 ﻿
-<div class="textfield @(Type == "textarea" ? "height" : "")">
+<div class="textfield @(Row == true ? "row" : "") @(Type == "textarea" ? "height" : "")">
     <label class="label">
         @Label
     </label>
@@ -24,6 +24,7 @@
     [Parameter] public string? Label {get; set;}
     [Parameter] public string? Context { get; set; }
     [Parameter] public string? Type { get; set; }
+    [Parameter] public bool? Row { get; set; }
     [Parameter] public bool? EditMode { get; set; } = false;
 }
 

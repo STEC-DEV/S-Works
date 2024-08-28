@@ -109,6 +109,10 @@
 
 }
 
+input:focus{
+    outline : none;
+}
+
 
 html,
 #app,

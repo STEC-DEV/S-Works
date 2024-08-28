@@ -1,0 +1,23 @@
+﻿@page "/material/inout/add"
+@using FamTec.Client.Pages.Normal.Material.Material.InOut.Add.Components
+
+<div class="addinout">
+    <div class="header">
+        <Tab Tabs="Category" OnClick="OnTab" />
+    </div>
+    <div class="content">
+        <SearchMaterial Tab="_tab" />
+    </div>
+</div>
+
+@code {
+    List<string> Category = new List<string> { "입고", "출고" };
+    private int _tab = 0;
+
+
+
+    private async void OnTab(int idx)
+    {
+        _tab = idx;
+    }
+}
