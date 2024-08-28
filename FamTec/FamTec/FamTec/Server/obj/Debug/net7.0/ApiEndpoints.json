@@ -3321,6 +3321,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "GetAllMaterialCount",
+    "RelativePath": "api/Material/sign/GetAllMaterialCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "GetAllPageNationMaterial",
     "RelativePath": "api/Material/sign/GetAllPageNationMaterial",
     "HttpMethod": "GET",
@@ -3956,12 +3966,43 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetAllInoutPlaceCount",
+    "RelativePath": "api/Store/sign/GetAllInoutPlaceCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetInoutHistory",
     "RelativePath": "api/Store/sign/GetHistory",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetInoutPageNationHistory",
+    "RelativePath": "api/Store/sign/GetPageNationHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "pagenum",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pagesize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

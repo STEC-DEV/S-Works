@@ -214,6 +214,75 @@ namespace FamTec.Server.Controllers.Store
         }
 
         /// <summary>
+        /// 입출고 이력 페이지네이션 조회
+        /// </summary>
+        /// <param name="pagenum"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetPageNationHistory")]
+        public async ValueTask<IActionResult> GetInoutPageNationHistory([FromQuery] int pagenum, [FromQuery] int pagesize)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (pagenum == 0)
+                    return NoContent();
+
+                if(pagesize == 0 || pagesize > 100)
+                    return NoContent();
+
+                ResponseList<InOutHistoryListDTO>? model = await InStoreService.GetInoutPageNationHistoryService(HttpContext, pagenum, pagesize);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 사업장의 입-출고 이력 개수 반환
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllInoutPlaceCount")]
+        public async ValueTask<IActionResult> GetAllInoutPlaceCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<int?> model = await InStoreService.GetPlaceInOutCountService(HttpContext);
+                
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
         /// 사업장 별 폼목별 재고 현황 
         ///     - true (재고가 없는것도) : false: 재고가 하나라도 있는것만
         /// </summary>

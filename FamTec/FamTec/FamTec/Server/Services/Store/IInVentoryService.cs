@@ -22,6 +22,22 @@ namespace FamTec.Server.Services.Store
         public ValueTask<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context);
 
         /// <summary>
+        /// 사업장의 입-출고 이력 개수 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context);
+
+        /// <summary>
+        /// 입-출고 이력 페이지네이션 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="pagenum"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize);
+
+        /// <summary>
         /// 출고 등록
         /// </summary>
         /// <param name="context"></param>

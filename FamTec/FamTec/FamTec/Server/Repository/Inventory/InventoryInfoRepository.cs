@@ -186,12 +186,12 @@ namespace FamTec.Server.Repository.Inventory
         {
             try
             {
-                string query = string.Empty;
-
                 // 전체조회
                 if (type == true) 
                 {
                     // 대상 전체조회
+                    /*
+                    string query = string.Empty;
                     string Where = String.Empty;
                     for (int i = 0; i < MaterialIdx.Count; i++)
                     {
@@ -199,9 +199,52 @@ namespace FamTec.Server.Repository.Inventory
                     }
 
                     Where = Where.Substring(0, Where.Length - 3);
-                    query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
+                    query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE room_tb.DEL_YN = FALSE AND material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
                     List<MaterialInventory>? model = await context.MaterialInven.FromSqlRaw<MaterialInventory>(query).ToListAsync();
-                    
+                    */
+
+                    List<MaterialInventory>? model =
+                        (from room in context.RoomTbs
+                        join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조껀 TRUE로 만든다.
+                        where room.DelYn != true && material.DelYn != true
+                              && material.PlaceTbId == placeid
+                              && context.FloorTbs
+                                   .Where(f => context.BuildingTbs
+                                                     .Where(b => b.PlaceTbId == placeid)
+                                                     .Select(b => b.Id)
+                                                     .Contains(f.BuildingTbId))
+                                   .Select(f => f.Id)
+                                   .Contains(room.FloorTbId)
+                        select new
+                        {
+                            R_ID = room.Id,
+                            R_NM = room.Name,
+                            M_ID = material.Id,
+                            M_NM = material.Name
+                        } into subQueryA // Subquery 'A'
+                        join inventoryGroup in
+                            (from i in context.InventoryTbs
+                             where i.DelYn != true
+                             group i by new { i.MaterialTbId, i.RoomTbId } into g
+                             select new
+                             {
+                                 MATERIAL_TB_ID = g.Key.MaterialTbId,
+                                 ROOM_TB_ID = g.Key.RoomTbId,
+                                 TOTAL = g.Sum(x => (int?)x.Num)
+                             })
+                        on new { R_ID = subQueryA.R_ID, M_ID = subQueryA.M_ID } equals new { R_ID = inventoryGroup.ROOM_TB_ID, M_ID = inventoryGroup.MATERIAL_TB_ID } into joined
+                        from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
+                        where MaterialIdx.Contains(subQueryA.M_ID)
+                        orderby subQueryA.M_ID, subQueryA.R_ID
+                        select new MaterialInventory
+                        {
+                            R_ID = subQueryA.R_ID,
+                            R_NM = subQueryA.R_NM,
+                            M_ID = subQueryA.M_ID,
+                            M_NM = subQueryA.M_NM,
+                            TOTAL = inventory.TOTAL ?? 0
+                        }).ToList();
+
                     if (model is null)
                         return null;
                     
@@ -231,12 +274,6 @@ namespace FamTec.Server.Repository.Inventory
                     // 반복문 돌리기 조건 [2]
                     int materiallist = model.GroupBy(m => m.M_ID).Count();
 
-                    // 개수 Check
-                    int checkCount = roomlist.Count() * materiallist;
-                    if (checkCount != model.Count())
-                        return null;
-
-
                     List<MaterialHistory> history = new List<MaterialHistory>();
                     int resultCount = 0;
                     for (int i = 0; i < materiallist; i++)
@@ -245,7 +282,6 @@ namespace FamTec.Server.Repository.Inventory
                         material.ID = model[resultCount].M_ID;
                         material.Name = model[resultCount].M_NM;
 
-                        //List<RoomDTO> room = new List<RoomDTO>();
                         for (int j = 0; j < roomlist.Count(); j++)
                         {
                             RoomDTO dto = new RoomDTO();
@@ -267,17 +303,61 @@ namespace FamTec.Server.Repository.Inventory
                 }
                 else // 0이 아닌것만 조회
                 {
-                    string Where = String.Empty;
-                    for (int i = 0; i < MaterialIdx.Count; i++)
-                    {
-                        Where += $"M_ID = {MaterialIdx[i]} OR ";
-                    }
+                    //string query = string.Empty;
 
-                    Where = Where.Substring(0, Where.Length - 3);
+                    //string Where = String.Empty;
+                    //for (int i = 0; i < MaterialIdx.Count; i++)
+                    //{
+                    //    Where += $"M_ID = {MaterialIdx[i]} OR ";
+                    //}
 
-                    query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
+                    //Where = Where.Substring(0, Where.Length - 3);
 
-                    List<MaterialInventory> model = await context.MaterialInven.FromSqlRaw<MaterialInventory>(query).ToListAsync();
+                    //query = $"SELECT `R_ID`, `R_NM`, `M_ID`, `M_NM`, IF(B.TOTAL != '', B.TOTAL, 0) AS TOTAL FROM (SELECT room_tb.ID AS R_ID, room_tb.`NAME` AS R_NM, material_tb.ID AS M_ID, material_tb.`NAME` AS M_NM FROM room_tb JOIN material_tb WHERE material_tb.DEL_YN = 0 AND material_tb.PLACE_TB_ID = 3 AND room_tb.floor_tb_id IN (SELECT id FROM floor_tb WHERE building_tb_id IN (SELECT id FROM building_tb WHERE place_tb_id = 3))) A LEFT JOIN (select material_tb_id, room_tb_id, sum(num) AS TOTAL from inventory_tb WHERE DEL_YN = 0 group by material_tb_id, room_tb_id) AS B ON A.R_ID = B.ROOM_TB_ID AND A.M_ID = B.material_tb_id WHERE {Where} ORDER BY M_ID, R_ID";
+
+                    //List<MaterialInventory> model = await context.MaterialInven.FromSqlRaw<MaterialInventory>(query).ToListAsync();
+
+                    List<MaterialInventory>? model =
+                       (from room in context.RoomTbs
+                        join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조껀 TRUE로 만든다.
+                        where room.DelYn != true && material.DelYn != true
+                               && material.PlaceTbId == placeid
+                               && context.FloorTbs
+                                    .Where(f => context.BuildingTbs
+                                                      .Where(b => b.PlaceTbId == placeid)
+                                                      .Select(b => b.Id)
+                                                      .Contains(f.BuildingTbId))
+                                    .Select(f => f.Id)
+                                    .Contains(room.FloorTbId)
+                        select new
+                        {
+                            R_ID = room.Id,
+                            R_NM = room.Name,
+                            M_ID = material.Id,
+                            M_NM = material.Name
+                        } into subQueryA // Subquery 'A'
+                        join inventoryGroup in
+                             (from i in context.InventoryTbs
+                            where i.DelYn != true
+                            group i by new { i.MaterialTbId, i.RoomTbId } into g
+                            select new
+                            {
+                                MATERIAL_TB_ID = g.Key.MaterialTbId,
+                                ROOM_TB_ID = g.Key.RoomTbId,
+                                TOTAL = g.Sum(x => (int?)x.Num)
+                            })
+                         on new { R_ID = subQueryA.R_ID, M_ID = subQueryA.M_ID } equals new { R_ID = inventoryGroup.ROOM_TB_ID, M_ID = inventoryGroup.MATERIAL_TB_ID } into joined
+                        from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
+                        where MaterialIdx.Contains(subQueryA.M_ID)
+                        orderby subQueryA.M_ID, subQueryA.R_ID
+                        select new MaterialInventory
+                        {
+                            R_ID = subQueryA.R_ID,
+                            R_NM = subQueryA.R_NM,
+                            M_ID = subQueryA.M_ID,
+                            M_NM = subQueryA.M_NM,
+                            TOTAL = inventory.TOTAL ?? 0
+                        }).ToList();
 
                     model = model
                     .GroupBy(m => m.M_ID)

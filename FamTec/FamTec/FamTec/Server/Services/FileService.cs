@@ -74,7 +74,7 @@ namespace FamTec.Server.Services
                             // 이미지 인코딩 형식 결정
                             var encodedFormat = GetEncodedFormat(targetExtension);
                             using (var image = SKImage.FromBitmap(resizedBitmap))
-                            using (var data = image.Encode(encodedFormat, 100)) // Quility 무시
+                            using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
                             using (var outputStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                             {
                                 data.SaveTo(outputStream);

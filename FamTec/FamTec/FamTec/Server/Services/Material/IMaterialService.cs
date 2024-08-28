@@ -21,6 +21,23 @@ namespace FamTec.Server.Services.Material
         public ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context);
 
         /// <summary>
+        /// 사업장에 속해있는 자재리스트 개수 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<int?>> GetPlaceMaterialCountService(HttpContext context);
+
+       
+        /// <summary>
+        /// 사업장에 속해있는 자재 리스트 페이지네이션
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="pagenumber"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialPageNationListService(HttpContext context, int pagenumber, int pagesize);
+
+        /// <summary>
         /// 자재 상세정보 보기
         /// </summary>
         /// <param name="materialid"></param>

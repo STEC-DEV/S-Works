@@ -15,10 +15,16 @@
         /// </summary>
         public int? INOUT { get; set; }
 
+        
+        /// <summary>
+        /// 품목코드
+        /// </summary>
+        public string? MaterialCode { get; set; }
+
         /// <summary>
         /// 입출고날짜
         /// </summary>
-        public DateTime? InOutDate { get; set; }
+        public string? InOutDate { get; set; }
 
         /// <summary>
         /// 공간 인덱스

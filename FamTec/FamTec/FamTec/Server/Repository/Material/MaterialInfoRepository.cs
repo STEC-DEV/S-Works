@@ -52,12 +52,6 @@ namespace FamTec.Server.Repository.Material
             {
                 try
                 {
-                    /*
-                    foreach(MaterialTb MaterialTB in MaterialList)
-                    {
-                        await context.MaterialTbs.AddAsync(MaterialTB);
-                    }
-                    */
                     await context.MaterialTbs.AddRangeAsync(MaterialList);
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -77,6 +71,33 @@ namespace FamTec.Server.Repository.Material
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 해당 품목코드 사업장에 있는지 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> GetPlaceMaterialCheck(int placeid, string code)
+        {
+            try
+            {
+                MaterialTb? MaterialTB = await context.MaterialTbs
+                    .FirstOrDefaultAsync(m => m.DelYn != true && 
+                                              m.Code == code && 
+                                              m.PlaceTbId == placeid);
+
+                if (MaterialTB is null)
+                    return true;
+                else
+                    return false;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
             }
         }
 
@@ -105,6 +126,61 @@ namespace FamTec.Server.Repository.Material
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 사업장에 속해있는 자재 개수 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<int> GetPlaceAllMaterialCount(int placeid)
+        {
+            try
+            {
+                int count = await context.MaterialTbs
+                    .Where(m => m.PlaceTbId == placeid && 
+                                m.DelYn != true)
+                    .CountAsync();
+
+                return count;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 사업장에 속해있는 자재리스트 페이지네이션 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="pagenumber"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<List<MaterialTb>?> GetPlaceAllMaterialPageNationList(int placeid,int pagenumber, int pagesize)
+        {
+            try
+            {
+                List<MaterialTb>? model = await context.MaterialTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .OrderBy(m => m.CreateDt)
+                    .Skip((pagenumber - 1) * pagesize)
+                    .Take(pagesize)
+                    .ToListAsync();
+
+                if (model is not null && model.Any())
+                    return model;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
 
         /// <summary>
         /// 자재 인덱스에 해당하는 모델클래스 반환
