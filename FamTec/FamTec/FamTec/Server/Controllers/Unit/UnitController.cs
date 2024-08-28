@@ -76,6 +76,8 @@ namespace FamTec.Server.Controllers.Unit
 
                 if (model.code == 200)
                     return Ok(model);
+                else if(model.code == 201)
+                    return Ok(model);
                 else
                     return BadRequest();
             }

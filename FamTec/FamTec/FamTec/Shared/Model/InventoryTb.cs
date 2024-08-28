@@ -15,7 +15,7 @@ public partial class InventoryTb
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
-
+    
     [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }

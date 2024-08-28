@@ -86,6 +86,75 @@ namespace FamTec.Server.Controllers.BlackList
         }
 
         /// <summary>
+        /// 블랙리스트 카운트 출력
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetBlackListCount")]
+        public async ValueTask<IActionResult> GetAllBlackListCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<int?> model = await BlackListService.GetBlackListCountService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 블랙리스트 페이지네이션 전체 조회
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllPageNationBlackList")]
+        public async ValueTask<IActionResult> GetAllBlackList([FromQuery]int pagenum, [FromQuery]int pagesize)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (pagesize > 100)
+                    return BadRequest(); // 사이즈 초과
+
+                if (pagenum == 0)
+                    return BadRequest(); // 잘못된 요청
+
+                if (pagesize == 0)
+                    return BadRequest(); // 잘못된 요청
+
+                ResponseList<BlackListDTO> model = await BlackListService.GetAllBlackListPageNation(HttpContext, pagenum, pagesize);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
         /// 블랙리스트 수정
         /// </summary>
         /// <param name="dto"></param>

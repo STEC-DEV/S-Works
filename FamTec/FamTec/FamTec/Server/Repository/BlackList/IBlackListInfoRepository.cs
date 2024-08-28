@@ -32,6 +32,20 @@ namespace FamTec.Server.Repository.BlackList
         ValueTask<List<BlacklistTb>?> GetBlackList();
 
         /// <summary>
+        /// 블랙리스트 페이지네이션 조회
+        /// </summary>
+        /// <param name="pagenumber"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        ValueTask<List<BlacklistTb>?> GetBlackListPaceNationList(int pagenumber, int pagesize);
+
+        /// <summary>
+        /// 블랙리스트 개수 조회
+        /// </summary>
+        /// <returns></returns>
+        ValueTask<int> GetBlackListCount();
+
+        /// <summary>
         /// 블랙리스트 정보 수정
         /// </summary>
         /// <param name="model"></param>

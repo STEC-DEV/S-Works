@@ -95,6 +95,31 @@ namespace FamTec.Server.Repository.Unit
             }
         }
 
+        /// <summary>
+        /// 해당사업장에 단위 추가되는지 여부
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> AddUnitInfoCheck(string unit, int placeid)
+        {
+            try
+            {
+                UnitTb? UnitInfo = await context.UnitTbs
+                    .FirstOrDefaultAsync(m => m.Unit == unit && 
+                                              m.PlaceTbId == placeid && 
+                                              m.DelYn != true);
+                if (UnitInfo is not null)
+                    return false;
+                else
+                    return true;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
         /// <summary>
         /// 단위정보 삭제
@@ -164,5 +189,7 @@ namespace FamTec.Server.Repository.Unit
                 throw new ArgumentNullException();
             }
         }
+
+     
     }
 }

@@ -1,12 +1,9 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using FamTec.Server.Repository.Maintenence;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.AccessControl;
 
 namespace FamTec.Server.Controllers.Material
 {

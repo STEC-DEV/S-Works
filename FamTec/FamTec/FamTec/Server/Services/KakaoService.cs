@@ -173,7 +173,6 @@ namespace FamTec.Server.Services
             }
         }
 
-
         /// <summary>
         /// 랜덤코드 생성
         /// </summary>
@@ -182,7 +181,6 @@ namespace FamTec.Server.Services
         {
             RandomGenerator generator = new RandomGenerator();
             string randomPassword = generator.RandomPassword();
-            
             return randomPassword;
         }
 

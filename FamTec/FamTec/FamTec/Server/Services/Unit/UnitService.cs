@@ -36,6 +36,10 @@ namespace FamTec.Server.Services.Unit
                 if (String.IsNullOrWhiteSpace(creator) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
+                bool? AddCheck = await UnitInfoRepository.AddUnitInfoCheck(dto.Unit!, Int32.Parse(placeidx));
+                if(AddCheck != true)
+                    return new ResponseUnit<UnitsDTO>() { message = "이미 해당사업장에 생성한 적 있는 단위명칭 입니다.", data = new UnitsDTO(), code = 201 };
+
                 UnitTb? model = new UnitTb()
                 {
                     Unit = dto.Unit!,

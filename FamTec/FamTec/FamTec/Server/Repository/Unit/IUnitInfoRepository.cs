@@ -13,6 +13,14 @@ namespace FamTec.Server.Repository.Unit
         ValueTask<List<UnitTb>?> GetUnitList(int placeid);
 
         /// <summary>
+        /// 해당사업장에 단위 추가되는지 여부
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> AddUnitInfoCheck(string unit, int placeid);
+
+        /// <summary>
         /// 단위 인덱스로 단위정보 조회
         /// </summary>
         /// <param name="UnitIdx"></param>

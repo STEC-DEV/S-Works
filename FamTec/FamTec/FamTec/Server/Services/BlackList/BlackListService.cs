@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.BlackList;
+﻿using DocumentFormat.OpenXml.InkML;
+using FamTec.Server.Repository.BlackList;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.BlackList;
@@ -80,6 +81,64 @@ namespace FamTec.Server.Services.BlackList
 
                 List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackList();
                 if(model is not null && model.Any())
+                {
+                    List<BlackListDTO> dto = model.Select(e => new BlackListDTO
+                    {
+                        ID = e.Id,
+                        PhoneNumber = e.Phone
+                    }).ToList();
+
+                    return new ResponseList<BlackListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto!, code = 200 };
+                }
+                else
+                {
+                    return new ResponseList<BlackListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<BlackListDTO>(), code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<BlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 블랙리스트 개수 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<int?>> GetBlackListCountService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                int count = await BlackListInfoRepository.GetBlackListCount();
+                return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 블랙리스트 페이지네이션 조회
+        /// </summary>
+        /// <param name="pagenumber"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<BlackListDTO>> GetAllBlackListPageNation(HttpContext context, int pagenumber, int pagesize)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+
+                List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackListPaceNationList(pagenumber, pagesize);
+                if (model is not null && model.Any())
                 {
                     List<BlackListDTO> dto = model.Select(e => new BlackListDTO
                     {

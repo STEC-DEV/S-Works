@@ -68,8 +68,6 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<UnitTb> UnitTbs { get; set; }
 
-    public virtual DbSet<UsedMaterialTb> UsedMaterialTbs { get; set; }
-
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
@@ -90,6 +88,7 @@ public partial class WorksContext : DbContext
         {
             entity.HasNoDiscriminator();
         });
+
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -723,14 +722,9 @@ public partial class WorksContext : DbContext
 
         modelBuilder.Entity<UnitTb>(entity =>
         {
-            entity.HasKey(e => new { e.Id, e.Unit })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasComment("단위 인덱스");
-            entity.Property(e => e.Unit).HasComment("단위");
+            entity.Property(e => e.Id).HasComment("단위 인덱스");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("생성일자");
@@ -741,27 +735,11 @@ public partial class WorksContext : DbContext
                 .HasDefaultValueSql("'0'")
                 .HasComment("삭제여부");
             entity.Property(e => e.PlaceTbId).HasComment("사업장 인덱스");
+            entity.Property(e => e.Unit).HasComment("단위");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");
             entity.Property(e => e.UpdateUser).HasComment("수정자");
 
             entity.HasOne(d => d.PlaceTb).WithMany(p => p.UnitTbs).HasConstraintName("fk_unit_tb_place_tb1");
-        });
-
-        modelBuilder.Entity<UsedMaterialTb>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.Property(e => e.Id).HasComment("사용자재 인덱스");
-            entity.Property(e => e.CreateDt)
-                .HasDefaultValueSql("current_timestamp()")
-                .HasComment("생성일자");
-            entity.Property(e => e.CreateUser).HasComment("생성자");
-            entity.Property(e => e.DelDt).HasComment("삭제일자");
-            entity.Property(e => e.DelUser).HasComment("삭제자");
-            entity.Property(e => e.DelYn)
-                .HasDefaultValueSql("'0'")
-                .HasComment("삭제여부");
-            entity.Property(e => e.UpdateUser).HasComment("수정자");
         });
 
         modelBuilder.Entity<UsersTb>(entity =>
@@ -834,7 +812,6 @@ public partial class WorksContext : DbContext
                 .HasConstraintName("building_tb_202407250842");
         });
 
-
         OnModelCreatingPartial(modelBuilder);
     }
 
@@ -849,4 +826,3 @@ public partial class WorksContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
-

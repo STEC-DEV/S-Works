@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Shared.Model;
 
-[PrimaryKey("Id", "Unit")]
 [Table("unit_tb")]
+[Index("Unit", "PlaceTbId", Name = "UK_CHECK", IsUnique = true)]
 [Index("PlaceTbId", Name = "fk_unit_tb_place_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class UnitTb
@@ -22,7 +22,6 @@ public partial class UnitTb
     /// <summary>
     /// 단위
     /// </summary>
-    [Key]
     [Column("UNIT")]
     public string Unit { get; set; } = null!;
 
