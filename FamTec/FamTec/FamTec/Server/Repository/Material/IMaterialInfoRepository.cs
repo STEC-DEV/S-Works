@@ -27,6 +27,8 @@ namespace FamTec.Server.Repository.Material
         /// <returns></returns>
         public ValueTask<List<MaterialTb>?> GetPlaceAllMaterialList(int placeid);
 
+        
+
         /// <summary>
         /// 해당 품목코드 사업장에 있는지 반환
         /// </summary>

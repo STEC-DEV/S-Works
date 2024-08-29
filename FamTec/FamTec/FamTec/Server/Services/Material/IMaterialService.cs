@@ -19,6 +19,13 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context);
+        
+        /// <summary>
+        /// 사업장에 속해있는 자재 리스트들 출력 - Search용
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<MaterialSearchListDTO>> GetAllPlaecMaterialSearchService(HttpContext context);
 
         /// <summary>
         /// 사업장에 속해있는 자재리스트 개수 반환
@@ -73,5 +80,6 @@ namespace FamTec.Server.Services.Material
         /// <param name="searchData"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData);
+
     }
 }

@@ -121,6 +121,37 @@ namespace FamTec.Server.Controllers.Material
         }
 
         /// <summary>
+        /// 사업장에 속해있는 자재 리스트들 출력 - Search용
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllSearchMaterialList")]
+
+        public async ValueTask<IActionResult> GetAllSearchMaterialList()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaterialSearchListDTO> model = await MaterialService.GetAllPlaecMaterialSearchService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
         /// 사업장에 속해있는 자재 총 개수 반환
         /// </summary>
         /// <returns></returns>

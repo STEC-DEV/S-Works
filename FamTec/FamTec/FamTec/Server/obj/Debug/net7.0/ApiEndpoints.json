@@ -3430,6 +3430,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "GetAllSearchMaterialList",
+    "RelativePath": "api/Material/sign/GetAllSearchMaterialList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "UploadFile",
     "RelativePath": "api/Material/sign/ImportMaterial",
     "HttpMethod": "POST",
