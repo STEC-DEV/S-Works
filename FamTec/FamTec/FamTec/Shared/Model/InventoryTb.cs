@@ -15,7 +15,7 @@ public partial class InventoryTb
     [Key]
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
-    
+
     [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }
@@ -46,9 +46,10 @@ public partial class InventoryTb
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
-
+    
+    [Timestamp]  // 이 속성은 자동으로 관리됩니다.
     [Column("ROW_VERSION")]
-    [StringLength(255)]
+    [StringLength(8)]
     public string? RowVersion { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]

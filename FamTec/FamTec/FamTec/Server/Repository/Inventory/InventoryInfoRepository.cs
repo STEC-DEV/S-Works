@@ -1,8 +1,10 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Presentation;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 
 namespace FamTec.Server.Repository.Inventory
@@ -26,7 +28,8 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
+        //public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
+        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
@@ -38,9 +41,12 @@ namespace FamTec.Server.Repository.Inventory
                         bool isAlreadyInUser = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                                         m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true &&
-                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
-                                        m.RowVersion != GUID).AnyAsync();
+                                        m.DelYn != true 
+                                        //&&
+                                        //!String.IsNullOrWhiteSpace(m.RowVersion) 
+                                        //&&
+                                        //m.RowVersion != GUID
+                                        ).AnyAsync();
 
                         if (isAlreadyInUser)
                             return false;  // 다른곳에서 이미 사용중
@@ -80,7 +86,7 @@ namespace FamTec.Server.Repository.Inventory
                         Inventorytb.CreateUser = creater;
                         Inventorytb.UpdateDt = DateTime.Now;
                         Inventorytb.UpdateUser = creater;
-                        Inventorytb.RowVersion = GUID;
+                        //Inventorytb.RowVersion = GUID;
                         Inventorytb.PlaceTbId = placeid;
                         Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
                         Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
@@ -110,14 +116,14 @@ namespace FamTec.Server.Repository.Inventory
                 catch (DbUpdateConcurrencyException ex)
                 {
                     await transaction.RollbackAsync();
-                    await RoolBackOccupant(GUID); // 토큰 RESET
+                    //await RoolBackOccupant(GUID); // 토큰 RESET
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
                     return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    await RoolBackOccupant(GUID); // 토큰 RESET
+                    //await RoolBackOccupant(GUID); // 토큰 RESET
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
                 }
@@ -438,7 +444,8 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount,string GUID)
+        //public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount,string GUID)
+        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount)
         {
             try
             {
@@ -447,7 +454,7 @@ namespace FamTec.Server.Repository.Inventory
                 .Where(m => m.MaterialTbId == materialid && 
                         m.RoomTbId == roomid && 
                         m.PlaceTbId == placeid &&
-                        m.RowVersion == GUID &&
+                        //m.RowVersion == GUID &&
                         m.DelYn != true)
                 .OrderBy(m => m.CreateDt)
                 .ToListAsync();
@@ -582,32 +589,37 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="GUID"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
+        //public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid, string GUID)
+        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     // [1] 토큰 체크
+                    /*
                     foreach(InOutInventoryDTO InventoryDTO in dto)
                     {
                         // 해당 토큰 외 다른토큰이 해당품목에 박혀있는지 검사
                         bool isAlreadyInUse = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                                         m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true &&
-                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
-                                        m.RowVersion != GUID).AnyAsync();
+                                        m.DelYn != true 
+                                        //&&
+                                        //!String.IsNullOrWhiteSpace(m.RowVersion) &&
+                                        //m.RowVersion != GUID
+                                        ).AnyAsync();
 
                         if (isAlreadyInUse)
                             return false; // 다른곳에서 사용중
                     }
-
+                    */
                     // [2]. 수량체크
                     foreach(InOutInventoryDTO model in dto)
                     {
                         // 출고할게 여러곳에 있으니 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
 
                         if (InventoryList is not [_, ..])
                             return null; // 수량이 아에 없음.
@@ -617,15 +629,16 @@ namespace FamTec.Server.Repository.Inventory
                             return null; // 수량이 부족함.
                         }
                     }
-
+                    // 이시점에서 변경해봄
                     foreach (InOutInventoryDTO model in dto)
                     {
                         List<InventoryTb> OutModel = new List<InventoryTb>();
                         int? result = 0;
 
                         // 추가해야함
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
-                        if(InventoryList is not [_, ..])
+                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
+                        if (InventoryList is not [_, ..])
                         {
                             // 출고개수가 부족함
                             return null;
@@ -647,7 +660,7 @@ namespace FamTec.Server.Repository.Inventory
                                 // 반복문 종료
                                 break;
                         }
-
+                        // 이시점에서 변경해봄
                         if(OutModel is [_, ..])
                         {
                             if(result >= model.AddStore.Num) // 출고개수가 충분할때만 동작
@@ -725,13 +738,13 @@ namespace FamTec.Server.Repository.Inventory
                     if(UpdateResult)
                     {
                         await transaction.CommitAsync(); // 출고 완료
-                        await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                         return true;
                     }
                     else
                     {
                         await transaction.RollbackAsync(); // 출고실패
-                        await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                         return false;
                     }
                 }
@@ -739,7 +752,7 @@ namespace FamTec.Server.Repository.Inventory
                 {
                     await transaction.RollbackAsync();
 
-                    await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
                     return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
@@ -747,7 +760,7 @@ namespace FamTec.Server.Repository.Inventory
                 {
                     await transaction.RollbackAsync();
 
-                    await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
                 }

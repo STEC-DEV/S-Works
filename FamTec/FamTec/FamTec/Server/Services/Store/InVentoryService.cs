@@ -43,9 +43,10 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string GUID = Guid.NewGuid().ToString();
 
                 // 동시성 검사 TOKEN 넣기
+                /*
+                string GUID = Guid.NewGuid().ToString();
                 bool? SetOccupantResult = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), dto, GUID);
                 if (SetOccupantResult == false)
                 {
@@ -53,22 +54,23 @@ namespace FamTec.Server.Services.Store
                     await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
-                
+                */
                 // 인벤토리 테이블에 ADD
-                bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid), GUID);
-                if(AddInStore == true)
+                //bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid), GUID);
+                bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid));
+                if (AddInStore == true)
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(AddInStore == false)
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
                 else
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
@@ -99,9 +101,10 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string GUID = Guid.NewGuid().ToString();
 
                 // 동시성 검사 TOKEN 넣기
+                /*
+                string GUID = Guid.NewGuid().ToString();
                 bool? SetOccupantResult = await InventoryInfoRepository.SetOccupantToken(Convert.ToInt32(placeid), dto, GUID);
                 if (SetOccupantResult == false)
                 {
@@ -115,21 +118,22 @@ namespace FamTec.Server.Services.Store
                     await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseList<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
                 }
-
-                bool? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid), GUID);
+                */
+                //bool? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid), GUID);
+                bool? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
                 if (OutResult == true)
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseList<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
                 else if (OutResult == false)
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseList<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
                 else
                 {
-                    await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
+                    //await InventoryInfoRepository.RoolBackOccupant(GUID); // 토큰 RESET
                     return new ResponseList<bool?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 200 };
                 }
             }

@@ -13,9 +13,9 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<bool?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid, string GUID);
+        ValueTask<bool?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid);
 
-        ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount, string GUID);
+        ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount);
 
         /// <summary>
         /// 출고등록
@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid, string GUID);
+        ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
 
         /// <summary>
         /// 동시성 토큰 등록

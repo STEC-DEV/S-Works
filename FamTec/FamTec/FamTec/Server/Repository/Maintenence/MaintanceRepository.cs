@@ -1,9 +1,11 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Presentation;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data;
 
 namespace FamTec.Server.Repository.Maintenence
@@ -24,31 +26,37 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid, string GUID)
+        //public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid, string GUID)
+        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     // [1]. 토큰체크
+                    /*
                     foreach (InOutInventoryDTO InventoryDTO in dto.Inventory!)
                     {
                         bool isAlreadyInuser = await context.InventoryTbs
                             .Where(m => m.PlaceTbId == placeid &&
                                         m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true &&
+                                        m.DelYn != true 
+                                        &&
                                         !String.IsNullOrWhiteSpace(m.RowVersion) &&
                                         m.RowVersion != GUID).AnyAsync();
 
                         if (isAlreadyInuser)
                             return false; // 다른곳에서 이미 사용중
                     }
+                    */
 
                     // [2]. 수량체크
-                    foreach (InOutInventoryDTO model in dto.Inventory)
+                    // 여기서 변경해봄 - 안됨
+                    foreach (InOutInventoryDTO model in dto.Inventory!)
                     {
                         // 출고할게 여러곳에 있으니 전체 Check 개수 Check
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
 
                         if (InventoryList is not [_, ..])
                             return null; // 수량이 아에 없음
@@ -59,7 +67,7 @@ namespace FamTec.Server.Repository.Maintenence
                         }
                     }
 
-                    // 유지보수 이력에 추가.
+                    // 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림.
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
                     MaintenenceHistory.Name = dto.Name!; // 작업명
                     MaintenenceHistory.Type = dto.Type!.Value; // 작업구분 (자체작업 / 외주작업 ..)
@@ -78,18 +86,20 @@ namespace FamTec.Server.Repository.Maintenence
 
                     if (!AddHistoryResult)
                     {
-                        await RoolBackOccupant(GUID);
+                        //await RoolBackOccupant(GUID);
                         await transaction.RollbackAsync();
                         return null;
                     }
 
+                    // 여기서 변경해봄
                     foreach (InOutInventoryDTO model in dto.Inventory)
                     {
                         List<InventoryTb> OutModel = new List<InventoryTb>();
                         int? result = 0;
 
                         // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
+                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
                         if (InventoryList is not [_, ..])
                         {
                             return null; // 출고 개수가 부족함.
@@ -189,29 +199,29 @@ namespace FamTec.Server.Repository.Maintenence
                     if(UpdateResult)
                     {
                         await transaction.CommitAsync(); // 출고완료
-                        await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
+                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
                         return true;
                     }
                     else
                     {
                         await transaction.RollbackAsync(); // 출고 실패
-                        await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
+                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
                         return false;
                     }
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
                     await transaction.RollbackAsync();
-                    
-                    await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+
+                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
                     return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    
-                    await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
+
+                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
                 }
@@ -411,7 +421,8 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="delCount"></param>
         /// <param name="Guid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount, string Guid)
+        //public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount, string Guid)
+        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount)
         {
             try
             {
@@ -420,7 +431,7 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => m.MaterialTbId == materialid &&
                                 m.RoomTbId == roomid &&
                                 m.PlaceTbId == placeid &&
-                                m.RowVersion == Guid &&
+                                //m.RowVersion == Guid &&
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();

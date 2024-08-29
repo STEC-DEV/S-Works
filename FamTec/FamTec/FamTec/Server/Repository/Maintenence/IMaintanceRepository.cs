@@ -9,7 +9,8 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid, string GUID);
+        //ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid, string GUID);
+        ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid);
 
         /// <summary>
         /// 유지보수이력 설비ID에 해당하는거 전체조회

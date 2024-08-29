@@ -89,7 +89,6 @@ public partial class WorksContext : DbContext
             entity.HasNoDiscriminator();
         });
 
-
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -527,6 +526,11 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.RowVersion)
+            .IsRowVersion() // 추가
+            .IsConcurrencyToken() // 추가
+            .HasColumnType("BINARY(8)") // 추가
+            .IsFixedLength();
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -814,7 +818,6 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>
@@ -823,6 +826,5 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
-
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
