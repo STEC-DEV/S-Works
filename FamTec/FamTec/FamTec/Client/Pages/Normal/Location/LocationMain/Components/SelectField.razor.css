@@ -5,12 +5,22 @@
     width :100%;
 }
 
+.row{
+    flex-direction:row;
+    align-items:center;
+    gap : var(--default-pd);
+}
+
 .label{
     font-weight :var(--bold-wt);
     font-size : var(--normal-size);
     color : var(--main-color);
+    white-space : nowrap;
 }
 
+.row>.selectbox>.display {
+    background-color : var(--content-back-color);
+}
 
 .selectbox{
     position : relative;

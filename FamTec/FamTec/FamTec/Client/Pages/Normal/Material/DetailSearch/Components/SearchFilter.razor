@@ -1,0 +1,41 @@
+﻿@using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+
+<div class="searchfilter">
+    <div class="header">
+        <span class="title">
+            검색 조건
+        </span>
+    </div>
+    <div class="content">
+        <InputDuration 
+            Row="true"
+            StartDT="@startDt"
+            EndDT="@endDt"
+            StartDTChanged="@(newDate => startDt = newDate)"
+            EndDTChanged="@(newDate => endDt = newDate)" />
+    </div>
+</div>
+
+@code {
+    private DateTime startDt = DateTime.Now;
+    private DateTime endDt = DateTime.Now;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaterial();
+    }
+
+    //조회
+    private async Task OnLoadMaterial()
+    {
+        try
+        {
+            
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+}

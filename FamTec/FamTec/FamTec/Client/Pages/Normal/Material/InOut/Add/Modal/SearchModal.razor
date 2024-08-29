@@ -1,0 +1,82 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components
+@using FamTec.Client.Pages.Voc.Main.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            자재 검색
+        </span>
+    </div>
+     <div class="content yappear">
+        <InputCol 
+            @bind-Value="@searchData" 
+            Placeholder="자재코드, 자재명, 제조사"
+            />
+        <Button Name="검색" Width=true Type="0" OnClick="OnSearch" />
+    </div>
+    <SearchTable OnCheck="OnCheck" ListData="@SearchList" CheckedItem="@checkItem" />
+    <div class="btns">
+        <Button Name="등록" Type="0" OnClick="OnAdd" />
+        <Button Name="닫기" Type="1" OnClick="OnClicked" />
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public MaterialSearchListDTO SelectData { get; set; }
+    [Parameter] public EventCallback<MaterialSearchListDTO> SelectDataChanged { get; set; }
+
+
+    List<MaterialSearchListDTO> SearchList;
+
+    string searchData="";
+    int checkItem = 0;
+    private MaterialSearchListDTO _selectData;
+
+    private async Task OnSearch()
+    {
+        try
+        {
+            checkItem = 0;
+            if (String.IsNullOrEmpty(searchData))
+            {
+                await JS.InvokeVoidAsync("alert", "검색 내용을 입력해주세요.");
+                return;
+            }
+            ResponseList<MaterialSearchListDTO> resGet = await apiManager.GetListAsync<MaterialSearchListDTO>($"Material/sign/MaterialSearch?searchData={searchData}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert",resGet.message);
+                return;
+            }
+
+            SearchList = resGet.data;
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[자재][검색] 자재 검색 에러"+ex);
+            await JS.InvokeVoidAsync("alert", "[자재][검색] 자재 검색 에러");
+        }
+    }
+
+    private void OnCheck(MaterialSearchListDTO data)
+    {
+        checkItem = data.Id;
+        _selectData = data;
+    }
+
+    private async Task OnAdd()
+    {
+        await SelectDataChanged.InvokeAsync(_selectData);
+        await OnClicked();
+    }
+
+    private async Task OnClicked()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

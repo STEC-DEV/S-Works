@@ -1,0 +1,57 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+<div class="m-search">
+    <div class="header">
+        <span class="title">
+            @(Tab==0 ? "입고 자재" : "출고 자재")
+        </span>
+        <Button Name="검색" Width=true Type="0" OnClick="OnSearch"/>
+    </div>
+    <div class="content">
+        <TextField 
+            Label="자재 코드" 
+            Context="@SelectData?.Code"
+            Row=true />
+        <TextField 
+            Label="자재명" 
+            Context="@SelectData?.Name"
+            Row=true />
+        <TextField 
+            Label="자재 제조사" 
+            Context="@SelectData?.Mfr"
+            Row=true />
+        <TextField 
+            Label="규격" 
+            Context="@SelectData?.Standard"
+            Row=true />
+    </div>
+    @if (_isSearch)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SearchModal OnClose="OnSearch" @bind-SelectData=SelectData />
+            </ChildComponent >
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int Tab { get; set; }
+    MaterialSearchListDTO? SelectData;
+    private bool _isSearch = false;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        StateHasChanged();
+    }
+
+    private void OnSearch()
+    {
+        _isSearch = !_isSearch;
+    }
+}

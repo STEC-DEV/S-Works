@@ -5,12 +5,22 @@
     width :100%;
 }
 
+.row[b-bjmstyaofj]{
+    flex-direction:row;
+    align-items:center;
+    gap : var(--default-pd);
+}
+
 .label[b-bjmstyaofj]{
     font-weight :var(--bold-wt);
     font-size : var(--normal-size);
     color : var(--main-color);
+    white-space : nowrap;
 }
 
+.row>.selectbox>.display[b-bjmstyaofj] {
+    background-color : var(--content-back-color);
+}
 
 .selectbox[b-bjmstyaofj]{
     position : relative;

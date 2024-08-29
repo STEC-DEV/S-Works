@@ -19,31 +19,38 @@
             ValueType="text"
             @bind-Value="@AddMaterial.Code" 
             />
-        <InputCol 
-            Label="자재명" 
-            Placeholder="자재명" 
-            ValueType="text" 
-            @bind-Value="@AddMaterial.Name" 
-            />
+        <div class="group">
+            <InputCol 
+                Label="자재명" 
+                Placeholder="자재명" 
+                ValueType="text" 
+                @bind-Value="@AddMaterial.Name" 
+                />
+            <InputCol 
+                Label="제조사" 
+                Placeholder="제조사" 
+                ValueType="text" 
+                @bind-Value="@AddMaterial.Mfr" 
+                />
+        </div>
         <InputCol 
             Label="규격" 
             Placeholder="규격" 
             ValueType="text" 
             @bind-Value="@AddMaterial.Standard" 
             />
-        <InputCol 
-            Label="단위" 
-            Placeholder="단위" 
-            ValueType="text" 
-            @bind-Value="@AddMaterial.Unit" 
-            />
-        <InputCol 
-            Label="안전재고" 
-            Placeholder="안전재고" 
-            ValueType="number" 
-            Min="0"
-            @bind-Value="@AddMaterial.SafeNum" 
-            />
+        <div class="group">
+            <InputCol Label="안전재고"
+                        Placeholder="안전재고"
+                        ValueType="number"
+                        Min="0"
+                        @bind-Value="@AddMaterial.SafeNum" />
+            <InputCol Label="단위"
+                        Placeholder="단위"
+                        ValueType="text"
+                        @bind-Value="@AddMaterial.Unit" />
+        </div>
+        
         <div class="group">
             <SelectField 
                 T="BuildingFloorListDTO" 

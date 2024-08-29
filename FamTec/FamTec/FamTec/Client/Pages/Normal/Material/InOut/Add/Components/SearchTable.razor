@@ -1,0 +1,81 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    자재코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    제조사
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    규격
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var row in ListData)
+        {
+            <tr class="tr">
+                <td class="td">
+                    @row.Code
+                </td>
+                <td class="td">
+                    @row.Name
+                </td>
+                <td class="td">
+                    @row.Mfr
+                </td>
+                <td class="td">
+                    @row.Standard
+                </td>
+                <td class="td">
+                    <input 
+                        type="checkbox" 
+                        checked=@(row.Id==CheckedItem)                    
+                        @onchange="(e)=>OnChecked(e, row)"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<MaterialSearchListDTO>? ListData { get; set; }
+    [Parameter] public EventCallback<MaterialSearchListDTO> OnCheck { get; set; }
+    [Parameter] public int CheckedItem { get; set; }
+
+
+
+    private void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+    {
+
+        if ((bool)e.Value)
+        {
+            OnCheck.InvokeAsync(data);
+            
+        }
+        else
+        {
+            OnCheck.InvokeAsync(null);
+        }
+
+    }
+}

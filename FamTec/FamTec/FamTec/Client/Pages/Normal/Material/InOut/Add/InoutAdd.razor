@@ -1,13 +1,15 @@
 ﻿@page "/material/inout/add"
-@using FamTec.Client.Pages.Normal.Material.Material.InOut.Add.Components
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components
 
 <div class="addinout">
     <div class="header">
         <Tab Tabs="Category" OnClick="OnTab" />
     </div>
-    <div class="content">
-        <SearchMaterial Tab="_tab" />
-    </div>
+    <SearchMaterial Tab="_tab" />
+    
+    <InForm />
+
+    <InOutList Title="@(_tab==0 ? "입고 목록" : "출고 목록")" />
 </div>
 
 @code {

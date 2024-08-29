@@ -1,0 +1,102 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    거래일
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    위치
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
+            <th class="th">
+                <span>
+
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach (InOutListDTO row in ListData)
+        {
+            <tr class="tr">
+                <td class="td">
+                    @row.InOutDate
+                </td>
+                <td class="td">
+                    @row.RoomName
+                </td>
+                <td class="td">
+                    @row.MaterialCode
+                </td>
+                <td class="td">
+                    @row.MaterialName
+                </td>
+                <td class="td">
+                    @row.MaterialUnit
+                </td>
+                <td class="td">
+                    @row.Num
+                </td>
+                <td class="td">
+                    @row.UnitPrice
+                </td>
+                <td class="td">
+                    @row.ToTalPrice
+                </td>
+                <td class="td">
+                    @row.Note
+                </td>
+                <td class="td">
+                    <input type="checkbox" />
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<InOutListDTO>? ListData { get; set; }
+
+}

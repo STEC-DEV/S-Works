@@ -27,6 +27,7 @@
                         <span class="label">기간 설정</span>
                         <div class="@(selectDefaultOption != 1 ? "none" : "") ">
                             <InputDuration 
+                                Row="true"
                                 StartDT="@startDt" 
                                 EndDT="@endDt" 
                                 StartDTChanged="@(newDate => startDt = newDate)"

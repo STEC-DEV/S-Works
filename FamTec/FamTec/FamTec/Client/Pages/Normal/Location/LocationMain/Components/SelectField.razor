@@ -1,6 +1,6 @@
 ﻿@typeparam T
 
-<div class="selectfield">
+<div class="selectfield @(Row==true ? "row":"")">
     @if (!String.IsNullOrEmpty(Label))
     {
         <label class="label">
@@ -55,6 +55,7 @@
     [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
     [Parameter] public bool EditMode {get;set;}
     [Parameter] public string? Label { get; set; }
+    [Parameter] public bool? Row { get; set; }
 
     public string SelectName = "Select";
     public bool IsActive { get; set; } = false;

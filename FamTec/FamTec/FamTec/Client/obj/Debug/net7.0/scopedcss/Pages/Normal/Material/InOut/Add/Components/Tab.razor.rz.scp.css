@@ -1,5 +1,5 @@
 
-.tabs[b-4eewkaqnb9]{
+.tabs[b-7tgxzn0rxl]{
     width :fit-content;
     display : flex;
     
@@ -7,7 +7,7 @@
     background-color : var(--default-color);
 }
 
-.tab[b-4eewkaqnb9] {
+.tab[b-7tgxzn0rxl] {
     transition: all .3s;
     padding: var(--default-pd);
     border-bottom: var(--comp-bd);
@@ -16,7 +16,7 @@
     color: darkgray;
 }
 
-.active[b-4eewkaqnb9] {
+.active[b-7tgxzn0rxl] {
     color: var(--main-color);
     transition: all .3s;
     border-bottom : var(--default-bd);

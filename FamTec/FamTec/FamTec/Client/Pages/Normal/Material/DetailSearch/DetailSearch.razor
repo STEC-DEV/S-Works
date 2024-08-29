@@ -1,0 +1,14 @@
+﻿@page "/material/detail"
+@page "/material/detail/{SearchTerm}"
+@using FamTec.Client.Pages.Normal.Material.DetailSearch.Components
+
+
+<div class="detailsearch">
+    <SearchFilter/>
+</div>
+
+@code {
+    [Parameter]
+    public string SearchTerm { get; set; }
+    private string searchTerm;
+}

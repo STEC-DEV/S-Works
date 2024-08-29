@@ -1,23 +1,34 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 
 <div class="duration">
-    <input 
+    <div class="wrap @(Row == true ? "row":"")">
+        @if (!String.IsNullOrEmpty(Label))
+        {
+            <label>
+                @Label
+            </label>
+        }
+        <input 
         class="dt"
         type="date" 
         max="@EndDT.ToString("yyyy-MM-dd")" 
         value="@StartDT.ToString("yyyy-MM-dd")"
         @onchange="@(e => OnStartDateChanged(e))"
         />
-    <span class="text"> ~ </span>
-    <input 
-        class="dt"
-        type="date" 
-        min="@StartDT.ToString("yyyy-MM-dd")" 
-        value="@StartDT.ToString("yyyy-MM-dd")"
-        @onchange="@(e => OnEndDateChanged(e))"/>
+        <span class="text"> ~ </span>
+        <input 
+            class="dt"
+            type="date" 
+            min="@StartDT.ToString("yyyy-MM-dd")" 
+            value="@StartDT.ToString("yyyy-MM-dd")"
+            @onchange="@(e => OnEndDateChanged(e))"/>
+    </div>
+    
 </div>
 
 @code {
+    [Parameter] public string? Label{ get; set; }
+    [Parameter] public bool? Row { get; set; }
     [Parameter] public DateTime StartDT { get; set; }
     [Parameter] public DateTime EndDT{ get; set; }
     [Parameter] public EventCallback<DateTime> StartDTChanged { get; set; }
