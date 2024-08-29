@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Client.DTO.Normal.Voc;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 
 namespace FamTec.Server.Repository.Voc
@@ -45,7 +46,13 @@ namespace FamTec.Server.Repository.Voc
 
         ValueTask<bool> UpdateVocInfo(VocTb model);
 
-        ValueTask<Task> GetDashBoardData(DateTime StartDate, DateTime EndDate);
+        /// <summary>
+        /// DashBoard 용 일주일치 각 타입별 카운트
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
+        ValueTask<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate);
       
     }
 }

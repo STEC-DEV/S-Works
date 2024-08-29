@@ -3,6 +3,7 @@ using FamTec.Server.Repository.Voc;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,31 +38,28 @@ namespace FamTec.Server.Controllers.Voc
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/GetTemp")]
-        public async ValueTask<IActionResult> GetTemp()
+        [Route("sign/GetVocWeekCount")]
+        public async ValueTask<IActionResult> GetVocWeekCount()
         {
-            DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-            // 현재 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
-            DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
-
-            // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 빼기
-            int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
-
-            // 일요일인 경우, 주의 첫날을 월요일로 설정하기 위해 7을 더함
-            if (daysToSubtract < 0)
+            try
             {
-                daysToSubtract += 7;
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDataService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
-
-            // 주의 첫날(월요일) 계산
-            DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
-            DateTime EndOfWeek = startOfWeek.AddDays(7);
-
-
-            await VocInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek);
-            // 결과 출력
-            Console.WriteLine("현재 주의 시작일 (월요일): " + startOfWeek.ToString("yyyy-MM-dd"));
-            return Ok();
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            
         }
 
         /// <summary>

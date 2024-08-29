@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,5 +39,12 @@ namespace FamTec.Server.Services.Voc
         /// <param name="dto"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto);
+
+        /// <summary>
+        /// DashBoard용 일주일치 민원 각 타입별 카운트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<VocWeekCountDTO>?> GetVocDashBoardDataService(HttpContext context);
     }
 }

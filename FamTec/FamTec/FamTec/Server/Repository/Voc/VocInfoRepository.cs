@@ -2,6 +2,7 @@
 using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,13 @@ namespace FamTec.Server.Repository.Voc
             this.LogService = _logservice;
         }
 
-        public async ValueTask<Task> GetDashBoardData(DateTime StartDate, DateTime EndDate)
+        /// <summary>
+        /// DashBoard 용 일주일치 각 타입별 카운트
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
+        public async ValueTask<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate)
         {
             // Step 1: 날짜 범위 생성
             var allDates = Enumerable.Range(0, 1 + EndDate.AddDays(-1).Subtract(StartDate).Days)
@@ -28,68 +35,65 @@ namespace FamTec.Server.Repository.Voc
             // Step 2: 데이터베이스에서 두 가지 유형의 데이터를 동시에 가져오기
             var groupedReceipts = await context.VocTbs
                 .Where(m => m.DelYn != true &&
-                            (m.Type == 0 || m.Type == 1) && // Type이 0 또는 1인 경우
-                            m.Status == 0 && // 민원신청됨
-                            m.CreateDt >= StartDate &&
-                            m.CreateDt <= EndDate)
+                            (m.Type == 0 || // 미분류
+                            m.Type == 1 ||  // 기계
+                            m.Type == 2 || // 전기
+                            m.Type == 3 || // 승강
+                            m.Type == 4 || // 소방
+                            m.Type == 5 || // 건축
+                            m.Type == 6 || // 통신
+                            m.Type == 7 || // 미화
+                            m.Type == 8 ) &&  // 보안
+                            m.CreateDt >= StartDate && m.CreateDt <= EndDate)
                 .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
                 .ToListAsync();
 
             // Step 3: 날짜별 데이터와 모든 날짜를 조인하여 결과 구성
-            var result = allDates
-                .Select(date => new
+            List<VocWeekCountDTO> model = allDates
+                .Select(date => new VocWeekCountDTO
                 {
                     Date = date,
                     DefaultType = groupedReceipts
                         .Where(g => g.Key.Date == date && g.Key.Type == 0)
                         .SelectMany(g => g)
-                        .ToList(),
+                        .Count(),
                     MachineType = groupedReceipts
                         .Where(g => g.Key.Date == date && g.Key.Type == 1)
                         .SelectMany(g => g)
-                        .ToList()
-                })
-                .Select(r => new
-                {
-                    Date = r.Date,
-                    DefaultType = r.DefaultType.Count > 0 ? r.DefaultType : null, // 데이터가 없는 경우 null로 설정
-                    MachineType = r.MachineType.Count > 0 ? r.MachineType : null  // 데이터가 없는 경우 null로 설정
-                })
-                .ToList();
+                        .Count(),
+                    ElecType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 2)
+                        .SelectMany(g => g)
+                        .Count(),
+                    liftType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 3)
+                        .SelectMany(g => g)
+                        .Count(),
+                    ConstructType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 4)
+                        .SelectMany(g => g)
+                        .Count(),
+                    FireType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 5)
+                        .SelectMany(g => g)
+                        .Count(),
+                    NetWorkType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 6)
+                        .SelectMany(g => g)
+                        .Count(),
+                    BeautyType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 7)
+                        .SelectMany(g => g)
+                        .Count(),
+                    SecurityType = groupedReceipts
+                        .Where(g=>g.Key.Date == date && g.Key.Type == 8)
+                        .SelectMany(g => g)
+                        .Count()
+                }).ToList();
 
-            Console.WriteLine("");
-            //// 접수중
-            //var groupedReceiptVocList = await context.VocTbs
-            //                .Where(m => m.DelYn != true &&
-            //                            m.Type == 0 && // 미분류
-            //                            m.Status == 0 && // 민원신청됨
-            //                            m.CreateDt >= StartDate && 
-            //                            m.CreateDt <= EndDate)
-            //                .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
-            //                .Select(g => new
-            //                {
-            //                    Date = g.Key,
-            //                    Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
-            //                })
-            //                .ToListAsync();
+            
 
-            //var groupedReceiptVocList1 = await context.VocTbs
-            //                .Where(m => m.DelYn != true &&
-            //                            m.Type == 1 && // 기계
-            //                            m.Status == 0 && // 민원신청됨
-            //                            m.CreateDt >= StartDate &&
-            //                            m.CreateDt <= EndDate)
-            //                .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
-            //                .Select(g => new
-            //                {
-            //                    Date = g.Key,
-            //                    Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
-            //                })
-            //                .ToListAsync();
-
-
-
-            return null;
+            return model;
         }
 
         /// <summary>

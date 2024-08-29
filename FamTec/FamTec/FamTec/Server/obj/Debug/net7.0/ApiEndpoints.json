@@ -4769,16 +4769,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "GetTemp",
-    "RelativePath": "api/Voc/sign/GetTemp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
     "Method": "GetVocFilterList",
     "RelativePath": "api/Voc/sign/GetVocFilterList",
     "HttpMethod": "GET",
@@ -4837,6 +4827,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetVocWeekCount",
+    "RelativePath": "api/Voc/sign/GetVocWeekCount",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
