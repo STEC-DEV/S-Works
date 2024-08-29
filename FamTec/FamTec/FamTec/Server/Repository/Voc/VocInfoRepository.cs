@@ -20,47 +20,74 @@ namespace FamTec.Server.Repository.Voc
 
         public async ValueTask<Task> GetDashBoardData(DateTime StartDate, DateTime EndDate)
         {
-            // 접수중
-            var groupedReceiptVocList = await context.VocTbs
-                            .Where(m => m.DelYn != true &&
-                                        m.Status == 0 &&
-                                        m.CreateDt >= StartDate && 
-                                        m.CreateDt <= EndDate)
-                            .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
-                            .Select(g => new
-                            {
-                                Date = g.Key,
-                                Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
-                            })
-                            .ToListAsync();
-            
-            // 진행중
-            var groupedReceiptVocList2 = await context.VocTbs
-                           .Where(m => m.DelYn != true &&
-                                       m.Status == 1 &&
-                                       m.UpdateDt >= StartDate &&
-                                       m.UpdateDt <= EndDate)
-                           .GroupBy(m => m.UpdateDt.Date) // CreateDt의 Date만 사용하여 그룹화
-                           .Select(g => new
-                           {
-                               Date = g.Key,
-                               Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
-                           })
-                           .ToListAsync();
+            // Step 1: 날짜 범위 생성
+            var allDates = Enumerable.Range(0, 1 + EndDate.AddDays(-1).Subtract(StartDate).Days)
+                                     .Select(offset => StartDate.AddDays(offset).Date)
+                                     .ToList();
 
-            // 완료
-            var groupedReceiptVocList3 = await context.VocTbs
-                           .Where(m => m.DelYn != true &&
-                                       m.Status == 2 &&
-                                       m.UpdateDt >= StartDate &&
-                                       m.UpdateDt <= EndDate)
-                           .GroupBy(m => m.UpdateDt.Date) // CreateDt의 Date만 사용하여 그룹화
-                           .Select(g => new
-                           {
-                               Date = g.Key,
-                               Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
-                           })
-                           .ToListAsync();
+            // Step 2: 데이터베이스에서 두 가지 유형의 데이터를 동시에 가져오기
+            var groupedReceipts = await context.VocTbs
+                .Where(m => m.DelYn != true &&
+                            (m.Type == 0 || m.Type == 1) && // Type이 0 또는 1인 경우
+                            m.Status == 0 && // 민원신청됨
+                            m.CreateDt >= StartDate &&
+                            m.CreateDt <= EndDate)
+                .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
+                .ToListAsync();
+
+            // Step 3: 날짜별 데이터와 모든 날짜를 조인하여 결과 구성
+            var result = allDates
+                .Select(date => new
+                {
+                    Date = date,
+                    DefaultType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 0)
+                        .SelectMany(g => g)
+                        .ToList(),
+                    MachineType = groupedReceipts
+                        .Where(g => g.Key.Date == date && g.Key.Type == 1)
+                        .SelectMany(g => g)
+                        .ToList()
+                })
+                .Select(r => new
+                {
+                    Date = r.Date,
+                    DefaultType = r.DefaultType.Count > 0 ? r.DefaultType : null, // 데이터가 없는 경우 null로 설정
+                    MachineType = r.MachineType.Count > 0 ? r.MachineType : null  // 데이터가 없는 경우 null로 설정
+                })
+                .ToList();
+
+            Console.WriteLine("");
+            //// 접수중
+            //var groupedReceiptVocList = await context.VocTbs
+            //                .Where(m => m.DelYn != true &&
+            //                            m.Type == 0 && // 미분류
+            //                            m.Status == 0 && // 민원신청됨
+            //                            m.CreateDt >= StartDate && 
+            //                            m.CreateDt <= EndDate)
+            //                .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
+            //                .Select(g => new
+            //                {
+            //                    Date = g.Key,
+            //                    Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
+            //                })
+            //                .ToListAsync();
+
+            //var groupedReceiptVocList1 = await context.VocTbs
+            //                .Where(m => m.DelYn != true &&
+            //                            m.Type == 1 && // 기계
+            //                            m.Status == 0 && // 민원신청됨
+            //                            m.CreateDt >= StartDate &&
+            //                            m.CreateDt <= EndDate)
+            //                .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
+            //                .Select(g => new
+            //                {
+            //                    Date = g.Key,
+            //                    Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
+            //                })
+            //                .ToListAsync();
+
+
 
             return null;
         }

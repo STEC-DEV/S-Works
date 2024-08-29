@@ -431,7 +431,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/MaterialSearch")]
-        public async Task<IActionResult> MaterialSearch(string searchData)
+        public async Task<IActionResult> MaterialSearch([FromQuery]string searchData)
         {
             try
             {
