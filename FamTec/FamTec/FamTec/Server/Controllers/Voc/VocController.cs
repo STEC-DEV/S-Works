@@ -1,4 +1,6 @@
-﻿using FamTec.Server.Services;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Repository.Voc;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
@@ -13,12 +15,15 @@ namespace FamTec.Server.Controllers.Voc
     {
         private readonly IVocService VocService;
         private readonly ILogService LogService;
+        private readonly IVocInfoRepository VocInfoRepository;
 
         public VocController(IVocService _vocservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            IVocInfoRepository _vocinforepository)
         {
             this.VocService = _vocservice;
             this.LogService = _logservice;
+            this.VocInfoRepository = _vocinforepository;
         }
 
        
@@ -28,6 +33,35 @@ namespace FamTec.Server.Controllers.Voc
         public async ValueTask<IActionResult> GetTemp([FromQuery]List<int> type)
         {
             return Ok(type);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetTemp")]
+        public async ValueTask<IActionResult> GetTemp()
+        {
+            DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            // 현재 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
+            DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
+
+            // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 빼기
+            int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
+
+            // 일요일인 경우, 주의 첫날을 월요일로 설정하기 위해 7을 더함
+            if (daysToSubtract < 0)
+            {
+                daysToSubtract += 7;
+            }
+
+            // 주의 첫날(월요일) 계산
+            DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
+            DateTime EndOfWeek = startOfWeek.AddDays(7);
+
+
+            await VocInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek);
+            // 결과 출력
+            Console.WriteLine("현재 주의 시작일 (월요일): " + startOfWeek.ToString("yyyy-MM-dd"));
+            return Ok();
         }
 
         /// <summary>

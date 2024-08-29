@@ -586,6 +586,34 @@ namespace FamTec.Server.Services.Material
             }
         }
 
-     
+        /// <summary>
+        /// 품목검색
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="searchData"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<MaterialSearchListDTO> model = await MaterialInfoRepository.GetMaterialSearchInfo(Int32.Parse(placeid), searchData);
+                if (model is not null)
+                    return new ResponseList<MaterialSearchListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<MaterialSearchListDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

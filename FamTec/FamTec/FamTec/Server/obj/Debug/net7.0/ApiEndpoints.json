@@ -3471,6 +3471,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "MaterialSearch",
+    "RelativePath": "api/Material/sign/MaterialSearch",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "searchData",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "UpdateMaterial",
     "RelativePath": "api/Material/sign/UpdateMaterial",
     "HttpMethod": "POST",
@@ -4044,6 +4060,32 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "AddOutStoreList",
+    "RelativePath": "api/Store/sign/AddOutStoreList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roomid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "outcount",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetAllInoutPlaceCount",
     "RelativePath": "api/Store/sign/GetAllInoutPlaceCount",
     "HttpMethod": "GET",
@@ -4060,6 +4102,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetLocationMaterial",
+    "RelativePath": "api/Store/sign/GetLocationMaterial",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -4697,6 +4755,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
+    "Method": "GetTemp",
+    "RelativePath": "api/Voc/sign/GetTemp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

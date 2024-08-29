@@ -18,6 +18,53 @@ namespace FamTec.Server.Repository.Voc
             this.LogService = _logservice;
         }
 
+        public async ValueTask<Task> GetDashBoardData(DateTime StartDate, DateTime EndDate)
+        {
+            // 접수중
+            var groupedReceiptVocList = await context.VocTbs
+                            .Where(m => m.DelYn != true &&
+                                        m.Status == 0 &&
+                                        m.CreateDt >= StartDate && 
+                                        m.CreateDt <= EndDate)
+                            .GroupBy(m => m.CreateDt.Date) // CreateDt의 Date만 사용하여 그룹화
+                            .Select(g => new
+                            {
+                                Date = g.Key,
+                                Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
+                            })
+                            .ToListAsync();
+            
+            // 진행중
+            var groupedReceiptVocList2 = await context.VocTbs
+                           .Where(m => m.DelYn != true &&
+                                       m.Status == 1 &&
+                                       m.UpdateDt >= StartDate &&
+                                       m.UpdateDt <= EndDate)
+                           .GroupBy(m => m.UpdateDt.Date) // CreateDt의 Date만 사용하여 그룹화
+                           .Select(g => new
+                           {
+                               Date = g.Key,
+                               Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
+                           })
+                           .ToListAsync();
+
+            // 완료
+            var groupedReceiptVocList3 = await context.VocTbs
+                           .Where(m => m.DelYn != true &&
+                                       m.Status == 2 &&
+                                       m.UpdateDt >= StartDate &&
+                                       m.UpdateDt <= EndDate)
+                           .GroupBy(m => m.UpdateDt.Date) // CreateDt의 Date만 사용하여 그룹화
+                           .Select(g => new
+                           {
+                               Date = g.Key,
+                               Receipts = g.ToList() // 그룹에 속한 목록을 리스트로 변환
+                           })
+                           .ToListAsync();
+
+            return null;
+        }
+
         /// <summary>
         /// VOC 추가
         /// </summary>
@@ -237,5 +284,6 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
+    
     }
 }

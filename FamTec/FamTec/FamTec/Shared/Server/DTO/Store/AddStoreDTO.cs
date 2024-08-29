@@ -13,6 +13,11 @@
         public int? RoomID { get; set; }
 
         /// <summary>
+        /// 창고명칭
+        /// </summary>
+        public string? RoomName { get; set; }
+
+        /// <summary>
         /// 단가
         /// </summary>
         public float? UnitPrice { get; set; }

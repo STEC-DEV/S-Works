@@ -121,6 +121,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 {
                     // VOC 에서 SELECT
                     ReceiptCode = KakaoService.RandomCode();
+                    model.Code = ReceiptCode;
                 } while (await VocInfoRepository.GetVocInfoByCode(ReceiptCode) != null);
 
 

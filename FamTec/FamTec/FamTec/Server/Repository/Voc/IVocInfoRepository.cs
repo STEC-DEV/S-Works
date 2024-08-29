@@ -45,6 +45,7 @@ namespace FamTec.Server.Repository.Voc
 
         ValueTask<bool> UpdateVocInfo(VocTb model);
 
+        ValueTask<Task> GetDashBoardData(DateTime StartDate, DateTime EndDate);
       
     }
 }

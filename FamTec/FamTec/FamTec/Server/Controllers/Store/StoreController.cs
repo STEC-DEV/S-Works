@@ -15,12 +15,14 @@ namespace FamTec.Server.Controllers.Store
     {
         private IInVentoryService InStoreService;
         private ILogService LogService;
-        
+        private IInventoryInfoRepository InventoryInfoRepository;
 
         public StoreController(IInVentoryService _instoreservice,
+            IInventoryInfoRepository _inventoryInfoRepository,
             ILogService _logservice)
         {
             this.InStoreService = _instoreservice;
+            this.InventoryInfoRepository = _inventoryInfoRepository;
             this.LogService = _logservice;
         }
 
@@ -119,33 +121,33 @@ namespace FamTec.Server.Controllers.Store
                 //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
                 //dto.Add(new InOutInventoryDTO()
                 //{
-                    //InOut = 0,
-                    //MaterialID = 10,
-                    //AddStore = new AddStoreDTO()
-                    //{
-                    //InOutDate = DateTime.Now,
-                    //Note = "출고데이터_1",
-                    //Num = 10,
-                    //RoomID = 2,
-                    //UnitPrice = 300,
-                    //TotalPrice = 10 * 300
-                    //}
+                //InOut = 0,
+                //MaterialID = 10,
+                //AddStore = new AddStoreDTO()
+                //{
+                //InOutDate = DateTime.Now,
+                //Note = "출고데이터_1",
+                //Num = 10,
+                //RoomID = 2,
+                //UnitPrice = 300,
+                //TotalPrice = UnitPrice * Num
+                //}
                 //});
 
 
                 //dto.Add(new InOutInventoryDTO()
                 //{
-                    //InOut = 0,
-                    //MaterialID = 11,
-                    //AddStore = new AddStoreDTO()
-                    //{
-                        //InOutDate = DateTime.Now,
-                        //Note = "출고데이터_1",
-                        //Num = 10,
-                        //RoomID = 3,
-                        //UnitPrice = 100,
-                        //TotalPrice = 100 * 10
-                    //}
+                //InOut = 0,
+                //MaterialID = 11,
+                //AddStore = new AddStoreDTO()
+                //{
+                //InOutDate = DateTime.Now,
+                //Note = "출고데이터_1",
+                //Num = 10,
+                //RoomID = 3,
+                //UnitPrice = 100,
+                //TotalPrice = UnitPrice * Num
+                //}
                 //});
 
                 if (HttpContext is null)
@@ -362,6 +364,72 @@ namespace FamTec.Server.Controllers.Store
             }
         }
 
+        /// <summary>
+        /// 공간의 재고수량 Return
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetLocationMaterial")]
+        public async ValueTask<IActionResult> GetLocationMaterial([FromQuery]int materialid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (materialid is 0)
+                    return NoContent();
+
+                ResponseList<InOutLocationDTO> model = await InStoreService.GetMaterialRoomNumService(HttpContext, materialid);
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 출고 리스트에 담음
+        /// </summary>
+        /// <param name="roomid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="outcount"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/AddOutStoreList")]
+        public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (roomid is 0)
+                    return NoContent();
+                if(materialid is 0)
+                    return NoContent();
+                if(outcount is 0)
+                    return NoContent();
+
+                bool? temp = await InventoryInfoRepository.AddOutStoreList(3, roomid, materialid, outcount);
+                return Ok(temp);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
     }
 }

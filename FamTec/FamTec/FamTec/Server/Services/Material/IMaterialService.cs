@@ -65,5 +65,13 @@ namespace FamTec.Server.Services.Material
         /// <param name="files"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files);
+
+        /// <summary>
+        /// 품목검색
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="searchData"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData);
     }
 }

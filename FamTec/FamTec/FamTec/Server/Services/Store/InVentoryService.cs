@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Inventory;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.Command;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
 using FamTec.Shared.Server.DTO;
@@ -297,7 +298,31 @@ namespace FamTec.Server.Services.Store
                 return new ResponseList<MaterialHistory>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-        
+
+        /// <summary>
+        /// 해당 품목의 재고수량 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="MaterialId"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId)
+        {
+            try
+            {
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<InOutLocationDTO> model = await InventoryInfoRepository.GetLocationMaterialInventoryList(Int32.Parse(placeid), MaterialId);
+                return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = model, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<InOutLocationDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 
    

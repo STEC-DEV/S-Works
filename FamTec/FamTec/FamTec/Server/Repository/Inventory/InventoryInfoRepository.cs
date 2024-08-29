@@ -819,7 +819,7 @@ namespace FamTec.Server.Repository.Inventory
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return null;
+                throw new ArgumentNullException();
             }
         }
 
@@ -852,5 +852,140 @@ namespace FamTec.Server.Repository.Inventory
             }
            
         }
+
+        /// <summary>
+        /// 사업장 - 품목ID에 해당하는 위치 재고수량 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid)
+        {
+            try
+            {
+                List<InventoryTb>? model = await context.InventoryTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MaterialTbId == materialid)
+                    .GroupBy(m => m.RoomTbId)
+                    .Select(g => new InventoryTb
+                    {
+                        RoomTbId = g.Key, // 그룹의 키인 RoomId
+                        PlaceTbId = g.First().PlaceTbId, // 그룹의 임의 항목에서 PlaceTbId 가져오기
+                        MaterialTbId = g.First().MaterialTbId, // 그룹의 임의 항목에서 MaterialTbId 가져오기
+                        Num = g.Sum(m => m.Num), // 각 그룹의 Num 필드 합계 계산
+                    })
+                    .ToListAsync();
+
+                if(model is not null && model.Any())
+                {
+                    List<InOutLocationDTO> dto = (from InventoryTB in model
+                                                  join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
+                                                  on InventoryTB.RoomTbId equals RoomTB.Id
+                                                  select new InOutLocationDTO
+                                                  {
+                                                      MaterialID = InventoryTB.MaterialTbId,
+                                                      Num = InventoryTB.Num,
+                                                      RoomID = InventoryTB.RoomTbId,
+                                                      RoomName = RoomTB.Name
+                                                  }).ToList();
+                    return dto;
+                }
+                else
+                {
+                    return new List<InOutLocationDTO>();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        public async ValueTask<bool?> AddOutStoreList(int placeid,int roomid, int materialid, int outcount)
+        {
+            try
+            {
+                List<InventoryTb>? model = await context.InventoryTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.RoomTbId == roomid && m.MaterialTbId == materialid
+                    && m.RowVersion == null).ToListAsync();
+
+                
+                if (model is null || !model.Any())
+                    return false; // 개수가 부족함
+
+                // 개수가 부족하지 않으면 로직돌아야함.
+                List<InventoryTb> result = new List<InventoryTb>();
+                foreach (InventoryTb InventoryTB in model)
+                {
+                    if(result.Select(m => m.Num).Sum() >= outcount)
+                    {
+                        break; // 반복문 종료
+                    }
+                    else
+                    {
+                        result.Add(InventoryTB);
+                    }
+                }
+
+                int ResultCheck = result.Select(m => m.Num).Sum();
+                if (ResultCheck < outcount)
+                    return false; // 개수가 부족함.
+
+                List<InventoryTb> OutResult = new List<InventoryTb>();
+                int num = 0;
+                foreach(InventoryTb InventoryTB in result)
+                {
+                    num += InventoryTB.Num;
+                    if (num <= outcount)
+                    {
+                        OutResult.Add(InventoryTB);
+                    }
+                    else
+                    {
+                        OutResult.Add(new InventoryTb
+                        {
+                            Id = InventoryTB.Id,
+                            RoomTbId = InventoryTB.RoomTbId,
+                            MaterialTbId = InventoryTB.MaterialTbId,
+                            UnitPrice = InventoryTB.UnitPrice,
+                            Num = InventoryTB.Num - (num - outcount),
+                            
+                        });
+                        break; // 반복문 종료
+                    }
+                }
+
+                List<InOutInventoryDTO> dto = (from InventoryTB in OutResult
+                                               join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
+                                               on InventoryTB.RoomTbId equals RoomTB.Id
+                                               select new InOutInventoryDTO
+                                               {
+                                                   InOut = 0,
+                                                   MaterialID = InventoryTB.MaterialTbId,
+                                                   AddStore = new AddStoreDTO
+                                                   {
+                                                       InOutDate = DateTime.Now,
+                                                       Note = String.Empty,
+                                                       Num = InventoryTB.Num,
+                                                       RoomID = RoomTB.Id,
+                                                       RoomName = RoomTB.Name,
+                                                       UnitPrice = InventoryTB.UnitPrice,
+                                                       TotalPrice = InventoryTB.UnitPrice * InventoryTB.Num
+                                                   }
+                                               }).ToList();
+                
+
+
+                
+
+                Console.WriteLine("");
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

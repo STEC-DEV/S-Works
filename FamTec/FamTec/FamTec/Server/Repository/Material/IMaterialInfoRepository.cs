@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Material;
 using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Material
@@ -71,7 +72,12 @@ namespace FamTec.Server.Repository.Material
         /// <returns></returns>
         public ValueTask<bool?> DeleteMaterialInfo(List<int> delidx, string deleter);
 
-       
 
+        /// <summary>
+        /// 품목 검색
+        /// </summary>
+        /// <param name="searchData"></param>
+        /// <returns></returns>
+        public ValueTask<List<MaterialSearchListDTO>> GetMaterialSearchInfo(int placeid, string searchData);
     }
 }

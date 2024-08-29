@@ -392,5 +392,39 @@ namespace FamTec.Server.Controllers.Material
             }
         }
 
+        /// <summary>
+        /// 품목검색
+        /// </summary>
+        /// <param name="searchData"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/MaterialSearch")]
+        public async Task<IActionResult> MaterialSearch(string searchData)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(searchData))
+                    return NoContent();
+
+                ResponseList<MaterialSearchListDTO>? model = await MaterialService.GetMaterialSearchService(HttpContext, searchData);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
+            }
+        }
+
     }
 }

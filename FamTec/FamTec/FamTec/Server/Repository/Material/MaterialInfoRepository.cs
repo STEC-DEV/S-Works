@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Material;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Repository.Material
@@ -278,6 +279,49 @@ namespace FamTec.Server.Repository.Material
             }
         }
 
-      
+        /// <summary>
+        /// 품목 검색
+        /// </summary>
+        /// <param name="searchData"></param>
+        /// <returns></returns>
+        public async ValueTask<List<MaterialSearchListDTO>> GetMaterialSearchInfo(int placeid, string searchData)
+        {
+            try
+            {
+                List<MaterialTb>? MaterialList = await context.MaterialTbs
+                    .Where(m => m.DelYn != true &&
+                               (m.Code == searchData ||
+                                m.ManufacturingComp == searchData ||
+                                m.Name == searchData ||
+                                m.Standard == searchData) &&
+                               m.PlaceTbId == placeid)
+                    .GroupBy(m => m.Id) // ID 기준으로 그룹화
+                    .Select(g => g.First()) // 각 그룹에서 첫 번째 항목 선택
+                    .ToListAsync();
+
+                if(MaterialList is not null && MaterialList.Any())
+                {
+                    List<MaterialSearchListDTO> model = MaterialList.Select(e => new MaterialSearchListDTO
+                    {
+                        Id = e.Id,
+                        Code = e.Code,
+                        Name = e.Name,
+                        Standard = e.Standard,
+                        Mfr = e.ManufacturingComp
+                    }).ToList();
+
+                    return model;
+                }
+                else
+                {
+                    return new List<MaterialSearchListDTO>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
     }
 }
