@@ -30,6 +30,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         //[HttpPost]
         [HttpGet]
+        //[Route("sign/AddMaintenance")]
         [Route("sign/AddMaintenance")]
         public async ValueTask<IActionResult> AddMaintenence()
         //public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintanceDTO dto)
@@ -74,7 +75,7 @@ namespace FamTec.Server.Controllers.Maintenance
                         Note = "출고등록"
                     }
                 });
-
+                
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -89,6 +90,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if(dto.Num is null)
                     return NoContent();
+
 
 
                 ResponseUnit<bool?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);

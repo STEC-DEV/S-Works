@@ -527,10 +527,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion)
-            .IsRowVersion() // 추가
             .IsConcurrencyToken() // 추가
-            .HasColumnType("BINARY(8)") // 추가
-            .IsFixedLength();
+            .HasColumnType("BIGINT"); // 추가
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)

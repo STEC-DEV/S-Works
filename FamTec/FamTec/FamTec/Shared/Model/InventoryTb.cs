@@ -46,11 +46,10 @@ public partial class InventoryTb
     [Column("DEL_USER")]
     [StringLength(255)]
     public string? DelUser { get; set; }
-    
-    [Timestamp]  // 이 속성은 자동으로 관리됩니다.
-    [Column("ROW_VERSION")]
-    [StringLength(8)]
-    public string? RowVersion { get; set; }
+
+    [ConcurrencyCheck]  // 동시성 제어를 위한 RowVersion 속성
+    [Column("ROW_VERSION", TypeName = "BIGINT")]
+    public long RowVersion { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }

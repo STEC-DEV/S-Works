@@ -33,23 +33,6 @@ namespace FamTec.Server.Repository.Maintenence
             {
                 try
                 {
-                    // [1]. 토큰체크
-                    /*
-                    foreach (InOutInventoryDTO InventoryDTO in dto.Inventory!)
-                    {
-                        bool isAlreadyInuser = await context.InventoryTbs
-                            .Where(m => m.PlaceTbId == placeid &&
-                                        m.RoomTbId == InventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true 
-                                        &&
-                                        !String.IsNullOrWhiteSpace(m.RowVersion) &&
-                                        m.RowVersion != GUID).AnyAsync();
-
-                        if (isAlreadyInuser)
-                            return false; // 다른곳에서 이미 사용중
-                    }
-                    */
-
                     // [2]. 수량체크
                     // 여기서 변경해봄 - 안됨
                     foreach (InOutInventoryDTO model in dto.Inventory!)
@@ -66,6 +49,30 @@ namespace FamTec.Server.Repository.Maintenence
                             return null; // 수량이 부족함.
                         }
                     }
+
+                    using (var context1 = new WorksContext())
+                    {
+                        var inventory1 = await context1.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
+                        inventory1.Num += 10; // 예: 재고 수량을 10 증가
+
+                        using (var context2 = new WorksContext())
+                        {
+                            var inventory2 = await context2.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
+                            inventory2.Num -= 5; // 예: 재고 수량을 5 감소
+
+                            await context1.SaveChangesAsync();
+
+                            try
+                            {
+                                await context2.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                Console.WriteLine("동시성 충돌이 발생했습니다.");
+                            }
+                        }
+                    }
+
 
                     // 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림.
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
@@ -137,7 +144,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            OutInventoryTb.RowVersion = null;
+                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
@@ -153,7 +160,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            OutInventoryTb.RowVersion = null;
+                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
@@ -490,10 +497,11 @@ namespace FamTec.Server.Repository.Maintenence
 
                     if(Occupant is [_, ..])
                     {
+                        /*
                         List<InventoryTb>? check = Occupant
                             .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion) && m.RowVersion != guid)
                             .ToList();
-
+                       
                         if (check is [_, ..])
                         {
                             return false; // 다른데서 품목 사용중
@@ -502,10 +510,11 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             foreach(InventoryTb item in Occupant)
                             {
-                                item.RowVersion = guid;
+                                //item.RowVersion = guid;
                                 context.Update(item);
                             }
                         }
+                         */
                     }
                     else
                     {
@@ -566,9 +575,11 @@ namespace FamTec.Server.Repository.Maintenence
                             .Where(m => m.PlaceTbId == placeid &&
                             m.MaterialTbId == inventoryDTO.MaterialID &&
                             m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true &&
-                            !String.IsNullOrWhiteSpace(m.RowVersion) &&
-                            m.RowVersion != guid)
+                            m.DelYn != true 
+                            //&&
+                            //!String.IsNullOrWhiteSpace(m.RowVersion) &&
+                            //m.RowVersion != guid
+                            )
                             .AnyAsync();
 
                         if (ItemInUse)
@@ -582,7 +593,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                         foreach(InventoryTb item in itemsToUpdate)
                         {
-                            item.RowVersion = guid; // GUID 토큰 SET
+                            //item.RowVersion = guid; // GUID 토큰 SET
                             context.Update(item);
                         }
                     }
@@ -642,14 +653,16 @@ namespace FamTec.Server.Repository.Maintenence
                 }
 
                 List<InventoryTb>? Occupant = await context.InventoryTbs
-                    .Where(m => m.DelYn != true && m.RowVersion == GUID)
+                    .Where(m => m.DelYn != true
+                    //&& m.RowVersion == GUID
+                    )
                     .ToListAsync();
 
                 if (Occupant.Any())
                 {
                     foreach (InventoryTb model in Occupant)
                     {
-                        model.RowVersion = null;
+                        //model.RowVersion = null;
                         context.InventoryTbs.Update(model);
                     }
                 }

@@ -36,6 +36,7 @@ namespace FamTec.Server.Repository.Inventory
                 try
                 {
                     // [1] 토큰체크
+                    /*
                     foreach (InOutInventoryDTO InventoryDTO in dto)
                     {
                         bool isAlreadyInUser = await context.InventoryTbs
@@ -51,7 +52,7 @@ namespace FamTec.Server.Repository.Inventory
                         if (isAlreadyInUser)
                             return false;  // 다른곳에서 이미 사용중
                     }
-
+                    */
                     // ADD 작업
                     foreach (InOutInventoryDTO InventoryDTO in dto)
                     {
@@ -529,9 +530,10 @@ namespace FamTec.Server.Repository.Inventory
                             .Where(m => m.PlaceTbId == placeid &&
                             m.MaterialTbId == inventoryDTO.MaterialID &&
                             m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true &&
-                            !String.IsNullOrWhiteSpace(m.RowVersion) &&
-                            m.RowVersion != guid)
+                            m.DelYn != true
+                            //!String.IsNullOrWhiteSpace(m.RowVersion) &&
+                            //m.RowVersion != guid
+                             )
                             .AnyAsync();
 
                         if (ItemsInUse)
@@ -547,7 +549,7 @@ namespace FamTec.Server.Repository.Inventory
 
                         foreach (InventoryTb item in itemsToUpdate)
                         {
-                            item.RowVersion = guid; // GUID 토큰 SET
+                            //item.RowVersion = guid; // GUID 토큰 SET
                             context.Update(item);
                         }
                     }
@@ -615,7 +617,9 @@ namespace FamTec.Server.Repository.Inventory
                     }
                     */
                     // [2]. 수량체크
-                    foreach(InOutInventoryDTO model in dto)
+
+
+                    foreach (InOutInventoryDTO model in dto)
                     {
                         // 출고할게 여러곳에 있으니 Check 개수 Check
                         //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
@@ -678,7 +682,7 @@ namespace FamTec.Server.Repository.Inventory
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            OutInventoryTb.RowVersion = null;
+                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
@@ -695,7 +699,7 @@ namespace FamTec.Server.Repository.Inventory
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            OutInventoryTb.RowVersion = null;
+                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
@@ -789,14 +793,16 @@ namespace FamTec.Server.Repository.Inventory
                 }
 
                 List<InventoryTb>? Occupant = await context.InventoryTbs
-                        .Where(m => m.DelYn != true && m.RowVersion == GUID)
+                        .Where(m => m.DelYn != true 
+                        //&& m.RowVersion == GUID
+                        )
                         .ToListAsync();
 
                 if (Occupant.Any())
                 {
                     foreach (InventoryTb model in Occupant)
                     {
-                        model.RowVersion = null;
+                        //model.RowVersion = null;
                         context.InventoryTbs.Update(model);
                     }
                 }
