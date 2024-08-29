@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
+using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
 
@@ -309,12 +310,18 @@ namespace FamTec.Server.Services.Store
         {
             try
             {
+                if(context is null)
+                    return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InOutLocationDTO> model = await InventoryInfoRepository.GetLocationMaterialInventoryList(Int32.Parse(placeid), MaterialId);
-                return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = model, code = 200 };
+                List<InOutLocationDTO>? model = await InventoryInfoRepository.GetLocationMaterialInventoryList(Int32.Parse(placeid), MaterialId);
+                if (model is not null && model.Any())
+                    return new ResponseList<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<InOutLocationDTO>(), code = 200 };
             }
             catch(Exception ex)
             {
@@ -323,6 +330,37 @@ namespace FamTec.Server.Services.Store
             }
         }
 
+        /// <summary>
+        /// 출고할 품목 LIST 반환 - FRONT용
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="roomid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="outcount"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<InOutInventoryDTO>? model = await InventoryInfoRepository.AddOutStoreList(Int32.Parse(placeid), roomid, materialid, outcount);
+                if (model is not null && model.Any())
+                    return new ResponseList<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<InOutInventoryDTO>(), code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<InOutInventoryDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 
    

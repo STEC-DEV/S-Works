@@ -78,6 +78,14 @@ namespace FamTec.Server.Repository.Inventory
         /// <returns></returns>
         ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid);
 
-        ValueTask<bool?> AddOutStoreList(int placeid, int roomid, int materialid, int outcount);
+        /// <summary>
+        /// 출고할 품목 LIST 반환 - FRONT용
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="roomid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="outcount"></param>
+        /// <returns></returns>
+        ValueTask<List<InOutInventoryDTO>?> AddOutStoreList(int placeid, int roomid, int materialid, int outcount);
     }
 }

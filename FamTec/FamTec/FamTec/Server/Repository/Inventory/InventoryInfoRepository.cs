@@ -901,7 +901,16 @@ namespace FamTec.Server.Repository.Inventory
             }
         }
 
-        public async ValueTask<bool?> AddOutStoreList(int placeid,int roomid, int materialid, int outcount)
+        /// <summary>
+        /// 출고할 품목 LIST 반환 - FRONT용
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="roomid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="outcount"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<List<InOutInventoryDTO>?> AddOutStoreList(int placeid,int roomid, int materialid, int outcount)
         {
             try
             {
@@ -911,7 +920,7 @@ namespace FamTec.Server.Repository.Inventory
 
                 
                 if (model is null || !model.Any())
-                    return false; // 개수가 부족함
+                    return null; // 개수가 부족함
 
                 // 개수가 부족하지 않으면 로직돌아야함.
                 List<InventoryTb> result = new List<InventoryTb>();
@@ -929,7 +938,7 @@ namespace FamTec.Server.Repository.Inventory
 
                 int ResultCheck = result.Select(m => m.Num).Sum();
                 if (ResultCheck < outcount)
-                    return false; // 개수가 부족함.
+                    return null; // 개수가 부족함.
 
                 List<InventoryTb> OutResult = new List<InventoryTb>();
                 int num = 0;
@@ -955,7 +964,7 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
 
-                List<InOutInventoryDTO> dto = (from InventoryTB in OutResult
+                List<InOutInventoryDTO>? dto = (from InventoryTB in OutResult
                                                join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
                                                on InventoryTB.RoomTbId equals RoomTB.Id
                                                select new InOutInventoryDTO
@@ -973,16 +982,15 @@ namespace FamTec.Server.Repository.Inventory
                                                        TotalPrice = InventoryTB.UnitPrice * InventoryTB.Num
                                                    }
                                                }).ToList();
-                
 
-
-                
-
-                Console.WriteLine("");
-                return true;
-            }
+                if (dto is not null && dto.Any())
+                    return dto;
+                else
+                    return new List<InOutInventoryDTO>();
+            }   
             catch(Exception ex)
             {
+                LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }

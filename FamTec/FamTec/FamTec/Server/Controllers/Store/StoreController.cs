@@ -398,7 +398,7 @@ namespace FamTec.Server.Controllers.Store
         }
 
         /// <summary>
-        /// 출고 리스트에 담음
+        /// 출고 리스트에 담음 - FRONT 용
         /// </summary>
         /// <param name="roomid"></param>
         /// <param name="materialid"></param>
@@ -421,8 +421,14 @@ namespace FamTec.Server.Controllers.Store
                 if(outcount is 0)
                     return NoContent();
 
-                bool? temp = await InventoryInfoRepository.AddOutStoreList(3, roomid, materialid, outcount);
-                return Ok(temp);
+                ResponseList<InOutInventoryDTO>? model = await InStoreService.AddOutStoreList(HttpContext, roomid, materialid, outcount);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {
