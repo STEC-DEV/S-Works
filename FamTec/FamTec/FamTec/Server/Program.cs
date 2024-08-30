@@ -65,10 +65,6 @@ using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.RateLimiting;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Presentation;
-using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,7 +76,6 @@ string? Https = builder.Configuration["Kestrel:Endpoints:Https:Url"]; // HTTPS
 builder.WebHost.UseKestrel((context, options) =>
 {
     options.Configure(context.Configuration.GetSection("Kestrel"));
-    //options.Configure(context.Configuration.GetSection("Kestrel"));
     // Keep-Alive TimeOut 3분설정 Keep-Alive 타임아웃: 일반적으로 2~5분. 너무 짧으면 연결이 자주 끊어질 수 있고, 너무 길면 리소스가 낭비될 수 있음.
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(3);
     // 최대 동시 업그레이드 연결 수:  일반적으로 1000 ~ 5000 사이로 설정하는 것이 좋음
@@ -180,9 +175,8 @@ builder.Services.AddTransient<IKakaoLogService, KakaoLogService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-
-/*
 #region 속도제한 LIMIT 
+/*
 // Fixed windoww limit 알고리즘 방식으로 속도 제한 처리
 builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "LimiterPolicy", options =>
 {
@@ -194,8 +188,8 @@ builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "Limite
     // 제한 시 10개의 요청만 대기열에 추가
     options.QueueLimit = 10;
 }));
-#endregion
 */
+#endregion
 #region JWT
 builder.Services.AddAuthentication(options =>
 {
@@ -251,12 +245,11 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-        //policy.WithOrigins("http://123.2.156.148:5245", "https://123.2.156.148:5246", "http://123.2.156.229:5245", "https://123.2.156.229:5246")
+        //policy.AllowAnyOrigin()
+        policy.WithOrigins("http://123.2.156.148:5245", "https://123.2.156.148:5246", "http://123.2.156.229:5245", "https://123.2.156.229:5246")
         .AllowAnyMethod()
-        .AllowAnyHeader();
-        //.AllowCredentials(); // With Origins만 사용가능
-        //.SetIsOriginAllowed((host) => true);
+        .AllowAnyHeader()
+        .AllowCredentials(); // With Origins만 사용가능
     });
 });
 #else
@@ -270,7 +263,6 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins("http://123.2.156.229:5245")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .WithMethods("PUT", "DELETE", "GET", "POST")
                           .AllowCredentials();
                       });
 

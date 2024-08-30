@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Tewr.Blazor.FileReader;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -17,7 +16,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 268435456;
+    options.MultipartBodyLengthLimit = 268435456; // 256MB
 });
 
 builder.Services.AddFileReaderService(options =>
@@ -26,17 +25,23 @@ builder.Services.AddFileReaderService(options =>
 });
 
 builder.Services.AddScoped<SessionService>();
-
 builder.Services.AddScoped<ApiManager>();
-builder.Services.AddBlazoredSessionStorage();
-builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredSessionStorage(); // 세션 스토리지 서비스
+builder.Services.AddAuthorizationCore(); // 권한부여 서비스
 
-builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 인증 상태 공급자
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); // 인증 상태 공급자 주입
+//builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 
 // 연결 -- 아래 코드 (게시용)
 string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 HubObject.hubConnection = new HubConnectionBuilder()
-    .WithUrl(HubUrl, transports: Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling) // 뒤에 붙는 url은 상관없이 같기만 하면 되는지 check
+      .WithUrl(HubUrl, options =>
+      {
+          options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
+                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
+                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+      })
     .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결
     .ConfigureLogging(logging =>
     {
@@ -50,7 +55,13 @@ HubObject.hubConnection = new HubConnectionBuilder()
 HubObject.hubConnection.KeepAliveInterval = System.TimeSpan.FromSeconds(15); //최소 설정가능한 값5초.
 HubObject.hubConnection.ServerTimeout = System.TimeSpan.FromSeconds(30); // 서버로부터 30초 안에 메시지를 수신 못하면 클라이언트가 끊음
 
-await HubObject.hubConnection.StartAsync();
-
+try
+{
+    await HubObject.hubConnection.StartAsync();
+}
+catch(Exception ex)
+{
+    Console.WriteLine($"SignalR 연결 중 오류 발생: {ex.Message}");
+}
 await builder.Build().RunAsync();
 
