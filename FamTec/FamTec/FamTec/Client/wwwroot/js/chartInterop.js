@@ -1,6 +1,16 @@
 ﻿window.chartInstance = null;
 
-window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, dataset_Wed, dataset_Thu, dataset_Fir, dataset_Sat, dataset_Sun) => {
+window.createStackedBarChart = (canvasId, labels, dataset1, dataset2, dataset3, dataset4, dataset5, dataset6, dataset7, dataset8, dataset9) => {
+    console.log(dataset1);
+    console.log(dataset2);
+    console.log(dataset3);
+    console.log(dataset4);
+    console.log(dataset5);
+    console.log(dataset6);
+    console.log(dataset7);
+    console.log(dataset8);
+    console.log(dataset9);
+
     var ctx = document.getElementById(canvasId).getContext('2d');
     window.chartInstance = new Chart(ctx, {
         type: 'bar',
@@ -8,55 +18,68 @@ window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, data
             labels: labels,
             datasets: [
             {
-                label: 'Monday',
-                data: dataset_Mon,
+                label: '미분류',
+                data: dataset1,
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
             },
             {
-                label: 'Tuesday',
-                data: dataset_Tue,
+                label: '기계',
+                data: dataset2,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             },
             {
-            label: 'Wednesday',
-            data: dataset_Wed,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-            },
-            {
-                label: 'Thursday',
-                data: dataset_Thu,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: '전기',
+                data: dataset3,
+                backgroundColor: 'rgba(102, 102, 204, 0.2)',
+                borderColor: 'rgba(102, 102, 255, 1)',
                 borderWidth: 1
             },
             {
-                label: 'Firday',
-                data: dataset_Fir,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: '승강',
+                data: dataset4,
+                backgroundColor: 'rgba(153, 204, 153, 0.2)',
+                borderColor: 'rgba(204, 255, 204, 1)',
                 borderWidth: 1
             },
             {
-                label: 'Saturday',
-                data: dataset_Sat,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: '건축',
+                data: dataset5,
+                backgroundColor: 'rgba(102, 051, 153, 0.2)',
+                borderColor: 'rgba(102, 051, 204, 1)',
                 borderWidth: 1
             },
             {
-                label: 'Sunday',
-                data: dataset_Sun,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: '소방',
+                data: dataset6,
+                backgroundColor: 'rgba(102, 051, 000, 0.2)',
+                borderColor: 'rgba(204, 153, 102, 1)',
                 borderWidth: 1
             },
-            ]
+            {
+                label: '통신',
+                data: dataset7,
+                backgroundColor: 'rgba(000, 102, 153, 0.2)',
+                borderColor: 'rgba(051, 153, 204, 1)',
+                borderWidth: 1
+            },
+            {
+                label: '미화',
+                data: dataset8,
+                backgroundColor: 'rgba(102, 204, 000, 0.2)',
+                borderColor: 'rgba(153, 255, 051, 1)',
+                borderWidth: 1
+            },
+            {
+                label: '보안',
+                data: dataset9,
+                backgroundColor: 'rgba(204, 000, 102, 0.2)',
+                borderColor: 'rgba(255, 051, 153, 1)',
+                borderWidth: 1
+            }]
         },
         options: {
             responsive: false, // false : 크기고정 & true : 고정안함
@@ -67,7 +90,9 @@ window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, data
                     grid: {
                         display: false, // 그리드 라인을 표시할지 여부
                         color: 'rgba(200, 200, 200, 0.8)' // 그리드 라인의 색상
-                    }
+                    },
+                    categoryPercentage: 0.8, // Adjust this value to control the width of each category (space between groups)
+                    barPercentage: 0.9 // Adjust this value to control the width of each bar within a category
                 },
                 y: {
                     stacked: true, // STACK 형
@@ -75,9 +100,9 @@ window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, data
 
                     //min: 0, // 최소값
                     //max: 1, // 최대값
-                    //ticks: {
-                    //    stepSize: 0.5 // 틱 마크 간격을 0.5로 설정
-                    //}
+                    ticks: {
+                        stepSize: 1 // 틱 마크 간격을 0.5로 설정
+                    }
                 }
             },
             plugins: {
@@ -111,46 +136,35 @@ window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, data
                 animationDuration: 400 // 호버 애니메이션 지속 시간 ms
             }
         },
-        plugins: [{
-            // 커스텀 플러그인 정의
-            id: 'customDataLabels',
-            afterDatasetsDraw(chart, args, options) {
-                const { ctx, data } = chart;
-
-                // 각 데이터셋의 막대 위에 텍스트를 그림
-                chart.data.datasets.forEach((dataset, i) => {
-                    const meta = chart.getDatasetMeta(i);
-                    if (!meta.hidden) {
-                        meta.data.forEach((element, index) => {
-                            // 데이터 값을 가져옴
-                            const dataValue = dataset.data[index];
-
-                            // 텍스트 스타일 설정
-                            ctx.fillStyle = 'black'; // 텍스트 색상
-                            ctx.font = '12px Arial'; // 텍스트 폰트
-                            ctx.textAlign = 'center'; // 텍스트 정렬
-                            ctx.textBaseline = 'bottom';
-
-                            // 텍스트 위치 설정
-                            const { x, y } = element.tooltipPosition();
-                            ctx.fillText(dataValue, x, y - 5); // 막대 위에 텍스트 표시
-                        });
-                    }
-                });
-            }
-        }]
+       
+       
+        
     });
 }
 
-window.updateChartData = (dataset_Mon, dataset_Tue, dataset_Wed, dataset_Thu, dataset_Fir, dataset_Sat, dataset_Sun) => {
+window.updateChartData = (dataset1, dataset2, dataset3, dataset4, dataset5, dataset6, dataset7, dataset8, dataset9) => {
     if (window.chartInstance) {
-        window.chartInstance.data.datasets[0].data = dataset_Mon; // 월 데이터 업데이트
-        window.chartInstance.data.datasets[1].data = dataset_Tue; // 화 데이터 업데이트
-        window.chartInstance.data.datasets[2].data = dataset_Wed; // 수 데이터 업데이트
-        window.chartInstance.data.datasets[3].data = dataset_Thu; // 목 데이터 업데이트
-        window.chartInstance.data.datasets[4].data = dataset_Fir; // 금 데이터 업데이트
-        window.chartInstance.data.datasets[5].data = dataset_Sat; // 토 데이터 업데이트
-        window.chartInstance.data.datasets[6].data = dataset_Sun; // 일 데이터 업데이트
+        console.log("== JS 데이터");
+        console.log(dataset1);
+        console.log(dataset2);
+        console.log(dataset3);
+        console.log(dataset4);
+        console.log(dataset5);
+        console.log(dataset6);
+        console.log(dataset7);
+        console.log(dataset8);
+        console.log(dataset9);
+        
+        window.chartInstance.data.datasets[0].data = dataset1; // 미분류 데이터 업데이트
+        window.chartInstance.data.datasets[1].data = dataset2; //  데이터 업데이트
+        window.chartInstance.data.datasets[2].data = dataset3; //  데이터 업데이트
+        window.chartInstance.data.datasets[3].data = dataset4; //  데이터 업데이트
+        window.chartInstance.data.datasets[4].data = dataset5; //  데이터 업데이트
+        window.chartInstance.data.datasets[5].data = dataset6; //  데이터 업데이트
+        window.chartInstance.data.datasets[6].data = dataset7; //  데이터 업데이트
+        window.chartInstance.data.datasets[7].data = dataset8; //  데이터 업데이트
+        window.chartInstance.data.datasets[8].data = dataset9; //  데이터 업데이트
+
         window.chartInstance.update();
     }
 }

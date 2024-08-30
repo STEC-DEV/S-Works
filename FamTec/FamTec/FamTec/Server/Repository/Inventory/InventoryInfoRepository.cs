@@ -947,8 +947,7 @@ namespace FamTec.Server.Repository.Inventory
             try
             {
                 List<InventoryTb>? model = await context.InventoryTbs
-                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.RoomTbId == roomid && m.MaterialTbId == materialid
-                    && m.RowVersion == null).ToListAsync();
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.RoomTbId == roomid && m.MaterialTbId == materialid).ToListAsync();
 
                 
                 if (model is null || !model.Any())

@@ -40,7 +40,7 @@ HubObject.hubConnection = new HubConnectionBuilder()
     .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결
     .ConfigureLogging(logging =>
     {
-        //logging.AddConsole();
+        logging.AddConsole();
         // This will set ALL logging to Debug level
         logging.SetMinimumLevel(LogLevel.Debug);
     })

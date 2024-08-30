@@ -50,28 +50,28 @@ namespace FamTec.Server.Repository.Maintenence
                         }
                     }
 
-                    using (var context1 = new WorksContext())
-                    {
-                        var inventory1 = await context1.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
-                        inventory1.Num += 10; // 예: 재고 수량을 10 증가
+                    //using (var context1 = new WorksContext())
+                    //{
+                    //    var inventory1 = await context1.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
+                    //    inventory1.Num += 10; // 예: 재고 수량을 10 증가
 
-                        using (var context2 = new WorksContext())
-                        {
-                            var inventory2 = await context2.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
-                            inventory2.Num -= 5; // 예: 재고 수량을 5 감소
+                    //    using (var context2 = new WorksContext())
+                    //    {
+                    //        var inventory2 = await context2.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
+                    //        inventory2.Num -= 5; // 예: 재고 수량을 5 감소
 
-                            await context1.SaveChangesAsync();
+                    //        await context1.SaveChangesAsync();
 
-                            try
-                            {
-                                await context2.SaveChangesAsync();
-                            }
-                            catch (DbUpdateConcurrencyException)
-                            {
-                                Console.WriteLine("동시성 충돌이 발생했습니다.");
-                            }
-                        }
-                    }
+                    //        try
+                    //        {
+                    //            await context2.SaveChangesAsync();
+                    //        }
+                    //        catch (DbUpdateConcurrencyException)
+                    //        {
+                    //            Console.WriteLine("동시성 충돌이 발생했습니다.");
+                    //        }
+                    //    }
+                    //}
 
 
                     // 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림.

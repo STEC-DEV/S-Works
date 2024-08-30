@@ -1,0 +1,164 @@
+﻿@layout MainLayout2
+
+@page "/stackchart"
+
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.DashBoard
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.JSInterop
+@using System.Net.Http.Headers
+@implements IAsyncDisposable
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+<h3>민원 접수 현황</h3>
+
+<canvas id="myChart" style="width: 800px; height: 500px;"></canvas>
+
+@code {
+    //private HubConnection? hubConnection;
+
+    private string[] Labels = { "Monday", "Tuesday", "Wednesday", "Thursday", "Firday", "Saturday", "Sunday" };
+
+    private int[] DataSet1 = new int[7]; 
+    private int[] DataSet2 = new int[7]; 
+    private int[] DataSet3 = new int[7]; 
+    private int[] DataSet4 = new int[7]; 
+    private int[] DataSet5 = new int[7]; 
+    private int[] DataSet6 = new int[7]; 
+    private int[] DataSet7 = new int[7]; 
+    private int[] DataSet8 = new int[7]; 
+    private int[] DataSet9 = new int[7];
+
+
+    public async ValueTask DisposeAsync()
+    {
+        if (HubObject.hubConnection is not null)
+        {
+            await HubObject.hubConnection.DisposeAsync();
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        // HuB 연결
+        await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "3_VocCount");
+
+        HubObject.hubConnection!.On<string>("ReceiveVocCount", async (message) =>
+        {
+            Console.WriteLine(message);
+            // 여기서 HTTP 호출 - Count 확인하는곳으로 ~
+            await GetVocCount();
+
+            StateHasChanged();
+        });
+    }
+
+    protected async Task GetVocCount()
+    {
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMTAiLCJOYW1lIjoi7JqpIiwianRpIjoiMmEzMmZjYzMtMGZiNi00MGUyLThhYzktYzNjNTI2MWIwZGVhIiwiQWxhcm1ZTiI6IlRydWUiLCJBZG1pbllOIjoiVHJ1ZSIsIlVzZXJUeXBlIjoiQURNSU4iLCJBZG1pbklkeCI6IjEwIiwiUGxhY2VJZHgiOiIzIiwiUGxhY2VOYW1lIjoiQeyImOygleyCrOyXheyepSIsIlJvbGUiOiJNYXN0ZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYXN0ZXIiLCJVc2VyUGVybXMiOiJ7XCJVc2VyUGVybV9CYXNpY1wiOlwiMlwiLFwiVXNlclBlcm1fTWFjaGluZVwiOlwiMlwiLFwiVXNlclBlcm1fRWxlY1wiOlwiMlwiLFwiVXNlclBlcm1fTGlmdFwiOlwiMlwiLFwiVXNlclBlcm1fRmlyZVwiOlwiMlwiLFwiVXNlclBlcm1fQ29uc3RydWN0XCI6XCIyXCIsXCJVc2VyUGVybV9OZXR3b3JrXCI6XCIyXCIsXCJVc2VyUGVybV9CZWF1dHlcIjpcIjJcIixcIlVzZXJQZXJtX1NlY3VyaXR5XCI6XCIyXCIsXCJVc2VyUGVybV9NYXRlcmlhbFwiOlwiMlwiLFwiVXNlclBlcm1fRW5lcmd5XCI6XCIyXCIsXCJVc2VyUGVybV9Vc2VyXCI6XCIyXCIsXCJVc2VyUGVybV9Wb2NcIjpcIjJcIn0iLCJWb2NQZXJtcyI6IntcIlZvY01hY2hpbmVcIjpcIlRydWVcIixcIlZvY0VsZWNcIjpcIlRydWVcIixcIlZvY0xpZnRcIjpcIlRydWVcIixcIlZvY0ZpcmVcIjpcIlRydWVcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzI1MDYyOTM2LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.3DmzLbC5P5gRf1Q6gn9QCp-9X1NLK0T1JAIhlKrcZGw";
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        ResponseList<VocWeekCountDTO>? VocCount = await Http.GetFromJsonAsync<ResponseList<VocWeekCountDTO>>("api/Voc/sign/GetVocWeekCount");
+
+        VocWeekCountDTO Datas_Mon = VocCount.data[0]; // 월
+        VocWeekCountDTO Datas_Tue = VocCount.data[1]; // 화
+        VocWeekCountDTO Datas_Wed = VocCount.data[2]; // 수
+        VocWeekCountDTO Datas_Thu = VocCount.data[3]; // 목
+        VocWeekCountDTO Datas_Fir = VocCount.data[4]; // 금
+        VocWeekCountDTO Datas_Sat = VocCount.data[5]; // 토
+        VocWeekCountDTO Datas_Sun = VocCount.data[6]; // 일
+
+        // [0] 월요일
+        DataSet1[0] = Datas_Mon.DefaultType;
+        DataSet2[0] = Datas_Mon.MachineType;
+        DataSet3[0] = Datas_Mon.ElecType;
+        DataSet4[0] = Datas_Mon.liftType;
+        DataSet5[0] = Datas_Mon.ConstructType;
+        DataSet6[0] = Datas_Mon.FireType;
+        DataSet7[0] = Datas_Mon.NetWorkType;
+        DataSet8[0] = Datas_Mon.BeautyType;
+        DataSet9[0] = Datas_Mon.SecurityType;
+
+        // 화요일
+        DataSet1[1] = Datas_Tue.DefaultType;
+        DataSet2[1] = Datas_Tue.MachineType;
+        DataSet3[1] = Datas_Tue.ElecType;
+        DataSet4[1] = Datas_Tue.liftType;
+        DataSet5[1] = Datas_Tue.ConstructType;
+        DataSet6[1] = Datas_Tue.FireType;
+        DataSet7[1] = Datas_Tue.NetWorkType;
+        DataSet8[1] = Datas_Tue.BeautyType;
+        DataSet9[1] = Datas_Tue.SecurityType;
+
+        // // 수요일
+        DataSet1[2] = Datas_Wed.DefaultType;
+        DataSet2[2] = Datas_Wed.MachineType;
+        DataSet3[2] = Datas_Wed.ElecType;
+        DataSet4[2] = Datas_Wed.liftType;
+        DataSet5[2] = Datas_Wed.ConstructType;
+        DataSet6[2] = Datas_Wed.FireType;
+        DataSet7[2] = Datas_Wed.NetWorkType;
+        DataSet8[2] = Datas_Wed.BeautyType;
+        DataSet9[2] = Datas_Wed.SecurityType;
+
+        // // 목요일
+        DataSet1[3] = Datas_Thu.DefaultType;
+        DataSet2[3] = Datas_Thu.MachineType;
+        DataSet3[3] = Datas_Thu.ElecType;
+        DataSet4[3] = Datas_Thu.liftType;
+        DataSet5[3] = Datas_Thu.ConstructType;
+        DataSet6[3] = Datas_Thu.FireType;
+        DataSet7[3] = Datas_Thu.NetWorkType;
+        DataSet8[3] = Datas_Thu.BeautyType;
+        DataSet9[3] = Datas_Thu.SecurityType;
+
+        // 금요일
+        DataSet1[4] = Datas_Fir.DefaultType;
+        DataSet2[4] = Datas_Fir.MachineType;
+        DataSet3[4] = Datas_Fir.ElecType;
+        DataSet4[4] = Datas_Fir.liftType;
+        DataSet5[4] = Datas_Fir.ConstructType;
+        DataSet6[4] = Datas_Fir.FireType;
+        DataSet7[4] = Datas_Fir.NetWorkType;
+        DataSet8[4] = Datas_Fir.BeautyType;
+        DataSet9[4] = Datas_Fir.SecurityType;
+
+        // // 토요일
+        DataSet1[5] = Datas_Sat.DefaultType;
+        DataSet2[5] = Datas_Sat.MachineType;
+        DataSet3[5] = Datas_Sat.ElecType;
+        DataSet4[5] = Datas_Sat.liftType;
+        DataSet5[5] = Datas_Sat.ConstructType;
+        DataSet6[5] = Datas_Sat.FireType;
+        DataSet7[5] = Datas_Sat.NetWorkType;
+        DataSet8[5] = Datas_Sat.BeautyType;
+        DataSet9[5] = Datas_Sat.SecurityType;
+
+        // // 일요일
+        DataSet1[6] = Datas_Sun.DefaultType;
+        DataSet2[6] = Datas_Sun.MachineType;
+        DataSet3[6] = Datas_Sun.ElecType;
+        DataSet4[6] = Datas_Sun.liftType;
+        DataSet5[6] = Datas_Sun.ConstructType;
+        DataSet6[6] = Datas_Sun.FireType;
+        DataSet7[6] = Datas_Sun.NetWorkType;
+        DataSet8[6] = Datas_Sun.BeautyType;
+        DataSet9[6] = Datas_Sun.SecurityType;
+
+
+        await JS.InvokeVoidAsync("updateChartData", DataSet1, DataSet2, DataSet3, DataSet4, DataSet5, DataSet6, DataSet7,DataSet8, DataSet9);
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string[] lables = new string[] { "월", "화","수","목","금","토","일" };
+            await JS.InvokeVoidAsync("createStackedBarChart", "myChart", lables, DataSet1, DataSet2, DataSet3, DataSet4, DataSet5, DataSet6, DataSet7, DataSet8, DataSet9);
+            StateHasChanged();
+        }
+    }
+
+}
+
