@@ -42,6 +42,9 @@ namespace FamTec.Server.Controllers.Store
             try
             {
                 //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+                
+
+                //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
                 //dto.Add(new InOutInventoryDTO
                 //{
                 //    InOut = 1,

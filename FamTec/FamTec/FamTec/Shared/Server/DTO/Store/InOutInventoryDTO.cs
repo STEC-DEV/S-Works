@@ -15,6 +15,21 @@
         /// </summary>
         public int? MaterialID { get; set; }
 
+        /// <summary>
+        /// 품목명
+        /// </summary>
+        public string? MaterialName { get; set; }
+        
+        /// <summary>
+        /// 품목코드
+        /// </summary>
+        public string? MaterialCode { get; set; }
+        
+        /// <summary>
+        /// 단위
+        /// </summary>
+        public string? Unit { get; set; }
+
         public AddStoreDTO? AddStore { get; set; } = new AddStoreDTO();
     }
 }
