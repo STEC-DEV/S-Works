@@ -18,6 +18,11 @@
         public string? Name { get; set; }
 
         /// <summary>
+        /// 단위
+        /// </summary>
+        public string? Unit { get; set; }
+
+        /// <summary>
         /// 제조사
         /// </summary>
         public string? Mfr { get; set; }

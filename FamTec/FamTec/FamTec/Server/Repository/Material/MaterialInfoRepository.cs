@@ -306,6 +306,7 @@ namespace FamTec.Server.Repository.Material
                         Id = e.Id,
                         Code = e.Code,
                         Name = e.Name,
+                        Unit = e.Unit,
                         Standard = e.Standard,
                         Mfr = e.ManufacturingComp
                     }).ToList();
