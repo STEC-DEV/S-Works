@@ -373,7 +373,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetLocationMaterial")]
-        public async ValueTask<IActionResult> GetLocationMaterial([FromQuery]int materialid)
+        public async ValueTask<IActionResult> GetLocationMaterial([FromQuery]int materialid, [FromQuery]int buildingid)
         {
             try
             {
@@ -383,7 +383,7 @@ namespace FamTec.Server.Controllers.Store
                 if (materialid is 0)
                     return NoContent();
 
-                ResponseList<InOutLocationDTO> model = await InStoreService.GetMaterialRoomNumService(HttpContext, materialid);
+                ResponseList<InOutLocationDTO> model = await InStoreService.GetMaterialRoomNumService(HttpContext, materialid, buildingid);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

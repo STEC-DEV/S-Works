@@ -2,97 +2,94 @@
 
 @page "/test"
 
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.DashBoard
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.JSInterop
+@using System.Net.Http.Headers
 @implements IAsyncDisposable
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject HttpClient Http
 
 <h3>Stacked Bar Chart</h3>
 
-<canvas id="myChart" style="width: 500px; height: 300px; border: 1px solid #000;" width="500" height="300"></canvas>
+<canvas id="myChart" style="width: 800px; height: 500px; border: 1px solid #000;"></canvas>
 <button @onclick="UpdateChartData">Update Chart Data</button>
 
 @code {
-    private HubConnection? hubConnection;
-  
-    private string[] Labels = { "January", "February", "March", "April", "May" };
+    //private HubConnection? hubConnection;
+
+    private string[] Labels = { "Monday", "Tuesday", "Wednesday", "Thursday", "Firday", "Saturday", "Sunday" };
     //private int[] Dataset1 = { 10, 20, 30, 40, 50 };
     //private int[] Dataset2 = { 5, 15, 25, 35, 45 };
     private Random random = new Random();
 
-    private double[] DataSet1 = new double[5];
-    private double[] DataSet2 = new double[5];
-    List<Datas> list = new List<Datas>();
+    private int[] DataSet1 = new int[6]; // 월
+    private int[] DataSet2 = new int[6]; // 화
+    private int[] DataSet3 = new int[6]; // 수
+    private int[] DataSet4 = new int[6]; // 목
+    private int[] DataSet5 = new int[6]; // 금
+    private int[] DataSet6 = new int[6]; // 토
+    private int[] DataSet7 = new int[6]; // 일
+
 
     public async ValueTask DisposeAsync()
     {
-        if (hubConnection is not null)
+        if (HubObject.hubConnection is not null)
         {
-            await hubConnection.DisposeAsync();
+            await HubObject.hubConnection.DisposeAsync();
         }
     }
     protected override async Task OnInitializedAsync()
     {
         // HuB 연결
-        
-        hubConnection = new HubConnectionBuilder()
-        .WithUrl(Navigation.ToAbsoluteUri("http://123.2.156.148:5245/VocHub"), transports: Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets | Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents | Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling)
-        .Build();
+        await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", "3_VocCount");
 
-        await hubConnection.StartAsync();
-        await hubConnection.InvokeAsync("JoinRoomAsync", "3_VocCount");
-
-        hubConnection.On<string>("ReceiveVocCount", (message) =>
+        HubObject.hubConnection!.On<string>("ReceiveVocCount", async (message) =>
         {
             Console.WriteLine(message);
             // 여기서 HTTP 호출 - Count 확인하는곳으로 ~
+            await GetVocCount();
 
             StateHasChanged();
         });
+    }
+
+    protected async Task GetVocCount()
+    {
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMTAiLCJOYW1lIjoi7JqpIiwianRpIjoiMmEzMmZjYzMtMGZiNi00MGUyLThhYzktYzNjNTI2MWIwZGVhIiwiQWxhcm1ZTiI6IlRydWUiLCJBZG1pbllOIjoiVHJ1ZSIsIlVzZXJUeXBlIjoiQURNSU4iLCJBZG1pbklkeCI6IjEwIiwiUGxhY2VJZHgiOiIzIiwiUGxhY2VOYW1lIjoiQeyImOygleyCrOyXheyepSIsIlJvbGUiOiJNYXN0ZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYXN0ZXIiLCJVc2VyUGVybXMiOiJ7XCJVc2VyUGVybV9CYXNpY1wiOlwiMlwiLFwiVXNlclBlcm1fTWFjaGluZVwiOlwiMlwiLFwiVXNlclBlcm1fRWxlY1wiOlwiMlwiLFwiVXNlclBlcm1fTGlmdFwiOlwiMlwiLFwiVXNlclBlcm1fRmlyZVwiOlwiMlwiLFwiVXNlclBlcm1fQ29uc3RydWN0XCI6XCIyXCIsXCJVc2VyUGVybV9OZXR3b3JrXCI6XCIyXCIsXCJVc2VyUGVybV9CZWF1dHlcIjpcIjJcIixcIlVzZXJQZXJtX1NlY3VyaXR5XCI6XCIyXCIsXCJVc2VyUGVybV9NYXRlcmlhbFwiOlwiMlwiLFwiVXNlclBlcm1fRW5lcmd5XCI6XCIyXCIsXCJVc2VyUGVybV9Vc2VyXCI6XCIyXCIsXCJVc2VyUGVybV9Wb2NcIjpcIjJcIn0iLCJWb2NQZXJtcyI6IntcIlZvY01hY2hpbmVcIjpcIlRydWVcIixcIlZvY0VsZWNcIjpcIlRydWVcIixcIlZvY0xpZnRcIjpcIlRydWVcIixcIlZvY0ZpcmVcIjpcIlRydWVcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzI1MDYyOTM2LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.3DmzLbC5P5gRf1Q6gn9QCp-9X1NLK0T1JAIhlKrcZGw";
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        ResponseList<VocWeekCountDTO>? VocCount = await Http.GetFromJsonAsync<ResponseList<VocWeekCountDTO>>("api/Voc/sign/GetVocWeekCount");
+        
+        VocWeekCountDTO Datas_Mon = VocCount.data[0]; // 월
+        VocWeekCountDTO Datas_Tue = VocCount.data[1]; // 화
+        VocWeekCountDTO Datas_Wed = VocCount.data[2]; // 수
+        VocWeekCountDTO Datas_Thu = VocCount.data[3]; // 목
+        VocWeekCountDTO Datas_Fir = VocCount.data[4]; // 금
+        VocWeekCountDTO Datas_Sat = VocCount.data[5]; // 토
+        VocWeekCountDTO Datas_Sun = VocCount.data[6]; // 일
+
+        /*
+        for (int i = 0; i < 5; i++)
+        {
+            DataSet1[i] += VocCount[i].Num1 + 100;
+            DataSet2[i] += list[i].Num2 + 100;
+        }
+        */
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            list.Add(new Datas
-                {
-                    Dates = DateTime.Now.AddDays(-1),
-                    Num1 = 10,
-                    Num2 = 50
-                });
-            list.Add(new Datas
-                {
-                    Dates = DateTime.Now.AddDays(-1),
-                    Num1 = 30,
-                    Num2 = 20
-                });
-            list.Add(new Datas
-                {
-                    Dates = DateTime.Now.AddDays(-1),
-                    Num1 = 40,
-                    Num2 = 30
-                });
-            list.Add(new Datas
-                {
-                    Dates = DateTime.Now.AddDays(-1),
-                    Num1 = 100,
-                    Num2 = 50
-                });
-            list.Add(new Datas
-                {
-                    Dates = DateTime.Now.AddDays(-1),
-                    Num1 = 1000,
-                    Num2 = 50
-                });
-
             for (int i = 0; i < 5; i++)
             {
                 //DataSet1[i] = list[i].Num1 / 100;
                 //DataSet2[i] = list[i].Num2 / 100;
-                DataSet1[i] = list[i].Num1;
-                DataSet2[i] = list[i].Num2;
+                //DataSet1[i] = list[i].Num1;
+                //DataSet2[i] = list[i].Num2;
             }
 
             await JS.InvokeVoidAsync("createStackedBarChart", "myChart", Labels, DataSet1, DataSet2);
@@ -102,20 +99,10 @@
     private async Task UpdateChartData()
     {
 
-        // 새로운 데이터를 생성하거나 기존 데이터를 수정
-        //Dataset1 = new int[] { 20, 30, 40, 50, 60 };
-        //Dataset2 = new int[] { 15, 25, 35, 45, 55 };
-
-        // 랜덤한 데이터를 생성
-        //Dataset1 = GenerateRandomData();
-        //Dataset2 = GenerateRandomData();
-
         for (int i = 0; i < 5; i++)
         {
-            //DataSet1[i] += (list[i].Num1 + 100) / 100;
-            //DataSet2[i] += (list[i].Num2 + 100) / 100;
-            DataSet1[i] += list[i].Num1 + 100;
-            DataSet2[i] += list[i].Num2 + 100;
+            //DataSet1[i] += list[i].Num1 + 100;
+            //DataSet2[i] += list[i].Num2 + 100;
         }
 
         // JavaScript 함수를 호출하여 차트를 업데이트
@@ -129,14 +116,6 @@
         return Enumerable.Range(0, 5).Select(_ => random.Next(0, 100)).ToArray();
     }
 
-    public class Datas
-    {
-        public DateTime Dates { get; set; }
-        public int Num1 { get; set; }
-        public int Num2 { get; set; }
-        // public int Num3 { get; set; }
-        // public int Num4 { get; set; }
-        // public int Num5 { get; set; }
-    }
+ 
 }
 

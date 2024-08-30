@@ -1,24 +1,62 @@
 ﻿window.chartInstance = null;
 
-window.createStackedBarChart = (canvasId, labels, dataset1, dataset2) => {
+window.createStackedBarChart = (canvasId, labels, dataset_Mon, dataset_Tue, dataset_Wed, dataset_Thu, dataset_Fir, dataset_Sat, dataset_Sun) => {
     var ctx = document.getElementById(canvasId).getContext('2d');
     window.chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [{
-                label: 'Dataset 1',
-                data: dataset1,
+            datasets: [
+            {
+                label: 'Monday',
+                data: dataset_Mon,
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
-            }, {
-                label: 'Dataset 2',
-                data: dataset2,
+            },
+            {
+                label: 'Tuesday',
+                data: dataset_Tue,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
-            }]
+            },
+            {
+            label: 'Wednesday',
+            data: dataset_Wed,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+            },
+            {
+                label: 'Thursday',
+                data: dataset_Thu,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Firday',
+                data: dataset_Fir,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Saturday',
+                data: dataset_Sat,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Sunday',
+                data: dataset_Sun,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            ]
         },
         options: {
             responsive: false, // false : 크기고정 & true : 고정안함
@@ -49,7 +87,7 @@ window.createStackedBarChart = (canvasId, labels, dataset1, dataset2) => {
                 },
                 title: {
                     display: true, // 차트 제목 표시여부
-                    text: 'Custom Stacked Bar Chart' // 제목
+                    text: '민원 접수' // 제목
                 },
                 tooltip: {
                     enabled: true, // 툴팁 표시여부
@@ -104,10 +142,15 @@ window.createStackedBarChart = (canvasId, labels, dataset1, dataset2) => {
     });
 }
 
-window.updateChartData = (dataset1, dataset2) => {
+window.updateChartData = (dataset_Mon, dataset_Tue, dataset_Wed, dataset_Thu, dataset_Fir, dataset_Sat, dataset_Sun) => {
     if (window.chartInstance) {
-        window.chartInstance.data.datasets[0].data = dataset1;
-        window.chartInstance.data.datasets[1].data = dataset2;
+        window.chartInstance.data.datasets[0].data = dataset_Mon; // 월 데이터 업데이트
+        window.chartInstance.data.datasets[1].data = dataset_Tue; // 화 데이터 업데이트
+        window.chartInstance.data.datasets[2].data = dataset_Wed; // 수 데이터 업데이트
+        window.chartInstance.data.datasets[3].data = dataset_Thu; // 목 데이터 업데이트
+        window.chartInstance.data.datasets[4].data = dataset_Fir; // 금 데이터 업데이트
+        window.chartInstance.data.datasets[5].data = dataset_Sat; // 토 데이터 업데이트
+        window.chartInstance.data.datasets[6].data = dataset_Sun; // 일 데이터 업데이트
         window.chartInstance.update();
     }
 }

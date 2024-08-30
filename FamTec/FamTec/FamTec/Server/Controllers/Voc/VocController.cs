@@ -27,14 +27,15 @@ namespace FamTec.Server.Controllers.Voc
             this.VocInfoRepository = _vocinforepository;
         }
 
-       
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/temp")]
-        public async ValueTask<IActionResult> GetTemp([FromQuery]List<int> type)
+        public async ValueTask<IActionResult> Get()
         {
-            return Ok(type);
+            return Ok("asdfasdf");
         }
+       
+     
 
         [AllowAnonymous]
         [HttpGet]

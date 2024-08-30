@@ -76,7 +76,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid);
+        ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid);
 
         /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용

@@ -878,12 +878,25 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid)
+        public async ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid)
         {
             try
             {
+
+                BuildingTb? buildingtb = await context.BuildingTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid && m.Id == buildingid);
+                if (buildingtb is null)
+                    return new List<InOutLocationDTO>();
+
+                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtb.Id && m.DelYn != true).ToListAsync();
+                if(FloorList is null || !FloorList.Any())
+                    return new List<InOutLocationDTO>();
+
+                List<RoomTb>? RoomList = await context.RoomTbs.Where(e => FloorList.Select(m => m.Id).Contains(e.FloorTbId) && e.DelYn != true).ToListAsync();
+                if (RoomList is null || !RoomList.Any())
+                    return new List<InOutLocationDTO>();
+
                 List<InventoryTb>? model = await context.InventoryTbs
-                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MaterialTbId == materialid)
+                    .Where(m => RoomList.Select(m => m.Id).Contains(m.RoomTbId) &&  m.DelYn != true && m.PlaceTbId == placeid && m.MaterialTbId == materialid)
                     .GroupBy(m => m.RoomTbId)
                     .Select(g => new InventoryTb
                     {
