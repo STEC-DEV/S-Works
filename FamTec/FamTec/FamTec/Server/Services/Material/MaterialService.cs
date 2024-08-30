@@ -71,7 +71,7 @@ namespace FamTec.Server.Services.Material
 
                 // 중복코드 검사
                 bool? MaterialCheck = await MaterialInfoRepository.GetPlaceMaterialCheck(Int32.Parse(placeidx), dto.Code);
-                if(MaterialCheck == true)
+                if(MaterialCheck != true)
                     return new ResponseUnit<AddMaterialDTO>() { message = "이미 존재하는 코드입니다.", data = new AddMaterialDTO(), code = 201 };
 
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeidx);

@@ -66,6 +66,9 @@ using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Presentation;
+using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -248,11 +251,11 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://123.2.156.148:5245","https://123.2.156.148:5246", "http://123.2.156.229:5245","https://123.2.156.229:5246")
+        policy.WithOrigins("http://123.2.156.148:5245", "https://123.2.156.148:5246", "http://123.2.156.229:5245", "https://123.2.156.229:5246")
         .AllowAnyMethod()
         .AllowAnyHeader()
-        .AllowCredentials()
-        .SetIsOriginAllowed((host) => true);
+        .AllowCredentials(); // With Origins만 사용가능
+        //.SetIsOriginAllowed((host) => true);
     });
 });
 #else
