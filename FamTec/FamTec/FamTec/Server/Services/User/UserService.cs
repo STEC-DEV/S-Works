@@ -97,7 +97,6 @@ namespace FamTec.Server.Services.User
                     new Claim("PlaceName", placeInfo.Name!.ToString()) // 사업장 명
                 };
 
-                //string? role = context.Items["Role"]?.ToString();
                 string? role = context.Items["Role"] switch
                 {
                     "시스템관리자" => "SystemManager",
@@ -413,7 +412,6 @@ namespace FamTec.Server.Services.User
 
                         string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
                         return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 201 };
-                   
                 }
             }
             catch (Exception ex)
@@ -489,7 +487,6 @@ namespace FamTec.Server.Services.User
 
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
-                // context에서 UserId(만든이)가 --> context의 사업장에 있는지 검사 1.
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(PlaceIdx) || String.IsNullOrWhiteSpace(UserIdx))

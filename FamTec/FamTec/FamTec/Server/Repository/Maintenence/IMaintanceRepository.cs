@@ -43,30 +43,5 @@ namespace FamTec.Server.Repository.Maintenence
         /// <returns></returns>
         ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type);
 
-        /// <summary>
-        /// 동시성 토큰 추가
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="roomid"></param>
-        /// <param name="materialid"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        ValueTask<bool?> SetOccupantToken(int placeid, int roomid, int materialid, string guid);
-
-        /// <summary>
-        /// 동시성 토큰 추가
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="dto"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        ValueTask<bool?> SetOccupantToken(int placeid, AddMaintanceDTO dto, string guid);
-
-        /// <summary>
-        /// 롤백
-        /// </summary>
-        /// <param name="GUID"></param>
-        /// <returns></returns>
-        ValueTask<Task?> RoolBackOccupant(string GUID);
     }
 }

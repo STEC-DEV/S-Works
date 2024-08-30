@@ -1,11 +1,9 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Data;
 
 namespace FamTec.Server.Repository.Maintenence
@@ -26,7 +24,6 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        //public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid, string GUID)
         public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
@@ -34,11 +31,9 @@ namespace FamTec.Server.Repository.Maintenence
                 try
                 {
                     // [2]. 수량체크
-                    // 여기서 변경해봄 - 안됨
                     foreach (InOutInventoryDTO model in dto.Inventory!)
                     {
                         // 출고할게 여러곳에 있으니 전체 Check 개수 Check
-                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
 
                         if (InventoryList is not [_, ..])
@@ -49,30 +44,6 @@ namespace FamTec.Server.Repository.Maintenence
                             return null; // 수량이 부족함.
                         }
                     }
-
-                    //using (var context1 = new WorksContext())
-                    //{
-                    //    var inventory1 = await context1.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
-                    //    inventory1.Num += 10; // 예: 재고 수량을 10 증가
-
-                    //    using (var context2 = new WorksContext())
-                    //    {
-                    //        var inventory2 = await context2.InventoryTbs.FirstOrDefaultAsync(p => p.Id == 258);
-                    //        inventory2.Num -= 5; // 예: 재고 수량을 5 감소
-
-                    //        await context1.SaveChangesAsync();
-
-                    //        try
-                    //        {
-                    //            await context2.SaveChangesAsync();
-                    //        }
-                    //        catch (DbUpdateConcurrencyException)
-                    //        {
-                    //            Console.WriteLine("동시성 충돌이 발생했습니다.");
-                    //        }
-                    //    }
-                    //}
-
 
                     // 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림.
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
@@ -93,7 +64,6 @@ namespace FamTec.Server.Repository.Maintenence
 
                     if (!AddHistoryResult)
                     {
-                        //await RoolBackOccupant(GUID);
                         await transaction.RollbackAsync();
                         return null;
                     }
@@ -105,7 +75,6 @@ namespace FamTec.Server.Repository.Maintenence
                         int? result = 0;
 
                         // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
-                        //List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value, GUID);
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
                         if (InventoryList is not [_, ..])
                         {
@@ -144,7 +113,6 @@ namespace FamTec.Server.Repository.Maintenence
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
@@ -160,16 +128,13 @@ namespace FamTec.Server.Repository.Maintenence
 
                                         if (OutInventoryTb.Num == 0)
                                         {
-                                            //OutInventoryTb.RowVersion = null;
                                             OutInventoryTb.DelYn = true;
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
                                         }
-
                                         context.Update(OutInventoryTb);
                                     }
                                 }
-
                                 await context.SaveChangesAsync();
                             }
                         }
@@ -206,29 +171,23 @@ namespace FamTec.Server.Repository.Maintenence
                     if(UpdateResult)
                     {
                         await transaction.CommitAsync(); // 출고완료
-                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
                         return true;
                     }
                     else
                     {
                         await transaction.RollbackAsync(); // 출고 실패
-                        //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업.
                         return false;
                     }
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
                     await transaction.RollbackAsync();
-
-                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
                     return false; // 다른곳에서 해당 품목을 사용중입니다.
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-
-                    //await RoolBackOccupant(GUID); // 다음 작업을 위해 토큰 비우는 작업
                     LogService.LogMessage(ex.ToString());
                     throw new ArgumentNullException();
                 }
@@ -428,7 +387,6 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="delCount"></param>
         /// <param name="Guid"></param>
         /// <returns></returns>
-        //public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount, string Guid)
         public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount)
         {
             try
@@ -438,7 +396,6 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => m.MaterialTbId == materialid &&
                                 m.RoomTbId == roomid &&
                                 m.PlaceTbId == placeid &&
-                                //m.RowVersion == Guid &&
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
@@ -454,221 +411,12 @@ namespace FamTec.Server.Repository.Maintenence
                     }
 
                     if (result >= delCount) // 개수가됨
-                    {
                         return model;
-                    }
                     else // 개수가안됨 ROLLBACK
-                    {
                         return null;
-                    }
                 }
                 else // 개수 조회결과가 아에없음
-                {
                     return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
-
-        /// <summary>
-        /// SET 토큰
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="roomid"></param>
-        /// <param name="materialid"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        public async ValueTask<bool?> SetOccupantToken(int placeid, int roomid, int materialid, string guid)
-        {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    List<InventoryTb>? Occupant = await context.InventoryTbs
-                        .Where(m => m.PlaceTbId == placeid &&
-                                    m.MaterialTbId == materialid &&
-                                    m.RoomTbId == roomid &&
-                                    m.DelYn != true)
-                        .ToListAsync();
-
-                    if(Occupant is [_, ..])
-                    {
-                        /*
-                        List<InventoryTb>? check = Occupant
-                            .Where(m => !String.IsNullOrWhiteSpace(m.RowVersion) && m.RowVersion != guid)
-                            .ToList();
-                       
-                        if (check is [_, ..])
-                        {
-                            return false; // 다른데서 품목 사용중
-                        }
-                        else // 여기는 FALSE 여야 함.
-                        {
-                            foreach(InventoryTb item in Occupant)
-                            {
-                                //item.RowVersion = guid;
-                                context.Update(item);
-                            }
-                        }
-                         */
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
-                    bool result = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(result)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
-                    }
-                }
-                catch(DbUpdateConcurrencyException ex) // 동시성 에러
-                {
-                    await transaction.RollbackAsync();
-
-                    // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야 함.
-                    await RoolBackOccupant(guid);
-                    LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    return false; // 다른곳에서 해당 품목을 사용중입니다.
-                }
-                catch(Exception ex)
-                {
-                    await transaction.RollbackAsync();
-
-                    // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야 함.
-                    await RoolBackOccupant(guid);
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// SET 토큰
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="roomid"></param>
-        /// <param name="materialid"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        public async ValueTask<bool?> SetOccupantToken(int placeid, AddMaintanceDTO dto, string guid)
-        {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach(InOutInventoryDTO inventoryDTO in dto.Inventory!)
-                    {
-                        bool ItemInUse = await context.InventoryTbs
-                            .Where(m => m.PlaceTbId == placeid &&
-                            m.MaterialTbId == inventoryDTO.MaterialID &&
-                            m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                            m.DelYn != true 
-                            //&&
-                            //!String.IsNullOrWhiteSpace(m.RowVersion) &&
-                            //m.RowVersion != guid
-                            )
-                            .AnyAsync();
-
-                        if (ItemInUse)
-                            return false; // 다른곳에서 해당 품목을 사용중입니다.
-
-                        List<InventoryTb> itemsToUpdate = await context.InventoryTbs
-                            .Where(m => m.PlaceTbId == placeid &&
-                                        m.MaterialTbId == inventoryDTO.MaterialID &&
-                                        m.RoomTbId == inventoryDTO.AddStore!.RoomID &&
-                                        m.DelYn != true).ToListAsync();
-
-                        foreach(InventoryTb item in itemsToUpdate)
-                        {
-                            //item.RowVersion = guid; // GUID 토큰 SET
-                            context.Update(item);
-                        }
-                    }
-
-                    bool result = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (result)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
-                    }
-                }
-                catch (DbUpdateConcurrencyException ex) // 동시성 에러
-                {
-                    await transaction.RollbackAsync();
-
-                    // 해당 GUID 찾아서 TimeStamp / 토큰 null 해줘야함.
-                    await RoolBackOccupant(guid);
-                    LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    return false; // 다른곳에서 해당 품목을 사용중입니다.
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-
-                    await RoolBackOccupant(guid);
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 토큰 RESET
-        /// </summary>
-        /// <param name="GUID"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<Task?> RoolBackOccupant(string GUID)
-        {
-            try
-            {
-                if (String.IsNullOrWhiteSpace(GUID))
-                {
-                    return null;
-                }
-
-                // 해당 코드가 없으면 RollBack Update도 ERROR
-                foreach (var entry in context.ChangeTracker.Entries().Where(e => e.State != EntityState.Unchanged))
-                {
-                    //추적 안함으로 변경
-                    entry.State = EntityState.Detached;
-                }
-
-                List<InventoryTb>? Occupant = await context.InventoryTbs
-                    .Where(m => m.DelYn != true
-                    //&& m.RowVersion == GUID
-                    )
-                    .ToListAsync();
-
-                if (Occupant.Any())
-                {
-                    foreach (InventoryTb model in Occupant)
-                    {
-                        //model.RowVersion = null;
-                        context.InventoryTbs.Update(model);
-                    }
-                }
-
-                await context.SaveChangesAsync();
-                return null;
             }
             catch (Exception ex)
             {
@@ -771,12 +519,9 @@ namespace FamTec.Server.Repository.Maintenence
                             MaterialName = MaterialTB.Name
                         });
                     }
-
                     HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
                     HistoryDTO.Add(HistoryModel);
                 }
-
-
                 return HistoryDTO;
             }
             catch(Exception ex)
@@ -888,10 +633,8 @@ namespace FamTec.Server.Repository.Maintenence
                         HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
                         GroupItem.HistoryList.Add(HistoryModel);
                     }
-
                     AllMaintanceList.Add(GroupItem);
                 }
-
                 return AllMaintanceList;
             }
             catch(Exception ex)
@@ -900,12 +643,5 @@ namespace FamTec.Server.Repository.Maintenence
                 throw new ArgumentNullException();
             }
         }
-
-
-
-
-
-
-
     }
 }

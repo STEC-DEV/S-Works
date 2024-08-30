@@ -16,17 +16,17 @@
         public int? MaterialID { get; set; }
 
         /// <summary>
-        /// 품목명
+        /// 품목명 - 없어도 넘어갈것같음.
         /// </summary>
         public string? MaterialName { get; set; }
-        
+
         /// <summary>
-        /// 품목코드
+        /// 품목코드 - 없어도 넘어갈것같음.
         /// </summary>
         public string? MaterialCode { get; set; }
-        
+
         /// <summary>
-        /// 단위
+        /// 단위 - 없어도 넘어갈것같음.
         /// </summary>
         public string? Unit { get; set; }
 

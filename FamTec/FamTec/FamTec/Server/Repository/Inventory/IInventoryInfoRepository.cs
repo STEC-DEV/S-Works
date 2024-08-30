@@ -28,22 +28,6 @@ namespace FamTec.Server.Repository.Inventory
         ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
 
         /// <summary>
-        /// 동시성 토큰 등록
-        /// </summary>
-        /// <param name="placeid"></param>
-        /// <param name="dto"></param>
-        /// <param name="guid"></param>
-        /// <returns></returns>
-        ValueTask<bool?> SetOccupantToken(int placeid, List<InOutInventoryDTO> dto, string guid);
-
-        /// <summary>
-        /// 롤백
-        /// </summary>
-        /// <param name="GUID"></param>
-        /// <returns></returns>
-        ValueTask<Task?> RoolBackOccupant(string GUID);
-
-        /// <summary>
         /// 기간별 - 품목별 입출고 리스트 출력
         /// </summary>
         /// <param name="placeid"></param>

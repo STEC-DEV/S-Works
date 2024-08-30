@@ -59,7 +59,6 @@ namespace FamTec.Server.Repository.User
                 {
                     return false;
                 }
-               
             }
             catch (Exception ex)
             {
@@ -79,11 +78,6 @@ namespace FamTec.Server.Repository.User
             {
                 try
                 {
-                    //foreach(UsersTb UserTB in UserList)
-                    //{
-                    //    context.UsersTbs.Add(UserTB);
-                    //}
-                    
                     await context.UsersTbs.AddRangeAsync(UserList);
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -248,13 +242,9 @@ namespace FamTec.Server.Repository.User
                     .FirstOrDefaultAsync(m => m.UserId == userid);
                 
                 if(model is not null)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {

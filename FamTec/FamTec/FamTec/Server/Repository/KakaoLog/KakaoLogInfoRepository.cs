@@ -28,13 +28,9 @@ namespace FamTec.Server.Repository.KakaoLog
                 await context.KakaoLogTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -42,8 +38,6 @@ namespace FamTec.Server.Repository.KakaoLog
                 throw new ArgumentNullException();
             }
         }
-
-        
 
         /// <summary>
         /// 카카오 알림톡 발송로그 전체 조회
@@ -54,7 +48,6 @@ namespace FamTec.Server.Repository.KakaoLog
             try
             {
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
-                    //.Take(1000)
                     .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();

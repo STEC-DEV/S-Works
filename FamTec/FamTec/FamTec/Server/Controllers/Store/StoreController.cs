@@ -16,14 +16,11 @@ namespace FamTec.Server.Controllers.Store
     {
         private IInVentoryService InStoreService;
         private ILogService LogService;
-        private IInventoryInfoRepository InventoryInfoRepository;
 
         public StoreController(IInVentoryService _instoreservice,
-            IInventoryInfoRepository _inventoryInfoRepository,
             ILogService _logservice)
         {
             this.InStoreService = _instoreservice;
-            this.InventoryInfoRepository = _inventoryInfoRepository;
             this.LogService = _logservice;
         }
 

@@ -3,7 +3,6 @@ using FamTec.Server.Repository.Maintenence;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
-using System;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -41,38 +40,17 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                /*
-                string? GUID = Guid.NewGuid().ToString();
-
-                bool? SetOccupantResult = await MaintanceRepository.SetOccupantToken(Convert.ToInt32(placeid), dto, GUID);
-                if (SetOccupantResult == false)
-                {
-                    // 다른곳에서 사용중인 품목
-                    await MaintanceRepository.RoolBackOccupant(GUID);
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 이미 사용중인 품목입니다.", data = null, code = 200 };
-                }
-                if (SetOccupantResult == null)
-                {
-                    // 조회결과가 없을때
-                    await MaintanceRepository.RoolBackOccupant(GUID);
-                    return new ResponseUnit<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
-                }
-                */
-                //bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, Convert.ToInt32(placeid), GUID);
                 bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, Convert.ToInt32(placeid));
                 if (OutResult == true)
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID);
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
                 else if (OutResult == false)
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID);
                     return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
                 else
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID);
                     return new ResponseUnit<bool?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 200 };
                 }
             }
@@ -100,39 +78,17 @@ namespace FamTec.Server.Services.Maintenance
                 if(String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                /*
-                string GUID = Guid.NewGuid().ToString();
-
-                // 동시성 검사 TOKEN 넣기
-                bool? SetOccupantResult = await MaintanceRepository.SetOccupantToken(dto.PlaceTBID!.Value, dto.RoomTBID!.Value, dto.MaterialTBID!.Value, GUID);
-                if(SetOccupantResult == false)
-                {
-                    // 다른곳에서 사용중인 품목
-                    await MaintanceRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
-                }
-                if (SetOccupantResult == null)
-                {
-                    // 조회결과가 없을때
-                    await MaintanceRepository.RoolBackOccupant(GUID);
-                    return new ResponseUnit<bool?>() { message = "조회결과가 없습니다.", data = null, code = 200 };
-                }
-                */
-                // 여기서 취소 하면됨.
                 bool? DeleteResult = await MaintanceRepository.DeleteHistoryInfo(dto, deleter);
                 if(DeleteResult == true)
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(DeleteResult == false)
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
                     return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
                 }
                 else
                 {
-                    //await MaintanceRepository.RoolBackOccupant(GUID); // 토큰 돌려놓기
                     return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
