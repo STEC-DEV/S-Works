@@ -30,10 +30,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQnVpbGRpbmdMaXN0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/DateTimeInput.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xEYXRlVGltZUlucHV0LnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/ExcelExample.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhjZWxFeGFtcGxlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -76,10 +72,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/DetailSearch/DetailSearch.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXERldGFpbFNlYXJjaFxEZXRhaWxTZWFyY2gucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/InOutTable.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluT3V0VGFibGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
@@ -233,6 +225,14 @@ build_metadata.AdditionalFiles.CssScope = b-nnxheo5jnq
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/CancleModal.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xDYW5jbGVNb2RhbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-m8ptrnziqb
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/DateInput.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xEYXRlSW5wdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-qvxd8gjmfu
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/DateTimeInput.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xEYXRlVGltZUlucHV0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-udo1ckz9yz
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/Empty.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xFbXB0eS5yYXpvcg==
@@ -398,13 +398,25 @@ build_metadata.AdditionalFiles.CssScope = b-v00ot3xtdx
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXExvY2F0aW9uXExvY2F0aW9uTWFpblxNb2RhbFxVcGRhdGVNb2RhbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-yunu9563k0
 
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/InForm.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluRm9ybS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-75tfwjexf6
-
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/InOutList.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluT3V0TGlzdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-qrxlkh4m7x
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/InOutSelectField.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluT3V0U2VsZWN0RmllbGQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-m95ix9km1u
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/InOutTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluT3V0VGFibGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-gdhc2qd8dk
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/In/InForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXEluXEluRm9ybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-15av6lgs23
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/Out/OutForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXE91dFxPdXRGb3JtLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-p5ljv1rt3l
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Material/InOut/Add/Components/SearchMaterial.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXEluT3V0XEFkZFxDb21wb25lbnRzXFNlYXJjaE1hdGVyaWFsLnJhem9y

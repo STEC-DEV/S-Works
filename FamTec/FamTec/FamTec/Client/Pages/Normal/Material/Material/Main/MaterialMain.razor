@@ -90,15 +90,24 @@
         _searchText = text;
         FilterData = String.IsNullOrEmpty(_searchText) 
                                 ? Material 
-                                : Material.Where(m => m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false ||
+                                : Material.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                                                         (m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                        (m.Mfr?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                                        (m.ManufacturingComp?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                                         ).ToList();
 
-        foreach(var i in FilterData)
-        {
-            Console.WriteLine(i.Name);
-        }
+        
+
+        // Console.WriteLine($"검색어: {_searchText}");
+        // Console.WriteLine($"검색 결과 수: {FilterData.Count}");
+        // Console.WriteLine($"이름으로 검색된 항목 수: {Material.Count(m => m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
+        // Console.WriteLine($"코드로 검색된 항목 수: {Material.Count(m => m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
+        // Console.WriteLine($"제조회사로 검색된 항목 수: {Material.Count(m => m.ManufacturingComp?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
+
+        // foreach(var i in FilterData)
+        // {
+        //     Console.WriteLine($"Name: {i.Name}, Code: {i.Code}, ManufacturingComp: {i.ManufacturingComp}");
+        // }
+
         await InvokeAsync(StateHasChanged);
     }
 

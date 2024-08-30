@@ -63,7 +63,7 @@
         _searchText = text;
         FilterList = String.IsNullOrEmpty(_searchText)
                                 ? InOuts
-                                : InOuts.Where(m => m.MaterialCode?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false ||
+                                : InOuts.Where(m => (m.MaterialCode?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                                                         (m.MaterialName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                                                         (m.RoomName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                                         ).ToList();

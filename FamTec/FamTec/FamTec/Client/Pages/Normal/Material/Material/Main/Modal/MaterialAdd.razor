@@ -30,7 +30,7 @@
                 Label="제조사" 
                 Placeholder="제조사" 
                 ValueType="text" 
-                @bind-Value="@AddMaterial.Mfr" 
+                @bind-Value="@AddMaterial.ManufacturingComp" 
                 />
         </div>
         <InputCol 
@@ -106,6 +106,7 @@
     {
         try
         {
+            Console.WriteLine(AddMaterial.ManufacturingComp);
             ResponseUnit<AddMaterialDTO> resPost = await apiManager.PostWithFilesAsync<AddMaterialDTO>("Material/sign/AddMaterial",AddMaterial);
             if(resPost.code != 200)
             {

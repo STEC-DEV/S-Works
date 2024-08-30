@@ -1,19 +1,43 @@
 ﻿@page "/material/inout/add"
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Material.InOut.Add.Components
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components.In
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components.Out
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
 
 <div class="addinout">
     <div class="header">
         <Tab Tabs="Category" OnClick="OnTab" />
     </div>
-    <SearchMaterial Tab="_tab" />
+    <SearchMaterial Tab="_tab" @bind-Data="@SelectMaterial" />
     
-    <InForm />
+    @if(_tab == 1)
+    {
+        <OutForm MaterialId="@SelectMaterial.Id" AddItem=AddItem />
+    }
+    else
+    {
+        <InForm />
+    }
 
-    <InOutList Title="@(_tab==0 ? "입고 목록" : "출고 목록")" />
+    <div class="btn">
+        <Button Name="추가" Width=true Type="0" OnClick=@(_tab == 1 ? OnAddList : null) />
+    </div>
+    <InOutList Title="@(_tab==0 ? "입고 목록" : "출고 목록")" ListData="@AddInventoryListData" />
 </div>
 
 @code {
+
+    MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
     List<string> Category = new List<string> { "입고", "출고" };
+
+    //출고 내용 데이터
+    OutContentDTO AddItem = new OutContentDTO();
+    //입고 내용 데이터
+    InOutInventoryDTO AddInItem = new InOutInventoryDTO();
+
+    List<InOutInventoryDTO> AddInventoryListData = new List<InOutInventoryDTO>();
     private int _tab = 0;
 
 
@@ -21,5 +45,62 @@
     private async void OnTab(int idx)
     {
         _tab = idx;
+    }
+
+    //출고 목록데이터 받아오는 함수
+    //현재 내용 초기화 안됨 작업해야함=============
+    private async Task OnAddList()
+    {
+        try
+        {
+            if (AddItem.RoomId == 0 || AddItem.Num == 0 || SelectMaterial.Id == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "자재코드, 수량, 자재를 확인해 주세요.");
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+
+            ResponseList<InOutInventoryDTO> resGet = await apiManager.GetListAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={AddItem.RoomId}&materialid={SelectMaterial.Id}&outcount={AddItem.Num}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert",resGet.message);
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+            AddInventoryListData = resGet.data;
+            AddItem = new OutContentDTO();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    private async Task OnInDataAdd()
+    {
+        try
+        {
+            if (String.IsNullOrEmpty(AddInItem.MaterialName ) || AddItem.Num == 0 || SelectMaterial.Id == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "자재코드, 수량, 자재를 확인해 주세요.");
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+        }catch(Exception ex)
+        {
+            
+        }
+    }
+
+
+    private void OnSumData()
+    {
+        AddInItem.MaterialName = SelectMaterial.Name;
+        AddInItem.MaterialCode = SelectMaterial.Code;
+        AddInItem.Unit = SelectMaterial.Unit;
     }
 }

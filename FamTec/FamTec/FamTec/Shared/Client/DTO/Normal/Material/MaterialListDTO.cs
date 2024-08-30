@@ -29,7 +29,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Material
         /// <summary>
         /// 제조사
         /// </summary>
-        public string? Mfr { get; set; }
+        public string? ManufacturingComp { get; set; }
 
         /// <summary>
         /// 단위

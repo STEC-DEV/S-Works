@@ -1,0 +1,83 @@
+﻿
+@* 자동변환 *@
+<div class="dateinput @(Row ==true ? "row" : "")">
+    <label class="label">
+        @Label
+    </label>
+    <input
+        class="input"
+        type="text" 
+        @bind-value="InputValue" 
+        @bind-value:event="oninput" 
+        placeholder="@Placeholder"
+        @onblur="FormatDate"/>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; }
+    [Parameter] public string Placeholder { get; set; }
+    [Parameter] public bool? Row { get; set; }
+    [Parameter] public DateTime? Date { get; set; }
+    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
+
+    private string InputValue
+    {
+        get => _inputValue;
+        set
+        {
+            _inputValue = value;
+            ParseDate();
+        }
+    }
+    private string _inputValue;
+
+    private void ParseDate()
+    {
+        if (string.IsNullOrWhiteSpace(InputValue))
+        {
+            Date = null;
+            return;
+        }
+
+        if (InputValue.Length == 8 && long.TryParse(InputValue, out long numericDate))
+        {
+            int year = (int)(numericDate / 10000);
+            int month = (int)((numericDate % 10000) / 100);
+            int day = (int)(numericDate % 100);
+
+            if (year >= 1900 && year <= 9999 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+            {
+                try
+                {
+                    Date = new DateTime(year, month, day);
+                    DateChanged.InvokeAsync(Date);
+                }
+                catch
+                {
+                    // Invalid date (e.g., February 30th)
+                    Date = null;
+                }
+            }
+            else
+            {
+                Date = null;
+            }
+        }
+        else
+        {
+            Date = null;
+        }
+    }
+
+    private void FormatDate()
+    {
+        if (Date.HasValue)
+        {
+            InputValue = Date.Value.ToString("yyyy-MM-dd");
+        }
+        else
+        {
+            InputValue = string.Empty;
+        }
+    }
+}

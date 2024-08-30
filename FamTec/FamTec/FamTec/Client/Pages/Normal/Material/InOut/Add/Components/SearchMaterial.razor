@@ -3,7 +3,7 @@
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
-<div class="m-search">
+<div class="m-search yappear">
     <div class="header">
         <span class="title">
             @(Tab==0 ? "입고 자재" : "출고 자재")
@@ -13,26 +13,26 @@
     <div class="content">
         <TextField 
             Label="자재 코드" 
-            Context="@SelectData?.Code"
+            Context="@Data?.Code"
             Row=true />
         <TextField 
             Label="자재명" 
-            Context="@SelectData?.Name"
+            Context="@Data?.Name"
             Row=true />
         <TextField 
             Label="자재 제조사" 
-            Context="@SelectData?.Mfr"
+            Context="@Data?.Mfr"
             Row=true />
         <TextField 
             Label="규격" 
-            Context="@SelectData?.Standard"
+            Context="@Data?.Standard"
             Row=true />
     </div>
     @if (_isSearch)
     {
         <ModalBackground>
             <ChildComponent>
-                <SearchModal OnClose="OnSearch" @bind-SelectData=SelectData />
+                <SearchModal OnClose="OnSearch" @bind-SelectData=Data />
             </ChildComponent >
         </ModalBackground>
     }
@@ -41,17 +41,37 @@
 
 @code {
     [Parameter] public int Tab { get; set; }
+    [Parameter] public MaterialSearchListDTO Data { get; set; }
+    [Parameter] public EventCallback<MaterialSearchListDTO> DataChanged { get; set; }
     MaterialSearchListDTO? SelectData;
+
+    private int _stateTab;
     private bool _isSearch = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        _stateTab = Tab;
+
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        if(_stateTab != Tab)
+        {
+            Data = new MaterialSearchListDTO();
+            _stateTab = Tab;
+        }
+
         StateHasChanged();
     }
 
-    private void OnSearch()
+    private async Task OnSearch()
     {
         _isSearch = !_isSearch;
+         if (Data != null)
+        {
+            await DataChanged.InvokeAsync(Data);
+        }
     }
+
 }

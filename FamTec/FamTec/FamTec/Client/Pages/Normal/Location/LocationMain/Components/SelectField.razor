@@ -53,6 +53,7 @@
     [Parameter] public List<T> SelectData { get; set; }
     [Parameter] public int Value{ get; set; }
     [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
+    [Parameter] public EventCallback<int> ValueChanged { get; set; }
     [Parameter] public bool EditMode {get;set;}
     [Parameter] public string? Label { get; set; }
     [Parameter] public bool? Row { get; set; }
@@ -61,34 +62,81 @@
     public bool IsActive { get; set; } = false;
 
 
-    protected override Task OnParametersSetAsync()
-    {        
-
-        return base.OnParametersSetAsync();
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateSelectName();
+        await base.OnParametersSetAsync();
     }
 
-    public void Reset()
+    // public void Reset()
+    // {
+    //     SelectName = "Select";
+    //     StateHasChanged();
+    // }
+
+    //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
+    // public void OnSelectRow(object row)
+    // {
+        
+    //     if(row == null)
+    //     {
+    //         SelectName = "Select";
+    //         OnChange.InvokeAsync(0);
+    //         OnActive();
+    //         return;
+    //     }
+    //     int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+    //     SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+
+    //     OnChange.InvokeAsync(id);
+    //     OnActive();
+    //     StateHasChanged();
+    // }
+    private async Task UpdateSelectName()
     {
+        if (Value != 0 && SelectData != null)
+        {
+            var selectedItem = SelectData.FirstOrDefault(item => (int)item.GetType().GetProperty("Id").GetValue(item) == Value);
+            if (selectedItem != null)
+            {
+                SelectName = selectedItem.GetType().GetProperty("Name").GetValue(selectedItem).ToString();
+            }
+            else
+            {
+                SelectName = "Select";
+            }
+        }
+        else
+        {
+            SelectName = "Select";
+        }
+    }
+
+    public async Task Reset()
+    {
+        Value = 0;
         SelectName = "Select";
+        await ValueChanged.InvokeAsync(Value);
         StateHasChanged();
     }
 
-    //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
-    public void OnSelectRow(object row)
+    public async Task OnSelectRow(object row)
     {
-        
-        if(row == null)
+        if (row == null)
         {
+            Value = 0;
             SelectName = "Select";
-            OnChange.InvokeAsync(0);
-            OnActive();
-            return;
         }
-        int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-        SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-
-        OnChange.InvokeAsync(id);
+        else
+        {
+            int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+            Value = id;
+            SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+        }
         OnActive();
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync(Value);
+        
         StateHasChanged();
     }
 

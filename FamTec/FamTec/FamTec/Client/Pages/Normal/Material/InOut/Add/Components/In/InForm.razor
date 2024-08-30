@@ -1,0 +1,172 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="inform yappear">
+    <div class="header">
+        <span class="title">
+            입고 내용
+        </span>
+    </div>
+    <div class="content">
+        <DateInput 
+            Label="날짜" 
+            Row="true"
+            @bind-Date=@AddItem.AddStore.InOutDate
+            Placeholder="YYYYMMDD"/>
+        <SelectField 
+            T="BuildingFloorListDTO" 
+            Key="building" 
+            SelectData="Building" 
+            @bind-Value="SelectedBuildingId" 
+            OnChange="OnBuildingChange" 
+            Label="건물"
+            Row="true"
+            EditMode="true" />
+        @if (Room != null && Room.Any())
+        {
+            <SelectField  
+                Key="floor" 
+                SelectData="Room" 
+                @bind-Value="SelectedRoomId" 
+                Label="위치"
+                Row="true"
+                OnChange="OnLocationChange" 
+                EditMode="true" />
+        }
+        @if (SelectedRoomId != 0)
+        {
+        <InputCol 
+            Label="단가" 
+            Placeholder="단가" 
+            Row="true" 
+            ValueType="number"
+            @bind-Value="@AddItem.AddStore.UnitPrice" />
+         <InputCol 
+            Label="수량" 
+            Placeholder="수량" 
+            Row="true" 
+            ValueType="number"
+            @bind-Value="@AddItem.AddStore.Num" />
+        <InputCol 
+            Label="입고 금액"
+            Placeholder="입고 금액"
+             Row="true"
+            ValueType="number"
+            @bind-Value="@AddItem.AddStore.TotalPrice" />
+        <InputCol 
+            Label="비고" 
+            Placeholder="비고" 
+            Row="true" 
+            @bind-Value="@AddItem.AddStore.Note"  /> 
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public InOutInventoryDTO AddItem { get; set; }
+    [Parameter] public int MaterialId{ get; set; }
+    [Parameter] public EventCallback<InOutInventoryDTO> ValueChaged { get; set; }
+
+    //건물, 위치정보 조회 변수
+    List<BuildingFloorListDTO> Building = new List<BuildingFloorListDTO>();
+    BuildingFloorListDTO SelectBuilding = new BuildingFloorListDTO();
+
+    //건물 선택 시 할당받을 위치 변수
+    List<BuildingFloor> Room = new List<BuildingFloor>();
+
+
+
+    int SelectedBuildingId;
+    int SelectedRoomId;
+
+    string moc = "";
+    DateTime? date;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuilding();
+        if (AddItem == null)
+        {
+            AddItem = new InOutInventoryDTO();
+        }
+        await OnLoadBuilding();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SelectedBuildingId = 0;
+    }
+
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                return;
+            }
+            Building = resGet.data;
+
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            Console.WriteLine("[자재][입고등록] 건물 조회 에러!" + ex);
+        }
+
+    }
+
+    //건물선택
+    private async Task OnBuildingChange(int buildingId)
+    {
+
+        if (buildingId == 0)
+        {
+            Room = null;
+            SelectedRoomId = 0;
+            AddItem.AddStore.UnitPrice = 0;
+            AddItem.AddStore.Num = 0;
+            AddItem.AddStore.TotalPrice = 0;
+            AddItem.AddStore.Note = null;
+
+            StateHasChanged();
+            return;
+        }
+        SelectedBuildingId = buildingId;
+
+        SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+
+        Room = SelectBuilding.FloorList;
+
+        SelectedRoomId = 0; // Reset floor selection when building changes
+        StateHasChanged();
+    }
+
+    //위치 선택
+    private void OnLocationChange(int locationId)
+    {
+        AddItem.AddStore.RoomID = locationId;
+
+    }
+
+
+    private async void OnValueChange()
+    {
+        
+    }
+
+    // //내용 초기화
+    // public void ResetForm()
+    // {
+    //     AddItem = new OutContentDTO();
+    //     StateHasChanged();
+    // }
+}

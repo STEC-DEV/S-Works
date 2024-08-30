@@ -1,5 +1,5 @@
 
-.inform[b-75tfwjexf6]{
+.inform[b-15av6lgs23]{
     display : flex;
     flex-direction : column;
     gap : var(--default-pd);
@@ -14,7 +14,7 @@
     background-color : var(--default-color);
 }
 
-.header[b-75tfwjexf6]{
+.header[b-15av6lgs23]{
     display : flex;
     padding : var(--default-pd);
 
@@ -22,7 +22,7 @@
     border-bottom : var(--default-bd);
 }
 
-.title[b-75tfwjexf6] {
+.title[b-15av6lgs23] {
     display: flex;
     align-items: center;
     font-size: var(--title-size);
@@ -30,7 +30,7 @@
     color: var(--main-color);
 }
 
-.content[b-75tfwjexf6]{
+.content[b-15av6lgs23]{
     display : grid;
     grid-template-columns : repeat(4, 1fr);
 

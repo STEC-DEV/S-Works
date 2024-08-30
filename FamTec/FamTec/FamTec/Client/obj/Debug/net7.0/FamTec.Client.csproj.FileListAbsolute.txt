@@ -1227,7 +1227,6 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\Material\Main\MaterialMain.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\Material\Main\Modal\MaterialAdd.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\InputCol.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\InForm.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\SearchMaterial.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\Tab.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\InoutAdd.razor.rz.scp.css
@@ -1236,3 +1235,9 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\InOut.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\InOutList.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\SearchTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\DateTimeInput.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\DateInput.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\InOutSelectField.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\Out\OutForm.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\InOutTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Normal\Material\InOut\Add\Components\In\InForm.razor.rz.scp.css

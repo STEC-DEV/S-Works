@@ -1,4 +1,5 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
 
 <table class="table">
@@ -31,29 +32,40 @@
         </tr>
     </thead>
     <tbody class="tbody">
-        @foreach(var row in ListData)
+        @if (ListData == null || ListData.Count == 0)
         {
-            <tr class="tr">
-                <td class="td">
-                    @row.Code
-                </td>
-                <td class="td">
-                    @row.Name
-                </td>
-                <td class="td">
-                    @row.Mfr
-                </td>
-                <td class="td">
-                    @row.Standard
-                </td>
-                <td class="td">
-                    <input 
-                        type="checkbox" 
-                        checked=@(row.Id==CheckedItem)                    
-                        @onchange="(e)=>OnChecked(e, row)"/>
+            <tr>
+                <td colspan="7" style="text-align:center;">
+                    <Empty />
                 </td>
             </tr>
         }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                        @row.Mfr
+                    </td>
+                    <td class="td">
+                        @row.Standard
+                    </td>
+                    <td class="td">
+                        <input type="checkbox"
+                               checked=@(row.Id==CheckedItem)
+                               @onchange="(e)=>OnChecked(e, row)" />
+                    </td>
+                </tr>
+            }
+        }
+
     </tbody>
 </table>
 
@@ -62,7 +74,7 @@
     [Parameter] public EventCallback<MaterialSearchListDTO> OnCheck { get; set; }
     [Parameter] public int CheckedItem { get; set; }
 
-
+   
 
     private void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
     {

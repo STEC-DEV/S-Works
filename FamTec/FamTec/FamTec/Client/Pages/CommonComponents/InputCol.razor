@@ -12,6 +12,7 @@
         type="@ValueType" 
         placeholder="@Placeholder"
         min="@Min"
+        max="@Max"
         value="@Value"
         @oninput="OnValueChanged"
         />
@@ -22,7 +23,8 @@
     [Parameter] public string? Placeholder { get; set; }
     [Parameter] public string? ValueType { get; set; }
     [Parameter] public T? Value { get; set; }
-    [Parameter] public string? Min { get; set; }
+    [Parameter] public string? Min { get; set; } = "0";
+    [Parameter] public int? Max { get; set; }
     [Parameter] public bool? Row { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
 
