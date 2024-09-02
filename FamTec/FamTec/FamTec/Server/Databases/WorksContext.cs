@@ -1,4 +1,6 @@
-﻿using FamTec.Shared.Model;
+﻿using System;
+using System.Collections.Generic;
+using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;
@@ -31,6 +33,8 @@ public partial class WorksContext : DbContext
     public virtual DbSet<BuildingTb> BuildingTbs { get; set; }
 
     public virtual DbSet<CommentTb> CommentTbs { get; set; }
+
+    public virtual DbSet<ContractTypeTb> ContractTypeTbs { get; set; }
 
     public virtual DbSet<DepartmentsTb> DepartmentsTbs { get; set; }
 
@@ -80,7 +84,7 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
-
+        
         // 쿼리스트링 사용
         modelBuilder.Entity<MaterialInventory>(entity =>
         {
@@ -334,6 +338,28 @@ public partial class WorksContext : DbContext
                 .HasConstraintName("fk_comment_tb_voc_tb1");
         });
 
+        modelBuilder.Entity<ContractTypeTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.Id).HasComment("인덱스");
+            entity.Property(e => e.BuildingTbId).HasComment("건물 외래키");
+            entity.Property(e => e.CreateDt)
+                .HasDefaultValueSql("current_timestamp()")
+                .HasComment("생성일");
+            entity.Property(e => e.CreateUser).HasComment("생성자");
+            entity.Property(e => e.Name).HasComment("계약종류");
+            entity.Property(e => e.PlaceTbId).HasComment("사업장 외래키");
+
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.ContractTypeTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BUILDING_TB_ID_202409021045");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.ContractTypeTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PLACE_TB_ID_202409021046");
+        });
+
         modelBuilder.Entity<DepartmentsTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -353,23 +379,49 @@ public partial class WorksContext : DbContext
 
             entity.ToTable("energy_month_usage_tb", tb => tb.HasComment("에너지 월별 사용량"));
 
-            entity.Property(e => e.Apr).HasComment("4월");
-            entity.Property(e => e.Aug).HasComment("8월");
+            entity.Property(e => e.Apr)
+                .HasDefaultValueSql("'0'")
+                .HasComment("4월");
+            entity.Property(e => e.Aug)
+                .HasDefaultValueSql("'0'")
+                .HasComment("8월");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.Dec).HasComment("12월");
+            entity.Property(e => e.Dec)
+                .HasDefaultValueSql("'0'")
+                .HasComment("12월");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.Feb).HasComment("2월");
-            entity.Property(e => e.Jan).HasComment("1월");
-            entity.Property(e => e.Jul).HasComment("7월");
-            entity.Property(e => e.Jun).HasComment("6월");
-            entity.Property(e => e.Mar).HasComment("3월");
-            entity.Property(e => e.May).HasComment("5월");
+            entity.Property(e => e.Feb)
+                .HasDefaultValueSql("'0'")
+                .HasComment("2월");
+            entity.Property(e => e.Jan)
+                .HasDefaultValueSql("'0'")
+                .HasComment("1월");
+            entity.Property(e => e.Jul)
+                .HasDefaultValueSql("'0'")
+                .HasComment("7월");
+            entity.Property(e => e.Jun)
+                .HasDefaultValueSql("'0'")
+                .HasComment("6월");
+            entity.Property(e => e.Mar)
+                .HasDefaultValueSql("'0'")
+                .HasComment("3월");
+            entity.Property(e => e.May)
+                .HasDefaultValueSql("'0'")
+                .HasComment("5월");
             entity.Property(e => e.MeterItemId).HasComment("검침기 인덱스");
-            entity.Property(e => e.Nov).HasComment("11월");
-            entity.Property(e => e.Oct).HasComment("10월");
-            entity.Property(e => e.Sep).HasComment("9월");
+            entity.Property(e => e.Nov)
+                .HasDefaultValueSql("'0'")
+                .HasComment("11월");
+            entity.Property(e => e.Oct)
+                .HasDefaultValueSql("'0'")
+                .HasComment("10월");
+            entity.Property(e => e.Sep)
+                .HasDefaultValueSql("'0'")
+                .HasComment("9월");
 
-            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs).HasConstraintName("fk_energy_month_usage_tb_meter_item_tb1");
+            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_energy_month_usage_tb_meter_item_tb1");
         });
 
         modelBuilder.Entity<EnergyUsageTb>(entity =>
@@ -383,7 +435,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.MeterDt).HasComment("검침일자");
             entity.Property(e => e.UseAmount).HasComment("사용량");
 
-            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyUsageTbs).HasConstraintName("fk_energy_usage_tb_meter_item_tb1");
+            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyUsageTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_energy_usage_tb_meter_item_tb1");
         });
 
         modelBuilder.Entity<FacilityItemGroupTb>(entity =>
@@ -524,7 +578,7 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.RowVersion)
+            entity.Property(e => e.RowVersion) // 추가
             .IsConcurrencyToken() // 추가
             .HasColumnType("BIGINT"); // 추가
 
@@ -613,13 +667,17 @@ public partial class WorksContext : DbContext
 
             entity.ToTable("meter_item_tb", tb => tb.HasComment("검침기 + 항목"));
 
-            entity.Property(e => e.AccumUsage).HasComment("누적사용량");
             entity.Property(e => e.Category).HasComment("전기, 기계 ..");
+            entity.Property(e => e.ContractTbId).HasComment("계약종");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.MeterItem).HasComment("검침항목");
+            entity.Property(e => e.Name).HasComment("계량기이름");
 
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.MeterItemTbs).HasConstraintName("fk_meter_item_tb_building_tb1");
+            entity.HasOne(d => d.BuildingTb).WithMany(p => p.MeterItemTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_meter_item_tb_building_tb1");
+
+            entity.HasOne(d => d.ContractTb).WithMany(p => p.MeterItemTbs).HasConstraintName("fk_contract_tb_id");
         });
 
         modelBuilder.Entity<PlaceTb>(entity =>
@@ -814,6 +872,7 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>
@@ -822,5 +881,6 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

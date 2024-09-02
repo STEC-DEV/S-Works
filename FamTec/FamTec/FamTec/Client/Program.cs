@@ -1,4 +1,3 @@
-
 using FamTec.Client;
 using FamTec.Client.Middleware;
 using Blazored.SessionStorage;
@@ -29,11 +28,10 @@ builder.Services.AddScoped<ApiManager>();
 builder.Services.AddBlazoredSessionStorage(); // 세션 스토리지 서비스
 builder.Services.AddAuthorizationCore(); // 권한부여 서비스
 
-builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 인증 상태 공급자
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); // 인증 상태 공급자 주입
-//builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+//builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 인증 상태 공급자
 
-// 연결 -- 아래 코드 (게시용)
+// SIGNAL R 허브연결
 string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 HubObject.hubConnection = new HubConnectionBuilder()
       .WithUrl(HubUrl, options =>
@@ -50,7 +48,6 @@ HubObject.hubConnection = new HubConnectionBuilder()
         logging.SetMinimumLevel(LogLevel.Debug);
     })
    .Build();
-
 
 HubObject.hubConnection.KeepAliveInterval = System.TimeSpan.FromSeconds(15); //최소 설정가능한 값5초.
 HubObject.hubConnection.ServerTimeout = System.TimeSpan.FromSeconds(30); // 서버로부터 30초 안에 메시지를 수신 못하면 클라이언트가 끊음

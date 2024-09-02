@@ -16,6 +16,9 @@ public partial class InventoryTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    /// <summary>
+    /// 동시성 검사
+    /// </summary>
     [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }
@@ -47,10 +50,6 @@ public partial class InventoryTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
-    [ConcurrencyCheck]  // 동시성 제어를 위한 RowVersion 속성
-    [Column("ROW_VERSION", TypeName = "BIGINT")]
-    public long RowVersion { get; set; }
-
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }
 
@@ -59,6 +58,13 @@ public partial class InventoryTb
 
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int MaterialTbId { get; set; }
+
+    /// <summary>
+    /// 동시성 검사
+    /// </summary>
+    [ConcurrencyCheck]
+    [Column("ROW_VERSION", TypeName = "bigint(20)")]
+    public long RowVersion { get; set; }
 
     [ForeignKey("MaterialTbId")]
     [InverseProperty("InventoryTbs")]

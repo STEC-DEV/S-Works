@@ -91,11 +91,11 @@ public partial class EnergyMonthUsageTb
     public float? Dec { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -118,9 +118,9 @@ public partial class EnergyMonthUsageTb
     /// 검침기 인덱스
     /// </summary>
     [Column("METER_ITEM_ID", TypeName = "int(11)")]
-    public int? MeterItemId { get; set; }
+    public int MeterItemId { get; set; }
 
     [ForeignKey("MeterItemId")]
     [InverseProperty("EnergyMonthUsageTbs")]
-    public virtual MeterItemTb? MeterItem { get; set; }
+    public virtual MeterItemTb MeterItem { get; set; } = null!;
 }

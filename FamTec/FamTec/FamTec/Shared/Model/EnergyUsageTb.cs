@@ -22,20 +22,20 @@ public partial class EnergyUsageTb
     /// 사용량
     /// </summary>
     [Column("USE_AMOUNT")]
-    public float? UseAmount { get; set; }
+    public float UseAmount { get; set; }
 
     /// <summary>
     /// 검침일자
     /// </summary>
     [Column("METER_DT", TypeName = "datetime")]
-    public DateTime? MeterDt { get; set; }
+    public DateTime MeterDt { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -55,9 +55,9 @@ public partial class EnergyUsageTb
     public string? DelUser { get; set; }
 
     [Column("METER_ITEM_ID", TypeName = "int(11)")]
-    public int? MeterItemId { get; set; }
+    public int MeterItemId { get; set; }
 
     [ForeignKey("MeterItemId")]
     [InverseProperty("EnergyUsageTbs")]
-    public virtual MeterItemTb? MeterItem { get; set; }
+    public virtual MeterItemTb MeterItem { get; set; } = null!;
 }

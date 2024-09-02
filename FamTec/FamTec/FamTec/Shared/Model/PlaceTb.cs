@@ -200,6 +200,9 @@ public partial class PlaceTb
     [InverseProperty("PlaceTb")]
     public virtual ICollection<BuildingTb> BuildingTbs { get; set; } = new List<BuildingTb>();
 
+    [InverseProperty("PlaceTb")]
+    public virtual ICollection<ContractTypeTb> ContractTypeTbs { get; set; } = new List<ContractTypeTb>();
+
     [ForeignKey("DepartmentTbId")]
     [InverseProperty("PlaceTbs")]
     public virtual DepartmentsTb? DepartmentTb { get; set; }

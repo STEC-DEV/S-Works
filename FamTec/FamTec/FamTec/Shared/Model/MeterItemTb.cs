@@ -10,7 +10,9 @@ namespace FamTec.Shared.Model;
 /// 검침기 + 항목
 /// </summary>
 [Table("meter_item_tb")]
+[Index("ContractTbId", Name = "fk_contract_tb_id_202409021049")]
 [Index("BuildingTbId", Name = "fk_meter_item_tb_building_tb1_idx")]
+[Index("Name", "BuildingTbId", Name = "uk_name", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MeterItemTb
 {
@@ -19,31 +21,24 @@ public partial class MeterItemTb
     public int MeterItemId { get; set; }
 
     /// <summary>
-    /// 검침항목
+    /// 계량기이름
     /// </summary>
-    [Column("METER_ITEM")]
-    [StringLength(255)]
-    public string? MeterItem { get; set; }
-
-    /// <summary>
-    /// 누적사용량
-    /// </summary>
-    [Column("ACCUM_USAGE")]
-    public float? AccumUsage { get; set; }
+    [Column("NAME")]
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// 전기, 기계 ..
     /// </summary>
     [Column("CATEGORY")]
     [StringLength(255)]
-    public string? Category { get; set; }
+    public string Category { get; set; } = null!;
 
     [Column("CREATE_DT", TypeName = "datetime")]
-    public DateTime? CreateDt { get; set; }
+    public DateTime CreateDt { get; set; }
 
     [Column("CREATE_USER")]
     [StringLength(255)]
-    public string? CreateUser { get; set; }
+    public string CreateUser { get; set; } = null!;
 
     [Column("UPDATE_DT", TypeName = "datetime")]
     public DateTime? UpdateDt { get; set; }
@@ -62,12 +57,22 @@ public partial class MeterItemTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    /// <summary>
+    /// 계약종
+    /// </summary>
+    [Column("CONTRACT_TB_ID", TypeName = "int(11)")]
+    public int? ContractTbId { get; set; }
+
     [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int? BuildingTbId { get; set; }
+    public int BuildingTbId { get; set; }
 
     [ForeignKey("BuildingTbId")]
     [InverseProperty("MeterItemTbs")]
-    public virtual BuildingTb? BuildingTb { get; set; }
+    public virtual BuildingTb BuildingTb { get; set; } = null!;
+
+    [ForeignKey("ContractTbId")]
+    [InverseProperty("MeterItemTbs")]
+    public virtual ContractTypeTb? ContractTb { get; set; }
 
     [InverseProperty("MeterItem")]
     public virtual ICollection<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; } = new List<EnergyMonthUsageTb>();

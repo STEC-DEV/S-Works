@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FS0AdbtO7oH9EJH2m9I568LmqLU467DF0JrDdkMVMLIgMJK4LLAWqjLsJt1YtvQf4ZIpn5nL+pHD7OhzzoJ1aQ==",
+  "dgSpecHash": "fcsY2cl1D5orJfrXNyoCMbGPYjWY2ZJcl7Vv5hULq2cD9j4xAZR58/MFQKPENpJXEvB9B/nxtIOe8vncuH8bsQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
   "expectedPackageFiles": [
@@ -49,10 +49,6 @@
     "C:\\Users\\kyw\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\mysqlconnector\\2.2.5\\mysqlconnector.2.2.5.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\7.0.0\\pomelo.entityframeworkcore.mysql.7.0.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.runtime\\4.3.0\\runtime.any.system.runtime.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.text.encoding\\4.3.0\\runtime.any.system.text.encoding.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\runtime.unix.system.private.uri\\4.3.0\\runtime.unix.system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.configuration.configurationmanager\\6.0.1\\system.configuration.configurationmanager.6.0.1.nupkg.sha512",
@@ -64,7 +60,6 @@
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\system.private.uri\\4.3.0\\system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime.caching\\6.0.0\\system.runtime.caching.6.0.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
