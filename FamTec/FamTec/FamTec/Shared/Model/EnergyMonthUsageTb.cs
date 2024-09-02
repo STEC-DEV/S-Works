@@ -19,6 +19,13 @@ public partial class EnergyMonthUsageTb
     public int MonthUsageId { get; set; }
 
     /// <summary>
+    /// 년도
+    /// </summary>
+    [Column("YEARS")]
+    [StringLength(255)]
+    public string Years { get; set; } = null!;
+
+    /// <summary>
     /// 1월
     /// </summary>
     [Column("JAN")]

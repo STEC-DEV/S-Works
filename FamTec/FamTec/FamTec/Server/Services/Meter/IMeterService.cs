@@ -12,5 +12,13 @@ namespace FamTec.Server.Services.Meter
         /// <param name="dto"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<AddMeterDTO>> AddMeterService(HttpContext context, AddMeterDTO dto);
+
+        /// <summary>
+        /// 해당 사업장의 검침기 전체조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<MeterDTO>> GetAllMeterListService(HttpContext context);
+
     }
 }

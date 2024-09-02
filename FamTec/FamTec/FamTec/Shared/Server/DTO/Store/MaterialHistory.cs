@@ -13,6 +13,11 @@
         public string? Name { get; set; } 
 
         /// <summary>
+        /// 품목코드
+        /// </summary>
+        public string? Code { get; set; }
+
+        /// <summary>
         /// 창고
         /// </summary>
         public List<RoomDTO>? RoomHistory { get; set; } = new List<RoomDTO>();

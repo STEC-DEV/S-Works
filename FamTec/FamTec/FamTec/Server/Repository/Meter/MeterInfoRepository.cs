@@ -26,14 +26,15 @@ namespace FamTec.Server.Repository.Meter
             try
             {
                 await context.MeterItemTbs.AddAsync(model);
+             
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-
+                
                 if (AddResult)
                     return model;
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();

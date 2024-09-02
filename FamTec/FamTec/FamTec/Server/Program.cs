@@ -177,7 +177,7 @@ builder.Services.AddTransient<IKakaoService, KakaoService>();
 builder.Services.AddTransient<IAlarmService, AlarmService>();
 builder.Services.AddTransient<IBlackListService, BlackListService>();
 builder.Services.AddTransient<IKakaoLogService, KakaoLogService>();
-//builder.Services.AddTransient<IMeterService, MeterService>();
+builder.Services.AddTransient<IMeterService, MeterService>();
 builder.Services.AddTransient<IContractService, ContractService>();
 
 builder.Services.AddControllersWithViews();
@@ -409,6 +409,7 @@ string[]? userPaths = new string[]
     "/api/Alarm/sign",
     "/api/BlackList/sign",
     "/api/KakaoLog/sign",
+    "/api/Meter/sign",
     "/api/Contract/sign"
 };
 

@@ -21,6 +21,11 @@ namespace FamTec.Shared.Model
         public int? M_ID { get; set; }
 
         /// <summary>
+        /// 자재코드
+        /// </summary>
+        public string? M_CODE { get; set; }
+
+        /// <summary>
         /// 자재명
         /// </summary>
         public string? M_NM { get; set; }

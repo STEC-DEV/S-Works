@@ -189,6 +189,7 @@ namespace FamTec.Server.Repository.Inventory
                             R_ID = room.Id,
                             R_NM = room.Name,
                             M_ID = material.Id,
+                            M_CODE = material.Code,
                             M_NM = material.Name
                         } into subQueryA // Subquery 'A'
                         join inventoryGroup in
@@ -210,6 +211,7 @@ namespace FamTec.Server.Repository.Inventory
                             R_ID = subQueryA.R_ID,
                             R_NM = subQueryA.R_NM,
                             M_ID = subQueryA.M_ID,
+                            M_CODE = subQueryA.M_CODE,
                             M_NM = subQueryA.M_NM,
                             TOTAL = inventory.TOTAL ?? 0
                         }).ToList();
@@ -249,6 +251,7 @@ namespace FamTec.Server.Repository.Inventory
                     {
                         MaterialHistory material = new MaterialHistory();
                         material.ID = model[resultCount].M_ID;
+                        material.Code = model[resultCount].M_CODE;
                         material.Name = model[resultCount].M_NM;
 
                         for (int j = 0; j < roomlist.Count(); j++)
@@ -289,6 +292,7 @@ namespace FamTec.Server.Repository.Inventory
                             R_ID = room.Id,
                             R_NM = room.Name,
                             M_ID = material.Id,
+                            M_CODE = material.Code,
                             M_NM = material.Name
                         } into subQueryA // Subquery 'A'
                         join inventoryGroup in
@@ -310,6 +314,7 @@ namespace FamTec.Server.Repository.Inventory
                             R_ID = subQueryA.R_ID,
                             R_NM = subQueryA.R_NM,
                             M_ID = subQueryA.M_ID,
+                            M_CODE = subQueryA.M_CODE,
                             M_NM = subQueryA.M_NM,
                             TOTAL = inventory.TOTAL ?? 0
                         }).ToList();
@@ -353,6 +358,7 @@ namespace FamTec.Server.Repository.Inventory
                             MaterialHistory material = new MaterialHistory();
                             material.ID = model[resultCount].M_ID;
                             material.Name = model[resultCount].M_NM;
+                            material.Code = model[resultCount].M_CODE;
 
                             for (int j = 0; j < roomlist.Count(); j++)
                             {

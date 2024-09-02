@@ -1,5 +1,7 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Meter;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Meter.Contract;
+using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter.Contract;
 using Microsoft.AspNetCore.Authorization;

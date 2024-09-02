@@ -3603,6 +3603,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Meter.MeterController",
+    "Method": "AddMeter",
+    "RelativePath": "api/Meter/sign/AddMeter",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Meter.AddMeterDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.NetworkFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/NetworkFacility/sign/AddNetworkFacility",
