@@ -1,0 +1,96 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.Inventory.Components
+@using FamTec.Client.Pages.Voc.Main.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            품목 검색
+        </span>
+    </div>
+    <InputCol 
+            T="string"
+            Placeholder="자재코드, 자재명, 제조사"
+            ValueChanged="@((e)=>OnSearch(e))"
+            />
+     <div class="content yappear">
+            <div class="modal-table">
+                <SearchTable 
+                    OnCheck="OnCheck" 
+                    ListData="@FilterData" 
+                    CheckedItem="@checkItem" />
+            </div>
+    </div>
+    
+    <div class="btns">
+        <Button Name="등록" Type="0" OnClick="OnAdd" />
+        <Button Name="닫기" Type="1" OnClick="OnClicked" />
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public List<MaterialSearchListDTO> ListData { get; set; }
+    [Parameter] public List<MaterialSearchListDTO> SelectData { get; set; }
+    [Parameter] public EventCallback<List<MaterialSearchListDTO>> SelectDataChanged { get; set; }
+
+
+    List<MaterialSearchListDTO> FilterData = new List<MaterialSearchListDTO>();
+
+    string _searchText ="";
+    List<int> checkItem = new List<int>();
+    private List<MaterialSearchListDTO> _selectData = new List<MaterialSearchListDTO>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(ListData.Count);
+        await OnSearch(_searchText);
+    }
+
+    private void OnCheck((MaterialSearchListDTO material,bool isChecked)data)
+    {
+        if (data.isChecked)
+        {
+            checkItem.Add(data.material.Id);
+            _selectData.Add(data.material);
+        }
+        else
+        {
+            checkItem.Remove(data.material.Id);
+            _selectData.Remove(data.material);
+        }
+
+        
+    }
+
+
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        FilterData = String.IsNullOrEmpty(_searchText)
+                                ? ListData
+                                : ListData.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.Mfr?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                                        ).ToList();
+
+        StateHasChanged();
+    }
+
+    //등록
+    private async Task OnAdd()
+    {
+        await SelectDataChanged.InvokeAsync(_selectData);
+        await OnClicked();
+    }
+
+    private async Task OnClicked()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

@@ -1,0 +1,72 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+
+
+<table class="table">
+    <thead class="thead">
+        
+        <tr "th-tr">
+            <th class="th" rowspan="2">
+                <span>
+                    품목 코드
+                </span>
+            </th>
+            <th class="th" rowspan="2">
+                <span>
+                    품목명
+                </span>
+            </th>
+                @if (@ListData.Count != 0)
+                {
+                    <th class="th" colspan="@ListData[0].RoomHistory.Count">
+                        <span>
+                            창고
+                        </span>
+                    </th>
+                    }else{
+                        <th class="th" rowspan="1">
+                            <span>
+                                창고
+                            </span>
+                        </th>
+                }
+            </tr>
+        @if (@ListData.Count != 0)
+        {
+        <tr class="th-tr">
+                @foreach (var th in ListData[0].RoomHistory)
+                {
+                <th class="th">
+                    <span>
+                            @th.Name
+                    </span>
+                </th>
+                }
+        </tr>
+        }
+     
+        
+    </thead>
+    <tbody class="tbody">
+        @foreach(var row in ListData)
+        {
+            <tr class="tr">
+                <td class="td">
+                    @row.Code
+                </td>
+                <td class="td">
+                    @row.Name
+                </td>
+                @foreach(var room in row.RoomHistory)
+                {
+                    <td class="td">
+                        @room.Num
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<MaterialHistoryDTO> ListData { get; set; }
+}

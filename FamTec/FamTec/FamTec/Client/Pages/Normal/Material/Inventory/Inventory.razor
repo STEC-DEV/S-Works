@@ -1,0 +1,16 @@
+﻿@page "/material/inventory"
+@using FamTec.Client.Pages.Normal.Material.Inventory.Components
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+
+
+<div class="inventory">
+    <SearchFilter MaterialHistory=@MaterialHistory />
+    <MaterialHistory ListData="@MaterialHistory" />
+</div>
+
+@code {
+    List<MaterialHistoryDTO> MaterialHistory = new List<MaterialHistoryDTO>();
+
+
+
+}

@@ -12,7 +12,7 @@
 @code {
     [Parameter] public List<string> Tabs{ get; set; }
     [Parameter] public EventCallback<int> OnClick { get;set; }
-    private int _defaultCheck = 0;
+    private int _defaultCheck = 1;
 
     private async void OnClicked(int idx)
     {

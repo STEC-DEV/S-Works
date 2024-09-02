@@ -27,7 +27,7 @@
             Label="건물"
             Row="true"
             EditMode="true" />
-        @if (LocationMaterial != null && LocationMaterial.Any())
+        @if (LocationMaterial != null && LocationMaterial.Any() && SelectedBuildingId != 0)
         {
             <InOutSelectField  
                 Key="floor" 
@@ -82,6 +82,8 @@
     protected override async Task OnParametersSetAsync()
     {
         SelectedBuildingId = 0;
+        SelectedRoomId = 0;
+        StateHasChanged(); // UI 업데이트 강제
     }
 
     private async Task OnLoadBuilding()

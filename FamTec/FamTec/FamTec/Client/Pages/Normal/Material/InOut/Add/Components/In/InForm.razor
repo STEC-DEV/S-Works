@@ -27,7 +27,7 @@
             Label="건물"
             Row="true"
             EditMode="true" />
-        @if (Room != null && Room.Any())
+        @if (Room != null && Room.Any() && SelectedBuildingId != 0)
         {
             <SelectField  
                 Key="floor" 
@@ -41,23 +41,33 @@
         @if (SelectedRoomId != 0)
         {
         <InputCol 
+            T="float"
             Label="단가" 
             Placeholder="단가" 
             Row="true" 
             ValueType="number"
-            @bind-Value="@AddItem.AddStore.UnitPrice" />
-         <InputCol 
+            @bind-Value="@AddItem.AddStore.UnitPrice"
+            @bind-Value:after="CalculateTotalPrice"
+
+            />
+         <InputCol
+            T="int"
             Label="수량" 
             Placeholder="수량" 
             Row="true" 
             ValueType="number"
-            @bind-Value="@AddItem.AddStore.Num" />
-        <InputCol 
-            Label="입고 금액"
-            Placeholder="입고 금액"
-             Row="true"
-            ValueType="number"
-            @bind-Value="@AddItem.AddStore.TotalPrice" />
+            @bind-Value="@AddItem.AddStore.Num"
+            @bind-Value:after="CalculateTotalPrice"
+            />
+            @if (AddItem.AddStore.TotalPrice != 0)
+            {
+                <TextField2 
+                    Label="입고 금액" 
+                    Value="@AddItem.AddStore.TotalPrice.ToString("N2")"
+                    Row=true
+                    />
+            }
+
         <InputCol 
             Label="비고" 
             Placeholder="비고" 
@@ -95,12 +105,18 @@
         {
             AddItem = new InOutInventoryDTO();
         }
+        CalculateTotalPrice();
         await OnLoadBuilding();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         SelectedBuildingId = 0;
+        SelectedRoomId = 0;
+        AddItem.AddStore.InOutDate = null;
+
+        StateHasChanged(); // UI 업데이트 강제
+
     }
 
     private async Task OnLoadBuilding()
@@ -160,13 +176,24 @@
 
     private async void OnValueChange()
     {
-        
+
     }
 
-    // //내용 초기화
-    // public void ResetForm()
-    // {
-    //     AddItem = new OutContentDTO();
-    //     StateHasChanged();
-    // }
+
+    private void CalculateTotalPrice()
+    {
+        if (!String.IsNullOrEmpty(AddItem.AddStore.Num.ToString()) && !String.IsNullOrEmpty(AddItem.AddStore.UnitPrice.ToString()) &&
+        AddItem.AddStore.Num != 0 && AddItem.AddStore.UnitPrice != 0)
+        {
+            AddItem.AddStore.TotalPrice = AddItem.AddStore.UnitPrice * AddItem.AddStore.Num;
+        }
+        else
+        {
+            AddItem.AddStore.TotalPrice = 0;
+        }
+        StateHasChanged();
+    }
+
+ 
+
 }

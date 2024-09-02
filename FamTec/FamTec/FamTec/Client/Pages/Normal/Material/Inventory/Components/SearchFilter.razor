@@ -1,0 +1,124 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.Inventory.Modal
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="filter">
+    <div class="header">
+        <span class="title">
+            조회 조건
+        </span>
+        <Button Name="조회"Width=true Type="0" OnClick="OnSelect"/>
+    </div>
+    <div class="content">
+        <div class="filter-item">
+            <TextField2 Label="조회 품목" Row=true />
+            <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
+        </div>
+        <div class="filter-item">
+            <div class="inputcheck">
+                <label class="label">
+                    조회 대상
+                </label>
+                <div class="item-wrap">
+                    <div class="item">
+                        <input type="radio" name="type" value="true" @onchange=OnSelectType />
+                        <span class="name">전체</span>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="type" value=false @onchange=OnSelectType />
+                        <span class="name">현재 사용가능</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @if (_isSearch)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SearchModal OnClose="OnSearch" ListData="@MaterialList" @bind-SelectData="SelectedMaterialList" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public List<MaterialHistoryDTO> MaterialHistory { get; set; }
+
+    private bool _selectType = true;
+    private bool _isSearch = false;
+    List<MaterialSearchListDTO> MaterialList;
+    List<MaterialSearchListDTO> SelectedMaterialList = new List<MaterialSearchListDTO>();
+    private List<int> _selectMaterial = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaterial();
+    }
+
+    //전제 자제 조회
+    private async Task OnLoadMaterial()
+    {
+        try
+        {
+            ResponseList<MaterialSearchListDTO> resGet = await apiManager.GetListAsync<MaterialSearchListDTO>("Material/sign/GetAllSearchMaterialList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            MaterialList = new List<MaterialSearchListDTO>();
+            MaterialList = resGet.data;
+        }catch(Exception ex)
+        {
+
+        }
+    }
+
+    private async Task OnSelect()
+    {
+        try
+        {
+            foreach (var i in SelectedMaterialList)
+            {
+                _selectMaterial.Add(i.Id);
+            }
+            string materialIdQueryString = string.Join("&materialid=", _selectMaterial);
+
+
+            ResponseList<MaterialHistoryDTO> resGet = await apiManager.GetListAsync<MaterialHistoryDTO>($"Store/sign/GetPlaceInventoryStatus?materialid={materialIdQueryString}&type={_selectType}");
+            if (resGet.code !=200)
+            {
+                await JS.InvokeVoidAsync("[조회 현황]"+resGet.message);
+                return;
+            }
+            //변수
+            MaterialHistory = resGet.data;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[조회 현황]조회 에러"+ex);
+            await JS.InvokeVoidAsync("[조회 현황]조회 에러");
+        }
+    }
+
+
+    private async Task OnSelectType(ChangeEventArgs e){
+        _selectType = Boolean.Parse(e.Value.ToString());
+        
+    }
+
+
+    private async Task OnSearch()
+    {
+        _isSearch = !_isSearch;
+
+    }
+
+}
