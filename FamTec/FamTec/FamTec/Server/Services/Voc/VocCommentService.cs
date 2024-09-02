@@ -74,6 +74,10 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
+                //BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(VocTB.Phone!);
+                //if (BlackListTB is not null)
+                //    return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
                 // 파일명 생성
                 if (files is not null)
                 {
@@ -115,7 +119,6 @@ namespace FamTec.Server.Services.Voc
                 if(model is null)
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-
                 if (files is not null)
                 {
                     for (int i = 0; i < files.Count; i++)
@@ -126,105 +129,96 @@ namespace FamTec.Server.Services.Voc
 
                 // 등록했으면 원래꺼 상태변경
                 VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId);
-                if (VocTB is not null)
+                if(VocTB is null)
+                    return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(model.Status == 2) // 처리완료
                 {
-                    if(model.Status == 2) // 처리완료
-                    {
-                        VocTB.CompleteDt = model.CreateDt; // 코맨트 등록시간을 VOC 완료시간으로
-                        VocTB.DurationDt = (model.CreateDt - VocTB.CreateDt).ToString(); // 댓글등록시간 - VOC 등록시간 ==> 소요시간
-                    }
+                    VocTB.CompleteDt = model.CreateDt; // 코맨트 등록시간을 VOC 완료시간으로
+                    VocTB.DurationDt = (model.CreateDt - VocTB.CreateDt).ToString(); // 댓글등록시간 - VOC 등록시간 ==> 소요시간
+                }
 
-                    VocTB.Status = dto.Status.Value;
-                    VocTB.UpdateDt = DateTime.Now;
-                    VocTB.UpdateUser = Creater;
-                    bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
-                        
-                    if (VocUpdateResult)
+                VocTB.Status = dto.Status.Value;
+                VocTB.UpdateDt = DateTime.Now;
+                VocTB.UpdateUser = Creater;
+                bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
+
+                if (VocUpdateResult)
+                {
+                    // 만약 처리결과를 받는다고 했었으면.
+                    if(VocTB.ReplyYn == true)
                     {
-                        // 만약 처리결과를 받는다고 했었으면.
-                        if(VocTB.ReplyYn == true)
+                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId);
+
+                        if (placeTB is null)
+                            return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                        // 전화번호
+                        string receiver = VocTB.Phone!;
+
+                        // 사업장 전화번호
+                        string placetel = placeTB.Tel!;
+
+                        // URL 파라미터 인코딩
+                        byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
+                        string base64 = Convert.ToBase64String(bytes);
+
+                        string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
+
+                        string StatusResult = string.Empty;
+                        if(model.Status == 1)
                         {
-                            BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(VocTB.Phone!);
-
-                            if(BlackListTB is null) // 블랙리스트가 아니면
-                            {
-                                PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId);
-
-                                if (placeTB is null)
-                                    return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                                // 전화번호
-                                string receiver = VocTB.Phone!;
-
-                                // 사업장 전화번호
-                                string placetel = placeTB.Tel!;
-
-                                // URL 파라미터 인코딩
-                                byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
-                                string base64 = Convert.ToBase64String(bytes);
-
-                                string url = $"https://123.2.156.148/vocinfo?vocid={base64}";
-
-                                string StatusResult = string.Empty;
-                                if(model.Status == 1)
-                                {
-                                    StatusResult = "처리중";
-                                }
-                                else if(model.Status == 2)
-                                {
-                                    StatusResult = "처리완료";
-                                }
-
-                                // 카카오 API 전송
-                                AddKakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
-
-                                if(LogDTO is not null)
-                                {
-                                    // 카카오 메시지 성공
-                                    KakaoLogTb LogTB = new KakaoLogTb();
-                                    LogTB.Code = LogDTO.Code!;
-                                    LogTB.Message = LogDTO.Message!;
-                                    LogTB.CreateDt = DateTime.Now;
-                                    LogTB.CreateUser = Creater;
-                                    LogTB.UpdateDt = DateTime.Now;
-                                    LogTB.UpdateUser = Creater;
-                                    LogTB.VocTbId = VocTB.Id; // 민원ID
-                                    LogTB.PlaceTbId = placeTB.Id; // 사업장ID
-                                    LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
-
-                                    // 카카오API 로그 테이블에 쌓아야함
-                                    KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
-                                }
-                                else
-                                {
-                                    // 카카오 메시지 에러
-                                    KakaoLogTb LogTB = new KakaoLogTb();
-                                    LogTB.Code = "ERROR";
-                                    LogTB.Message = "ERROR";
-                                    LogTB.CreateDt = DateTime.Now;
-                                    LogTB.CreateUser = Creater;
-                                    LogTB.UpdateDt = DateTime.Now;
-                                    LogTB.UpdateUser = Creater;
-                                    LogTB.VocTbId = VocTB.Id; // 민원ID
-                                    LogTB.PlaceTbId = placeTB.Id; // 사업장ID
-                                    LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
-
-                                    // 카카오API 로그 테이블에 쌓아야함
-                                    await KakaoLogInfoRepository.AddAsync(LogTB);
-                                }
-                            }
+                            StatusResult = "처리중";
+                        }
+                        else if(model.Status == 2)
+                        {
+                            StatusResult = "처리완료";
                         }
 
-                        return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto , code = 200 };
+                        // 카카오 API 전송
+                        AddKakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
+
+                        if(LogDTO is not null)
+                        {
+                            // 카카오 메시지 성공
+                            KakaoLogTb LogTB = new KakaoLogTb();
+                            LogTB.Code = LogDTO.Code!;
+                            LogTB.Message = LogDTO.Message!;
+                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateUser = Creater;
+                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateUser = Creater;
+                            LogTB.VocTbId = VocTB.Id; // 민원ID
+                            LogTB.PlaceTbId = placeTB.Id; // 사업장ID
+                            LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
+
+                            // 카카오API 로그 테이블에 쌓아야함
+                            KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                        }
+                        else
+                        {
+                            // 카카오 메시지 에러
+                            KakaoLogTb LogTB = new KakaoLogTb();
+                            LogTB.Code = "ERROR";
+                            LogTB.Message = "ERROR";
+                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateUser = Creater;
+                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateUser = Creater;
+                            LogTB.VocTbId = VocTB.Id; // 민원ID
+                            LogTB.PlaceTbId = placeTB.Id; // 사업장ID
+                            LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
+
+                            // 카카오API 로그 테이블에 쌓아야함
+                            await KakaoLogInfoRepository.AddAsync(LogTB);
+                        }
                     }
-                    else
-                    {
-                        return new ResponseUnit<AddVocCommentDTO?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 404 };
-                    }
+
+                    return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto , code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<AddVocCommentDTO?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)
