@@ -252,6 +252,18 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[2.88.8, )"
+            },
+            "SkiaSharp.NativeAssets.Linux": {
+              "target": "Package",
+              "version": "[2.88.8, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[7.6.0, )"

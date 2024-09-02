@@ -129,6 +129,10 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
+      "PackagePath": "staticwebassets\\js\\chartInterop.js"
+    },
+    {
       "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\ex.js",
       "PackagePath": "staticwebassets\\js\\ex.js"
     },

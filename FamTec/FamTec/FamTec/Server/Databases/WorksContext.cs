@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FamTec.Shared.Model;
+﻿using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamTec.Server.Databases;

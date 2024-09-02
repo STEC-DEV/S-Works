@@ -56,12 +56,17 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.JSInterop.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.JSInterop.WebAssembly.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.OpenApi.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.SqlServer.Server.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\MySqlConnector.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\SixLabors.Fonts.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\SkiaSharp.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\System.Drawing.Common.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
@@ -73,6 +78,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\Tewr.Blazor.FileReader.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\XLParser.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\libSkiaSharp.so
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\FamTec.Shared.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\PubTmp\Out\FamTec.Client.pdb

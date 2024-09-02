@@ -108,3 +108,10 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\ref\FamTec.Server.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Microsoft.OpenApi.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\SkiaSharp.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\libSkiaSharp.so
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.MvcApplicationPartsAssemblyInfo.cs

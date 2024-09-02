@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FQ1TtXL6TmESn4l4ovO//85TL+ZWVeK1QNjiIQ5eyhw=",
+  "Hash": "Ptnp+P1ze0V8X+XsX/UmeFDBKA2RS1aPRYm+1Lfo28s=",
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -10503,6 +10503,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
+      "SourceId": "FamTec.Client",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "js/chartInterop.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\chartInterop.js"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\ex.js",
