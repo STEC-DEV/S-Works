@@ -2,7 +2,6 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace FamTec.Server.Repository.Place
 {
@@ -105,7 +104,7 @@ namespace FamTec.Server.Repository.Place
             try
             {
                 PlaceTb? PlaceTB = await context.PlaceTbs
-                    .FirstOrDefaultAsync(m => m.PlaceCd == Code);
+                    .FirstOrDefaultAsync(m => m.PlaceCd == Code && m.DelYn != true);
 
                 if (PlaceTB is null)
                     return true;
@@ -129,7 +128,7 @@ namespace FamTec.Server.Repository.Place
             try
             {
                 PlaceTb? model = await context.PlaceTbs
-                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id) && m.DelYn != true);
 
                 if (model is not null)
                     return model;
@@ -188,6 +187,8 @@ namespace FamTec.Server.Repository.Place
         {
             try
             {
+                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                model.PlaceCd = $"{model.PlaceCd}_{model.Id}";
                 context.PlaceTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
@@ -215,6 +216,8 @@ namespace FamTec.Server.Repository.Place
                         PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
                         if(PlaceTB is not null)
                         {
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
                             PlaceTB.DelYn = true;
                             PlaceTB.DelDt = DateTime.Now;
                             PlaceTB.DelUser = Name;

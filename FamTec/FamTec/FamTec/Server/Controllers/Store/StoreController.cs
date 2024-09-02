@@ -337,7 +337,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] int materialid, DateTime Startdate, DateTime EndDate)
+        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] int materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {

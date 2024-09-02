@@ -167,6 +167,8 @@ namespace FamTec.Server.Repository.User
                         UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
                         if(UserTB is not null)
                         {
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            UserTB.UserId = $"{UserTB.UserId}_{UserTB.Id}";
                             UserTB.DelYn = true;
                             UserTB.DelDt = DateTime.Now;
                             UserTB.DelUser = deleter;
@@ -239,7 +241,7 @@ namespace FamTec.Server.Repository.User
             try
             {
                 UsersTb? model = await context.UsersTbs
-                    .FirstOrDefaultAsync(m => m.UserId == userid);
+                    .FirstOrDefaultAsync(m => m.UserId == userid && m.DelYn != true);
                 
                 if(model is not null)
                     return model;

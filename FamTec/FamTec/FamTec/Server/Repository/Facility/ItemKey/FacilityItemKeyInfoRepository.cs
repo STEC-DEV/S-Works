@@ -262,8 +262,6 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         {
             try
             {
-                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                model.Name = $"{model.Name}";
                 context.FacilityItemKeyTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
@@ -292,8 +290,6 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                         if (KeyTB is null)
                             return null;
 
-                        // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                        KeyTB.Name = $"{KeyTB.Name}_{KeyTB.Id}";
                         KeyTB.DelDt = DateTime.Now;
                         KeyTB.DelUser = deleter;
                         KeyTB.DelYn = true;
@@ -305,8 +301,6 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                         {
                             foreach(FacilityItemValueTb ValueTB in ValueList)
                             {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                ValueTB.ItemValue = $"{ValueTB.ItemValue}_{ValueTB.Id}";
                                 ValueTB.DelDt = DateTime.Now;
                                 ValueTB.DelUser = deleter;
                                 ValueTB.DelYn = true;

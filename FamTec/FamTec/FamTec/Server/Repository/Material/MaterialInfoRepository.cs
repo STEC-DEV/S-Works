@@ -247,6 +247,8 @@ namespace FamTec.Server.Repository.Material
                         
                         if(MaterialTB is not null)
                         {
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            MaterialTB.Code = $"{MaterialTB.Code}_{MaterialTB.Id}";
                             MaterialTB.DelYn = true;
                             MaterialTB.DelDt = DateTime.Now;
                             MaterialTB.DelUser = deleter;

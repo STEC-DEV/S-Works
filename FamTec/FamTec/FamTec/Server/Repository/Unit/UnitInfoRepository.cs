@@ -134,18 +134,20 @@ namespace FamTec.Server.Repository.Unit
                 {
                     foreach(int unitid in idx) 
                     {
-                        UnitTb? UserModel = await context.UnitTbs
+                        UnitTb? UnitModel = await context.UnitTbs
                             .FirstOrDefaultAsync(m => m.Id == unitid &&
                                                       m.DelYn != true);
 
-                        if (UserModel is null)
+                        if (UnitModel is null)
                             return null;
 
-                        UserModel.DelDt = DateTime.Now;
-                        UserModel.DelUser = deleter;
-                        UserModel.DelYn = true;
+                        // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                        UnitModel.Unit = $"{UnitModel.Unit}_{UnitModel.Id}";
+                        UnitModel.DelDt = DateTime.Now;
+                        UnitModel.DelUser = deleter;
+                        UnitModel.DelYn = true;
 
-                        context.UnitTbs.Update(UserModel);
+                        context.UnitTbs.Update(UnitModel);
                     }
 
                     bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;

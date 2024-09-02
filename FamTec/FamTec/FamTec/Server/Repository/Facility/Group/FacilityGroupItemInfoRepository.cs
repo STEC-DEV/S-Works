@@ -120,8 +120,6 @@ namespace FamTec.Server.Repository.Facility.Group
         {
             try
             {
-                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                model.Name = $"{model.Name}_{model.Id}";
                 context.FacilityItemGroupTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
@@ -150,8 +148,6 @@ namespace FamTec.Server.Repository.Facility.Group
                     if(GroupTB is null)
                         return null;
 
-                    // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                    GroupTB.Name = $"{GroupTB.Name}_{GroupTB.Id}";
                     GroupTB.DelDt = DateTime.Now;
                     GroupTB.DelUser = deleter;
                     GroupTB.DelYn = true;
@@ -164,8 +160,6 @@ namespace FamTec.Server.Repository.Facility.Group
                     {
                         foreach(FacilityItemKeyTb KeyModel in KeyTB)
                         {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            KeyModel.Name = $"{KeyModel.Name}_{KeyModel.Id}";
                             KeyModel.DelDt = DateTime.Now;
                             KeyModel.DelUser = deleter;
                             KeyModel.DelYn = true;
@@ -177,8 +171,6 @@ namespace FamTec.Server.Repository.Facility.Group
                             {
                                 foreach(FacilityItemValueTb ValueModel in ValueTB)
                                 {
-                                    // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                    ValueModel.ItemValue = $"{ValueModel.ItemValue}_{ValueModel.Id}";
                                     ValueModel.DelDt = DateTime.Now;
                                     ValueModel.DelUser = deleter;
                                     ValueModel.DelYn = true;

@@ -261,7 +261,7 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                model.Name = $"{model.Name}_{model.Id}";
+                model.BuildingCd = $"{model.BuildingCd}_{model.Id}";
                 context.BuildingTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
@@ -322,7 +322,7 @@ namespace FamTec.Server.Repository.Building
                         if(BuildingTB is not null)
                         {
                             // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            BuildingTB.Name = $"{BuildingTB.Name}_{BuildingTB.Id}";
+                            BuildingTB.BuildingCd = $"{BuildingTB.BuildingCd}_{BuildingTB.Id}";
                             BuildingTB.DelYn = true;
                             BuildingTB.DelDt = DateTime.Now;
                             BuildingTB.DelUser = deleter;
@@ -344,8 +344,6 @@ namespace FamTec.Server.Repository.Building
                             {
                                 foreach(BuildingItemGroupTb GroupTB in GroupList)
                                 {
-                                    // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                    GroupTB.Name = $"{GroupTB.Name}_{GroupTB.Id}";
                                     GroupTB.DelYn = true;
                                     GroupTB.DelDt = DateTime.Now;
                                     GroupTB.DelUser = deleter;
@@ -366,8 +364,6 @@ namespace FamTec.Server.Repository.Building
                                     {
                                         foreach(BuildingItemKeyTb KeyTB in KeyList)
                                         {
-                                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                            KeyTB.Name = $"{KeyTB.Name}_{KeyTB.Id}";
                                             KeyTB.DelYn = true;
                                             KeyTB.DelDt = DateTime.Now;
                                             KeyTB.DelUser = deleter;
@@ -386,8 +382,6 @@ namespace FamTec.Server.Repository.Building
                                             {
                                                 foreach(BuildingItemValueTb ValueTB in ValueList)
                                                 {
-                                                    // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                                    ValueTB.ItemValue = $"{ValueTB.ItemValue}_{ValueTB.Id}";
                                                     ValueTB.DelYn = true;
                                                     ValueTB.DelDt = DateTime.Now;
                                                     ValueTB.DelUser = deleter;

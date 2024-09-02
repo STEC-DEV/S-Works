@@ -93,6 +93,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
                             if(usertb is not null)
                             {
+                                // 해당 UserId 재사용을 위함
+                                usertb.UserId = $"{usertb.UserId}_{usertb.Id}";
                                 usertb.DelYn = true;
                                 usertb.DelDt = DateTime.Now;
                                 usertb.DelUser = deleter;
