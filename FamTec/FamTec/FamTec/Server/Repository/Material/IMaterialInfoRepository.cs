@@ -1,6 +1,5 @@
 ﻿using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Material;
-using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Repository.Material
 {

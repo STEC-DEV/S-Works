@@ -787,6 +787,7 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
 
+                /*
                 List<InOutInventoryDTO>? dto = (from InventoryTB in OutResult
                                                join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
                                                on InventoryTB.RoomTbId equals RoomTB.Id
@@ -796,15 +797,35 @@ namespace FamTec.Server.Repository.Inventory
                                                    MaterialID = InventoryTB.MaterialTbId,
                                                    AddStore = new AddStoreDTO
                                                    {
-                                                       InOutDate = DateTime.Now,
+                                                       //InOutDate = DateTime.Now,
                                                        Note = String.Empty,
-                                                       Num = InventoryTB.Num,
-                                                       RoomID = RoomTB.Id,
+                                                       Num = InventoryTB.Num, //
+                                                       RoomID = RoomTB.Id, //
                                                        RoomName = RoomTB.Name,
-                                                       UnitPrice = InventoryTB.UnitPrice,
-                                                       TotalPrice = InventoryTB.UnitPrice * InventoryTB.Num
+                                                       UnitPrice = InventoryTB.UnitPrice, //
+                                                       //TotalPrice = InventoryTB.UnitPrice * InventoryTB.Num
                                                    }
                                                }).ToList();
+                */
+                List<InOutInventoryDTO>? dto = (from InventoryTB in OutResult
+                                                join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
+                                                on InventoryTB.RoomTbId equals RoomTB.Id
+                                                group new { InventoryTB, RoomTB } by new { InventoryTB.MaterialTbId, RoomTB.Id } into grouped
+                                                select new InOutInventoryDTO
+                                                {
+                                                    InOut = 0,
+                                                    MaterialID = grouped.Key.MaterialTbId,
+                                                    AddStore = new AddStoreDTO
+                                                    {
+                                                        //InOutDate = DateTime.Now,
+                                                        Note = String.Empty,
+                                                        Num = grouped.Sum(x => x.InventoryTB.Num), // Sum Num for each group
+                                                        RoomID = grouped.Key.Id, // RoomID from the grouped key
+                                                        RoomName = grouped.First().RoomTB.Name, // RoomName from the first item in the group
+                                                        UnitPrice = grouped.First().InventoryTB.UnitPrice, // UnitPrice from the first item in the group
+                                                        TotalPrice = (grouped.Sum(x => x.InventoryTB.Num))*(grouped.First().InventoryTB.UnitPrice)                                                                                                 // TotalPrice can be calculated here if needed
+                                                    }
+                                                }).ToList();
 
                 if (dto is not null && dto.Any())
                     return dto;

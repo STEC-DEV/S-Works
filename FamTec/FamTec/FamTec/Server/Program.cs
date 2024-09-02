@@ -65,6 +65,10 @@ using FamTec.Server.Services.Maintenance;
 using FamTec.Server.Services.BlackList;
 using FamTec.Server.Services.KakaoLog;
 using Microsoft.AspNetCore.HttpOverrides;
+using FamTec.Server.Repository.Meter;
+using FamTec.Server.Repository.Meter.Contract;
+using FamTec.Server.Services.Meter;
+using FamTec.Server.Services.Meter.Contract;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -134,6 +138,8 @@ builder.Services.AddTransient<IMaintanceRepository, MaintanceRepository>();
 builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
 builder.Services.AddTransient<IKakaoLogInfoRepository, KakaoLogInfoRepository>();
 builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
+builder.Services.AddTransient<IMeterInfoRepository, MeterInfoRepository>();
+builder.Services.AddTransient<IContractInfoRepository, ContractInfoRepository>();
 
 // Add services to the container. - Logic
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -171,6 +177,8 @@ builder.Services.AddTransient<IKakaoService, KakaoService>();
 builder.Services.AddTransient<IAlarmService, AlarmService>();
 builder.Services.AddTransient<IBlackListService, BlackListService>();
 builder.Services.AddTransient<IKakaoLogService, KakaoLogService>();
+//builder.Services.AddTransient<IMeterService, MeterService>();
+builder.Services.AddTransient<IContractService, ContractService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -247,6 +255,10 @@ builder.Services.AddCors(opts =>
     {
         //policy.AllowAnyOrigin()
         policy.WithOrigins(
+            "http://localhost:5245",
+            "https://localhost:5246",
+            "http://127.0.0.1:5245",
+            "https://127.0.0.1:5246",
             "http://123.2.156.28:5247",
             "https://123.2.156.28:5248",
             "http://123.2.156.148:5245", 
@@ -396,7 +408,8 @@ string[]? userPaths = new string[]
     "/api/Maintenance/sign",
     "/api/Alarm/sign",
     "/api/BlackList/sign",
-    "/api/KakaoLog/sign"
+    "/api/KakaoLog/sign",
+    "/api/Contract/sign"
 };
 
 

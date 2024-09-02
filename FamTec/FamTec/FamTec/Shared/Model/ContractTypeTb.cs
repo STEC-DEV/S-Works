@@ -7,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FamTec.Shared.Model;
 
 [Table("contract_type_tb")]
-[Index("BuildingTbId", Name = "FK_BUILDING_TB_ID_202409021045")]
 [Index("PlaceTbId", Name = "FK_PLACE_TB_ID_202409021051")]
-[Index("PlaceTbId", "BuildingTbId", "Name", Name = "UK_NAME", IsUnique = true)]
+[Index("PlaceTbId", "Name", Name = "UK_NAME", IsUnique = true)]
 public partial class ContractTypeTb
 {
     /// <summary>
@@ -56,20 +55,10 @@ public partial class ContractTypeTb
     public string? DelUser { get; set; }
 
     /// <summary>
-    /// 건물 외래키
-    /// </summary>
-    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int BuildingTbId { get; set; }
-
-    /// <summary>
     /// 사업장 외래키
     /// </summary>
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }
-
-    [ForeignKey("BuildingTbId")]
-    [InverseProperty("ContractTypeTbs")]
-    public virtual BuildingTb BuildingTb { get; set; } = null!;
 
     [InverseProperty("ContractTb")]
     public virtual ICollection<MeterItemTb> MeterItemTbs { get; set; } = new List<MeterItemTb>();

@@ -11,8 +11,8 @@ namespace FamTec.Shared.Model;
 /// </summary>
 [Table("meter_item_tb")]
 [Index("ContractTbId", Name = "fk_contract_tb_id_202409021049")]
-[Index("BuildingTbId", Name = "fk_meter_item_tb_building_tb1_idx")]
-[Index("Name", "BuildingTbId", Name = "uk_name", IsUnique = true)]
+[Index("PlaceTbId", Name = "fk_place_tb_id")]
+[Index("Name", "PlaceTbId", Name = "uk_name", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MeterItemTb
 {
@@ -63,12 +63,8 @@ public partial class MeterItemTb
     [Column("CONTRACT_TB_ID", TypeName = "int(11)")]
     public int? ContractTbId { get; set; }
 
-    [Column("BUILDING_TB_ID", TypeName = "int(11)")]
-    public int BuildingTbId { get; set; }
-
-    [ForeignKey("BuildingTbId")]
-    [InverseProperty("MeterItemTbs")]
-    public virtual BuildingTb BuildingTb { get; set; } = null!;
+    [Column("PLACE_TB_ID", TypeName = "int(11)")]
+    public int? PlaceTbId { get; set; }
 
     [ForeignKey("ContractTbId")]
     [InverseProperty("MeterItemTbs")]
@@ -79,4 +75,8 @@ public partial class MeterItemTb
 
     [InverseProperty("MeterItem")]
     public virtual ICollection<EnergyUsageTb> EnergyUsageTbs { get; set; } = new List<EnergyUsageTb>();
+
+    [ForeignKey("PlaceTbId")]
+    [InverseProperty("MeterItemTbs")]
+    public virtual PlaceTb? PlaceTb { get; set; }
 }

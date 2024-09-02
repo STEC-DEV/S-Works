@@ -223,6 +223,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         {
             try
             {
+                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                model.Name = $"{model.Name}_{model.Id}"; 
                 context.DepartmentsTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
@@ -252,6 +254,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
 
                         if(DepartmentTB is not null)
                         {
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
                             DepartmentTB.DelYn = true;
                             DepartmentTB.DelUser = deleter;
                             DepartmentTB.DelDt = DateTime.Now;

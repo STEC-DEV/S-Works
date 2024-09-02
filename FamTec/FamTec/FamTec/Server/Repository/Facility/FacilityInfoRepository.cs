@@ -129,6 +129,8 @@ namespace FamTec.Server.Repository.Facility
                         if (FacilityTB is null)
                             return null;
 
+                        // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                        FacilityTB.Name = $"{FacilityTB.Name}_{FacilityTB.Id}";
                         FacilityTB.DelYn = true;
                         FacilityTB.DelDt = DateTime.Now;
                         FacilityTB.DelUser = deleter;
@@ -143,6 +145,7 @@ namespace FamTec.Server.Repository.Facility
                         {
                             foreach(FacilityItemGroupTb GroupTB in GroupList)
                             {
+                                GroupTB.Name = $"{GroupTB.Name}_{GroupTB.Id}";
                                 GroupTB.DelYn = true;
                                 GroupTB.DelDt = DateTime.Now;
                                 GroupTB.DelUser = deleter;

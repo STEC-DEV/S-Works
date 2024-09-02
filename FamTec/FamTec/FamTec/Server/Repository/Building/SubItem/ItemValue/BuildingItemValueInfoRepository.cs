@@ -120,6 +120,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         {
             try
             {
+                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                model.ItemValue = $"{model.ItemValue}_{model.Id}";
                 context.BuildingItemValueTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }

@@ -184,6 +184,8 @@ namespace FamTec.Server.Repository.BlackList
                         
                         if(BlackListTB is not null)
                         {
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
                             BlackListTB.DelYn = true;
                             BlackListTB.DelDt = DateTime.Now;
                             BlackListTB.DelUser = deleter;

@@ -391,16 +391,10 @@ public partial class BuildingTb
     public virtual ICollection<BuildingItemGroupTb> BuildingItemGroupTbs { get; set; } = new List<BuildingItemGroupTb>();
 
     [InverseProperty("BuildingTb")]
-    public virtual ICollection<ContractTypeTb> ContractTypeTbs { get; set; } = new List<ContractTypeTb>();
-
-    [InverseProperty("BuildingTb")]
     public virtual ICollection<FloorTb> FloorTbs { get; set; } = new List<FloorTb>();
 
     [InverseProperty("BuildingTb")]
     public virtual ICollection<KakaoLogTb> KakaoLogTbs { get; set; } = new List<KakaoLogTb>();
-
-    [InverseProperty("BuildingTb")]
-    public virtual ICollection<MeterItemTb> MeterItemTbs { get; set; } = new List<MeterItemTb>();
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("BuildingTbs")]

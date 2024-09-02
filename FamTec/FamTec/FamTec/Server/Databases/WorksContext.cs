@@ -84,12 +84,13 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
-        
+
         // 쿼리스트링 사용
         modelBuilder.Entity<MaterialInventory>(entity =>
         {
             entity.HasNoDiscriminator();
         });
+
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -343,17 +344,12 @@ public partial class WorksContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.Property(e => e.Id).HasComment("인덱스");
-            entity.Property(e => e.BuildingTbId).HasComment("건물 외래키");
             entity.Property(e => e.CreateDt)
                 .HasDefaultValueSql("current_timestamp()")
                 .HasComment("생성일");
             entity.Property(e => e.CreateUser).HasComment("생성자");
             entity.Property(e => e.Name).HasComment("계약종류");
             entity.Property(e => e.PlaceTbId).HasComment("사업장 외래키");
-
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.ContractTypeTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BUILDING_TB_ID_202409021045");
 
             entity.HasOne(d => d.PlaceTb).WithMany(p => p.ContractTypeTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -673,11 +669,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Name).HasComment("계량기이름");
 
-            entity.HasOne(d => d.BuildingTb).WithMany(p => p.MeterItemTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_meter_item_tb_building_tb1");
-
             entity.HasOne(d => d.ContractTb).WithMany(p => p.MeterItemTbs).HasConstraintName("fk_contract_tb_id");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.MeterItemTbs).HasConstraintName("fk_place_tb_id");
         });
 
         modelBuilder.Entity<PlaceTb>(entity =>

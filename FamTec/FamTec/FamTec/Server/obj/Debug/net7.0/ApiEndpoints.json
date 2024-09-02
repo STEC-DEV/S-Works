@@ -1780,6 +1780,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Contract.ContractController",
+    "Method": "GetAllContract",
+    "RelativePath": "api/Contract/\u314A",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Contract.ContractController",
+    "Method": "AddContract",
+    "RelativePath": "api/Contract/sign/AddContract",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Meter.Contract.AddContractDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Admin.Department.DepartmentController",
     "Method": "AddDepartment",
     "RelativePath": "api/Department/sign/AddDepartment",
