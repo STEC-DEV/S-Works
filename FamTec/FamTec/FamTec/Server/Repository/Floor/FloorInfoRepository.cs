@@ -81,13 +81,6 @@ namespace FamTec.Server.Repository.Floor
                             floortb.DelUser = deleter;
 
                             context.FloorTbs.Update(floortb);
-                            bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!FloorResult)
-                            {
-                                // 업데이트 실패시 롤백
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
                         }
                         else
                         {
@@ -96,9 +89,18 @@ namespace FamTec.Server.Repository.Floor
                             return false;
                         }
                     }
-
-                    await transaction.CommitAsync();
-                    return true;
+                    bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (FloorResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        // 업데이트 실패시 롤백
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -537,7 +537,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             try
             {
-                context.AdminPlaceTbs.Add(model);
+                await context.AdminPlaceTbs.AddAsync(model);
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
                 {

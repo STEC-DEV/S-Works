@@ -254,13 +254,6 @@ namespace FamTec.Server.Repository.Material
                             MaterialTB.DelUser = deleter;
 
                             context.MaterialTbs.Update(MaterialTB);
-                            bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!MaterialResult)
-                            {
-                                // 업데이트 실패시 롤백
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
                         }
                         else
                         {
@@ -270,8 +263,18 @@ namespace FamTec.Server.Repository.Material
                         }
                     }
 
-                    await transaction.CommitAsync();
-                    return true;
+                    bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (MaterialResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        // 업데이트 실패시 롤백
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
                 }
                 catch(Exception ex)
                 {

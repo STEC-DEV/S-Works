@@ -407,7 +407,6 @@ namespace FamTec.Server.Repository.Inventory
                 .Where(m => m.MaterialTbId == materialid && 
                         m.RoomTbId == roomid && 
                         m.PlaceTbId == placeid &&
-                        //m.RowVersion == GUID &&
                         m.DelYn != true)
                 .OrderBy(m => m.CreateDt)
                 .ToListAsync();
@@ -793,26 +792,6 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
 
-                /*
-                List<InOutInventoryDTO>? dto = (from InventoryTB in OutResult
-                                               join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
-                                               on InventoryTB.RoomTbId equals RoomTB.Id
-                                               select new InOutInventoryDTO
-                                               {
-                                                   InOut = 0,
-                                                   MaterialID = InventoryTB.MaterialTbId,
-                                                   AddStore = new AddStoreDTO
-                                                   {
-                                                       //InOutDate = DateTime.Now,
-                                                       Note = String.Empty,
-                                                       Num = InventoryTB.Num, //
-                                                       RoomID = RoomTB.Id, //
-                                                       RoomName = RoomTB.Name,
-                                                       UnitPrice = InventoryTB.UnitPrice, //
-                                                       //TotalPrice = InventoryTB.UnitPrice * InventoryTB.Num
-                                                   }
-                                               }).ToList();
-                */
                 List<InOutInventoryDTO>? dto = (from InventoryTB in OutResult
                                                 join RoomTB in context.RoomTbs.Where(m => m.DelYn != true)
                                                 on InventoryTB.RoomTbId equals RoomTB.Id

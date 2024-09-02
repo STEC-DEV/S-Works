@@ -144,8 +144,22 @@ namespace FamTec.Server.Services
         {
             try
             {
-                string[] FileList = Directory.GetFiles(folderpath);
+                // 특정 파일 이름을 가진 파일 검색
+                string[] files = Directory.GetFiles(folderpath, filename);
 
+                foreach (string file in files)
+                {
+                    if (file.Contains(filename))
+                    {
+                        byte[] ImageBytes = await File.ReadAllBytesAsync(file);
+                        return ImageBytes;
+                    }
+                }
+
+                return null;
+
+                /*
+                string[] FileList = Directory.GetFiles(folderpath);
                 if (FileList is [_, ..])
                 {
                     foreach (var file in FileList)
@@ -162,6 +176,7 @@ namespace FamTec.Server.Services
                 {
                     return null;
                 }
+                */
             }
             catch(Exception ex)
             {

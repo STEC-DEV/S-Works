@@ -51,7 +51,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             try
             {
                 List<BuildingItemValueTb>? model = await context.BuildingItemValueTbs
-                    .Where(m => m.BuildingKeyTbId == keyid && m.DelYn != true)
+                    .Where(m => m.BuildingKeyTbId == keyid && 
+                                m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
@@ -77,7 +78,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             try
             {
                 BuildingItemValueTb? model = await context.BuildingItemValueTbs
-                    .FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == valueid && 
+                                              m.DelYn != true);
 
                 if (model is not null)
                     return model;

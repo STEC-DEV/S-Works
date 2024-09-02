@@ -177,44 +177,40 @@ namespace FamTec.Server.Repository.Room
             {
                 try
                 {
-                    if (idx is [_, ..])
+                    if(idx is null || !idx.Any())
+                        return null;
+
+                    foreach(int roomid in idx)
                     {
-                        foreach(int roomid in idx)
+                        RoomTb? RoomTB = await context.RoomTbs
+                            .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+
+                        if(RoomTB is not null)
                         {
-                            RoomTb? RoomTB = await context.RoomTbs
-                                .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            RoomTB.DelYn = true;
+                            RoomTB.DelDt = DateTime.Now;
+                            RoomTB.DelUser = deleter;
 
-                            if(RoomTB is not null)
-                            {
-                                RoomTB.DelYn = true;
-                                RoomTB.DelDt = DateTime.Now;
-                                RoomTB.DelUser = deleter;
-
-                                context.RoomTbs.Update(RoomTB);
-                            }
-                            else
-                            {
-                                // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
+                            context.RoomTbs.Update(RoomTB);
                         }
-
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (UpdateResult) // 성공시 커밋
+                        else
                         {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else // 실패시 롤백
-                        {
+                            // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-                    else
+
+                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (UpdateResult) // 성공시 커밋
                     {
-                        return null;
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else // 실패시 롤백
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -253,7 +249,6 @@ namespace FamTec.Server.Repository.Room
                 throw new ArgumentNullException();
             }
         }
-
   
     }
 }

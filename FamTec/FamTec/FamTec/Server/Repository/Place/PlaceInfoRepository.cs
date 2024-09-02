@@ -154,21 +154,16 @@ namespace FamTec.Server.Repository.Place
                 BuildingTb? builingTB = await context.BuildingTbs
                     .FirstOrDefaultAsync(m => m.Id == buildingid && m.DelYn != true);
 
-                if(builingTB is not null)
-                {
-                    PlaceTb? PlaceTB = await context.PlaceTbs
-                        .FirstOrDefaultAsync(m => m.Id == builingTB.PlaceTbId && m.DelYn != true);
-
-                    if (PlaceTB is not null)
-                        return PlaceTB;
-                    else
-                        return null;
-                }
-                else
-                {
+                if (builingTB is null)
                     return null;
-                }
-               
+
+                PlaceTb? PlaceTB = await context.PlaceTbs
+                    .FirstOrDefaultAsync(m => m.Id == builingTB.PlaceTbId && m.DelYn != true);
+
+                if (PlaceTB is not null)
+                    return PlaceTB;
+                else
+                    return null;
             }
             catch(Exception ex)
             {

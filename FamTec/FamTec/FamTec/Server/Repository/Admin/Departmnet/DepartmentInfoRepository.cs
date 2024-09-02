@@ -261,12 +261,6 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                             DepartmentTB.DelDt = DateTime.Now;
 
                             context.DepartmentsTbs.Update(DepartmentTB);
-                            bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if(!DepartmentResult)
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
                         }
                         else // 잘못됨
                         {
@@ -275,8 +269,17 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                         }
                     }
 
-                    await transaction.CommitAsync();
-                    return true;
+                    bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if(DepartmentResult)
+                    {
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
                 }
                 catch (Exception ex)
                 {

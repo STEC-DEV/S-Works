@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
@@ -50,15 +49,11 @@ namespace FamTec.Server.Repository.User
                 UsersTb? search = await context.UsersTbs
                     .FirstOrDefaultAsync(m => m.UserId == model.UserId);
 
-                if (search is null)
-                {
+                if(search is not null)
+                    return false;
+                else
                     context.UsersTbs.Add(model);
                     return await context.SaveChangesAsync() > 0 ? true: false;
-                }
-                else
-                {
-                    return false;
-                }
             }
             catch (Exception ex)
             {

@@ -130,7 +130,8 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 BuildingTb? model = await context.BuildingTbs
-                    .FirstOrDefaultAsync(m => m.Id == buildingId && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == buildingId && 
+                                              m.DelYn != true);
 
                 if (model is not null)
                     return model;
@@ -196,7 +197,10 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                List<BuildingTb>? buildinglist = await context.BuildingTbs.Where(m => buildingId.Contains(m.Id) && m.DelYn != true).ToListAsync();
+                List<BuildingTb>? buildinglist = await context.BuildingTbs
+                                .Where(m => buildingId.Contains(m.Id) && 
+                                            m.DelYn != true)
+                                .ToListAsync();
 
                 if (buildinglist is [_, ..])
                 {

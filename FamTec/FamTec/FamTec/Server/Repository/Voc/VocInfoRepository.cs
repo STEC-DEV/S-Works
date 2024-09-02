@@ -91,9 +91,6 @@ namespace FamTec.Server.Repository.Voc
                         .Count()
                 }).ToList();
 
-
-            Console.WriteLine("asdgsadg");
-
             return model;
         }
 

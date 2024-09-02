@@ -145,19 +145,20 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
 
                         // SELECT VALUE 정보 반환
                         List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs
-                            .Where(m => m.BuildingKeyTbId == dto.ID && m.DelYn != true)
+                            .Where(m => m.BuildingKeyTbId == dto.ID && 
+                                        m.DelYn != true)
                             .ToListAsync();
-
 
                         // NULL 인값 INSERT OR UPDATE OR DELETE
                         if (dto.ValueList is [_, ..])
                         {
-                            List<GroupValueListDTO> INSERTLIST = dto.ValueList.Where(m => m.ID == null).ToList();
+                            List<GroupValueListDTO> INSERTLIST = dto.ValueList.Where(m => m.ID == null)
+                                                                .ToList();
 
 
                             // DTO IDList 중 NULL이 아닌것 -- 수정대상
                             List<GroupValueListDTO> UPDATELIST = dto.ValueList!.Where(m => m.ID != null)
-                                .ToList();
+                                                                .ToList();
 
                             // DB IDList
                             List<int> db_valueidx = ValueList.Select(m => m.Id).ToList();
