@@ -139,7 +139,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateFireFacility")]
-        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] FacilityDTO dto, IFormFile? files)
+        public async ValueTask<IActionResult> UpdateFireFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
