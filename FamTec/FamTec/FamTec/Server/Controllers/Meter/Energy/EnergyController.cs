@@ -32,20 +32,18 @@ namespace FamTec.Server.Controllers.Meter.Energy
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddEnergy")]
-        public async ValueTask<IActionResult> AddEnergy()
-        //public async ValueTask<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
+        //public async ValueTask<IActionResult> AddEnergy()
+        public async ValueTask<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
         {
             try
             {
-                AddEnergyDTO dto = new AddEnergyDTO();
-                dto.MeterID = 5;
-                dto.MeterDate = DateTime.Now.AddMonths(-1).AddYears(-1);
-                dto.UseAmount = 200;
-
-
+                //AddEnergyDTO dto = new AddEnergyDTO();
+                //dto.MeterID = 5;
+                //dto.MeterDate = DateTime.Now.AddMonths(-1).AddYears(-1);
+                //dto.UseAmount = 200;
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -69,13 +67,36 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+        /// <summary>
+        /// 해당 년도-월의 품목별 모든일자 데이터 조회
+        /// </summary>
+        /// <param name="SearchDate"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMonthList")]
-        public async ValueTask<IActionResult> GetTemp()
+        public async ValueTask<IActionResult> GetMonthList([FromQuery]DateTime SearchDate)
         {
-            var temp = await EnergyService.GetMonthListService(HttpContext, DateTime.Now);
-            return Ok(temp);
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<DayEnergyDTO>? model = await EnergyService.GetMonthListService(HttpContext, DateTime.Now);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
     }

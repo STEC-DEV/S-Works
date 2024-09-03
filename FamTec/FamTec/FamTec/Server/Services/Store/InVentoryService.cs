@@ -193,8 +193,6 @@ namespace FamTec.Server.Services.Store
             }
         }
 
-
-       
         /// <summary>
         /// 품목별 기간별 입출고 이력조회
         /// </summary>
@@ -227,8 +225,6 @@ namespace FamTec.Server.Services.Store
                 return new ResponseList<PeriodicDTO>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
-
-
 
         /// <summary>
         /// 사업장별 재고 현황 - 공간 

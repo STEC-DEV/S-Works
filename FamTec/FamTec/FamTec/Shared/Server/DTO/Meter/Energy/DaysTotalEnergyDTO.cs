@@ -3,7 +3,11 @@
     public class DayEnergyDTO
     {
         public int MaterItemId { get; set; }
+        
+        public string? ContractName { get; set; }
+
         public string? Name { get; set; }
+
 
         public List<DayTotalEnergyDTO> TotalList { get; set; } = new List<DayTotalEnergyDTO>();
     }
@@ -11,6 +15,8 @@
     public class DayTotalEnergyDTO
     {
         public int MaterItemId { get; set; }
+        public string? ContractName { get; set; }
+
         public string? Name { get; set; }
 
         /// <summary>
