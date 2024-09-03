@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System.Data;
 
 namespace FamTec.Server.Repository.Inventory
@@ -534,6 +535,8 @@ namespace FamTec.Server.Repository.Inventory
                         {
                             if(result >= model.AddStore.Num) // 출고개수가 충분할때만 동작
                             {
+                                int checksum = 0; // 테스트
+
                                 int outresult = 0; // 개수만큼 - 빼주면 됨
                                 
                                 foreach (InventoryTb OutInventoryTb in OutModel)
@@ -541,10 +544,12 @@ namespace FamTec.Server.Repository.Inventory
                                     outresult += OutInventoryTb.Num;
                                     if (model.AddStore.Num > outresult)
                                     {
+                                        checksum += OutInventoryTb.Num;
+
                                         OutInventoryTb.Num -= OutInventoryTb.Num;
                                         OutInventoryTb.UpdateDt = DateTime.Now;
                                         OutInventoryTb.UpdateUser = creater;
-
+                                        
                                         if (OutInventoryTb.Num == 0)
                                         {
                                             OutInventoryTb.DelYn = true;
@@ -556,6 +561,8 @@ namespace FamTec.Server.Repository.Inventory
                                     }
                                     else
                                     {
+                                        checksum += model.AddStore.Num!.Value - (outresult - OutInventoryTb.Num);
+
                                         outresult -= model.AddStore.Num!.Value;
                                         OutInventoryTb.Num = outresult;
                                         OutInventoryTb.UpdateDt = DateTime.Now;
@@ -569,9 +576,19 @@ namespace FamTec.Server.Repository.Inventory
                                         }
                                         context.Update(OutInventoryTb);
                                     }
+
+
+                                }
+
+                                if(checksum != model.AddStore.Num)
+                                {
+                                    Console.WriteLine("결과가 다름 RollBack!");
+                                    await transaction.RollbackAsync();
+                                    return null;
                                 }
                                 await context.SaveChangesAsync();
                             }
+
                         }
 
                         // Inventory 테이블에서 해당 품목의 개수 Sum
