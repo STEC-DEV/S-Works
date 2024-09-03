@@ -535,7 +535,8 @@ namespace FamTec.Server.Repository.Inventory
                         {
                             if(result >= model.AddStore.Num) // 출고개수가 충분할때만 동작
                             {
-                                int checksum = 0; // 테스트
+                                // 넘어온 수량이랑 실제로 빠지는 수량이랑 같은지 검사하는 CheckSum
+                                int checksum = 0; 
 
                                 int outresult = 0; // 개수만큼 - 빼주면 됨
                                 
@@ -586,6 +587,7 @@ namespace FamTec.Server.Repository.Inventory
                                     await transaction.RollbackAsync();
                                     return null;
                                 }
+
                                 await context.SaveChangesAsync();
                             }
 

@@ -108,45 +108,45 @@ namespace FamTec.Server.Controllers.Store
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
-        //[HttpPost]
+        //[HttpGet]
+        [HttpPost]
         [Route("sign/OutInventory")]
-        public async ValueTask<IActionResult> OutInventoryService()
-        //public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
+        //public async ValueTask<IActionResult> OutInventoryService()
+        public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
         {
             try
             {
-                List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-                dto.Add(new InOutInventoryDTO()
-                {
-                InOut = 0,
-                MaterialID = 10,
-                AddStore = new AddStoreDTO()
-                {
-                InOutDate = DateTime.Now,
-                Note = "출고데이터_1",
-                Num = 10,
-                RoomID = 2,
-                UnitPrice = 300,
-                TotalPrice = 3000
-                }
-                });
+                //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
+                //dto.Add(new InOutInventoryDTO()
+                //{
+                //InOut = 0,
+                //MaterialID = 10,
+                //AddStore = new AddStoreDTO()
+                //{
+                //InOutDate = DateTime.Now,
+                //Note = "출고데이터_1",
+                //Num = 74,
+                //RoomID = 2,
+                //UnitPrice = 300,
+                //TotalPrice = 3000
+                //}
+                //});
 
 
-                dto.Add(new InOutInventoryDTO()
-                {
-                InOut = 0,
-                MaterialID = 11,
-                AddStore = new AddStoreDTO()
-                {
-                InOutDate = DateTime.Now,
-                Note = "출고데이터_1",
-                Num = 235,
-                RoomID = 3,
-                UnitPrice = 100,
-                TotalPrice = 1000
-                }
-                });
+                //dto.Add(new InOutInventoryDTO()
+                //{
+                //InOut = 0,
+                //MaterialID = 11,
+                //AddStore = new AddStoreDTO()
+                //{
+                //InOutDate = DateTime.Now,
+                //Note = "출고데이터_1",
+                //Num = 235,
+                //RoomID = 3,
+                //UnitPrice = 100,
+                //TotalPrice = 1000
+                //}
+                //});
 
                 if (HttpContext is null)
                     return BadRequest();

@@ -100,6 +100,9 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             if (result >= model.AddStore.Num) // 출고개수가 충분할때만 동작.
                             {
+                                // 넘어온 수량이랑 실제로 빠지는 수량이랑 같은지 검사하는 CheckSum
+                                int checksum = 0;
+
                                 // 개수만큼 - 빼주면 됨
                                 int outresult = 0;
                                 foreach (InventoryTb OutInventoryTb in OutModel)
@@ -107,6 +110,8 @@ namespace FamTec.Server.Repository.Maintenence
                                     outresult += OutInventoryTb.Num;
                                     if (model.AddStore.Num > outresult)
                                     {
+                                        checksum += OutInventoryTb.Num;
+
                                         OutInventoryTb.Num -= OutInventoryTb.Num;
                                         OutInventoryTb.UpdateDt = DateTime.Now;
                                         OutInventoryTb.UpdateUser = creater;
@@ -121,6 +126,8 @@ namespace FamTec.Server.Repository.Maintenence
                                     }
                                     else
                                     {
+                                        checksum += model.AddStore.Num!.Value - (outresult - OutInventoryTb.Num);
+
                                         outresult -= model.AddStore.Num!.Value;
                                         OutInventoryTb.Num = outresult;
                                         OutInventoryTb.UpdateDt = DateTime.Now;
@@ -135,6 +142,14 @@ namespace FamTec.Server.Repository.Maintenence
                                         context.Update(OutInventoryTb);
                                     }
                                 }
+
+
+                                if(checksum != model.AddStore.Num)
+                                {
+                                    Console.WriteLine("결과가 다름 RollBack!");
+                                    await transaction.RollbackAsync();
+                                }
+
                                 await context.SaveChangesAsync();
                             }
                         }

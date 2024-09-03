@@ -54,7 +54,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 2,
-                //        Num = 10,
+                //        Num = 74,
                 //        UnitPrice = 100,
                 //        TotalPrice = 10 * 100,
                 //        Note = "출고등록"
@@ -69,7 +69,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 3,
-                //        Num = 3,
+                //        Num = 235,
                 //        UnitPrice = 200,
                 //        TotalPrice = 3 * 200,
                 //        Note = "출고등록"
