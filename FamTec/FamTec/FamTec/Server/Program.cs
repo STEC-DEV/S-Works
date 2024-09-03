@@ -69,6 +69,8 @@ using FamTec.Server.Repository.Meter;
 using FamTec.Server.Repository.Meter.Contract;
 using FamTec.Server.Services.Meter;
 using FamTec.Server.Services.Meter.Contract;
+using FamTec.Server.Repository.Meter.Energy;
+using FamTec.Server.Services.Meter.Energy;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -140,6 +142,7 @@ builder.Services.AddTransient<IKakaoLogInfoRepository, KakaoLogInfoRepository>()
 builder.Services.AddTransient<IBlackListInfoRepository, BlackListInfoRepository>();
 builder.Services.AddTransient<IMeterInfoRepository, MeterInfoRepository>();
 builder.Services.AddTransient<IContractInfoRepository, ContractInfoRepository>();
+builder.Services.AddTransient<IEnergyInfoRepository, EnergyInfoRepository>();
 
 // Add services to the container. - Logic
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
@@ -179,6 +182,7 @@ builder.Services.AddTransient<IBlackListService, BlackListService>();
 builder.Services.AddTransient<IKakaoLogService, KakaoLogService>();
 builder.Services.AddTransient<IMeterService, MeterService>();
 builder.Services.AddTransient<IContractService, ContractService>();
+builder.Services.AddTransient<IEnergyService, EnergyService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -410,7 +414,8 @@ string[]? userPaths = new string[]
     "/api/BlackList/sign",
     "/api/KakaoLog/sign",
     "/api/Meter/sign",
-    "/api/Contract/sign"
+    "/api/Contract/sign",
+    "/api/Energy/sign"
 };
 
 

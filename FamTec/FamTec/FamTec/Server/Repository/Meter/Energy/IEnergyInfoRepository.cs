@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Meter.Energy;
 
 namespace FamTec.Server.Repository.Meter.Energy
 {
@@ -12,12 +13,11 @@ namespace FamTec.Server.Repository.Meter.Energy
         public ValueTask<EnergyUsageTb?> AddAsync(EnergyUsageTb model);
 
         /// <summary>
-        /// 오늘 입력했는지 검색
-        ///     - 입력했으면 수정으로 해야함.
+        /// 해당년-월 데이터 리스트 출력
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public ValueTask<EnergyUsageTb?> GetDayEnergy(DateTime SearchDate);
+        public ValueTask<List<DaysTotalEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid);
 
     }
 }

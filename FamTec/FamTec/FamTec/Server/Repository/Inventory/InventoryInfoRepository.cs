@@ -113,42 +113,54 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int placeid,int materialid, DateTime startDate, DateTime endDate)
+        public async ValueTask<List<PeriodicDTO>?> GetInventoryRecord(int placeid,List<int> materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
                 List<StoreTb>? StoreList = await context.StoreTbs
-                .Where(m => m.DelYn != true &&
-                            m.PlaceTbId == placeid &&
-                            m.MaterialTbId == materialid &&
-                            m.CreateDt >= startDate &&
-                            m.CreateDt <= endDate)
-                .OrderBy(m => m.CreateDt)
-                .ToListAsync();
-
+                    .Where(m => materialid.Contains(m.MaterialTbId) && m.DelYn != true &&
+                    m.PlaceTbId == placeid &&
+                    m.CreateDt >= startDate &&
+                    m.CreateDt <= endDate)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync();
+            
                 if(StoreList is null || !StoreList.Any())
                     return null;
 
-                List<PeriodicInventoryRecordDTO> dto = (from StoreTB in StoreList
-                                                        join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
-                                                        on StoreTB.MaterialTbId equals MaterialTB.Id
-                                                        select new PeriodicInventoryRecordDTO
-                                                        {
-                                                            INOUT_DATE = StoreTB.CreateDt, // 거래일
-                                                            Type = StoreTB.Inout, // 입출고구분
-                                                            MaterialID = StoreTB.MaterialTbId, // 품목코드
-                                                            MaterialName = MaterialTB.Name, // 품목명
-                                                            MaterialUnit = MaterialTB.Unit, // 품목 단위
-                                                            InOutNum = StoreTB.Num, // 입출고 수량
-                                                            InOutUnitPrice = StoreTB.UnitPrice, // 입출고 단가
-                                                            InOutTotalPrice = StoreTB.TotalPrice, // 총 가격
-                                                            CurrentNum = StoreTB.CurrentNum,
-                                                            Note = StoreTB.Note // 비고
-                                                        })
-                                                        .OrderBy(m => m.INOUT_DATE)
-                                                        .ToList();
-                    
-                return dto;
+                List<PeriodicDTO>? dtoList = (from StoreTB in StoreList
+                                             join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
+                                             on StoreTB.MaterialTbId equals MaterialTB.Id
+                                             group new { StoreTB, MaterialTB } by new
+                                             {
+                                                 StoreTB.MaterialTbId,
+                                                 MaterialTB.Name
+                                             } into g
+                                             select new PeriodicDTO
+                                             {
+                                                 MaterialID = g.Key.MaterialTbId,
+                                                 MaterialName = g.Key.Name,
+                                                 InventoryList = g.Select(x => new InventoryRecord
+                                                 {
+                                                     INOUT_DATE = x.StoreTB.CreateDt,  // 거래일
+                                                     Type = x.StoreTB.Inout,           // 입출고 구분
+                                                     MaterialID = x.StoreTB.MaterialTbId, // 품목코드
+                                                     MaterialName = x.MaterialTB.Name,    // 품목명
+                                                     MaterialUnit = x.MaterialTB.Unit,    // 품목 단위
+                                                     InOutNum = x.StoreTB.Num,            // 입출고 수량
+                                                     InOutUnitPrice = x.StoreTB.UnitPrice, // 입출고 단가
+                                                     InOutTotalPrice = x.StoreTB.TotalPrice, // 총 가격
+                                                     CurrentNum = x.StoreTB.CurrentNum,   // 시점 재고 수량
+                                                     Note = x.StoreTB.Note                // 비고
+                                                 }).OrderBy(r => r.INOUT_DATE).ToList() // Sort by 거래일
+                                             })
+                             .OrderBy(dto => dto.MaterialID)
+                             .ToList();
+
+                if (dtoList is not null && dtoList.Any())
+                    return dtoList;
+                else
+                    return new List<PeriodicDTO>();
             }
             catch(Exception ex)
             {

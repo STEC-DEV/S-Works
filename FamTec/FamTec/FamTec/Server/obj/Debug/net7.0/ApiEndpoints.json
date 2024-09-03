@@ -2083,6 +2083,26 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "AddEnergy",
+    "RelativePath": "api/Energy/sign/AddEnergy",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetTemp",
+    "RelativePath": "api/Energy/sign/GetMonthList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
     "Method": "AddFacilityGroup",
     "RelativePath": "api/FacilityGroup/sign/AddFacilityGroup",
@@ -4205,23 +4225,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "materialid",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "Startdate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      },
-      {
-        "Name": "EndDate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

@@ -53,7 +53,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<PeriodicInventoryRecordDTO>> PeriodicInventoryRecordService(HttpContext context, int materialid, DateTime startDate, DateTime endDate);
+        public ValueTask<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 사업장별 재고 현황

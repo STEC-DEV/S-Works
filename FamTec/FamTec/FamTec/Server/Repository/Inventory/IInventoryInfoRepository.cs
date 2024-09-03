@@ -35,7 +35,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        ValueTask<List<PeriodicInventoryRecordDTO>?> GetInventoryRecord(int placeid, int materialid, DateTime startDate, DateTime endDate);
+        ValueTask<List<PeriodicDTO>?> GetInventoryRecord(int placeid, List<int> materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 품목별 창고별 재고현황

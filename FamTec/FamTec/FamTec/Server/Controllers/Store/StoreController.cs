@@ -337,19 +337,18 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] int materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
+        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
-                //int materialid = 10;
-                //DateTime Startdate = DateTime.Now.AddDays(-30);
+                //List<int> materialid = new List<int>() { 10};
+                //DateTime Startdate = DateTime.Now.AddDays(-50);
                 //DateTime EndDate = DateTime.Now;
-
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<PeriodicInventoryRecordDTO>? model = await InStoreService.PeriodicInventoryRecordService(HttpContext, materialid, Startdate, EndDate);
+                ResponseList<PeriodicDTO>? model = await InStoreService.PeriodicInventoryRecordService(HttpContext, materialid, Startdate, EndDate);
 
                 if (model is null)
                     return BadRequest();

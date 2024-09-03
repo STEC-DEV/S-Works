@@ -203,28 +203,28 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PeriodicInventoryRecordDTO>> PeriodicInventoryRecordService(HttpContext context, int materialid, DateTime startDate, DateTime endDate)
+        public async ValueTask<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<PeriodicInventoryRecordDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
            
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<PeriodicInventoryRecordDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<PeriodicInventoryRecordDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate);
+                List<PeriodicDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate);
                 
                 if (model is [_, ..])
-                    return new ResponseList<PeriodicInventoryRecordDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<PeriodicDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<PeriodicInventoryRecordDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<PeriodicInventoryRecordDTO>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
+                return new ResponseList<PeriodicDTO>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
 

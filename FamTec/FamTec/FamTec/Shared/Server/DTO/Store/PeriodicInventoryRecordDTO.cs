@@ -3,8 +3,16 @@
     /// <summary>
     /// 기간별 입출고내역 DTO
     /// </summary>
-    public class PeriodicInventoryRecordDTO
+    public class PeriodicDTO
     {
+        public int? MaterialID { get; set; }
+        public string? MaterialName { get; set; }
+
+        public List<InventoryRecord> InventoryList { get; set; } = new List<InventoryRecord>();
+    }
+
+    public class InventoryRecord
+    {       
         /// <summary>
         /// 거래일
         /// </summary>
@@ -24,7 +32,7 @@
         /// 품목명
         /// </summary>
         public string? MaterialName { get; set; }
-        
+
         /// <summary>
         /// 단위
         /// </summary>
@@ -54,5 +62,6 @@
         /// 비고
         /// </summary>
         public string? Note { get; set; }
+
     }
 }
