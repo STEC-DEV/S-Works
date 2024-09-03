@@ -1,0 +1,65 @@
+﻿@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+@using FamTec.Shared.Client.DTO.Normal.Material.Detail
+
+
+<div class="history">
+    <div class="header">
+        <span class="title">
+            기간별 입출고내역
+        </span>
+        <div class="options">
+            <SelectField 
+                T=DetailMaterialListDTO
+                Key="material"
+                SelectData="@ListData"
+                @bind-Value=@MaterialId
+                EditMode="true" />
+        </div>
+        
+    </div>
+    <div class="content">
+        <MaterialTable ListData="@FilterList" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<DetailMaterialListDTO> ListData { get; set; }
+
+    private int _materialId;
+    int MaterialId
+    {
+        get => _materialId;
+        set
+        {
+            _materialId = value;
+            FilterData();
+        }
+    }
+
+    List<InventoryRecordDTO> FilterList = new List<InventoryRecordDTO>();
+
+    protected override Task OnParametersSetAsync()
+    {
+        if(ListData != null)
+        {
+            MaterialId = ListData[0].Id;
+        }
+        FilterData();
+        return base.OnParametersSetAsync();
+    }
+
+    private void FilterData()
+    {
+        if(_materialId == null)
+        {
+            FilterList = null;
+        }
+        else
+        {
+            var selectedMaterial = ListData.FirstOrDefault(m => m.Id == _materialId);
+            FilterList = selectedMaterial?.InventoryList ?? new List<InventoryRecordDTO>();
+        }
+    }
+
+}

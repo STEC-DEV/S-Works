@@ -1,10 +1,11 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
 
 
 <table class="table">
     <thead class="thead">
         
-        <tr "th-tr">
+        <tr class="th-tr">
             <th class="th" rowspan="2">
                 <span>
                     품목 코드
@@ -17,7 +18,7 @@
             </th>
                 @if (@ListData.Count != 0)
                 {
-                    <th class="th" colspan="@ListData[0].RoomHistory.Count">
+                    <th class="th-subp" colspan="@ListData[0].RoomHistory.Count">
                         <span>
                             창고
                         </span>
@@ -32,14 +33,14 @@
             </tr>
         @if (@ListData.Count != 0)
         {
-        <tr class="th-tr">
+        <tr >
                 @foreach (var th in ListData[0].RoomHistory)
                 {
-                <th class="th">
-                    <span>
-                            @th.Name
-                    </span>
-                </th>
+                    <th class="th-subc">
+                        <span class="sub-span">
+                                @th.Name
+                        </span>
+                    </th>
                 }
         </tr>
         }
@@ -47,26 +48,47 @@
         
     </thead>
     <tbody class="tbody">
-        @foreach(var row in ListData)
+        @if (ListData.Count == 0 || ListData is null)
         {
-            <tr class="tr">
-                <td class="td">
-                    @row.Code
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
                 </td>
-                <td class="td">
-                    @row.Name
-                </td>
-                @foreach(var room in row.RoomHistory)
-                {
-                    <td class="td">
-                        @room.Num
-                    </td>
-                }
             </tr>
         }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    @foreach (var room in row.RoomHistory)
+                    {
+                        <td class="td">
+                            @room.Num
+                        </td>
+                    }
+                </tr>
+            }
+        }
+        
     </tbody>
 </table>
 
 @code {
     [Parameter] public List<MaterialHistoryDTO> ListData { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        foreach(var i in ListData)
+        {
+            Console.WriteLine("gdgd"+i.Name);
+        }
+    }
 }

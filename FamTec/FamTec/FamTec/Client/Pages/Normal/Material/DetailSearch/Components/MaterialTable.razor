@@ -1,0 +1,171 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+@using FamTec.Shared.Client.DTO.Normal.Material.Detail
+
+
+<table class="table">
+    <thead class="thead">
+        
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    거래일
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    품목 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    품목명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    재고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData.Count == 0 || ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td">
+                        @row.INOUT_DATE
+                    </td>
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                        @row.MaterialUnit
+                    </td>
+                    <td class="td">
+                        @(row.Type == 1 ? row.InOutNum : 0)
+                    </td>
+                    <td class="td">
+                        @(row.Type == 1 ? row.InOutUnitPrice : 0)
+                    </td>
+                    <td class="td">
+                        @(row.Type == 1 ? row.InOutTotalPrice : 0)
+                    </td>
+                    <td class="td">
+                        @(row.Type == 0 ? row.InOutNum : 0)
+                    </td>
+                    <td class="td">
+                        @(row.Type == 0 ? row.InOutUnitPrice : 0)
+                    </td>
+                    <td class="td">
+                        @(row.Type == 0 ? row.InOutTotalPrice : 0)
+                    </td>
+                    <td class="td">
+                        @row.CurrentNum
+                    </td>
+                    <td class="td">
+                        @row.Note
+                    </td>
+                    
+                </tr>
+            }
+        }
+        
+    </tbody>
+    <tfoot class="tfoot">
+        <tr class="tfoot-tr">
+            <td class="tf-td" colspan="4">소계</td>
+            <td class="tf-td">@totalInQty</td>
+            <td class="tf-td">@totalInPrice</td>
+            <td class="tf-td">@totalInAmount</td>
+            <td class="tf-td">@totalOutQty</td>
+            <td class="tf-td">@totalOutPrice</td>
+            <td class="tf-td">@totalOutAmount</td>
+            <td class="tf-td">@totalCurrentNum</td>
+            <td class="tf-td"></td>
+        </tr>
+    </tfoot>
+</table>
+
+@code {
+    [Parameter] public List<InventoryRecordDTO> ListData { get; set; }
+
+    private int? totalInQty = 0;
+    private float? totalInPrice = 0;
+    private float? totalInAmount = 0;
+    private int? totalOutQty = 0;
+    private float? totalOutPrice = 0;
+    private float? totalOutAmount = 0;
+    private int? totalCurrentNum = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        CalculateTotals();
+    }
+
+    private void CalculateTotals()
+    {
+        totalInQty = ListData.Where(row => row.Type == 1).Sum(row => row.InOutNum);
+        totalInPrice = ListData.Where(row => row.Type == 1).Sum(row => row.InOutUnitPrice);
+        totalInAmount = ListData.Where(row => row.Type == 1).Sum(row => row.InOutTotalPrice);
+
+        totalOutQty = ListData.Where(row => row.Type == 0).Sum(row => row.InOutNum);
+        totalOutPrice = ListData.Where(row => row.Type == 0).Sum(row => row.InOutUnitPrice);
+        totalOutAmount = ListData.Where(row => row.Type == 0).Sum(row => row.InOutTotalPrice);
+
+        totalCurrentNum = ListData.Sum(row => row.CurrentNum);
+    }
+}

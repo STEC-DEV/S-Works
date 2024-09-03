@@ -1,0 +1,62 @@
+﻿
+
+<div class="inputmonth">
+    <label>
+        @Label
+    </label>
+    <div class="inputwrap">
+        <input 
+            type="month" 
+            value="@StartDT.ToString("yyyy-MM")" 
+            max="@(EndDT != null ? EndDT.ToString("yyyy-MM") : null)"
+            @onchange="(e)=>OnStartConvert(e)"
+            />
+        <input 
+            type="month" 
+            value="@EndDT.ToString("yyyy-MM")" 
+            min="@StartDT.ToString("yyyy-MM")"
+            @onchange="(e)=>OnEndConvert(e)"
+            />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Label{ get; set; }
+    [Parameter] public DateTime StartDT{ get; set; }
+    [Parameter] public DateTime EndDT{ get; set; }
+    [Parameter] public EventCallback<(DateTime,DateTime)> ValueChanged { get; set; }
+
+
+    private async void OnValueChanged(){
+
+    }
+
+    private async void OnStartConvert(ChangeEventArgs e)
+    {
+        DateTime start = OnConvert(true, Convert.ToDateTime(e.Value));
+        StartDT = start;
+        await ValueChanged.InvokeAsync((StartDT, EndDT));
+    }
+
+    private async void OnEndConvert(ChangeEventArgs e)
+    {
+        DateTime end = OnConvert(false, Convert.ToDateTime(e.Value));
+        EndDT = end;
+        await ValueChanged.InvokeAsync((StartDT, EndDT));
+    }
+
+    private DateTime OnConvert(bool frist, DateTime date)
+    {
+        if (frist)
+        {
+            date = new DateTime(date.Year, date.Month, 1);
+            return date;
+        }
+        else
+        {
+            date = new DateTime(date.Year, date.Month, 1).AddMonths(1).AddDays(-1);
+            return date;
+        }
+    }
+
+}

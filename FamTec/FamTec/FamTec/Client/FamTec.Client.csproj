@@ -40,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\Place\PlaceMain\Modal\NotUse\" />
-    <Folder Include="Pages\Normal\Material\DetailSearch\Modal\" />
     <Folder Include="Pages\Normal\Material\InOut\Modal\" />
     <Folder Include="Pages\Normal\Material\Material\Store\" />
     <Folder Include="Pages\Normal\Voc\VocCreate\" />

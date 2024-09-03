@@ -42,6 +42,7 @@
 .filter-item[b-vu86acb01j]{
     display : flex;
     gap : var(--half-pd);
+    overflow : hidden;
 }
 
 .inputcheck[b-vu86acb01j]{

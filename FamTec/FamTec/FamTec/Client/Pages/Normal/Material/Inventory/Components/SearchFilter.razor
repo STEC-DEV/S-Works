@@ -14,7 +14,7 @@
     </div>
     <div class="content">
         <div class="filter-item">
-            <TextField2 Label="조회 품목" Row=true />
+            <TextField2 Label="조회 품목" Value="@titles" Row=true />
             <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
         </div>
         <div class="filter-item">
@@ -24,11 +24,11 @@
                 </label>
                 <div class="item-wrap">
                     <div class="item">
-                        <input type="radio" name="type" value="true" @onchange=OnSelectType />
+                        <input type="radio" name="type" value="true" @onchange=OnSelectType checked="@(_selectType == true)" />
                         <span class="name">전체</span>
                     </div>
                     <div class="item">
-                        <input type="radio" name="type" value=false @onchange=OnSelectType />
+                        <input type="radio" name="type" value=false @onchange=OnSelectType checked="@(_selectType != true)"  />
                         <span class="name">현재 사용가능</span>
                     </div>
                 </div>
@@ -49,11 +49,22 @@
 
 @code {
     [Parameter] public List<MaterialHistoryDTO> MaterialHistory { get; set; }
+    [Parameter] public EventCallback<List<MaterialHistoryDTO>> OnMaterialHistoryUpdated { get; set; }
 
     private bool _selectType = true;
     private bool _isSearch = false;
+    private string titles = "";
     List<MaterialSearchListDTO> MaterialList;
-    List<MaterialSearchListDTO> SelectedMaterialList = new List<MaterialSearchListDTO>();
+    private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
+    List<MaterialSearchListDTO> SelectedMaterialList
+    {
+        get => _selectedMaterialList;
+        set
+        {
+            _selectedMaterialList = value;
+            UpdateTitles(); // titles 업데이트
+        }
+    }
     private List<int> _selectMaterial = new List<int>();
 
     protected override async Task OnInitializedAsync()
@@ -97,8 +108,16 @@
                 await JS.InvokeVoidAsync("[조회 현황]"+resGet.message);
                 return;
             }
-            //변수
-            MaterialHistory = resGet.data;
+            Console.WriteLine("여기는오는데");
+
+            // 상위 컴포넌트에 데이터 변경을 알립니다.
+            await OnMaterialHistoryUpdated.InvokeAsync(resGet.data);
+
+            foreach(var row in MaterialHistory)
+            {
+                Console.WriteLine(row.Name);
+            }
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -111,7 +130,7 @@
 
     private async Task OnSelectType(ChangeEventArgs e){
         _selectType = Boolean.Parse(e.Value.ToString());
-        
+
     }
 
 
@@ -119,6 +138,18 @@
     {
         _isSearch = !_isSearch;
 
+    }
+
+    private void UpdateTitles()
+    {
+        List<string> temp = new List<string>();
+        temp.Clear();
+        foreach (var material in _selectedMaterialList)
+        {
+            temp.Add(material.Name); // MaterialSearchListDTO의 Name 필드를 사용 (필드 이름이 다른 경우 수정 필요)
+        }
+        titles = string.Join(", ", temp);
+        StateHasChanged();
     }
 
 }

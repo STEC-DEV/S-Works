@@ -1,4 +1,4 @@
-﻿@page "/facility/machine"
+﻿@page "/facility/{FacType}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Facility
@@ -8,7 +8,7 @@
 <div class="fac-container">
     <div class="fac-header">
         <span class="title">
-            기계 설비
+            @title 설비
         </span>
         <div>
             <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
@@ -19,17 +19,39 @@
 </div>
 
 @code {
+    [Parameter] public string FacType { get; set; }
+
     List<FacilityListDTO> ListFacility;
+    private string title = "";
 
     protected override async Task OnInitializedAsync()
     {
+        ConvertType();
         ListFacility = new List<FacilityListDTO>();
         await OnLoadMahine();
+
     }
 
+    private void ConvertType()
+    {
+        title = FacType switch
+        {
+            "machine" => "기계",
+            "electronic" => "전기",
+            "lift" => "승강",
+            "fire" => "소방",
+            "construct" => "건물",
+            "network" => "통신",
+            "beauty" => "미화",
+            "security" => "보안",
+            _ => "기계"
+        };
+    }
+
+    //여기도 타입에 따라 데이터 수정
     private async Task OnLoadMahine()
     {
-        ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>("MachineFacility/sign/GetAllMachineFacility");
+        ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>($"{FacType}Facility/sign/GetAll{FacType}Facility");
         foreach(var i in resGetData.data)
         {
             Console.WriteLine(i.Name);
@@ -45,7 +67,7 @@
 
     private void onAdd()
     {
-        Navigation.NavigateTo("/facility/machine/add");
+        Navigation.NavigateTo($"/facility/{FacType}/add");
     }
 
 

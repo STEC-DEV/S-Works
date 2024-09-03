@@ -23,6 +23,8 @@
 .table .th:last-child[b-d96u4ifbiu] {
     border-radius: 0 4px 4px 0;
 }
+
+
 /* 둥글게 끝*/
 
 
@@ -31,6 +33,7 @@
     
     padding : 0 var(--half-pd);
 }
+
 
 .table  .th > span[b-d96u4ifbiu]{
     display : inline-block;

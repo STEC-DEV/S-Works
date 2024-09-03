@@ -1,7 +1,7 @@
 ﻿.fac-container {
     display : flex;
     flex-direction : column;
-
+    gap : var(--default-pd);
     padding: var(--default-pd);
     width: 100%;
     border : var(--comp-bd);

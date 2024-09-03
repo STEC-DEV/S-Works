@@ -27,6 +27,13 @@
 .table .th:last-child[b-sfcufcjpv9] {
     border-radius: 0 4px 4px 0;
 }
+
+.table .th-subp[b-sfcufcjpv9]{
+    border-radius: 0 4px 0 0;
+}
+.table .th-subc:last-child[b-sfcufcjpv9]{
+    border-radius: 0 0 4px 0;
+}
 /* 둥글게 끝*/
 
 .table .th[b-sfcufcjpv9]{
@@ -34,6 +41,22 @@
     font-size:var(--normal-size);
     font-weight:var(--bold-wt);
    
+}
+
+
+.table .th-subp[b-sfcufcjpv9] {
+     padding:var(--half-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+}
+
+
+.sub-span[b-sfcufcjpv9] {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: var(--bold-wt);
+    color: var(--default-color);
+    padding: var(--half-pd)
 }
 
 .table .text-center[b-sfcufcjpv9]{

@@ -1,14 +1,24 @@
 ﻿@page "/material/detail"
-@page "/material/detail/{SearchTerm}"
 @using FamTec.Client.Pages.Normal.Material.DetailSearch.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.Detail
 
 
 <div class="detailsearch">
-    <SearchFilter/>
+    <SearchFilter ValueChange="@ValueChange" />
+    <MaterialHistory ListData="MaterialList" />
 </div>
 
 @code {
-    [Parameter]
-    public string SearchTerm { get; set; }
-    private string searchTerm;
+    public List<DetailMaterialListDTO> MaterialList = new List<DetailMaterialListDTO>();
+
+
+    private void ValueChange(List<DetailMaterialListDTO> data)
+    {
+        MaterialList = data;
+        foreach(var i in MaterialList)
+        {
+            Console.WriteLine(i.Name);
+        }
+        StateHasChanged();
+    }
 }
