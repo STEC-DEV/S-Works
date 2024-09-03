@@ -175,123 +175,65 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<DaysTotalEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid)
+        public async ValueTask<List<DayEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid)
         {
             try
             {
+                int Years = SearchDate.Year;
+                int Month = SearchDate.Month;
 
-                int year = SearchDate.Year; // Example year input
-                int month = SearchDate.Month;   // Example month input
-
-                // Step 1: Retrieve all MeterItemTb records for the given placeid
-                List<MeterItemTb> MeterItemList = await context.MeterItemTbs
-                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
-                    .ToListAsync();
-
-                // Step 2: Extract MeterialItemIDs from the MeterItemList
-                List<int> meterialItemIDs = MeterItemList.Select(m => m.MeterItemId).ToList();
-
-                // Step 3: Retrieve all EnergyUsageTb records that match the extracted MeterialItemIDs and are within the specified year and month, and join with MeterTb
-                var dailyUsageWithMeter = await context.EnergyUsageTbs
-                    .Where(e => meterialItemIDs.Contains(e.MeterItemId) && e.MeterDt.Year == year && e.MeterDt.Month == month && e.DelYn != true)
-                    .Join(
-                        context.MeterItemTbs, // The table to join with
-                        energyUsage => energyUsage.MeterItemId, // The foreign key in EnergyUsageTb
-                        meter => meter.MeterItemId, // The primary key in MeterTb
-                        (energyUsage, meter) => new
-                        {
-                            MeterialItemID = energyUsage.MeterItemId, // Renaming to avoid conflict
-                            energyUsage.MeterDt,
-                            energyUsage.UseAmount,
-                            MeterId = meter.MeterItemId, // Renaming to avoid conflict if needed
-                            MeterName = meter.Name, // Assuming MeterTb has a property MeterName
-                            PlaceId = meter.PlaceTbId   // Assuming MeterTb has a property Location
-                                                        // Add other properties from MeterTb that you want to include
-                        }
-                    )
-                    .GroupBy(e => e.MeterDt.Date)
-                    .Select(g => new
-                    {
-                        Date = g.Key,
-                        TotalUseAmount = g.Sum(x => x.UseAmount),
-                        MeterDetails = g.Select(x => new {
-                            x.MeterId,
-                            x.MeterName,
-                            x.PlaceId
-                            // Add any other MeterTb properties you want to include in the output
-                        }).FirstOrDefault() // Since we are grouping by date, use the first meter details
-                    })
-                    .ToListAsync();
-
-                // Step 4: Generate a complete list of days for the specified month
-                var daysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(year, month))
-                    .Select(day => new DateTime(year, month, day));
-
-                // Step 5: Merge with daily usage data to ensure all days are covered
-                var result = daysInMonth.GroupJoin(
-                    dailyUsageWithMeter,
-                    date => date,
-                    usage => usage.Date,
-                    (date, usage) => new
-                    {
-                        Date = date,
-                        TotalUseAmount = usage.Sum(x => x.TotalUseAmount), // Will be 0 if there's no matching data
-                        MeterDetails = usage.Select(x => x.MeterDetails).FirstOrDefault() // Gets meter details if available
-                    })
-                    .OrderBy(x => x.Date)
+                // Step 1: Generate all dates for September 2024
+                var allDates = Enumerable.Range(1, 30)
+                    .Select(day => new DateTime(Years, Month, day))
                     .ToList();
 
-                Console.WriteLine("Adsfasdf");
+                // Step 2: Generate all distinct METER_ITEM_IDs that are relevant
+                var allMeterItems = (from a in context.EnergyUsageTbs
+                                     join m in context.MeterItemTbs on a.MeterItemId equals m.MeterItemId
+                                     where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid && mt.MeterItemId == m.MeterItemId)
+                                     select new { a.MeterItemId, m.Name })
+                                     .Distinct()
+                                     .ToList();
+
+                // Step 3: Create a cross join of all dates and meter items to ensure every combination is covered
+                var crossJoinResult = (from d in allDates
+                                       from m in allMeterItems
+                                       join a in
+                                           (from e in context.EnergyUsageTbs
+                                            join mi in context.MeterItemTbs on e.MeterItemId equals mi.MeterItemId
+                                            where context.MeterItemTbs.Any(mt => mt.PlaceTbId == 3 && mt.MeterItemId == mi.MeterItemId)
+                                            group e by new { e.MeterItemId, e.MeterDt.Date } into g
+                                            select new
+                                            {
+                                                g.Key.MeterItemId,
+                                                DT = g.Key.Date,
+                                                TotalUseAmount = g.Sum(x => x.UseAmount)
+                                            })
+                                       on new { m.MeterItemId, DT = d } equals new { a.MeterItemId, a.DT } into gj
+                                       from sub in gj.DefaultIfEmpty()
+                                       select new DayTotalEnergyDTO
+                                       {
+                                           MaterItemId = m.MeterItemId,
+                                           Name = m.Name,
+                                           Date = d,
+                                           TotalUseAmount = sub?.TotalUseAmount ?? 0
+                                       })
+                                       .ToList();
+
+                // Step 4: Group the results by MaterItemId
+                var groupedResult = crossJoinResult
+                    .GroupBy(x => new { x.MaterItemId, x.Name })
+                    .Select(g => new DayEnergyDTO
+                    {
+                        MaterItemId = g.Key.MaterItemId,
+                        Name = g.Key.Name,
+                        TotalList = g.OrderBy(x => x.Date).ToList() // Order by date within each group
+                    })
+                    .OrderBy(x => x.MaterItemId)
+                    .ToList();
+
                 return null;
 
-                /*
-                List<MeterItemTb> MeterItemList = await context.MeterItemTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync();
-
-
-
-                
-
-
-                int year = SearchDate.Year;
-                int month = SearchDate.Month;
-
-                var dailyUsage = (
-                        from MeterTB in context.MeterItemTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
-                        join EnergyTB in context.EnergyUsageTbs
-                        on MeterTB.MeterItemId equals EnergyTB.MeterItemId
-                        )
-                                
-
-                // Get all records for the given year and month, grouped by day
-                //var dailyUsage = await context.EnergyUsageTbs
-                    //.Where(m => m.DelYn != true && m.MeterDt.Year == year && m.MeterDt.Month == month)
-                    //.GroupBy(m => m.MeterDt.Date)
-                    //.Select(g => new
-                    //{
-                        //Date = g.Key,
-                        //TotalUseAmount = g.Sum(x => x.UseAmount)
-                    //})
-                    //.ToListAsync();
-
-                // Generate a complete list of days for the specified month
-                var daysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(year, month))
-                    .Select(day => new DateTime(year, month, day));
-
-                // Merge with daily usage data to ensure all days are covered
-                List<DaysTotalEnergyDTO> result = daysInMonth.GroupJoin(
-                    dailyUsage,
-                    date => date,
-                    usage => usage.Date,
-                    (date, usage) => new DaysTotalEnergyDTO
-                    {
-                        Date = date,
-                        TotalUseAmount = usage.Sum(x => x.TotalUseAmount) // Will be 0 if there's no matching data
-                    })
-                    .OrderBy(x => x.Date)
-                    .ToList();
-
-                return result;
-                */
             }
             catch (Exception ex)
             {

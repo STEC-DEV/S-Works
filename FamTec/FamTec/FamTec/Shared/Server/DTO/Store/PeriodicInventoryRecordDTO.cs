@@ -5,8 +5,11 @@
     /// </summary>
     public class PeriodicDTO
     {
-        public int? MaterialID { get; set; }
-        public string? MaterialName { get; set; }
+        public int? ID { get; set; }
+
+        public string? Code { get; set; }
+
+        public string? Name { get; set; }
 
         public List<InventoryRecord> InventoryList { get; set; } = new List<InventoryRecord>();
     }
@@ -24,14 +27,19 @@
         public int? Type { get; set; }
 
         /// <summary>
+        /// 품목인덱스
+        /// </summary>
+        public int? ID { get; set; }
+
+        /// <summary>
         /// 품목코드
         /// </summary>
-        public int? MaterialID { get; set; }
+        public string? Code { get; set; }
 
         /// <summary>
         /// 품목명
         /// </summary>
-        public string? MaterialName { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 단위

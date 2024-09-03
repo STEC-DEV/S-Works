@@ -341,7 +341,7 @@ namespace FamTec.Server.Controllers.Store
         {
             try
             {
-                //List<int> materialid = new List<int>() { 10};
+                //List<int> materialid = new List<int>() { 10,11};
                 //DateTime Startdate = DateTime.Now.AddDays(-50);
                 //DateTime EndDate = DateTime.Now;
 

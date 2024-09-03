@@ -17,7 +17,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public ValueTask<List<DaysTotalEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid);
+        public ValueTask<List<DayEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid);
 
     }
 }

@@ -134,18 +134,21 @@ namespace FamTec.Server.Repository.Inventory
                                              group new { StoreTB, MaterialTB } by new
                                              {
                                                  StoreTB.MaterialTbId,
+                                                 MaterialTB.Code,
                                                  MaterialTB.Name
                                              } into g
                                              select new PeriodicDTO
                                              {
-                                                 MaterialID = g.Key.MaterialTbId,
-                                                 MaterialName = g.Key.Name,
+                                                 ID = g.Key.MaterialTbId,
+                                                 Code = g.Key.Code,
+                                                 Name = g.Key.Name,
                                                  InventoryList = g.Select(x => new InventoryRecord
                                                  {
                                                      INOUT_DATE = x.StoreTB.CreateDt,  // 거래일
                                                      Type = x.StoreTB.Inout,           // 입출고 구분
-                                                     MaterialID = x.StoreTB.MaterialTbId, // 품목코드
-                                                     MaterialName = x.MaterialTB.Name,    // 품목명
+                                                     ID = x.StoreTB.MaterialTbId, // 품목코드
+                                                     Code = x.MaterialTB.Code,
+                                                     Name = x.MaterialTB.Name,    // 품목명
                                                      MaterialUnit = x.MaterialTB.Unit,    // 품목 단위
                                                      InOutNum = x.StoreTB.Num,            // 입출고 수량
                                                      InOutUnitPrice = x.StoreTB.UnitPrice, // 입출고 단가
@@ -154,7 +157,7 @@ namespace FamTec.Server.Repository.Inventory
                                                      Note = x.StoreTB.Note                // 비고
                                                  }).OrderBy(r => r.INOUT_DATE).ToList() // Sort by 거래일
                                              })
-                             .OrderBy(dto => dto.MaterialID)
+                             .OrderBy(dto => dto.ID)
                              .ToList();
 
                 if (dtoList is not null && dtoList.Any())

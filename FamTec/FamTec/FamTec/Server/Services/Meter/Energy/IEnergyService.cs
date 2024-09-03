@@ -19,6 +19,6 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        ValueTask<ResponseList<DaysTotalEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate);
+        ValueTask<ResponseList<DayEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate);
     }
 }

@@ -68,29 +68,29 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DaysTotalEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate)
+        public async ValueTask<ResponseList<DayEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<DaysTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
 
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<DaysTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<DaysTotalEnergyDTO>? model = await EnergyInfoRepository.GetMonthList(SearchDate, Int32.Parse(placeidx));
+                List<DayEnergyDTO>? model = await EnergyInfoRepository.GetMonthList(SearchDate, Int32.Parse(placeidx));
                
                 if (model is not null)
-                    return new ResponseList<DaysTotalEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
-                    return new ResponseList<DaysTotalEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    return new ResponseList<DayEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<DaysTotalEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<DayEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
