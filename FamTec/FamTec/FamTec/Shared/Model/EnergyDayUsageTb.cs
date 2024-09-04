@@ -10,6 +10,7 @@ namespace FamTec.Shared.Model;
 /// 에너지 검침 기록 - 일별
 /// </summary>
 [Table("energy_day_usage_tb")]
+[Index("Year", "Month", "MeterItemId", Name = "UK_METER_ITEM_ID_YEAR_MONTH", IsUnique = true)]
 [Index("MeterItemId", Name = "fk_energy_usage_tb_meter_item_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class EnergyDayUsageTb
@@ -32,6 +33,18 @@ public partial class EnergyDayUsageTb
     /// </summary>
     [Column("TOTAL_AMOUNT")]
     public float TotalAmount { get; set; }
+
+    /// <summary>
+    /// 년도
+    /// </summary>
+    [Column("YEAR", TypeName = "int(11)")]
+    public int? Year { get; set; }
+
+    /// <summary>
+    /// 월
+    /// </summary>
+    [Column("MONTH", TypeName = "int(11)")]
+    public int? Month { get; set; }
 
     /// <summary>
     /// 검침일자

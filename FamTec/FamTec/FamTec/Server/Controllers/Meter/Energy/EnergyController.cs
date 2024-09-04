@@ -68,6 +68,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+
+
         /// <summary>
         /// 해당 년도-월의 품목별 모든일자 데이터 조회 - 전체
         /// </summary>
@@ -76,13 +78,14 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMonthList")]
-        //public async ValueTask<IActionResult> GetMonthList()
-        public async ValueTask<IActionResult> GetMonthList([FromQuery] DateTime SearchDate)
+        public async ValueTask<IActionResult> GetMonthList()
+        //public async ValueTask<IActionResult> GetMonthList([FromQuery] DateTime SearchDate)
         {
             try
             {
+                DateOnly DaOnly = DateOnly.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
 
-                //DateTime SearchDate = DateTime.Now;
+                DateTime SearchDate = DateTime.Now.AddYears(-1).AddMonths(-1);
 
                 if (HttpContext is null)
                     return BadRequest();

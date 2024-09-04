@@ -39,9 +39,9 @@ namespace FamTec.Server.Repository.Meter.Energy
                     }
 
                     // MONTH TB 있는지 검사
-                    EnergyMonthUsageTb? MonthTBInfo = await context.EnergyMonthUsageTbs
+                    EnergyMonthUsageTb ? MonthTBInfo = await context.EnergyMonthUsageTbs
                         .FirstOrDefaultAsync(m => m.DelYn != true &&
-                        m.MeterItemId == model.MeterItemId && 
+                        m.MeterItemId == model.MeterItemId &&
                         m.Year == model.MeterDt.Year);
 
                     // 월별
@@ -84,7 +84,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                         return null;
                     }
 
-                    MonthUsageTB.TotalUsage += amount_result;
+                    MonthUsageTB.TotalUsage = amount_result;
                     context.EnergyMonthUsageTbs.Update(MonthTBInfo);
 
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -114,7 +114,6 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
-                /*
                 int Years = SearchDate.Year;
                 int Month = SearchDate.Month;
 
@@ -137,7 +136,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                 List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in allDates
                                                             from AllMeterList in allMeterItems
                                                             join a in
-                                                                (from EnergyList in context.EnergyUsageTbs
+                                                                (from EnergyList in context.EnergyDayUsageTbs
                                                                 join MeterItemList in context.MeterItemTbs
                                                                 on EnergyList.MeterItemId equals MeterItemList.MeterItemId
                                                                 where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
@@ -151,13 +150,14 @@ namespace FamTec.Server.Repository.Meter.Energy
                                                                 {
                                                                     g.Key.MeterItemId,
                                                                     DT = g.Key.Date,
-                                                                    TotalUseAmount = g.Sum(x => x.UseAmount)
+                                                                    TotalUseAmount = g.Sum(x => x.TotalAmount)
                                                                 })
                                                             on new 
                                                             {
                                                                 AllMeterList.MeterItemId,
                                                                 DT = AllDateList 
-                                                            } equals new 
+                                                            }
+                                                            equals new 
                                                             {
                                                                 a.MeterItemId, 
                                                                 a.DT 
@@ -186,7 +186,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                         MaterItemId = g.Key.MaterItemId,
                         ContractName = g.Key.ContractName,
                         Name = g.Key.Name,
-                        TotalList = g.OrderBy(x => x.Date).ToList()
+                        TotalList = g.OrderBy(x => x.Date).ToList(),
+                        MeterUseAmountSum = g.Sum(x => x.TotalUseAmount)
                     })
                     .OrderBy(x => x.MaterItemId)
                     .ToList();
@@ -195,9 +196,6 @@ namespace FamTec.Server.Repository.Meter.Energy
                     return groupedResult;
                 else
                     return null;
-                */
-
-                return null;
             }
             catch (Exception ex)
             {

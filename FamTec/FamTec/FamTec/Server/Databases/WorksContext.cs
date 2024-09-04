@@ -378,7 +378,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.MeterDt).HasComment("검침일자");
+            entity.Property(e => e.Month).HasComment("월");
             entity.Property(e => e.TotalAmount).HasComment("사용량");
+            entity.Property(e => e.Year).HasComment("년도");
 
             entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyDayUsageTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -545,10 +547,9 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.RowVersion)
-                      .IsConcurrencyToken() // 추가
-                      .HasColumnType("BIGINT"); // 추가
-
+            entity.Property(e => e.RowVersion) // 추가
+                .IsConcurrencyToken() // 추가
+                .HasColumnType("BIGINT"); // 추가
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -601,6 +602,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.TotalPrice).HasComment("소요비용");
             entity.Property(e => e.Type).HasComment("작업구분");
             entity.Property(e => e.UnitPrice).HasComment("단가");
+            entity.Property(e => e.Workdt).HasComment("작업일자");
             entity.Property(e => e.Worker).HasComment("작업자");
 
             entity.HasOne(d => d.FacilityTb).WithMany(p => p.MaintenenceHistoryTbs)
@@ -838,7 +840,6 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>
@@ -847,6 +848,5 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
-
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

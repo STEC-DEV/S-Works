@@ -42,6 +42,12 @@ public partial class MaintenenceHistoryTb
     public string Worker { get; set; } = null!;
 
     /// <summary>
+    /// 작업일자
+    /// </summary>
+    [Column("WORKDT", TypeName = "datetime")]
+    public DateTime Workdt { get; set; }
+
+    /// <summary>
     /// 단가
     /// </summary>
     [Column("UNIT_PRICE")]
@@ -89,6 +95,9 @@ public partial class MaintenenceHistoryTb
     [Column("NOTE")]
     [StringLength(50)]
     public string? Note { get; set; }
+
+    [StringLength(255)]
+    public string? Image { get; set; }
 
     [Column("FACILITY_TB_ID", TypeName = "int(11)")]
     public int FacilityTbId { get; set; }

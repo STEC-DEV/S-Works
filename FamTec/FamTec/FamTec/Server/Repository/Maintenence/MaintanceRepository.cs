@@ -11,11 +11,17 @@ namespace FamTec.Server.Repository.Maintenence
     public class MaintanceRepository : IMaintanceRepository
     {
         private readonly WorksContext context;
+
+        private IFileService FileService;
         private ILogService LogService;
 
-        public MaintanceRepository(WorksContext _context, ILogService _logservice)
+        private DirectoryInfo? di;
+        private string? MaintanceFileFolderPath;
+
+        public MaintanceRepository(WorksContext _context, IFileService _fileservice, ILogService _logservice)
         {
             this.context = _context;
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -24,7 +30,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, int placeid)
+        public async ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO dto, string creater, string userid, int placeid, IFormFile? files)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
@@ -45,6 +51,12 @@ namespace FamTec.Server.Repository.Maintenence
                         }
                     }
 
+                    string NewFileName = files is not null ? FileService.SetNewFileName(userid.ToString(), files) : String.Empty;
+
+                    MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                    di = new DirectoryInfo(MaintanceFileFolderPath);
+                    if (!di.Exists) di.Create();
+
                     /* 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림. */
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
                     MaintenenceHistory.Name = dto.Name!; /* 작업명 */
@@ -58,6 +70,7 @@ namespace FamTec.Server.Repository.Maintenence
                     MaintenenceHistory.UpdateDt = DateTime.Now; /* 수정일자 */
                     MaintenenceHistory.UpdateUser = creater; /* 수정자 */
                     MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; /* 설비 ID */
+                    MaintenenceHistory.Image = files is not null ? NewFileName : null;
 
                     await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
                     bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; /* 저장 */
@@ -186,6 +199,12 @@ namespace FamTec.Server.Repository.Maintenence
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if(UpdateResult)
                     {
+                        if(files is not null)
+                        {
+                            // 파일 넣기
+                            await FileService.AddResizeImageFile(NewFileName, MaintanceFileFolderPath, files);
+                        }
+
                         await transaction.CommitAsync(); // 출고완료
                         return true;
                     }
@@ -215,7 +234,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid)
+        public async ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid)
         {
             try
             {
@@ -227,6 +246,9 @@ namespace FamTec.Server.Repository.Maintenence
                 List<MaintanceListDTO> Model = new List<MaintanceListDTO>();
                 if (MainTenenceList is [_, ..])
                 {
+                    // 여기서 DTO에 이미지 변환시켜 넣어야함.
+                    MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+
                     foreach (MaintenenceHistoryTb HistoryTB in MainTenenceList)
                     {
                         MaintanceListDTO MaintanceModel = new MaintanceListDTO();
@@ -236,7 +258,8 @@ namespace FamTec.Server.Repository.Maintenence
                         MaintanceModel.Type = HistoryTB.Type; // 작업구분
                         MaintanceModel.TotalPrice = HistoryTB.TotalPrice; // 총 합계
                         MaintanceModel.Worker = HistoryTB.Worker; // 작업자
-
+                        MaintanceModel.Image = !string.IsNullOrWhiteSpace(HistoryTB.Image) ? await FileService.GetImageFile(MaintanceFileFolderPath, HistoryTB.Image) : null;
+                        
                         // Log에서 반복문의 해당시점 MaintenenceHistoryTB.ID를 조회한다.
                         List<StoreTb> StoreList = await context.StoreTbs.Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id && m.DelYn != true).ToListAsync();
                         if (StoreList is [_, ..]) // 유지보수 이력이면 무조껀 있어야함.

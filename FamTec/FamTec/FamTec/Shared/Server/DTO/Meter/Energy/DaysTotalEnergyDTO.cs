@@ -8,6 +8,7 @@
 
         public string? Name { get; set; }
 
+        public float? MeterUseAmountSum { get; set; }
 
         public List<DayTotalEnergyDTO> TotalList { get; set; } = new List<DayTotalEnergyDTO>();
     }

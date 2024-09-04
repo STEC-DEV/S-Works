@@ -30,6 +30,8 @@
         /// </summary>
         public string? Unit { get; set; }
 
+        
+
         public AddStoreDTO? AddStore { get; set; } = new AddStoreDTO();
     }
 }

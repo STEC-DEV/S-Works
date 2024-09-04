@@ -43,6 +43,16 @@ namespace FamTec.Shared.Server.DTO.Maintenence
         public int? FacilityID { get; set; }
 
         /// <summary>
+        /// 작업일자
+        /// </summary>
+        public DateTime WorkDT { get; set; }
+
+        /// <summary>
+        /// 이미지 경로
+        /// </summary>
+        public string? ImageFiles { get; set; }
+
+        /// <summary>
         /// 출고정보
         /// </summary>
         public List<InOutInventoryDTO>? Inventory { get; set; } = new List<InOutInventoryDTO>();

@@ -10,14 +10,14 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="model"></param>
         /// <returns></returns>
         //ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid, string GUID);
-        ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid);
+        ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, string userid, int placeid, IFormFile? files);
 
         /// <summary>
         /// 유지보수이력 설비ID에 해당하는거 전체조회
         /// </summary>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid);
+        ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid);
 
         /// <summary>
         /// 유지보수이력 삭제

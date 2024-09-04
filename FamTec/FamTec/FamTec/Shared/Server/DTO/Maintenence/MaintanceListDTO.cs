@@ -35,11 +35,15 @@
         /// </summary>
         public List<UsedMaterialDTO> UsedMaterialList { get; set; } = new List<UsedMaterialDTO>();
     
-
         /// <summary>
         /// 총 비용
         /// </summary>
         public float? TotalPrice { get; set; }
+
+        /// <summary>
+        /// 이미지
+        /// </summary>
+        public byte[]? Image { get; set; }
     }
 
     /// <summary>

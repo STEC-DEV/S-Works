@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto)
+        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto, IFormFile? files)
         {
             try
             {
@@ -36,11 +36,12 @@ namespace FamTec.Server.Services.Maintenance
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
+                string? userid = Convert.ToString(context.Items["UserIdx"]);
 
-                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, Convert.ToInt32(placeid));
+                bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid), files);
                 if (OutResult == true)
                 {
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
@@ -114,12 +115,18 @@ namespace FamTec.Server.Services.Maintenance
                 if (context is null)
                     return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                // 여기 더 추가해야함
+                
                 FacilityTb? VaildFacility = await FacilityInfoRepository.GetFacilityInfo(facilityid);
                 if(VaildFacility is null)
                     return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid);
+                List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid, Int32.Parse(placeid));
                 
+
                 if (dto is not null && dto.Any())
                     return new ResponseList<MaintanceListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
