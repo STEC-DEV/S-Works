@@ -1,0 +1,24 @@
+﻿@page "/facility/maintenance/add"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Maintenance.AddMaintence.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<div class="container">
+    <InfoCard @bind-Maintenance=Maintenance />
+    <SearchMaterial @bind-Data=@SelectMaterial />
+    <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+    <Button Name="버튼" Type="0" OnClick="OnCheck" />
+</div>
+
+@code {
+    AddMaintenaceDTO Maintenance = new AddMaintenaceDTO();
+    AddStoreDTO MaintenanceStore = new AddStoreDTO();
+    MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
+
+    private void OnCheck()
+    {
+        Console.WriteLine(MaintenanceStore.Note);
+    }
+}

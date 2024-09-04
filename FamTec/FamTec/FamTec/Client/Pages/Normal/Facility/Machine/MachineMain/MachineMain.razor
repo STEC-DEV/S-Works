@@ -15,7 +15,7 @@
             <Button Name="삭제" Width=true Type=1 />
         </div>
     </div>
-    <FacilityTable ListData="ListFacility" />
+    <FacilityTable ListData="ListFacility" FacType="@FacType" />
 </div>
 
 @code {
@@ -32,8 +32,17 @@
 
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        ConvertType();
+        ListFacility = new List<FacilityListDTO>();
+        await OnLoadMahine();
+        
+    }
+
     private void ConvertType()
     {
+        Console.WriteLine("설비타입" + FacType);
         title = FacType switch
         {
             "machine" => "기계",
@@ -46,6 +55,7 @@
             "security" => "보안",
             _ => "기계"
         };
+        StateHasChanged();
     }
 
     //여기도 타입에 따라 데이터 수정

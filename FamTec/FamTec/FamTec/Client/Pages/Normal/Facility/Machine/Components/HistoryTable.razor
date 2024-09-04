@@ -1,77 +1,73 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Facility
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 
 
-<table>
-    <thead>
-        <tr>
-            <th>
+<table class="table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th" >
                 <span>
                     작업 일자
                 </span>
             </th>
-            <th>
+            <th class="th">
                 <span>
                     수리 및 보수 이력
                 </span>
             </th>
-            <th>
+            <th class="th">
                 <span>
                     작업 구분
                 </span>
             </th>
-            <th>
+            <th class="th">
                 <span>
                     작업자
                 </span>
             </th>
-            <th>
-                <span>
-                    사용자재
-                </span>
-            </th>
-            <th>
+            <th class="th">
                 <span>
                     소요비용
                 </span>
             </th>
-            <th>
+            <th class="th">
                 <span>
 
                 </span>
             </th>
         </tr>
     </thead>
-    <tbody>
-        @if(ListData == null)
+    <tbody class="tbody">
+        @if (ListData.Count == 0 || ListData is null)
         {
-            <p>
-                ...Loading
-            </p>
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
         }
         else
         {
             foreach(var row in ListData)
             {
-                <tr>
-                    <td>
-                        @row.WorkDT
+                <tr class="tr">
+                    <td class="td">
+                        @row.CreateDT
                     </td>
-                    <td>
+                    <td class="td">
                         @row.Name
                     </td>
-                    <td>
+                    <td class="td">
                         @row.Type
                     </td>
-                    <td>
-                        @row.Worker
+                    <td class="td">
+                        @row.Type
                     </td>
-                    <td>
-                        @row.UseMaterial
-                    </td>
-                    <td>
+                    <td class="td">
                         @row.TotalPrice
                     </td>
-                    <td>
+                    <td class="td">
                         <input type="checkbox" />
                     </td>
 
@@ -84,5 +80,5 @@
 </table>
 
 @code {
-    [Parameter] public List<FacilityHistoyuList> ListData { get; set; }
+    [Parameter] public List<MaintenanceListDTO> ListData { get; set; }
 }

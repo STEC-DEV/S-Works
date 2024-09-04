@@ -13,10 +13,12 @@
 }
 
 .label{
+    min-width :50px;
     font-weight :var(--bold-wt);
     font-size : var(--normal-size);
     color : var(--main-color);
-    white-space : nowrap;
+    /*white-space : nowrap;*/
+    white-space : normal;
 }
 
 .row>.selectbox>.display {

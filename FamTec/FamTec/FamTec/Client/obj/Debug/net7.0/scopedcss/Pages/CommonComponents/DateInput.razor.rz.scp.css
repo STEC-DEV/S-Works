@@ -15,10 +15,11 @@
 }
 
 .label[b-qvxd8gjmfu] {
+    min-width: 50px;
     font-size: var(--normal-size);
     font-weight: var(--bold-wt);
     color: var(--main-color);
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .input[b-qvxd8gjmfu] {
@@ -27,4 +28,9 @@
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--content-back-color);
+    transition : all .3s;
+}
+
+.input:focus[b-qvxd8gjmfu]{
+    border: var(--default-bd);
 }

@@ -54,7 +54,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         /// <summary>
         /// 규격용량
         /// </summary>
-        public string StandardCapacity { get; set; }
+         public string? Standard_capacity { get; set; }
 
         /// <summary>
         /// 교체년월
@@ -64,7 +64,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         /// <summary>
         /// 공간 인덱스
         /// </summary>
-        public int RoomId { get; set; }
+        public int? RoomTbId { get; set; }
 
         /// <summary>
         /// 공간이름
@@ -74,7 +74,12 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         /// <summary>
         /// 이미지
         /// </summary>
-        public string Image { get; set; }
+        public byte[] Image { get; set; }
+
+        /// <summary>
+        /// 이미지
+        /// </summary>
+        public string ImageName { get; set; }
 
 
     }

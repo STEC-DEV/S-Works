@@ -1,7 +1,14 @@
 
-
-.btns[b-y8siuilxs5]{
+.add-container[b-y8siuilxs5]{
     display : flex;
-    justify-content : flex-end;
-    gap : var(--half-pd);
+    flex-direction :column;
+    gap :var(--default-pd);
+    padding : var(--default-pd);
+}
+
+
+.btns[b-y8siuilxs5] {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--half-pd);
 }

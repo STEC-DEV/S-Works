@@ -4,6 +4,7 @@
     width : 100%;
     display : flex;
     flex-direction : column;
+    gap : var(--wide-pd);
 
     background-color : var(--default-color);
 
@@ -11,7 +12,7 @@
 
     border : var(--comp-bd);
     border-radius : var(--default-rd);
-    box-shadow : var(--default-bs);
+    box-shadow : var(--shadow-1);
 }
 
 .infocard-container .infocard-header[b-2akvokpspo]{    
@@ -32,9 +33,13 @@
 
 
 
+
+
 .infocard-container .infocard-content[b-2akvokpspo]{
+    display : flex;
+    gap : var(--wide-pd);
     width : 100%;
-    display :flex;
+    height : 100%;
 }
 
 .infocard-container .infocard-inputs[b-2akvokpspo]{
@@ -47,6 +52,20 @@
 }
 
 .infocard-container .infocard-img-area[b-2akvokpspo]{
-    flex:1;
-    min-width : 300px
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap:var(--one-q-pd);
+    width: 400px;
+    max-width: 100%;
+    
+}
+
+.infocard-container .infocard-img-area[b-2akvokpspo] {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 400px;
+    max-width: 100%;
 }

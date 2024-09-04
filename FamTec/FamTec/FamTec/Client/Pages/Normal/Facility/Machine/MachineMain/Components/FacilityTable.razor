@@ -104,10 +104,10 @@
 
 @code {
     [Parameter] public List<FacilityListDTO?> ListData { get; set; }
-
+    [Parameter] public string FacType { get; set; }
     private void OnDetail(int Id)
     {
-        Navigation.NavigateTo($"/facility/machine/{Id}");
+        Navigation.NavigateTo($"/facility/{FacType}/{Id}");
 
     }
 }

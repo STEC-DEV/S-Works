@@ -1,0 +1,61 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            항목 그룹 추가
+        </span>
+    </div>
+    <div class="input">
+        <span>
+            그룹명
+        </span>
+        <input type="text" placeholder="그룹명" @bind-value=@Group.Name>
+    </div>
+    <div class="btns">
+        <Button Name="추가" Type="0" OnClick="OnAdd" />
+        <Button Name="닫기" Type="1" OnClick="OnCloseModal" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+    [Parameter] public EventCallback LoadGroup { get; set; }
+    AddGroupDTO Group = new AddGroupDTO();
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine(Id);
+        Group.FacilityIdx = Id;
+        return base.OnInitializedAsync();
+    }
+
+    private async void OnAdd()
+    {
+        try
+        {
+            
+            ResponseUnit<AddGroupDTO> resAdd = await apiManager.PostAsync<AddGroupDTO>("FacilityGroup/sign/AddGroup",Group);
+            if(resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "그룹 추가 실패");
+            }
+            OnCloseModal();
+            LoadGroup.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Facility][AddGroup] 그룹 추가 에러!" + ex);
+        }
+    }
+
+    private void OnCloseModal()
+    {
+        CloseModal.InvokeAsync();
+    }
+}
+;

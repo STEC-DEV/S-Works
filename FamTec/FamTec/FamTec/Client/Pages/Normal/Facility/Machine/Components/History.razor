@@ -1,14 +1,66 @@
-﻿
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
 
-<div class="">
-    <div>
-        <span>
+
+<div class="history yappear">
+    <div class="header">
+        <span class="title">
             유지보수 이력
         </span>
+        <div class="options">
+            @if (_editMode)
+            {
+                <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
+                <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+            }else{
+                <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+            }
+        </div>
+        
+
     </div>
-    <HistoryTable />
+    <div class="content">
+
+    </div>
+    <HistoryTable ListData="@ListData" />
 </div>
 
 @code {
+    [Parameter] public int Id{ get; set; }
+    List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
+    private bool _editMode = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaintenance();
+    }
 
+    private async Task OnLoadMaintenance()
+    {
+        try
+        {
+            ResponseList<MaintenanceListDTO> resGet = await apiManager.GetListAsync<MaintenanceListDTO>($"Maintenance/sign/GetMaintanceHistory?facilityid={Id}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            ListData = resGet.data;
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
+    }
+
+    private void OnAdd()
+    {
+        Navigation.NavigateTo("/facility/maintenance/add");
+    }
 }

@@ -19,10 +19,12 @@
 }
 
 .label[b-30vlxjah2w] {
+    min-width: 50px;
     font-size: var(--normal-size);
     font-weight: var(--bold-wt);
     color: var(--main-color);
-    white-space: nowrap;
+    /*white-space: nowrap;*/
+    white-space: normal;
 }
 
 .text[b-30vlxjah2w] {
