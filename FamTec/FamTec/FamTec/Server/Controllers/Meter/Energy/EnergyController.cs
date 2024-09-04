@@ -13,7 +13,6 @@ namespace FamTec.Server.Controllers.Meter.Energy
     [ApiController]
     public class EnergyController : ControllerBase
     {
-        private IEnergyInfoRepository EnergyInfoRepository;
         private IEnergyService EnergyService;
         private ILogService LogService;
 
@@ -22,7 +21,6 @@ namespace FamTec.Server.Controllers.Meter.Energy
             ILogService _logservice)
         {
             this.EnergyService = _energyservice;
-            this.EnergyInfoRepository = _energyinforepository;
             this.LogService = _logservice;
         }
 
@@ -68,21 +66,25 @@ namespace FamTec.Server.Controllers.Meter.Energy
         }
 
         /// <summary>
-        /// 해당 년도-월의 품목별 모든일자 데이터 조회
+        /// 해당 년도-월의 품목별 모든일자 데이터 조회 - 전체
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMonthList")]
-        public async ValueTask<IActionResult> GetMonthList([FromQuery]DateTime SearchDate)
+        //public async ValueTask<IActionResult> GetMonthList()
+        public async ValueTask<IActionResult> GetMonthList([FromQuery] DateTime SearchDate)
         {
             try
             {
+
+                //DateTime SearchDate = DateTime.Now;
+
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<DayEnergyDTO>? model = await EnergyService.GetMonthListService(HttpContext, DateTime.Now);
+                ResponseList<DayEnergyDTO>? model = await EnergyService.GetMonthListService(HttpContext, SearchDate);
 
                 if (model is null)
                     return BadRequest();
@@ -93,6 +95,187 @@ namespace FamTec.Server.Controllers.Meter.Energy
                     return BadRequest();
             }
             catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 해당 년도-월의 품목별 모든일자 데이터 조회 - 선택된 것
+        /// </summary>
+        /// <param name="MeterId"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMeterMonthList")]
+        //public async ValueTask<IActionResult> GetMeterMonthList()
+        public async ValueTask<IActionResult> GetMeterMonthList([FromQuery] DateTime SearchDate, [FromQuery] List<int> MeterId)
+        {
+            try
+            {
+                //DateTime SearchDate = DateTime.Now;
+                //List<int> MeterId = new List<int>() { 5, 7 };
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (MeterId is null || !MeterId.Any())
+                    return NoContent();
+
+                ResponseList<DayEnergyDTO>? model = await EnergyService.GetMonthSelectListService(HttpContext, SearchDate, MeterId);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+
+        /// <summary>
+        /// 해당 년도의 월별 통계
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetYearList")]
+        public async ValueTask<IActionResult> GetYearList([FromQuery]int year)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<YearsTotalEnergyDTO>? model = await EnergyService.GetYearListService(HttpContext, year);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 해당 년도의 선택된 검침기에 대한 월별 통계
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMeterYearList")]
+        //public async ValueTask<IActionResult> GetMeterYearList()
+        public async ValueTask<IActionResult> GetYearList([FromQuery] List<int> MeterId, [FromQuery] int year)
+        {
+            try
+            {
+                //List<int> MeterId = new List<int>() { 5, 6 };
+                //int year = 2022;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<YearsTotalEnergyDTO>? model = await EnergyService.GetYearSelectListService(HttpContext, MeterId, year);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 선택된 일자 사이의 데이터 리스트 전체출력
+        /// </summary>
+        /// <param name="SearchDate"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetDayList")]
+        //public async ValueTask<IActionResult> GetDayList()
+        public async ValueTask<IActionResult> GetDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        {
+            try
+            {
+
+                //DateTime StartDate = DateTime.Now.AddDays(-47);
+                //DateTime EndDate = DateTime.Now;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<DayEnergyDTO>? model = await EnergyService.GetDaysListService(HttpContext, StartDate, EndDate);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 선택된 일자 사이의 데이터 리스트 전체출력
+        /// </summary>
+        /// <param name="SearchDate"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMeterDayList")]
+        //public async ValueTask<IActionResult> GetMeterDayList()
+        public async ValueTask<IActionResult> GetMeterDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> MeterId)
+        {
+            try
+            {
+                //DateTime StartDate = DateTime.Now.AddDays(-47);
+                //DateTime EndDate = DateTime.Now;
+
+                //List<int> MeterId = new List<int>() { 5 };
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<DayEnergyDTO>? model = await EnergyService.GetDaysSelectListService(HttpContext, MeterId, StartDate, EndDate);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);

@@ -73,7 +73,7 @@ public partial class WorksContext : DbContext
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
-    
+
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -84,12 +84,6 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
-
-        // 쿼리스트링 사용
-        modelBuilder.Entity<MaterialInventory>(entity =>
-        {
-            entity.HasNoDiscriminator();
-        });
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -413,9 +407,7 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Sep)
                 .HasDefaultValueSql("'0'")
                 .HasComment("9월");
-            entity.Property(e => e.Years)
-                .HasDefaultValueSql("''")
-                .HasComment("년도");
+            entity.Property(e => e.Years).HasComment("년도");
 
             entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -577,8 +569,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion)
-           .IsConcurrencyToken() // 추가
-           .HasColumnType("BIGINT"); // 추가
+                        .IsConcurrencyToken() // 추가
+                        .HasColumnType("BIGINT"); // 추가
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)

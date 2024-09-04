@@ -30,37 +30,37 @@ namespace FamTec.Server.Repository.Maintenence
             {
                 try
                 {
-                    // [2]. 수량체크
+                    /* 수량 체크 */
                     foreach (InOutInventoryDTO model in dto.Inventory!)
                     {
-                        // 출고할게 여러곳에 있으니 전체 Check 개수 Check
+                        /* 출고할게 여러곳에 있으니 전체 Check 개수 Check */
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
 
                         if (InventoryList is not [_, ..])
-                            return null; // 수량이 아에 없음
+                            return null; /* 수량이 아에 없음 */
 
                         if(InventoryList.Sum(i => i.Num) < model.AddStore.Num)
                         {
-                            return null; // 수량이 부족함.
+                            return null; /* 수량이 부족함. */
                         }
                     }
 
-                    // 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림.
+                    /* 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림. */
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
-                    MaintenenceHistory.Name = dto.Name!; // 작업명
-                    MaintenenceHistory.Type = dto.Type!.Value; // 작업구분 (자체작업 / 외주작업 ..)
-                    MaintenenceHistory.Worker = dto.Worker!; // 작업자
-                    MaintenenceHistory.UnitPrice = dto.UnitPrice!.Value; // 단가
-                    MaintenenceHistory.Num = dto.Num!.Value; // 수량
-                    MaintenenceHistory.TotalPrice = dto.TotalPrice!.Value; // 소요비용
-                    MaintenenceHistory.CreateDt = DateTime.Now; // 생성일자
-                    MaintenenceHistory.CreateUser = creater; // 생성자
-                    MaintenenceHistory.UpdateDt = DateTime.Now; // 수정일자
-                    MaintenenceHistory.UpdateUser = creater; // 수정자
-                    MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; // 설비 ID
+                    MaintenenceHistory.Name = dto.Name!; /* 작업명 */
+                    MaintenenceHistory.Type = dto.Type!.Value; /* 작업구분 (자체작업 / 외주작업 ..) */
+                    MaintenenceHistory.Worker = dto.Worker!; /* 작업자 */
+                    MaintenenceHistory.UnitPrice = dto.UnitPrice!.Value; /* 단가 */
+                    MaintenenceHistory.Num = dto.Num!.Value; /* 수량 */
+                    MaintenenceHistory.TotalPrice = dto.TotalPrice!.Value; /* 소요비용 */
+                    MaintenenceHistory.CreateDt = DateTime.Now; /* 생성일자 */
+                    MaintenenceHistory.CreateUser = creater; /* 생성자 */
+                    MaintenenceHistory.UpdateDt = DateTime.Now; /* 수정일자 */
+                    MaintenenceHistory.UpdateUser = creater; /* 수정자 */
+                    MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; /* 설비 ID */
 
                     await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
-                    bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; // 저장
+                    bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; /* 저장 */
 
                     if (!AddHistoryResult)
                     {
@@ -68,17 +68,17 @@ namespace FamTec.Server.Repository.Maintenence
                         return null;
                     }
 
-                    // 여기서 변경해봄
                     foreach (InOutInventoryDTO model in dto.Inventory)
                     {
                         List<InventoryTb> OutModel = new List<InventoryTb>();
                         int? result = 0;
 
-                        // 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 + GUID로 검색
+                        /* 출고시킬 LIST를 만든다 = 사업장ID + ROOMID + MATERIAL ID + 삭제수량 */
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
                         if (InventoryList is not [_, ..])
                         {
-                            return null; // 출고 개수가 부족함.
+                            /* 출고 개수가 부족함. */
+                            return null; 
                         }
 
                         foreach (InventoryTb? inventory in InventoryList)
@@ -139,6 +139,7 @@ namespace FamTec.Server.Repository.Maintenence
                                             OutInventoryTb.DelDt = DateTime.Now;
                                             OutInventoryTb.DelUser = creater;
                                         }
+
                                         context.Update(OutInventoryTb);
                                     }
                                 }
@@ -194,11 +195,11 @@ namespace FamTec.Server.Repository.Maintenence
                         return false;
                     }
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                 {
                     await transaction.RollbackAsync();
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    return false; // 다른곳에서 해당 품목을 사용중입니다.
+                    return false; 
                 }
                 catch (Exception ex)
                 {
@@ -218,7 +219,10 @@ namespace FamTec.Server.Repository.Maintenence
         {
             try
             {
-                List<MaintenenceHistoryTb>? MainTenenceList = await context.MaintenenceHistoryTbs.Where(m => m.FacilityTbId == facilityid && m.DelYn != true).ToListAsync();
+                List<MaintenenceHistoryTb>? MainTenenceList = await context.MaintenenceHistoryTbs
+                    .Where(m => m.FacilityTbId == facilityid && 
+                                m.DelYn != true)
+                    .ToListAsync();
 
                 List<MaintanceListDTO> Model = new List<MaintanceListDTO>();
                 if (MainTenenceList is [_, ..])
@@ -258,9 +262,9 @@ namespace FamTec.Server.Repository.Maintenence
                                 }
                             }
                         }
-
                         Model.Add(MaintanceModel); // 반환모델에 담는다.
                     }
+
                     return Model;
                 }
                 else

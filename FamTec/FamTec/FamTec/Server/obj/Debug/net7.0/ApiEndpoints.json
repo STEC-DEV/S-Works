@@ -2175,6 +2175,95 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetDayList",
+    "RelativePath": "api/Energy/sign/GetDayList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "StartDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetMeterDayList",
+    "RelativePath": "api/Energy/sign/GetMeterDayList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "StartDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "MeterId",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetMeterMonthList",
+    "RelativePath": "api/Energy/sign/GetMeterMonthList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SearchDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "MeterId",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetYearList",
+    "RelativePath": "api/Energy/sign/GetMeterYearList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MeterId",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
     "Method": "GetMonthList",
     "RelativePath": "api/Energy/sign/GetMonthList",
     "HttpMethod": "GET",
@@ -2184,6 +2273,22 @@
       {
         "Name": "SearchDate",
         "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetYearList",
+    "RelativePath": "api/Energy/sign/GetYearList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],
@@ -3370,10 +3475,16 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddMaintenence",
     "RelativePath": "api/Maintenance/sign/AddMaintenance",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.AddMaintanceDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

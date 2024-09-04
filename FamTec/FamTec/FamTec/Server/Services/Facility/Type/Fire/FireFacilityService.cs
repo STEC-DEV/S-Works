@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                     return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
-                    return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = new FacilityDTO(), code = 404 };
+                    return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
             catch (Exception ex)
             {
@@ -127,7 +127,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 }
                 else
                 {
-                    return new ResponseList<FacilityListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FacilityListDTO>(), code = 404 };
+                    return new ResponseList<FacilityListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<FacilityListDTO>(), code = 200 };
                 }
             }
             catch (Exception ex)

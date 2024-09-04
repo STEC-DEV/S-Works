@@ -83,21 +83,21 @@ namespace FamTec.Server.Repository.Inventory
                         Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
                         context.Update(Storetb);
                         bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (UpdateStoreTB != true)
+                        if (UpdateStoreTB != true) // 다른곳에서 해당 품목을 사용중입니다.
                         {
                             await transaction.RollbackAsync();
-                            return false; // 다른곳에서 해당 품목을 사용중입니다.
+                            return false; 
                         }
                     }
 
                     await transaction.CommitAsync();
                     return true;
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                 {
                     await transaction.RollbackAsync();
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    return false; // 다른곳에서 해당 품목을 사용중입니다.
+                    return false; 
                 }
                 catch (Exception ex)
                 {
@@ -485,8 +485,6 @@ namespace FamTec.Server.Repository.Inventory
             {
                 try
                 {
-                  
-                    // [2]. 수량체크
                     foreach (InOutInventoryDTO model in dto)
                     {
                         // 출고할게 여러곳에 있으니 Check 개수 Check
@@ -522,13 +520,11 @@ namespace FamTec.Server.Repository.Inventory
                                 result += inventory.Num;
                                 if(result == model.AddStore.Num)
                                 {
-                                    // 반복문 종료
-                                    break;
+                                    break; // 반복문 종료
                                 }
                             }
                             else
-                                // 반복문 종료
-                                break;
+                                break; // 반복문 종료
                         }
                         // 이시점에서 변경해봄
                         if(OutModel is [_, ..])
@@ -577,8 +573,6 @@ namespace FamTec.Server.Repository.Inventory
                                         }
                                         context.Update(OutInventoryTb);
                                     }
-
-
                                 }
 
                                 if(checksum != model.AddStore.Num)
