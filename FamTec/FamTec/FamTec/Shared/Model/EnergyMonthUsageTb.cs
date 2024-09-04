@@ -10,6 +10,7 @@ namespace FamTec.Shared.Model;
 /// 에너지 월별 사용량
 /// </summary>
 [Table("energy_month_usage_tb")]
+[Index("MeterItemId", "Year", "Month", Name = "UK_METER_ITEM_ID_YEAR_MONTH", IsUnique = true)]
 [Index("MeterItemId", Name = "fk_energy_month_usage_tb_meter_item_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class EnergyMonthUsageTb
@@ -21,80 +22,29 @@ public partial class EnergyMonthUsageTb
     /// <summary>
     /// 년도
     /// </summary>
-    [Column("YEARS", TypeName = "int(11)")]
-    public int Years { get; set; }
+    [Column("YEAR", TypeName = "int(11)")]
+    public int Year { get; set; }
 
     /// <summary>
-    /// 1월
+    /// 월
     /// </summary>
-    [Column("JAN")]
-    public float? Jan { get; set; }
+    [Column("MONTH", TypeName = "int(11)")]
+    public int Month { get; set; }
+
+    [Column("TOTAL_USAGE")]
+    public float? TotalUsage { get; set; }
 
     /// <summary>
-    /// 2월
+    /// 청구금액
     /// </summary>
-    [Column("FEB")]
-    public float? Feb { get; set; }
+    [Column("TOTAL_PRICE")]
+    public float? TotalPrice { get; set; }
 
     /// <summary>
-    /// 3월
+    /// 단가금액
     /// </summary>
-    [Column("MAR")]
-    public float? Mar { get; set; }
-
-    /// <summary>
-    /// 4월
-    /// </summary>
-    [Column("APR")]
-    public float? Apr { get; set; }
-
-    /// <summary>
-    /// 5월
-    /// </summary>
-    [Column("MAY")]
-    public float? May { get; set; }
-
-    /// <summary>
-    /// 6월
-    /// </summary>
-    [Column("JUN")]
-    public float? Jun { get; set; }
-
-    /// <summary>
-    /// 7월
-    /// </summary>
-    [Column("JUL")]
-    public float? Jul { get; set; }
-
-    /// <summary>
-    /// 8월
-    /// </summary>
-    [Column("AUG")]
-    public float? Aug { get; set; }
-
-    /// <summary>
-    /// 9월
-    /// </summary>
-    [Column("SEP")]
-    public float? Sep { get; set; }
-
-    /// <summary>
-    /// 10월
-    /// </summary>
-    [Column("OCT")]
-    public float? Oct { get; set; }
-
-    /// <summary>
-    /// 11월
-    /// </summary>
-    [Column("NOV")]
-    public float? Nov { get; set; }
-
-    /// <summary>
-    /// 12월
-    /// </summary>
-    [Column("DEC")]
-    public float? Dec { get; set; }
+    [Column("UNIT_PRICE")]
+    public float? UnitPrice { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime CreateDt { get; set; }

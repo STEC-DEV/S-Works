@@ -30,18 +30,21 @@ namespace FamTec.Server.Controllers.Meter.Energy
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/AddEnergy")]
-        //public async ValueTask<IActionResult> AddEnergy()
-        public async ValueTask<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
+        public async ValueTask<IActionResult> AddEnergy()
+        //public async ValueTask<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
         {
             try
             {
-                //AddEnergyDTO dto = new AddEnergyDTO();
-                //dto.MeterID = 5;
-                //dto.MeterDate = DateTime.Now.AddMonths(-1).AddYears(-1);
-                //dto.UseAmount = 200;
+                AddEnergyDTO dto = new AddEnergyDTO();
+                dto.MeterID = 5;
+                dto.MeterDate = DateTime.Now.AddMonths(-1).AddYears(-1).AddDays(-1);
+                dto.Amount1 = 200;
+                dto.Amount2 = 500;
+                dto.Amount3 = 600;
+                dto.TotalAmount = dto.Amount1 + dto.Amount2 + dto.Amount3;
 
                 if (HttpContext is null)
                     return BadRequest();

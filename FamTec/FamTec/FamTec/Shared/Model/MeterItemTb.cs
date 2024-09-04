@@ -71,10 +71,10 @@ public partial class MeterItemTb
     public virtual ContractTypeTb? ContractTb { get; set; }
 
     [InverseProperty("MeterItem")]
-    public virtual ICollection<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; } = new List<EnergyMonthUsageTb>();
+    public virtual ICollection<EnergyDayUsageTb> EnergyDayUsageTbs { get; set; } = new List<EnergyDayUsageTb>();
 
     [InverseProperty("MeterItem")]
-    public virtual ICollection<EnergyUsageTb> EnergyUsageTbs { get; set; } = new List<EnergyUsageTb>();
+    public virtual ICollection<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; } = new List<EnergyMonthUsageTb>();
 
     [ForeignKey("PlaceTbId")]
     [InverseProperty("MeterItemTbs")]

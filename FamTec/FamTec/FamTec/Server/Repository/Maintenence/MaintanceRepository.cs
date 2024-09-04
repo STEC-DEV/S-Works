@@ -235,6 +235,7 @@ namespace FamTec.Server.Repository.Maintenence
                         MaintanceModel.Name = HistoryTB.Name; // 유지보수 명
                         MaintanceModel.Type = HistoryTB.Type; // 작업구분
                         MaintanceModel.TotalPrice = HistoryTB.TotalPrice; // 총 합계
+                        MaintanceModel.Worker = HistoryTB.Worker; // 작업자
 
                         // Log에서 반복문의 해당시점 MaintenenceHistoryTB.ID를 조회한다.
                         List<StoreTb> StoreList = await context.StoreTbs.Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id && m.DelYn != true).ToListAsync();

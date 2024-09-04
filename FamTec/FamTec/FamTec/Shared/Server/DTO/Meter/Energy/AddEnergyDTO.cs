@@ -16,8 +16,25 @@
         public DateTime MeterDate { get; set; }
         
         /// <summary>
-        /// 검침값
+        /// 소계
         /// </summary>
-        public float UseAmount { get; set; }
+        public float Amount1 { get; set; }
+
+        /// <summary>
+        /// 중간부하
+        /// </summary>
+        public float Amount2 { get; set; }
+        
+        /// <summary>
+        /// 최대부하
+        /// </summary>
+        public float Amount3 { get; set; }
+
+        /// <summary>
+        /// 합계
+        /// </summary>
+        public float TotalAmount { get; set;}
+
+    
     }
 }

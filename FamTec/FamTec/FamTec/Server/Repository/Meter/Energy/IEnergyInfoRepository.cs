@@ -10,7 +10,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ValueTask<EnergyUsageTb?> AddAsync(EnergyUsageTb model);
+        public ValueTask<EnergyDayUsageTb?> AddAsync(EnergyDayUsageTb model);
 
         /// <summary>
         /// 해당년-월 데이터 전체 리스트 출력

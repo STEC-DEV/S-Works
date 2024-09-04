@@ -23,13 +23,13 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<EnergyUsageTb?> AddAsync(EnergyUsageTb model)
+        public async ValueTask<EnergyDayUsageTb?> AddAsync(EnergyDayUsageTb model)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    await context.EnergyUsageTbs.AddAsync(model);
+                    await context.EnergyDayUsageTbs.AddAsync(model);
 
                     bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if (!AddResult)
@@ -42,26 +42,16 @@ namespace FamTec.Server.Repository.Meter.Energy
                     EnergyMonthUsageTb? MonthTBInfo = await context.EnergyMonthUsageTbs
                         .FirstOrDefaultAsync(m => m.DelYn != true &&
                         m.MeterItemId == model.MeterItemId && 
-                        m.Years == model.MeterDt.Year);
+                        m.Year == model.MeterDt.Year);
 
                     // 월별
                     if (MonthTBInfo is null)
                     {
                         MonthTBInfo = new EnergyMonthUsageTb
                         {
-                            Jan = 0, // 1월
-                            Feb = 0, // 2월
-                            Mar = 0, // 3월
-                            Apr = 0, // 4월
-                            May = 0, // 5월
-                            Jun = 0, // 6월
-                            Jul = 0, // 7월
-                            Aug = 0, // 8월
-                            Sep = 0, // 9월
-                            Oct = 0, // 10월
-                            Nov = 0, // 11월
-                            Dec = 0, // 12월
-                            Years = model.MeterDt.Year,
+                            TotalUsage = 0,
+                            Year = model.MeterDt.Year,
+                            Month = model.MeterDt.Month,
                             CreateDt = DateTime.Now,
                             CreateUser = model.CreateUser,
                             UpdateDt = DateTime.Now,
@@ -78,77 +68,25 @@ namespace FamTec.Server.Repository.Meter.Energy
                         }
                     }
 
-                    float amount_result  = await context.EnergyUsageTbs
-                        .Where(m => m.DelYn != true && 
+                    float amount_result  = await context.EnergyDayUsageTbs
+                        .Where(m => m.DelYn != true &&
+                                    m.MeterItemId == model.MeterItemId &&
                                     m.MeterDt.Year == model.MeterDt.Year && 
                                     m.MeterDt.Month == model.MeterDt.Month)
-                        .SumAsync(m => m.UseAmount);
+                        .SumAsync(m => m.TotalAmount);
 
-                    switch (model.MeterDt.Month)
+                    EnergyMonthUsageTb? MonthUsageTB = await context.EnergyMonthUsageTbs
+                        .FirstOrDefaultAsync(m => m.DelYn != true && m.Year == model.MeterDt.Year && m.Month == model.MeterDt.Month && m.MeterItemId == model.MeterItemId);
+
+                    if(MonthUsageTB is null)
                     {
-                        case 1:
-                            MonthTBInfo.Jan += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 2:
-                            MonthTBInfo.Feb += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 3:
-                            MonthTBInfo.Mar += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 4:
-                            MonthTBInfo.Apr += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 5:
-                            MonthTBInfo.May += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 6:
-                            MonthTBInfo.Jun += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 7:
-                            MonthTBInfo.Jul += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 8:
-                            MonthTBInfo.Aug += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 9:
-                            MonthTBInfo.Sep += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 10:
-                            MonthTBInfo.Oct += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 11:
-                            MonthTBInfo.Nov += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
-                        case 12:
-                            MonthTBInfo.Dec += amount_result;
-                            MonthTBInfo.UpdateDt = DateTime.Now;
-                            MonthTBInfo.UpdateUser = model.CreateUser;
-                            break;
+                        await transaction.RollbackAsync();
+                        return null;
                     }
 
+                    MonthUsageTB.TotalUsage += amount_result;
                     context.EnergyMonthUsageTbs.Update(MonthTBInfo);
+
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if (!UpdateResult)
                     {
@@ -176,6 +114,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
+                /*
                 int Years = SearchDate.Year;
                 int Month = SearchDate.Month;
 
@@ -256,6 +195,9 @@ namespace FamTec.Server.Repository.Meter.Energy
                     return groupedResult;
                 else
                     return null;
+                */
+
+                return null;
             }
             catch (Exception ex)
             {
@@ -275,6 +217,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
+                /*
                 int Years = SearchDate.Year;
                 int Month = SearchDate.Month;
 
@@ -356,6 +299,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                     return groupedResult;
                 else
                     return null;
+                */
+                return null;
             }
             catch (Exception ex)
             {
@@ -374,48 +319,49 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
-                List<MeterItemTb>? MeterList = await context.MeterItemTbs
-                    .Where(m => m.PlaceTbId == placeid && 
-                                m.DelYn != true)
-                    .ToListAsync();
+                //List<MeterItemTb>? MeterList = await context.MeterItemTbs
+                //    .Where(m => m.PlaceTbId == placeid && 
+                //                m.DelYn != true)
+                //    .ToListAsync();
 
-                if (MeterList is null || !MeterList.Any())
-                    return new List<YearsTotalEnergyDTO>();
+                //if (MeterList is null || !MeterList.Any())
+                //    return new List<YearsTotalEnergyDTO>();
 
 
-                List<EnergyMonthUsageTb>? MonthUsageList = await context.EnergyMonthUsageTbs
-                    .Where(m => MeterList.Select(m => m.MeterItemId).Contains(m.MeterItemId) && 
-                                m.Years == year)
-                    .ToListAsync();
+                //List<EnergyMonthUsageTb>? MonthUsageList = await context.EnergyMonthUsageTbs
+                //    .Where(m => MeterList.Select(m => m.MeterItemId).Contains(m.MeterItemId) && 
+                //                m.Years == year)
+                //    .ToListAsync();
 
-                if(MonthUsageList is null || !MonthUsageList.Any())
-                    return new List<YearsTotalEnergyDTO>();
+                //if(MonthUsageList is null || !MonthUsageList.Any())
+                //    return new List<YearsTotalEnergyDTO>();
 
-                List<YearsTotalEnergyDTO>? model = (from MonthUsageTB in MonthUsageList
-                                                   join MeterTB in context.MeterItemTbs.Where(m => m.DelYn != true)
-                                                   on MonthUsageTB.MeterItemId equals MeterTB.MeterItemId
-                                                   join ContractTypeTB in context.ContractTypeTbs.Where(m => m.DelYn != true)
-                                                   on MeterTB.ContractTbId equals ContractTypeTB.Id
-                                                   select new YearsTotalEnergyDTO
-                                                   {
-                                                       MeterID = MonthUsageTB.MeterItemId,
-                                                       ContractType = ContractTypeTB.Name,
-                                                       Name = MeterTB.Name,
-                                                       JAN = MonthUsageTB.Jan!.Value, /* 1월 */
-                                                       FEB = MonthUsageTB.Feb!.Value, /* 2월 */
-                                                       MAR = MonthUsageTB.Mar!.Value, /* 3월 */
-                                                       APR = MonthUsageTB.Apr!.Value, /* 4월 */
-                                                       MAY = MonthUsageTB.May!.Value, /* 5월 */
-                                                       JUN = MonthUsageTB.Jun!.Value, /* 6월 */
-                                                       JUL = MonthUsageTB.Jul!.Value, /* 7월 */
-                                                       AUG = MonthUsageTB.Aug!.Value, /* 8월 */
-                                                       SEP = MonthUsageTB.Sep!.Value, /* 9월 */
-                                                       OCT = MonthUsageTB.Oct!.Value, /* 10월 */
-                                                       NOV = MonthUsageTB.Nov!.Value, /* 11월 */
-                                                       DEC = MonthUsageTB.Dec!.Value /* 12월 */
-                                                   }).ToList();
+                //List<YearsTotalEnergyDTO>? model = (from MonthUsageTB in MonthUsageList
+                //                                   join MeterTB in context.MeterItemTbs.Where(m => m.DelYn != true)
+                //                                   on MonthUsageTB.MeterItemId equals MeterTB.MeterItemId
+                //                                   join ContractTypeTB in context.ContractTypeTbs.Where(m => m.DelYn != true)
+                //                                   on MeterTB.ContractTbId equals ContractTypeTB.Id
+                //                                   select new YearsTotalEnergyDTO
+                //                                   {
+                //                                       MeterID = MonthUsageTB.MeterItemId,
+                //                                       ContractType = ContractTypeTB.Name,
+                //                                       Name = MeterTB.Name,
+                //                                       JAN = MonthUsageTB.Jan!.Value, /* 1월 */
+                //                                       FEB = MonthUsageTB.Feb!.Value, /* 2월 */
+                //                                       MAR = MonthUsageTB.Mar!.Value, /* 3월 */
+                //                                       APR = MonthUsageTB.Apr!.Value, /* 4월 */
+                //                                       MAY = MonthUsageTB.May!.Value, /* 5월 */
+                //                                       JUN = MonthUsageTB.Jun!.Value, /* 6월 */
+                //                                       JUL = MonthUsageTB.Jul!.Value, /* 7월 */
+                //                                       AUG = MonthUsageTB.Aug!.Value, /* 8월 */
+                //                                       SEP = MonthUsageTB.Sep!.Value, /* 9월 */
+                //                                       OCT = MonthUsageTB.Oct!.Value, /* 10월 */
+                //                                       NOV = MonthUsageTB.Nov!.Value, /* 11월 */
+                //                                       DEC = MonthUsageTB.Dec!.Value /* 12월 */
+                //                                   }).ToList();
 
-                return model;
+                //return model;
+                return null;
             }
             catch(Exception ex)
             {
@@ -435,49 +381,50 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
-                List<MeterItemTb>? MeterList = await context.MeterItemTbs
-                    .Where(m => MeterId.Contains(m.MeterItemId) && 
-                                         m.PlaceTbId == placeid && 
-                                         m.DelYn != true)
-                    .ToListAsync();
+                //List<MeterItemTb>? MeterList = await context.MeterItemTbs
+                //    .Where(m => MeterId.Contains(m.MeterItemId) && 
+                //                         m.PlaceTbId == placeid && 
+                //                         m.DelYn != true)
+                //    .ToListAsync();
 
-                if (MeterList is null || !MeterList.Any())
-                    return new List<YearsTotalEnergyDTO>();
+                //if (MeterList is null || !MeterList.Any())
+                //    return new List<YearsTotalEnergyDTO>();
 
 
-                List<EnergyMonthUsageTb>? MonthUsageList = await context.EnergyMonthUsageTbs
-                    .Where(m => MeterList.Select(m => m.MeterItemId).Contains(m.MeterItemId) &&
-                                m.Years == year)
-                    .ToListAsync();
+                //List<EnergyMonthUsageTb>? MonthUsageList = await context.EnergyMonthUsageTbs
+                //    .Where(m => MeterList.Select(m => m.MeterItemId).Contains(m.MeterItemId) &&
+                //                m.Years == year)
+                //    .ToListAsync();
 
-                if (MonthUsageList is null || !MonthUsageList.Any())
-                    return new List<YearsTotalEnergyDTO>();
+                //if (MonthUsageList is null || !MonthUsageList.Any())
+                //    return new List<YearsTotalEnergyDTO>();
 
-                List<YearsTotalEnergyDTO>? model = (from MonthUsageTB in MonthUsageList
-                                                    join MeterTB in context.MeterItemTbs.Where(m => m.DelYn != true)
-                                                    on MonthUsageTB.MeterItemId equals MeterTB.MeterItemId
-                                                    join ContractTypeTB in context.ContractTypeTbs.Where(m => m.DelYn != true)
-                                                    on MeterTB.ContractTbId equals ContractTypeTB.Id
-                                                    select new YearsTotalEnergyDTO
-                                                    {
-                                                        MeterID = MonthUsageTB.MeterItemId,
-                                                        ContractType = ContractTypeTB.Name,
-                                                        Name = MeterTB.Name,
-                                                        JAN = MonthUsageTB.Jan!.Value, /* 1월 */
-                                                        FEB = MonthUsageTB.Feb!.Value, /* 2월 */
-                                                        MAR = MonthUsageTB.Mar!.Value, /* 3월 */
-                                                        APR = MonthUsageTB.Apr!.Value, /* 4월 */
-                                                        MAY = MonthUsageTB.May!.Value, /* 5월 */
-                                                        JUN = MonthUsageTB.Jun!.Value, /* 6월 */
-                                                        JUL = MonthUsageTB.Jul!.Value, /* 7월 */
-                                                        AUG = MonthUsageTB.Aug!.Value, /* 8월 */
-                                                        SEP = MonthUsageTB.Sep!.Value, /* 9월 */
-                                                        OCT = MonthUsageTB.Oct!.Value, /* 10월 */
-                                                        NOV = MonthUsageTB.Nov!.Value, /* 11월 */
-                                                        DEC = MonthUsageTB.Dec!.Value /* 12월 */
-                                                    }).ToList();
+                //List<YearsTotalEnergyDTO>? model = (from MonthUsageTB in MonthUsageList
+                //                                    join MeterTB in context.MeterItemTbs.Where(m => m.DelYn != true)
+                //                                    on MonthUsageTB.MeterItemId equals MeterTB.MeterItemId
+                //                                    join ContractTypeTB in context.ContractTypeTbs.Where(m => m.DelYn != true)
+                //                                    on MeterTB.ContractTbId equals ContractTypeTB.Id
+                //                                    select new YearsTotalEnergyDTO
+                //                                    {
+                //                                        MeterID = MonthUsageTB.MeterItemId,
+                //                                        ContractType = ContractTypeTB.Name,
+                //                                        Name = MeterTB.Name,
+                //                                        JAN = MonthUsageTB.Jan!.Value, /* 1월 */
+                //                                        FEB = MonthUsageTB.Feb!.Value, /* 2월 */
+                //                                        MAR = MonthUsageTB.Mar!.Value, /* 3월 */
+                //                                        APR = MonthUsageTB.Apr!.Value, /* 4월 */
+                //                                        MAY = MonthUsageTB.May!.Value, /* 5월 */
+                //                                        JUN = MonthUsageTB.Jun!.Value, /* 6월 */
+                //                                        JUL = MonthUsageTB.Jul!.Value, /* 7월 */
+                //                                        AUG = MonthUsageTB.Aug!.Value, /* 8월 */
+                //                                        SEP = MonthUsageTB.Sep!.Value, /* 9월 */
+                //                                        OCT = MonthUsageTB.Oct!.Value, /* 10월 */
+                //                                        NOV = MonthUsageTB.Nov!.Value, /* 11월 */
+                //                                        DEC = MonthUsageTB.Dec!.Value /* 12월 */
+                //                                    }).ToList();
 
-                return model;
+                //return model;
+                return null;
             }
             catch(Exception ex)
             {
@@ -499,86 +446,87 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
-                DateTime Search_startDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day); // 시작일
-                DateTime Search_endDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day); // 종료일
+                //DateTime Search_startDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day); // 시작일
+                //DateTime Search_endDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day); // 종료일
 
-                // 시작일 ~~ 종료일 까지 1일단위로 List에 담음.
-                List<DateTime> dateList = Enumerable.Range(0, (Search_endDate - Search_startDate).Days + 1)
-                                                    .Select(offset => Search_startDate.AddDays(offset))
-                                                    .ToList();
+                //// 시작일 ~~ 종료일 까지 1일단위로 List에 담음.
+                //List<DateTime> dateList = Enumerable.Range(0, (Search_endDate - Search_startDate).Days + 1)
+                //                                    .Select(offset => Search_startDate.AddDays(offset))
+                //                                    .ToList();
 
-                // MeterItemTable의 Where 조건에 맞는 모든 List 반환
-                List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
-                    .Where(m => m.DelYn != true &&
-                                m.PlaceTbId == placeid &&
-                                m.ContractTbId != null)
-                    .ToListAsync();
+                //// MeterItemTable의 Where 조건에 맞는 모든 List 반환
+                //List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
+                //    .Where(m => m.DelYn != true &&
+                //                m.PlaceTbId == placeid &&
+                //                m.ContractTbId != null)
+                //    .ToListAsync();
 
-                if (allMeterItems is null || !allMeterItems.Any())
-                    return null;
+                //if (allMeterItems is null || !allMeterItems.Any())
+                //    return null;
 
-                // 그룹 만들 데이터 크로스 조인
-                List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in dateList
-                                                            from AllMeterList in allMeterItems
-                                                            join a in
-                                                                (from EnergyList in context.EnergyUsageTbs
-                                                                 join MeterItemList in context.MeterItemTbs
-                                                           on EnergyList.MeterItemId equals MeterItemList.MeterItemId
-                                                                 where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
-                                                                                                mt.MeterItemId == MeterItemList.MeterItemId)
-                                                                 group EnergyList by new
-                                                                 {
-                                                                     EnergyList.MeterItemId,
-                                                                     EnergyList.MeterDt.Date
-                                                                 } into g
-                                                                 select new
-                                                                 {
-                                                                     g.Key.MeterItemId,
-                                                                     DT = g.Key.Date,
-                                                                     TotalUseAmount = g.Sum(x => x.UseAmount)
-                                                                 })
-                                                            on new
-                                                            {
-                                                                AllMeterList.MeterItemId,
-                                                                DT = AllDateList
-                                                            } equals new
-                                                            {
-                                                                a.MeterItemId,
-                                                                a.DT
-                                                            } into gj
-                                                            from sub in gj.DefaultIfEmpty()
-                                                            join ContractTypeTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid)
-                                                            on AllMeterList.ContractTbId equals ContractTypeTB.Id
-                                                            select new DayTotalEnergyDTO
-                                                            {
-                                                                MaterItemId = AllMeterList.MeterItemId,
-                                                                ContractName = ContractTypeTB.Name,
-                                                                Name = AllMeterList.Name,
-                                                                Date = AllDateList,
-                                                                TotalUseAmount = sub?.TotalUseAmount ?? 0
-                                                            })
-                                                            .ToList();
+                //// 그룹 만들 데이터 크로스 조인
+                //List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in dateList
+                //                                            from AllMeterList in allMeterItems
+                //                                            join a in
+                //                                                (from EnergyList in context.EnergyUsageTbs
+                //                                                 join MeterItemList in context.MeterItemTbs
+                //                                           on EnergyList.MeterItemId equals MeterItemList.MeterItemId
+                //                                                 where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
+                //                                                                                mt.MeterItemId == MeterItemList.MeterItemId)
+                //                                                 group EnergyList by new
+                //                                                 {
+                //                                                     EnergyList.MeterItemId,
+                //                                                     EnergyList.MeterDt.Date
+                //                                                 } into g
+                //                                                 select new
+                //                                                 {
+                //                                                     g.Key.MeterItemId,
+                //                                                     DT = g.Key.Date,
+                //                                                     TotalUseAmount = g.Sum(x => x.UseAmount)
+                //                                                 })
+                //                                            on new
+                //                                            {
+                //                                                AllMeterList.MeterItemId,
+                //                                                DT = AllDateList
+                //                                            } equals new
+                //                                            {
+                //                                                a.MeterItemId,
+                //                                                a.DT
+                //                                            } into gj
+                //                                            from sub in gj.DefaultIfEmpty()
+                //                                            join ContractTypeTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid)
+                //                                            on AllMeterList.ContractTbId equals ContractTypeTB.Id
+                //                                            select new DayTotalEnergyDTO
+                //                                            {
+                //                                                MaterItemId = AllMeterList.MeterItemId,
+                //                                                ContractName = ContractTypeTB.Name,
+                //                                                Name = AllMeterList.Name,
+                //                                                Date = AllDateList,
+                //                                                TotalUseAmount = sub?.TotalUseAmount ?? 0
+                //                                            })
+                //                                            .ToList();
 
-                if (crossJoinResult is null || !crossJoinResult.Any())
-                    return null;
+                //if (crossJoinResult is null || !crossJoinResult.Any())
+                //    return null;
 
-                // 그룹화
-                List<DayEnergyDTO>? groupedResult = crossJoinResult
-                    .GroupBy(x => new { x.MaterItemId, x.Name, x.ContractName })
-                    .Select(g => new DayEnergyDTO
-                    {
-                        MaterItemId = g.Key.MaterItemId,
-                        ContractName = g.Key.ContractName,
-                        Name = g.Key.Name,
-                        TotalList = g.OrderBy(x => x.Date).ToList()
-                    })
-                    .OrderBy(x => x.MaterItemId)
-                    .ToList();
+                //// 그룹화
+                //List<DayEnergyDTO>? groupedResult = crossJoinResult
+                //    .GroupBy(x => new { x.MaterItemId, x.Name, x.ContractName })
+                //    .Select(g => new DayEnergyDTO
+                //    {
+                //        MaterItemId = g.Key.MaterItemId,
+                //        ContractName = g.Key.ContractName,
+                //        Name = g.Key.Name,
+                //        TotalList = g.OrderBy(x => x.Date).ToList()
+                //    })
+                //    .OrderBy(x => x.MaterItemId)
+                //    .ToList();
 
-                if (groupedResult is not null && groupedResult.Any())
-                    return groupedResult;
-                else
-                    return null;
+                //if (groupedResult is not null && groupedResult.Any())
+                //    return groupedResult;
+                //else
+                //    return null;
+                return null;
             }
             catch (Exception ex)
             {
@@ -599,87 +547,88 @@ namespace FamTec.Server.Repository.Meter.Energy
         {
             try
             {
-                DateTime Search_startDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day); // 시작일
-                DateTime Search_endDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day); // 종료일
+                //DateTime Search_startDate = new DateTime(StartDate.Year, StartDate.Month, StartDate.Day); // 시작일
+                //DateTime Search_endDate = new DateTime(EndDate.Year, EndDate.Month, EndDate.Day); // 종료일
 
-                // 시작일 ~~ 종료일 까지 1일단위로 List에 담음.
-                List<DateTime> dateList = Enumerable.Range(0, (Search_endDate - Search_startDate).Days + 1)
-                                                    .Select(offset => Search_startDate.AddDays(offset))
-                                                    .ToList();
+                //// 시작일 ~~ 종료일 까지 1일단위로 List에 담음.
+                //List<DateTime> dateList = Enumerable.Range(0, (Search_endDate - Search_startDate).Days + 1)
+                //                                    .Select(offset => Search_startDate.AddDays(offset))
+                //                                    .ToList();
 
-                // MeterItemTable의 Where 조건에 맞는 모든 List 반환
-                List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
-                    .Where(m => MeterId.Contains(m.MeterItemId) &&
-                                                m.DelYn != true &&
-                                         m.PlaceTbId == placeid &&
-                                        m.ContractTbId != null)
-                    .ToListAsync();
+                //// MeterItemTable의 Where 조건에 맞는 모든 List 반환
+                //List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
+                //    .Where(m => MeterId.Contains(m.MeterItemId) &&
+                //                                m.DelYn != true &&
+                //                         m.PlaceTbId == placeid &&
+                //                        m.ContractTbId != null)
+                //    .ToListAsync();
 
-                if (allMeterItems is null || !allMeterItems.Any())
-                    return null;
+                //if (allMeterItems is null || !allMeterItems.Any())
+                //    return null;
 
-                // 그룹 만들 데이터 크로스 조인
-                List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in dateList
-                                                            from AllMeterList in allMeterItems
-                                                            join a in
-                                                                (from EnergyList in context.EnergyUsageTbs
-                                                                 join MeterItemList in context.MeterItemTbs
-                                                           on EnergyList.MeterItemId equals MeterItemList.MeterItemId
-                                                                 where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
-                                                                                                mt.MeterItemId == MeterItemList.MeterItemId)
-                                                                 group EnergyList by new
-                                                                 {
-                                                                     EnergyList.MeterItemId,
-                                                                     EnergyList.MeterDt.Date
-                                                                 } into g
-                                                                 select new
-                                                                 {
-                                                                     g.Key.MeterItemId,
-                                                                     DT = g.Key.Date,
-                                                                     TotalUseAmount = g.Sum(x => x.UseAmount)
-                                                                 })
-                                                            on new
-                                                            {
-                                                                AllMeterList.MeterItemId,
-                                                                DT = AllDateList
-                                                            } equals new
-                                                            {
-                                                                a.MeterItemId,
-                                                                a.DT
-                                                            } into gj
-                                                            from sub in gj.DefaultIfEmpty()
-                                                            join ContractTypeTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid)
-                                                            on AllMeterList.ContractTbId equals ContractTypeTB.Id
-                                                            select new DayTotalEnergyDTO
-                                                            {
-                                                                MaterItemId = AllMeterList.MeterItemId,
-                                                                ContractName = ContractTypeTB.Name,
-                                                                Name = AllMeterList.Name,
-                                                                Date = AllDateList,
-                                                                TotalUseAmount = sub?.TotalUseAmount ?? 0
-                                                            })
-                                                            .ToList();
+                //// 그룹 만들 데이터 크로스 조인
+                //List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in dateList
+                //                                            from AllMeterList in allMeterItems
+                //                                            join a in
+                //                                                (from EnergyList in context.EnergyUsageTbs
+                //                                                 join MeterItemList in context.MeterItemTbs
+                //                                           on EnergyList.MeterItemId equals MeterItemList.MeterItemId
+                //                                                 where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
+                //                                                                                mt.MeterItemId == MeterItemList.MeterItemId)
+                //                                                 group EnergyList by new
+                //                                                 {
+                //                                                     EnergyList.MeterItemId,
+                //                                                     EnergyList.MeterDt.Date
+                //                                                 } into g
+                //                                                 select new
+                //                                                 {
+                //                                                     g.Key.MeterItemId,
+                //                                                     DT = g.Key.Date,
+                //                                                     TotalUseAmount = g.Sum(x => x.UseAmount)
+                //                                                 })
+                //                                            on new
+                //                                            {
+                //                                                AllMeterList.MeterItemId,
+                //                                                DT = AllDateList
+                //                                            } equals new
+                //                                            {
+                //                                                a.MeterItemId,
+                //                                                a.DT
+                //                                            } into gj
+                //                                            from sub in gj.DefaultIfEmpty()
+                //                                            join ContractTypeTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid)
+                //                                            on AllMeterList.ContractTbId equals ContractTypeTB.Id
+                //                                            select new DayTotalEnergyDTO
+                //                                            {
+                //                                                MaterItemId = AllMeterList.MeterItemId,
+                //                                                ContractName = ContractTypeTB.Name,
+                //                                                Name = AllMeterList.Name,
+                //                                                Date = AllDateList,
+                //                                                TotalUseAmount = sub?.TotalUseAmount ?? 0
+                //                                            })
+                //                                            .ToList();
 
-                if (crossJoinResult is null || !crossJoinResult.Any())
-                    return null;
+                //if (crossJoinResult is null || !crossJoinResult.Any())
+                //    return null;
 
-                // 그룹화
-                List<DayEnergyDTO>? groupedResult = crossJoinResult
-                    .GroupBy(x => new { x.MaterItemId, x.Name, x.ContractName })
-                    .Select(g => new DayEnergyDTO
-                    {
-                        MaterItemId = g.Key.MaterItemId,
-                        ContractName = g.Key.ContractName,
-                        Name = g.Key.Name,
-                        TotalList = g.OrderBy(x => x.Date).ToList()
-                    })
-                    .OrderBy(x => x.MaterItemId)
-                    .ToList();
+                //// 그룹화
+                //List<DayEnergyDTO>? groupedResult = crossJoinResult
+                //    .GroupBy(x => new { x.MaterItemId, x.Name, x.ContractName })
+                //    .Select(g => new DayEnergyDTO
+                //    {
+                //        MaterItemId = g.Key.MaterItemId,
+                //        ContractName = g.Key.ContractName,
+                //        Name = g.Key.Name,
+                //        TotalList = g.OrderBy(x => x.Date).ToList()
+                //    })
+                //    .OrderBy(x => x.MaterItemId)
+                //    .ToList();
 
-                if (groupedResult is not null && groupedResult.Any())
-                    return groupedResult;
-                else
-                    return null;
+                //if (groupedResult is not null && groupedResult.Any())
+                //    return groupedResult;
+                //else
+                //    return null;
+                return null;
             }
             catch (Exception ex)
             {

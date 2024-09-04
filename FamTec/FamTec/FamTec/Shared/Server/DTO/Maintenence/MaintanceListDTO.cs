@@ -26,6 +26,11 @@
         public int? Type { get; set; }
 
         /// <summary>
+        /// 작업자
+        /// </summary>
+        public string? Worker { get; set; }
+
+        /// <summary>
         /// 사용자재 리스트
         /// </summary>
         public List<UsedMaterialDTO> UsedMaterialList { get; set; } = new List<UsedMaterialDTO>();

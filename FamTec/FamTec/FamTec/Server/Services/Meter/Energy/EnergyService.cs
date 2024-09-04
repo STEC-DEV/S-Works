@@ -36,10 +36,13 @@ namespace FamTec.Server.Services.Meter.Energy
                 if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                EnergyUsageTb EnergyUserTB = new EnergyUsageTb()
+                EnergyDayUsageTb EnergyUserTB = new EnergyDayUsageTb()
                 {
                     MeterDt = dto.MeterDate,
-                    UseAmount = dto.UseAmount,
+                    Amount1 = dto.Amount1,
+                    Amount2 = dto.Amount2,
+                    Amount3 = dto.Amount3,
+                    TotalAmount = dto.TotalAmount,
                     MeterItemId = dto.MeterID,
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
@@ -47,7 +50,7 @@ namespace FamTec.Server.Services.Meter.Energy
                     UpdateUser = creater
                 };
 
-                EnergyUsageTb? model = await EnergyInfoRepository.AddAsync(EnergyUserTB);
+                EnergyDayUsageTb? model = await EnergyInfoRepository.AddAsync(EnergyUserTB);
                 if (model is not null)
                     return new ResponseUnit<AddEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 else

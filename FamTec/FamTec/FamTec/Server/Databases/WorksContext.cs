@@ -38,9 +38,9 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<DepartmentsTb> DepartmentsTbs { get; set; }
 
-    public virtual DbSet<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; }
+    public virtual DbSet<EnergyDayUsageTb> EnergyDayUsageTbs { get; set; }
 
-    public virtual DbSet<EnergyUsageTb> EnergyUsageTbs { get; set; }
+    public virtual DbSet<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; }
 
     public virtual DbSet<FacilityItemGroupTb> FacilityItemGroupTbs { get; set; }
 
@@ -84,6 +84,13 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
+
+        // 쿼리스트링 사용
+        modelBuilder.Entity<MaterialInventory>(entity =>
+        {
+            entity.HasNoDiscriminator();
+        });
+
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -362,72 +369,42 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Name).HasComment("부서명");
         });
 
+        modelBuilder.Entity<EnergyDayUsageTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("energy_day_usage_tb", tb => tb.HasComment("에너지 검침 기록 - 일별"));
+
+            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.MeterDt).HasComment("검침일자");
+            entity.Property(e => e.TotalAmount).HasComment("사용량");
+
+            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyDayUsageTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_energy_usage_tb_meter_item_tb1");
+        });
+
         modelBuilder.Entity<EnergyMonthUsageTb>(entity =>
         {
             entity.HasKey(e => e.MonthUsageId).HasName("PRIMARY");
 
             entity.ToTable("energy_month_usage_tb", tb => tb.HasComment("에너지 월별 사용량"));
 
-            entity.Property(e => e.Apr)
-                .HasDefaultValueSql("'0'")
-                .HasComment("4월");
-            entity.Property(e => e.Aug)
-                .HasDefaultValueSql("'0'")
-                .HasComment("8월");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.Dec)
-                .HasDefaultValueSql("'0'")
-                .HasComment("12월");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.Feb)
-                .HasDefaultValueSql("'0'")
-                .HasComment("2월");
-            entity.Property(e => e.Jan)
-                .HasDefaultValueSql("'0'")
-                .HasComment("1월");
-            entity.Property(e => e.Jul)
-                .HasDefaultValueSql("'0'")
-                .HasComment("7월");
-            entity.Property(e => e.Jun)
-                .HasDefaultValueSql("'0'")
-                .HasComment("6월");
-            entity.Property(e => e.Mar)
-                .HasDefaultValueSql("'0'")
-                .HasComment("3월");
-            entity.Property(e => e.May)
-                .HasDefaultValueSql("'0'")
-                .HasComment("5월");
             entity.Property(e => e.MeterItemId).HasComment("검침기 인덱스");
-            entity.Property(e => e.Nov)
+            entity.Property(e => e.Month).HasComment("월");
+            entity.Property(e => e.TotalPrice)
                 .HasDefaultValueSql("'0'")
-                .HasComment("11월");
-            entity.Property(e => e.Oct)
-                .HasDefaultValueSql("'0'")
-                .HasComment("10월");
-            entity.Property(e => e.Sep)
-                .HasDefaultValueSql("'0'")
-                .HasComment("9월");
-            entity.Property(e => e.Years).HasComment("년도");
+                .HasComment("청구금액");
+            entity.Property(e => e.TotalUsage).HasDefaultValueSql("'0'");
+            entity.Property(e => e.UnitPrice).HasComment("단가금액");
+            entity.Property(e => e.Year).HasComment("년도");
 
             entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_energy_month_usage_tb_meter_item_tb1");
-        });
-
-        modelBuilder.Entity<EnergyUsageTb>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("energy_usage_tb", tb => tb.HasComment("에너지 검침 기록 - 일별"));
-
-            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.MeterDt).HasComment("검침일자");
-            entity.Property(e => e.UseAmount).HasComment("사용량");
-
-            entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyUsageTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_energy_usage_tb_meter_item_tb1");
         });
 
         modelBuilder.Entity<FacilityItemGroupTb>(entity =>
@@ -569,8 +546,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion)
-                        .IsConcurrencyToken() // 추가
-                        .HasColumnType("BIGINT"); // 추가
+                      .IsConcurrencyToken() // 추가
+                      .HasColumnType("BIGINT"); // 추가
+
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
