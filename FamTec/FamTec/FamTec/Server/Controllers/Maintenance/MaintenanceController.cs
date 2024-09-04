@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
+using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using Microsoft.AspNetCore.Authorization;
@@ -138,7 +139,32 @@ namespace FamTec.Server.Controllers.Maintenance
                 LogService.LogMessage(ex.Message);
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
+        }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetDetailMaintance")]
+        public async ValueTask<IActionResult> GetDetailMaintance(int Maintanceid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
         }
 
         /// <summary>

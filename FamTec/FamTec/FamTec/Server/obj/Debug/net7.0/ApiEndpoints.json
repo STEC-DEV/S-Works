@@ -3570,6 +3570,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "GetDetailMaintance",
+    "RelativePath": "api/Maintenance/sign/GetDetailMaintance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Maintanceid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "GetMaintanceHistory",
     "RelativePath": "api/Maintenance/sign/GetMaintanceHistory",
     "HttpMethod": "GET",

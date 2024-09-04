@@ -43,5 +43,12 @@ namespace FamTec.Server.Repository.Maintenence
         /// <returns></returns>
         ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type);
 
+        /// <summary>
+        /// 유지보수 상세조회
+        /// </summary>
+        /// <param name="MaintanceID"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid);
     }
 }

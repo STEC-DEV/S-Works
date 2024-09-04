@@ -40,3 +40,13 @@
 [2024-09-04 오후 6:27:45]	System.ArgumentNullException: Value cannot be null.
    at FamTec.Server.Repository.Maintenence.MaintanceRepository.GetFacilityHistoryList(Int32 facilityid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Maintenence\MaintanceRepository.cs:line 301
    at FamTec.Server.Services.Maintenance.MaintanceService.GetMaintanceHistoryService(HttpContext context, Int32 facilityid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Maintenance\MaintanceService.cs:line 123
+[2024-09-04 오후 7:02:38]	System.NullReferenceException: Object reference not set to an instance of an object.
+   at FamTec.Server.Repository.Maintenence.MaintanceRepository.GetFacilityHistoryList(Int32 facilityid, Int32 placeid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Maintenence\MaintanceRepository.cs:line 276
+[2024-09-04 오후 7:02:38]	System.ArgumentNullException: Value cannot be null.
+   at FamTec.Server.Repository.Maintenence.MaintanceRepository.GetFacilityHistoryList(Int32 facilityid, Int32 placeid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Maintenence\MaintanceRepository.cs:line 305
+   at FamTec.Server.Services.Maintenance.MaintanceService.GetMaintanceHistoryService(HttpContext context, Int32 facilityid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Maintenance\MaintanceService.cs:line 127
+[2024-09-04 오후 7:02:40]	System.NullReferenceException: Object reference not set to an instance of an object.
+   at FamTec.Server.Repository.Maintenence.MaintanceRepository.GetFacilityHistoryList(Int32 facilityid, Int32 placeid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Maintenence\MaintanceRepository.cs:line 276
+[2024-09-04 오후 7:02:40]	System.ArgumentNullException: Value cannot be null.
+   at FamTec.Server.Repository.Maintenence.MaintanceRepository.GetFacilityHistoryList(Int32 facilityid, Int32 placeid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Maintenence\MaintanceRepository.cs:line 305
+   at FamTec.Server.Services.Maintenance.MaintanceService.GetMaintanceHistoryService(HttpContext context, Int32 facilityid) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Maintenance\MaintanceService.cs:line 127

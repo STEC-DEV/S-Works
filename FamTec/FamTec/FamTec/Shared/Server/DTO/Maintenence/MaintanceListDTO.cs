@@ -11,9 +11,9 @@
         public int? ID { get; set; }
 
         /// <summary>
-        /// 일자
+        /// 작업일자
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        public DateTime? WorkDT { get; set; }
 
         /// <summary>
         /// 유지보수 명
@@ -39,11 +39,6 @@
         /// 총 비용
         /// </summary>
         public float? TotalPrice { get; set; }
-
-        /// <summary>
-        /// 이미지
-        /// </summary>
-        public byte[]? Image { get; set; }
     }
 
     /// <summary>
@@ -60,16 +55,6 @@
         /// 공간 ID - 재입고시 필요
         /// </summary>
         public int? RoomTBID { get; set; }
-
-        /// <summary>
-        /// 사업장ID - 재입고시 필요
-        /// </summary>
-        public int? PlaceTBID { get; set; }
-
-        /// <summary>
-        /// 자재ID - 재입고시 필요
-        /// </summary>
-        public int? MaterialTBID { get; set; }
 
         /// <summary>
         /// 사용자재 인덱스 - 재입고시 필요

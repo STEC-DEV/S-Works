@@ -48,5 +48,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="type"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, string category, int type);
+
+        public ValueTask<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID);
     }
 }

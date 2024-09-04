@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Office.PowerPoint.Y2021.M06.Main;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
@@ -23,6 +24,76 @@ namespace FamTec.Server.Repository.Maintenence
             this.context = _context;
             this.FileService = _fileservice;
             this.LogService = _logservice;
+        }
+
+        public async ValueTask<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid)
+        {
+            try
+            {
+                MaintenenceHistoryTb? maintenenceTB = await context.MaintenenceHistoryTbs
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == MaintanceID && m.DelYn != true);
+                if (maintenenceTB is null)
+                {
+                    return null;  // 유지보수 항목이 없으면 null 반환
+                }
+
+                DetailMaintanceDTO maintanceDTO = new DetailMaintanceDTO
+                {
+                    MaintanceID = maintenenceTB.Id, // 유지보수 ID
+                    WorkDT = maintenenceTB.Workdt.ToString("yyyy-MM-dd"), // 작업일자
+                    WorkName = maintenenceTB.Name, // 작업명칭
+                    Type = maintenenceTB.Type, // 작업구분
+                    Worker = maintenenceTB.Worker, // 작업자
+                    UnitPrice = maintenenceTB.UnitPrice, // 단가
+                    Num = maintenenceTB.Num, // 수량
+                    TotalPrice = maintenenceTB.TotalPrice, // 합계
+                    Image = !string.IsNullOrWhiteSpace(maintenenceTB.Image) ? await FileService.GetImageFile($"{Common.FileServer}\\{placeid}\\Maintance", maintenenceTB.Image) : null
+                };
+
+                var storeData = await context.StoreTbs
+                    .Where(store => store.DelYn != true && store.MaintenenceHistoryTbId == maintenenceTB.Id)
+                    .Select(store => new
+                    {
+                        Store = store,
+                        Material = context.MaterialTbs.FirstOrDefault(m => m.Id == store.MaterialTbId && m.DelYn != true),
+                        Room = context.RoomTbs.FirstOrDefault(r => r.Id == store.RoomTbId && r.DelYn != true)
+                    })
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                foreach (var data in storeData)
+                {
+                    if (data.Material is null || data.Room is null)
+                    {
+                        return null;
+                    }
+
+                    UseStoreDTO dto = new UseStoreDTO
+                    {
+                        MaterialID = data.Store.MaterialTbId,
+                        MaterialCode = data.Material.Code,
+                        MaterialName = data.Material.Name,
+                        Standard = data.Material.Standard,
+                        ManufacuringComp = data.Material.ManufacturingComp,
+                        RoomID = data.Store.RoomTbId,
+                        RoomName = data.Room.Name,
+                        UnitPrice = data.Store.UnitPrice,
+                        Num = data.Store.Num,
+                        Unit = data.Material.Unit,
+                        TotalPrice = data.Store.TotalPrice
+                    };
+
+                    maintanceDTO.UseStoreList.Add(dto);
+                }
+
+                return maintanceDTO;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
         }
 
         /// <summary>
@@ -253,12 +324,12 @@ namespace FamTec.Server.Repository.Maintenence
                     {
                         MaintanceListDTO MaintanceModel = new MaintanceListDTO();
                         MaintanceModel.ID = HistoryTB.Id; // 유지보수 설비이력 인덱스
-                        MaintanceModel.CreateDT = HistoryTB.CreateDt; // 생성일
+                        MaintanceModel.WorkDT = HistoryTB.Workdt; // 생성일
                         MaintanceModel.Name = HistoryTB.Name; // 유지보수 명
                         MaintanceModel.Type = HistoryTB.Type; // 작업구분
                         MaintanceModel.TotalPrice = HistoryTB.TotalPrice; // 총 합계
                         MaintanceModel.Worker = HistoryTB.Worker; // 작업자
-                        MaintanceModel.Image = !string.IsNullOrWhiteSpace(HistoryTB.Image) ? await FileService.GetImageFile(MaintanceFileFolderPath, HistoryTB.Image) : null;
+                        //MaintanceModel.Image = !string.IsNullOrWhiteSpace(HistoryTB.Image) ? await FileService.GetImageFile(MaintanceFileFolderPath, HistoryTB.Image) : null;
                         
                         // Log에서 반복문의 해당시점 MaintenenceHistoryTB.ID를 조회한다.
                         List<StoreTb> StoreList = await context.StoreTbs.Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id && m.DelYn != true).ToListAsync();
@@ -266,16 +337,18 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             foreach (StoreTb StoreTB in StoreList)
                             {
-                                int MaterialID = StoreTB.MaterialTbId;
-                                MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == MaterialID && m.DelYn != true);
+                                RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == StoreTB.RoomTbId);
+
+                                MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => 
+                                                                                        m.Id == StoreTB.MaterialTbId &&
+                                                                                        m.DelYn != true);
+
                                 if (MaterialTB is not null)
                                 {
                                     MaintanceModel.UsedMaterialList.Add(new UsedMaterialDTO
                                     {
                                         StoreID = StoreTB.Id,
                                         RoomTBID = StoreTB.RoomTbId,
-                                        PlaceTBID = StoreTB.PlaceTbId,
-                                        MaterialTBID = StoreTB.MaterialTbId,
                                         MaterialID = MaterialTB.Id,
                                         MaterialName = MaterialTB.Name
                                     });
