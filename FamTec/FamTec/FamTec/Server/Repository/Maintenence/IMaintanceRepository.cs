@@ -1,9 +1,24 @@
-﻿using FamTec.Shared.Server.DTO.Maintenence;
+﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Maintenence;
 
 namespace FamTec.Server.Repository.Maintenence
 {
     public interface IMaintanceRepository
     {
+        /// <summary>
+        /// 유지보수 ID로 유지보수 검색
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ValueTask<MaintenenceHistoryTb> GetMaintenanceInfo(int id);
+
+        /// <summary>
+        /// 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<bool> UpdateMaintenanceInfo(MaintenenceHistoryTb model);
+
         /// <summary>
         /// 유지보수이력 추가
         /// </summary>

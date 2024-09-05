@@ -51,6 +51,8 @@ namespace FamTec.Server.Services.Material
         /// <returns></returns>
         public ValueTask<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context,int materialid);
 
+
+
         /// <summary>
         /// 자재정보 수정
         /// </summary>

@@ -637,7 +637,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                     {
                         return null;
                     }
-
                 }
             }
             catch(Exception ex)

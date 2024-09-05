@@ -26,6 +26,55 @@ namespace FamTec.Server.Repository.Maintenence
             this.LogService = _logservice;
         }
 
+
+        /// <summary>
+        /// 유지보수 ID로 유지보수 조회
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async ValueTask<MaintenenceHistoryTb> GetMaintenanceInfo(int id)
+        {
+            try
+            {
+                MaintenenceHistoryTb? model = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
+
+                if (model is not null)
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
+        /// 유지보수 정보 수정
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async ValueTask<bool> UpdateMaintenanceInfo(MaintenenceHistoryTb model)
+        {
+            try
+            {
+                context.MaintenenceHistoryTbs.Update(model);
+                
+                bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                
+                if (UpdateResult)
+                    return true;
+                else
+                    return false;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
         public async ValueTask<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid)
         {
             try
