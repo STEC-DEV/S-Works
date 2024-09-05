@@ -73,29 +73,7 @@ namespace FamTec.Client.Middleware
             return await response.Content.ReadFromJsonAsync<T>(options);
         }
 
-        /*
-         * Post 요청
-         */
-        //private async Task<string> PostSendReqeustAsync(string endpoint, object data, string contentsType)
-        //{
-        //    await AddAuthorizationHeader();
 
-        //    var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
-
-        //    if (data != null)
-        //    {
-        //        string json = JsonSerializer.Serialize(data);
-        //        request.Content = new StringContent(json, Encoding.UTF8, contentsType);
-        //    }
-
-        //    HttpResponseMessage response = await _httpClient.SendAsync(request);
-        //    var a= response.Content;
-        //    Console.WriteLine(a);
-        //    response.EnsureSuccessStatusCode();
-
-        //    return await response.Content.ReadAsStringAsync();
-
-        //}
 
         private async Task<string> PostSendReqeustAsync(string endpoint, object data, string contentType)
         {
@@ -286,7 +264,68 @@ namespace FamTec.Client.Middleware
             string jsonResponse = await PostSendReqeustAsync(endPoint, content, contentType);
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse, options);
         }
-        
+
+
+        //Post Image Test
+        public async Task<ResponseUnit<T>> PostFormAsync<T>(string endPoint, object manager)
+        {
+            string contentType = "multipart/form-data";
+            using var content = new MultipartFormDataContent();
+            // DTO 속성들을 폼 데이터로 추가
+            var properties = manager.GetType().GetProperties();
+            foreach (var prop in properties)
+            {
+                var value = prop.GetValue(manager);
+                if (value != null)
+                {
+                    switch (prop.Name)
+                    {
+                        case "Image":
+                            if (value is List<byte[]> imageList)
+                            {
+                                var imageNames = manager.GetType().GetProperty("ImageName")?.GetValue(manager) as List<string>;
+                                for (int i = 0; i < imageList.Count; i++)
+                                {
+                                    var imageByte1 = imageList[i];
+                                    if (imageByte1.Length > 0)
+                                    {
+                                        var stream = new MemoryStream(imageByte1);
+                                        var streamContent = new StreamContent(stream);
+                                        streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+                                        content.Add(content: streamContent, name: $"\"files\"", fileName: imageNames[i]);
+                                    }
+                                }
+                            }
+                            if (value is byte[] imageBytes && imageBytes.Length > 0)
+                            {
+                                var stream = new MemoryStream(imageBytes);
+                                var streamContent = new StreamContent(stream);
+                                content.Add(content: streamContent, name: "\"files\"", fileName: manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+                            }
+                            break;
+                        case "PlaceList":
+                            if (value is List<int> placeList)
+                            {
+                                foreach (var place in placeList)
+                                {
+                                    content.Add(new StringContent(place.ToString()), "PlaceList");
+                                }
+                            }
+                            break;
+                        default:
+                            content.Add(new StringContent(value.ToString()), prop.Name);
+                            break;
+                    }
+                }
+            }
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            string jsonResponse = await PostSendReqeustAsync(endPoint, content, contentType);
+            return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse, options);
+        }
+
 
         //put 공통
         public async Task<ResponseUnit<T>> PutAsync<T>(string endpoint, object data, bool isMultipart = false)

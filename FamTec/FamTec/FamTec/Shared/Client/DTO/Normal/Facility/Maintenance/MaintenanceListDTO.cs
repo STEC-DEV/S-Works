@@ -28,6 +28,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// </summary>
         public int? Type { get; set; }
 
+        public string Worker { get; set; }
 
         /// <summary>
         /// 총 비용

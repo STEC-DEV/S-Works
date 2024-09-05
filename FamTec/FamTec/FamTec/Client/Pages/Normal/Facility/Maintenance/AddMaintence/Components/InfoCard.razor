@@ -19,51 +19,43 @@
             <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
         </div>
         <div class="infocard-inputs">
-            <DateInput 
-                Label="작업일자" 
-                Row="true"
-                @bind-Date=@Maintenance.WorkDT
-                Placeholder="YYYYMMDD"/>
-            <InputCol
-                Label="작업명"
-                Placeholder="작업명"
-                Row="true" 
-                @bind-Value=@Maintenance.Name
-                />
-            <SelectField 
-                Key="WorkType" 
-                SelectData="WorkType" 
-                @bind-Value="SelectedWorkType" 
-                OnChange="OnWorkTypeChange" 
-                Label="작업 구분"
-                Row="true"
-                EditMode="true" />
+            <DateInput Label="작업일자"
+                       Row="true"
+                       @bind-Date=@Maintenance.WorkDT
+                       Placeholder="YYYYMMDD" />
+            <InputCol Label="작업명"
+                      Placeholder="작업명"
+                      Row="true"
+                      @bind-Value=@Maintenance.Name />
+            <SelectField Key="WorkType"
+                         SelectData="WorkType"
+                         @bind-Value="Maintenance.Type"
+                         OnChange="OnWorkTypeChange"
+                         Label="작업 구분"
+                         Row="true"
+                         EditMode="true" />
 
-            <InputCol
-                Label="작업자"
-                Placeholder="작업자"
-                Row="true" 
-                @bind-Value=@Maintenance.Worker
-                />
-                @* 작업구분에따라 *@
-            @if (SelectedWorkType == 2)
+            <InputCol Label="작업자"
+                      Placeholder="작업자"
+                      Row="true"
+                      @bind-Value=@Maintenance.Worker />
+            @if(Maintenance.Type == 1)
             {
-                <InputCol Label="수량"
-                          Placeholder="수량"
-                          Row="true"
-                          ValueType="number"
-                          @bind-Value=@Maintenance.Num />
-                <InputCol Label="단가"
-                          Placeholder="단가"
-                          Row="true"
-                          @bind-Value=@Maintenance.UnitPrice />
+                <TextField2
+                    Label="쇼요비용"
+                    Row=true
+                    Value="@TotalPrice.ToString()"
+                    />
             }
-
-            <TextField2 
-                Label="소요비용"
-                Value=@Maintenance.TotalPrice.ToString()
-                Row=true 
-                />
+            else
+            {
+                <InputCol Label="소요비용"
+                          Placeholder="소요비용"
+                          @bind-Value=@Maintenance.TotalPrice
+                          ValueType="number"
+                          Row=true />
+            }
+            
 
         </div>
     </div>
@@ -71,10 +63,10 @@
 
 @code {
     // [Parameter]public FacilityDetailDTO Facility { get; set; }
-    private AddMaintenaceDTO _maintenance;
-
+    private AddMaintenanceDTO _maintenance;
+    [Parameter] public float TotalPrice {get; set;}
     [Parameter]
-    public AddMaintenaceDTO Maintenance
+    public AddMaintenanceDTO Maintenance
     {
         get => _maintenance;
         set
@@ -86,7 +78,7 @@
             }
         }
     }
-    [Parameter] public EventCallback<AddMaintenaceDTO> MaintenanceChanged { get; set; }
+    [Parameter] public EventCallback<AddMaintenanceDTO> MaintenanceChanged { get; set; }
 
 
     //건물, 위치정보 조회 변수
@@ -135,6 +127,7 @@
         }
         SelectedWorkType = worktype;
         Maintenance.Type = SelectedWorkType;
+        await MaintenanceChanged.InvokeAsync(Maintenance);
         StateHasChanged();
     }
 

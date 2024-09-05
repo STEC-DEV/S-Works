@@ -84,6 +84,16 @@
         {
             if (float.TryParse(newValue, out float floatValue))
             {
+                // 새로 추가된 부분: Max 값 검사
+                if (Max.HasValue && floatValue > Max.Value)
+                {
+                    floatValue = Max.Value;
+                }
+                // 새로 추가된 부분: Min 값 검사
+                if (Min.HasValue && floatValue < Min.Value)
+                {
+                    floatValue = Min.Value;
+                }
                 await ValueChanged.InvokeAsync((T)(object)floatValue);
             }
             else
@@ -96,6 +106,16 @@
         {
             if (int.TryParse(newValue, out int intValue))
             {
+                // 새로 추가된 부분: Max 값 검사
+                if (Max.HasValue && intValue > Max.Value)
+                {
+                    intValue = Max.Value;
+                }
+                // 새로 추가된 부분: Min 값 검사
+                if (Min.HasValue && intValue < Min.Value)
+                {
+                    intValue = Min.Value;
+                }
                 await ValueChanged.InvokeAsync((T)(object)intValue);
             }
             else

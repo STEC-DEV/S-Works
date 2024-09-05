@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
 
@@ -13,6 +14,7 @@
             {
                 <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
                 <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelMode" />
             }else{
                 <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
             }
@@ -23,13 +25,26 @@
     <div class="content">
 
     </div>
-    <HistoryTable ListData="@ListData" />
+    <HistoryTable ListData="@ListData" FacType="@FacType" FacId="@Id" />
+    @if (_isDel)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <DeleteNote  OnClick="OnDelMode"/>
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
     [Parameter] public int Id{ get; set; }
+    [Parameter] public string FacType{ get; set; }
     List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
     private bool _editMode = false;
+    private bool _isDel = false;
+    List<int?> checkedMaintenance = new List<int?>();
+
+
     protected override async Task OnInitializedAsync()
     {
         await OnLoadMaintenance();
@@ -53,14 +68,31 @@
         }
     }
 
+    private void OnCheck((bool isCheck, MaintenanceListDTO checkdata) data)
+    {
+        if (data.isCheck)
+        {
+            checkedMaintenance.Add(data.checkdata.ID);
+        }
+        else
+        {
+            checkedMaintenance.Remove(data.checkdata.ID);
+        }
+    }
+
 
     private void OnEdit()
     {
         _editMode = !_editMode;
     }
 
+    private void OnDelMode()
+    {
+        _isDel = !_isDel;
+    }
+
     private void OnAdd()
     {
-        Navigation.NavigateTo("/facility/maintenance/add");
+        Navigation.NavigateTo($"/facility/{FacType}/{Id}/maintenance/add");
     }
 }

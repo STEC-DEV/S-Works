@@ -1,0 +1,31 @@
+.modal[b-5r76jmu2ug] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.modal .header>.title[b-5r76jmu2ug]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+.content[b-5r76jmu2ug] {
+    height: 100%;
+    display : flex;
+    gap : var(--default-pd);
+    overflow: auto;
+}
+
+
+.btns[b-5r76jmu2ug] {
+    display: flex;
+    gap: var(--default-pd);
+}

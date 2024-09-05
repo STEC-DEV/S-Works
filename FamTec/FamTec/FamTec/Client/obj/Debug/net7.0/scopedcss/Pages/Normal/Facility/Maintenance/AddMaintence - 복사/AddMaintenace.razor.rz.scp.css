@@ -1,0 +1,9 @@
+
+
+.container[b-2bltkflw4c] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+}
+

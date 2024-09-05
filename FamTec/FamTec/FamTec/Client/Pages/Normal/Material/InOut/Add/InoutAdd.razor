@@ -76,7 +76,7 @@
                 return;
             }
 
-            ResponseList<InOutInventoryDTO> resGet = await apiManager.GetListAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={AddItem.RoomId}&materialid={SelectMaterial.Id}&outcount={AddItem.Num}");
+            ResponseUnit<InOutInventoryDTO> resGet = await apiManager.GetUnitAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={AddItem.RoomId}&materialid={SelectMaterial.Id}&outcount={AddItem.Num}");
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert",resGet.message);
@@ -84,7 +84,7 @@
                 StateHasChanged();
                 return;
             }
-            AddInventoryListData = resGet.data;
+            AddInventoryListData.Add(resGet.data);
             AddItem = new OutContentDTO();
             SelectMaterial = new MaterialSearchListDTO();
             StateHasChanged();

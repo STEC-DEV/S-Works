@@ -52,23 +52,23 @@
             foreach(var row in ListData)
             {
                 <tr class="tr">
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.CreateDT
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.Name
                     </td>
-                    <td class="td">
-                        @row.Type
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @(row.Type == 1 ? "자체 작업" : "외주 작업")
                     </td>
-                    <td class="td">
-                        @row.Type
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @row.Worker
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.TotalPrice
                     </td>
                     <td class="td">
-                        <input type="checkbox" />
+                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
                     </td>
 
                 </tr>
@@ -81,4 +81,17 @@
 
 @code {
     [Parameter] public List<MaintenanceListDTO> ListData { get; set; }
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+    [Parameter] public EventCallback<(bool, MaintenanceListDTO)> OnCheck { get; set; }
+
+    private async void OnChecked(ChangeEventArgs e, MaintenanceListDTO obj)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, obj));
+    }
+
+    private void OnDetail(int? maintenanceId)
+    {
+        Navigation.NavigateTo($"/facility/{FacType}/{FacId}/maintenance/{maintenanceId}");
+    }
 }

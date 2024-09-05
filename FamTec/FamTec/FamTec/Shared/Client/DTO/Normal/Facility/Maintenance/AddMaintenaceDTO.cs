@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 {
-    public class AddMaintenaceDTO
+    public class AddMaintenanceDTO
     {
         /// <summary>
         /// 작업명
@@ -49,6 +49,6 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// </summary>
         public List<InOutInventoryDTO> Inventory { get; set; } = new List<InOutInventoryDTO>();
 
-
+        public List<object> Test { get; set; } = new List<object>();
     }
 }

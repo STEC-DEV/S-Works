@@ -1,24 +1,141 @@
-﻿@page "/facility/maintenance/add"
+﻿@page "/facility/{FacType}/{FacId:int}/maintenance/add"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Maintenance.AddMaintence.Components
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
 
 
 <div class="container">
-    <InfoCard @bind-Maintenance=Maintenance />
-    <SearchMaterial @bind-Data=@SelectMaterial />
-    <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
-    <Button Name="버튼" Type="0" OnClick="OnCheck" />
+    <InfoCard @bind-Maintenance=Maintenance TotalPrice=@_totalPrice />
+    @if(Maintenance.Type == 1)
+    {
+        <SearchMaterial @bind-Data=@SelectMaterial />
+        <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+        <div class="btn">
+            <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
+        </div>
+        <InOutList ListData="@Maintenance.Inventory" />
+    }
+    <div class="btns">
+        <Button Name="유지보수 등록" Width=true Type="0" OnClick=@OnAdd />
+    </div>
 </div>
 
 @code {
-    AddMaintenaceDTO Maintenance = new AddMaintenaceDTO();
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+
+
+    AddMaintenanceDTO Maintenance = new AddMaintenanceDTO();
     AddStoreDTO MaintenanceStore = new AddStoreDTO();
     MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
+    AddFile File = new AddFile();
+    int _defaultWorkType = 1;
+    float _totalPrice = 0; //자체 작업 경우
 
-    private void OnCheck()
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(MaintenanceStore.Note);
+        Maintenance.Type= _defaultWorkType;
+        StateHasChanged();
+    }
+
+    //출고 목록데이터 받아오는 함수
+    //출고 데이터 목록에 추가
+    private async Task OnAddMaterial()
+    {
+        try
+        {
+            if (Maintenance.WorkDT== null ||
+                MaintenanceStore.Num == 0 ||
+                SelectMaterial.Id == 0 ||
+                MaintenanceStore.RoomID == 0||
+                Maintenance.Type != 1
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                MaintenanceStore = new AddStoreDTO();
+                StateHasChanged();
+                return;
+            }
+
+            ResponseUnit<InOutInventoryDTO> resGet = await apiManager.GetUnitAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={MaintenanceStore.RoomID}&materialid={SelectMaterial.Id}&outcount={MaintenanceStore.Num}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                MaintenanceStore = new AddStoreDTO();
+                StateHasChanged();
+                return;
+            }
+            resGet.data.AddStore.InOutDate = Maintenance.WorkDT; //작업날짜 추가
+            resGet.data.MaterialCode = SelectMaterial.Code; //자재 코드
+            resGet.data.MaterialName = SelectMaterial.Name; //자재 이름
+            resGet.data.Unit= SelectMaterial.Unit; //자재 단위
+            _totalPrice += (resGet.data.AddStore.Num * resGet.data.AddStore.UnitPrice);
+            Maintenance.TotalPrice += _totalPrice;
+            Maintenance.Inventory.Add(resGet.data);
+            Console.WriteLine("인벤토리 카운트 복사"+Maintenance.Inventory.Count);
+            MaintenanceStore = new AddStoreDTO();
+            SelectMaterial = new MaterialSearchListDTO();
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+
+    //유지보수 등록
+    private async Task OnAdd()
+    {
+        try
+        {
+            await OnSum();
+            if(
+                Maintenance.FacilityId == 0 ||
+                Maintenance.WorkDT == null ||
+                Maintenance.Type == 0
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "입력 내용을 확인해주세요.");
+                return;
+            }
+            Console.WriteLine(Maintenance.Inventory.Count);
+            //유지보수 정보 전송
+            ResponseUnit<int> resPost = await apiManager.PostAsync<int>("Maintenance/sign/AddMaintenance", Maintenance);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                Navigation.NavigateTo($"/facility/{FacType}/{FacId}");
+                return;
+            }
+            File.ImageName = Maintenance.ImageName;
+            File.Image = Maintenance.Image;
+            File.Id = resPost.data;
+            Console.WriteLine("파일이름" + File.ImageName);
+            Console.WriteLine("유지보수 아이디"+File.Id);
+            //이미지 전송
+            ResponseUnit<bool> resPostImage = await apiManager.PostWithFilesAsync<bool>("Maintenance/sign/AddMaintenanceImage", File);
+            if(resPostImage.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                Navigation.NavigateTo($"/facility/{FacType}/{FacId}");
+                return;
+            }
+            Navigation.NavigateTo($"/facility/{FacType}/{FacId}");
+            Console.WriteLine("이동후");
+            StateHasChanged();
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[유지보수 등록 에러]"+ex);
+            await JS.InvokeVoidAsync("alert", "유지보수 작업에러");
+        }
+    }
+
+    private async Task OnSum()
+    {
+        Maintenance.FacilityId = FacId;
     }
 }
