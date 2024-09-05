@@ -51,11 +51,11 @@ namespace FamTec.Shared.Server.DTO.Maintenence
         /// <summary>
         /// 이미지 경로
         /// </summary>
-        public string? ImageFiles { get; set; }
-
+        //public string? ImageFiles { get; set; }
+      
         /// <summary>
         /// 출고정보
         /// </summary>
-        public List<InOutInventoryDTO>? Inventory { get; set; } = new List<InOutInventoryDTO>();
+        public List<InOutInventoryDTO> Inventory { get; set; } = new List<InOutInventoryDTO>();
     }
 }

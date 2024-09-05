@@ -21,44 +21,72 @@ namespace FamTec.Server.Services.Maintenance
             this.LogService = _logservice;
         }
 
+        public async ValueTask<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
+        {
+            try
+            {
+                if(context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files);
+                if(ImageAddResult == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                }
+                else if(ImageAddResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         /// <summary>
         /// 유지보수 출고등록
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<int?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
         {
             try
             {
                 if (context is null || dto is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? userid = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? OutResult = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid), files);
-                if (OutResult == true)
-                {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-                }
-                else if (OutResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
-                }
+                int? MaintanceId = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+                if(MaintanceId > 0)
+                    return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                else if(MaintanceId == 0)
+                    return new ResponseUnit<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 201 };
+                else if(MaintanceId < 0)
+                    return new ResponseUnit<int?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 202 };
                 else
-                {
-                    return new ResponseUnit<bool?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 200 };
-                }
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
         

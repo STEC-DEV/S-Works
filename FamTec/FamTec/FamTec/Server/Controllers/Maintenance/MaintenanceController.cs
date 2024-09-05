@@ -1,12 +1,9 @@
-﻿using FamTec.Server.Repository.Maintenence;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
-using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace FamTec.Server.Controllers.Maintenance
 {
@@ -15,7 +12,6 @@ namespace FamTec.Server.Controllers.Maintenance
     public class MaintenanceController : ControllerBase
     {
         private IMaintanceService MaintanceService;
-
         private IFileService FileService;
         private ILogService LogService;
 
@@ -29,6 +25,54 @@ namespace FamTec.Server.Controllers.Maintenance
             this.LogService = _logservice;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/AddMaintenanceImage")]
+        public async ValueTask<IActionResult> AddMaintenencec([FromQuery]int id, [FromQuery]IFormFile? files)
+        {
+            try
+            {
+                if (id is 0)
+                    return BadRequest();
+
+                if (files is not null)
+                {
+                    if (files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
+                    }
+                }
+
+                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(HttpContext, id, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 유지보수 등록
         /// </summary>
@@ -38,50 +82,51 @@ namespace FamTec.Server.Controllers.Maintenance
         [HttpPost]
         //[HttpGet]
         [Route("sign/AddMaintenance")]
-        //public async ValueTask<IActionResult> AddMaintenence([FromForm]IFormFile? files)
-        public async ValueTask<IActionResult> AddMaintenence([FromForm]AddMaintenanceDTO dto, IFormFile? files)
+        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
             {
-               //AddMaintanceDTO dto = new AddMaintanceDTO();
-               //dto.Name = "유지보수이력_1";
-               //dto.Type = 0;
-               //dto.Worker = "테스트";
-               //dto.UnitPrice = 500;
-               //dto.Num = 30;
-               //dto.TotalPrice = 30 * 500;
-               //dto.FacilityID = 1;
-               
-               //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-               //{
-               //    InOut = 0,
-               //    MaterialID = 10,
-               //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-               //    {
-               //        InOutDate = DateTime.Now,
-               //        RoomID = 2,
-               //        Num = 74,
-               //        UnitPrice = 100,
-               //        TotalPrice = 10 * 100,
-               //        Note = "출고등록"
-               //    }
-               //});
-               
-               //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-               //{
-               //    InOut = 0,
-               //    MaterialID = 11,
-               //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-               //    {
-               //        InOutDate = DateTime.Now,
-               //        RoomID = 3,
-               //        Num = 10,
-               //        UnitPrice = 200,
-               //        TotalPrice = 3 * 200,
-               //        Note = "출고등록"
-               //    }
-               //});
-                
+
+                // DTO의 Inventory에 역직렬화된 데이터를 할당
+                //AddMaintanceDTO dto = new AddMaintanceDTO();
+                //dto.Name = "유지보수이력_1";
+                //dto.Type = 0;
+                //dto.Worker = "테스트";
+                //dto.UnitPrice = 500;
+                //dto.Num = 30;
+                //dto.TotalPrice = 30 * 500;
+                //dto.FacilityID = 1;
+
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 10,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 2,
+                //        Num = 74,
+                //        UnitPrice = 100,
+                //        TotalPrice = 10 * 100,
+                //        Note = "출고등록"
+                //    }
+                //});
+
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 11,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 3,
+                //        Num = 10,
+                //        UnitPrice = 200,
+                //        TotalPrice = 3 * 200,
+                //        Note = "출고등록"
+                //    }
+                //});
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -109,34 +154,15 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.Inventory is null || !dto.Inventory.Any())
                     return NoContent();
 
-                //if (files is not null)
-                //{
-                //    if (files.Length > Common.MEGABYTE_1)
-                //    {
-                //        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                //    }
-
-                //    string? extension = FileService.GetExtension(files);
-                //    if (String.IsNullOrWhiteSpace(extension))
-                //    {
-                //        return BadRequest();
-                //    }
-                //    else
-                //    {
-                //        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
-                //        if (!extensioncheck)
-                //        {
-                //            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
-                //        }
-                //    }
-                //}
-
-
-                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceService(HttpContext, dto, files);
+                ResponseUnit<int?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
                 if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 201)
+                    return Ok(model);
+                else if(model.code == 202)
                     return Ok(model);
                 else
                     return BadRequest();

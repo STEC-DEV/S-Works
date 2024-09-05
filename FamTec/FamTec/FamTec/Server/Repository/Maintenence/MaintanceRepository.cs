@@ -98,11 +98,69 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
         /// <summary>
+        /// 이미지 업로드
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="placeid"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async ValueTask<bool?> AddMaintanceImageAsync(int id, int placeid, IFormFile? files)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    string? NewFileName = files is not null ? FileService.SetNewFileName(id.ToString(), files) : String.Empty;
+
+                    MaintenenceHistoryTb? MaintenenceHistory = await context.MaintenenceHistoryTbs
+                        .FirstOrDefaultAsync(m => m.Id == id &&
+                                                  m.DelYn != true);
+                    
+                    if (MaintenenceHistory is null)
+                        return null;
+
+                    MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                    di = new DirectoryInfo(MaintanceFileFolderPath);
+                    if (!di.Exists) di.Create();
+
+                    MaintenenceHistory.Image = files is not null ? NewFileName : null;
+
+                    context.MaintenenceHistoryTbs.Update(MaintenenceHistory);
+                    bool UpdateImageResult = await context.SaveChangesAsync() > 0 ? true : false;
+
+                    if (UpdateImageResult)
+                    {
+                        if (files is not null)
+                        {
+                            // 파일 넣기
+                            await FileService.AddResizeImageFile(NewFileName, MaintanceFileFolderPath, files);
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(); // 트랜잭션 롤백
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+        }
+
+        /// <summary>
         /// 유지보수 사용자재 등록 -- 출고등록과 비슷하다 보면됨.
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid, IFormFile? files)
+        public async ValueTask<int?> AddMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
@@ -115,20 +173,13 @@ namespace FamTec.Server.Repository.Maintenence
                         List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
 
                         if (InventoryList is not [_, ..])
-                            return null; /* 수량이 아에 없음 */
+                            return -1; /* 수량이 아에 없음 */
 
                         if(InventoryList.Sum(i => i.Num) < model.AddStore.Num)
                         {
-                            return null; /* 수량이 부족함. */
+                            return -1; /* 수량이 부족함. */
                         }
                     }
-
-
-                    string NewFileName = files is not null ? FileService.SetNewFileName(userid.ToString(), files) : String.Empty;
-
-                    MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
-                    di = new DirectoryInfo(MaintanceFileFolderPath);
-                    if (!di.Exists) di.Create();
 
                     /* 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림. */
                     MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
@@ -143,7 +194,7 @@ namespace FamTec.Server.Repository.Maintenence
                     MaintenenceHistory.UpdateDt = DateTime.Now; /* 수정일자 */
                     MaintenenceHistory.UpdateUser = creater; /* 수정자 */
                     MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; /* 설비 ID */
-                    MaintenenceHistory.Image = files is not null ? NewFileName : null;
+                    
 
                     await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
                     bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; /* 저장 */
@@ -151,7 +202,7 @@ namespace FamTec.Server.Repository.Maintenence
                     if (!AddHistoryResult)
                     {
                         await transaction.RollbackAsync();
-                        return null;
+                        return 0;
                     }
 
                     foreach (InOutInventoryDTO model in dto.Inventory)
@@ -164,7 +215,7 @@ namespace FamTec.Server.Repository.Maintenence
                         if (InventoryList is not [_, ..])
                         {
                             /* 출고 개수가 부족함. */
-                            return null; 
+                            return -1; 
                         }
 
                         foreach (InventoryTb? inventory in InventoryList)
@@ -272,26 +323,20 @@ namespace FamTec.Server.Repository.Maintenence
                     bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
                     if(UpdateResult)
                     {
-                        if(files is not null)
-                        {
-                            // 파일 넣기
-                            await FileService.AddResizeImageFile(NewFileName, MaintanceFileFolderPath, files);
-                        }
-
                         await transaction.CommitAsync(); // 출고완료
-                        return true;
+                        return MaintenenceHistory.Id; // ID 반환
                     }
                     else
                     {
                         await transaction.RollbackAsync(); // 출고 실패
-                        return false;
+                        return 0;
                     }
                 }
                 catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                 {
                     await transaction.RollbackAsync();
                     LogService.LogMessage($"동시성 에러 {ex.Message}");
-                    return false; 
+                    return 0; 
                 }
                 catch (Exception ex)
                 {

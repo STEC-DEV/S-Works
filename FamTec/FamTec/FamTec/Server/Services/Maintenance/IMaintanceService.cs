@@ -11,7 +11,16 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto, IFormFile? files);
+        public ValueTask<ResponseUnit<int?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto);
+
+        /// <summary>
+        /// 유지보수 이미지 등록
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="id"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files);
 
         /// <summary>
         /// 해당 설비의 유지보수 이력 조회
