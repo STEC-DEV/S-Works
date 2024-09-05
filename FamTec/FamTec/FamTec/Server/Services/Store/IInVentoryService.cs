@@ -80,6 +80,6 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount);
+        public ValueTask<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount);
     }
 }

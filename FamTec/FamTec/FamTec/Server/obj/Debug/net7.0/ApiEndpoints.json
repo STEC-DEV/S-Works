@@ -3468,33 +3468,58 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "ContentType",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "ContentDisposition",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Headers",
-        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
-        "IsRequired": false
-      },
-      {
-        "Name": "Length",
-        "Type": "System.Int64",
-        "IsRequired": false
-      },
-      {
         "Name": "Name",
         "Type": "System.String",
         "IsRequired": false
       },
       {
-        "Name": "FileName",
+        "Name": "Type",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Worker",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "UnitPrice",
+        "Type": "System.Nullable\u00601[[System.Single, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Num",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "TotalPrice",
+        "Type": "System.Nullable\u00601[[System.Single, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FacilityID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "WorkDT",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFiles",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Inventory",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Store.InOutInventoryDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "files",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
       }
     ],
@@ -3502,15 +3527,15 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "DeleteMaintanceHistory",
-    "RelativePath": "api/Maintenance/sign/DeleteMaintanceHistory",
+    "Method": "DeleteMaintenanceStore",
+    "RelativePath": "api/Maintenance/sign/DeleteMaintenanceStore",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO",
+        "Name": "DeleteList",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "IsRequired": true
       }
     ],

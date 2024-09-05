@@ -298,27 +298,27 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
+        public async ValueTask<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 if (String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseList<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<InOutInventoryDTO>? model = await InventoryInfoRepository.AddOutStoreList(Int32.Parse(placeid), roomid, materialid, outcount);
                 if (model is not null && model.Any())
-                    return new ResponseList<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    return new ResponseUnit<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model[0], code = 200 };
                 else
-                    return new ResponseList<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<InOutInventoryDTO>(), code = 200 };
+                    return new ResponseUnit<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = new InOutInventoryDTO(), code = 200 };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<InOutInventoryDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<InOutInventoryDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

@@ -15,12 +15,17 @@ namespace FamTec.Server.Controllers.Maintenance
     public class MaintenanceController : ControllerBase
     {
         private IMaintanceService MaintanceService;
+
+        private IFileService FileService;
         private ILogService LogService;
 
         public MaintenanceController(IMaintanceService _maintanceservice,
+            IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaintanceService = _maintanceservice;
+
+            this.FileService = _fileservice;
             this.LogService = _logservice;
         }
 
@@ -33,54 +38,57 @@ namespace FamTec.Server.Controllers.Maintenance
         [HttpPost]
         //[HttpGet]
         [Route("sign/AddMaintenance")]
-        public async ValueTask<IActionResult> AddMaintenence([FromForm]IFormFile? files)
-        //public async ValueTask<IActionResult> AddMaintenence([FromForm]AddMaintanceDTO dto, [FromForm]IFormFile? files)
+        //public async ValueTask<IActionResult> AddMaintenence([FromForm]IFormFile? files)
+        public async ValueTask<IActionResult> AddMaintenence([FromForm]AddMaintenanceDTO dto, IFormFile? files)
         {
             try
             {
-               AddMaintanceDTO dto = new AddMaintanceDTO();
-               dto.Name = "유지보수이력_1";
-               dto.Type = 0;
-               dto.Worker = "테스트";
-               dto.UnitPrice = 500;
-               dto.Num = 30;
-               dto.TotalPrice = 30 * 500;
-               dto.FacilityID = 1;
+               //AddMaintanceDTO dto = new AddMaintanceDTO();
+               //dto.Name = "유지보수이력_1";
+               //dto.Type = 0;
+               //dto.Worker = "테스트";
+               //dto.UnitPrice = 500;
+               //dto.Num = 30;
+               //dto.TotalPrice = 30 * 500;
+               //dto.FacilityID = 1;
                
-               dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-               {
-                   InOut = 0,
-                   MaterialID = 10,
-                   AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                   {
-                       InOutDate = DateTime.Now,
-                       RoomID = 2,
-                       Num = 74,
-                       UnitPrice = 100,
-                       TotalPrice = 10 * 100,
-                       Note = "출고등록"
-                   }
-               });
+               //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+               //{
+               //    InOut = 0,
+               //    MaterialID = 10,
+               //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+               //    {
+               //        InOutDate = DateTime.Now,
+               //        RoomID = 2,
+               //        Num = 74,
+               //        UnitPrice = 100,
+               //        TotalPrice = 10 * 100,
+               //        Note = "출고등록"
+               //    }
+               //});
                
-               dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-               {
-                   InOut = 0,
-                   MaterialID = 11,
-                   AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                   {
-                       InOutDate = DateTime.Now,
-                       RoomID = 3,
-                       Num = 10,
-                       UnitPrice = 200,
-                       TotalPrice = 3 * 200,
-                       Note = "출고등록"
-                   }
-               });
+               //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+               //{
+               //    InOut = 0,
+               //    MaterialID = 11,
+               //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+               //    {
+               //        InOutDate = DateTime.Now,
+               //        RoomID = 3,
+               //        Num = 10,
+               //        UnitPrice = 200,
+               //        TotalPrice = 3 * 200,
+               //        Note = "출고등록"
+               //    }
+               //});
                 
                 if (HttpContext is null)
                     return BadRequest();
 
                 if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+
+                if(String.IsNullOrWhiteSpace(dto.Worker))
                     return NoContent();
 
                 if (dto.Type is null)
@@ -89,9 +97,39 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.UnitPrice is null)
                     return NoContent();
 
-                if(dto.Num is null)
+                if (dto.UnitPrice == 0)
                     return NoContent();
 
+                if(dto.FacilityID == 0)
+                    return NoContent();
+
+                if (dto.Num is null)
+                    return NoContent();
+
+                if (dto.Inventory is null || !dto.Inventory.Any())
+                    return NoContent();
+
+                //if (files is not null)
+                //{
+                //    if (files.Length > Common.MEGABYTE_1)
+                //    {
+                //        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                //    }
+
+                //    string? extension = FileService.GetExtension(files);
+                //    if (String.IsNullOrWhiteSpace(extension))
+                //    {
+                //        return BadRequest();
+                //    }
+                //    else
+                //    {
+                //        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                //        if (!extensioncheck)
+                //        {
+                //            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                //        }
+                //    }
+                //}
 
 
                 ResponseUnit<bool?> model = await MaintanceService.AddMaintanceService(HttpContext, dto, files);
@@ -174,11 +212,31 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        [Route("sign/DeleteMaintanceHistory")]
-        public async ValueTask<IActionResult> DeleteMaintanceHistory([FromBody]DeleteMaintanceDTO dto)
+        //[HttpGet]
+        [Route("sign/DeleteMaintenanceStore")]
+        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
+                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                //DeleteList.Add(new DeleteMaintanceDTO
+                //{
+                //    MaintanceID = 67,
+                //    MaterialTBID = 10,
+                //    RoomTBID = 2,
+                //    StoreID = 594,
+                //    Note = "출고취소_테스트1"
+                //});
+                //DeleteList.Add(new DeleteMaintanceDTO
+                //{
+                //    MaintanceID = 67,
+                //    MaterialTBID = 11,
+                //    RoomTBID = 3,
+                //    StoreID = 595,
+                //    Note = "출고취소_테스트2"
+                //});
+
                 //DeleteMaintanceDTO dto = new DeleteMaintanceDTO();
                 //dto.ID = 65;
                 //dto.StoreID = 472;
@@ -189,26 +247,25 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (HttpContext is null)
                     return BadRequest();
+                foreach(DeleteMaintanceDTO dto in DeleteList)
+                {
+                    if (dto.MaintanceID is null)
+                        return NoContent();
 
-                if (dto.ID is null)
-                    return NoContent();
+                    if (dto.StoreID is null)
+                        return NoContent();
 
-                if (dto.StoreID is null)
-                    return NoContent();
+                    if (dto.RoomTBID is null)
+                        return NoContent();
 
-                if (dto.RoomTBID is null)
-                    return NoContent();
+                    if (dto.MaterialTBID is null)
+                        return NoContent();
 
-                if (dto.PlaceTBID is null)
-                    return NoContent();
+                    if (String.IsNullOrWhiteSpace(dto.Note))
+                        return NoContent();
+                }
 
-                if(dto.MaterialTBID is null)
-                    return NoContent();
-
-                if(String.IsNullOrWhiteSpace(dto.Note))
-                    return NoContent();
-
-                ResponseUnit<bool?> model = await MaintanceService.DeletemaintanceHistoryService(HttpContext, dto);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, DeleteList);
                 if (model is null)
                     return BadRequest();
 
@@ -223,6 +280,8 @@ namespace FamTec.Server.Controllers.Maintenance
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
+
+        
 
         /// <summary>
         /// 유지보수 이력 사업장별 날짜기간 전체

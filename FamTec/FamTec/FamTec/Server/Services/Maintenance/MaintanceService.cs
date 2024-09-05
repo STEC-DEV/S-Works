@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto, IFormFile? files)
+        public async ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto, IFormFile? files)
         {
             try
             {
@@ -64,22 +64,25 @@ namespace FamTec.Server.Services.Maintenance
         
         /// <summary>
         /// 해당 설비의 유지보수 이력 삭제
+        ///     - 해당 유지보수 내용을 삭제할것인지
+        ///     - 쓴 내용을 취소시킬것인지.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeletemaintanceHistoryService(HttpContext context, DeleteMaintanceDTO dto)
+        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, List<DeleteMaintanceDTO> dto)
         {
             try
             {
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? deleter = Convert.ToString(context.Items["Name"]);
-                if(String.IsNullOrWhiteSpace(deleter))
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                bool? DeleteResult = await MaintanceRepository.DeleteHistoryInfo(dto, deleter);
+                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter);
                 if(DeleteResult == true)
                 {
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -208,6 +211,12 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
+        /// <summary>
+        /// 설비의 유지보수리스트중 하나 상세보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="MaintanceID"></param>
+        /// <returns></returns>
         public async ValueTask<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID)
         {
             try
@@ -231,5 +240,6 @@ namespace FamTec.Server.Services.Maintenance
                 return new ResponseUnit<DetailMaintanceDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
     }
 }

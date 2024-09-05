@@ -28,8 +28,8 @@ builder.Services.AddScoped<ApiManager>();
 builder.Services.AddBlazoredSessionStorage(); // 세션 스토리지 서비스
 builder.Services.AddAuthorizationCore(); // 권한부여 서비스
 
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); // 인증 상태 공급자 주입
-//builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 인증 상태 공급자
+//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); // 인증 상태 공급자 주입
+builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 인증 상태 공급자
 
 // SIGNAL R 허브연결
 string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";

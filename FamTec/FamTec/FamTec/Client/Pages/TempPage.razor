@@ -1,0 +1,150 @@
+﻿@layout MainLayout2
+
+@page "/temppage"
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+<h3>유지보수 데이터 업로드</h3>
+
+<!-- 파일 업로드 입력 -->
+<InputFile OnChange="HandleFileSelected" />
+<br />
+<button @onclick="SubmitForm">Submit</button>
+
+<p>@statusMessage</p>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private string statusMessage = string.Empty;
+
+    // 샘플 DTO 데이터 생성
+    private AddMaintanceDTO dto = new AddMaintanceDTO
+        {
+            Name = "유지보수이력_1",
+            Type = 0,
+            Worker = "테스트",
+            UnitPrice = 500,
+            Num = 30,
+            TotalPrice = 15000, // 30 * 500
+            FacilityID = 1,
+            Inventory = new List<InOutInventoryDTO>
+        {
+            new InOutInventoryDTO
+            {
+                InOut = 0,
+                MaterialID = 10,
+                AddStore = new AddStoreDTO
+                {
+                    InOutDate = DateTime.Now,
+                    RoomID = 2,
+                    Num = 74,
+                    UnitPrice = 100,
+                    TotalPrice = 1000, // 10 * 100
+                    Note = "출고등록"
+                }
+            }
+        }
+        };
+
+    // 파일 선택 처리
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    // 폼 데이터 및 파일 전송
+    private async Task SubmitForm()
+    {
+        if (selectedFile == null)
+        {
+            statusMessage = "파일을 선택하세요.";
+            return;
+        }
+
+        try
+        {
+            // MultipartFormDataContent 생성
+            var content = new MultipartFormDataContent();
+
+            // DTO 데이터 추가
+            content.Add(new StringContent(dto.Name), "Name");
+            content.Add(new StringContent(dto.Type.ToString()), "Type");
+            content.Add(new StringContent(dto.Worker), "Worker");
+            content.Add(new StringContent(dto.UnitPrice.ToString()), "UnitPrice");
+            content.Add(new StringContent(dto.Num.ToString()), "Num");
+            content.Add(new StringContent(dto.TotalPrice.ToString()), "TotalPrice");
+            content.Add(new StringContent(dto.FacilityID.ToString()), "FacilityID");
+
+            // Inventory 데이터 추가
+            for (int i = 0; i < dto.Inventory.Count; i++)
+            {
+                var inventory = dto.Inventory[i];
+                content.Add(new StringContent(inventory.InOut.ToString()), $"Inventory[{i}].InOut");
+                content.Add(new StringContent(inventory.MaterialID.ToString()), $"Inventory[{i}].MaterialID");
+
+                var addStore = inventory.AddStore;
+                content.Add(new StringContent(addStore.InOutDate.ToString("o")), $"Inventory[{i}].AddStore.InOutDate");
+                content.Add(new StringContent(addStore.RoomID.ToString()), $"Inventory[{i}].AddStore.RoomID");
+                content.Add(new StringContent(addStore.Num.ToString()), $"Inventory[{i}].AddStore.Num");
+                content.Add(new StringContent(addStore.UnitPrice.ToString()), $"Inventory[{i}].AddStore.UnitPrice");
+                content.Add(new StringContent(addStore.TotalPrice.ToString()), $"Inventory[{i}].AddStore.TotalPrice");
+                content.Add(new StringContent(addStore.Note), $"Inventory[{i}].AddStore.Note");
+            }
+
+            // 파일 추가
+            var fileContent = new StreamContent(selectedFile.OpenReadStream(5000000));
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(selectedFile.ContentType);
+            content.Add(fileContent, "files", selectedFile.Name);
+
+            // HTTP POST 요청 전송
+            string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMTAiLCJOYW1lIjoi7JqpIiwianRpIjoiMTQ3MDVhNDMtYjZhYS00YTgzLTg2NzEtNWE4NmI3NzYwNmRlIiwiQWxhcm1ZTiI6IlRydWUiLCJBZG1pbllOIjoiVHJ1ZSIsIlVzZXJUeXBlIjoiQURNSU4iLCJBZG1pbklkeCI6IjEwIiwiUGxhY2VJZHgiOiIzIiwiUGxhY2VOYW1lIjoiQeyImOygleyCrOyXheyepSIsIlJvbGUiOiJNYXN0ZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJNYXN0ZXIiLCJVc2VyUGVybXMiOiJ7XCJVc2VyUGVybV9CYXNpY1wiOlwiMlwiLFwiVXNlclBlcm1fTWFjaGluZVwiOlwiMlwiLFwiVXNlclBlcm1fRWxlY1wiOlwiMlwiLFwiVXNlclBlcm1fTGlmdFwiOlwiMlwiLFwiVXNlclBlcm1fRmlyZVwiOlwiMlwiLFwiVXNlclBlcm1fQ29uc3RydWN0XCI6XCIyXCIsXCJVc2VyUGVybV9OZXR3b3JrXCI6XCIyXCIsXCJVc2VyUGVybV9CZWF1dHlcIjpcIjJcIixcIlVzZXJQZXJtX1NlY3VyaXR5XCI6XCIyXCIsXCJVc2VyUGVybV9NYXRlcmlhbFwiOlwiMlwiLFwiVXNlclBlcm1fRW5lcmd5XCI6XCIyXCIsXCJVc2VyUGVybV9Vc2VyXCI6XCIyXCIsXCJVc2VyUGVybV9Wb2NcIjpcIjJcIn0iLCJWb2NQZXJtcyI6IntcIlZvY01hY2hpbmVcIjpcIlRydWVcIixcIlZvY0VsZWNcIjpcIlRydWVcIixcIlZvY0xpZnRcIjpcIlRydWVcIixcIlZvY0ZpcmVcIjpcIlRydWVcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzI1NTgxNjQwLCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.ienOuInYJFSISGb08js0k0WaUFrAPn8BByVuCCezdXM";
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await Http.PostAsync("http://123.2.156.148:5245/api/Maintenance/sign/AddMaintenance", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                statusMessage = "유지보수가 성공적으로 추가되었습니다.";
+            }
+            else
+            {
+                statusMessage = $"에러 발생: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"요청 중 오류 발생: {ex.Message}";
+        }
+    }
+
+    // DTO 클래스 정의
+    public class AddMaintanceDTO
+    {
+        public string Name { get; set; }
+        public int Type { get; set; }
+        public string Worker { get; set; }
+        public float UnitPrice { get; set; }
+        public int Num { get; set; }
+        public float TotalPrice { get; set; }
+        public int FacilityID { get; set; }
+        public List<InOutInventoryDTO> Inventory { get; set; } = new List<InOutInventoryDTO>();
+    }
+
+    public class InOutInventoryDTO
+    {
+        public int InOut { get; set; }
+        public int MaterialID { get; set; }
+        public AddStoreDTO AddStore { get; set; }
+    }
+
+    public class AddStoreDTO
+    {
+        public DateTime InOutDate { get; set; }
+        public int RoomID { get; set; }
+        public int Num { get; set; }
+        public float UnitPrice { get; set; }
+        public float TotalPrice { get; set; }
+        public string Note { get; set; }
+    }
+}

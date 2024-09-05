@@ -10,7 +10,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="model"></param>
         /// <returns></returns>
         //ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, int placeid, string GUID);
-        ValueTask<bool?> AddMaintanceAsync(AddMaintanceDTO model, string creater, string userid, int placeid, IFormFile? files);
+        ValueTask<bool?> AddMaintanceAsync(AddMaintenanceDTO model, string creater, string userid, int placeid, IFormFile? files);
 
         /// <summary>
         /// 유지보수이력 설비ID에 해당하는거 전체조회
@@ -18,13 +18,6 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="facilityid"></param>
         /// <returns></returns>
         ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid);
-
-        /// <summary>
-        /// 유지보수이력 삭제
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        ValueTask<bool?> DeleteHistoryInfo(DeleteMaintanceDTO DeleteDTO, string deleter);
 
         /// <summary>
         /// 유지보수 이력 사업장별 날짜기간 전체
@@ -50,5 +43,21 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <returns></returns>
         ValueTask<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid);
+
+        /// <summary>
+        /// 유지보수용 출고내용 삭제
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        ValueTask<bool?> deleteMaintenanceStoreRecord(List<DeleteMaintanceDTO> DeleteDTO, int placeid, string deleter);
+
+        /// <summary>
+        /// 유지보수 삭제
+        /// </summary>
+        /// <param name="maintanceid"></param>
+        /// <param name="placeid"></param>
+        /// <param name="deleter"></param>
+        /// <returns></returns>
+        ValueTask<bool?> deleteMaintenanceRecord(List<int> maintanceids, int placeid, string deleter);
     }
 }

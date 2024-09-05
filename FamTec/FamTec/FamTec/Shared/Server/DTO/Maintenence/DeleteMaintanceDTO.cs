@@ -5,7 +5,7 @@
         /// <summary>
         /// 유지보수 이력ID
         /// </summary>
-        public int? ID { get; set; }
+        public int? MaintanceID { get; set; }
 
         /// <summary>
         /// 입출고 이력 ID
@@ -18,15 +18,9 @@
         public int? RoomTBID { get; set; }
 
         /// <summary>
-        /// 사업장ID - 재입고시 필요
-        /// </summary>
-        public int? PlaceTBID { get; set; }
-
-        /// <summary>
         /// 자재ID - 재입고시 필요
         /// </summary>
         public int? MaterialTBID { get; set; }
-
 
         /// <summary>
         /// 취소사유

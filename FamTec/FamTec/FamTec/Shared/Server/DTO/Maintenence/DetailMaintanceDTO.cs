@@ -55,6 +55,8 @@
     /// </summary>
     public class UseStoreDTO
     {
+        public int StoreID { get; set; }
+
         /// <summary>
         /// 품목 ID
         /// </summary>

@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintanceDTO dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto, IFormFile? files);
 
         /// <summary>
         /// 해당 설비의 유지보수 이력 조회
@@ -22,13 +22,12 @@ namespace FamTec.Server.Services.Maintenance
         public ValueTask<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(HttpContext context, int facilityid);
 
         /// <summary>
-        /// 해당 설비의 유지보수 이력 삭제
+        /// 유지보수용 출고내용 삭제
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeletemaintanceHistoryService(HttpContext context, DeleteMaintanceDTO dto);
-
+        public ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, List<DeleteMaintanceDTO> dto);
         /// <summary>
         /// 속한 사업장 유지보수 이력 날짜기간 전체
         /// </summary>
@@ -49,6 +48,12 @@ namespace FamTec.Server.Services.Maintenance
         /// <returns></returns>
         public ValueTask<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, string category, int type);
 
+        /// <summary>
+        /// 설비의 유지보수리스트중 하나 상세보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="MaintanceID"></param>
+        /// <returns></returns>
         public ValueTask<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID);
     }
 }

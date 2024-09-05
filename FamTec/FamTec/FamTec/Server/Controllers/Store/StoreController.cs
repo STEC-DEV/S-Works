@@ -419,7 +419,7 @@ namespace FamTec.Server.Controllers.Store
                 if(outcount is 0)
                     return NoContent();
 
-                ResponseList<InOutInventoryDTO>? model = await InStoreService.AddOutStoreList(HttpContext, roomid, materialid, outcount);
+                ResponseUnit<InOutInventoryDTO>? model = await InStoreService.AddOutStoreList(HttpContext, roomid, materialid, outcount);
                 if (model is null)
                     return BadRequest();
 
