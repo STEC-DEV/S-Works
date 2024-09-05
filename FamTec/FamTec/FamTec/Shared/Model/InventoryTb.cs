@@ -58,7 +58,7 @@ public partial class InventoryTb
 
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int MaterialTbId { get; set; }
-
+    
     /// <summary>
     /// 동시성 제어
     /// </summary>

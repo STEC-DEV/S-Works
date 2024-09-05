@@ -48,18 +48,6 @@ public partial class MaintenenceHistoryTb
     public DateTime Workdt { get; set; }
 
     /// <summary>
-    /// 단가
-    /// </summary>
-    [Column("UNIT_PRICE")]
-    public float UnitPrice { get; set; }
-
-    /// <summary>
-    /// 수량
-    /// </summary>
-    [Column("NUM", TypeName = "int(11)")]
-    public int Num { get; set; }
-
-    /// <summary>
     /// 소요비용
     /// </summary>
     [Column("TOTAL_PRICE")]

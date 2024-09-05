@@ -131,7 +131,45 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
-      
+        /// <summary>
+        /// 유지보수 자체를 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceRecordService(HttpContext context, DeleteMaintanceDTO2 dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                string? deleter = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
+
+                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter);
+                
+                if (DeleteResult == true)
+                {
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if (DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
+            }
+        }
 
         /// <summary>
         /// 해당 설비의 유지보수 이력 조회
@@ -268,6 +306,8 @@ namespace FamTec.Server.Services.Maintenance
                 return new ResponseUnit<DetailMaintanceDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+     
 
     }
 }

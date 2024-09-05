@@ -28,7 +28,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaintenanceImage")]
-        public async ValueTask<IActionResult> AddMaintenencec([FromQuery]int id, [FromQuery]IFormFile? files)
+        public async ValueTask<IActionResult> AddMaintenencec([FromForm] int id, [FromForm] IFormFile? files)
         {
             try
             {
@@ -139,16 +139,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.Type is null)
                     return NoContent();
 
-                if (dto.UnitPrice is null)
-                    return NoContent();
-
-                if (dto.UnitPrice == 0)
-                    return NoContent();
-
                 if(dto.FacilityID == 0)
-                    return NoContent();
-
-                if (dto.Num is null)
                     return NoContent();
 
                 if (dto.Inventory is null || !dto.Inventory.Any())
@@ -232,7 +223,48 @@ namespace FamTec.Server.Controllers.Maintenance
         }
 
         /// <summary>
-        /// 유지보수 이력 삭제
+        /// 유지보수 삭제
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        //[HttpPost]
+        [Route("sign/DeleteMaintenanceList")]
+        public async ValueTask<IActionResult> DeleteMaintenanceList()
+        //public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        {
+            try
+            {
+                DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
+                dto.Note = "테스트 유지보수삭제";
+                dto.MaintanceID.Add(86);
+                dto.MaintanceID.Add(87);
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (dto.MaintanceID is null || !dto.MaintanceID.Any())
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 유지보수 내용 삭제
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>

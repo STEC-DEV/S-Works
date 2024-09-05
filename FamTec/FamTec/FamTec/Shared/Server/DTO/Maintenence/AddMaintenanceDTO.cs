@@ -24,16 +24,6 @@ namespace FamTec.Shared.Server.DTO.Maintenence
         public string? Worker { get; set; }
 
         /// <summary>
-        /// 단가
-        /// </summary>
-        public float? UnitPrice { get; set; }
-
-        /// <summary>
-        /// 수량
-        /// </summary>
-        public int? Num { get; set; }
-
-        /// <summary>
         /// 소요비용
         /// </summary>
         public float? TotalPrice { get; set; }
@@ -48,11 +38,6 @@ namespace FamTec.Shared.Server.DTO.Maintenence
         /// </summary>
         public DateTime WorkDT { get; set; }
 
-        /// <summary>
-        /// 이미지 경로
-        /// </summary>
-        //public string? ImageFiles { get; set; }
-      
         /// <summary>
         /// 출고정보
         /// </summary>

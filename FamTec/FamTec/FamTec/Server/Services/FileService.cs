@@ -5,6 +5,7 @@ namespace FamTec.Server.Services
     public class FileService : IFileService
     {
         private readonly ILogService LogService;
+
         public FileService(ILogService _logservice)
         {
             this.LogService = _logservice;

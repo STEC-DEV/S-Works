@@ -37,6 +37,15 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, List<DeleteMaintanceDTO> dto);
+
+        /// <summary>
+        /// 유지보수 자체를 삭제
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> DeleteMaintenanceRecordService(HttpContext context, DeleteMaintanceDTO2 dto);
+
         /// <summary>
         /// 속한 사업장 유지보수 이력 날짜기간 전체
         /// </summary>

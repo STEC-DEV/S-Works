@@ -28,16 +28,6 @@
         public string? Worker { get; set; }
 
         /// <summary>
-        /// 단가
-        /// </summary>
-        public float UnitPrice { get; set; }
-
-        /// <summary>
-        /// 수량
-        /// </summary>
-        public int Num { get; set; }
-
-        /// <summary>
         /// 소요비용
         /// </summary>
         public float TotalPrice { get; set; }

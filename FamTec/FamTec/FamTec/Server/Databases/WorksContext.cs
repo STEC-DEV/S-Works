@@ -548,8 +548,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion) // 추가
-                .IsConcurrencyToken() // 추가
-                .HasColumnType("BIGINT"); // 추가
+                        .IsConcurrencyToken() // 추가
+                        .HasColumnType("BIGINT"); // 추가
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -598,10 +598,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.Name).HasComment("이력명");
             entity.Property(e => e.Note).HasComment("유지보수 취소사유 설명");
-            entity.Property(e => e.Num).HasComment("수량");
             entity.Property(e => e.TotalPrice).HasComment("소요비용");
             entity.Property(e => e.Type).HasComment("작업구분");
-            entity.Property(e => e.UnitPrice).HasComment("단가");
             entity.Property(e => e.Workdt).HasComment("작업일자");
             entity.Property(e => e.Worker).HasComment("작업자");
 
@@ -840,6 +838,7 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>
@@ -848,5 +847,6 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
