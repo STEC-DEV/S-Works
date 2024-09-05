@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Maintenance
                 bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files);
                 if(ImageAddResult == true)
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else if(ImageAddResult == false)
                 {
@@ -117,7 +117,7 @@ namespace FamTec.Server.Services.Maintenance
                 }
                 else if(DeleteResult == false)
                 {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
                 }
                 else
                 {

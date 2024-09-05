@@ -228,18 +228,18 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
-        //[HttpPost]
+        //[HttpGet]
+        [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        public async ValueTask<IActionResult> DeleteMaintenanceList()
-        //public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        //public async ValueTask<IActionResult> DeleteMaintenanceList()
+        public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
-                DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
-                dto.Note = "테스트 유지보수삭제";
-                dto.MaintanceID.Add(86);
-                dto.MaintanceID.Add(87);
+                //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
+                //dto.Note = "테스트 유지보수삭제";
+                //dto.MaintanceID.Add(86);
+                //dto.MaintanceID.Add(87);
 
                 if (HttpContext is null)
                     return BadRequest();
