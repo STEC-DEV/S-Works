@@ -4,6 +4,7 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Alarm;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Alarm

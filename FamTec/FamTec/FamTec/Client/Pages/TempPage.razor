@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Text.Json
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 <h3>유지보수 데이터 업로드</h3>
 
@@ -15,10 +16,20 @@
 <button @onclick="SubmitForm">Submit</button>
 
 <p>@statusMessage</p>
+<button @onclick="GetReferrer">이전 주소 가져오기</button>
 
 @code {
     private IBrowserFile? selectedFile;
     private string statusMessage = string.Empty;
+
+    private string referrer;
+
+    private async Task GetReferrer()
+    {
+        // JavaScript 함수 호출하여 이전 주소를 가져오기
+        referrer = await JSRuntime.InvokeAsync<string>("getReferrer");
+        Console.WriteLine(referrer);
+    }
 
     // 샘플 DTO 데이터 생성
     private AddMaintanceDTO dto = new AddMaintanceDTO

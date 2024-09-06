@@ -32,6 +32,7 @@
 
         
 
+
         public AddStoreDTO? AddStore { get; set; } = new AddStoreDTO();
     }
 }

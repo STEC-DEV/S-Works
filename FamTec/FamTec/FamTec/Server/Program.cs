@@ -359,10 +359,8 @@ else
     app.UseHttpsRedirection(); // 위치변경
 }
 
-
-
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
+app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정
+app.UseStaticFiles(); // 정적 파일 제공 설정
 
 app.UseRouting();
 
