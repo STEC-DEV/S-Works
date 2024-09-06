@@ -18,6 +18,9 @@ public partial class UseMaintenenceMaterialTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    [Column("INOUT", TypeName = "int(11)")]
+    public int Inout { get; set; }
+
     [Column("UNITPRICE")]
     public float Unitprice { get; set; }
 

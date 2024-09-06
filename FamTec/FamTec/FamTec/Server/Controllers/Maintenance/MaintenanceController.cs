@@ -230,15 +230,14 @@ namespace FamTec.Server.Controllers.Maintenance
         //[HttpGet]
         [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        //public async ValueTask<IActionResult> DeleteMaintenanceList()
         public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
                 //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
                 //dto.Note = "테스트 유지보수삭제";
-                //dto.MaintanceID.Add(86);
-                //dto.MaintanceID.Add(87);
+                //dto.MaintanceID.Add(96);
+                
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -268,39 +267,35 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
-                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                //DeleteList.Add(new DeleteMaintanceDTO
-                //{
-                //    MaintanceID = 67,
-                //    MaterialTBID = 10,
-                //    RoomTBID = 2,
-                //    StoreID = 594,
-                //    Note = "출고취소_테스트1"
-                //});
-                //DeleteList.Add(new DeleteMaintanceDTO
-                //{
-                //    MaintanceID = 67,
-                //    MaterialTBID = 11,
-                //    RoomTBID = 3,
-                //    StoreID = 595,
-                //    Note = "출고취소_테스트2"
-                //});
+                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                DeleteList.Add(new DeleteMaintanceDTO
+                {
+                    MaintanceID = 98,
+                    UseMaintenenceID = 7,
+                    MaterialTBID = 10,
+                    RoomTBID = 2,
+                    StoreID = 659,
+                    Note = "출고취소_테스트1"
+                });
+                DeleteList.Add(new DeleteMaintanceDTO
+                {
+                    MaintanceID = 98,
+                    UseMaintenenceID = 8,
+                    MaterialTBID = 11,
+                    RoomTBID = 3,
+                    StoreID = 660,
+                    Note = "출고취소_테스트2"
+                });
 
-                //DeleteMaintanceDTO dto = new DeleteMaintanceDTO();
-                //dto.ID = 65;
-                //dto.StoreID = 472;
-                //dto.RoomTBID = 1;
-                //dto.PlaceTBID = 3;
-                //dto.MaterialTBID = 5;
-                //dto.Note = "테스트";
+            
 
                 if (HttpContext is null)
                     return BadRequest();

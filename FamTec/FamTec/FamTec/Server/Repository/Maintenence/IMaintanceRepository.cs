@@ -85,6 +85,15 @@ namespace FamTec.Server.Repository.Maintenence
         /// <returns></returns>
         ValueTask<bool?> deleteMaintenanceRecord(DeleteMaintanceDTO2 dto, int placeid, string deleter);
 
-      
+        /// <summary>
+        /// 유지보수 입-출고 품목 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="placeid"></param>
+        /// <param name="updater"></param>
+        /// <returns></returns>
+        ValueTask<bool?> UpdateMaintenanceUseRecord(UpdateMaintenanceMaterialDTO dto, int placeid, string updater);
+
+
     }
 }
