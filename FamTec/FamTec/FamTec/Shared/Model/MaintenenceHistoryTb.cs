@@ -96,4 +96,7 @@ public partial class MaintenenceHistoryTb
 
     [InverseProperty("MaintenenceHistoryTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();
+
+    [InverseProperty("MaintenanceTb")]
+    public virtual ICollection<UseMaintenenceMaterialTb> UseMaintenenceMaterialTbs { get; set; } = new List<UseMaintenenceMaterialTb>();
 }

@@ -37,20 +37,33 @@
         /// </summary>
         public byte[]? Image { get; set; }
 
-        public List<UseStoreDTO> UseStoreList { get; set; } = new List<UseStoreDTO>();
+        public List<UseMaterialDTO> UseMaterialList { get; set; } = new List<UseMaterialDTO>();
     }
 
     /// <summary>
     /// 사용자재 DTO
     /// </summary>
-    public class UseStoreDTO
+    public class UseMaterialDTO
     {
-        public int StoreID { get; set; }
+        /// <summary>
+        /// 사용자재 테이블 ID
+        /// </summary>
+        public int ID { get; set; }
 
         /// <summary>
         /// 품목 ID
         /// </summary>
         public int MaterialID { get; set; }
+
+        /// <summary>
+        /// 출고창고 ID
+        /// </summary>
+        public int RoomID { get; set; }
+
+        /// <summary>
+        /// 저장 로그 ID
+        /// </summary>
+        public int StoreID { get; set; }
 
         /// <summary>
         /// 품목 Code
@@ -71,11 +84,6 @@
         /// 제조사
         /// </summary>
         public string? ManufacuringComp { get; set; }
-
-        /// <summary>
-        /// 출고창고 ID
-        /// </summary>
-        public int RoomID { get; set; }
 
         /// <summary>
         /// 출고창고 명

@@ -82,21 +82,19 @@ namespace FamTec.Server.Controllers.Maintenance
         [HttpPost]
         //[HttpGet]
         [Route("sign/AddMaintenance")]
+        //public async ValueTask<IActionResult> AddMaintenence()
         public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
             {
-                
-
                 // DTO의 Inventory에 역직렬화된 데이터를 할당
-                //AddMaintanceDTO dto = new AddMaintanceDTO();
+                //AddMaintenanceDTO dto = new AddMaintenanceDTO();
                 //dto.Name = "유지보수이력_1";
-                //dto.Type = 0;
+                //dto.Type = 1;
                 //dto.Worker = "테스트";
-                //dto.UnitPrice = 500;
-                //dto.Num = 30;
                 //dto.TotalPrice = 30 * 500;
                 //dto.FacilityID = 1;
+                //dto.WorkDT = DateTime.Now;
 
                 //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
                 //{
@@ -106,7 +104,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 2,
-                //        Num = 74,
+                //        Num = 11,
                 //        UnitPrice = 100,
                 //        TotalPrice = 10 * 100,
                 //        Note = "출고등록"

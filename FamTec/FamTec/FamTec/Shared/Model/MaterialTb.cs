@@ -104,4 +104,7 @@ public partial class MaterialTb
 
     [InverseProperty("MaterialTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();
+
+    [InverseProperty("MaterialTb")]
+    public virtual ICollection<UseMaintenenceMaterialTb> UseMaintenenceMaterialTbs { get; set; } = new List<UseMaintenenceMaterialTb>();
 }

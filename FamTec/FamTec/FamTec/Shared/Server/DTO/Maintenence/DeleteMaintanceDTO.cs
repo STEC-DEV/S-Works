@@ -23,6 +23,11 @@
         public int? MaterialTBID { get; set; }
 
         /// <summary>
+        /// 유지보수용 출고 ID - 재입고시 필요
+        /// </summary>
+        public int? UseMaintenenceID { get; set; }
+
+        /// <summary>
         /// 취소사유
         /// </summary>
         public string? Note { get; set; }

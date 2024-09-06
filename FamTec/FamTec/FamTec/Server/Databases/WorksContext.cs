@@ -70,6 +70,8 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<UnitTb> UnitTbs { get; set; }
 
+    public virtual DbSet<UseMaintenenceMaterialTb> UseMaintenenceMaterialTbs { get; set; }
+
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
@@ -90,7 +92,6 @@ public partial class WorksContext : DbContext
         {
             entity.HasNoDiscriminator();
         });
-
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -547,7 +548,7 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.RowVersion) // 추가
+            entity.Property(e => e.RowVersion)
                         .IsConcurrencyToken() // 추가
                         .HasColumnType("BIGINT"); // 추가
 
@@ -766,6 +767,34 @@ public partial class WorksContext : DbContext
             entity.HasOne(d => d.PlaceTb).WithMany(p => p.UnitTbs).HasConstraintName("fk_unit_tb_place_tb1");
         });
 
+        modelBuilder.Entity<UseMaintenenceMaterialTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+
+            entity.HasOne(d => d.MaintenanceTb).WithMany(p => p.UseMaintenenceMaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MaintenanceTB_20240906_1151");
+
+            entity.HasOne(d => d.MaterialTb).WithMany(p => p.UseMaintenenceMaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MaterialTB_20240906_1150");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.UseMaintenenceMaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PlaceTB_20240906_1237");
+
+            entity.HasOne(d => d.RoomTb).WithMany(p => p.UseMaintenenceMaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RoomTB_20240906_1150");
+
+            entity.HasOne(d => d.StoreTb).WithMany(p => p.UseMaintenenceMaterialTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StoreTB_20240906_1151");
+        });
+
         modelBuilder.Entity<UsersTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -838,7 +867,6 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>

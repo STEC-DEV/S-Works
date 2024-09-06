@@ -131,4 +131,7 @@ public partial class StoreTb
     [ForeignKey("RoomTbId")]
     [InverseProperty("StoreTbs")]
     public virtual RoomTb RoomTb { get; set; } = null!;
+
+    [InverseProperty("StoreTb")]
+    public virtual ICollection<UseMaintenenceMaterialTb> UseMaintenenceMaterialTbs { get; set; } = new List<UseMaintenenceMaterialTb>();
 }

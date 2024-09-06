@@ -98,41 +98,45 @@ namespace FamTec.Server.Repository.Maintenence
                     Image = !string.IsNullOrWhiteSpace(maintenenceTB.Image) ? await FileService.GetImageFile($"{Common.FileServer}\\{placeid}\\Maintance", maintenenceTB.Image) : null
                 };
 
-                var storeData = await context.StoreTbs
-                    .Where(store => store.DelYn != true && store.MaintenenceHistoryTbId == maintenenceTB.Id)
-                    .Select(store => new
-                    {
-                        Store = store,
-                        Material = context.MaterialTbs.FirstOrDefault(m => m.Id == store.MaterialTbId && m.DelYn != true),
-                        Room = context.RoomTbs.FirstOrDefault(r => r.Id == store.RoomTbId && r.DelYn != true)
-                    })
-                    .AsNoTracking()
-                    .ToListAsync();
+                var result = await (from UseMaintenenceTB in context.UseMaintenenceMaterialTbs
+                                    where UseMaintenenceTB.DelYn != true && UseMaintenenceTB.MaintenanceTbId == maintenenceTB.Id
+                                    join RoomTB in context.RoomTbs on UseMaintenenceTB.RoomTbId equals RoomTB.Id
+                                    join MaterialTB in context.MaterialTbs on UseMaintenenceTB.MaterialTbId equals MaterialTB.Id
+                                    join StoreTB in context.StoreTbs on UseMaintenenceTB.StoreTbId equals StoreTB.Id
+                                    where RoomTB.DelYn != true && MaterialTB.DelYn != true && StoreTB.DelYn != true
+                                    select new
+                                    {
+                                        UseMaintenenceMaterial = UseMaintenenceTB,
+                                        Room = RoomTB,
+                                        Material = MaterialTB,
+                                        Store = StoreTB
+                                    }).ToListAsync();
 
-                foreach (var data in storeData)
+                foreach(var item in result)
                 {
-                    if (data.Material is null || data.Room is null)
+                    if(item.Material is null || item.Room is null)
                     {
                         return null;
                     }
 
-                    UseStoreDTO dto = new UseStoreDTO
+                    UseMaterialDTO dto = new UseMaterialDTO
                     {
-                        StoreID = data.Store.Id,
-                        MaterialID = data.Store.MaterialTbId,
-                        MaterialCode = data.Material.Code,
-                        MaterialName = data.Material.Name,
-                        Standard = data.Material.Standard,
-                        ManufacuringComp = data.Material.ManufacturingComp,
-                        RoomID = data.Store.RoomTbId,
-                        RoomName = data.Room.Name,
-                        UnitPrice = data.Store.UnitPrice,
-                        Num = data.Store.Num,
-                        Unit = data.Material.Unit,
-                        TotalPrice = data.Store.TotalPrice
+                        ID = item.UseMaintenenceMaterial.Id,
+                        MaterialID = item.Material.Id,
+                        MaterialCode = item.Material.Code,
+                        MaterialName = item.Material.Name,
+                        Standard = item.Material.Standard,
+                        ManufacuringComp = item.Material.ManufacturingComp,
+                        RoomID = item.Room.Id,
+                        RoomName = item.Room.Name,
+                        StoreID = item.Store.Id,
+                        UnitPrice = item.UseMaintenenceMaterial.Unitprice,
+                        Num = item.UseMaintenenceMaterial.Num,
+                        TotalPrice = item.UseMaintenenceMaterial.Totalprice,
+                        Unit = item.Material.Unit
                     };
 
-                    maintanceDTO.UseStoreList.Add(dto);
+                    maintanceDTO.UseMaterialList.Add(dto);
                 }
 
                 return maintanceDTO;
@@ -330,6 +334,7 @@ namespace FamTec.Server.Repository.Maintenence
                                 {
                                     Console.WriteLine("결과가 다름 RollBack!");
                                     await transaction.RollbackAsync();
+                                    return 0;
                                 }
 
                                 await context.SaveChangesAsync();
@@ -362,19 +367,38 @@ namespace FamTec.Server.Repository.Maintenence
                         store.MaintenenceHistoryTbId = MaintenenceHistory.Id;
 
                         await context.StoreTbs.AddAsync(store);
+                        bool AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!AddStoreResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return 0;
+                        }
+
+                        UseMaintenenceMaterialTb MaintenenceMaterialTB = new UseMaintenenceMaterialTb();
+                        MaintenenceMaterialTB.Unitprice = model.AddStore.UnitPrice!.Value;
+                        MaintenenceMaterialTB.Num = model.AddStore.Num!.Value;
+                        MaintenenceMaterialTB.Totalprice = model.AddStore.TotalPrice!.Value;
+                        MaintenenceMaterialTB.MaterialTbId = model.MaterialID!.Value;
+                        MaintenenceMaterialTB.RoomTbId = model.AddStore.RoomID!.Value;
+                        MaintenenceMaterialTB.StoreTbId = store.Id;
+                        MaintenenceMaterialTB.MaintenanceTbId = MaintenenceHistory.Id;
+                        MaintenenceMaterialTB.CreateDt = DateTime.Now;
+                        MaintenenceMaterialTB.CreateUser = creater;
+                        MaintenenceMaterialTB.UpdateDt = DateTime.Now;
+                        MaintenenceMaterialTB.PlaceTbId = placeid;
+                        MaintenenceMaterialTB.Note = model.AddStore.Note;
+
+                        await context.UseMaintenenceMaterialTbs.AddAsync(MaintenenceMaterialTB);
+                        bool AddMaintenenceMaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!AddMaintenenceMaterialResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return 0;
+                        }
                     }
 
-                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(UpdateResult)
-                    {
-                        await transaction.CommitAsync(); // 출고완료
-                        return MaintenenceHistory.Id; // ID 반환
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync(); // 출고 실패
-                        return 0;
-                    }
+                    await transaction.CommitAsync(); // 출고완료
+                    return MaintenenceHistory.Id; // ID 반환
                 }
                 catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                 {
@@ -484,11 +508,13 @@ namespace FamTec.Server.Repository.Maintenence
                         if (MaintenceHistoryTB is null)
                             return null;
 
+                        FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == MaintenceHistoryTB.FacilityTbId && m.DelYn != true);
+                        if(FacilityTB is null)
+                            return null;
+
                         StoreTb? StoreTB = await context.StoreTbs.FirstOrDefaultAsync(m => m.Id == dto.StoreID && m.DelYn != true);
                         if (StoreTB is null)
                             return null;
-
-                        FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == MaintenceHistoryTB.FacilityTbId && m.DelYn != true);
 
                         StoreTB.DelDt = DateTime.Now;
                         StoreTB.DelYn = true;
@@ -503,6 +529,12 @@ namespace FamTec.Server.Repository.Maintenence
                             await transaction.RollbackAsync();
                             return false;
                         }
+
+                        UseMaintenenceMaterialTb? UseMaintenenceMaterialTB = await context.UseMaintenenceMaterialTbs.FirstOrDefaultAsync(m => m.Id == dto.UseMaintenenceID && m.DelYn != true);
+                        UseMaintenenceMaterialTB.DelDt = DateTime.Now;
+                        UseMaintenenceMaterialTB.DelYn = true;
+                        UseMaintenenceMaterialTB.DelUser = deleter;
+
 
                         // 새로 재입고
                         InventoryTb NewInventoryTB = new InventoryTb
