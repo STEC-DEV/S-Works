@@ -1,0 +1,80 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    아이디
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                   이름
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    부서
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData.Count==0)
+        {
+            <tr >
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td">
+                        <span>
+                            @row.UserId
+                        </span>
+                    </td>
+                    <td class="td">
+                        <span>
+                            @row.Name
+                        </span>
+                    </td>
+                    <td class="td">
+                        <span>
+                            @row.Department
+                        </span>
+                    </td>
+                    <td class="td">
+                        <input type="checkbox" @onchange="(e) => OnCheck(e, row)" />
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+@code {
+    [Parameter] public List<ManagerDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool,ManagerDTO)> OnChecked { get; set; }
+    [Parameter] public List<int> CheckedItem{ get; set; }
+
+
+    //체크 함수
+    private async void OnCheck(ChangeEventArgs e, ManagerDTO manager)
+    {
+        await OnChecked.InvokeAsync(((bool)e.Value, manager));
+    }
+
+
+}

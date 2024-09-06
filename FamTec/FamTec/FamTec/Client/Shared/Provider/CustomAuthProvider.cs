@@ -48,6 +48,20 @@ namespace FamTec.Client.Shared.Provider
             return Convert.FromBase64String(base64);
         }
 
+        //관리자에서 [시스템 관리자, 마스터] / [매니저] 구분 write권한
+        public async Task<string> AdminRole()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var roleClaim = user.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+            if(roleClaim != null)
+            {
+                return roleClaim.Value;
+            }
+            return null;
+        }
+
+        //일반 사용자 관리자 구분
         public async Task<bool> IsAdminAsync()
         {
             var authState = await GetAuthenticationStateAsync();

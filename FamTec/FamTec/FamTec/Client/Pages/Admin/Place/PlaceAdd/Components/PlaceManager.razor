@@ -1,0 +1,49 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceAdd.Modal
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+
+
+<div class="manager">
+    <div class="header">
+        <span class="title">
+            사업장 매니저
+        </span>
+        <div class="options">
+            <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+            <Button Name="삭제" Width=true Type="1" />
+        </div>
+    </div>
+    <div class="content">
+        <ManagerTable ListData="@SelectList" />
+    </div>
+    @if (_isModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <ManagerModal 
+                    SelectManagerList="@SelectList" 
+                    OnCancel="OnModal" 
+                    OnAddManager="OnSelected"
+                    />
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public List<ManagerDTO>? SelectList { get; set; }
+    [Parameter] public EventCallback<List<ManagerDTO>> OnSelect{ get; set; }
+
+    private bool _isModal = false;
+
+
+    private void OnSelected(List<ManagerDTO> data)
+    {
+        SelectList = data;
+    }
+
+    private void OnModal()
+    {
+        _isModal = !_isModal;
+    }
+}

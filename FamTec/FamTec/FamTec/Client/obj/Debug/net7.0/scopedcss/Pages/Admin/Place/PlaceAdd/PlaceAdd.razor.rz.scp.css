@@ -1,0 +1,20 @@
+
+.container[b-1fb1rk4lj9] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wide-pd);
+
+    padding: var(--default-pd);
+}
+
+.section-row[b-1fb1rk4lj9]{
+    display : grid;
+    grid-template-columns : 1fr 2fr;
+    gap : var(--wide-pd);
+}
+
+.btns[b-1fb1rk4lj9]{
+    display :flex;
+    justify-content : flex-end;
+    gap : var(--half-pd);
+}

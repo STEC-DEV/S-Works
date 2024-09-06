@@ -7,16 +7,6 @@
         <tr class="thead-tr">
             <th class="th">
                 <span>
-                    거래일
-                </span>
-            </th>
-            <th class="th">
-                <span>
-                    위치
-                </span>
-            </th>
-            <th class="th">
-                <span>
                     자재코드
                 </span>
             </th>
@@ -27,12 +17,7 @@
             </th>
             <th class="th">
                 <span>
-                    단위
-                </span>
-            </th>
-            <th class="th">
-                <span>
-                    수량
+                    위치
                 </span>
             </th>
             <th class="th">
@@ -42,12 +27,17 @@
             </th>
             <th class="th">
                 <span>
-                    금액
+                    수량
                 </span>
             </th>
             <th class="th">
                 <span>
-                    비고
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    금액
                 </span>
             </th>
             <th class="th">
@@ -72,31 +62,25 @@
             {
                 <tr class="tr">
                     <td class="td">
-                        @row.AddStore.InOutDate
-                    </td>
-                    <td class="td">
-                        @row.AddStore.RoomName
-                    </td>
-                    <td class="td">
                         @row.MaterialCode
                     </td>
                     <td class="td">
                         @row.MaterialName
                     </td>
                     <td class="td">
-                        @row.Unit
-                    </td>
-                    <td class="td">
-                        @row.AddStore.Num
+                        @row.AddStore.RoomName
                     </td>
                     <td class="td">
                         @row.AddStore.UnitPrice
                     </td>
                     <td class="td">
-                        @row.AddStore.TotalPrice
+                        @row.AddStore.Num
                     </td>
                     <td class="td">
-                        @row.AddStore.Note
+                        @row.Unit
+                    </td>
+                    <td class="td">
+                        @row.AddStore.TotalPrice
                     </td>
                     <td class="td">
                         <input type="checkbox" />

@@ -21,5 +21,13 @@ namespace FamTec.Client.Middleware
             Console.WriteLine("미들웨어 권한 확인" + (isAdmin || userPerm == 2));
             return (isAdmin || userPerm == 2);
         }
+
+        public async Task<string> HasAdminModeEditPerm()
+        {
+            var authProvider = _authStateProvider as CustomAuthProvider;
+            string role = await authProvider.AdminRole();
+            await Console.Out.WriteLineAsync(role);
+            return role;
+        }
     }
 }

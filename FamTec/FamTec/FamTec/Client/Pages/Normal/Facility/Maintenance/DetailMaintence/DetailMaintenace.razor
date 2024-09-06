@@ -11,11 +11,15 @@
     @if(OriginalMaintenance.Type == 1)
     {
         <SearchMaterial @bind-Data=@SelectMaterial />
-        <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
-        <div class="btn">
-            <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
-        </div>
-        <InOutList  />
+        @if(SelectMaterial.Id != 0)
+        {
+            <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+            <div class="btn">
+                <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
+            </div>
+        }
+
+        <InOutList ListData="@UseMaterial" />
         @* ListData = "@Maintenance.Inventory" *@
     }
 
@@ -33,6 +37,7 @@
     DetailMaintenanceDTO Maintenance = new DetailMaintenanceDTO();
     DetailMaintenanceDTO OriginalMaintenance = new DetailMaintenanceDTO(); //원본 데이터
 
+    List<InOutInventoryDTO> UseMaterial = new List<InOutInventoryDTO>(); //사용자재
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,10 +63,10 @@
             {
                 Console.WriteLine(i.MaterialName);
             }
-
+            await OnConverDTO();
         }catch(Exception ex)
         {
-            
+
         }
     }
 
@@ -130,7 +135,7 @@
             //     StateHasChanged();
             //     return;
             // }
-            // resGet.data.AddStore.InOutDate = Maintenance.WorkDT; //작업날짜 추가
+            // resGet.data.AddStore.InOutDate = ; //추가시 현재 날짜로 들어감
             // resGet.data.MaterialCode = SelectMaterial.Code; //자재 코드
             // resGet.data.MaterialName = SelectMaterial.Name; //자재 이름
             // resGet.data.Unit= SelectMaterial.Unit; //자재 단위
@@ -184,5 +189,33 @@
     private async Task OnSum()
     {
         // Maintenance.FacilityId = FacId;
+    }
+
+    //디테일 -> InOuteInventoryDTO
+    private async Task OnConverDTO()
+    {
+        foreach (var useStore in Maintenance.UseStoreList)
+        {
+            UseMaterial.Add(
+                new InOutInventoryDTO
+                {
+                    MaterialID = useStore.MaterialID,
+                    MaterialName = useStore.MaterialName,
+                    MaterialCode = useStore.MaterialCode,
+                    Unit = useStore.Unit,
+                    AddStore = new AddStoreDTO
+                    {
+                        RoomID = useStore.RoomID,
+                        RoomName = useStore.RoomName,
+                        UnitPrice = useStore.UnitPrice,
+                        Num = useStore.Num,
+                        TotalPrice = useStore.TotalPrice,   
+                    }
+                 }
+            );
+            
+            
+        }
+
     }
 }

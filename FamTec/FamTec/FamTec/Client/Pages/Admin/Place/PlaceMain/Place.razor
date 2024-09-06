@@ -1,5 +1,6 @@
 ﻿@page "/admin/place"
 
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
 @using FamTec.Client.Pages.Admin.Place.PlaceMain.Modal
 @using FamTec.Shared.Client.DTO
@@ -21,12 +22,16 @@
             <div class="table-header-option">
                 <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
 
-                @if (_Role == "시스템관리자" || _Role == "마스터")
+                @if (ADMINEDIT)
                 {
+                    @* <Button Name="등록"
+                            Width="true"
+                            Type=0
+                            OnClick="@onAddPlace" /> *@
                     <Button Name="등록"
                             Width="true"
                             Type=0
-                            OnClick="@onAddPlace" />
+                            OnClick = "@OnAddPage" />
                     <Button Name="삭제"
                             Width="true"
                             Type=1
@@ -70,26 +75,28 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //관리자 권한 검사
+        await base.OnInitializedAsync();
         /*
         * fetch 서버 요청
         */
         Console.WriteLine("[사업장 OnInitializedAsync]");
-        await LoadSession();
+        // await LoadSession();
 
         await LoadPlace();
     }
 
-    private async Task LoadSession()
-    {
-        var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-        _Role = await SessionService.GetClaimValue(session, "Role");
-        LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
-    }
+    // private async Task LoadSession()
+    // {
+    //     var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
+    //     _Role = await SessionService.GetClaimValue(session, "Role");
+    //     LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
+    // }
 
-    private async Task OnLoadStorage(List<Claim> claims)
-    {
-        var Role = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
-    }
+    // private async Task OnLoadStorage(List<Claim> claims)
+    // {
+    //     var Role = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
+    // }
 
 
     /*
@@ -184,7 +191,7 @@
                     CheckedItems.Clear();
                     await LoadPlace();
                 }
-                
+
             }
         }
         catch(Exception ex)
@@ -204,15 +211,21 @@
     }
 
     /*
-     * 모달 활성화
-     */
+    * 모달 활성화
+    */
     private void OnModalClose()
     {
         is_openModal = false;
         StateHasChanged();
     }
 
-   
+    /*
+    * 사업장 등록 페이지 이동
+    */
+    private void OnAddPage()
+    {
+        Navigation.NavigateTo("/admin/place/add");
+    }
 }
 
 

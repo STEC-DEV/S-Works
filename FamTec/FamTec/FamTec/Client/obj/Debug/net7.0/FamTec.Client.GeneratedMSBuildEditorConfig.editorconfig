@@ -146,6 +146,30 @@ build_metadata.AdditionalFiles.CssScope = b-e9xqng0i4t
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwXE1vZGFsXFBsYWNlTW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-8ecxbftryv
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/Components/ManagerTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcQ29tcG9uZW50c1xNYW5hZ2VyVGFibGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-si2e108hwm
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/Components/PlaceInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcQ29tcG9uZW50c1xQbGFjZUluZm8ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-4g6zw8058z
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/Components/PlaceManager.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcQ29tcG9uZW50c1xQbGFjZU1hbmFnZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-wdtexlmlgt
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/Components/PlacePerm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcQ29tcG9uZW50c1xQbGFjZVBlcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-nel5eggi6p
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/Modal/ManagerModal.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcTW9kYWxcTWFuYWdlck1vZGFsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-qvd8450mx1
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/PlaceAdd.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcUGxhY2VBZGQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-1fb1rk4lj9
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetail/Components/ManagerList.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWxcQ29tcG9uZW50c1xNYW5hZ2VyTGlzdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-mb8sqxjz45
