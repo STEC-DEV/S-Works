@@ -11,7 +11,6 @@ namespace FamTec.Shared.Model;
 [Index("MaterialTbId", Name = "FK_MaterialTB_20240906_1150")]
 [Index("PlaceTbId", Name = "FK_PlaceTB_20240906_1237")]
 [Index("RoomTbId", Name = "FK_RoomTB_20240906_1150")]
-[Index("StoreTbId", Name = "FK_StoreTB_20240906_1151")]
 public partial class UseMaintenenceMaterialTb
 {
     [Key]
@@ -35,9 +34,6 @@ public partial class UseMaintenenceMaterialTb
 
     [Column("ROOM_TB_ID", TypeName = "int(11)")]
     public int RoomTbId { get; set; }
-
-    [Column("STORE_TB_ID", TypeName = "int(11)")]
-    public int StoreTbId { get; set; }
 
     [Column("MAINTENANCE_TB_ID", TypeName = "int(11)")]
     public int MaintenanceTbId { get; set; }
@@ -93,7 +89,6 @@ public partial class UseMaintenenceMaterialTb
     [InverseProperty("UseMaintenenceMaterialTbs")]
     public virtual RoomTb RoomTb { get; set; } = null!;
 
-    [ForeignKey("StoreTbId")]
-    [InverseProperty("UseMaintenenceMaterialTbs")]
-    public virtual StoreTb StoreTb { get; set; } = null!;
+    [InverseProperty("MaintenenceMaterialTb")]
+    public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();
 }

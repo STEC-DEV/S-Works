@@ -92,8 +92,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="updater"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateMaintenanceUseRecord(UpdateMaintenanceMaterialDTO dto, int placeid, string updater);
-
+        ValueTask<int?> UpdateMaintenanceUseRecord(UpdateMaintenanceMaterialDTO dto, int placeid, string updater);
 
     }
 }

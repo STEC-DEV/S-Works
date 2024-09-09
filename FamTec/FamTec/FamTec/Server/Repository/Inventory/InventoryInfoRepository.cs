@@ -72,7 +72,6 @@ namespace FamTec.Server.Repository.Inventory
                         Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                         await context.InventoryTbs.AddAsync(Inventorytb);
 
-
                         int thisCurrentNum = await context.InventoryTbs
                             .Where(m => m.DelYn != true &&
                                         m.MaterialTbId == InventoryDTO.MaterialID &&

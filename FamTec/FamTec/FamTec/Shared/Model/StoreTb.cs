@@ -9,6 +9,7 @@ namespace FamTec.Shared.Model;
 [Table("store_tb")]
 [Index("PlaceTbId", Name = "FK_PLACE_202407231358")]
 [Index("RoomTbId", Name = "FK_ROOM_202407231358")]
+[Index("MaintenenceMaterialTbId", Name = "fk_maintenence_material_tb")]
 [Index("MaintenenceHistoryTbId", Name = "fk_store_tb_maintenence_history_tb1_idx")]
 [Index("MaterialTbId", Name = "fk_store_tb_material_tb1_idx")]
 [MySqlCollation("utf8mb4_unicode_ci")]
@@ -116,9 +117,16 @@ public partial class StoreTb
     [Column("MAINTENENCE_HISTORY_TB_ID", TypeName = "int(11)")]
     public int? MaintenenceHistoryTbId { get; set; }
 
+    [Column("MAINTENENCE_MATERIAL_TB_ID", TypeName = "int(11)")]
+    public int? MaintenenceMaterialTbId { get; set; }
+
     [ForeignKey("MaintenenceHistoryTbId")]
     [InverseProperty("StoreTbs")]
     public virtual MaintenenceHistoryTb? MaintenenceHistoryTb { get; set; }
+
+    [ForeignKey("MaintenenceMaterialTbId")]
+    [InverseProperty("StoreTbs")]
+    public virtual UseMaintenenceMaterialTb? MaintenenceMaterialTb { get; set; }
 
     [ForeignKey("MaterialTbId")]
     [InverseProperty("StoreTbs")]
@@ -131,7 +139,4 @@ public partial class StoreTb
     [ForeignKey("RoomTbId")]
     [InverseProperty("StoreTbs")]
     public virtual RoomTb RoomTb { get; set; } = null!;
-
-    [InverseProperty("StoreTb")]
-    public virtual ICollection<UseMaintenenceMaterialTb> UseMaintenenceMaterialTbs { get; set; } = new List<UseMaintenenceMaterialTb>();
 }

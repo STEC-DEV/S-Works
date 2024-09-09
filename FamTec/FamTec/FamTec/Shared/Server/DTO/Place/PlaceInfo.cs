@@ -17,6 +17,11 @@ namespace FamTec.Shared.Server.DTO.Place
         public string? PlaceCd { get; set; }
 
         /// <summary>
+        /// 사업장주소
+        /// </summary>
+        public string? Address { get; set; }
+
+        /// <summary>
         /// 사업장명
         /// </summary>
         [Display(Name = "사업장명")]

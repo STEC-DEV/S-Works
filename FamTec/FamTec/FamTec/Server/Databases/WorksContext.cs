@@ -86,7 +86,7 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
-        
+
         // 쿼리스트링 사용
         modelBuilder.Entity<MaterialInventory>(entity =>
         {
@@ -549,8 +549,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion)
-                    .IsConcurrencyToken() // 추가
-                    .HasColumnType("BIGINT"); // 추가
+                 .IsConcurrencyToken() // 추가
+                 .HasColumnType("BIGINT"); // 추가
+
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -732,6 +733,8 @@ public partial class WorksContext : DbContext
 
             entity.HasOne(d => d.MaintenenceHistoryTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_store_tb_maintenence_history_tb1");
 
+            entity.HasOne(d => d.MaintenenceMaterialTb).WithMany(p => p.StoreTbs).HasConstraintName("fk_maintenence_material_tb");
+
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.StoreTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_store_tb_material_tb1");
@@ -789,10 +792,6 @@ public partial class WorksContext : DbContext
             entity.HasOne(d => d.RoomTb).WithMany(p => p.UseMaintenenceMaterialTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RoomTB_20240906_1150");
-
-            entity.HasOne(d => d.StoreTb).WithMany(p => p.UseMaintenenceMaterialTbs)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StoreTB_20240906_1151");
         });
 
         modelBuilder.Entity<UsersTb>(entity =>
@@ -876,6 +875,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

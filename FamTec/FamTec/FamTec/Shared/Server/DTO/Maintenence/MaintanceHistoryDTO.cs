@@ -32,7 +32,7 @@
         /// <summary>
         /// 작업일자
         /// </summary>
-        public string? CreateDT { get; set; }
+        public string? WorkDT { get; set; }
 
         /// <summary>
         /// 유비보수 설명

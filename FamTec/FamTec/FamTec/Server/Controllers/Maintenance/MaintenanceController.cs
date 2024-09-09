@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Maintenence;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
@@ -14,15 +15,39 @@ namespace FamTec.Server.Controllers.Maintenance
         private IMaintanceService MaintanceService;
         private IFileService FileService;
         private ILogService LogService;
+        private IMaintanceRepository MaintanceRepository;
 
         public MaintenanceController(IMaintanceService _maintanceservice,
+            IMaintanceRepository _maintancerepository,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaintanceService = _maintanceservice;
-
+            this.MaintanceRepository = _maintancerepository;
+            
             this.FileService = _fileservice;
             this.LogService = _logservice;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/temp")]
+        public async ValueTask<IActionResult> Temp()
+        {
+            UpdateMaintenanceMaterialDTO dto = new UpdateMaintenanceMaterialDTO()
+            {
+                MaterialID = 10,
+                RoomID = 2,
+                UseMaintanceID = 28,
+                MaintanceID = 100,
+                Num = 8,
+                UnitPrice = 100,
+                TotalPrice = 10000,
+                Note = "테스트"
+            };
+        
+            var temp = await MaintanceRepository.UpdateMaintenanceUseRecord(dto, 3, "용");
+            return Ok(temp);
         }
 
         [AllowAnonymous]
@@ -79,52 +104,52 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/AddMaintenance")]
-        //public async ValueTask<IActionResult> AddMaintenence()
-        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
+        public async ValueTask<IActionResult> AddMaintenence()
+        //public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
             {
                 // DTO의 Inventory에 역직렬화된 데이터를 할당
-                //AddMaintenanceDTO dto = new AddMaintenanceDTO();
-                //dto.Name = "유지보수이력_1";
-                //dto.Type = 1;
-                //dto.Worker = "테스트";
-                //dto.TotalPrice = 30 * 500;
-                //dto.FacilityID = 1;
-                //dto.WorkDT = DateTime.Now;
+                AddMaintenanceDTO dto = new AddMaintenanceDTO();
+                dto.Name = "유지보수이력_1";
+                dto.Type = 1;
+                dto.Worker = "테스트";
+                dto.TotalPrice = 30 * 500;
+                dto.FacilityID = 1;
+                dto.WorkDT = DateTime.Now;
 
-                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                //{
-                //    InOut = 0,
-                //    MaterialID = 10,
-                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now,
-                //        RoomID = 2,
-                //        Num = 11,
-                //        UnitPrice = 100,
-                //        TotalPrice = 10 * 100,
-                //        Note = "출고등록"
-                //    }
-                //});
+                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                {
+                    InOut = 0,
+                    MaterialID = 10,
+                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                    {
+                        InOutDate = DateTime.Now,
+                        RoomID = 2,
+                        Num = 11,
+                        UnitPrice = 100,
+                        TotalPrice = 10 * 100,
+                        Note = "출고등록"
+                    }
+                });
 
-                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                //{
-                //    InOut = 0,
-                //    MaterialID = 11,
-                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now,
-                //        RoomID = 3,
-                //        Num = 10,
-                //        UnitPrice = 200,
-                //        TotalPrice = 3 * 200,
-                //        Note = "출고등록"
-                //    }
-                //});
+                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                {
+                    InOut = 0,
+                    MaterialID = 11,
+                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                    {
+                        InOutDate = DateTime.Now,
+                        RoomID = 3,
+                        Num = 10,
+                        UnitPrice = 200,
+                        TotalPrice = 3 * 200,
+                        Note = "출고등록"
+                    }
+                });
 
                 if (HttpContext is null)
                     return BadRequest();

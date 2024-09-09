@@ -26,11 +26,6 @@
         public int UseMaintanceID { get; set; }
 
         /// <summary>
-        /// 입출고 이력 ID
-        /// </summary>
-        public int StoreID { get; set; }
-
-        /// <summary>
         /// 비고
         /// </summary>
         public string? Note { get; set; }
@@ -39,6 +34,11 @@
         /// 수량
         /// </summary>
         public int Num { get; set; }
+
+        /// <summary>
+        /// 단가
+        /// </summary>
+        public int UnitPrice { get; set; }
 
         /// <summary>
         /// 총 금액

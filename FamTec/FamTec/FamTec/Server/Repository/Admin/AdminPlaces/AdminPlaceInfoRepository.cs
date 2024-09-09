@@ -288,6 +288,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();
                 PlaceDetail.PlaceInfo!.Id = placetb.Id;
                 PlaceDetail.PlaceInfo.PlaceCd = placetb.PlaceCd;
+                PlaceDetail.PlaceInfo.Address = placetb.Address; // 주소
                 PlaceDetail.PlaceInfo.Name = placetb.Name;
                 PlaceDetail.PlaceInfo.Tel = placetb.Tel;
                 PlaceDetail.PlaceInfo.ContractNum = placetb.ContractNum;

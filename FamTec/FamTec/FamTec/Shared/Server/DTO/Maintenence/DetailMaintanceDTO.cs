@@ -61,11 +61,6 @@
         public int RoomID { get; set; }
 
         /// <summary>
-        /// 저장 로그 ID
-        /// </summary>
-        public int StoreID { get; set; }
-
-        /// <summary>
         /// 품목 Code
         /// </summary>
         public string? MaterialCode { get; set;}
