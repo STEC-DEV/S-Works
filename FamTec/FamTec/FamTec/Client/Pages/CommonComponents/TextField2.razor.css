@@ -46,3 +46,7 @@
 .text:focus {
     border:var(--default-bd);
 }
+
+.color{
+    background-color : var(--content-back-color);
+}

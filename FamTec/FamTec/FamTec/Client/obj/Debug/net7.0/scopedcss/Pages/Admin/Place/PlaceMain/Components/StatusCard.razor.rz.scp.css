@@ -8,8 +8,8 @@
     border-radius: .25em;
 }
 
-.status-false[b-bwxf2o4x4c] {
-    background-color: var(--status-0);
+.status-False[b-bwxf2o4x4c] {
+    background-color: var(--status-del);
 }
 
 .status-True[b-bwxf2o4x4c] {

@@ -10,9 +10,11 @@
             매니저 목록
         </span>
     </div>
-    <InputCol
+    <Input
         Placeholder="매니저명, 부서명"
-        @bind-Value="@_searchText"
+        Value="@_searchText"
+        Padding=true
+        ValueChanged="OnSearch"
         />
     <div class="content">
         <ManagerTable 
@@ -59,9 +61,20 @@
             await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
             return;
         }
-        ListManager = CheckedManagerList;
-        FilterData = ListManager;
-        await OnAddManager.InvokeAsync(CheckedManagerList);
+
+        // 선택된 매니저들을 기존 SelectManagerList에 추가
+        foreach (var manager in CheckedManagerList)
+        {
+            if (!SelectManagerList.Any(m => m.Id == manager.Id))
+            {
+                SelectManagerList.Add(manager);
+            }
+        }
+
+        // 업데이트된 SelectManagerList를 부모 컴포넌트에 전달
+        await OnAddManager.InvokeAsync(SelectManagerList);
+
+        // 모달 닫기
         OnCanceled();
     }
 
@@ -75,22 +88,34 @@
             return;
         }
         ListManager = res.data;
-        // FilterManagerList = ManagerList;
+        FilterData = ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList();
     }
 
     //매니저 필터링
     private async Task OnSearch(string text)
     {
+        foreach(var i in SelectManagerList)
+        {
+            Console.WriteLine(i.Name);
+        }
         _searchText = text;
-        FilterData = String.IsNullOrEmpty(_searchText)
-                                ? ListManager
-                                : ListManager.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                        (m.UserId?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                        (m.Department?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
-                                                        ).ToList();
+        FilterData = ListManager
+        .Where(m => !SelectManagerList.Any(s => s.Id == m.Id)) // 선택된 객체 제외
+        .Where(m => String.IsNullOrEmpty(_searchText) ||
+                    (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (m.UserId?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (m.Department?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        .ToList();  
 
         await InvokeAsync(StateHasChanged);
-        
+    
+
+        // FilterData = String.IsNullOrEmpty(_searchText)
+        //                            ? ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList()
+        //                        : ListManager.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        //                                                    (m.UserId?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        //                                                    (m.Department?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+        //                                                    ).ToList();
     }
 
 

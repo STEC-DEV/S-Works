@@ -1,0 +1,80 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            부서 수정
+        </span>
+    </div>
+    <div class="content">
+        
+        <InputCol
+            Label="부서명"
+            @bind-Value=@Data.Name
+            />
+        <Toggle Title="사업장 관리부서"
+                @bind-Value=@Data.ManagerYN
+                IsChecked="@Data.ManagerYN"
+                EditMode=true />
+    </div>
+    <div class="btns">
+        <Button Name="수정" Type="0" OnClick="OnSubmitEdit" />
+        <Button Name="닫기" Type="1" OnClick="OnCaneled" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int? DepartmentId { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnLoadDepartment{ get; set; }
+    [Parameter] public DepartmentDTO Data { get; set; }
+
+    string _originalDep = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _originalDep = Data.Name;
+    }
+
+
+    //부서 수정
+    private async Task OnSubmitEdit()
+    {
+
+        try
+        {
+            if (Data.Name.ToLower() == _originalDep.ToLower())
+            {
+                await JS.InvokeVoidAsync("alert", "변경된 내용이 없습니다.");
+                return;
+            }
+            Console.WriteLine("부서번호" + Data.Id);
+            Console.WriteLine("수정명" + Data.Name);
+            ResponseUnit<bool> resUpdate = await apiManager.PostAsync<bool>("Department/sign/UpdateDepartment", Data);
+            if (resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            Console.WriteLine("여기옴");
+            await OnLoadDepartment.InvokeAsync();
+            StateHasChanged();
+            await OnCaneled();
+        }
+        catch (Exception ex)
+        {
+
+        }
+        
+ 
+    }
+
+    private async Task OnCaneled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+}

@@ -23,11 +23,11 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        @if (DataList == null)
+        @if (DataList.Count == 0)
         {
             <tr>
-                <td colspan="@(typeof(T).GetProperties().Length)">
-                    Loading ....
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
                 </td>
             </tr>
 

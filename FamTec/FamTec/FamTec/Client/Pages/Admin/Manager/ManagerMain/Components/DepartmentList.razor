@@ -1,4 +1,5 @@
-﻿@using FamTec.Shared.Client.DTO
+﻿@using FamTec.Client.Pages.Admin.Manager.ManagerMain.Modal
+@using FamTec.Shared.Client.DTO
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Server.DTO
 
@@ -9,43 +10,34 @@
     }
     else
     {
-        @if (AddMode)
+        @if (Edit)
         {
             <li class="depart-add-form">
-                <Input Type="text" Placeholder="부서명" @bind-Value=@newDepartment.Name />
-                <Button Name="추가" OnClick="@AddDepartment" />
+                
+                <Toggle
+                    Title="사업장 관리부서"
+                    @bind-Value=@newDepartment.ManagerYN
+                    IsChecked="@newDepartment.ManagerYN"
+                    EditMode=true
+                    />
+                <div class="add-form">
+                    <Input Type="text" Placeholder="부서명" @bind-Value=@newDepartment.Name />
+                    <Button Name="추가" OnClick="@AddDepartment" />
+                </div>
+                
             </li>
         }
 
         @foreach (var item in DataList)
         {
-
-            <li class="depart-item @(InputEdit ? "edit": "" ) ">
-                @if (!Edit)
+            
+            <li class="depart-item @(InputEdit ? "edit": "" ) "  >
+                <span class="item-title" @onclick=@(()=>OnModal(item.Id)) @onclick:stopPropagation>
+                    @item.Name
+                </span>
+                @if (Edit)
                 {
-                    <NavLink>
-                        <span class="item-title">
-                            @item.Name
-                        </span>
-                    </NavLink>
-                }
-                else
-                {
-                    
-                    <input class="item-title item-input " type="text" @bind-value="@item.Name" disabled=@(!(editStates.ContainsKey(item.Id) && editStates[item.Id]))  />
                     <div class="item-option">
-                        @if (editStates.ContainsKey(item.Id) && editStates[item.Id])
-                        {
-                            <button class="edit-btn btn-submit" @onclick="()=>OnSubmitEdit(item.Id) " />
-                    
-
-                        }
-                        else
-                        {
-                            <button class="edit-btn" @onclick="()=>OnInputEdit(item.Id)" />
-
-                        }
-
                         <input class="depart-select"
                                type="checkbox"
                                value="@item.Id"
@@ -53,7 +45,21 @@
                     </div>
                 }
             </li>
+            @if ( Edit && openModalId == item.Id)
+            {
+                <ModalBackground>
+                    <ChildComponent>
+                        <EditDepartment 
+                            DepartmentId="openModalId" 
+                            OnCancel="CloseModal" 
+                            OnLoadDepartment="OnLoadDepartments"
+                            Data="item" />
+                    </ChildComponent>
+                </ModalBackground>
+            }
         }
+
+        
     }
     
 </ul>
@@ -70,66 +76,14 @@
     AddDepartmentDTO newDepartment = new AddDepartmentDTO();
 
     public bool InputEdit { get; set; } = false;
+    private int? openModalId = null;
+
 
 
     private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
     {
         bool isChecked = (bool)(e.Value ?? false);
         await Select.InvokeAsync((isChecked, id));
-    }
-
-    private void OnInputEdit(int id)
-    {
-        Console.WriteLine("부서편집");
-        if (!editStates.ContainsKey(id))
-        {
-            editStates[id] = false;
-            Console.WriteLine(editStates[id]);
-        }
-
-        editStates[id] = true;
-
-
-
-    }
-
-    private async Task OnSubmitEdit(int id)
-    {
-        var updateDepartment = DataList.FirstOrDefault(d => d.Id ==id);
-        Console.WriteLine(updateDepartment.Name + updateDepartment.Id);
-        if (updateDepartment != null)
-        {
-            try
-            {
-                ResponseUnit<DepartmentDTO> resUpdate = await apiManager.PutAsync<DepartmentDTO>("Department/sign/UpdateDepartment", updateDepartment);
-                Console.WriteLine(resUpdate);
-                if (resUpdate.code == 200)
-                {
-                    Console.WriteLine($"수정된 값: {updateDepartment.Name}");
-                    await OnLoadDepartments.InvokeAsync();
-                    await OnListSync.InvokeAsync();
-                }
-                else
-                {
-                    await JS.InvokeVoidAsync("alert", "부서 수정 실패.");
-                }
-            }
-            catch(Exception ex)
-            {
-                
-            }
-        }
-
-
-
-
-
-
-
-        if (editStates.ContainsKey(id))
-        {
-            editStates[id] = false;
-        }
     }
 
 
@@ -157,6 +111,7 @@
 
             await OnLoadDepartments.InvokeAsync();
             await OnListSync.InvokeAsync();
+            StateHasChanged();
             newDepartment = new AddDepartmentDTO();
         }
         catch (Exception ex)
@@ -165,20 +120,15 @@
         }
     }
 
-    /*
-    * (Put)부서 편집
-    */
-    private async Task OnUpdateDepartment()
+    private void OnModal(int id)
     {
-        try
-        {
-            Console.WriteLine();
-        }
-        catch
-        {
-            
-        }
+        Console.WriteLine("동작함");
+        openModalId = id;
     }
 
-    
+    private void CloseModal()
+    {
+        openModalId = null;
+    }
+
 }

@@ -1,0 +1,89 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceDetailv2.Modal
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+
+
+<div class="manager">
+    <div class="header">
+        <span class="title">
+            사업장 매니저
+        </span>
+        <div class="options">
+            @if (EditMode)
+            {
+                <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+            }
+            
+        </div>
+    </div>
+    <div class="content">
+        <ManagerTable ListData="@SelectList" OnChecked="OnChecked" EditMode=EditMode />
+    </div>
+    @if (_isModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <ManagerModal 
+                    SelectManagerList="@SelectList" 
+                    OnCancel="OnModal" 
+                    OnAddManager="OnSelected"
+                    Id=@Id
+                    />
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public List<ManagerDTO>? SelectList { get; set; }
+    [Parameter] public bool EditMode{ get; set; }
+    [Parameter] public EventCallback<List<ManagerDTO>> OnSelect{ get; set; }
+    [Parameter] public int Id { get; set; }
+
+
+    private bool _isModal = false;
+    private List<ManagerDTO> _selectDelList = new List<ManagerDTO>();
+
+
+    private void OnSelected(List<ManagerDTO> data)
+    {
+        SelectList = data;
+    }
+
+    //목록에 담긴애들 중 체크
+    private void OnChecked((bool isCheck, ManagerDTO manager) data)
+    {
+
+        //매니저 추가
+        if (data.isCheck)
+        {
+            _selectDelList.Add(data.manager);
+        }
+        //매니저 삭제
+        else
+        {
+            _selectDelList.Remove(data.manager);
+        }
+    }
+
+    private async void OnDelManager()
+    {
+        if(_selectDelList.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "삭제할 매니저를 선택해주세요.");
+            return;
+        }
+
+        foreach(var i in _selectDelList)
+        {
+            SelectList?.Remove(i);
+        }
+        StateHasChanged();
+    }
+
+    private void OnModal()
+    {
+        _isModal = !_isModal;
+    }
+}

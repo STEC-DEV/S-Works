@@ -8,8 +8,8 @@ namespace FamTec.Shared.Client.DTO.Place
 {
     public class UpdatePlaceDTO
     {
-        public PlaceInfo PlaceInfo { get; set; }
-        public PlacePerm PlacePerm { get; set; }
+        public PlaceInfo PlaceInfo { get; set; } = new PlaceInfo();
+        public PlacePerm PlacePerm { get; set; } = new PlacePerm();
 
     }
 }

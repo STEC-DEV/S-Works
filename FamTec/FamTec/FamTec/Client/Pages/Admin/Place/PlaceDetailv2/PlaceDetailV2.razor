@@ -1,0 +1,108 @@
+﻿@page "/admin/place/{Id:int}"
+@using FamTec.Client.Pages.Admin.Place.PlaceDetailv2.Components
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server.DTO
+
+<div class="container">
+    <div class="section">
+        <PlaceInfo Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
+    </div>
+    <div class="section-row">
+        <PlacePerm Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
+        <PlaceManager 
+            Id=Id
+            SelectList="@(_editMode ? UpdateManagerList: OriginalManagerList)" 
+            EditMode=@_editMode />
+    </div>
+    <div class="btns">
+        @if (_editMode)
+        {
+            <Button Name="저장" Width=true Type=0 OnClick="OnUpdate" />
+            <Button Name="취소" Width=true Type=1 OnClick="OnEditMode" />
+        }
+        else
+        {
+            <Button Name="편집" Width=true Type=0 OnClick="OnEditMode" />
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private bool _editMode = false;
+    //사업장 정보 + 권한
+    AddPlaceDTO Place = new AddPlaceDTO();
+
+    //서버 전송 데이터
+    AddPlaceManagerDTO<ManagerDTO> PlaceManager = new AddPlaceManagerDTO<ManagerDTO>();
+
+    //매니저 추가 리스트
+    List<ManagerDTO> UpdateManagerList = new List<ManagerDTO>();
+    List<ManagerDTO> OriginalManagerList = new List<ManagerDTO>();
+
+    UpdatePlaceDTO UpdatePlace = new UpdatePlaceDTO();
+    UpdatePlaceDTO OriginalPlace = new UpdatePlaceDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPlaceDetailInfo();
+    }
+
+
+    //사업장 정보 조회
+    private async Task LoadPlaceDetailInfo()
+    {
+        Console.WriteLine("샐행됨");
+        ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
+
+
+        OriginalManagerList = res.data.ManagerList;
+        OriginalPlace.PlaceInfo = res.data.PlaceInfo;
+        OriginalPlace.PlacePerm = res.data.PlacePerm;
+        OnDeepCopyData();
+        StateHasChanged();
+    }
+
+    private void OnEditMode()
+    {
+        _editMode = !_editMode;
+        OnDeepCopyData();
+    }
+
+    private void OnDeepCopyData()
+    {
+        UpdateManagerList = OriginalManagerList.Select(m => m.DeepCopy()).ToList();
+        UpdatePlace.PlaceInfo = OriginalPlace.PlaceInfo.DeepCopy();
+        UpdatePlace.PlacePerm = OriginalPlace.PlacePerm.DeepCopy();
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+
+            Console.WriteLine("[사업장 추가 끝]");
+
+            ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
+            Console.WriteLine(resUpdate.code);
+            if (resUpdate.code == 200)
+            {
+                await LoadPlaceDetailInfo();
+                OnEditMode();
+            }
+            StateHasChanged();
+
+ 
+
+            return;
+        }catch(Exception ex)
+        {
+            
+        }
+    }
+}

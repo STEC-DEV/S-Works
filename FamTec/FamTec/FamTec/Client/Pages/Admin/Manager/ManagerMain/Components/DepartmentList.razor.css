@@ -98,11 +98,15 @@
     background-color : transparent;
 }
 
+.item-title:hover{
+    cursor:pointer;
+}
+
 
 .depart-list .item-option {
     display: flex;
-    align-items:center;
-    gap : var(--half-pd);
+    align-items: center;
+    gap: var(--half-pd);
 }
 
 .depart-list .edit-btn {
@@ -129,6 +133,12 @@
 
 .depart-list .depart-add-form{
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    
+    gap: var(--half-pd);
+}
+
+.add-form{
+    display:flex;
     gap: var(--half-pd);
 }

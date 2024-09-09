@@ -10,6 +10,8 @@ namespace FamTec.Client.Middleware
         protected bool USEREDIT { get; private set; } = false;
         protected bool ADMINEDIT { get; private set; } = false;
 
+        protected string? ADMINJOB { get; private set; }
+
         // 각 페이지에서 오버라이드할 속성
         protected virtual string RequiredPermission => "UserPerm_Basic";
 
@@ -18,6 +20,7 @@ namespace FamTec.Client.Middleware
             await base.OnInitializedAsync();
             await LoadPermissions();
             await LoadAdminModePermissions();
+            await LoadAdminJob();
         }
 
         protected virtual async Task LoadPermissions()
@@ -35,6 +38,11 @@ namespace FamTec.Client.Middleware
                 return;
             }
             ADMINEDIT = false;
+        }
+
+        protected virtual async Task LoadAdminJob()
+        {
+            ADMINJOB= await PermissionService.HasAdminModeEditPerm();
         }
     }
 }

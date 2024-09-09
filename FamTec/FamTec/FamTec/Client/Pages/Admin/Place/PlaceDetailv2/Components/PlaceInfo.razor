@@ -1,0 +1,119 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Place
+
+
+<div class="form">
+    <div class="header">
+        <span class="title">
+            사업장 정보
+        </span>
+    </div>
+    <div class="content">
+        @if (EditMode)
+        {
+            <InputCol Label="사업장 코드"
+                      Placeholder="사업장 코드"
+                      @bind-Value="Data.PlaceInfo.PlaceCd" />
+            <InputCol Label="사업장명"
+                      Placeholder="사업장명"
+                      @bind-Value="Data.PlaceInfo.Name" />
+            <InputCol Label="사업장 주소"
+                      Placeholder="사업장 주소"
+                      @bind-Value="Data.PlaceInfo.Address" />
+            <InputCol Label="전화번호"
+                      Placeholder="전화번호"
+                      @bind-Value="Data.PlaceInfo.Tel" />
+            <InputCol Label="계약번호"
+                      Placeholder="계약번호"
+                      @bind-Value="Data.PlaceInfo.ContractNum" />
+            <DateInput Label="계약일자"
+                       Placeholder="YYYYMMDD"
+                       @bind-Date=@Data.PlaceInfo.ContractDt />
+            <DateInput Label="해약일자"
+                       Placeholder="YYYYMMDD"
+                       @bind-Date=@Data.PlaceInfo.CancelDt />
+            <SelectField 
+                Label="계약상태"
+                SelectData="@stateList"
+                @bind-Value="@_state"
+                OnChange="OnSelectState"
+                EditMode=EditMode
+                />
+        }
+        else
+        {
+            <TextField2
+                Label="사업장 코드"
+                Color=true
+                Value="@(Data.PlaceInfo.PlaceCd ?? "없음")" />
+            <TextField2 Label="사업장명"
+                        Color=true
+                        Value="@(Data.PlaceInfo.Name ??"없음")" />
+            <TextField2 Label="사업장 주소"
+                        Color=true
+                        Value="@(Data.PlaceInfo.Address ?? "없음")" />
+            <TextField2 Label="전화번호"
+                        Color=true
+                        Value="@(Data.PlaceInfo.Tel ?? "없음")" />
+            <TextField2 Label="계약번호"
+                        Color=true
+                        Value="@(Data.PlaceInfo.ContractNum ?? "없음")" />
+            <TextField2 Label="계약일자"
+                        Color=true
+                        Value="@(Data.PlaceInfo.ContractDt?.ToString("yyyy-MM-dd") ?? "없음")" />
+            <TextField2 Label="해약일자"
+                        Color=true
+                        Value=@(Data.PlaceInfo.CancelDt?.ToString("yyyy-MM-dd") ?? "없음") />
+            <TextField2 Label="계약상태"
+                        Color=true
+                        Value="@(Data.PlaceInfo.Status == true ? "계약" : "해약")" />
+        }
+        
+    </div>
+</div>
+
+@code {
+    [Parameter] public UpdatePlaceDTO Data { get; set; }
+    [Parameter] public bool EditMode { get; set;  }
+
+    private int _state = 0;
+
+    List<object> stateList = new List<object>
+    {
+        new
+        {
+            Id = 1,
+            Name = "계약"
+        },
+        new
+        {
+            Id = 2,
+            Name = "해약"
+        },
+    };
+
+    protected async override Task OnInitializedAsync()
+    {
+        _state = (Data.PlaceInfo.Status == true ? 1 : 2);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _state = (Data.PlaceInfo.Status == true ? 1 : 2);
+    }
+
+    private async Task OnSelectState(int stateId)
+    {
+        Console.WriteLine("동작함");
+        if(stateId == 1)
+        {
+            Data.PlaceInfo.Status = true;
+        }
+        else
+        {
+            Data.PlaceInfo.Status = false;
+        }
+
+    }
+}

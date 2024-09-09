@@ -8,8 +8,8 @@
     border-radius: .25em;
 }
 
-.status-false {
-    background-color: var(--status-0);
+.status-False {
+    background-color: var(--status-del);
 }
 
 .status-True {

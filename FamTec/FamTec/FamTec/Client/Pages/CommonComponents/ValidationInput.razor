@@ -1,0 +1,101 @@
+﻿@using System.Text.RegularExpressions
+
+<div class="valid-input @(Row==true?"row":"")">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
+    <div class="inputs">
+        <input class="input"
+               type="@ValueType"
+               placeholder="@Placeholder"
+               @oninput=@(e =>OnInputChange(e)) />
+        @if(Type == "USERID")
+        {
+            <Button Name="중복검사" Width=true Type="0" />
+        }
+
+    </div>
+    
+    @if(Type == "PW")
+    {
+        <div class="guide">
+            <span class="text @(pw1 ? "true":"")">
+                8자 이상 입력(공백 제외)
+            </span>
+        </div>
+        <div class="guide">
+            <span class="text @(pw2 ? "true":"")">
+                영문/숫자/특수문자 모두 포함
+            </span>
+        </div>
+    }
+    @if(Type == "PWCHECK")
+    {
+        <div class="guide">
+            <span class="text @(pw_check ? "true":"")">
+                비밀번호 일치
+            </span>
+        </div>
+    }
+    @if (Type == "EMAIL")
+    {
+        <div class="guide">
+            <span class="text @(emailValid ? "true":"")">
+                유효한 이메일 형식
+            </span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? PasswordCheck { get; set; } //비밀번호값
+    [Parameter] public string? Type { get; set; }
+
+    [Parameter] public string? Value {get;set;}
+    [Parameter] public bool? Row{ get; set; }
+    [Parameter] public string? ValueType { get; set; } //아이디 비번 이메일 구분
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    bool pw1 = false;
+    bool pw2 = false;
+    bool pw_check = false;
+    bool emailValid = false;
+    private async Task OnInputChange(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        ValidateInput(Value);
+        await ValueChanged.InvokeAsync(Value);
+        
+    }
+
+
+    private void ValidateInput(string? value)
+    {
+        switch (Type)
+        {
+            case "PW":
+                pw1 = !string.IsNullOrWhiteSpace(value) && value.Length >= 8;
+                pw2 = Regex.IsMatch(value ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
+                break;
+            case "PWCHECK":
+                pw_check = value == PasswordCheck;
+                break;
+            case "EMAIL":
+                emailValid = Regex.IsMatch(value ?? "", @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                break;
+        }
+    }
+}
+
+@*
+    [type]
+    UserId => 중복검사
+    Password => 영문자, 숫자, 특수 문자, 8자리 이상
+    email => @ / .com 정도
+
+*@

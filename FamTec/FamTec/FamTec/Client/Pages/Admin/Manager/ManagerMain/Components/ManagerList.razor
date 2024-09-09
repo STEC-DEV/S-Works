@@ -20,8 +20,6 @@
                     <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
                 </div>
             }
-            
-            
         </div>
         <div class="managerlist-list">
             <Table DataList="@managerList" Select="OnSelected" Detail="true" />
@@ -34,6 +32,8 @@
 
     List<ManagerDTO>? managerList;
     List<int>? deleteManagerList = new List<int>();
+
+    private bool _editMode = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -122,9 +122,12 @@
         }
     }
 
-    
 
-    
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
+    }
+
 
     private void OnSignUp()
     {

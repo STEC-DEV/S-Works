@@ -27,8 +27,9 @@
     padding: var(--default-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);
-    background-color: var(--content-back-color);
-    transition : all .3s;
+    /*background-color: var(--content-back-color);*/
+    background-color: var(--default-color);
+    transition: all .3s;
 }
 
 .input:focus[b-qvxd8gjmfu]{

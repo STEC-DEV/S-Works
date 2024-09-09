@@ -15,23 +15,28 @@
             </span>
         </div>
         <div class="depart-content">
-            <DepartmentList DataList="departmentList" />
+            <DepartmentList 
+                DataList="departmentList" 
+                OnLoadDepartments="LoadDepartments"
+                Select="OnCheck"
+                Edit=EditMode/>
         </div>
         <div class="depart-btns">
             @if(UserType != "매니저")
             {
-                <Button Name="편집" OnClick="@OnEdit" Type=0/>
+                if (EditMode)
+                {
+                    <Button Name="닫기" Type="0" OnClick="OnEditMode" />
+                    <Button Name="삭제" Type="1" OnClick="OnDelDepartments" />
+                }
+                else
+                {
+                    <Button Name="편집" OnClick="@OnEditMode" Type=0 />
+                }
+                
             }
             
         </div>
-        @if (is_openModal == true)
-        {
-            <ModalBackground >
-                <ChildComponent>
-                    <ModalDepartment OnClose="@OnModalClose" OnListSync="ReloadDepartments" />
-                </ChildComponent>
-            </ModalBackground>
-        }
     </div>
 </div>
 
@@ -40,7 +45,8 @@
 
     List<DepartmentDTO>? departmentList = new List<DepartmentDTO>();
     private bool is_openModal = false;
-
+    private bool EditMode = false;
+    List<int> DelList = new List<int>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,7 +67,7 @@
             }
 
             departmentList = resDepartment.data;
-            
+            StateHasChanged();
         }catch(Exception ex)
         {
             Console.WriteLine($"[Admin][Department] 클라이언트 부서 조회 에러");
@@ -74,6 +80,39 @@
         await LoadDepartments();
     }
 
+
+
+    //부서삭제
+    private async Task OnDelDepartments()
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Department/sign/DeleteDepartment",DelList);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "부서 삭제 실패");
+                return;
+            }
+            await LoadDepartments();
+            StateHasChanged();
+        }catch(Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 클라이언트 부서 삭제 에러");
+        }
+    }
+
+
+    private void OnCheck((bool isChecked, int id) data)
+    {
+        if (data.isChecked)
+        {
+            DelList.Add(data.id);
+        }
+        else
+        {
+            DelList.Remove(data.id);
+        }
+    }
 
     /*
     * click add
@@ -88,6 +127,11 @@
     {
         is_openModal = false;
         StateHasChanged();
+    }
+
+    private void OnEditMode()
+    {
+        EditMode = !EditMode;
     }
 }
 

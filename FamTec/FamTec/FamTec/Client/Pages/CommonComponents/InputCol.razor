@@ -31,43 +31,6 @@
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
     [Parameter] public bool ReadOnly { get; set; } = false;
 
-
-    // private async Task OnValueChanged(ChangeEventArgs e)
-    // {
-    //     // Check if the value is null or empty
-    //     var newValue = e.Value?.ToString();
-
-    //     // Handle empty input for number types
-    //     if (ValueType == "number" && string.IsNullOrEmpty(newValue))
-    //     {
-    //         newValue = "0"; // Set default value for empty input
-    //     }
-        
-    //     // Update Value based on input change
-    //     if (typeof(T) == typeof(float) && float.TryParse(e.Value?.ToString(), out float floatValue))
-    //     {
-    //         if (e.Value.ToString() == "-")
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능 합니다.");
-    //             return;
-    //         }
-    //         await ValueChanged.InvokeAsync((T)(object)floatValue);
-    //     }
-    //     else if (typeof(T) == typeof(int) && int.TryParse(e.Value?.ToString(), out int intValue))
-    //     {
-    //         if (intValue < 0)
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능합니다.");
-    //             return;
-    //         }
-    //         await ValueChanged.InvokeAsync((T)(object)intValue);
-    //     }
-    //     else if (typeof(T) == typeof(string))
-    //     {
-    //         await ValueChanged.InvokeAsync((T)(object)(e.Value?.ToString() ?? string.Empty));
-    //     }
-    // }
-
     private async Task OnValueChanged(ChangeEventArgs e)
     {
         // Check if the value is null or empty
@@ -131,15 +94,42 @@
         }
     }
 
-    // private async Task onBulr(FocusEventArgs e)
+}
+
+
+    @* // private async Task OnValueChanged(ChangeEventArgs e)
     // {
-    //     Console.WriteLine("동작해라");
-    //     Console.WriteLine("값"+ Value.ToString());
-    //     if (ValueType == "number" && (Value == null || Value.Equals(default(T))))
+    //     // Check if the value is null or empty
+    //     var newValue = e.Value?.ToString();
+
+    //     // Handle empty input for number types
+    //     if (ValueType == "number" && string.IsNullOrEmpty(newValue))
     //     {
-    //         Value = (T)(object)0;
-    //         await ValueChanged.InvokeAsync(Value);
+    //         newValue = "0"; // Set default value for empty input
+    //     }
+        
+    //     // Update Value based on input change
+    //     if (typeof(T) == typeof(float) && float.TryParse(e.Value?.ToString(), out float floatValue))
+    //     {
+    //         if (e.Value.ToString() == "-")
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능 합니다.");
+    //             return;
+    //         }
+    //         await ValueChanged.InvokeAsync((T)(object)floatValue);
+    //     }
+    //     else if (typeof(T) == typeof(int) && int.TryParse(e.Value?.ToString(), out int intValue))
+    //     {
+    //         if (intValue < 0)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능합니다.");
+    //             return;
+    //         }
+    //         await ValueChanged.InvokeAsync((T)(object)intValue);
+    //     }
+    //     else if (typeof(T) == typeof(string))
+    //     {
+    //         await ValueChanged.InvokeAsync((T)(object)(e.Value?.ToString() ?? string.Empty));
     //     }
     // }
-
-}
+ *@

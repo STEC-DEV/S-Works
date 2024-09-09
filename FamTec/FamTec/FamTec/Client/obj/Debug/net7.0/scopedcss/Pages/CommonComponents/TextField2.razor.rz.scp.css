@@ -46,3 +46,7 @@
 .text:focus[b-30vlxjah2w] {
     border:var(--default-bd);
 }
+
+.color[b-30vlxjah2w]{
+    background-color : var(--content-back-color);
+}

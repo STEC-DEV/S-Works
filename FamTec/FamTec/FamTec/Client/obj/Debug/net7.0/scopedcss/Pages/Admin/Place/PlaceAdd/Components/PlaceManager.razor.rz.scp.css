@@ -10,6 +10,8 @@
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: var(--shadow-1);
+    max-height: 474px;
+    min-height: 474px;
 }
 
 .manager .header[b-wdtexlmlgt]{    

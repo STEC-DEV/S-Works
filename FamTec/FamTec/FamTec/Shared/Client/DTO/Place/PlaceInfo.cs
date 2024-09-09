@@ -16,8 +16,11 @@ namespace FamTec.Shared.Client.DTO.Place
         public string? Name { get; set; }
         [Display(Name = "전화번호")]
         public string? Tel { get; set; }
+
         [Display(Name = "계약번호")]
         public string? ContractNum { get; set; }
+        //주소
+        public string? Address { get; set; }
         [Display(Name = "계약일자")]
         public DateTime? ContractDt { get; set; }
         [Display(Name = "해약일자")]

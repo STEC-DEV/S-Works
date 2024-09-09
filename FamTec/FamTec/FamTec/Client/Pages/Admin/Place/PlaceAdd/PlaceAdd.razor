@@ -3,6 +3,7 @@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server.DTO
 
 <div class="container">
     <div class="section">
@@ -44,6 +45,33 @@
                 Console.WriteLine("매니저 : "+i.Name);
             }
             Console.WriteLine("[사업장 추가 끝]");
+
+
+            ResponseUnit<int?> resPlace = await apiManager.PostAsync<int?>("AdminPlace/sign/AddWorks", Place);
+            if (resPlace.code != 200 || resPlace.data == null)
+            {
+                await JS.InvokeVoidAsync("alert", "사업장 등록 실패");
+                /*
+                * 롤백 요청 코드 추가 예정
+                */
+                return;
+            }
+            if (resPlace.data == null)
+            {
+                return;
+            }
+            PlaceManager.PlaceId = resPlace.data;
+            PlaceManager.PlaceManager = ManagerList;
+            ResponseUnit<bool> resManager = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", PlaceManager);
+            if (resManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 등록실패");
+                return;
+            }
+            await JS.InvokeVoidAsync("alert", "매니저 등록 성공");
+            Navigation.NavigateTo("/admin/place");
+
+            return;
         }catch(Exception ex)
         {
             

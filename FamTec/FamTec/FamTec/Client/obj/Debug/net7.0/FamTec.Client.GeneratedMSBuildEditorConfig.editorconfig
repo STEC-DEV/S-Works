@@ -122,9 +122,33 @@ build_metadata.AdditionalFiles.CssScope = b-mj93a9brp6
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyTWFpblxNYW5hZ2VyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-yqha0i1pk2
 
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerMain/Modal/EditDepartment.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyTWFpblxNb2RhbFxFZGl0RGVwYXJ0bWVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-r89xkv2l5a
+
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerMain/Modal/ModalDepartment.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyTWFpblxNb2RhbFxNb2RhbERlcGFydG1lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-id4obh3910
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignupV2/Components/PlaceSelectTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwVjJcQ29tcG9uZW50c1xQbGFjZVNlbGVjdFRhYmxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-nv3vkbvc5d
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignupV2/Components/PlaceTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwVjJcQ29tcG9uZW50c1xQbGFjZVRhYmxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-9vpb5a3a3r
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignupV2/Components/SignForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwVjJcQ29tcG9uZW50c1xTaWduRm9ybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-hqmk3b7mpz
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignupV2/ManagerSignUp.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwVjJcTWFuYWdlclNpZ25VcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-y07wex9bc4
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignupV2/Modal/PlaceModal.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwVjJcTW9kYWxcUGxhY2VNb2RhbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-5d8omdeqaa
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Manager/ManagerSignup/Components/PlaceSelectTable.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlclxNYW5hZ2VyU2lnbnVwXENvbXBvbmVudHNcUGxhY2VTZWxlY3RUYWJsZS5yYXpvcg==
@@ -169,6 +193,30 @@ build_metadata.AdditionalFiles.CssScope = b-qvd8450mx1
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceAdd/PlaceAdd.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VBZGRcUGxhY2VBZGQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-1fb1rk4lj9
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/Components/ManagerTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxDb21wb25lbnRzXE1hbmFnZXJUYWJsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-xfgdul83wn
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/Components/PlaceInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxDb21wb25lbnRzXFBsYWNlSW5mby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-44t9s2zuwx
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/Components/PlaceManager.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxDb21wb25lbnRzXFBsYWNlTWFuYWdlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-j49e40mv1x
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/Components/PlacePerm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxDb21wb25lbnRzXFBsYWNlUGVybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-d55g0elbon
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/Modal/ManagerModal.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxNb2RhbFxNYW5hZ2VyTW9kYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-jtozu7ukea
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetailv2/PlaceDetailV2.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWx2MlxQbGFjZURldGFpbFYyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-f8rauuaynh
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Admin/Place/PlaceDetail/Components/ManagerList.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGxhY2VcUGxhY2VEZXRhaWxcQ29tcG9uZW50c1xNYW5hZ2VyTGlzdC5yYXpvcg==
@@ -297,6 +345,10 @@ build_metadata.AdditionalFiles.CssScope = b-30vlxjah2w
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/Toggle.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xUb2dnbGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-dj25yh7jz7
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/ValidationInput.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xWYWxpZGF0aW9uSW5wdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ju3qontch3
 
 [C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Building/BuildingDetail/BuildingDetail.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXEJ1aWxkaW5nXEJ1aWxkaW5nRGV0YWlsXEJ1aWxkaW5nRGV0YWlsLnJhem9y

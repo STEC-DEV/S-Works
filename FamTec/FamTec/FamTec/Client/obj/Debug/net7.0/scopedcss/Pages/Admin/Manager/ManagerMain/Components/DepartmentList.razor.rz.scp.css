@@ -98,11 +98,15 @@
     background-color : transparent;
 }
 
+.item-title:hover[b-uq4pwmuq1t]{
+    cursor:pointer;
+}
+
 
 .depart-list .item-option[b-uq4pwmuq1t] {
     display: flex;
-    align-items:center;
-    gap : var(--half-pd);
+    align-items: center;
+    gap: var(--half-pd);
 }
 
 .depart-list .edit-btn[b-uq4pwmuq1t] {
@@ -129,6 +133,12 @@
 
 .depart-list .depart-add-form[b-uq4pwmuq1t]{
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    
+    gap: var(--half-pd);
+}
+
+.add-form[b-uq4pwmuq1t]{
+    display:flex;
     gap: var(--half-pd);
 }

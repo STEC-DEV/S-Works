@@ -2,7 +2,7 @@
     <label class="label">
         @Label
     </label>
-    <p class="text">
+    <p class="text @(Color? "color":"")">
         @Value
     </p>
 </div>
@@ -10,6 +10,7 @@
 @code {
     [Parameter] public string Label { get; set; }
     [Parameter] public string Value { get; set; }
+    [Parameter] public bool Color { get; set; }
     [Parameter] public bool Row { get; set; }
 
 }

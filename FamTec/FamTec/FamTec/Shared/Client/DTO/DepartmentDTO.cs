@@ -12,6 +12,7 @@ namespace FamTec.Shared.Client.DTO
         public int Id { get; set; }
         
         public string? Name { get; set; }
+        public bool ManagerYN { get; set; } = false;
         public string? Description { get; set; } = null;
     }
 }

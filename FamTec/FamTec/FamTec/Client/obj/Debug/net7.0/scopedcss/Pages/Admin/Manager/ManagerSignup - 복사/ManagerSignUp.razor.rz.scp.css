@@ -1,0 +1,39 @@
+.admin-signup-container[b-yrxsml62rb]{
+    display : flex;
+    flex-direction : column;
+    width : 100%;
+    height : 100%;
+
+    gap : var(--default-pd);
+}
+
+
+.admin-signup-container .admin-signup-wrap[b-yrxsml62rb] {
+    display: flex;
+    gap: var(--wide-pd);
+    height: 100%;
+    flex: 1;
+    overflow: hidden;
+    padding : var(--default-pd);
+}
+
+.admin-signup-container .btns[b-yrxsml62rb]{
+    display :flex;
+    justify-content:flex-end;
+    gap : 0.5rem;
+    padding : var(--default-pd);
+}
+
+.admin-signup-container .form[b-yrxsml62rb] {
+    height:100%;
+    flex:1;
+    
+    box-shadow : var(--default-bs);
+}
+
+.admin-signup-container .place[b-yrxsml62rb]{
+    flex:2;
+
+    box-shadow : var(--default-bs);
+}
+

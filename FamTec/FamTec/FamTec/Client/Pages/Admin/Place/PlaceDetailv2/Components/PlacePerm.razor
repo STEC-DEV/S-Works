@@ -1,0 +1,69 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+
+
+<div class="perm">
+    <div class="header">
+        <span class="title">
+            사업장 권한
+        </span>
+    </div>
+    <div class="content">
+        <Toggle 
+            Title="기계설비 권한" 
+            @bind-Value=@Data.PlacePerm.PermMachine
+            IsChecked="@Data.PlacePerm.PermMachine"
+                EditMode=@EditMode />
+        <Toggle 
+            Title="전기설비 권한" 
+            @bind-Value=@Data.PlacePerm.PermElec
+            IsChecked="@Data.PlacePerm.PermElec"
+                EditMode=@EditMode />
+        <Toggle Title="승강설비 권한"
+                @bind-Value=@Data.PlacePerm.PermLift
+                IsChecked="@Data.PlacePerm.PermLift"
+                EditMode=@EditMode />
+        <Toggle Title="소방설비 권한"
+                @bind-Value=@Data.PlacePerm.PermFire
+                IsChecked="@Data.PlacePerm.PermFire"
+                EditMode=@EditMode />
+        <Toggle Title="건축설비 권한"
+                @bind-Value=@Data.PlacePerm.PermConstruct
+                IsChecked="@Data.PlacePerm.PermConstruct"
+                EditMode=@EditMode />
+        <Toggle Title="통신설비 권한"
+                @bind-Value=@Data.PlacePerm.PermNetwork
+                IsChecked="@Data.PlacePerm.PermNetwork"
+                EditMode=@EditMode />
+        <Toggle Title="미화설비 권한"
+                @bind-Value=@Data.PlacePerm.PermBeauty
+                IsChecked="@Data.PlacePerm.PermBeauty"
+                EditMode=@EditMode />
+        <Toggle Title="보안설비 권한"
+                @bind-Value=@Data.PlacePerm.PermSecurity
+                IsChecked="@Data.PlacePerm.PermSecurity"
+                EditMode=@EditMode />
+        <Toggle Title="자재 권한"
+                @bind-Value=@Data.PlacePerm.PermMaterial
+                IsChecked="@Data.PlacePerm.PermMaterial"
+                EditMode=@EditMode />
+        <Toggle Title="에너지 권한"
+                @bind-Value=@Data.PlacePerm.PermEnergy
+                IsChecked="@Data.PlacePerm.PermEnergy"
+                EditMode=@EditMode />
+        <Toggle Title="민원관리 권한"
+                @bind-Value=@Data.PlacePerm.PermVoc
+                IsChecked="@Data.PlacePerm.PermVoc"
+                EditMode=@EditMode />
+
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public UpdatePlaceDTO Data { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+    
+}
+    

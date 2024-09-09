@@ -1,5 +1,5 @@
 ﻿<input 
-    class="input-container @(Width ? "width" : "")" 
+    class="input-container @(Width ? "width" : "") @(Padding ? "padding" : "")" 
     type="@Type" 
     placeholder="@Placeholder" 
     @bind-value="@Value" 
@@ -10,6 +10,7 @@
     [Parameter] public string? Value { get; set; }
     [Parameter] public string? Type { get; set; }
     [Parameter] public bool Width { get; set; }
+    [Parameter] public bool Padding { get; set; }
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
 
