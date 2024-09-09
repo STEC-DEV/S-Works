@@ -238,7 +238,7 @@ if (!String.IsNullOrWhiteSpace(connectionString))
       options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
       mySqlOptions =>
       {
-          mySqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); // 자동 재시도 설정 (최대 5회, 10초 대기)
+          mySqlOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
           // CommandTimeout을 60초로 설정
           mySqlOptions.CommandTimeout(60);
           // 다른 성능 및 안정성 옵션 추가
