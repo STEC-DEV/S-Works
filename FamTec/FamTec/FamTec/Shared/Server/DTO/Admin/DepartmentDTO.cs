@@ -20,7 +20,7 @@
         /// <summary>
         /// 관리부서 여부
         /// </summary>
-        public bool? ManageYN { get; set; }
+        public bool? ManagerYN { get; set; }
 
         public string? Description { get; set; } = null;
 

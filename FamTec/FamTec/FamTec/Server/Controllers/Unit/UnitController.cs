@@ -151,8 +151,5 @@ namespace FamTec.Server.Controllers.Unit
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
-
-
     }
 }

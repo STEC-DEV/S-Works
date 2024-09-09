@@ -231,8 +231,19 @@ builder.Services.AddAuthentication(options =>
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
+    //builder.Services.AddDbContext<WorksContext>(options =>
+    //    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
     builder.Services.AddDbContext<WorksContext>(options =>
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+      options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+      mySqlOptions =>
+      {
+          mySqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); // 자동 재시도 설정 (최대 5회, 10초 대기)
+          // CommandTimeout을 60초로 설정
+          mySqlOptions.CommandTimeout(60);
+          // 다른 성능 및 안정성 옵션 추가
+          mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
+      }));
 }
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.

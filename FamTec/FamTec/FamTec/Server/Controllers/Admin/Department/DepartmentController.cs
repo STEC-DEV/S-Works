@@ -174,7 +174,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if (dto.ManageYN is null)
+                if (dto.ManagerYN is null)
                     return NoContent();
 
                 ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto);

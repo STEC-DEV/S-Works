@@ -29,6 +29,10 @@ namespace FamTec.Server.Controllers.Maintenance
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 잠시보류
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/temp")]
@@ -40,7 +44,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 RoomID = 2,
                 UseMaintanceID = 28,
                 MaintanceID = 100,
-                Num = 8,
+                Num = 38,
                 UnitPrice = 100,
                 TotalPrice = 10000,
                 Note = "테스트"
@@ -197,7 +201,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMaintanceHistory")]
-        public async ValueTask<IActionResult> GetMaintanceHistory(int facilityid)
+        public async ValueTask<IActionResult> GetMaintanceHistory([FromQuery]int facilityid)
         {
             try
             {
@@ -223,7 +227,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailMaintance")]
-        public async ValueTask<IActionResult> GetDetailMaintance(int Maintanceid)
+        public async ValueTask<IActionResult> GetDetailMaintance([FromQuery]int Maintanceid)
         {
             try
             {
@@ -263,7 +267,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 //dto.Note = "테스트 유지보수삭제";
                 //dto.MaintanceID.Add(96);
                 
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -292,33 +295,33 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
-                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                DeleteList.Add(new DeleteMaintanceDTO
-                {
-                    MaintanceID = 98,
-                    UseMaintenenceID = 7,
-                    MaterialTBID = 10,
-                    RoomTBID = 2,
-                    StoreID = 659,
-                    Note = "출고취소_테스트1"
-                });
-                DeleteList.Add(new DeleteMaintanceDTO
-                {
-                    MaintanceID = 98,
-                    UseMaintenenceID = 8,
-                    MaterialTBID = 11,
-                    RoomTBID = 3,
-                    StoreID = 660,
-                    Note = "출고취소_테스트2"
-                });
+                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                //DeleteList.Add(new DeleteMaintanceDTO
+                //{
+                //    MaintanceID = 98,
+                //    UseMaintenenceID = 7,
+                //    MaterialTBID = 10,
+                //    RoomTBID = 2,
+                //    StoreID = 659,
+                //    Note = "출고취소_테스트1"
+                //});
+                //DeleteList.Add(new DeleteMaintanceDTO
+                //{
+                //    MaintanceID = 98,
+                //    UseMaintenenceID = 8,
+                //    MaterialTBID = 11,
+                //    RoomTBID = 3,
+                //    StoreID = 660,
+                //    Note = "출고취소_테스트2"
+                //});
 
             
 
@@ -408,14 +411,16 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllHistoryList")]
-
         public async ValueTask<IActionResult> GetAllHistoryList([FromQuery]string category, [FromQuery]int type)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
-                
+
+                if (String.IsNullOrWhiteSpace(category))
+                    return NoContent();
+
                 ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, "전체", 0);
                 if (model is null)
                     return BadRequest();

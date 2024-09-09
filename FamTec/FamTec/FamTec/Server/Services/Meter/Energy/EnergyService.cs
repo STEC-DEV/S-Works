@@ -10,7 +10,8 @@ namespace FamTec.Server.Services.Meter.Energy
         private readonly IEnergyInfoRepository EnergyInfoRepository;
         private ILogService LogService;
 
-        public EnergyService(IEnergyInfoRepository _energyinforepository, ILogService _logservice)
+        public EnergyService(IEnergyInfoRepository _energyinforepository,
+            ILogService _logservice)
         {
             this.EnergyInfoRepository = _energyinforepository;
             this.LogService = _logservice;

@@ -10,7 +10,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<MaintenenceHistoryTb> GetMaintenanceInfo(int id);
+        ValueTask<MaintenenceHistoryTb?> GetMaintenanceInfo(int id);
 
         /// <summary>
         /// 수정

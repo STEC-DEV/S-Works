@@ -92,7 +92,7 @@ namespace FamTec.Server.Services.Admin.Department
                     {
                         Id = e.Id,
                         Name = e.Name,
-                        ManageYN = e.ManagementYn
+                        ManagerYN = e.ManagementYn
                     }).ToList();
 
                     return new ResponseList<DepartmentDTO> { message = "데이터가 정상 처리되었습니다.", data = departmentData, code = 200 };
@@ -126,7 +126,7 @@ namespace FamTec.Server.Services.Admin.Department
                     {
                         Id = e.Id,
                         Name = e.Name,
-                        ManageYN = e.ManagementYn
+                        ManagerYN = e.ManagementYn
                     }).ToList();
 
                     return new ResponseList<DepartmentDTO> { message = "데이터가 정상 처리되었습니다.", data = DepartmentData, code = 200 };
@@ -221,7 +221,7 @@ namespace FamTec.Server.Services.Admin.Department
                 DepartmentTB.Name = dto.Name!;
                 DepartmentTB.UpdateUser = updater;
                 DepartmentTB.UpdateDt = DateTime.Now;
-                DepartmentTB.ManagementYn = dto.ManageYN!.Value;
+                DepartmentTB.ManagementYn = dto.ManagerYN!.Value;
 
                 bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB);
                 return result switch

@@ -80,6 +80,8 @@ public partial class WorksContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
+    
+    //"DefaultConnection": "Server=localhost;Database=YourDatabaseName;User=YourUsername;Password=YourPassword;Port=3306;SslMode=None;ConnectionTimeout=30;Pooling=true;MinPoolSize=5;MaxPoolSize=50;"
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

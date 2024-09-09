@@ -3533,12 +3533,18 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "DeleteMaintanceHistory",
+    "Method": "DeleteMaintenanceStore",
     "RelativePath": "api/Maintenance/sign/DeleteMaintenanceStore",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "DeleteList",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

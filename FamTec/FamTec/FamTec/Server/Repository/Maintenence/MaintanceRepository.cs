@@ -3,9 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Data;
 
 namespace FamTec.Server.Repository.Maintenence
@@ -27,13 +25,12 @@ namespace FamTec.Server.Repository.Maintenence
             this.LogService = _logservice;
         }
 
-
         /// <summary>
         /// 유지보수 ID로 유지보수 조회
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<MaintenenceHistoryTb> GetMaintenanceInfo(int id)
+        public async ValueTask<MaintenenceHistoryTb?> GetMaintenanceInfo(int id)
         {
             try
             {
@@ -128,7 +125,6 @@ namespace FamTec.Server.Repository.Maintenence
                         ManufacuringComp = item.Material.ManufacturingComp,
                         RoomID = item.Room.Id,
                         RoomName = item.Room.Name,
-                        //StoreID = item.Store.Id,
                         UnitPrice = item.UseMaintenenceMaterial.Unitprice,
                         Num = item.UseMaintenenceMaterial.Num,
                         TotalPrice = item.UseMaintenenceMaterial.Totalprice,
@@ -395,8 +391,6 @@ namespace FamTec.Server.Repository.Maintenence
                             await transaction.RollbackAsync();
                             return 0;
                         }
-
-                     
                     }
 
                     await transaction.CommitAsync(); // 출고완료
@@ -457,7 +451,8 @@ namespace FamTec.Server.Repository.Maintenence
                         {
                             foreach (StoreTb StoreTB in StoreList)
                             {
-                                RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == StoreTB.RoomTbId);
+                                //RoomTb? RoomTB = await context.RoomTbs
+                                //    .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == StoreTB.RoomTbId);
 
                                 MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => 
                                                                                         m.Id == StoreTB.MaterialTbId &&
@@ -645,6 +640,12 @@ namespace FamTec.Server.Repository.Maintenence
                     await transaction.CommitAsync();
                     return true;
                 }
+                catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
+                {
+                    await transaction.RollbackAsync();
+                    LogService.LogMessage($"동시성 에러 {ex.Message}");
+                    return false;
+                }
                 catch (Exception ex)
                 {
                     LogService.LogMessage(ex.ToString());
@@ -828,8 +829,6 @@ namespace FamTec.Server.Repository.Maintenence
                                     await transaction.RollbackAsync();
                                     return false; // 실패
                                 }
-
-                              
                             }
                         }
                     }
@@ -1135,6 +1134,7 @@ namespace FamTec.Server.Repository.Maintenence
                     if (UseMaterialTB is null)
                         return null;
 
+                    // 넘어온 NUM가 해당 테이블의 NUM보다 클때 -- 추가로 빼야함..
                     if (dto.Num > UseMaterialTB.Num) // 추가출고가 이루어 져야함.
                     {
                         int TargetNumber = dto.Num - UseMaterialTB.Num; // 원래 DB에서 넘어온 DTO 수량 만큼을 빼면 추가 출고가 이루어 져야할 개수임.
@@ -1150,7 +1150,6 @@ namespace FamTec.Server.Repository.Maintenence
                         }
 
                         List<InventoryTb> OutModel = new List<InventoryTb>();
-
 
                         int result = 0;
 
@@ -1169,14 +1168,17 @@ namespace FamTec.Server.Repository.Maintenence
                                 break; // 반복문 종료
                         }
 
-
+                       
                         // 출고 로직
                         if (OutModel is [_, ..])
                         {
+                        
                             if (result >= TargetNumber) // 출고개수가 충분할때만 동작
                             {
                                 int checksum = 0;
                                 int outresult = 0;
+
+
                                 foreach (InventoryTb OutInventorytb in OutModel)
                                 {
                                     outresult += OutInventorytb.Num;
@@ -1192,6 +1194,8 @@ namespace FamTec.Server.Repository.Maintenence
                                             OutInventorytb.DelYn = true;
                                             OutInventorytb.DelDt = DateTime.Now;
                                             OutInventorytb.DelUser = updater;
+
+                                            // 여기!
                                         }
 
                                         context.Update(OutInventorytb);
@@ -1238,9 +1242,11 @@ namespace FamTec.Server.Repository.Maintenence
                                 m.PlaceTbId == placeid)
                                 .Sum(m => m.Num);
 
+
+                            // 여기도 주석해야함.
                             UseMaintenenceMaterialTb? MaintenenceMaterialTB = await context.UseMaintenenceMaterialTbs
                                 .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == dto.UseMaintanceID);
-
+                          
                             if(MaintenenceMaterialTB is null)
                             {
                                 await transaction.RollbackAsync();
@@ -1259,7 +1265,7 @@ namespace FamTec.Server.Repository.Maintenence
                                 await transaction.RollbackAsync();
                                 return 0;
                             }
-
+                        
                             StoreTb store = new StoreTb();
                             store.InoutDate = DateTime.Now; // 현재날짜로 추가출고
                             store.Inout = 0; // 여기는 출고로직에 해당하는 부분임.
