@@ -13,7 +13,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<bool?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid);
+        ValueTask<int?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid);
 
         ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount);
 
@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
+        ValueTask<int?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
 
         /// <summary>
         /// 기간별 - 품목별 입출고 리스트 출력

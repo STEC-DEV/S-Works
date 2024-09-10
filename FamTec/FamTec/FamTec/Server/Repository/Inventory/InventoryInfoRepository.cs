@@ -29,11 +29,11 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid)
+        public async ValueTask<int?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-            bool? result = await strategy.ExecuteAsync(async () =>
+            int? result = await strategy.ExecuteAsync(async () =>
             {
 #if DEBUG
                 // 디버깅 포인트를 강제로 잡음.
@@ -67,7 +67,7 @@ namespace FamTec.Server.Repository.Inventory
                             if (AddStoreResult != true)
                             {
                                 await transaction.RollbackAsync();
-                                return false; // 다른곳에서 해당 품목을 사용중입니다.
+                                return -1; // 다른곳에서 해당 품목을 사용중입니다.
                             }
 
                             InventoryTb Inventorytb = new InventoryTb();
@@ -95,18 +95,18 @@ namespace FamTec.Server.Repository.Inventory
                             if (UpdateStoreTB != true) // 다른곳에서 해당 품목을 사용중입니다.
                             {
                                 await transaction.RollbackAsync();
-                                return false;
+                                return -1;
                             }
                         }
 
                         await transaction.CommitAsync();
-                        return true;
+                        return 1;
                     }
                     catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                     {
                         await transaction.RollbackAsync();
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
-                        return false;
+                        return -1;
                     }
                     catch (Exception ex)
                     {
@@ -490,11 +490,11 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid)
+        public async ValueTask<int?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-            bool? result = await strategy.ExecuteAsync(async () =>
+            int? result = await strategy.ExecuteAsync(async () =>
             {
 #if DEBUG
                 // 디버깅 포인트를 강제로 잡음.
@@ -512,12 +512,12 @@ namespace FamTec.Server.Repository.Inventory
                             if (InventoryList is not [_, ..])
                             {
                                 // 수량이 아에 없음.
-                                return (bool?)null;
+                                return 0;
                             }
                             if (InventoryList.Sum(i => i.Num) < model.AddStore.Num)
                             {
                                 // 수량이 부족함.
-                                return (bool?)null; 
+                                return 0; 
                             }
                         }
                         // 이시점에서 변경해봄
@@ -531,7 +531,7 @@ namespace FamTec.Server.Repository.Inventory
                             if (InventoryList is not [_, ..])
                             {
                                 // 출고개수가 부족함
-                                return (bool?)null;
+                                return 0;
                             }
 
                             foreach (InventoryTb? inventory in InventoryList)
@@ -601,7 +601,7 @@ namespace FamTec.Server.Repository.Inventory
                                     {
                                         Console.WriteLine("결과가 다름 RollBack!");
                                         await transaction.RollbackAsync();
-                                        return (bool?)null;
+                                        return -1;
                                     }
 
                                     await context.SaveChangesAsync();
@@ -640,19 +640,19 @@ namespace FamTec.Server.Repository.Inventory
                         if (UpdateResult)
                         {
                             await transaction.CommitAsync(); // 출고 완료
-                            return true;
+                            return 1;
                         }
                         else
                         {
                             await transaction.RollbackAsync(); // 출고실패
-                            return false;
+                            return -1;
                         }
                     }
                     catch (DbUpdateConcurrencyException ex)
                     {
                         await transaction.RollbackAsync();
                         LogService.LogMessage($"동시성 에러 {ex.Message}"); // 다른곳에서 해당 품목을 사용중입니다.
-                        return false;
+                        return -1;
                     }
                     catch (Exception ex)
                     {
@@ -662,6 +662,7 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
             });
+
             return result;
         }
 

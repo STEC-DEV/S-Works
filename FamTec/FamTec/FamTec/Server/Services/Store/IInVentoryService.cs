@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto);
+        public ValueTask<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 입출고 이력
@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
+        public ValueTask<ResponseList<int?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 품목별 기간별 입출고내역

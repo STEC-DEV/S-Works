@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FamTec.Server.Services.Store
 {
@@ -27,38 +28,32 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async ValueTask<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto)
         {
             try
             {
                 if (context is null || dto is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = 0, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = 0, code = 404 };
 
                 // 인벤토리 테이블에 ADD
-                bool? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid));
-                if (AddInStore == true)
+                int? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid));
+                return AddInStore switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(AddInStore == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
+                    1 => new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 },
+                    -1 => new ResponseUnit<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = -1, code = 200 },
+                    _ => new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
+                };
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
@@ -68,39 +63,35 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<bool?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async ValueTask<ResponseList<int?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
         {
             try
             {
                 if (context is null || dto is null)
-                    return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
-                    return new ResponseList<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseList<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                bool? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
-                if (OutResult == true)
+                int? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
+                return OutResult switch
                 {
-                    return new ResponseList<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-                }
-                else if (OutResult == false)
-                {
-                    return new ResponseList<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
-                }
-                else
-                {
-                    return new ResponseList<bool?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 200 };
-                }
+                    1 => new ResponseList<int?>() { message = "요청이 정상 처리되었습니다.", data = new List<int?>() { 1 }, code = 200 },
+                    0 => new ResponseList<int?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = new List<int?>() { 0 }, code = 200 },
+                    -1 => new ResponseList<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = new List<int?>() { -1 }, code = 200 },
+                    _ => new ResponseList<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
+                };
+                
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseList<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 

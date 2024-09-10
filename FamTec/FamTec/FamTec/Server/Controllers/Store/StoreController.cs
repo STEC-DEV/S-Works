@@ -85,7 +85,7 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                 }
 
-                ResponseUnit<bool?> model = await InStoreService.AddInStoreService(HttpContext, dto);
+                ResponseUnit<int?> model = await InStoreService.AddInStoreService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
@@ -165,7 +165,7 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                 }
 
-                ResponseList<bool?> model = await InStoreService.OutInventoryService(HttpContext, dto);
+                ResponseList<int?> model = await InStoreService.OutInventoryService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
