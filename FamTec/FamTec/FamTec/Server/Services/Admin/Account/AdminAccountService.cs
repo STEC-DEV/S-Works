@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminUser;
+﻿using DocumentFormat.OpenXml.InkML;
+using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
@@ -303,35 +304,37 @@ namespace FamTec.Server.Services.Admin.Account
             {
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx);
                 if (admintb is null)
-                {
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
-                }
 
                 DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
-                if(departmenttb is null)
-                {
+                if (departmenttb is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
-                }
 
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
                 if(usertb is null)
-                {
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
-                }
 
-                DManagerDTO dto = new DManagerDTO()
-                {
-                    DepartmentId = departmenttb.Id,
-                    AdminId = admintb.Id,
-                    UserId = usertb.UserId,
-                    Name = usertb.Name,
-                    Password = usertb.Password,
-                    Phone = usertb.Phone,
-                    Email = usertb.Email,
-                    Type = admintb.Type,
-                    Department = departmenttb.Name
-                };
-               
+                DManagerDTO? dto = (from admin in Enumerable.Repeat(admintb, 1) // List 대신 반복(Repeat)을 사용하여 JOIN
+                                    join department in Enumerable.Repeat(departmenttb, 1)
+                                    on admin.DepartmentTbId equals department.Id
+                                    join user in Enumerable.Repeat(usertb, 1)
+                                        on admin.UserTbId equals user.Id
+                                    select new DManagerDTO
+                                    {
+                                        DepartmentId = department.Id, // 부서 인덱스
+                                        Department = departmenttb.Name, // 부서명
+                                        AdminId = admintb.Id, // 관리자테이블 인덱스
+                                        UserId = usertb.UserId, // 로그인 ID
+                                        Name = usertb.Name, // 사용자 명
+                                        Password = usertb.Password, // 사용자 비밀번호
+                                        Phone = usertb.Phone, // 전화번호
+                                        Email = usertb.Email, // 비밀번호
+                                        Type = admintb.Type // 관리자 유형
+                                    }).FirstOrDefault();
+
+                if(dto is null)
+                    return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
+
                 string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
                 if(!String.IsNullOrWhiteSpace(usertb.Image))
                 {

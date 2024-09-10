@@ -1,5 +1,4 @@
-﻿using FamTec.Client.Pages.Admin.Place.PlaceMain;
-using FamTec.Server.Repository.Facility;
+﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Maintenence;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -11,9 +10,12 @@ namespace FamTec.Server.Services.Maintenance
     {
         private readonly IMaintanceRepository MaintanceRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
+        
         private IFileService FileService;
         private ILogService LogService;
+        
         private string? MaintanceFileFolderPath;
+
         public MaintanceService(IMaintanceRepository _maintancerepository,
             IFacilityInfoRepository _facilityinforepository,
             IFileService _fileservice,
@@ -38,18 +40,12 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files);
-                if(ImageAddResult == true)
+                return ImageAddResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(ImageAddResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch(Exception ex)
             {
@@ -114,18 +110,12 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter);
-                if(DeleteResult == true)
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if(DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 },
+                    _ => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
+                };
             }
             catch(Exception ex)
             {
@@ -153,19 +143,13 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter);
-                
-                if (DeleteResult == true)
+
+                return DeleteResult switch
                 {
-                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
-                }
-                else if (DeleteResult == false)
-                {
-                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
-                }
-                else
-                {
-                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-                }
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 },
+                    _ => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
+                };
             }
             catch(Exception ex)
             {
