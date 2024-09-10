@@ -595,13 +595,20 @@ namespace FamTec.Server.Services.Building
 
                 // - 층이 있으면 삭제안됨
                 // - 건물 삭제시 하위 추가내용들 전체삭제
-                for (int i = 0; i < buildingid.Count(); i++)
+                foreach(int delIdx in buildingid)
                 {
-                    List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildingid[i]);
-
-                    if (floortb is [_, ..])
-                        return new ResponseUnit<bool?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                    bool? DelCheck = await BuildingInfoRepository.DelBuildingCheck(delIdx);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
+
+                //for (int i = 0; i < buildingid.Count(); i++)
+                //{
+                //    List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildingid[i]);
+
+                //    if (floortb is [_, ..])
+                //        return new ResponseUnit<bool?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                //}
 
                 bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater);
                 return DeleteResult switch

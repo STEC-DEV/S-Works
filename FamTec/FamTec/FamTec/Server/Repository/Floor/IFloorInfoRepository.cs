@@ -5,6 +5,13 @@ namespace FamTec.Server.Repository.Floor
     public interface IFloorInfoRepository
     {
         /// <summary>
+        /// 층 삭제여부
+        /// </summary>
+        /// <param name="floortbid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelFloorCheck(int floortbid);
+
+        /// <summary>
         /// 층추가
         /// </summary>
         /// <param name="model"></param>

@@ -19,6 +19,31 @@ namespace FamTec.Server.Repository.User
         }
 
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DelUserCheck(int id)
+        {
+            try
+            {
+                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true);
+                bool AlarmCheck = await context.AlarmTbs.AnyAsync(m => m.UsersTbId == id && m.DelYn != true);
+                bool CommentCheck = await context.CommentTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true);
+
+                return AdminCheck || AlarmCheck || CommentCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+
+        /// <summary>
         /// 사용자 추가
         /// </summary>
         /// <param name="model"></param>
@@ -703,6 +728,6 @@ namespace FamTec.Server.Repository.User
             }
         }
 
-       
+    
     }
 }

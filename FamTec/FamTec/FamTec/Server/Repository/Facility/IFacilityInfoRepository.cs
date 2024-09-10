@@ -5,6 +5,16 @@ namespace FamTec.Server.Repository.Facility
 {
     public interface IFacilityInfoRepository
     {
+
+        /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="Facilityid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelFacilityCheck(int Facilityid);
+
         /// <summary>
         /// 설비 추가
         /// </summary>

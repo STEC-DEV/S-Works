@@ -20,6 +20,30 @@ namespace FamTec.Server.Repository.Building
         }
 
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DelBuildingCheck(int buildingid)
+        {
+            try
+            {
+                bool FloorCheck = await context.FloorTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
+                bool KakaoLogCheck = await context.KakaoLogTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
+                bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
+
+                return FloorCheck || KakaoLogCheck || VocCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 사업장에 속한 건물 총 개수 반환
         /// </summary>
         /// <param name="placeid"></param>
@@ -435,6 +459,6 @@ namespace FamTec.Server.Repository.Building
             return result;
         }
 
-    
+  
     }
 }

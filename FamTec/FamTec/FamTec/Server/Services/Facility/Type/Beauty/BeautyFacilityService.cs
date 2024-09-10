@@ -302,6 +302,14 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                // 삭제가능여부 체크
+                foreach (int id in delIdx)
+                {
+                    bool? DelCheck = await FacilityInfoRepository.DelFacilityCheck(id);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                }
+
                 bool? DeleteResult = await FacilityInfoRepository.DeleteFacilityInfo(delIdx, creater);
                 return DeleteResult switch
                 {

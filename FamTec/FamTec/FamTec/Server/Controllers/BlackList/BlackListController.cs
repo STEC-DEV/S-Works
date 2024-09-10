@@ -29,7 +29,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBlackList")]
-        public async ValueTask<IActionResult> AddBlackList(AddBlackListDTO dto)
+        public async ValueTask<IActionResult> AddBlackList([FromBody]AddBlackListDTO dto)
         {
             try
             {

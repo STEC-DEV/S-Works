@@ -6,6 +6,13 @@ namespace FamTec.Server.Repository.Room
     public interface IRoomInfoRepository
     {
         /// <summary>
+        /// 공간 삭제가능여부 체크
+        /// </summary>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelRoomCheck(int roomid);
+
+        /// <summary>
         /// 공간 정보 추가
         /// </summary>
         /// <param name="model"></param>

@@ -208,14 +208,21 @@ namespace FamTec.Server.Services.Room
 
                 foreach(int index in del)
                 {
-                    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(index);
-                    if (FacilityList is [_, ..])
-                        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
-
-                    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), index);
-                    if (Inventory != true)
-                        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                    bool? DelCheck = await RoomInfoRepository.DelRoomCheck(index);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "해당 정보를 참조하는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
+
+                //foreach(int index in del)
+                //{
+                //    List<FacilityTb>? FacilityList = await FacilityInfoRepository.GetAllFacilityList(index);
+                //    if (FacilityList is [_, ..])
+                //        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 장치정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+
+                //    bool? Inventory = await RoomInfoRepository.RoomDeleteCheck(Convert.ToInt32(placeid), index);
+                //    if (Inventory != true)
+                //        return new ResponseUnit<bool?>() { message = "해당 공간에 속한 자재가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                //}
 
 
                 bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater);

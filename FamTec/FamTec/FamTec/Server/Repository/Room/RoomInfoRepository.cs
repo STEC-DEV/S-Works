@@ -18,6 +18,34 @@ namespace FamTec.Server.Repository.Room
             this.LogService = _logservice;
         }
 
+        
+        /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false반환
+        /// </summary>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async ValueTask<bool?> DelRoomCheck(int roomid)
+        {
+            try
+            {
+                bool FacilityCheck = await context.FacilityTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
+                bool InventoryCheck = await context.InventoryTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
+                bool MaterialCheck = await context.MaterialTbs.AnyAsync(m => m.DefaultLocation == roomid && m.DelYn != true);
+                bool StoreCheck = await context.StoreTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
+                bool UseMaintenenceMartialCheck = await context.UseMaintenenceMaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
+
+                return FacilityCheck || InventoryCheck || MaterialCheck || StoreCheck || UseMaintenenceMartialCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
         /// <summary>
         /// 공간정보 추가
         /// </summary>
@@ -259,6 +287,7 @@ namespace FamTec.Server.Repository.Room
                 throw new ArgumentNullException();
             }
         }
-  
+
+      
     }
 }

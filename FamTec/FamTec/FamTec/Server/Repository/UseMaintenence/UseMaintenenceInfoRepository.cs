@@ -17,9 +17,5 @@ namespace FamTec.Server.Repository.UseMaintenence
 
        
 
-        public ValueTask<UseMaintenenceMaterialTb?> GetUseMaintenenceInfo(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

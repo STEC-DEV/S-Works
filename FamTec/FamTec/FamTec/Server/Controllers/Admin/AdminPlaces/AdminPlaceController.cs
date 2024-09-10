@@ -339,6 +339,8 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 dto.PlacePerm.PermVoc = true;
                 */
 
+
+
                 if (dto.PlaceInfo.Id is null)
                     return NoContent();
 

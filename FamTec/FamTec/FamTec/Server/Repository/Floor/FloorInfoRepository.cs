@@ -1,9 +1,13 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.InkML;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace FamTec.Server.Repository.Floor
 {
@@ -17,6 +21,25 @@ namespace FamTec.Server.Repository.Floor
             this.context = _context;
             this.LogService = _logservice;
         }
+
+        // 삭제가능여부 체크
+        // 참조하는게 하나라도 있으면 true 반환
+        // 아니면 false 반환
+        public async ValueTask<bool?> DelFloorCheck(int floorTbId)
+        {
+            try
+            {
+                bool RoomCheck = await context.RoomTbs.AnyAsync(r => r.FloorTbId == floorTbId && r.DelYn != true);
+                // 참조된 테이블이 하나라도 있으면 true 반환
+                return RoomCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
 
         /// <summary>
         /// 층추가
@@ -131,6 +154,8 @@ namespace FamTec.Server.Repository.Floor
         {
             try
             {
+                
+
                 FloorTb? model = await context.FloorTbs
                     .FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true);
 
@@ -238,5 +263,7 @@ namespace FamTec.Server.Repository.Floor
                 throw new ArgumentNullException();
             }
         }
+
+    
     }
 }

@@ -4,6 +4,16 @@ namespace FamTec.Server.Repository.User
 {
     public interface IUserInfoRepository
     {
+
+        /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelUserCheck(int id);
+
         /// <summary>
         /// 추가
         /// </summary>

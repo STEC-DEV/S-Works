@@ -684,6 +684,14 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                // 삭제체크
+                foreach (int id in del) 
+                {
+                    bool? DelCheck = await UserInfoRepository.DelUserCheck(id);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+                }
+
                 bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater);
                 return DeleteResult switch
                 {

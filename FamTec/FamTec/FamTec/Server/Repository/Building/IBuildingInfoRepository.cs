@@ -5,6 +5,13 @@ namespace FamTec.Server.Repository.Building
     public interface IBuildingInfoRepository
     {
         /// <summary>
+        /// 삭제가능여부 체크
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelBuildingCheck(int buildingid);
+
+        /// <summary>
         /// 건물추가
         /// </summary>
         /// <param name="model"></param>

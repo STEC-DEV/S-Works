@@ -4,6 +4,16 @@ namespace FamTec.Server.Repository.Admin.Departmnet
 {
     public interface IDepartmentInfoRepository
     {
+
+        /// <summary>
+        /// 부서 삭제가능 여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="departmentid"></param>
+        /// <returns></returns>
+        ValueTask<bool?> DelDepartmentCheck(int departmentid);
+
         /// <summary>
         /// 부서 추가
         /// </summary>

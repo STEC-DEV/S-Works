@@ -19,6 +19,29 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         }
 
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="departmentid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DelDepartmentCheck(int departmentid)
+        {
+            try
+            {
+                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true);
+                bool DepartmentCheck = await context.PlaceTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true);
+
+                return AdminCheck || DepartmentCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 부서추가
         /// </summary>
         /// <param name="model"></param>
@@ -301,6 +324,6 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             return result;
         }
 
-  
+   
     }
 }

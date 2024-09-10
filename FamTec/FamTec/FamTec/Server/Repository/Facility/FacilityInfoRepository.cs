@@ -20,6 +20,28 @@ namespace FamTec.Server.Repository.Facility
         }
 
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="Facilityid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DelFacilityCheck(int Facilityid)
+        {
+            try
+            {
+                bool MaintenenceCheck = await context.MaintenenceHistoryTbs.AnyAsync(m => m.FacilityTbId == Facilityid && m.DelYn != true);
+
+                return MaintenenceCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 설비추가
         /// </summary>
         /// <param name="model"></param>
@@ -597,5 +619,6 @@ namespace FamTec.Server.Repository.Facility
             }
         }
 
+ 
     }
 }

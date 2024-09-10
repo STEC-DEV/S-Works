@@ -5,6 +5,7 @@ namespace FamTec.Server.Repository.Store
 {
     public interface IStoreInfoRepository
     {
+
         ValueTask<StoreTb?> AddAsync(StoreTb model);
 
         /// <summary>

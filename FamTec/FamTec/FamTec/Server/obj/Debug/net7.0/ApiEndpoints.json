@@ -370,10 +370,16 @@
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "UpdateManager",
     "RelativePath": "api/AdminUser/sign/UpdateManager",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Admin.UpdateManagerDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

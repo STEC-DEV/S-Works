@@ -168,12 +168,16 @@ namespace FamTec.Server.Services.Admin.Department
                 // 부서존재하는지 + 시스템 부서가 있는지 검사
                 foreach(int DepartmentID in departmentidx)
                 {
+                    bool? DelCheck = await DepartmentInfoRepository.DelDepartmentCheck(DepartmentID);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "참조하는 하위 정보가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+
                     DepartmentsTb? CheckTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(DepartmentID);
                     if(CheckTB is null)
-                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 200 };
                     
                     if (CheckTB.Name.Equals("에스텍시스템"))
-                        return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 404 };
+                        return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 200 };
                 }
 
                 // 부서삭제

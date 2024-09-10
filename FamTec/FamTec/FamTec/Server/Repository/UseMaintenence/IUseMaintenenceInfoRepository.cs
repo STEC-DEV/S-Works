@@ -5,7 +5,6 @@ namespace FamTec.Server.Repository.UseMaintenence
     public interface IUseMaintenenceInfoRepository
     {
 
-        ValueTask<UseMaintenenceMaterialTb?> GetUseMaintenenceInfo(int id);
         
         
 

@@ -162,14 +162,22 @@ namespace FamTec.Server.Services.Floor
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                // 삭제 검사
+                // 삭제검사 - Check
                 foreach(int FloorId in del)
                 {
-                    List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(FloorId);
-
-                    if (roomtb is [_, ..])
-                        return new ResponseUnit<bool?>() { message = "해당 층에 속한 공간정보가 있어 삭제가 불가능합니다.", data = null, code = 201 };
+                    bool? DelCheck = await FloorInfoRepository.DelFloorCheck(FloorId);
+                    if (DelCheck == true)
+                        return new ResponseUnit<bool?>() { message = "해당 층을 참조하고있는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 201 };
                 }
+
+                // 삭제 검사
+                //foreach(int FloorId in del)
+                //{
+                //    List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(FloorId);
+
+                //    if (roomtb is [_, ..])
+                //        return new ResponseUnit<bool?>() { message = "해당 층에 속한 공간정보가 있어 삭제가 불가능합니다.", data = null, code = 201 };
+                //}
                 
                 bool? DeleteResult = await FloorInfoRepository.DeleteFloorInfo(del, creater);
                 return DeleteResult switch

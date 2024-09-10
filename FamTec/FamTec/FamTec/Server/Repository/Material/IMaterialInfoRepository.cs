@@ -80,5 +80,7 @@ namespace FamTec.Server.Repository.Material
         /// <param name="searchData"></param>
         /// <returns></returns>
         public ValueTask<List<MaterialSearchListDTO>> GetMaterialSearchInfo(int placeid, string searchData);
+
+        
     }
 }
