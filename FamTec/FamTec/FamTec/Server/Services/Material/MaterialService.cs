@@ -463,6 +463,11 @@ namespace FamTec.Server.Services.Material
 
                 foreach(int index in delIdx)
                 {
+                    bool? delCheck = await MaterialInfoRepository.DelMaterialCheck(index);
+                    if (delCheck == true)
+                        return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
+
+
                     List<InventoryTb>? Inventory = await InventoryInfoRepository.GetPlaceMaterialInventoryList(Convert.ToInt32(placeid), index);
                     
                     if (Inventory is [_, ..])

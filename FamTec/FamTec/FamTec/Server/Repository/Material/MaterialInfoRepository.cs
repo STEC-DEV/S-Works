@@ -20,6 +20,33 @@ namespace FamTec.Server.Repository.Material
         }
 
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> DelMaterialCheck(int materialid)
+        {
+            try
+            {
+                bool InventoryCheck = await context.InventoryTbs
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+                bool StoreCheck = await context.StoreTbs
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+                bool UseMaterialCheck = await context.UseMaintenenceMaterialTbs
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+
+                return InventoryCheck || StoreCheck || UseMaterialCheck;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
+        /// <summary>
         /// 자재 추가
         /// </summary>
         /// <param name="model"></param>
@@ -351,5 +378,7 @@ namespace FamTec.Server.Repository.Material
                 throw new ArgumentNullException();
             }
         }
+
+
     }
 }

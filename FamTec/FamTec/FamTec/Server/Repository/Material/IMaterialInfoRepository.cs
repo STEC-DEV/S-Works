@@ -6,6 +6,15 @@ namespace FamTec.Server.Repository.Material
     public interface IMaterialInfoRepository
     {
         /// <summary>
+        /// 삭제가능여부 체크
+        ///     참조하는게 하나라도 있으면 true 반환
+        ///     아니면 false 반환
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public ValueTask<bool?> DelMaterialCheck(int materialid);
+
+        /// <summary>
         /// 자재 추가
         /// </summary>
         /// <param name="model"></param>

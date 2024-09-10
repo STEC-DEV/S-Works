@@ -29,8 +29,9 @@ namespace FamTec.Server.Repository.Floor
         {
             try
             {
-                bool RoomCheck = await context.RoomTbs.AnyAsync(r => r.FloorTbId == floorTbId && r.DelYn != true);
                 // 참조된 테이블이 하나라도 있으면 true 반환
+                bool RoomCheck = await context.RoomTbs.AnyAsync(r => r.FloorTbId == floorTbId && r.DelYn != true);
+
                 return RoomCheck;
             }
             catch(Exception ex)
