@@ -256,16 +256,17 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
-        [HttpPost]
+        [HttpGet]
+        //[HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        public async ValueTask<IActionResult> DeleteMaintenanceList()
+        //public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
-                //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
-                //dto.Note = "테스트 유지보수삭제";
-                //dto.MaintanceID.Add(96);
+                DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
+                dto.Note = "테스트 유지보수삭제";
+                dto.MaintanceID.Add(100);
                 
                 if (HttpContext is null)
                     return BadRequest();
@@ -295,33 +296,21 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
-                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                //DeleteList.Add(new DeleteMaintanceDTO
-                //{
-                //    MaintanceID = 98,
-                //    UseMaintenenceID = 7,
-                //    MaterialTBID = 10,
-                //    RoomTBID = 2,
-                //    StoreID = 659,
-                //    Note = "출고취소_테스트1"
-                //});
-                //DeleteList.Add(new DeleteMaintanceDTO
-                //{
-                //    MaintanceID = 98,
-                //    UseMaintenenceID = 8,
-                //    MaterialTBID = 11,
-                //    RoomTBID = 3,
-                //    StoreID = 660,
-                //    Note = "출고취소_테스트2"
-                //});
+                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                DeleteList.Add(new DeleteMaintanceDTO
+                {
+                    MaintanceID = 100,
+                    UseMaintenenceID = 7,
+                    Note = "출고취소_테스트1"
+                });
 
             
 
@@ -332,14 +321,13 @@ namespace FamTec.Server.Controllers.Maintenance
                     if (dto.MaintanceID is null)
                         return NoContent();
 
-                    if (dto.StoreID is null)
-                        return NoContent();
+                    
 
-                    if (dto.RoomTBID is null)
-                        return NoContent();
+                    //if (dto.RoomTBID is null)
+                    //    return NoContent();
 
-                    if (dto.MaterialTBID is null)
-                        return NoContent();
+                    //if (dto.MaterialTBID is null)
+                    //    return NoContent();
 
                     if (String.IsNullOrWhiteSpace(dto.Note))
                         return NoContent();
@@ -421,7 +409,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (String.IsNullOrWhiteSpace(category))
                     return NoContent();
 
-                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, "전체", 0);
+                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, 0);
                 if (model is null)
                     return BadRequest();
 

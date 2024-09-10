@@ -227,7 +227,6 @@ builder.Services.AddAuthentication(options =>
 #endregion
 
 #region DB연결 정보
-// Server=123.2.156.122,3306;Database=Works;userid=root;pwd=stecdev1234!
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
@@ -444,8 +443,6 @@ foreach (var path in userPaths)
         appBuilder.UseMiddleware<UserMiddleware>();
     });
 }
-
-
 
 #endregion
 

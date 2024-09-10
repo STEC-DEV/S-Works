@@ -1831,16 +1831,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Meter.Contract.ContractController",
-    "Method": "GetAllContract",
-    "RelativePath": "api/Contract/\u314A",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Meter.Contract.ContractController",
     "Method": "AddContract",
     "RelativePath": "api/Contract/sign/AddContract",
     "HttpMethod": "POST",
@@ -1853,6 +1843,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Contract.ContractController",
+    "Method": "GetAllContract",
+    "RelativePath": "api/Contract/sign/GetAllContract",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -3216,16 +3216,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
-    "Method": "Temp",
-    "RelativePath": "api/Login/temp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/MachineFacility/sign/AddMachineFacility",
@@ -3519,32 +3509,20 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "DeleteMaintenanceList",
     "RelativePath": "api/Maintenance/sign/DeleteMaintenanceList",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO2",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "DeleteMaintenanceStore",
+    "Method": "DeleteMaintanceHistory",
     "RelativePath": "api/Maintenance/sign/DeleteMaintenanceStore",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "DeleteList",
-        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

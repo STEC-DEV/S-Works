@@ -17,7 +17,7 @@ public partial class InventoryTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 동시성 검사
+    /// 동시성 제어
     /// </summary>
     [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
@@ -58,9 +58,9 @@ public partial class InventoryTb
 
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int MaterialTbId { get; set; }
-
+    
     /// <summary>
-    /// 동시성 검사
+    /// 동시성 제어
     /// </summary>
     [ConcurrencyCheck]
     [Column("ROW_VERSION", TypeName = "bigint(20)")]

@@ -173,52 +173,57 @@ namespace FamTec.Server.Repository.Room
         /// <returns></returns>
         public async ValueTask<bool?> DeleteRoomInfo(List<int> idx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            var strategy = context.Database.CreateExecutionStrategy();
+            bool? result = await strategy.ExecuteAsync(async () =>
             {
-                try
+                using (var transaction = await context.Database.BeginTransactionAsync())
                 {
-                    if(idx is null || !idx.Any())
-                        return null;
-
-                    foreach(int roomid in idx)
+                    try
                     {
-                        RoomTb? RoomTB = await context.RoomTbs
-                            .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                        if (idx is null || !idx.Any())
+                            return (bool?)null;
 
-                        if(RoomTB is not null)
+                        foreach (int roomid in idx)
                         {
-                            RoomTB.DelYn = true;
-                            RoomTB.DelDt = DateTime.Now;
-                            RoomTB.DelUser = deleter;
+                            RoomTb? RoomTB = await context.RoomTbs
+                                .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
 
-                            context.RoomTbs.Update(RoomTB);
+                            if (RoomTB is not null)
+                            {
+                                RoomTB.DelYn = true;
+                                RoomTB.DelDt = DateTime.Now;
+                                RoomTB.DelUser = deleter;
+
+                                context.RoomTbs.Update(RoomTB);
+                            }
+                            else
+                            {
+                                // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
                         }
-                        else
+
+                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (UpdateResult) // 성공시 커밋
                         {
-                            // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else // 실패시 롤백
+                        {
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-
-                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (UpdateResult) // 성공시 커밋
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else // 실패시 롤백
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
+            return result;
         }
 
 

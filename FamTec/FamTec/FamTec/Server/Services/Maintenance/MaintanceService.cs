@@ -96,9 +96,7 @@ namespace FamTec.Server.Services.Maintenance
         }
         
         /// <summary>
-        /// 해당 설비의 유지보수 이력 삭제
-        ///     - 해당 유지보수 내용을 삭제할것인지
-        ///     - 쓴 내용을 취소시킬것인지.
+        /// 해당 유지보수의 출고내역 삭제
         /// </summary>
         /// <param name="context"></param>
         /// <param name="dto"></param>

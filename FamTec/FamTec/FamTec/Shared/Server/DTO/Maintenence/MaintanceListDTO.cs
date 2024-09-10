@@ -47,9 +47,9 @@
     public class UsedMaterialDTO
     {
         /// <summary>
-        /// 입출고이력 테이블 ID
+        /// 유지보수 ID
         /// </summary>
-        public int? StoreID { get; set; }
+        public int MaintanceId { get; set; }
 
         /// <summary>
         /// 공간 ID - 재입고시 필요

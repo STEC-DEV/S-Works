@@ -63,7 +63,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("ㅊ")]
+        [Route("sign/GetAllContract")]
         public async ValueTask<IActionResult> GetAllContract()
         {
             try

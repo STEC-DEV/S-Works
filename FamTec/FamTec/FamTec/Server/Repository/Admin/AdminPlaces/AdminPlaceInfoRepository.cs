@@ -5,6 +5,8 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 
 namespace FamTec.Server.Repository.Admin.AdminPlaces
@@ -27,30 +29,39 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <returns></returns>
         public async ValueTask<bool?> AddAsync(List<AdminPlaceTb> model)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            bool? result = await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
                 {
-                    await context.AdminPlaceTbs.AddRangeAsync(model);
+                    try
+                    {
+                        await context.AdminPlaceTbs.AddRangeAsync(model);
 
-                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(AddResult)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
+                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (AddResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
+            return result;
         }
 
 
@@ -362,36 +373,47 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <returns></returns>
         public async ValueTask<bool?> RemoveAdminPlace(List<int> adminid, int placeid)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach (int id in adminid)
-                    {
-                        AdminPlaceTb? admintb = await context.AdminPlaceTbs
-                            .FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
-                        
-                        if (admintb is null)
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
-                        else
-                        {
-                            context.AdminPlaceTbs.Remove(admintb);
-                            await context.SaveChangesAsync();
-                        }
-                    }
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                    await transaction.CommitAsync();
-                    return true;
-                }
-                catch (Exception ex)
+            bool? result = await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
                 {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
+                    try
+                    {
+                        foreach (int id in adminid)
+                        {
+                            AdminPlaceTb? admintb = await context.AdminPlaceTbs
+                                .FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
+
+                            if (admintb is null)
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                            else
+                            {
+                                context.AdminPlaceTbs.Remove(admintb);
+                                await context.SaveChangesAsync();
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
+                    }
                 }
-            }
+            });
+
+            return result;
         }
 
         /// <summary>
