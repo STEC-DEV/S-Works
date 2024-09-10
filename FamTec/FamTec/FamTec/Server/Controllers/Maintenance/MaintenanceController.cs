@@ -57,10 +57,13 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaintenanceImage")]
-        public async ValueTask<IActionResult> AddMaintenencec([FromForm] int id, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> AddMaintenanceImage([FromForm] int id, [FromForm] IFormFile? files)
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 if (id is 0)
                     return BadRequest();
 
@@ -320,14 +323,6 @@ namespace FamTec.Server.Controllers.Maintenance
                 {
                     if (dto.MaintanceID is null)
                         return NoContent();
-
-                    
-
-                    //if (dto.RoomTBID is null)
-                    //    return NoContent();
-
-                    //if (dto.MaterialTBID is null)
-                    //    return NoContent();
 
                     if (String.IsNullOrWhiteSpace(dto.Note))
                         return NoContent();

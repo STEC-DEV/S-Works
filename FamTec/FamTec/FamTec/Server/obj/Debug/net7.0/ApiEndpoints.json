@@ -370,18 +370,53 @@
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "UpdateManager",
     "RelativePath": "api/AdminUser/sign/UpdateManager",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
+    "Method": "UpdateManagerImage",
+    "RelativePath": "api/AdminUser/sign/UpdateManagerImage",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Admin.UpdateManagerDTO",
-        "IsRequired": true
+        "Name": "adminid",
+        "Type": "System.Int32",
+        "IsRequired": false
       },
       {
-        "Name": "files",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -3461,7 +3496,7 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "AddMaintenencec",
+    "Method": "AddMaintenanceImage",
     "RelativePath": "api/Maintenance/sign/AddMaintenanceImage",
     "HttpMethod": "POST",
     "IsController": true,

@@ -44,6 +44,76 @@ namespace FamTec.Server.Services.Admin.Account
         }
 
         /// <summary>
+        /// 관리자 이미지 변경
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="adminid"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int adminid, IFormFile? files)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                bool? ImageAddResult = await AdminUserInfoRepository.UpdateAdminImageInfo(adminid, files);
+
+                return ImageAddResult switch
+                {
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 매니저 정보 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto)
+        {
+            try
+            {
+                string? creater = Convert.ToString(context.Items["Name"]);
+                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserIdx))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value);
+                if (admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 계정정보 변경을 위해 UserTB 조회
+                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                if (usertb is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater);
+                return UpdateResult switch
+                {
+                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
         /// 관리자 접속화면 서비스
         /// </summary>
         /// <param name="userid"></param>
@@ -378,48 +448,6 @@ namespace FamTec.Server.Services.Admin.Account
             }
         }
 
-        /// <summary>
-        /// 매니저 정보 수정
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto, IFormFile? files)
-        {
-            try
-            {
-                string? creater = Convert.ToString(context.Items["Name"]);
-                string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
-
-                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserIdx))
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value);
-                if(admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                // 계정정보 변경을 위해 UserTB 조회
-                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
-                if(usertb is null)
-                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater, files);
-                return UpdateResult switch
-                {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
-                    _ => new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
-                };
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
-
-
-     
-
+   
     }
 }

@@ -42,7 +42,16 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto, IFormFile? files);
+        public ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto);
+
+        /// <summary>
+        /// 매니저 이미지 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="id"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int id, IFormFile? files);
 
         /// <summary>
         /// 아이디 중복검사

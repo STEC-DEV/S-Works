@@ -210,50 +210,24 @@ namespace FamTec.Server.Controllers.Admin
             }
         }
 
+
         /// <summary>
-        /// 관리자 정보 수정
+        /// 관리자 이미지 변경
         /// </summary>
+        /// <param name="adminid"></param>
+        /// <param name="files"></param>
         /// <returns></returns>
-        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
-        [Route("sign/UpdateManager")]
-        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto, IFormFile? files)
+        [Route("sign/UpdateManagerImage")]
+        public async ValueTask<IActionResult> UpdateManagerImage([FromForm]int adminid, [FromForm]IFormFile? files)
         {
             try
             {
-                /*
-                UpdateManagerDTO dto = new UpdateManagerDTO();
-                dto.AdminIndex = 37;
-                dto.Name = "용";
-                dto.DepartmentId = 5;
-                dto.UserId = "MASTER0003";
-                dto.Password = "123";
-                dto.PlaceList.Add(new AdminPlaceDTO
-                {
-                    Id = 11
-                });
-                dto.PlaceList.Add(new AdminPlaceDTO
-                {
-                    Id = 3
-                });
-               */
-
                 if (HttpContext is null)
                     return BadRequest();
 
-                if (dto.AdminIndex is null)
-                    return NoContent();
-                
-                if (String.IsNullOrWhiteSpace(dto.Name))
-                    return NoContent();
-                
-                if(dto.DepartmentId is null)
-                    return NoContent();
-                
-                if(String.IsNullOrWhiteSpace(dto.UserId))
-                    return NoContent();
-                
-                if (String.IsNullOrWhiteSpace(dto.Password))
+                if (adminid is 0)
                     return NoContent();
 
                 if (files is not null)
@@ -277,8 +251,76 @@ namespace FamTec.Server.Controllers.Admin
                         }
                     }
                 }
+
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(HttpContext, adminid, files);
+                
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+
+        /// <summary>
+        /// 관리자 정보 수정
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPut]
+        //[HttpGet]
+        [Route("sign/UpdateManager")]
+        //public async ValueTask<IActionResult> UpdateManager()
+
+        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
+        {
+            try
+            {
+                
+                //UpdateManagerDTO dto = new UpdateManagerDTO();
+                //dto.AdminIndex = 10;
+                //dto.Name = "용";
+                //dto.DepartmentId = 5;
+                //dto.UserId = "Master";
+                //dto.Password = "123";
+                //dto.PlaceList.Add(new AdminPlaceDTO
+                //{
+                //    Id = 3
+                //});
+                //dto.PlaceList.Add(new AdminPlaceDTO
+                //{
+                //    Id = 11
+                //});
                
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext,dto, files);
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (dto.AdminIndex is null)
+                    return NoContent();
+                
+                if (String.IsNullOrWhiteSpace(dto.Name))
+                    return NoContent();
+                
+                if(dto.DepartmentId is null)
+                    return NoContent();
+                
+                if(String.IsNullOrWhiteSpace(dto.UserId))
+                    return NoContent();
+                
+                if (String.IsNullOrWhiteSpace(dto.Password))
+                    return NoContent();
+
+
+
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
