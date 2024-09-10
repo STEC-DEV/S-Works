@@ -38,7 +38,8 @@ namespace FamTec.Server.Repository.Maintenence
         {
             try
             {
-                MaintenenceHistoryTb? model = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
+                MaintenenceHistoryTb? model = await context.MaintenenceHistoryTbs
+                    .FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
 
                 if (model is not null)
                     return model;
@@ -160,9 +161,10 @@ namespace FamTec.Server.Repository.Maintenence
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
             bool? result = await strategy.ExecuteAsync(async () =>
             {
+#if DEBUG
                 // 디버깅 포인트를 강제로 잡음
                 Debugger.Break();
-
+#endif
                 using (var transaction = await context.Database.BeginTransactionAsync())
                 {
                     try

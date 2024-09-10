@@ -2,6 +2,8 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Place
 {
@@ -202,22 +204,43 @@ namespace FamTec.Server.Repository.Place
         /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> DeletePlaceList(string Name, List<int> placeidx)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach(int PlaceID in placeidx)
-                    {
-                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
-                        if(PlaceTB is not null)
-                        {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
-                            PlaceTB.DelYn = true;
-                            PlaceTB.DelDt = DateTime.Now;
-                            PlaceTB.DelUser = Name;
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                            context.PlaceTbs.Update(PlaceTB);
+            bool? result = await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음.
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        foreach (int PlaceID in placeidx)
+                        {
+                            PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
+                            if (PlaceTB is not null)
+                            {
+                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                                PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
+                                PlaceTB.DelYn = true;
+                                PlaceTB.DelDt = DateTime.Now;
+                                PlaceTB.DelUser = Name;
+
+                                context.PlaceTbs.Update(PlaceTB);
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
@@ -225,25 +248,14 @@ namespace FamTec.Server.Repository.Place
                             return false;
                         }
                     }
-
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(DeleteResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
+            return result;
         }
 
         /// <summary>

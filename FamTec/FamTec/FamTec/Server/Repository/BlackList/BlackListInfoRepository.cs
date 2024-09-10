@@ -2,6 +2,8 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.BlackList
 {
@@ -173,51 +175,61 @@ namespace FamTec.Server.Repository.BlackList
         /// <returns></returns>
         public async ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach(int BlackListID in delIdx)
-                    {
-                        BlacklistTb? BlackListTB = await context.BlacklistTbs
-                            .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
-                        
-                        if(BlackListTB is not null)
-                        {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
-                            BlackListTB.DelYn = true;
-                            BlackListTB.DelDt = DateTime.Now;
-                            BlackListTB.DelUser = deleter;
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                            context.BlacklistTbs.Update(BlackListTB);
+            bool? result = await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음.
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        foreach (int BlackListID in delIdx)
+                        {
+                            BlacklistTb? BlackListTB = await context.BlacklistTbs
+                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
+
+                            if (BlackListTB is not null)
+                            {
+                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                                BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
+                                BlackListTB.DelYn = true;
+                                BlackListTB.DelDt = DateTime.Now;
+                                BlackListTB.DelUser = deleter;
+
+                                context.BlacklistTbs.Update(BlackListTB);
+                            }
+                            else
+                            {
+                                // 조회결과가 없음
+                                return (bool?)null;
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
-                            // 조회결과가 없음
-                            return null;
+                            await transaction.RollbackAsync();
+                            return false;
                         }
-                    }
 
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if(DeleteResult)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
-                   
                 }
-                catch(Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
+            return result;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Room
 {
@@ -176,6 +177,10 @@ namespace FamTec.Server.Repository.Room
             var strategy = context.Database.CreateExecutionStrategy();
             bool? result = await strategy.ExecuteAsync(async () =>
             {
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음.
+                Debugger.Break();
+#endif
                 using (var transaction = await context.Database.BeginTransactionAsync())
                 {
                     try

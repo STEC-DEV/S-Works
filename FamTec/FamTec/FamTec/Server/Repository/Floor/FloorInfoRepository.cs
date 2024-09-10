@@ -2,6 +2,8 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Floor
 {
@@ -67,47 +69,57 @@ namespace FamTec.Server.Repository.Floor
         /// <returns></returns>
         public async ValueTask<bool?> DeleteFloorInfo(List<int> roomidx, string deleter)
         {
-            using(var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach(int roomid in roomidx)
-                    {
-                        FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
-                        if(floortb is not null)
-                        {
-                            floortb.DelYn = true;
-                            floortb.DelDt = DateTime.Now;
-                            floortb.DelUser = deleter;
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                            context.FloorTbs.Update(floortb);
+            bool? result = await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 디버깅 포인트를 강제로 잡음.
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        foreach (int roomid in roomidx)
+                        {
+                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            if (floortb is not null)
+                            {
+                                floortb.DelYn = true;
+                                floortb.DelDt = DateTime.Now;
+                                floortb.DelUser = deleter;
+
+                                context.FloorTbs.Update(floortb);
+                            }
+                            else
+                            {
+                                // 값이 없으면 잘못됨 roolback
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                        bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (FloorResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
-                            // 값이 없으면 잘못됨 roolback
+                            // 업데이트 실패시 롤백
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-                    bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (FloorResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        // 업데이트 실패시 롤백
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
+            return result;
         }
 
         /// <summary>
