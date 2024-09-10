@@ -5,6 +5,16 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
     public class DManagerDTO
     {
         /// <summary>
+        /// 부서인덱스
+        /// </summary>
+        public int DepartmentId { get; set; }
+
+        /// <summary>
+        /// 관리자ID
+        /// </summary>
+        public int AdminId { get; set; }
+
+        /// <summary>
         /// 관리자 이름
         /// </summary>
         [Display(Name = "이름")]

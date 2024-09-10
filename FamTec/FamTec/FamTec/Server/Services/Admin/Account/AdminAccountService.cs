@@ -321,6 +321,8 @@ namespace FamTec.Server.Services.Admin.Account
 
                 DManagerDTO dto = new DManagerDTO()
                 {
+                    DepartmentId = departmenttb.Id,
+                    AdminId = admintb.Id,
                     UserId = usertb.UserId,
                     Name = usertb.Name,
                     Password = usertb.Password,
