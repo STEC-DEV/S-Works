@@ -1,0 +1,41 @@
+.managerdetail-container[b-928vcx6dw5] {
+    display : flex;
+    flex-direction : column;
+    width : 100%;
+    height : 100%;
+
+    gap : var(--default-pd);
+}
+
+.managerdetail-container .managerdetail-wrap[b-928vcx6dw5]{
+    display: flex;
+    gap: var(--wide-pd);
+    height: 100%;
+    flex: 1;
+    overflow: hidden;
+    padding : var(--default-pd);
+}
+
+.managerdetail-container .managerdetail-info[b-928vcx6dw5] {
+    flex: 1;
+    width: 100%;
+    box-shadow: var(--default-bs);
+}
+
+.managerdetail-container .managerdetail-place[b-928vcx6dw5]{
+    flex:2;
+    width:100%;
+
+     box-shadow : var(--default-bs);
+}
+
+
+/*
+    버튼 영역
+*/
+.managerdetail-container .managerdetail-btns[b-928vcx6dw5] {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--half-pd);
+    padding: var(--default-pd);
+}

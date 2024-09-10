@@ -7,6 +7,7 @@
     font-size: var(--normal-size);
     font-weight: var(--bold-wt);
     white-space:nowrap;
+    transition : all .3s;
     /*border: var(--default-bd);*/
 }
 
@@ -57,4 +58,14 @@
 
 .width[b-nnxheo5jnq]{
     width: 100%;
+}
+
+
+.valid[b-nnxheo5jnq]{
+    background-color:var(--status-0)
+}
+
+.valid:hover[b-nnxheo5jnq]{
+    cursor : not-allowed;
+    background-color:var(--status-0);
 }

@@ -26,12 +26,14 @@
                              Placeholder="비밀번호"
                              ValueType="password"
                              @bind-Value=@NewManager.Password
+                             ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
                              Type="PW" />
 
             <ValidationInput Label="비밀번호 확인"
                              Placeholder="비밀번호 확인"
                              ValueType="password"
                              PasswordCheck="@NewManager.Password"
+                             ValidChanged="@(isValid => UpdateValidState("PasswordCheck", isValid))"
                              Type="PWCHECK" />
 
             <ValidationInput Label="이름"
@@ -50,6 +52,7 @@
                              Placeholder="이메일"
                              ValueType="text"
                              @bind-Value=@NewManager.Email
+                             ValidChanged="@(isValid => UpdateValidState("Email", isValid))"
                              Type="EMAIL" />
 
             <SelectField
@@ -61,6 +64,7 @@
                 <TextField2
                     Label="직급"
                     Value="@job"
+                    Color=true
                     />
 
         </div>
@@ -74,6 +78,8 @@
     [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public string? ManagerType { get; set; }
+    [Parameter] public bool? Valid { get; set; }
+    [Parameter] public EventCallback<bool> ValidChanged { get; set; }
     //아이디 패스워드 이메일 유효형식 파라미터
 
 
@@ -81,6 +87,8 @@
     private string job;
 
     private List<string> ImageUrl = new List<string>();
+    private Dictionary<string, bool> validationStates = new Dictionary<string, bool>();
+
 
     private void HandleSelectedValueChange(int value)
     {
@@ -144,5 +152,16 @@
             ImageUrl.Add(image.ImageUrl);
         }
         StateHasChanged();
+    }
+
+    private async Task UpdateValidState(string field, bool isValid)
+    {
+        validationStates[field] = isValid;
+        bool overallValid = validationStates.All(v => v.Value);
+        if (Valid != overallValid)
+        {
+            Valid = overallValid;
+            await ValidChanged.InvokeAsync(overallValid);
+        }
     }
 }

@@ -1,15 +1,20 @@
 ﻿.placetable-container {
     display: flex;
     flex-direction: column;
+    
     gap: var(--default-pd);
 
+    min-height:515px;
     height: 100%;
+    max-height:50%;
 
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     background-color : var(--back-default-color);
 
     padding : var(--default-pd);
+
+    box-shadow:var(--shadow-1);
 }
 
 .placetable-container .placetable-title{

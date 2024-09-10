@@ -20,6 +20,7 @@
                 DepartmentList="departmetnList" 
                 EditMode=EditMode
                 ManagerType="@UserType"
+                @bind-Valid="@validationCheck"
                 />
         </div>
         <div class="place">
@@ -28,7 +29,15 @@
 
     </div>
     <div class="btns">
-        <Button Name="등록" Width="true" Type=0 OnClick ="Submit" />
+        @if (!validationCheck)
+        {
+            <Button Name="등록" Width="true" Type=0 Valid=true />
+        }
+        else
+        {
+            <Button Name="등록" Width="true" Type=0 OnClick="Submit" />
+        }
+
         <Button Name="취소" Width="true" Type=1 />
     </div>
     
@@ -42,6 +51,7 @@
     string? EncryptSession;
     string? UserType;
 
+    bool validationCheck = false;
 
 
     protected async override Task OnInitializedAsync()
@@ -49,6 +59,13 @@
         await OnLoadDepartments();
         newManager = new();
     }
+
+    private void HandleFormValidityChanged(bool isValid)
+    {
+        // Do something with the form validity state
+        Console.WriteLine($"Form is valid: {isValid}");
+    }
+
 
     /*
     * 부서 조회
@@ -86,24 +103,28 @@
             Console.WriteLine("아이디" +newManager.UserId);
             Console.WriteLine("비밀번호" +newManager.Password);
             Console.WriteLine("부서" +newManager.DepartmentId);
+            foreach (var i in managerPlace.PlaceList)
+            {
+                Console.WriteLine("사업장"+i);
+            }
             Console.WriteLine("매니저 등록 끝");
-            // ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
-            // if(resManager.code != 200)
-            // {
-            //     await JS.InvokeVoidAsync("alert", "관리자 정보 등록 실패");
-            //     //롤백 코드 추가 예정
-            //     return;
-            // }
-            // int adminId = resManager.data;
-            // managerPlace.AdminId = adminId;
-            // ResponseUnit<bool> resManagerPlace = await apiManager.PostAsync<bool>("AdminUser/sign/AddManagerWorks", managerPlace);
-            // if (resManagerPlace.code != 200)
-            // {
-            //     await JS.InvokeVoidAsync("alert", "관리자 사업장 등록 실패");
-            //     //롤백 코드 추가 예정
-            //     return;
-            // }
-            // Navigation.NavigateTo("/admin/manager");
+            ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
+            if(resManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "관리자 정보 등록 실패");
+                //롤백 코드 추가 예정
+                return;
+            }
+            int adminId = resManager.data;
+            managerPlace.AdminId = adminId;
+            ResponseUnit<bool> resManagerPlace = await apiManager.PostAsync<bool>("AdminUser/sign/AddManagerWorks", managerPlace);
+            if (resManagerPlace.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "관리자 사업장 등록 실패");
+                //롤백 코드 추가 예정
+                return;
+            }
+            Navigation.NavigateTo("/admin/manager");
 
 
         }

@@ -52,6 +52,7 @@
     transition : all .3s;
 }
 .true{
-    color:var(--main-color);
+    /*color:var(--main-color);*/
+    color: #1bd733;
     font-weight:bold;
 }

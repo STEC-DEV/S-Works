@@ -823,11 +823,6 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerMain\Components\NotUse\ManagerTable.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerMain\Manager.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerMain\Modal\ModalDepartment.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignup\Components\PlaceSelectTable.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignup\Components\PlaceTable.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignup\Components\SignForm.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignup\ManagerSignUp.razor.rz.scp.css
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignup\Modal\PlaceModal.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Place\PlaceDetail\Components\PlaceForm.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Place\PlaceDetail\Components\PlaceToggle.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Place\PlaceDetail\PlaceDetail.razor.rz.scp.css
@@ -1300,3 +1295,10 @@ C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debu
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignupV2\ManagerSignUp.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignupV2\Modal\PlaceModal.razor.rz.scp.css
 C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\CommonComponents\ValidationInput.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerSignupV2\Components\SignUpPlaceTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\Components\PlaceSelectTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\Components\PlaceTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\Components\SignForm.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\Components\SignUpPlaceTable.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\ManageDetail.razor.rz.scp.css
+C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net7.0\scopedcss\Pages\Admin\Manager\ManagerDetailsV2\Modal\PlaceModal.razor.rz.scp.css

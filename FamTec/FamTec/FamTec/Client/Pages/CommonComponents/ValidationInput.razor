@@ -11,6 +11,7 @@
         <input class="input"
                type="@ValueType"
                placeholder="@Placeholder"
+               value="@Value"
                @oninput=@(e =>OnInputChange(e)) />
         @if(Type == "USERID")
         {
@@ -60,17 +61,30 @@
     [Parameter] public bool? Row{ get; set; }
     [Parameter] public string? ValueType { get; set; } //아이디 비번 이메일 구분
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<bool> ValidChanged { get; set; }
 
     bool pw1 = false;
     bool pw2 = false;
     bool pw_check = false;
     bool emailValid = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ValidateInput(Value);
+        bool isValid = DetermineValidity();
+        await ValidChanged.InvokeAsync(isValid);
+    }
+
     private async Task OnInputChange(ChangeEventArgs e)
     {
         Value = e.Value?.ToString();
         ValidateInput(Value);
         await ValueChanged.InvokeAsync(Value);
-        
+
+        //rjawmd
+        bool isValid = DetermineValidity();
+        await ValidChanged.InvokeAsync(isValid);
+
     }
 
 
@@ -83,11 +97,28 @@
                 pw2 = Regex.IsMatch(value ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
                 break;
             case "PWCHECK":
-                pw_check = value == PasswordCheck;
+                pw1 = !string.IsNullOrWhiteSpace(PasswordCheck) && PasswordCheck.Length >= 8;
+                pw2 = Regex.IsMatch(PasswordCheck ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
+                pw_check = pw1 && pw2 && !String.IsNullOrEmpty(value) && value == PasswordCheck;
                 break;
             case "EMAIL":
                 emailValid = Regex.IsMatch(value ?? "", @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
                 break;
+        }
+    }
+
+    private bool DetermineValidity()
+    {
+        switch (Type)
+        {
+            case "PW":
+                return pw1 && pw2;
+            case "PWCHECK":
+                return pw_check;
+            case "EMAIL":
+                return emailValid;
+            default:
+                return !string.IsNullOrWhiteSpace(Value);
         }
     }
 }

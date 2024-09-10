@@ -1,0 +1,86 @@
+﻿@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO.Admin
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    사업장 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    사업장명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약번호
+                </span>
+            </th>
+            <th class="th">
+                
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            <p>...Lodaing</p>
+        }
+        else
+        {
+             @foreach(var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td">
+                        @row.PlaceCd
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                       @row.ContractNum
+                    </td>
+                    <td class="td">
+                        <input type="checkbox" checked="@IsChecked(row)" @onchange=" e => onCheckItem(e, row)" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter] public List<AdminPlaceDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool, AdminPlaceDTO)> OnCheck { get; set; }
+
+    List<AdminPlaceDTO> CheckedData = new List<AdminPlaceDTO>();
+
+
+    private bool IsChecked(AdminPlaceDTO place)
+    {
+        // CheckedData 리스트에서 현재 행에 해당하는 place가 있는지 확인
+        return CheckedData != null && CheckedData.Any(x => x.PlaceCd == place.PlaceCd);
+    }
+
+    private async void onCheckItem(ChangeEventArgs e, AdminPlaceDTO place)
+    {
+        //현재 컴포넌트내에서 검색과 체크 동기화
+        if((bool)e.Value == true)
+        {
+            CheckedData.Add(place);
+        }
+        else
+        {
+            CheckedData.Remove(place);
+        }
+
+
+        //체크여부 부모로 넘김
+        await OnCheck.InvokeAsync(((bool)e.Value, place));
+    }
+}

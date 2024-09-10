@@ -1,0 +1,62 @@
+
+.placemodal-container[b-oynkft2e5f] {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 30%;
+    height : 80%;
+    background-color: var(--default-color);
+    border-radius: var(--default-rd);
+    border: var(--comp-bd);
+    transition: all 0.5s ease-in-out;
+    box-shadow: var(--default-bs);
+}
+
+.placemodal-container .placemodal-wrap[b-oynkft2e5f] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    width: 100%;
+    height: 100%;
+    padding: var(--default-pd);
+}
+
+.placemodal-container .placemodal-content[b-oynkft2e5f] {
+    height: 100%;
+    max-height: 100%;
+    border-radius: var(--default-rd);
+    overflow: auto;
+}
+
+.placemodal-container .placemodal-title[b-oynkft2e5f] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+}
+
+.placemodal-container .title[b-oynkft2e5f]{
+    color: var(--main-color);
+}
+ 
+.placemodal-container .placemodal-count[b-oynkft2e5f]{
+    border-radius : var(--default-rd);
+    padding : var(--three-q-pd);
+    
+    
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+    background-color : var(--main-color);
+}
+
+.placemodal-container .count[b-oynkft2e5f]{
+    color : var(--default-color);
+}
+
+.placemodal-container .placemodal-btns[b-oynkft2e5f] {
+    display : flex;
+    gap : var(--default-pd);
+    width: 100%;
+    border-radius: var(--default-rd);
+}

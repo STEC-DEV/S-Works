@@ -9,6 +9,7 @@ namespace FamTec.Shared.Client.DTO.Manager
 {
     public class DManagerDTO
     {
+        public int Id { get; set; }
         [Display(Name = "이름")]
         public string Name { get; set; }
         [Display(Name="아이디")]
@@ -23,7 +24,35 @@ namespace FamTec.Shared.Client.DTO.Manager
         public string Type { get; set; }
         [Display(Name = "부서")]
         public string Department { get; set; }
-        public string Image { get; set; }
+        public int DepartmentId { get; set; }
+        public byte[] Image { get; set; }
+        public string ImageName { get; set; }
 
+
+        public DManagerDTO() 
+        { 
+        }
+
+        public DManagerDTO(DManagerDTO source)
+        {
+            if(source != null)
+            {
+                Id = source.Id; 
+                Name = source.Name; 
+                UserId = source.UserId;
+                Password = source.Password;
+                Email = source.Email;
+                Phone = source.Phone;
+                Type = source.Type;
+                Department = source.Department;
+                DepartmentId = source.DepartmentId;
+                Image = source.Image;
+                ImageName = source.ImageName;
+            }
+        }
+        public DManagerDTO DeepCopy()
+        {
+            return new DManagerDTO(this);
+        }
     }
 }

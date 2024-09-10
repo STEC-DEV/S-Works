@@ -7,7 +7,7 @@
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     background-color : var(--back-default-color);
-
+    box-shadow:var(--shadow-1);
     padding : var(--default-pd);
 }
 

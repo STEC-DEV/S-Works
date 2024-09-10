@@ -94,10 +94,6 @@
     //매니저 필터링
     private async Task OnSearch(string text)
     {
-        foreach(var i in SelectManagerList)
-        {
-            Console.WriteLine(i.Name);
-        }
         _searchText = text;
         FilterData = ListManager
         .Where(m => !SelectManagerList.Any(s => s.Id == m.Id)) // 선택된 객체 제외
