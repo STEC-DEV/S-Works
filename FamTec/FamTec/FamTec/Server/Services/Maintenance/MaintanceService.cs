@@ -75,14 +75,13 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 int? MaintanceId = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
-                if(MaintanceId > 0)
-                    return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
-                else if(MaintanceId == 0)
-                    return new ResponseUnit<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 201 };
-                else if(MaintanceId < 0)
-                    return new ResponseUnit<int?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = null, code = 202 };
-                else
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                return MaintanceId switch
+                {
+                    > 0 => new ResponseUnit<int?> { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
+                    0 => new ResponseUnit<int?> { message = "출고시킬 수량이 실제 수량보다 부족합니다.", data = 0, code = 201 },
+                    < 0 => new ResponseUnit<int?> { message = "다른 곳에서 해당 품목을 사용 중입니다.", data = -1, code = 202 },
+                    _ => new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                };
             }
             catch (Exception ex)
             {
