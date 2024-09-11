@@ -192,7 +192,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-
         public async ValueTask<ResponseUnit<bool?>> UpdateMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
@@ -216,7 +215,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 }
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
-                if(model is null || model.Category != "기계")
+                if(model is null || model.Category.Trim() != "기계")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "기계"; // 카테고리

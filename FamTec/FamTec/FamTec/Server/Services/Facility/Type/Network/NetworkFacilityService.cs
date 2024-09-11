@@ -209,7 +209,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 }
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
-                if(model is null || model.Category != "통신")
+                if(model is null || model.Category.Trim() != "통신")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "통신"; // 카테고리

@@ -12,7 +12,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public BuildingGroupItemInfoRepository(WorksContext _context, ILogService _logservice)
+        public BuildingGroupItemInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;
@@ -29,15 +30,12 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 
                 await context.BuildingItemGroupTbs.AddAsync(model);
+                
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                 if (AddResult)
-                {
                     return model;
-                }
                 else
-                {
                     return null;
-                }
             }
             catch(Exception ex)
             {
@@ -57,7 +55,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 
                 List<BuildingItemGroupTb>? model = await context.BuildingItemGroupTbs
-                    .Where(m => m.BuildingTbId == buildingid && m.DelYn != true)
+                    .Where(m => m.BuildingTbId == buildingid && 
+                                m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
@@ -84,7 +83,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             try
             {
                 BuildingItemGroupTb? model = await context.BuildingItemGroupTbs
-                    .FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == groupid && 
+                                              m.DelYn != true);
 
                 if (model is not null)
                     return model;

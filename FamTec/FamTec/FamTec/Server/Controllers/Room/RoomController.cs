@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Repository.Room;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Room;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Room;
@@ -19,6 +20,32 @@ namespace FamTec.Server.Controllers.Room
         {
             this.RoomService = _roomservice;
             this.LogService = _logservice;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetPlaceRoomGroup")]
+        public async ValueTask<IActionResult> GetPlaceRoomGroup()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<PlaceRoomListDTO>? model = await RoomService.GetPlaceAllGroupRoomInfo(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         /// <summary>

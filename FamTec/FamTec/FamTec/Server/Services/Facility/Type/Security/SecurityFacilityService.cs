@@ -208,7 +208,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 }
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
-                if(model is null || model.Category != "보안")
+                if(model is null || model.Category.Trim() != "보안")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "보안"; // 카테고리

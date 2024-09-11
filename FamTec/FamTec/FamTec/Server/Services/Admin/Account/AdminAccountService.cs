@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using FamTec.Server.Repository.Admin.AdminUser;
+﻿using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
@@ -9,6 +8,7 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 
@@ -150,7 +150,7 @@ namespace FamTec.Server.Services.Admin.Account
                 authClaims.Add(new Claim("DepartIdx", admintb.DepartmentTbId.ToString()));
                 authClaims.Add(new Claim("DepartmentName",  departmenttb.Name.ToString()));
 
-                switch(admintb.Type)
+                switch(admintb.Type.Trim())
                 {
                     case "시스템관리자":
                         authClaims.Add(new Claim("Role", "시스템관리자"));
@@ -216,48 +216,47 @@ namespace FamTec.Server.Services.Admin.Account
                 di = new DirectoryInfo(AdminFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(dto.UserId!);
-                if(AlreadyCheck is not null)
+                UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(!String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!);
+                if (AlreadyCheck is not null)
                     return new ResponseUnit<int?>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
 
-                var model = new UsersTb
-                {
-                    UserId = dto.UserId!,
-                    Name = dto.Name,
-                    Password = dto.Password!,
-                    Email = dto.Email,
-                    Phone = dto.Phone,
-                    PermBasic = 2,
-                    PermMachine = 2,
-                    PermLift = 2,
-                    PermElec = 2,
-                    PermFire = 2,
-                    PermConstruct = 2,
-                    PermNetwork = 2,
-                    PermBeauty = 2,
-                    PermSecurity = 2,
-                    PermMaterial = 2,
-                    PermEnergy = 2,
-                    PermUser = 2,
-                    PermVoc = 2,
-                    VocMachine = true,
-                    VocElec = true,
-                    VocLift = true,
-                    VocConstruct = true,
-                    VocNetwork = true,
-                    VocBeauty = true,
-                    VocSecurity = true,
-                    VocEtc = true,
-                    Job = "관리자",
-                    AdminYn = true,
-                    AlarmYn = true,
-                    Status = 2,
-                    CreateDt = DateTime.Now,
-                    CreateUser = creater,
-                    UpdateDt = DateTime.Now,
-                    UpdateUser = creater,
-                    Image = files is not null ? NewFileName : null
-                };
+                UsersTb model = new UsersTb();
+                model.UserId = !String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!;
+                model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name;
+                model.Password = !String.IsNullOrWhiteSpace(dto.Password) ? dto.Password.Trim() : dto.Password!;
+                model.Email = !String.IsNullOrWhiteSpace(dto.Email) ? dto.Email.Trim() : dto.Email;
+                model.Phone = !String.IsNullOrWhiteSpace(dto.Phone) ? dto.Phone.Trim() : dto.Phone;
+                model.PermBasic = 2;
+                model.PermMachine = 2;
+                model.PermLift = 2;
+                model.PermElec = 2;
+                model.PermFire = 2;
+                model.PermConstruct = 2;
+                model.PermNetwork = 2;
+                model.PermBeauty = 2;
+                model.PermSecurity = 2;
+                model.PermMaterial = 2;
+                model.PermEnergy = 2;
+                model.PermUser = 2;
+                model.PermVoc = 2;
+                model.VocMachine = true;
+                model.VocElec = true;
+                model.VocLift = true;
+                model.VocConstruct = true;
+                model.VocNetwork = true;
+                model.VocBeauty = true;
+                model.VocSecurity = true;
+                model.VocEtc = true;
+                model.Job = "관리자";
+                model.AdminYn = true;
+                model.AlarmYn = true;
+                model.Status = 2;
+                model.CreateDt = DateTime.Now;
+                model.CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
+                model.UpdateDt = DateTime.Now;
+                model.UpdateUser = creater;
+                model.Image = files is not null ? NewFileName : null;
+                
 
                 UsersTb? userresult = await UserInfoRepository.AddAsync(model);
                 if (userresult is null)
@@ -271,7 +270,7 @@ namespace FamTec.Server.Services.Admin.Account
 
                 var adminModel = new AdminTb
                 {
-                    Type = UserType switch
+                    Type = UserType.Trim() switch
                     {
                         "시스템관리자" => "마스터",
                         "마스터" => "매니저",
@@ -339,7 +338,7 @@ namespace FamTec.Server.Services.Admin.Account
                     if(UserTB is null)
                         return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                     
-                    if (UserTB.Job!.Equals("시스템관리자")) // 시스템 관리자 삭제못하게 막음.
+                    if (UserTB.Job!.Trim().Equals("시스템관리자")) // 시스템 관리자 삭제못하게 막음.
                     {
                         return new ResponseUnit<bool?>() { message = "시스템관리자는 삭제 불가능합니다.", data = null, code = 404 };
                     }

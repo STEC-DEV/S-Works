@@ -65,18 +65,18 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 FacilityTb? model = new FacilityTb()
                 {
                     Category = "미화", //  카테고리 - 미화
-                    Name = dto.Name!, // 설비명칭
-                    Type = dto.Type, // 형식
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 설비명칭 */
+                    Type = !String.IsNullOrWhiteSpace(dto.Type) ? dto.Type.Trim() : dto.Type, /* 형식 */
                     Num = dto.Num, // 개수
-                    Unit = dto.Unit, // 단위
+                    Unit = !String.IsNullOrWhiteSpace(dto.Unit) ? dto.Unit.Trim() : dto.Unit, /* 단위 */
                     EquipDt = dto.EquipDT, // 설치년월
-                    Lifespan = dto.LifeSpan, // 내용연수
-                    StandardCapacity = dto.Standard_capacity, // 규격용량
+                    Lifespan = !String.IsNullOrWhiteSpace(dto.LifeSpan) ? dto.LifeSpan.Trim() : dto.LifeSpan, /* 내용연수 */
+                    StandardCapacity = !String.IsNullOrWhiteSpace(dto.Standard_capacity) ? dto.Standard_capacity.Trim() : dto.Standard_capacity, /* 규격용량 */
                     ChangeDt = dto.ChangeDT, // 교체년월
                     CreateDt = DateTime.Now,
-                    CreateUser = creator,
+                    CreateUser = !String.IsNullOrWhiteSpace(creator) ? creator.Trim() : creator, /* 생성자 */
                     UpdateDt = DateTime.Now,
-                    UpdateUser = creator,
+                    UpdateUser = !String.IsNullOrWhiteSpace(creator) ? creator.Trim() : creator, /* 수정자 */
                     RoomTbId = dto.RoomTbId.Value, // 공간 ID
                     Image = NewFileName
                 };
@@ -157,17 +157,17 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
 
                 FacilityDetailDTO dto = new FacilityDetailDTO();
                 dto.Id = model.Id;
-                dto.Category = model.Category;
-                dto.Name = model.Name;
-                dto.Type = model.Type;
+                dto.Category = !String.IsNullOrWhiteSpace(model.Category) ? model.Category.Trim() : model.Category;
+                dto.Name = !String.IsNullOrWhiteSpace(model.Name) ? model.Name.Trim() : model.Name;
+                dto.Type = !String.IsNullOrWhiteSpace(model.Type) ? model.Type.Trim() : model.Type;
                 dto.Num = model.Num;
-                dto.Unit = model.Unit;
+                dto.Unit = !String.IsNullOrWhiteSpace(model.Unit) ? model.Unit.Trim() : model.Unit;
                 dto.EquipDT = model.EquipDt;
-                dto.LifeSpan = model.Lifespan;
+                dto.LifeSpan = !String.IsNullOrWhiteSpace(model.Lifespan) ? model.Lifespan.Trim() : model.Lifespan;
                 dto.Standard_capacity = model.StandardCapacity;
                 dto.ChangeDT = model.ChangeDt;
                 dto.RoomId = model.RoomTbId;
-                dto.RoomName = room.Name;
+                dto.RoomName = !String.IsNullOrWhiteSpace(room.Name) ? room.Name.Trim() : room.Name;
 
                 BeautyFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Beauty", Common.FileServer, placeid);
 
@@ -209,7 +209,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
 
-                if(model is null || model.Category != "미화")
+                if(model is null || model.Category.Trim() != "미화")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "미화"; // 카테고리

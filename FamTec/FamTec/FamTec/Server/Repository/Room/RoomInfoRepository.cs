@@ -1,7 +1,9 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Room;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Room
@@ -288,6 +290,56 @@ namespace FamTec.Server.Repository.Room
             }
         }
 
-      
+        /// <summary>
+        /// 사업장에 해당하는 전체건물 - 전체층 - 전체공간 Group
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<PlaceRoomListDTO>?> GetPlaceAllGroupRoomInfo(int placeid)
+        {
+            try
+            {
+                List<BuildingTb>? BuildingList = await context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync();
+                if (BuildingList is null || !BuildingList.Any())
+                    return null;
+
+                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => BuildingList.Select(b => b.Id).Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
+                if (FloorList is null || !FloorList.Any())
+                    return null;
+
+                List<RoomTb>? RoomList = await context.RoomTbs.Where(m => FloorList.Select(f => f.Id).Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
+                if (RoomList is null || !RoomList.Any())
+                    return null;
+
+                List<PlaceRoomListDTO>? model = BuildingList.Select(building => new PlaceRoomListDTO
+                {
+                    Id = building.Id,
+                    Name = building.Name,
+                    FloorList = FloorList.Where(floor => floor.BuildingTbId == building.Id)
+                         .Select(floor => new BuildingFloor
+                         {
+                             Id = floor.Id,
+                             Name = floor.Name,
+                             RoomList = RoomList.Where(room => room.FloorTbId == floor.Id)
+                                                .Select(room => new FloorRoom
+                                                {
+                                                    Id = room.Id,
+                                                    Name = room.Name
+                                                }).ToList()
+                         }).ToList()
+                }).ToList();
+
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
+
     }
 }

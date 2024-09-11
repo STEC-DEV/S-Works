@@ -176,7 +176,7 @@ namespace FamTec.Server.Services.Admin.Department
                     if(CheckTB is null)
                         return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 200 };
                     
-                    if (CheckTB.Name.Equals("에스텍시스템"))
+                    if (CheckTB.Name.Trim().Equals("에스텍시스템"))
                         return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 200 };
                 }
 

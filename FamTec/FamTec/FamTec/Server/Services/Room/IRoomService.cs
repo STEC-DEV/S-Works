@@ -36,5 +36,11 @@ namespace FamTec.Server.Services.Room
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext context, List<int> del);
 
+        /// <summary>
+        /// 사업장에 해당하는 전체건물 - 전체층 - 전체공간 Group
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context);
     }
 }

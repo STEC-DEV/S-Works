@@ -100,7 +100,8 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 List<BuildingTb>? model = await context.BuildingTbs
-                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .Where(m => m.PlaceTbId == placeid &&
+                                m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync();
 
@@ -180,7 +181,8 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                BuildingTb? model = await context.BuildingTbs.FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode));
+                BuildingTb? model = await context.BuildingTbs
+                    .FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode));
                 
                 if (model is null)
                     return true;
@@ -235,7 +237,8 @@ namespace FamTec.Server.Repository.Building
                                                     join floortb in context.FloorTbs.Where(m => m.DelYn == true)
                                                     on buildingtb.Id equals floortb.BuildingTbId
                                                     select buildingtb).ToList();
-                        
+                   
+
                     // 건물 Table의 층이 할당안된 테이블
                     List<BuildingTb>? deleteList = buildinglist.Where(a => !context.FloorTbs.Any(b => b.BuildingTbId == a.Id)).ToList();
                         

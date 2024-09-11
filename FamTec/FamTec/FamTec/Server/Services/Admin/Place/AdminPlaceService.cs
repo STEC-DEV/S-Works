@@ -18,7 +18,6 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private ILogService LogService;
 
-  
         public AdminPlaceService(IAdminPlacesInfoRepository _adminplaceinforepository,
             IPlaceInfoRepository _placeinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
@@ -32,8 +31,6 @@ namespace FamTec.Server.Services.Admin.Place
 
             this.LogService = _logservice;
         }
-
-        
 
         /// <summary>
         /// 전체사업장 조회 
@@ -56,7 +53,7 @@ namespace FamTec.Server.Services.Admin.Place
                     return new ResponseList<AllPlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<PlaceTb> placetb = new List<PlaceTb>();
-                if (Role == "매니저")
+                if (Role.Trim() == "매니저")
                 {
                     List<AdminPlaceTb>? adminplacetb = await AdminPlaceInfoRepository.GetMyWorksList(Int32.Parse(AdminId));
                     if(adminplacetb is [_, ..])

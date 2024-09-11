@@ -14,7 +14,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public BuildingItemKeyInfoRepository(WorksContext _context, ILogService _logservice)
+        public BuildingItemKeyInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

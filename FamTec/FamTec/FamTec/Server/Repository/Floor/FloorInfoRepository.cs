@@ -1,13 +1,9 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.InkML;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace FamTec.Server.Repository.Floor
 {
@@ -16,7 +12,8 @@ namespace FamTec.Server.Repository.Floor
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public FloorInfoRepository(WorksContext _context, ILogService _logservice)
+        public FloorInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

@@ -69,5 +69,12 @@ namespace FamTec.Server.Repository.Room
         /// <param name="deleter"></param>
         /// <returns></returns>
         ValueTask<bool?> DeleteRoomInfo(List<int> idx, string deleter);
+
+        /// <summary>
+        /// 사업장에 해당하는 전체건물 - 전체층 - 전체공간 Group
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<List<PlaceRoomListDTO>?> GetPlaceAllGroupRoomInfo(int placeid);
     }
 }

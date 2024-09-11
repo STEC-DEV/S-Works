@@ -239,5 +239,36 @@ namespace FamTec.Server.Services.Room
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+        /// <summary>
+        /// 사업장에 해당하는 전체건물 - 전체층 - 전체공간 Group
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<PlaceRoomListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<PlaceRoomListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<PlaceRoomListDTO>? model = await RoomInfoRepository.GetPlaceAllGroupRoomInfo(Int32.Parse(placeid));
+                if (model is [_, ..])
+                    return new ResponseList<PlaceRoomListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<PlaceRoomListDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<PlaceRoomListDTO>(), code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<PlaceRoomListDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+
     }
 }

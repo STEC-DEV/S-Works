@@ -13,7 +13,8 @@ namespace FamTec.Server.Repository.Material
         private readonly WorksContext context;
         private ILogService LogService;
         
-        public MaterialInfoRepository(WorksContext _context, ILogService _logservice)
+        public MaterialInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

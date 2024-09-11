@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Repository.Admin.AdminPlaces;
-using FamTec.Server.Repository.Building;
+﻿using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;

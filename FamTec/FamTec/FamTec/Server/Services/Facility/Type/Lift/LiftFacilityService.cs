@@ -214,7 +214,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 }
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
-                if (model is null || model.Category != "승강")
+                if (model is null || model.Category.Trim() != "승강")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "승강"; // 카테고리

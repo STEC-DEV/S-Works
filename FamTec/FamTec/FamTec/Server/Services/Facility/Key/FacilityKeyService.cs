@@ -46,8 +46,8 @@ namespace FamTec.Server.Services.Facility.Key
                     return new ResponseUnit<AddKeyDTO>() { message = "잘못된 요청입니다.", data = new AddKeyDTO(), code = 404 };
 
                 FacilityItemKeyTb KeyTb = new FacilityItemKeyTb();
-                KeyTb.Name = dto.Name!; // 키 명칭
-                KeyTb.Unit = dto.Unit!; // 단위
+                KeyTb.Name = dto.Name!.Trim()!; // 키 명칭
+                KeyTb.Unit = dto.Unit!.Trim(); // 단위
                 KeyTb.CreateDt = DateTime.Now;
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = DateTime.Now;

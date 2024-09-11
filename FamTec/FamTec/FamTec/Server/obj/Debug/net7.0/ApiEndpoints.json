@@ -4272,6 +4272,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Room.RoomController",
+    "Method": "GetPlaceRoomGroup",
+    "RelativePath": "api/Room/sign/GetPlaceRoomGroup",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Room.RoomController",
     "Method": "UpdateRoom",
     "RelativePath": "api/Room/sign/UpdateRoom",
     "HttpMethod": "PUT",
