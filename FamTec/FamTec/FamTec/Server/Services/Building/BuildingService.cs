@@ -18,7 +18,6 @@ namespace FamTec.Server.Services.Building
         private DirectoryInfo? di;
         private string? PlaceFileFolderPath;
 
-      
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
@@ -91,8 +90,8 @@ namespace FamTec.Server.Services.Building
 
                 BuildingTb? model = new BuildingTb()
                 {
-                    BuildingCd = dto.Code!, // 건물코드
-                    Name = dto.Name!, // 건물명
+                    BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!, /* 건물코드 */
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 건물명 */
                     Address = dto.Address, // 주소
                     Tel = dto.Tel, // 전화번호
                     Usage = dto.Usage, // 건물용도
@@ -462,9 +461,9 @@ namespace FamTec.Server.Services.Building
                 BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value);
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
-                
-                model.BuildingCd = dto.Code!; // 건물코드
-                model.Name = dto.Name!; // 건물명
+
+                model.BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!; /* 건물코드 */
+                model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!; /* 건물명 */
                 model.Address = dto.Address; // 건물주소
                 model.Tel = dto.Tel; // 전화번호
                 model.Usage = dto.Usage; // 건물용도

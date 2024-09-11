@@ -53,8 +53,8 @@ namespace FamTec.Server.Services.Building.Key
 
                 BuildingItemKeyTb KeyTb = new BuildingItemKeyTb()
                 {
-                    Name = dto.Name!, // 키명칭
-                    Unit = dto.Unit!, // 단위
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 키 명칭 */
+                    Unit = !String.IsNullOrWhiteSpace(dto.Unit) ? dto.Unit.Trim() : dto.Unit!, /* 단위 */
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
                     UpdateDt = DateTime.Now,
@@ -72,7 +72,7 @@ namespace FamTec.Server.Services.Building.Key
                     {
                         BuildingItemValueTb ValueTB = new BuildingItemValueTb()
                         {
-                            ItemValue = GroupDTO.Values!,
+                            ItemValue = !String.IsNullOrWhiteSpace(GroupDTO.Values) ? GroupDTO.Values.Trim() : GroupDTO.Values!,
                             CreateDt = DateTime.Now,
                             CreateUser = creater,
                             UpdateDt = DateTime.Now,

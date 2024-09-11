@@ -41,11 +41,11 @@ namespace FamTec.Server.Services.Admin.Department
 
                 DepartmentsTb? DepartmentTB = new DepartmentsTb
                 {
-                    Name = dto.Name!,
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!,
                     CreateDt = DateTime.Now,
-                    CreateUser = Creater,
+                    CreateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
                     UpdateDt = DateTime.Now,
-                    UpdateUser = Creater,
+                    UpdateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
                     ManagementYn = dto.ManagerYN!.Value
                 };
 
@@ -55,7 +55,7 @@ namespace FamTec.Server.Services.Admin.Department
                 {
                     var DepartmentData = new AddDepartmentDTO
                     {
-                        Name = result.Name,
+                        Name = !String.IsNullOrWhiteSpace(result.Name) ? result.Name.Trim() : result.Name,
                         ManagerYN = result.ManagementYn
                     };
 
@@ -91,7 +91,7 @@ namespace FamTec.Server.Services.Admin.Department
                     var departmentData = model.Select(e => new DepartmentDTO
                     {
                         Id = e.Id,
-                        Name = e.Name,
+                        Name = !String.IsNullOrWhiteSpace(e.Name) ? e.Name.Trim() : e.Name,
                         ManagerYN = e.ManagementYn
                     }).ToList();
 
@@ -125,7 +125,7 @@ namespace FamTec.Server.Services.Admin.Department
                     var DepartmentData = model.Select(e => new DepartmentDTO()
                     {
                         Id = e.Id,
-                        Name = e.Name,
+                        Name = !String.IsNullOrWhiteSpace(e.Name) ? e.Name.Trim() : e.Name,
                         ManagerYN = e.ManagementYn
                     }).ToList();
 
@@ -221,9 +221,8 @@ namespace FamTec.Server.Services.Admin.Department
                 if(DepartmentTB is null)
                     return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = null, code = 404 };
 
-               
-                DepartmentTB.Name = dto.Name!;
-                DepartmentTB.UpdateUser = updater;
+                DepartmentTB.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!;
+                DepartmentTB.UpdateUser = !String.IsNullOrWhiteSpace(updater) ? updater.Trim() : updater;
                 DepartmentTB.UpdateDt = DateTime.Now;
                 DepartmentTB.ManagementYn = dto.ManagerYN!.Value;
 

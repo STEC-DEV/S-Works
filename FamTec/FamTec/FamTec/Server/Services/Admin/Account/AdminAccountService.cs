@@ -254,7 +254,8 @@ namespace FamTec.Server.Services.Admin.Account
                 model.CreateDt = DateTime.Now;
                 model.CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.UpdateDt = DateTime.Now;
-                model.UpdateUser = creater;
+                //model.UpdateUser = creater;
+                model.UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.Image = files is not null ? NewFileName : null;
                 
 
@@ -277,9 +278,9 @@ namespace FamTec.Server.Services.Admin.Account
                         _ => string.Empty
                     },
                     CreateDt = DateTime.Now,
-                    CreateUser = creater,
+                    CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater,
                     UpdateDt = DateTime.Now,
-                    UpdateUser = creater,
+                    UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater,
                     DelYn = false,
                     UserTbId = userresult.Id,
                     DepartmentTbId = dto.DepartmentId!.Value

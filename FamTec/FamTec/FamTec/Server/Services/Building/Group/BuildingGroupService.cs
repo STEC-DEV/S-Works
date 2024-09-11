@@ -47,7 +47,7 @@ namespace FamTec.Server.Services.Building.Group
 
                 BuildingItemGroupTb GroupTB = new BuildingItemGroupTb()
                 {
-                    Name = dto.Name!, // 그룹이름
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 그룹이름 */
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
                     UpdateDt = DateTime.Now,
@@ -65,8 +65,8 @@ namespace FamTec.Server.Services.Building.Group
                     {
                         BuildingItemKeyTb KeyTB = new BuildingItemKeyTb()
                         {
-                            Name = KeyDTO.Name!, // 키명칭
-                            Unit = KeyDTO.Unit!, // 키단위
+                            Name = !String.IsNullOrWhiteSpace(KeyDTO.Name) ? KeyDTO.Name.Trim() : KeyDTO.Name!, /* 키 명칭 */
+                            Unit = !String.IsNullOrWhiteSpace(KeyDTO.Unit) ? KeyDTO.Unit.Trim() : KeyDTO.Unit!, /* 키 단위 */
                             CreateDt = DateTime.Now,
                             CreateUser = creater,
                             UpdateDt = DateTime.Now,
@@ -85,7 +85,7 @@ namespace FamTec.Server.Services.Building.Group
                             {
                                 BuildingItemValueTb ValueTB = new BuildingItemValueTb()
                                 {
-                                    ItemValue = ValueDTO.Values!,
+                                    ItemValue = !String.IsNullOrWhiteSpace(ValueDTO.Values) ? ValueDTO.Values.Trim() : ValueDTO.Values!,
                                     CreateDt = DateTime.Now,
                                     CreateUser = creater,
                                     UpdateDt = DateTime.Now,
@@ -130,7 +130,7 @@ namespace FamTec.Server.Services.Building.Group
 
                 BuildingItemGroupTb GroupTb = new BuildingItemGroupTb()
                 {
-                    Name = dto.Name!,
+                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!,
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
                     UpdateDt = DateTime.Now,
@@ -249,7 +249,7 @@ namespace FamTec.Server.Services.Building.Group
                 if(GroupTb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                GroupTb.Name = dto.GroupName!;
+                GroupTb.Name = !String.IsNullOrWhiteSpace(dto.GroupName) ? dto.GroupName.Trim() : dto.GroupName!;
                 GroupTb.UpdateDt = DateTime.Now;
                 GroupTb.UpdateUser = creater;
 
