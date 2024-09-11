@@ -42,8 +42,30 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// 이미지
         /// </summary>
         public byte[]? Image { get; set; }
+        public string ImageName { get; set; }
 
-        public List<UseStoreDTO> UseStoreList { get; set; } = new List<UseStoreDTO>();
+        public List<UseMaterialDTO> UseMaterialList { get; set; } = new List<UseMaterialDTO>();
 
+
+
+        public DetailMaintenanceDTO() { }
+        public DetailMaintenanceDTO(DetailMaintenanceDTO source)
+        {
+            MaintanceID = source.MaintanceID;
+            WorkDT = source.WorkDT;
+            WorkName = source.WorkName;
+            Type = source.Type;
+            Worker = source.Worker;
+            TotalPrice = source.TotalPrice;
+            Image = source.Image;
+            ImageName = source.ImageName;
+            UseMaterialList = source.UseMaterialList;
+
+        }
+
+        public DetailMaintenanceDTO DeepCopy()
+        {
+            return new DetailMaintenanceDTO(this);
+        }
     }
 }

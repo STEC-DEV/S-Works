@@ -64,6 +64,10 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         /// <summary>
         /// 공간 인덱스
         /// </summary>
+        public int? RoomId { get; set; }
+        /// <summary>
+        /// 공간 인덱스
+        /// </summary>
         public int? RoomTbId { get; set; }
 
         /// <summary>
@@ -82,5 +86,31 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
         public string ImageName { get; set; }
 
 
+
+        public FacilityDetailDTO() { }
+
+        public FacilityDetailDTO(FacilityDetailDTO source)
+        {
+            Id = source.Id;
+            Category = source.Category;
+            Name = source.Name;
+            Type = source.Type;
+            Num = source.Num;
+            Unit = source.Unit;
+            EquipDT = source.EquipDT;
+            LifeSpan = source.LifeSpan;
+            Standard_capacity = source.Standard_capacity;
+            ChangeDT = source.ChangeDT;
+ 
+            RoomId = source.RoomId;
+            RoomName = source.RoomName;
+            Image = source.Image;
+            ImageName = source.ImageName;
+        }
+
+        public FacilityDetailDTO DeepCopy()
+        {
+            return new FacilityDetailDTO(this);
+        }
     }
 }

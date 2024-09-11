@@ -31,15 +31,27 @@
                     소요비용
                 </span>
             </th>
-            <th class="th">
-                <span>
+            @if (EditMode)
+            {
+                <th class="th">
+                    <span>
 
-                </span>
-            </th>
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
-        @if (ListData.Count == 0 || ListData is null)
+        @if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
+        else if (ListData.Count == 0 )
         {
             <tr>
                 <td colspan="100" style="text-align:center;">
@@ -67,9 +79,13 @@
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.TotalPrice
                     </td>
-                    <td class="td">
-                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
-                    </td>
+                    @if (EditMode)
+                    {
+                        <td class="td">
+                            <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                        </td>
+                    }
+                    
 
                 </tr>
             }
@@ -84,6 +100,7 @@
     [Parameter] public string FacType { get; set; }
     [Parameter] public int FacId { get; set; }
     [Parameter] public EventCallback<(bool, MaintenanceListDTO)> OnCheck { get; set; }
+    [Parameter] public bool EditMode { get; set; }
 
     private async void OnChecked(ChangeEventArgs e, MaintenanceListDTO obj)
     {

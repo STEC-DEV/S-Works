@@ -123,17 +123,17 @@
             return;
         }
 
-        // 선택된 사업장들을 기존 SelectManagerList에 추가
-        foreach (var place in SelectItems)
-        {
-            if (!SelectPlace.Any(m => m.Id == place.Id))
-            {
-                SelectPlace.Add(place);
-            }
-        }
+        // // 선택된 사업장들을 기존 SelectManagerList에 추가
+        // foreach (var place in SelectItems)
+        // {
+        //     if (!SelectPlace.Any(m => m.Id == place.Id))
+        //     {
+        //         SelectPlace.Add(place);
+        //     }
+        // }
 
         // 업데이트된 SelectManagerList를 부모 컴포넌트에 전달
-        await OnAdd.InvokeAsync(SelectPlace);
+        await OnAdd.InvokeAsync(SelectItems);
 
         // 모달 닫기
         OnClosed();

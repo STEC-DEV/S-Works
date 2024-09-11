@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
@@ -11,121 +12,121 @@
         <span>
             장비 제원
         </span>
-        <div class="option">
-            @if (EditMode)
-            {
-                <Button Name="저장" Width=true Type="0"/>
-                <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
-            }
-            else
-            {
-                <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
-            }
-        </div>
+        @if (USEREDIT)
+        {
+            <div class="option">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                }
+            </div>
+        }
+        
     </div>
     <div class="infocard-content">
-        <div class="infocard-img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-        </div>
-        <div class="infocard-inputs">
-            @if (EditMode)
-            {
-                <InputCol Label="장비명"
-                          Placeholder="장비명"
-                          Row="true"
-                          @bind-Value=@Facility.Name />
-                <InputCol Label="형식"
-                          Placeholder="형식"
-                          Row="true"
-                          @bind-Value=@Facility.Type />
-                <SelectField T="BuildingFloorListDTO"
-                             Key="building"
-                             SelectData="Building"
-                             @bind-Value="SelectedBuildingId"
-                             OnChange="OnBuildingChange"
-                             Label="건물"
-                             Row="true"
-                             EditMode="true" />
-                @if (Room != null && Room.Any() && SelectedBuildingId != 0)
+        @if (Facility == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <div class="infocard-img-area">
+                <PreviewBox ImageUrls="@ImageUrl" />
+                @if (EditMode)
                 {
-                    <SelectField Key="floor"
-                                 SelectData="Room"
-                                 @bind-Value="SelectedRoomId"
-                                 Label="위치"
-                                 Row="true"
-                                 OnChange="OnLocationChange"
-                                 EditMode="true" />
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
                 }
 
-                <InputCol Label="규격 용량"
-                          Placeholder="규격 용량"
-                          Row="true"
-                          @bind-Value=@Facility.Standard_capacity />
-                <InputCol Label="수량"
-                          Placeholder="수량"
-                          Row="true"
-                          ValueType="number"
-                          @bind-Value=@Facility.Num />
-                <InputCol Label="내용년수"
-                          Placeholder="내용 년수"
-                          Row="true"
-                          @bind-Value=@Facility.LifeSpan />
-                <DateInput Label="설치년월"
-                           Row="true"
-                           @bind-Date=@Facility.EquipDT
-                           Placeholder="YYYYMMDD" />
-                <DateInput Label="교체년월"
-                           Row="true"
-                           @bind-Date=@Facility.ChangeDT
-                Placeholder="YYYYMMDD" />
-            }
-            else
-            {
-                 <TextField2 
-                    Label="장비명" 
-                    Value=@Facility.Name
-                    Row=true
-                    />
-                <TextField2 
-                    Label="형식" 
-                    Value=@Facility.Type
-                    Row=true
-                    />
-                <TextField2 
-                    Label="위치" 
-                    Value=@Facility.RoomName
-                    Row=true
-                    />
-                <TextField2 
-                    Label="규격 용량" 
-                    Value=@Facility.Standard_capacity
-                    Row=true
-                    />
-                <TextField2 
-                    Label="수량" 
-                    Value=@Facility.Num.ToString()
-                    Row=true
-                    />
-                <TextField2 
-                    Label="내용년수" 
-                    Value=@Facility.LifeSpan
-                    Row=true
-                    />
-                <TextField2 
-                    Label="설치년월" 
-                    Value=@Facility.EquipDT?.ToString("yyyy-MM-dd")
-                    Row=true
-                    />
-                <TextField2 
-                    Label="교체년월" 
-                    Value=@Facility.ChangeDT?.ToString("yyyy-MM-dd")
-                    Row=true
-                    />
+            </div>
+            <div class="infocard-inputs">
+                @if (EditMode)
+                {
+                    <InputCol Label="장비명"
+                              Placeholder="장비명"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Name />
+                    <InputCol Label="형식"
+                              Placeholder="형식"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Type />
+                    <SelectField T="BuildingFloorListDTO"
+                                 Key="building"
+                                 SelectData="Building"
+                                 @bind-Value="SelectedBuildingId"
+                                 OnChange="OnBuildingChange"
+                                 Label="건물"
+                                 Row="true"
+                                 EditMode="true" />
+                    @if (Room != null && Room.Any() && SelectedBuildingId != 0)
+                    {
+                        <SelectField Key="floor"
+                                     SelectData="Room"
+                                     @bind-Value="SelectedRoomId"
+                                     Label="위치"
+                                     Row="true"
+                                     OnChange="OnLocationChange"
+                                     EditMode="true" />
+                    }
 
-            }
-            
-        </div>
+                    <InputCol Label="규격 용량"
+                              Placeholder="규격 용량"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Standard_capacity />
+                    <InputCol Label="수량"
+                              Placeholder="수량"
+                              Row="true"
+                              ValueType="number"
+                              @bind-Value=@UpdateFacility.Num />
+                    <InputCol Label="내용년수"
+                              Placeholder="내용 년수"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.LifeSpan />
+                    <DateInput Label="설치년월"
+                               Row="true"
+                               @bind-Date=@UpdateFacility.EquipDT
+                               Placeholder="YYYYMMDD" />
+                    <DateInput Label="교체년월"
+                               Row="true"
+                               @bind-Date=@UpdateFacility.ChangeDT
+                               Placeholder="YYYYMMDD" />
+                }
+                else
+                {
+                    <TextField2 Label="장비명"
+                                Value=@Facility.Name
+                                Row=true />
+                    <TextField2 Label="형식"
+                                Value=@Facility.Type
+                                Row=true />
+                    <TextField2 Label="위치"
+                                Value=@Facility.RoomName
+                                Row=true />
+                    <TextField2 Label="규격 용량"
+                                Value=@Facility.Standard_capacity
+                                Row=true />
+                    <TextField2 Label="수량"
+                                Value=@Facility.Num.ToString()
+                                Row=true />
+                    <TextField2 Label="내용년수"
+                                Value=@Facility.LifeSpan
+                                Row=true />
+                    <TextField2 Label="설치년월"
+                                Value=@Facility.EquipDT?.ToString("yyyy-MM-dd")
+                                Row=true />
+                    <TextField2 Label="교체년월"
+                                Value=@Facility.ChangeDT?.ToString("yyyy-MM-dd")
+                                Row=true />
+
+                }
+
+            </div>
+        }
+
     </div>
 </div>
 
@@ -148,6 +149,10 @@
     }
     [Parameter] public EventCallback<FacilityDetailDTO> FacilityChanged { get; set; }
 
+    //원본 데이터
+    FacilityDetailDTO OriginalFacility;
+    //수정본 데이터
+    FacilityDetailDTO UpdateFacility;
 
     //건물, 위치정보 조회 변수
     List<BuildingFloorListDTO> Building = new List<BuildingFloorListDTO>();
@@ -163,7 +168,31 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadBuilding();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        OriginalFacility = Facility.DeepCopy();
+        UpdateFacility = Facility.DeepCopy();
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            Console.WriteLine("장비제원 수정 시작");
+            Console.WriteLine("설치년월 : " + UpdateFacility.EquipDT);
+            Console.WriteLine("위치 : " + UpdateFacility.RoomId);
+            Console.WriteLine("원본 위치 : " + OriginalFacility.RoomId);
+            Console.WriteLine("이름 : " + UpdateFacility.RoomName);
+            Console.WriteLine("장비제원 수정 끝");
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
     private async Task OnLoadBuilding()
@@ -211,7 +240,7 @@
     //위치 선택
     private void OnLocationChange(int locationId)
     {
-        Facility.RoomTbId= locationId;
+        UpdateFacility.RoomId = locationId;
 
     }
 
@@ -223,8 +252,8 @@
 
         foreach (var image in images)
         {
-            Facility.Image = image.Image;
-            Facility.ImageName = image.Name;
+            UpdateFacility.Image = image.Image;
+            UpdateFacility.ImageName = image.Name;
             ImageUrl.Add(image.ImageUrl);
         }
         StateHasChanged();
@@ -234,6 +263,8 @@
 
     private void OnEdit()
     {
+        UpdateFacility = OriginalFacility.DeepCopy();
+        Console.WriteLine(OriginalFacility.RoomId);
         EditMode = !EditMode;
     }
 

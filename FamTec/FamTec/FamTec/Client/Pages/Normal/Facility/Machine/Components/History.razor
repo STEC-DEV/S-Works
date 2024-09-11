@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
@@ -9,23 +10,39 @@
         <span class="title">
             유지보수 이력
         </span>
-        <div class="options">
-            @if (_editMode)
-            {
-                <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
-                <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
-                <Button Name="삭제" Width=true Type="1" OnClick="OnDelMode" />
-            }else{
-                <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
-            }
-        </div>
+        @if (USEREDIT)
+        {
+            <div class="options">
+                @if (_editMode)
+                {
+                    <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
+                    @if(checkedMaintenance.Count != 0)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelMode" />
+                    }
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                }
+            </div>
+        }
+
         
 
     </div>
     <div class="content">
 
     </div>
-    <HistoryTable ListData="@ListData" FacType="@FacType" FacId="@Id" />
+    <HistoryTable 
+        ListData="@ListData" 
+        FacType="@FacType" 
+        FacId="@Id" 
+        OnCheck="OnCheck"
+        EditMode=_editMode
+        />
     @if (_isDel)
     {
         <ModalBackground>
@@ -39,7 +56,8 @@
 @code {
     [Parameter] public int Id{ get; set; }
     [Parameter] public string FacType{ get; set; }
-    List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
+    // List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
+    List<MaintenanceListDTO> ListData;
     private bool _editMode = false;
     private bool _isDel = false;
     List<int?> checkedMaintenance = new List<int?>();
@@ -47,6 +65,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadMaintenance();
     }
 
@@ -60,11 +79,21 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
-            ListData = resGet.data;
+
+            if(resGet.data == null)
+            {
+                ListData = new List<MaintenanceListDTO>();
+            }
+            else
+            {
+                ListData = resGet.data;
+            }
+            StateHasChanged();
         }
         catch (Exception ex)
         {
-
+            Console.WriteLine("유지보수 이력조회 실패");
+            await JS.InvokeVoidAsync("alert", "유지보수 이력 조회 에러");
         }
     }
 

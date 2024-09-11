@@ -58,7 +58,19 @@
     <tbody class="tbody">
         @if(ListData == null)
         {
-            <p>...Loading</p>
+            <tr>
+                <td colspan="100" style="text-align:center">
+                    <Loading/>
+                </td>
+            </tr>
+        }
+        else if(ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center">
+                    <Empty />
+                </td>
+            </tr>
         }
         else
         {

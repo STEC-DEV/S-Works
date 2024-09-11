@@ -22,7 +22,7 @@
 }
 
 .row>.selectbox>.display {
-    background-color : var(--content-back-color);
+    /*background-color : var(--content-back-color);*/
 }
 
 .selectbox{

@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.CommonComponents
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
@@ -12,118 +13,94 @@
         <span>
             유지보수 정보
         </span>
-        <div class="option">
-            @if (EditMode)
-            {
-                <Button Name="저장" Width=true Type="0" OnClick="OnEdit" />
-                <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
-            }
-            else
-            {
-                <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
-            }
-        </div>
-
-
+        @if (USEREDIT)
+        {
+            <div class="option">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                }
+            </div>
+        }
     </div>
     <div class="infocard-content">
-        <div class="infocard-img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            @* <InputImages MaxFilesNum="1" OnChange="OnUploadImage" /> *@
-        </div>
-        <div class="infocard-inputs">
-            @if (EditMode)
-            {
-                <InputCol Label="작업명"
-                          Placeholder="작업명"
-                          Row="true"
-                          @bind-Value=@_maintenance.WorkName />
-                <InputCol Label="작업자"
-                          Placeholder="작업자"
-                          Row="true"
-                          @bind-Value=@_maintenance.Worker />
-                @* <DateInput Label="작업일자"
-            Row="true"
-            @bind-Date=@Maintenance.WorkDT
-            Placeholder="YYYYMMDD" />
-            <InputCol Label="작업명"
-            Placeholder="작업명"
-            Row="true"
-            @bind-Value=@Maintenance.Name />
-            <SelectField Key="WorkType"
-            SelectData="WorkType"
-            @bind-Value="Maintenance.Type"
-            OnChange="OnWorkTypeChange"
-            Label="작업 구분"
-            Row="true"
-            EditMode="true" />
+        @if(Maintenance == null)
+        {
+            <div>
+                <Loading/>
+            </div>
 
-            <InputCol Label="작업자"
-            Placeholder="작업자"
-            Row="true"
-            @bind-Value=@Maintenance.Worker />
-            @if (Maintenance.Type == 2)
-            {
-            <InputCol Label="소요비용"
-            Placeholder="소요비용"
-            @bind-Value=@Maintenance.TotalPrice
-            ValueType="number"
-            Row=true />
-            }
-            else
-            {
-            <TextField2 Label="소요비용"
-            Row=true
-            Value="@TotalPrice.ToString()" />
-            } *@
-            }
-            else
-            {
-                <TextField2 Label="작업일자"
-                            Row=true
-                            Value="@OriginalMaintenance.WorkDT" />
-                <TextField2 Label="작업명"
-                            Row=true
-                            Value="@OriginalMaintenance.WorkName" />
-                <TextField2 Label="작업구분"
-                            Row=true
-                            Value="@(OriginalMaintenance.Type == 1? "자체 작업" : "외주 작업")" />
-                <TextField2 Label="작업자"
-                            Row=true
-                            Value="@OriginalMaintenance.Worker" />
-                <TextField2 Label="소요 비용"
-                            Row=true
-                            Value="@OriginalMaintenance.TotalPrice.ToString()" />
-            }
+        }
+        else
+        {
+            <div class="infocard-img-area">
+                <PreviewBox ImageUrls="@ImageUrl" />
+                @if (EditMode)
+                {
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                }
+                
+            </div>
+            <div class="infocard-inputs">
+                @if (EditMode)
+                {
+                    <TextField2 Label="작업일자"
+                                Row=true
+                                Value="@UpdateMaintenance.WorkDT" />
+                    <InputCol Label="작업명"
+                              Placeholder="작업명"
+                              Row="true"
+                              @bind-Value=@UpdateMaintenance.WorkName />
+                    <TextField2 Label="작업구분"
+                                Row=true
+                                Value="@(UpdateMaintenance.Type == 1? "자체 작업" : "외주 작업")" />
+                    <InputCol Label="작업자"
+                              Placeholder="작업자"
+                              Row="true"
+                              @bind-Value=@UpdateMaintenance.Worker />
+                    <TextField2 Label="소요 비용"
+                                Row=true
+                                Value="@UpdateMaintenance.TotalPrice.ToString()" />
 
+                }
+                else
+                {
+                    <TextField2 Label="작업일자"
+                                Row=true
+                                Value="@Maintenance.WorkDT" />
+                    <TextField2 Label="작업명"
+                                Row=true
+                                Value="@Maintenance.WorkName" />
+                    <TextField2 Label="작업구분"
+                                Row=true
+                                Value="@(Maintenance.Type == 1? "자체 작업" : "외주 작업")" />
+                    <TextField2 Label="작업자"
+                                Row=true
+                                Value="@Maintenance.Worker" />
+                    <TextField2 Label="소요 비용"
+                                Row=true
+                                Value="@Maintenance.TotalPrice.ToString()" />
+                }
 
-
-        </div>
+            </div>
+        }
+        
     </div>
 </div>
 
 @code {
     [Parameter] public float TotalPrice { get; set; }
-    private DetailMaintenanceDTO _maintenance;
+    [Parameter] public DetailMaintenanceDTO Maintenance { get; set; }
+    [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+    // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
-    [Parameter]
-    public DetailMaintenanceDTO Maintenance
-    {
-        get => _maintenance;
-        set
-        {
-            if (_maintenance != value)
-            {
-                _maintenance = value;
-                MaintenanceChanged.InvokeAsync(value);
-            }
-        }
-    }
-    [Parameter] public DetailMaintenanceDTO OriginalMaintenance{ get; set; }
-    [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
-
-
-
+    DetailMaintenanceDTO UpdateMaintenance;
+    UpdateMaintenanceInfo updateMaintenance = new UpdateMaintenanceInfo();
 
     //건물, 위치정보 조회 변수
     List<BuildingFloorListDTO> Building = new List<BuildingFloorListDTO>();
@@ -150,49 +127,66 @@
         },
     };
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UpdateMaintenance = Maintenance.DeepCopy();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UpdateMaintenance = Maintenance.DeepCopy();
+    }
 
 
-    // //작업 구분 선택
-    // private async Task OnWorkTypeChange(int worktype)
-    // {
-    //     Console.WriteLine("초기 작업 타입 : " + Maintenance.Type);
-    //     if (worktype == 0)
-    //     {
-    //         SelectedWorkType = 0;
-    //         Maintenance.Num = 0;
-    //         Maintenance.UnitPrice = 0;
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        ImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
 
-    //         StateHasChanged();
-    //         return;
-    //     }
-    //     SelectedWorkType = worktype;
-    //     Maintenance.Type = SelectedWorkType;
-    //     Console.WriteLine("선택 후 작업 타입 : " + Maintenance.Type);
-    //     await MaintenanceChanged.InvokeAsync(Maintenance);
-    //     StateHasChanged();
-    // }
+        foreach (var image in images)
+        {
+            UpdateMaintenance.Image = image.Image;
+            UpdateMaintenance.ImageName = image.Name;
+            ImageUrl.Add(image.ImageUrl);
+        }
+        StateHasChanged();
+        // await MaintenanceChanged.InvokeAsync(Maintenance);
+    }
 
+    private async Task OnUpdate()
+    {
+        try
+        {
+            updateMaintenance.Id = UpdateMaintenance.MaintanceID;
+            updateMaintenance.Name = UpdateMaintenance.WorkName;
+            updateMaintenance.Worker = UpdateMaintenance.Worker;
+            updateMaintenance.Image = UpdateMaintenance.Image;
+            updateMaintenance.ImageName = UpdateMaintenance.ImageName;
 
-
-    // private async void OnUploadImage(List<ImageFile> images)
-    // {
-    //     ImageUrl.Clear();
-    //     List<byte[]> temp = new List<byte[]>();
-    //     List<string> names = new List<string>();
-
-    //     foreach (var image in images)
-    //     {
-    //         Maintenance.Image = image.Image;
-    //         Maintenance.ImageName = image.Name;
-    //         ImageUrl.Add(image.ImageUrl);
-    //     }
-    //     StateHasChanged();
-    //     await MaintenanceChanged.InvokeAsync(Maintenance);
-    // }
+            Console.WriteLine(updateMaintenance.Id);
+            Console.WriteLine(updateMaintenance.Name);
+            Console.WriteLine(updateMaintenance.Worker);
+           
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", updateMaintenance, true);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            await OnLoadMaintenance.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
 
     private void OnEdit()
     {
         EditMode = !EditMode;
+        UpdateMaintenance = Maintenance.DeepCopy();
     }
 
 

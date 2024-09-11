@@ -61,8 +61,18 @@
         if(resGet.code != 200)
         {
             await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            return;
         }
-        BuildingList = resGet.data;
+
+        if(resGet.data == null)
+        {
+            BuildingList = new List<BuildingListDTO>();
+        }
+        else
+        {
+            BuildingList = resGet.data;
+        }
+
         DelList.Clear();
         buildingTable.ResetChecks();
     }

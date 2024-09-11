@@ -47,13 +47,13 @@ namespace FamTec.Shared.Client.DTO.Manager
         /// <summary>
         /// 이미지
         /// </summary>
-        public byte[] files { get; set; }
+        public byte[] Image { get; set; }
 
 
         /// <summary>
         /// 이미지이름
         /// </summary>
-        public string fileName { get; set; }
+        public string ImageName { get; set; }
 
         /// <summary>
         /// 사업장

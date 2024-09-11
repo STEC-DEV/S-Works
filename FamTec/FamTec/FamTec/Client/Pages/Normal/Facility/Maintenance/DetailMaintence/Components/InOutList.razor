@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
 
@@ -16,8 +17,31 @@
 
 @code {
     [Parameter] public string Title{ get; set; }
-    [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
+    // [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
+    [Parameter] public List<UseMaterialDTO> ListData { get; set; }
+
+    List<int> CheckMaterial = new List<int>();
+
+
+    private async Task OnDel()
+    {
+        try
+        {
+            
+        }
+    }
 
 
 
+    private void OnCheck((bool isCheck, UseMaterialDTO material)data)
+    {
+        if (data.isCheck)
+        {
+            CheckMaterial.Add(data.material.ID);
+        }
+        else
+        {
+            CheckMaterial.Remove(data.material.ID);
+        }
+    }
 }

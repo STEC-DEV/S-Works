@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FamTec.Shared.Client.DTO.Normal.Location.Inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace FamTec.Shared.Client.DTO.Normal.Location
         /// </summary>
         public string? Name { get; set; }
 
+        public List<BuildingRoomDTO>? RoomList { get; set; } = new List<BuildingRoomDTO>();
     }
 }

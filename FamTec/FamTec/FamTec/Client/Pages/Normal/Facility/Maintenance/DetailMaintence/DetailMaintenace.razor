@@ -1,4 +1,5 @@
 ﻿@page "/facility/{FacType}/{FacId:int}/maintenance/{MaintenanceId:int}"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Components
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
@@ -7,23 +8,25 @@
 
 
 <div class="container">
-    <InfoCard @bind-Maintenance=Maintenance OriginalMaintenance="@OriginalMaintenance" />
-    @if(OriginalMaintenance.Type == 1)
-    {
-        <SearchMaterial @bind-Data=@SelectMaterial />
-        @if(SelectMaterial.Id != 0)
-        {
-            <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
-            <div class="btn">
-                <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
-            </div>
-        }
+    @* <InfoCard @bind-Maintenance=Maintenance OriginalMaintenance="@OriginalMaintenance" /> *@
+    <InfoCard Maintenance="@Maintenance" OnLoadMaintenance="OnLoadMaintenance" />
 
-        <InOutList ListData="@UseMaterial" />
-        @* ListData = "@Maintenance.Inventory" *@
+    @if (Maintenance.Type == 1)
+    {
+        @if (USEREDIT)
+        {
+            <SearchMaterial @bind-Data=@SelectMaterial />
+            @if (SelectMaterial.Id != 0)
+            {
+                <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+                <div class="btn">
+                    <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
+                </div>
+            }
+        }
+        <InOutList ListData="@Maintenance.UseMaterialList" />
     }
 
-    
 </div>
 
 @code {
@@ -34,15 +37,17 @@
     AddStoreDTO MaintenanceStore = new AddStoreDTO();
     MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
 
-    DetailMaintenanceDTO Maintenance = new DetailMaintenanceDTO();
-    DetailMaintenanceDTO OriginalMaintenance = new DetailMaintenanceDTO(); //원본 데이터
+    // DetailMaintenanceDTO Maintenance = new DetailMaintenanceDTO();
+    DetailMaintenanceDTO Maintenance;
+    // DetailMaintenanceDTO OriginalMaintenance = new DetailMaintenanceDTO(); //원본 데이터
+    DetailMaintenanceDTO OriginalMaintenance;
 
     List<InOutInventoryDTO> UseMaterial = new List<InOutInventoryDTO>(); //사용자재
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadMaintenance();
-        OnDeepCopy();
     }
 
     private async Task OnLoadMaintenance()
@@ -55,53 +60,13 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
-            Maintenance = resGet.data;
-            Console.WriteLine("작업일자 : " + Maintenance.WorkDT);
-            Console.WriteLine("작업구분  :" + Maintenance.Type);
-            Console.WriteLine("작업자 : " + Maintenance.Worker);
-            foreach (var i in Maintenance.UseStoreList)
-            {
-                Console.WriteLine(i.MaterialName);
-            }
-            await OnConverDTO();
+            Maintenance = new DetailMaintenanceDTO(resGet.data);
+            Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
+            
+            // await OnConverDTO();
         }catch(Exception ex)
         {
 
-        }
-    }
-
-
-    //원본데이터 복사
-    private void OnDeepCopy()
-    {
-        OriginalMaintenance = new DetailMaintenanceDTO
-            {
-                MaintanceID = Maintenance.MaintanceID,
-                WorkDT = Maintenance.WorkDT,
-                WorkName = Maintenance.WorkName,
-                Type = Maintenance.Type,
-                Worker = Maintenance.Worker,
-                TotalPrice = Maintenance.TotalPrice,
-                Image = Maintenance.Image,
-                UseStoreList = new List<UseStoreDTO>()
-            };
-        foreach (var useStore in Maintenance.UseStoreList)
-        {
-            OriginalMaintenance.UseStoreList.Add(new UseStoreDTO
-                {
-                    StoreID = useStore.StoreID,
-                    MaterialID = useStore.MaterialID,
-                    MaterialCode = useStore.MaterialCode,
-                    MaterialName = useStore.MaterialName,
-                    Standard = useStore.Standard,
-                    ManufacuringComp = useStore.ManufacuringComp,
-                    RoomID = useStore.RoomID,
-                    RoomName = useStore.RoomName,
-                    UnitPrice = useStore.UnitPrice,
-                    Num = useStore.Num,
-                    Unit = useStore.Unit,
-                    TotalPrice = useStore.TotalPrice,
-                });
         }
     }
 
@@ -192,30 +157,30 @@
     }
 
     //디테일 -> InOuteInventoryDTO
-    private async Task OnConverDTO()
-    {
-        foreach (var useStore in Maintenance.UseStoreList)
-        {
-            UseMaterial.Add(
-                new InOutInventoryDTO
-                {
-                    MaterialID = useStore.MaterialID,
-                    MaterialName = useStore.MaterialName,
-                    MaterialCode = useStore.MaterialCode,
-                    Unit = useStore.Unit,
-                    AddStore = new AddStoreDTO
-                    {
-                        RoomID = useStore.RoomID,
-                        RoomName = useStore.RoomName,
-                        UnitPrice = useStore.UnitPrice,
-                        Num = useStore.Num,
-                        TotalPrice = useStore.TotalPrice,   
-                    }
-                 }
-            );
+    // private async Task OnConverDTO()
+    // {
+    //     foreach (var useStore in Maintenance.UseStoreList)
+    //     {
+    //         UseMaterial.Add(
+    //             new InOutInventoryDTO
+    //             {
+    //                 MaterialID = useStore.MaterialID,
+    //                 MaterialName = useStore.MaterialName,
+    //                 MaterialCode = useStore.MaterialCode,
+    //                 Unit = useStore.Unit,
+    //                 AddStore = new AddStoreDTO
+    //                 {
+    //                     RoomID = useStore.RoomID,
+    //                     RoomName = useStore.RoomName,
+    //                     UnitPrice = useStore.UnitPrice,
+    //                     Num = useStore.Num,
+    //                     TotalPrice = useStore.TotalPrice,   
+    //                 }
+    //              }
+    //         );
             
             
-        }
+    //     }
 
-    }
+    // }
 }

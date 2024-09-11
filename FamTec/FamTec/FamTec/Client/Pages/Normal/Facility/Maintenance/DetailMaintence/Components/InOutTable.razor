@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
 
@@ -56,9 +57,17 @@
                 </td>
             </tr>
         }
+        @if (ListData == null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
         else
         {
-            @foreach (InOutInventoryDTO row in ListData)
+            @foreach(UseMaterialDTO row in ListData)
             {
                 <tr class="tr">
                     <td class="td">
@@ -68,19 +77,19 @@
                         @row.MaterialName
                     </td>
                     <td class="td">
-                        @row.AddStore.RoomName
+                        @row.RoomName
                     </td>
                     <td class="td">
-                        @row.AddStore.UnitPrice
+                        @row.UnitPrice
                     </td>
                     <td class="td">
-                        @row.AddStore.Num
+                        @row.Num
                     </td>
                     <td class="td">
                         @row.Unit
                     </td>
                     <td class="td">
-                        @row.AddStore.TotalPrice
+                        @row.TotalPrice
                     </td>
                     <td class="td">
                         <input type="checkbox" />
@@ -94,6 +103,7 @@
 </table>
 
 @code {
-    [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
+    // [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
+    [Parameter] public List<UseMaterialDTO>? ListData { get; set; }
 
 }

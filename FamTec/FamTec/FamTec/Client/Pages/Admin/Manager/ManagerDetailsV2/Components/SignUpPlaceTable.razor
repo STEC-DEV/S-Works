@@ -98,6 +98,10 @@
 
     List<AdminPlaceDTO> CheckedData = new List<AdminPlaceDTO>();
 
+    protected override async Task OnParametersSetAsync()
+    {
+        CheckedData.Clear();
+    }
 
     private bool IsChecked(AdminPlaceDTO place)
     {

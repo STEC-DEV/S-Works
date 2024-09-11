@@ -11,9 +11,8 @@
     </div>
     <div class="buildinginfo-contents">
         <div class="building-img">
-            @* <InputFile type="file" OnChange="OnUploadFiles" /> *@
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
             <PreviewBox ImageUrls="@ImageUrl" />
+            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
         </div>
         <div class="infosection-1">
             <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@Building.Code"/>

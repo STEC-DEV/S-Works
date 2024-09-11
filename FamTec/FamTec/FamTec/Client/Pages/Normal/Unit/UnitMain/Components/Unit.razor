@@ -57,13 +57,15 @@
     {
         try
         {
-            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Unit/sign/SelectUnitinfo",DelUnits);
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Unit/sign/DeleteUnitinfo",DelUnits);
             if(resDel.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resDel.message);
                 return;
             }
             await OnLoadUnit.InvokeAsync();
+            DelUnits.Clear();
+            StateHasChanged();
         }
         catch (Exception ex)
         {

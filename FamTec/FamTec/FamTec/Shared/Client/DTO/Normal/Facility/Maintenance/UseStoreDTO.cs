@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,5 +66,27 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// </summary>
         public float TotalPrice { get; set; }
 
+
+        public UseStoreDTO() { }
+        public UseStoreDTO(UseStoreDTO source)
+        {
+            StoreID = source.StoreID;
+            MaterialID = source.MaterialID;
+            MaterialCode = source.MaterialCode;
+            MaterialName = source.MaterialName;
+            Standard = source.Standard;
+            ManufacuringComp = source.ManufacuringComp;
+            RoomID = source.RoomID;
+            RoomName = source.RoomName;
+            UnitPrice = source.UnitPrice;
+            Num = source.Num;
+            Unit = source.Unit;
+            TotalPrice = source.TotalPrice;
+        }
+
+        public UseStoreDTO DeepCopy()
+        {
+            return new UseStoreDTO(this);
+        }
     }
 }
