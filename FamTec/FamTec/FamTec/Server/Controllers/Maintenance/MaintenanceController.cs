@@ -54,6 +54,67 @@ namespace FamTec.Server.Controllers.Maintenance
             return Ok(temp);
         }
 
+        /// <summary>
+        /// 유지보수 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        //[HttpGet]
+        [HttpPut]
+        [Route("sign/UpdateMaintenance")]
+        //public async ValueTask<IActionResult> UpdateMaintenance([FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> UpdateMaintenance([FromForm]UpdateMaintenanceDTO dto, [FromForm]IFormFile? files)
+        {
+            try
+            {
+                if (dto.Id == 0)
+                    return BadRequest();
+                    
+                //UpdateMaintenanceDTO dto = new UpdateMaintenanceDTO();
+                //dto.Id = 101;
+                //dto.Name = "작업수정";
+                //dto.Worker = "용용";
+
+                if (files is not null)
+                {
+                    if (files.Length > Common.MEGABYTE_1)
+                    {
+                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    }
+
+                    string? extension = FileService.GetExtension(files);
+                    if (String.IsNullOrWhiteSpace(extension))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
+                        if (!extensioncheck)
+                        {
+                            return Ok(new ResponseUnit<bool?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                        }
+                    }
+                }
+
+                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(HttpContext, dto, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaintenanceImage")]
@@ -292,6 +353,8 @@ namespace FamTec.Server.Controllers.Maintenance
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
+
+       
 
         /// <summary>
         /// 유지보수 내용 삭제

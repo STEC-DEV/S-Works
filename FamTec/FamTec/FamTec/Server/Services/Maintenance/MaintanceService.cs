@@ -326,9 +326,7 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Name = dto.Name!; // 유지보수명
-                model.Workdt = dto.WorkDT; // 작업일자
-                model.Worker = dto.Worker; // 작업자
-                model.TotalPrice = dto.TotalPrice;
+                model.Worker = dto.Worker!; // 작업자
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = updater;
 

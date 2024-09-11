@@ -1,5 +1,6 @@
 ﻿namespace FamTec.Shared.Server.DTO.Maintenence
 {
+    //MaintanceID / 사진 / 작업명 / 작업자
     public class UpdateMaintenanceDTO
     {
         /// <summary>
@@ -20,12 +21,12 @@
         /// <summary>
         /// 작업일
         /// </summary>
-        public DateTime WorkDT { get; set; }
+        //public DateTime WorkDT { get; set; }
 
         /// <summary>
         /// 총 금액
         /// </summary>
-        public float TotalPrice { get; set; }
+        //public float TotalPrice { get; set; }
     }
 }
  
