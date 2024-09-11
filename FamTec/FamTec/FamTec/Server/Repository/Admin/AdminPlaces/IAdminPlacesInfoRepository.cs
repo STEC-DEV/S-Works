@@ -51,18 +51,20 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         ValueTask<List<AdminPlaceTb>?> GetMyWorksList(int adminid);
 
         /// <summary>
+        /// 관리자 로그인용 사업장 리스트 반환
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        ValueTask<List<AdminPlaceDTO>?> LoginSelectPlaceList(int adminid);
+
+        /// <summary>
         /// 관리자 상세보기 페이지
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
         ValueTask<DManagerDTO?> GetManagerDetails(int adminidx);
 
-        /// <summary>
-        /// 관리자사업장 리스트 모델에 해당하는 사업장 리스트들 반환
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        ValueTask<List<PlaceTb>?> GetMyWorksDetails(List<AdminPlaceTb> model);
+
 
         /// <summary>
         /// AdminPlaceTb 사업장 삭제

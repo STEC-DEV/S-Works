@@ -171,7 +171,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if(String.IsNullOrWhiteSpace(adminidx))
                     return new ResponseList<AdminPlaceDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<AdminPlaceDTO>? model = await AdminPlaceInfoRepository.GetMyWorks(Int32.Parse(adminidx));
+                List<AdminPlaceDTO>? model = await AdminPlaceInfoRepository.LoginSelectPlaceList(Int32.Parse(adminidx));
 
                 if (model is not null &&  model.Any())
                 {

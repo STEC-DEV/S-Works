@@ -72,6 +72,13 @@ namespace FamTec.Server.Services.User
                 if(placeInfo is null || placeInfo.Name is null)
                     return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
 
+                /*
+                 * 해약된 사업장 로그인못하게 
+                 * Status(계약상태) true : 계약 / false : 해약
+                 */
+                if (placeInfo.Status == false)
+                    return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
+
                 /* USER TOKEN 검사 */
                 var checkUserToken = new[]
                 {
@@ -246,8 +253,16 @@ namespace FamTec.Server.Services.User
                 if(AdminYN == false) // 일반유저
                 {
                     PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value);
+                    
                     if(placetb is null)
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    /*
+                    * 해약된 사업장 로그인못하게 
+                    * Status(계약상태) true : 계약 / false : 해약
+                    */
+                    if (placetb.Status == false)
+                        return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 200 };
 
                     var authClaims = new List<Claim>
                     {

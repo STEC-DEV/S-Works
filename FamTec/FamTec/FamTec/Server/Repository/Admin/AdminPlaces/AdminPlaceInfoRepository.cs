@@ -205,65 +205,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             }
         }
 
-
-        /// <summary>
-        /// 관리자사업장 리스트 모델에 해당하는 사업장 리스트들 반환
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public async ValueTask<List<PlaceTb>?> GetMyWorksDetails(List<AdminPlaceTb> model)
-        {
-            try
-            {
-                List<PlaceTb>? result =  (from adminplacetb in model
-                                        join placetb in context.PlaceTbs.Where(m => m.DelYn != true)
-                                        on adminplacetb.PlaceTbId equals placetb.Id
-                                        where adminplacetb.DelYn != true && placetb.DelYn != true
-                                        select new PlaceTb
-                                        {
-                                            Id = placetb.Id,
-                                            PlaceCd = placetb.PlaceCd,
-                                            ContractNum = placetb.ContractNum,
-                                            Name = placetb.Name,
-                                            Tel = placetb.Tel,
-                                            Note = placetb.Note,
-                                            Address = placetb.Address,
-                                            ContractDt = placetb.ContractDt,
-                                            PermMachine = placetb.PermMachine,
-                                            PermLift = placetb.PermLift,
-                                            PermFire = placetb.PermFire,
-                                            PermConstruct = placetb.PermConstruct,
-                                            PermNetwork = placetb.PermNetwork,
-                                            PermBeauty = placetb.PermBeauty,
-                                            PermSecurity = placetb.PermSecurity,
-                                            PermMaterial = placetb.PermMaterial,
-                                            PermEnergy = placetb.PermEnergy,
-                                            PermVoc = placetb.PermVoc,
-                                            CancelDt = placetb.CancelDt,
-                                            Status = placetb.Status,
-                                            CreateDt = placetb.CreateDt,
-                                            CreateUser = placetb.CreateUser,
-                                            UpdateDt = placetb.UpdateDt,
-                                            UpdateUser = placetb.UpdateUser,
-                                            DelYn = placetb.DelYn,
-                                            DelDt = placetb.DelDt,
-                                            DelUser = placetb.DelUser
-                                        })
-                                        .OrderBy(m => m.CreateDt)
-                                        .ToList();
-
-                if (result is [_, ..])
-                    return result;
-                else
-                    return null;
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
-            }
-        }
-
         /// <summary>
         /// 사업장번호로 사업장 상세정보조회
         /// </summary>
@@ -669,6 +610,40 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             }
         }
 
+        /// <summary>
+        /// 로그인용 관리자 사업장 리스트 반환
+        /// </summary>
+        /// <param name="adminid"></param>
+        /// <returns></returns>
+        public async ValueTask<List<AdminPlaceDTO>?> LoginSelectPlaceList(int adminid)
+        {
+            try
+            {
+                List<AdminPlaceDTO>? model = await (from AdminPlaceTB in context.AdminPlaceTbs.Where(m => m.DelYn != true && m.AdminTbId == adminid)
+                                              join PlaceTB in context.PlaceTbs.Where(m => m.DelYn != true && m.Status == true)
+                                              on AdminPlaceTB.PlaceTbId equals PlaceTB.Id
+                                              select new AdminPlaceDTO
+                                              {
+                                                  Id = PlaceTB.Id,
+                                                  Name = PlaceTB.Name,
+                                                  PlaceCd = PlaceTB.PlaceCd,
+                                                  Status = PlaceTB.Status,
+                                                  Note = PlaceTB.Note,
+                                                  ContractDt = PlaceTB.ContractDt,
+                                                  ContractNum = PlaceTB.ContractNum
+                                              }).ToListAsync();
+
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw new ArgumentNullException();
+            }
+        }
 
     }
 }

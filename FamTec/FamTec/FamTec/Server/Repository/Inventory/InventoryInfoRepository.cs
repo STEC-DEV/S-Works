@@ -3,7 +3,6 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Diagnostics;
@@ -15,7 +14,8 @@ namespace FamTec.Server.Repository.Inventory
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public InventoryInfoRepository(WorksContext _context, ILogService _logservice)
+        public InventoryInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;
@@ -199,73 +199,81 @@ namespace FamTec.Server.Repository.Inventory
                 // 전체조회
                 if (type == true) 
                 {
-                    List<MaterialInventory>? model =
-                        (from room in context.RoomTbs
-                        join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조껀 TRUE로 만든다.
-                        where room.DelYn != true && material.DelYn != true
-                              && material.PlaceTbId == placeid
-                              && context.FloorTbs
-                                   .Where(f => context.BuildingTbs
-                                                     .Where(b => b.PlaceTbId == placeid)
-                                                     .Select(b => b.Id)
-                                                     .Contains(f.BuildingTbId))
-                                   .Select(f => f.Id)
-                                   .Contains(room.FloorTbId)
-                        select new
-                        {
-                            R_ID = room.Id,
-                            R_NM = room.Name,
-                            M_ID = material.Id,
-                            M_CODE = material.Code,
-                            M_NM = material.Name
-                        } into subQueryA // Subquery 'A'
-                        join inventoryGroup in
-                            (from i in context.InventoryTbs
-                             where i.DelYn != true
-                             group i by new { i.MaterialTbId, i.RoomTbId } into g
-                             select new
-                             {
-                                 MATERIAL_TB_ID = g.Key.MaterialTbId,
-                                 ROOM_TB_ID = g.Key.RoomTbId,
-                                 TOTAL = g.Sum(x => (int?)x.Num)
-                             })
-                        on new { R_ID = subQueryA.R_ID, M_ID = subQueryA.M_ID } equals new { R_ID = inventoryGroup.ROOM_TB_ID, M_ID = inventoryGroup.MATERIAL_TB_ID } into joined
-                        from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
-                        where MaterialIdx.Contains(subQueryA.M_ID)
-                        orderby subQueryA.M_ID, subQueryA.R_ID
-                        select new MaterialInventory
-                        {
-                            R_ID = subQueryA.R_ID,
-                            R_NM = subQueryA.R_NM,
-                            M_ID = subQueryA.M_ID,
-                            M_CODE = subQueryA.M_CODE,
-                            M_NM = subQueryA.M_NM,
-                            TOTAL = inventory.TOTAL ?? 0
-                        }).ToList();
+                    List<MaterialInventory>? model = await (from room in context.RoomTbs
+                                                            join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조건 TRUE로 만든다.
+                                                            where room.DelYn != true && material.DelYn != true
+                                                           && material.PlaceTbId == placeid && context.FloorTbs
+                                                                .Where(f => context.BuildingTbs
+                                                                                  .Where(b => b.PlaceTbId == placeid)
+                                                                                  .Select(b => b.Id)
+                                                                                  .Contains(f.BuildingTbId))
+                                                                .Select(f => f.Id)
+                                                                .Contains(room.FloorTbId)
+                                                         select new
+                                                         {
+                                                             R_ID = room.Id,
+                                                             R_NM = room.Name,
+                                                             M_ID = material.Id,
+                                                             M_CODE = material.Code,
+                                                             M_NM = material.Name
+                                                         } into subQueryA // Subquery 'A'
+                                                         join inventoryGroup in (from i in context.InventoryTbs
+                                                              where i.DelYn != true
+                                                              group i by new {i.MaterialTbId, i.RoomTbId } into g
+                                                              select new
+                                                              {
+                                                                  MATERIAL_TB_ID = g.Key.MaterialTbId,
+                                                                  ROOM_TB_ID = g.Key.RoomTbId,
+                                                                  TOTAL = g.Sum(x => (int?)x.Num)
+                                                              })
+                                                         on new 
+                                                         {
+                                                             R_ID = subQueryA.R_ID, 
+                                                             M_ID = subQueryA.M_ID 
+                                                         } 
+                                                         equals new 
+                                                         { 
+                                                             R_ID = inventoryGroup.ROOM_TB_ID,
+                                                             M_ID = inventoryGroup.MATERIAL_TB_ID
+                                                         } into joined
+                                                         from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
+                                                         where MaterialIdx.Contains(subQueryA.M_ID)
+                                                         orderby subQueryA.M_ID, subQueryA.R_ID
+                                                         select new MaterialInventory
+                                                         {
+                                                             R_ID = subQueryA.R_ID,
+                                                             R_NM = subQueryA.R_NM,
+                                                             M_ID = subQueryA.M_ID,
+                                                             M_CODE = subQueryA.M_CODE,
+                                                             M_NM = subQueryA.M_NM,
+                                                             TOTAL = inventory.TOTAL ?? 0
+                                                         }).ToListAsync(); // 비동기 ToListAsync() 사용
 
+                  
                     if (model is null)
                         return null;
-                    
+
                     // 반복문 돌리 조건 [1]
-                    List<RoomTb>? roomlist = (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
-                                              join floor in context.FloorTbs.Where(m => m.DelYn != true)
-                                              on building.Id equals floor.BuildingTbId
-                                              join room in context.RoomTbs.Where(m => m.DelYn != true)
-                                              on floor.Id equals room.FloorTbId
-                                              select new RoomTb
-                                              {
-                                                  Id = room.Id,
-                                                  Name = room.Name,
-                                                  CreateDt = room.CreateDt,
-                                                  CreateUser = room.CreateUser,
-                                                  UpdateDt = room.UpdateDt,
-                                                  UpdateUser = room.UpdateUser,
-                                                  DelYn = room.DelYn,
-                                                  DelDt = room.DelDt,
-                                                  DelUser = room.DelUser,
-                                                  FloorTbId = room.FloorTbId
-                                              }).OrderBy(m => m.CreateDt)
-                                              .ToList();
+                    List<RoomTb>? roomlist = await (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                                                    join floor in context.FloorTbs.Where(m => m.DelYn != true)
+                                                    on building.Id equals floor.BuildingTbId
+                                                    join room in context.RoomTbs.Where(m => m.DelYn != true)
+                                                    on floor.Id equals room.FloorTbId
+                                                    select new RoomTb
+                                                    {
+                                                        Id = room.Id,
+                                                        Name = room.Name,
+                                                        CreateDt = room.CreateDt,
+                                                        CreateUser = room.CreateUser,
+                                                        UpdateDt = room.UpdateDt,
+                                                        UpdateUser = room.UpdateUser,
+                                                        DelYn = room.DelYn,
+                                                        DelDt = room.DelDt,
+                                                        DelUser = room.DelUser,
+                                                        FloorTbId = room.FloorTbId
+                                                    }).OrderBy(m => m.CreateDt)
+                                .ToListAsync(); // 비동기 ToListAsync() 사용
+                  
                     if (roomlist is null)
                         return null;
 
@@ -302,49 +310,55 @@ namespace FamTec.Server.Repository.Inventory
                 }
                 else // 0이 아닌것만 조회
                 {
-                    List<MaterialInventory>? model =
-                       (from room in context.RoomTbs
-                        join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조껀 TRUE로 만든다.
-                        where room.DelYn != true && material.DelYn != true
-                               && material.PlaceTbId == placeid
-                               && context.FloorTbs
-                                    .Where(f => context.BuildingTbs
-                                                      .Where(b => b.PlaceTbId == placeid)
-                                                      .Select(b => b.Id)
-                                                      .Contains(f.BuildingTbId))
-                                    .Select(f => f.Id)
-                                    .Contains(room.FloorTbId)
-                        select new
-                        {
-                            R_ID = room.Id,
-                            R_NM = room.Name,
-                            M_ID = material.Id,
-                            M_CODE = material.Code,
-                            M_NM = material.Name
-                        } into subQueryA // Subquery 'A'
-                        join inventoryGroup in
-                             (from i in context.InventoryTbs
-                            where i.DelYn != true
-                            group i by new { i.MaterialTbId, i.RoomTbId } into g
-                            select new
-                            {
-                                MATERIAL_TB_ID = g.Key.MaterialTbId,
-                                ROOM_TB_ID = g.Key.RoomTbId,
-                                TOTAL = g.Sum(x => (int?)x.Num)
-                            })
-                         on new { R_ID = subQueryA.R_ID, M_ID = subQueryA.M_ID } equals new { R_ID = inventoryGroup.ROOM_TB_ID, M_ID = inventoryGroup.MATERIAL_TB_ID } into joined
-                        from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
-                        where MaterialIdx.Contains(subQueryA.M_ID)
-                        orderby subQueryA.M_ID, subQueryA.R_ID
-                        select new MaterialInventory
-                        {
-                            R_ID = subQueryA.R_ID,
-                            R_NM = subQueryA.R_NM,
-                            M_ID = subQueryA.M_ID,
-                            M_CODE = subQueryA.M_CODE,
-                            M_NM = subQueryA.M_NM,
-                            TOTAL = inventory.TOTAL ?? 0
-                        }).ToList();
+                    List<MaterialInventory>? model = await (from room in context.RoomTbs
+                                                            join material in context.MaterialTbs on 1 equals 1 // Cross Join을 위해 무조건 TRUE로 만든다.
+                                                            where room.DelYn != true && material.DelYn != true && material.PlaceTbId == placeid && context.FloorTbs
+                                                            .Where(f => context.BuildingTbs
+                                                                    .Where(b => b.PlaceTbId == placeid)
+                                                                    .Select(b => b.Id)
+                                                                    .Contains(f.BuildingTbId))
+                                                            .Select(f => f.Id)
+                                                            .Contains(room.FloorTbId)
+                                                             select new
+                                                             {
+                                                                 R_ID = room.Id,
+                                                                 R_NM = room.Name,
+                                                                 M_ID = material.Id,
+                                                                 M_CODE = material.Code,
+                                                                 M_NM = material.Name
+                                                             } into subQueryA // Subquery 'A'
+                                                            join inventoryGroup in
+                                                            (from i in context.InventoryTbs
+                                                            where i.DelYn != true
+                                                                group i by new { i.MaterialTbId, i.RoomTbId } into g
+                                                                select new
+                                                                {
+                                                                    MATERIAL_TB_ID = g.Key.MaterialTbId,
+                                                                    ROOM_TB_ID = g.Key.RoomTbId,
+                                                                    TOTAL = g.Sum(x => (int?)x.Num)
+                                                                })
+                                                                on new 
+                                                                { 
+                                                                    R_ID = subQueryA.R_ID,
+                                                                    M_ID = subQueryA.M_ID 
+                                                                } 
+                                                                equals new 
+                                                                { 
+                                                                    R_ID = inventoryGroup.ROOM_TB_ID,
+                                                                    M_ID = inventoryGroup.MATERIAL_TB_ID 
+                                                                } into joined
+                                                                from inventory in joined.DefaultIfEmpty() // LEFT JOIN using DefaultIfEmpty
+                                                                where MaterialIdx.Contains(subQueryA.M_ID)
+                                                                orderby subQueryA.M_ID, subQueryA.R_ID
+                                                                select new MaterialInventory
+                                                                {
+                                                                    R_ID = subQueryA.R_ID,
+                                                                    R_NM = subQueryA.R_NM,
+                                                                    M_ID = subQueryA.M_ID,
+                                                                    M_CODE = subQueryA.M_CODE,
+                                                                    M_NM = subQueryA.M_NM,
+                                                                    TOTAL = inventory.TOTAL ?? 0
+                                                                }).ToListAsync();
 
                     model = model
                     .GroupBy(m => m.M_ID)
@@ -355,25 +369,26 @@ namespace FamTec.Server.Repository.Inventory
                     if(model is [_, ..]) // 있으면
                     {
                         // 반복문 돌리 조건 [1]
-                        List<RoomTb>? roomlist = (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
-                                                  join floor in context.FloorTbs.Where(m => m.DelYn != true)
-                                                  on building.Id equals floor.BuildingTbId
-                                                  join room in context.RoomTbs.Where(m => m.DelYn != true)
-                                                  on floor.Id equals room.FloorTbId
-                                                  select new RoomTb
-                                                  {
-                                                      Id = room.Id,
-                                                      Name = room.Name,
-                                                      CreateDt = room.CreateDt,
-                                                      CreateUser = room.CreateUser,
-                                                      UpdateDt = room.UpdateDt,
-                                                      UpdateUser = room.UpdateUser,
-                                                      DelYn = room.DelYn,
-                                                      DelDt = room.DelDt,
-                                                      DelUser = room.DelUser,
-                                                      FloorTbId = room.FloorTbId
-                                                  }).OrderBy(m => m.CreateDt)
-                                                  .ToList();
+                        List<RoomTb>? roomlist = await (from building in context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                                                        join floor in context.FloorTbs.Where(m => m.DelYn != true)
+                                                        on building.Id equals floor.BuildingTbId
+                                                        join room in context.RoomTbs.Where(m => m.DelYn != true)
+                                                        on floor.Id equals room.FloorTbId
+                                                        select new RoomTb
+                                                        {
+                                                            Id = room.Id,
+                                                            Name = room.Name,
+                                                            CreateDt = room.CreateDt,
+                                                            CreateUser = room.CreateUser,
+                                                            UpdateDt = room.UpdateDt,
+                                                            UpdateUser = room.UpdateUser,
+                                                            DelYn = room.DelYn,
+                                                            DelDt = room.DelDt,
+                                                            DelUser = room.DelUser,
+                                                            FloorTbId = room.FloorTbId
+                                                        }).OrderBy(m => m.CreateDt)
+                                     .ToListAsync(); // 비동기 메서드 사용
+
 
                         int materialcount = model.GroupBy(m => m.M_ID).Count();
 
@@ -430,13 +445,12 @@ namespace FamTec.Server.Repository.Inventory
             try
             {
                 // 선입선출
-                List<InventoryTb>? model = await context.InventoryTbs
-                .Where(m => m.MaterialTbId == materialid && 
-                        m.RoomTbId == roomid && 
-                        m.PlaceTbId == placeid &&
-                        m.DelYn != true)
-                .OrderBy(m => m.CreateDt)
-                .ToListAsync();
+                List<InventoryTb>? model = await context.InventoryTbs.Where(m => m.MaterialTbId == materialid && 
+                                                                                m.RoomTbId == roomid && 
+                                                                                m.PlaceTbId == placeid &&
+                                                                                m.DelYn != true)
+                                                                        .OrderBy(m => m.CreateDt)
+                                                                        .ToListAsync();
 
                 // 개수가 뭐라도 있으면
                 if (model is [_, ..])
