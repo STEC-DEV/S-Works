@@ -1,5 +1,4 @@
 ﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
@@ -13,7 +12,6 @@ namespace FamTec.Server.Services.Room
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
-        private readonly IFacilityInfoRepository FacilityInfoRepository;
 
         private ILogService LogService;
 
@@ -21,15 +19,13 @@ namespace FamTec.Server.Services.Room
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IRoomInfoRepository _roominforepository,
-            IFacilityInfoRepository _facilityinforepository,
             ILogService _logService)
         {
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
-            this.FacilityInfoRepository = _facilityinforepository;
 
-            LogService = _logService;
+            this.LogService = _logService;
         }
 
         /// <summary>

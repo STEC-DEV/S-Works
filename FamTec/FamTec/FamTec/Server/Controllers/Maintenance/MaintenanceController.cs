@@ -111,52 +111,52 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddMaintenance")]
-        public async ValueTask<IActionResult> AddMaintenence()
-        //public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
+        //public async ValueTask<IActionResult> AddMaintenence()
+        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
             {
                 // DTO의 Inventory에 역직렬화된 데이터를 할당
-                AddMaintenanceDTO dto = new AddMaintenanceDTO();
-                dto.Name = "유지보수이력_1";
-                dto.Type = 1;
-                dto.Worker = "테스트";
-                dto.TotalPrice = 30 * 500;
-                dto.FacilityID = 1;
-                dto.WorkDT = DateTime.Now;
+                //AddMaintenanceDTO dto = new AddMaintenanceDTO();
+                //dto.Name = "유지보수이력_1";
+                //dto.Type = 1;
+                //dto.Worker = "테스트";
+                //dto.TotalPrice = 30 * 500;
+                //dto.FacilityID = 1;
+                //dto.WorkDT = DateTime.Now;
 
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 10,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 2,
-                        Num = 11,
-                        UnitPrice = 100,
-                        TotalPrice = 10 * 100,
-                        Note = "출고등록"
-                    }
-                });
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 10,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 2,
+                //        Num = 11,
+                //        UnitPrice = 100,
+                //        TotalPrice = 10 * 100,
+                //        Note = "출고등록"
+                //    }
+                //});
 
-                dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                {
-                    InOut = 0,
-                    MaterialID = 11,
-                    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                    {
-                        InOutDate = DateTime.Now,
-                        RoomID = 3,
-                        Num = 10,
-                        UnitPrice = 200,
-                        TotalPrice = 3 * 200,
-                        Note = "출고등록"
-                    }
-                });
+                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
+                //{
+                //    InOut = 0,
+                //    MaterialID = 11,
+                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
+                //    {
+                //        InOutDate = DateTime.Now,
+                //        RoomID = 3,
+                //        Num = 10,
+                //        UnitPrice = 200,
+                //        TotalPrice = 3 * 200,
+                //        Note = "출고등록"
+                //    }
+                //});
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -259,17 +259,17 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
-        //[HttpPost]
+        //[HttpGet]
+        [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        public async ValueTask<IActionResult> DeleteMaintenanceList()
-        //public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        //public async ValueTask<IActionResult> DeleteMaintenanceList()
+        public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
-                DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
-                dto.Note = "테스트 유지보수삭제";
-                dto.MaintanceID.Add(100);
+                //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
+                //dto.Note = "테스트 유지보수삭제";
+                //dto.MaintanceID.Add(100);
                 
                 if (HttpContext is null)
                     return BadRequest();
@@ -299,21 +299,21 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
-                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                DeleteList.Add(new DeleteMaintanceDTO
-                {
-                    MaintanceID = 100,
-                    UseMaintenenceID = 7,
-                    Note = "출고취소_테스트1"
-                });
+                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                //DeleteList.Add(new DeleteMaintanceDTO
+                //{
+                //    MaintanceID = 100,
+                //    UseMaintenenceID = 7,
+                //    Note = "출고취소_테스트1"
+                //});
 
             
 
