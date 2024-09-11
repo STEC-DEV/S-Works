@@ -53,6 +53,7 @@ namespace FamTec.Server.Repository.Store
                     .OrderByDescending(m => m.InoutDate)
                     .ToListAsync();
 
+
                 List<InOutHistoryListDTO> model = (from Store in StoreList
                                                    join Material in context.MaterialTbs.Where(m => m.DelYn != true)
                                                    on Store.MaterialTbId equals Material.Id

@@ -105,7 +105,10 @@ namespace FamTec.Server.Repository.Meter
         {
             try
             {
-                MeterItemTb? model = await context.MeterItemTbs.FirstOrDefaultAsync(m => m.PlaceTbId == placeid && m.Name == name && m.DelYn != true);
+                MeterItemTb? model = await context.MeterItemTbs
+                    .FirstOrDefaultAsync(m => m.PlaceTbId == placeid && 
+                                            m.Name == name && 
+                                            m.DelYn != true);
 
                 if (model is not null)
                     return model;

@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteUnitInfo")]
-        public async ValueTask<IActionResult> DeleteUnitInfo([FromQuery] List<int> unitid)
+        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody] List<int> unitid)
         {
             try
             {

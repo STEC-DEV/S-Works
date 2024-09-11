@@ -29,16 +29,6 @@ namespace FamTec.Server.Controllers.Voc
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/temp")]
-        public async ValueTask<IActionResult> Get()
-        {
-            return Ok("asdfasdf");
-        }
-       
-     
-
-        [AllowAnonymous]
-        [HttpGet]
         [Route("sign/GetVocWeekCount")]
         public async ValueTask<IActionResult> GetVocWeekCount()
         {
