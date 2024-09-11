@@ -190,7 +190,10 @@ namespace FamTec.Server.Repository.Floor
                     .ToListAsync();
 
                 if (model is not null && model.Any())
-                    return model;
+                {
+                    List<FloorTb> sortedData = model.OrderBy(item => item.Name, new CustomComparer()).ToList();
+                    return sortedData;
+                }
                 else
                     return null;
             }
@@ -236,7 +239,9 @@ namespace FamTec.Server.Repository.Floor
                                             .ToList();
 
                 if (result is not null && result.Any())
+                {
                     return result;
+                }
                 else
                     return null;
             }
