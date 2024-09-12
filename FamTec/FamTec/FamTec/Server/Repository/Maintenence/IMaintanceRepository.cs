@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
+using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Repository.Maintenence
 {
@@ -24,7 +25,16 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<int?> AddMaintanceAsync(AddMaintenanceDTO model, string creater, string userid, int placeid);
+        ValueTask<FailResult?> AddMaintanceAsync(AddMaintenanceDTO model, string creater, string userid, int placeid);
+
+        /// <summary>
+        /// 유지보수 사용자재 추가 출고
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="creater"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<int?> AddMaintanceMaterialAsync(AddMaintanceMaterialDTO model, string creater, int placeid);
 
         /// <summary>
         /// 유지보수 이미지 추가

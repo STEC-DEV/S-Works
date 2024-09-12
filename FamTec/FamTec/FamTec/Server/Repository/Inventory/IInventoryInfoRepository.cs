@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<int?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
+        ValueTask<FailResult?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
 
         /// <summary>
         /// 기간별 - 품목별 입출고 리스트 출력

@@ -233,6 +233,7 @@ if (!String.IsNullOrWhiteSpace(connectionString))
     //builder.Services.AddDbContext<WorksContext>(options =>
     //    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+    
     builder.Services.AddDbContext<WorksContext>(options =>
       options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
       mySqlOptions =>
@@ -243,6 +244,7 @@ if (!String.IsNullOrWhiteSpace(connectionString))
           // 다른 성능 및 안정성 옵션 추가
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
+    
 }
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.

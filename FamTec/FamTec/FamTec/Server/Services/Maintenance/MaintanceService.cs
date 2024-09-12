@@ -3,6 +3,8 @@ using FamTec.Server.Repository.Maintenence;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
+using FamTec.Shared.Server.DTO.Store;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -60,33 +62,34 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
+        public async ValueTask<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
         {
             try
             {
                 if (context is null || dto is null)
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? userid = Convert.ToString(context.Items["UserIdx"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
-                    return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int? MaintanceId = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
-                return MaintanceId switch
+                FailResult? MaintanceId = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+                return MaintanceId!.ReturnResult switch
                 {
-                    > 0 => new ResponseUnit<int?> { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
-                    0 => new ResponseUnit<int?> { message = "출고시킬 수량이 실제 수량보다 부족합니다.", data = 0, code = 201 },
-                    < 0 => new ResponseUnit<int?> { message = "다른 곳에서 해당 품목을 사용 중입니다.", data = -1, code = 202 },
-                    _ => new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 }
+                    > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
+                    0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 },
+                    -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 },
+                    -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
+                    _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
                 };
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
         

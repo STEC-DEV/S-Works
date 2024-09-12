@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<int?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
+        public ValueTask<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 품목별 기간별 입출고내역

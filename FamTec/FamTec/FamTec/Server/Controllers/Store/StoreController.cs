@@ -125,10 +125,8 @@ namespace FamTec.Server.Controllers.Store
                 //{
                 //InOutDate = DateTime.Now,
                 //Note = "출고데이터_1",
-                //Num = 74,
+                //Num = 44,
                 //RoomID = 2,
-                //UnitPrice = 300,
-                //TotalPrice = 3000
                 //}
                 //});
 
@@ -141,10 +139,8 @@ namespace FamTec.Server.Controllers.Store
                 //{
                 //InOutDate = DateTime.Now,
                 //Note = "출고데이터_1",
-                //Num = 235,
+                //Num = 2,
                 //RoomID = 3,
-                //UnitPrice = 100,
-                //TotalPrice = 1000
                 //}
                 //});
 
@@ -159,17 +155,19 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                     if (InOutDTO.AddStore!.RoomID is null)
                         return NoContent();
-                    if (InOutDTO.AddStore!.UnitPrice is null)
-                        return NoContent();
                     if (InOutDTO.AddStore!.Num is null)
                         return NoContent();
                 }
 
-                ResponseList<int?> model = await InStoreService.OutInventoryService(HttpContext, dto);
+                ResponseUnit<FailResult?> model = await InStoreService.OutInventoryService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
                 if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 422)
+                    return Ok(model);
+                else if (model.code == 409)
                     return Ok(model);
                 else
                     return BadRequest();
@@ -405,10 +403,15 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/AddOutStoreList")]
-        public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
+        public async ValueTask<IActionResult> AddOutStoreList()
+        //public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
         {
             try
             {
+                int roomid = 3;
+                int materialid = 10;
+                int outcount = 120;
+
                 if (HttpContext is null)
                     return BadRequest();
 

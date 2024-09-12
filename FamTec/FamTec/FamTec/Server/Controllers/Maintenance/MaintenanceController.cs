@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
+using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,35 @@ namespace FamTec.Server.Controllers.Maintenance
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/temp2")]
+        public async ValueTask<IActionResult> Temp2()
+        {
+            // 같은품목 + 같은공간 에는 한번만
+            AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
+            dto.MaintanceID = 100;
+            dto.MaterialList = new List<MaterialDTO>();
+            dto.MaterialList.Add(new MaterialDTO
+            {
+                MaterialID = 11,
+                Num = 145,
+                RoomID = 3,
+                UnitPrice = 200, // 프론트에서 계산해줘야함.
+                TotalPrice = 2000 // 프론트에서 계산해줘야함.
+            });
+            dto.MaterialList.Add(new MaterialDTO
+            {
+                MaterialID = 10,
+                Num = 5,
+                RoomID = 3,
+                UnitPrice = 200,
+                TotalPrice = 1000
+            });
+            var temp = await MaintanceRepository.AddMaintanceMaterialAsync(dto, "용", 3);
+            return Ok(temp);
         }
 
         /// <summary>
@@ -197,9 +227,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 2,
-                //        Num = 11,
-                //        UnitPrice = 100,
-                //        TotalPrice = 10 * 100,
+                //        Num = 21,
                 //        Note = "출고등록"
                 //    }
                 //});
@@ -212,9 +240,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 3,
-                //        Num = 10,
-                //        UnitPrice = 200,
-                //        TotalPrice = 3 * 200,
+                //        Num = 2,
                 //        Note = "출고등록"
                 //    }
                 //});
@@ -237,15 +263,15 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.Inventory is null || !dto.Inventory.Any())
                     return NoContent();
 
-                ResponseUnit<int?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
+                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
                 if (model is null)
                     return BadRequest();
 
                 if (model.code == 200)
                     return Ok(model);
-                else if (model.code == 201)
+                else if (model.code == 422)
                     return Ok(model);
-                else if(model.code == 202)
+                else if (model.code == 409)
                     return Ok(model);
                 else
                     return BadRequest();

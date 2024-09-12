@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
+using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -11,7 +12,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto);
+        public ValueTask<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto);
 
         /// <summary>
         /// 유지보수 이미지 등록

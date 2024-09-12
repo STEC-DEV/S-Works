@@ -17,9 +17,6 @@ public partial class UseMaintenenceMaterialTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
-    [Column("UNITPRICE")]
-    public float Unitprice { get; set; }
-
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }
 

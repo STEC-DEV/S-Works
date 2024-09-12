@@ -63,35 +63,43 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<int?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async ValueTask<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
         {
             try
             {
                 if (context is null || dto is null)
-                    return new ResponseList<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
 
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
 
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater))
-                    return new ResponseList<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                int? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
-                return OutResult switch
+                FailResult? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
+                /*
+                    0 : 출고수량이 부족함
+                    1 : 출고성공
+                    -1 : 트랜잭션 걸림
+                    -2 : 이미 삭제된 정보에 접근하고자 함.
+                 */
+
+                return OutResult!.ReturnResult switch
                 {
-                    1 => new ResponseList<int?>() { message = "요청이 정상 처리되었습니다.", data = new List<int?>() { 1 }, code = 200 },
-                    0 => new ResponseList<int?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = new List<int?>() { 0 }, code = 200 },
-                    -1 => new ResponseList<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = new List<int?>() { -1 }, code = 200 },
-                    _ => new ResponseList<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
+                    1 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = OutResult, code = 200 },
+                    0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = OutResult, code = 422 },
+                    -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = OutResult, code = 409 },
+                    -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = OutResult, code = 404 },
+                    _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = OutResult, code = 500 }
                 };
                 
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseList<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
