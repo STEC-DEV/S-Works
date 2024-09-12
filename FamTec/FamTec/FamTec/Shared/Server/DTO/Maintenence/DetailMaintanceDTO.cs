@@ -86,11 +86,6 @@
         public string? RoomName { get; set; }
 
         /// <summary>
-        /// 단가
-        /// </summary>
-        public float UnitPrice { get; set; }
-
-        /// <summary>
         /// 수량
         /// </summary>
         public int Num { get; set; }
@@ -105,5 +100,4 @@
         /// </summary>
         public float TotalPrice { get; set; }
     }
-
 }

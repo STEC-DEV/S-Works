@@ -3494,10 +3494,16 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddMaintenence",
     "RelativePath": "api/Maintenance/sign/AddMaintenance",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.AddMaintenanceDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -4747,10 +4753,16 @@
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "OutInventoryService",
     "RelativePath": "api/Store/sign/OutInventory",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Store.InOutInventoryDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -4807,6 +4819,22 @@
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Unit.UnitsDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.UseMaintenence.UseMaintenenceController",
+    "Method": "GetDetailUseMaterial",
+    "RelativePath": "api/UseMaintenence/sign/GetDetailUseMaterial",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
