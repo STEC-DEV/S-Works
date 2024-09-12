@@ -168,14 +168,16 @@
             Console.WriteLine(updateMaintenance.Id);
             Console.WriteLine(updateMaintenance.Name);
             Console.WriteLine(updateMaintenance.Worker);
-           
+
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", updateMaintenance, true);
             if(resUpdate.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resUpdate.message);
                 return;
             }
+            OnEdit();
             await OnLoadMaintenance.InvokeAsync();
+            
         }
         catch (Exception ex)
         {

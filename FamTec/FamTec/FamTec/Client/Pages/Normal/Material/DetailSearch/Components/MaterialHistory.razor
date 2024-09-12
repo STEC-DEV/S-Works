@@ -39,26 +39,31 @@
 
     List<InventoryRecordDTO> FilterList = new List<InventoryRecordDTO>();
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        if(ListData != null)
+        Console.WriteLine("검색 데이터 수 : "+ListData.Count);
+
+        if(ListData != null && ListData.Any())
         {
             MaterialId = ListData[0].Id;
         }
+        
         FilterData();
-        return base.OnParametersSetAsync();
     }
 
     private void FilterData()
     {
+        Console.WriteLine("동작 필터함수");
         if(_materialId == null)
         {
-            FilterList = null;
+            FilterList = new List<InventoryRecordDTO>();
+            StateHasChanged();
         }
         else
         {
-            var selectedMaterial = ListData.FirstOrDefault(m => m.Id == _materialId);
+            var selectedMaterial = ListData?.FirstOrDefault(m => m.Id == _materialId);
             FilterList = selectedMaterial?.InventoryList ?? new List<InventoryRecordDTO>();
+            StateHasChanged();
         }
     }
 

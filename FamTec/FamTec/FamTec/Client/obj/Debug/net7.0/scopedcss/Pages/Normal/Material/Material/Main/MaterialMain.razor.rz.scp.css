@@ -29,6 +29,11 @@
     border-bottom : var(--default-bd);
 }
 
+.options[b-wly28q2jgs]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .title[b-wly28q2jgs]{
     display : flex;
     align-items:center;

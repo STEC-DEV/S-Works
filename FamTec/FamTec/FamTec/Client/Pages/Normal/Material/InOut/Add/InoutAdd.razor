@@ -12,14 +12,18 @@
     </div>
     <SearchMaterial Tab="_tab" @bind-Data="@SelectMaterial" />
     
-    @if(_tab == 0)
+    @if (SelectMaterial.Id != 0)
     {
-        <OutForm MaterialId="@SelectMaterial.Id" AddItem=AddItem />
+        @if (_tab == 0)
+        {
+            <OutForm MaterialId="@SelectMaterial.Id" AddItem=AddItem />
+        }
+        else
+        {
+            <InForm AddItem="@AddInItem"/>
+        }
     }
-    else
-    {
-        <InForm AddItem="@AddInItem"/>
-    }
+
 
     <div class="btn">
         <Button Name="추가" Width=true Type="0" OnClick=@(_tab == 0 ? OnAddList : OnInDataAdd) />
@@ -133,8 +137,13 @@
     {
         try
         {
+            if(AddInventoryListData.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "입고 목록이 존재하지 않습니다.");
+                return;
+            }
 
-            ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("Store/sign/AddInStore", AddInventoryListData);
+            ResponseUnit<int> resAdd = await apiManager.PostAsync<int>("Store/sign/AddInStore", AddInventoryListData);
             if(resAdd.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resAdd.message);
@@ -144,7 +153,8 @@
         }
         catch (Exception ex)
         {
-
+            Console.WriteLine("입고등록 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "입고등록 에러");
         }
     }
 

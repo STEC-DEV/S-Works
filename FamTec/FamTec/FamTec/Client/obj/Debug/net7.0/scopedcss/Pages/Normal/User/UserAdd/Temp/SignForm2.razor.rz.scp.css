@@ -30,6 +30,7 @@
 .form-container .form-area[b-n4hh76lg6q]{
     display:flex;
     padding :var(--default-pd);
+    gap:var(--default-pd);
 }
 
 .form-container .form-input[b-n4hh76lg6q]{
@@ -49,9 +50,9 @@
 .form-container .img-wrap[b-n4hh76lg6q]{
     display :flex;
     flex-direction : column;
+    justify-content:center;
     gap : var(--half-pd);
     width : 350px;
-    height : 250px;
     
 }
 

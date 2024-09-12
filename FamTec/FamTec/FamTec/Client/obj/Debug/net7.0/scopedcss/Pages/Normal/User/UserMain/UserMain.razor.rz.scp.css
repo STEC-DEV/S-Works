@@ -17,14 +17,16 @@
     border-radius : var(--default-rd);
     box-shadow : var(--shadow-1);
 }
-
-.user-container .user-title[b-d1uo8hyl0z]{
+.user-options[b-d1uo8hyl0z]{
     display : flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:var(--default-pd);
-    border-bottom : var(--default-bd);
+    gap: var(--half-pd);
+}
+.user-container .user-title[b-d1uo8hyl0z] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
 }
 
 .user-container .title[b-d1uo8hyl0z]{

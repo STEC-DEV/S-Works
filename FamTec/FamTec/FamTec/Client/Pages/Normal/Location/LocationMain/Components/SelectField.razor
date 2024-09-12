@@ -23,9 +23,9 @@
             }
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
-            <li class="option-item" @onclick="() => OnSelectRow(null)">
+            @* <li class="option-item" @onclick="() => OnSelectRow(null)">
                 Select
-            </li>
+            </li> *@
             @if (SelectData != null && SelectData.Any())
             {
                 @foreach (var selectRow in SelectData)

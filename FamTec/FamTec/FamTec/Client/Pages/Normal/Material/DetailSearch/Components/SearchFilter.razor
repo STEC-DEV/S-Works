@@ -14,10 +14,10 @@
     </div>
     <div class="content">
         <div class="inputmonth">
-            <InputMonth Label="조회 기간" StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
+            <InputMonth Label="조회 기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
         </div>
         <div class="filter-item">
-            <TextField2 Label="조회 품목" Value="@titles" Row=true />
+            <TextField2 Label="조회 품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true />
             <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
         </div>
     </div>
@@ -39,8 +39,10 @@
     private DateTime endDt { get; set; } = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
 
 
-
+    //전체 자재
     List<MaterialSearchListDTO> MaterialList;
+
+
     private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
     List<MaterialSearchListDTO> SelectedMaterialList
     {
@@ -98,6 +100,7 @@
             }
             string materialIdQueryString = string.Join("&materialid=", _selectMaterial);
 
+            List<DetailMaterialListDTO> material;
 
             ResponseList<DetailMaterialListDTO> resGet = await apiManager.GetListAsync<DetailMaterialListDTO>($"Store/sign/GetPeriodicRecord?materialid={materialIdQueryString}&StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}");
             if (resGet.code != 200)
@@ -105,12 +108,20 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
+            if(resGet.data == null)
+            {
+                material = new List<DetailMaterialListDTO>();
+            }
+            else
+            {
+                material = resGet.data;
+            }
             //검색 데이터 초기화
             SelectedMaterialList.Clear();
             titles = "";
             startDt = new DateTime(curdate.Year, curdate.Month, 1);
             endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
-            await ValueChange.InvokeAsync(resGet.data);
+            await ValueChange.InvokeAsync(material);
         }
         catch (Exception ex)
         {

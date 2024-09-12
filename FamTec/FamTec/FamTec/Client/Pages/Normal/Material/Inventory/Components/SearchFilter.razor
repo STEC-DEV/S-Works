@@ -108,7 +108,10 @@
                 await JS.InvokeVoidAsync("[조회 현황]"+resGet.message);
                 return;
             }
-            Console.WriteLine("여기는오는데");
+            if(resGet.data == null)
+            {
+                MaterialHistory = new List<MaterialHistoryDTO>();
+            }
 
             // 상위 컴포넌트에 데이터 변경을 알립니다.
             await OnMaterialHistoryUpdated.InvokeAsync(resGet.data);

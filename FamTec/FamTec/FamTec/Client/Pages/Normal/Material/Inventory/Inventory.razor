@@ -5,16 +5,19 @@
 
 <div class="inventory">
     <SearchFilter MaterialHistory=@MaterialHistory OnMaterialHistoryUpdated="@UpdateMaterialHistory" />
+    
     <MaterialHistory ListData="@MaterialHistory" />
+    
+
 </div>
 
 @code {
-    List<MaterialHistoryDTO> MaterialHistory = new List<MaterialHistoryDTO>();
+     List<MaterialHistoryDTO> MaterialHistory = new List<MaterialHistoryDTO>();
+    //List<MaterialHistoryDTO> MaterialHistory;
 
 
     private void UpdateMaterialHistory(List<MaterialHistoryDTO> updatedHistory)
     {
-       
         MaterialHistory = updatedHistory;
         StateHasChanged();
     }

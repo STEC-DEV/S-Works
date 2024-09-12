@@ -80,7 +80,7 @@
                         <input 
                             type="checkbox"
                             checked=@(_checkItem.Contains(row.ID))
-                            @onchange="(e)=>OnChecked(e,row.ID)"
+                            @onchange="(e)=>OnChecked(e,row)"
                             />
                     </td>
                 </tr>
@@ -92,19 +92,19 @@
 
 @code {
     [Parameter] public List<MaterialListDTO>? ListData { get; set; }
-    [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
+    [Parameter] public EventCallback<(bool, MaterialListDTO)> OnCheck { get; set; }
     private HashSet<int> _checkItem = new HashSet<int>(); 
 
-    private async void OnChecked(ChangeEventArgs e, int id)
+    private async void OnChecked(ChangeEventArgs e, MaterialListDTO material)
     {
-        await OnCheck.InvokeAsync(((bool)e.Value, id));
+        await OnCheck.InvokeAsync(((bool)e.Value, material));
         if ((bool)e.Value)
         {
-            _checkItem.Add(id);
+            _checkItem.Add(material.ID);
         }
         else
         {
-            _checkItem.Remove(id);
+            _checkItem.Remove(material.ID);
         }
     }
 }

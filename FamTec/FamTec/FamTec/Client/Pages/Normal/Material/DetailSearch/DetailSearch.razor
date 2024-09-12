@@ -14,11 +14,10 @@
 
     private void ValueChange(List<DetailMaterialListDTO> data)
     {
+        Console.WriteLine("동작");
         MaterialList = data;
-        foreach(var i in MaterialList)
-        {
-            Console.WriteLine(i.Name);
-        }
+        Console.WriteLine("부모 : " + data.Count);
+
         StateHasChanged();
     }
 }

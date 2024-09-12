@@ -1,5 +1,5 @@
-﻿@* @page "/users/add"
-@using FamTec.Client.Pages.Normal.User.UserAdd.Components
+﻿@page "/users/add"
+@* @using FamTec.Client.Pages.Normal.User.UserAdd.Components *@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Shared.Server.DTO
@@ -11,12 +11,12 @@
             <SignForm2 UserInfo="@User.UserInfo" EditMode=@EditMode />
         </div>
         <div class="useradd-perm">
-            <UserPermComponent UserPerm="@User.UserPerm" OnVocActive="@OnVocActive" />
+            <UserPermComponent2 UserPerm="@User.UserPerm" OnVocActive="@OnVocActive" EditMode=EditMode />
         </div>
-        @if (isVocPerm)
+        @if (User.UserPerm.VocPerm >= 1)
         {
             <div class="useradd-sub yappear">
-                <UserVocPermComponent UserVocPerm="@User.UserVocPerm" />
+                <UserVocPermComponent2 UserVocPerm="@User.UserVocPerm" EditMode=EditMode />
             </div>
         }
     </div>
@@ -104,6 +104,7 @@
     private async Task OnConvert()
     {
         Users.USERID = User.UserInfo.UserId;
+        Users.PASSWORD = User.UserInfo.Password;
         Users.NAME = User.UserInfo.Name;
         Users.JOB= User.UserInfo.Job;
         Users.PHONE = User.UserInfo.Phone;
@@ -135,4 +136,3 @@
         Users.VOC_ETC = User.UserVocPerm.ETCVoc;
     }
 }
- *@

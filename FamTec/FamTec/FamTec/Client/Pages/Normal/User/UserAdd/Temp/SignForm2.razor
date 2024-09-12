@@ -14,38 +14,45 @@
             <InputImages MaxFilesNum="1"OnChange="OnUploadImage"/>
         </div>
         <div class="form-input">
-            <InputField InputType="text"
-                        Placeholder="Id"
-                        @bind-Value="@UserInfo.UserId"
-                        Label="아이디"
-                        EditMode=EditMode
-                        />
-            <InputField InputType="password"
-                        Placeholder="Password"
-                        @bind-Value="@UserInfo.Password"
-                        Label="비밀번호"
-                        EditMode=EditMode />
-            <InputField InputType="text"
-                        Placeholder="Name"
-                        @bind-Value="@UserInfo.Name"
-                        Label="이름"
-                        EditMode=EditMode />
-            <InputField InputType="text"
-                        Placeholder="Phone"
-                        @bind-Value="@UserInfo.Phone"
-                        Label="전화번호"
-                        EditMode=EditMode />
-            <InputField InputType="text"
-                        Placeholder="Email"
-                        @bind-Value="@UserInfo.Email"
-                        Label="이메일"
-                        EditMode=EditMode />
-            <InputField InputType="text"
-                        Placeholder="Job"
-                        @bind-Value="@UserInfo.Job"
-                        Label="직책"
-                        EditMode=EditMode />
+            <ValidationInput ValueType="text"
+                            Placeholder="아이디"
+                            @bind-Value="@UserInfo.UserId"
+                            Label="아이디"
+                            />
+            <ValidationInput ValueType="password"
+                            Placeholder="비밀번호"
+                            Type="PW"
+                            @bind-Value="@UserInfo.Password"
+                            Label="비밀번호"
+                             />
+            <ValidationInput ValueType="password"
+                              Placeholder="비밀번호 확인"
+                              PasswordCheck="@UserInfo.Password"
+                              Type="PWCHECK"
+                              Label="비밀번호 확인" />
+            <ValidationInput ValueType="text"
+                            Placeholder="Name"
+                            @bind-Value="@UserInfo.Name"
+                            Label="이름"
+                                />
+            <ValidationInput ValueType="text"
+                            Placeholder="전화번호"
+                            @bind-Value="@UserInfo.Phone"
+                            Label="전화번호"
+                             />
+            <ValidationInput ValueType="text"
+                            Placeholder="이메일"
+                            Type="EMAIL"
+                            @bind-Value="@UserInfo.Email"
+                            Label="이메일"
+                             />
+            <ValidationInput ValueType="text"
+                            Placeholder="Job"
+                            @bind-Value="@UserInfo.Job"
+                            Label="직책"
+                             />
             <Toggle Title="알람 수신"
+                    Col=true
                     @bind-Value="@UserInfo.AlarmYN"
                     EditMode=EditMode />
         </div>

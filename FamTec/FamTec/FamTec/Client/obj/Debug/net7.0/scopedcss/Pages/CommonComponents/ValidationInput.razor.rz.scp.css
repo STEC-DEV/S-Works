@@ -52,7 +52,7 @@
     transition : all .3s;
 }
 .true[b-ju3qontch3]{
-    /*color:var(--main-color);*/
-    color: #1bd733;
+    color:var(--main-color);
+    /*color: #56d522;*/
     font-weight:bold;
 }

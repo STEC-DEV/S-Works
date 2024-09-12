@@ -17,14 +17,16 @@
     border-radius : var(--default-rd);
     box-shadow : var(--shadow-1);
 }
-
-.user-container .user-title{
+.user-options{
     display : flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:var(--default-pd);
-    border-bottom : var(--default-bd);
+    gap: var(--half-pd);
+}
+.user-container .user-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--default-pd);
+    border-bottom: var(--default-bd);
 }
 
 .user-container .title{

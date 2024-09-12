@@ -39,7 +39,8 @@
 
 .inout .option[b-j0fs4skodx]{
     display : flex;
-    justify-content : space-between;
+    gap : var(--half-pd);
+    /*justify-content : space-between;*/
     align-items : center;
 }
 

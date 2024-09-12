@@ -1,17 +1,19 @@
 ﻿
 
-<div class="inputmonth">
-    <label>
+<div class="inputmonth @(Row ? "row" : "")">
+    <label class="label">
         @Label
     </label>
     <div class="inputwrap">
         <input 
+            class="start input"
             type="month" 
             value="@StartDT.ToString("yyyy-MM")" 
             max="@(EndDT != null ? EndDT.ToString("yyyy-MM") : null)"
             @onchange="(e)=>OnStartConvert(e)"
             />
         <input 
+            class="end input"
             type="month" 
             value="@EndDT.ToString("yyyy-MM")" 
             min="@StartDT.ToString("yyyy-MM")"
@@ -22,6 +24,7 @@
 
 @code {
     [Parameter] public string Label{ get; set; }
+    [Parameter] public bool Row { get; set; }
     [Parameter] public DateTime StartDT{ get; set; }
     [Parameter] public DateTime EndDT{ get; set; }
     [Parameter] public EventCallback<(DateTime,DateTime)> ValueChanged { get; set; }

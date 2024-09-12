@@ -11,7 +11,6 @@
             <span class="title">
                 자재목록
             </span>
-
                 <div class="options">
                     <Input 
                         Placeholder="search" 
@@ -27,7 +26,9 @@
                                 />
                         <Button Name="삭제"
                                 Type="1"
-                                Width=true />
+                                Width=true 
+                                OnClick="OnDelete"
+                                />
                     }
                 </div>
             
@@ -95,31 +96,31 @@
                                                         (m.ManufacturingComp?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                                         ).ToList();
 
-        
-
-        // Console.WriteLine($"검색어: {_searchText}");
-        // Console.WriteLine($"검색 결과 수: {FilterData.Count}");
-        // Console.WriteLine($"이름으로 검색된 항목 수: {Material.Count(m => m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
-        // Console.WriteLine($"코드로 검색된 항목 수: {Material.Count(m => m.Code?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
-        // Console.WriteLine($"제조회사로 검색된 항목 수: {Material.Count(m => m.ManufacturingComp?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)}");
-
-        // foreach(var i in FilterData)
-        // {
-        //     Console.WriteLine($"Name: {i.Name}, Code: {i.Code}, ManufacturingComp: {i.ManufacturingComp}");
-        // }
-
         await InvokeAsync(StateHasChanged);
     }
 
-    private void OnCheck((bool isCheck, int id)value)
+    private void OnCheck((bool isCheck, MaterialListDTO material) value)
     {
         if (value.isCheck)
         {
-            CheckList.Add(value.id);
+            CheckList.Add(value.material.ID);
         }
         else
         {
-            CheckList.Remove(value.id);
+            CheckList.Remove(value.material.ID);
+        }
+    }
+
+    private async Task OnDelete()
+    {
+        try
+        {
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("자재 삭제 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "자재 삭제 에러");
         }
     }
 

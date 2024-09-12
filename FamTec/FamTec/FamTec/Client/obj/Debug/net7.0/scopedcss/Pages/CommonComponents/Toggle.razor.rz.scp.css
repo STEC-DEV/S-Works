@@ -1,18 +1,25 @@
 .toggle-container[b-dj25yh7jz7] {
-    display : inline-flex;
+    display : flex;
+    flex-direction:row;
     align-items :center;
     gap : var(--half-pd);
     cursor : pointer;
     white-space:nowrap;
 }
 
-[type="checkbox"][b-dj25yh7jz7]{
-    appearance:none;
-    position:relative;
-    border : max(2px, 0.1em) solid gray;
+.col[b-dj25yh7jz7] {
+    flex-direction: column;
+    align-items : baseline;
+    justify-content:center;
+}
+
+[type="checkbox"][b-dj25yh7jz7] {
+    appearance: none;
+    position: relative;
+    border: max(2px, 0.1em) solid gray;
     border-radius: 1.25rem;
-    width : 2.25em;
-    height : 1.25em;
+    width: 2.25em;
+    height: 1.25em;
 }
 [type="checkbox"][b-dj25yh7jz7]::before{
     content:"";
@@ -68,3 +75,4 @@
 .toggle-title[b-dj25yh7jz7]{
     min-width : 80px;
 }
+

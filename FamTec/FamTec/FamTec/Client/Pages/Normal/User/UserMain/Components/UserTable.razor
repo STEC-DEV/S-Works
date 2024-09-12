@@ -1,6 +1,7 @@
 ﻿@inherits PermissionComponentBase
 @using System.ComponentModel.DataAnnotations
 @using System.Reflection
+@using FamTec.Client.Pages.CommonComponents
 @typeparam T
 
 <table class="table">
@@ -40,9 +41,24 @@
         </tr>
     </thead>
     <tbody class="tbody">
+       
             @if(Data == null)
             {
-                <p>...Loading</p>
+            <tr>
+                <td colspan="100" style="text-align:center; height:100%;">
+                    <Loading />
+                </td>
+
+            </tr>
+            }
+            else if (Data.Count == 0)
+            {
+            <tr>
+                <td colspan="100" style="text-align:center; height:100%;">
+                    <Empty />
+                </td>
+
+            </tr>
             }
             else
             {
@@ -87,7 +103,7 @@
                     </td>
                     @if (USEREDIT)
                     {
-                        <td class="td text-right">
+                        <td class="td">
                             <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))" />
                         </td>
                     }
@@ -95,7 +111,7 @@
 
                  </tr>
                 }
-            }
+        }
         
     </tbody>
 </table>

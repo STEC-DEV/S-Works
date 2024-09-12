@@ -29,6 +29,11 @@
     border-bottom : var(--default-bd);
 }
 
+.options{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .title{
     display : flex;
     align-items:center;
