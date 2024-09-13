@@ -5896,9 +5896,11 @@
     gap : var(--default-pd);
     padding: var(--default-pd);
     width: 100%;
+    min-height : 100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     background-color : var(--default-color);
+    box-shadow : var(--shadow-1);
 }
 .fac-container .fac-header[b-74h6h1kpt4]{
     display : flex;
@@ -6881,7 +6883,7 @@
     border-radius : var(--default-rd);
     
     background-color :var(--default-color);
-    box-shadow : var(--default-bs);
+    box-shadow : var(--shadow-1);
 
     overflow : hidden;
 }
@@ -7002,7 +7004,7 @@
     border-radius : var(--default-rd);
     overflow:hidden;
     background-color : var(--default-color);
-    box-shadow:var(--default-bs);
+    box-shadow : var(--shadow-1);
     padding : var(--default-pd);
 }
 
@@ -8196,6 +8198,7 @@ modal-table[b-0o0wpwo3cd]{
 .inout[b-j0fs4skodx] {
     padding: var(--default-pd);
     width: 100%;    
+    
 }
 
 .inout .inout-wrap[b-j0fs4skodx]{
@@ -8208,7 +8211,8 @@ modal-table[b-0o0wpwo3cd]{
     height:100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
-    box-shadow : var(--default-bs);
+    box-shadow : var(--shadow-1);
+
 }
 
 
@@ -8865,7 +8869,7 @@ modal-table[b-all74yxmu0]{
     border-radius : var(--default-rd);
     overflow:hidden;
     background-color : var(--default-color);
-    box-shadow:var(--default-bs);
+    box-shadow:var(--shadow-1);
     padding : var(--default-pd);
 }
 
@@ -8906,7 +8910,7 @@ modal-table[b-all74yxmu0]{
     border-radius : var(--default-rd);
     overflow:hidden;
     background-color : var(--default-color);
-    box-shadow:var(--default-bs);
+    box-shadow:var(--shadow-1);
     padding : var(--default-pd);
 }
 

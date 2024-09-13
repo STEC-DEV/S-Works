@@ -27,11 +27,11 @@
             Label="건물"
             Row="true"
             EditMode="true" />
-        @if (Room != null && Room.Any() && SelectedBuildingId != 0)
+        @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
         {
             <SelectField  
                 Key="floor" 
-                SelectData="Room" 
+                SelectData="PlaceRoom" 
                 @bind-Value="SelectedRoomId" 
                 Label="위치"
                 Row="true"
@@ -91,6 +91,10 @@
     List<BuildingFloor> Room = new List<BuildingFloor>();
 
 
+    //새 건물 룸 데이터
+    List<PlaceRoomListDTO> PlaceLocation = new List<PlaceRoomListDTO>();
+    PlaceRoomListDTO PlaceLocationSelect = new PlaceRoomListDTO();
+    List<PlaceRoom> PlaceRoom = new List<PlaceRoom>();
 
     int SelectedBuildingId;
     int SelectedRoomId;
@@ -107,6 +111,7 @@
         }
         CalculateTotalPrice();
         await OnLoadBuilding();
+        await OnLoadBuilginRoom();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -119,6 +124,31 @@
 
     }
 
+    //건물 + 위치 + 공간 조회
+    private async Task OnLoadBuilginRoom()
+    {
+        try
+        {
+            ResponseList<PlaceRoomListDTO> resGet = await apiManager.GetListAsync<PlaceRoomListDTO>("Room/sign/GetPlaceRoomGroup");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            PlaceLocation = resGet.data;
+
+            foreach(var i in PlaceLocation)
+            {
+                Console.WriteLine(   );
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    //건물 + 위치 조회
     private async Task OnLoadBuilding()
     {
         try
@@ -158,9 +188,20 @@
         }
         SelectedBuildingId = buildingId;
 
-        SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        // SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        // Room = SelectBuilding.FloorList;
 
-        Room = SelectBuilding.FloorList;
+
+        //건물선택
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        //해당건물에 층전체 반복하여 위치 리스트 추가
+        foreach(var i in PlaceLocationSelect.FloorList)
+        {
+            foreach(PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
 
         SelectedRoomId = 0; // Reset floor selection when building changes
         StateHasChanged();

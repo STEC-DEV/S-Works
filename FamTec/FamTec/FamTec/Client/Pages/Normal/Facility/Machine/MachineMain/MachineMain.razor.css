@@ -4,9 +4,11 @@
     gap : var(--default-pd);
     padding: var(--default-pd);
     width: 100%;
+    min-height : 100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     background-color : var(--default-color);
+    box-shadow : var(--shadow-1);
 }
 .fac-container .fac-header{
     display : flex;
