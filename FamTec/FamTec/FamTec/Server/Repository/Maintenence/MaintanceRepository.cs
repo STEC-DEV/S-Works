@@ -894,8 +894,7 @@ namespace FamTec.Server.Repository.Maintenence
                                 await transaction.RollbackAsync();
                                 return false; // 실패
                             }
-
-
+                            
                             List<UseMaintenenceMaterialTb> UseList = await context.UseMaintenenceMaterialTbs
                                 .Where(m => m.MaintenanceTbId == MaintenenceTB.Id && m.DelYn != true).ToListAsync();
 
@@ -915,7 +914,9 @@ namespace FamTec.Server.Repository.Maintenence
                                         return false;
                                     }
 
-                                    List<StoreTb>? StoreList = await context.StoreTbs.Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id).ToListAsync();
+                                    List<StoreTb>? StoreList = await context.StoreTbs
+                                    .Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id).ToListAsync();
+
                                     if (StoreList is [_, ..])
                                     {
                                         foreach (StoreTb StoreTB in StoreList)
@@ -924,102 +925,63 @@ namespace FamTec.Server.Repository.Maintenence
                                             StoreTB.DelDt = DateTime.Now;
                                             StoreTB.DelYn = true;
                                             StoreTB.DelUser = deleter;
+                                            StoreTB.InoutDate = DateTime.Now;
                                             StoreTB.Note = dto.Note;
                                             StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintenenceTB.Name}건 [시스템]삭제";
                                             context.StoreTbs.Update(StoreTB);
 
-                                            InventoryTb NewInventoryTB = new InventoryTb()
-                                            {
 
-                                            };
-                                        }
-
-                                    }
-
-
-
-
-                                    /*
-                                    List<StoreTb>? StoreList = await context.StoreTbs.Where(m => m.DelYn != true &&
-                                    m.Inout == 0 &&
-                                    m.MaintenenceHistoryTbId == MaintenenceTB.Id).ToListAsync();
-
-                                    foreach (StoreTb StoreTB in StoreList)
-                                    {
-                                        // 로그 삭제처리
-                                        StoreTB.DelDt = DateTime.Now;
-                                        StoreTB.DelYn = true;
-                                        StoreTB.DelUser = deleter;
-                                        StoreTB.Note = dto.Note;
-                                        StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintenenceTB.Name}건 [시스템]삭제";
-                                        context.StoreTbs.Update(StoreTB);
-
-                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if (!UpdateResult)
-                                        {
-                                            await transaction.RollbackAsync();
-                                            return false;
-                                        }
-
-                                        // 삭제된 로그에 대해 재입고 처리
-                                        InventoryTb NewInventoryTB = new InventoryTb
-                                        {
-                                            Num = StoreTB.Num,
-                                            UnitPrice = StoreTB.UnitPrice,
-                                            CreateDt = DateTime.Now,
-                                            CreateUser = deleter,
-                                            UpdateDt = DateTime.Now,
-                                            UpdateUser = deleter,
-                                            PlaceTbId = placeid,
-                                            RoomTbId = StoreTB.RoomTbId,
-                                            MaterialTbId = StoreTB.MaterialTbId
-                                        };
-
-                                        context.InventoryTbs.Add(NewInventoryTB);
-                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if (!UpdateResult)
-                                        {
-                                            await transaction.RollbackAsync();
-                                            return false;
-                                        }
-
-                                        // 현재개수 가져와야함.
-                                        int thisCurrentNum = await context.InventoryTbs
-                                            .Where(m => m.DelYn != true &&
-                                                        m.MaterialTbId == StoreTB.MaterialTbId &&
-                                                        m.RoomTbId == StoreTB.RoomTbId &&
-                                                        m.PlaceTbId == placeid)
+                                            int thisCurrentNum = await context.InventoryTbs
+                                            .Where(m => m.DelYn != true && 
+                                                m.MaterialTbId == StoreTB.MaterialTbId && 
+                                                m.RoomTbId == StoreTB.RoomTbId && 
+                                                m.PlaceTbId == StoreTB.PlaceTbId)
                                             .SumAsync(m => m.Num);
 
-                                        // 새로 재입고로그
-                                        StoreTb NewStoreTB = new StoreTb
-                                        {
-                                            Inout = 1,
-                                            Num = StoreTB.Num,
-                                            UnitPrice = StoreTB.UnitPrice,
-                                            TotalPrice = StoreTB.TotalPrice,
-                                            InoutDate = DateTime.Now,
-                                            CreateDt = DateTime.Now,
-                                            CreateUser = deleter,
-                                            UpdateDt = DateTime.Now,
-                                            UpdateUser = deleter,
-                                            CurrentNum = thisCurrentNum,
-                                            PlaceTbId = placeid,
-                                            RoomTbId = StoreTB.RoomTbId,
-                                            MaterialTbId = StoreTB.MaterialTbId,
-                                            Note2 = $"{FacilityTB!.Name}설비의 {MaintenenceTB.Name}건 [시스템]재입고"
-                                        };
+                                            StoreTb NewStoreTB = new StoreTb();
+                                            NewStoreTB.Inout = 1; // 해당건 재 입고처리 로그
+                                            NewStoreTB.Num = StoreTB.Num; // 해당 수량만큼
+                                            NewStoreTB.UnitPrice = StoreTB.UnitPrice; // 해당 단가로
+                                            NewStoreTB.TotalPrice = StoreTB.Num * StoreTB.UnitPrice; // 해당 금액으로
+                                            NewStoreTB.InoutDate = DateTime.Now;
+                                            NewStoreTB.CreateDt = DateTime.Now;
+                                            NewStoreTB.CreateUser = deleter;
+                                            NewStoreTB.UpdateDt = DateTime.Now;
+                                            NewStoreTB.UpdateUser = deleter;
+                                            NewStoreTB.CurrentNum = StoreTB.Num + thisCurrentNum;
+                                            NewStoreTB.RoomTbId = StoreTB.RoomTbId;
+                                            NewStoreTB.PlaceTbId = StoreTB.PlaceTbId;
+                                            NewStoreTB.MaterialTbId = StoreTB.MaterialTbId;
+                                            context.StoreTbs.Add(NewStoreTB);
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if (!UpdateResult)
+                                            {
+                                                await transaction.RollbackAsync();
+                                                return false;
+                                            }
 
-                                        context.StoreTbs.Add(NewStoreTB);
-                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if (!UpdateResult)
-                                        {
-                                            await transaction.RollbackAsync();
-                                            return false;
+                                            InventoryTb NewInventoryTB = new InventoryTb()
+                                            {
+                                                Num = StoreTB.Num, // 출고된 수량만큼 입고
+                                                UnitPrice = StoreTB.UnitPrice, // 출고된 수량의 단가
+                                                CreateDt = DateTime.Now, // 현재 시간으로 입고
+                                                CreateUser = deleter, // 해당 작업을 수행하는사람 이름으로 재입고
+                                                UpdateDt = DateTime.Now,
+                                                UpdateUser = deleter,
+                                                PlaceTbId = StoreTB.PlaceTbId, // 해당 사업장
+                                                RoomTbId = StoreTB.RoomTbId, // 해당 공간
+                                                MaterialTbId = StoreTB.MaterialTbId // 해당 자재
+                                            };
+
+                                            context.InventoryTbs.Add(NewInventoryTB);
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if (!UpdateResult)
+                                            {
+                                                await transaction.RollbackAsync();
+                                                return false;
+                                            }
                                         }
                                     }
-                                }
-                                */
                                 }
                             }
                         }

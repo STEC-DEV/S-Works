@@ -50,7 +50,8 @@ namespace FamTec.Server.Repository.Inventory
                             Storetb.Inout = InventoryDTO.InOut!.Value;
                             Storetb.Num = InventoryDTO.AddStore!.Num!.Value;
                             Storetb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
-                            Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice!.Value;
+                            //Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice!.Value;
+                            Storetb.TotalPrice = InventoryDTO.AddStore!.Num!.Value * InventoryDTO.AddStore.UnitPrice!.Value;
                             Storetb.InoutDate = InventoryDTO.AddStore.InOutDate;
                             Storetb.CreateDt = DateTime.Now;
                             Storetb.CreateUser = creater;
