@@ -446,19 +446,20 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]string category, [FromQuery]int type)
+        public async ValueTask<IActionResult> GetDateHistoryList()
+        //public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]string category, [FromQuery]int type)
         {
             try
             {
-                //DateTime StartDate = DateTime.Now.AddDays(-30);
-                //DateTime EndDate = DateTime.Now;
-                //int Category = "전체"; // 전체
-                //int type = 0; // 전체
+                DateTime StartDate = DateTime.Now.AddDays(-30);
+                DateTime EndDate = DateTime.Now;
+                string Category = "전체"; // 전체
+                int type = 0; // 전체
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type);
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, Category, type);
                 if (model is null)
                     return BadRequest();
 

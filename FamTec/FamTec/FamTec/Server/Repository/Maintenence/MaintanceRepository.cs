@@ -915,6 +915,31 @@ namespace FamTec.Server.Repository.Maintenence
                                         return false;
                                     }
 
+                                    List<StoreTb>? StoreList = await context.StoreTbs.Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id).ToListAsync();
+                                    if (StoreList is [_, ..])
+                                    {
+                                        foreach (StoreTb StoreTB in StoreList)
+                                        {
+                                            // 로그 삭제처리
+                                            StoreTB.DelDt = DateTime.Now;
+                                            StoreTB.DelYn = true;
+                                            StoreTB.DelUser = deleter;
+                                            StoreTB.Note = dto.Note;
+                                            StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintenenceTB.Name}건 [시스템]삭제";
+                                            context.StoreTbs.Update(StoreTB);
+
+                                            InventoryTb NewInventoryTB = new InventoryTb()
+                                            {
+
+                                            };
+                                        }
+
+                                    }
+
+
+
+
+                                    /*
                                     List<StoreTb>? StoreList = await context.StoreTbs.Where(m => m.DelYn != true &&
                                     m.Inout == 0 &&
                                     m.MaintenenceHistoryTbId == MaintenenceTB.Id).ToListAsync();
@@ -994,9 +1019,10 @@ namespace FamTec.Server.Repository.Maintenence
                                         }
                                     }
                                 }
+                                */
+                                }
                             }
                         }
-
                         await transaction.CommitAsync();
                         return true; // 성공
                     }

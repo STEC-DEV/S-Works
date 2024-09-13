@@ -112,7 +112,7 @@ namespace FamTec.Server.Controllers.Store
         [HttpPost]
         [Route("sign/OutInventory")]
         //public async ValueTask<IActionResult> OutInventoryService()
-        public async ValueTask<IActionResult> OutInventoryService(List<InOutInventoryDTO> dto)
+        public async ValueTask<IActionResult> OutInventoryService([FromBody] List<InOutInventoryDTO> dto)
         {
             try
             {
@@ -403,14 +403,14 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/AddOutStoreList")]
-        public async ValueTask<IActionResult> AddOutStoreList()
-        //public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
+        //public async ValueTask<IActionResult> AddOutStoreList()
+        public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
         {
             try
             {
-                int roomid = 3;
-                int materialid = 10;
-                int outcount = 120;
+                //int roomid = 3;
+                //int materialid = 10;
+                //int outcount = 120;
 
                 if (HttpContext is null)
                     return BadRequest();

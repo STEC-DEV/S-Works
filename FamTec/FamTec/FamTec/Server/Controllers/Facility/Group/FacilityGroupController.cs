@@ -119,7 +119,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFacilityGroup")]
-        public async ValueTask<IActionResult> GetDetailFacility(int Facilityid)
+        public async ValueTask<IActionResult> GetDetailFacility([FromQuery]int Facilityid)
         {
             try
             {

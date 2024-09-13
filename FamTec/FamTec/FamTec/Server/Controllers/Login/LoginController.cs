@@ -103,7 +103,7 @@ namespace FamTec.Server.Controllers.Login
         /// 사업장 리스트 반환
         /// </summary>
         /// <returns></returns>
-        
+        /*
         [HttpGet]
         [Route("AdminSelectList")]
         public async ValueTask<IActionResult> AdminSelectList([FromQuery]string token)
@@ -128,6 +128,7 @@ namespace FamTec.Server.Controllers.Login
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+        */
 
         /// <summary>
         /// 관리자 들만 접근가능 할당된 사업장 LIST 반환

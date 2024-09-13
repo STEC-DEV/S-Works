@@ -121,7 +121,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteKeyList")]
-        public async ValueTask<IActionResult> DeleteGroupKeyList([FromQuery]List<int> keylist)
+        public async ValueTask<IActionResult> DeleteGroupKeyList([FromBody]List<int> keylist)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteKey")]
-        public async ValueTask<IActionResult> DeleteGroupKey([FromQuery]int keyid)
+        public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {
             try
             {
