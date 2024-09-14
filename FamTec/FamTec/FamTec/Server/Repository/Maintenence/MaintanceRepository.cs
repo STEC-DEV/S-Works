@@ -683,7 +683,7 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
         /// <summary>
-        /// 유지보수용 출고내용 삭제 - 출고내용 삭제임.
+        /// 유지보수용 출고내용 삭제 - 출고내용 삭제임. - 이거 20240913 수정함. 확인필요
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -705,6 +705,7 @@ namespace FamTec.Server.Repository.Maintenence
 
                         foreach (DeleteMaintanceDTO dto in DeleteDTO)
                         {
+                            // 유지보수 History 검사.
                             MaintenenceHistoryTb? MaintenceHistoryTB = await context.MaintenenceHistoryTbs
                                 .FirstOrDefaultAsync(m => m.Id == dto.MaintanceID && m.DelYn != true);
 
@@ -763,18 +764,17 @@ namespace FamTec.Server.Repository.Maintenence
                                     }
 
                                     // 삭제된 로그에 대해 재입고 처리
-                                    InventoryTb NewInventoryTB = new InventoryTb
-                                    {
-                                        Num = StoreTB.Num,
-                                        UnitPrice = StoreTB.UnitPrice,
-                                        CreateDt = DateTime.Now,
-                                        CreateUser = deleter,
-                                        UpdateDt = DateTime.Now,
-                                        UpdateUser = deleter,
-                                        PlaceTbId = placeid,
-                                        RoomTbId = StoreTB.RoomTbId,
-                                        MaterialTbId = StoreTB.MaterialTbId
-                                    };
+                                    InventoryTb NewInventoryTB = new InventoryTb();
+                                    NewInventoryTB.Num = StoreTB.Num;
+                                    NewInventoryTB.UnitPrice = StoreTB.UnitPrice;
+                                    NewInventoryTB.CreateDt = DateTime.Now;
+                                    NewInventoryTB.CreateUser = deleter;
+                                    NewInventoryTB.UpdateDt = DateTime.Now;
+                                    NewInventoryTB.UpdateUser = deleter;
+                                    NewInventoryTB.PlaceTbId = placeid;
+                                    NewInventoryTB.RoomTbId = StoreTB.RoomTbId;
+                                    NewInventoryTB.MaterialTbId = StoreTB.MaterialTbId;
+                                    
 
                                     context.InventoryTbs.Add(NewInventoryTB);
                                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -793,23 +793,21 @@ namespace FamTec.Server.Repository.Maintenence
                                         .SumAsync(m => m.Num);
 
                                     // 새로 재입고로그
-                                    StoreTb NewStoreTB = new StoreTb
-                                    {
-                                        Inout = 1,
-                                        Num = StoreTB.Num,
-                                        UnitPrice = StoreTB.UnitPrice,
-                                        TotalPrice = StoreTB.TotalPrice,
-                                        InoutDate = DateTime.Now,
-                                        CreateDt = DateTime.Now,
-                                        CreateUser = deleter,
-                                        UpdateDt = DateTime.Now,
-                                        UpdateUser = deleter,
-                                        CurrentNum = thisCurrentNum,
-                                        PlaceTbId = placeid,
-                                        RoomTbId = StoreTB.RoomTbId,
-                                        MaterialTbId = StoreTB.MaterialTbId,
-                                        Note2 = $"{FacilityTB!.Name}설비의 {MaintenceHistoryTB.Name}건 [시스템]재입고"
-                                    };
+                                    StoreTb NewStoreTB = new StoreTb();
+                                    NewStoreTB.Inout = 1;
+                                    NewStoreTB.Num = StoreTB.Num;
+                                    NewStoreTB.UnitPrice = StoreTB.UnitPrice;
+                                    NewStoreTB.TotalPrice = StoreTB.TotalPrice;
+                                    NewStoreTB.InoutDate = DateTime.Now;
+                                    NewStoreTB.CreateDt = DateTime.Now;
+                                    NewStoreTB.CreateUser = deleter;
+                                    NewStoreTB.UpdateDt = DateTime.Now;
+                                    NewStoreTB.UpdateUser = deleter;
+                                    NewStoreTB.CurrentNum = StoreTB.Num + thisCurrentNum;
+                                    NewStoreTB.PlaceTbId = placeid;
+                                    NewStoreTB.RoomTbId = StoreTB.RoomTbId;
+                                    NewStoreTB.MaterialTbId = StoreTB.MaterialTbId;
+                                    //Note2 = $"{FacilityTB!.Name}설비의 {MaintenceHistoryTB.Name}건 [시스템]재입고"
 
                                     context.StoreTbs.Add(NewStoreTB);
                                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;

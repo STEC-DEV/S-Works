@@ -388,21 +388,21 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
-        //[HttpGet]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
         {
             try
             {
-                //List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                //DeleteList.Add(new DeleteMaintanceDTO
-                //{
-                //    MaintanceID = 100,
-                //    UseMaintenenceID = 7,
-                //    Note = "출고취소_테스트1"
-                //});
+                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
+                DeleteList.Add(new DeleteMaintanceDTO
+                {
+                    MaintanceID = 109,
+                    UseMaintenenceID = 56,
+                    Note = "출고취소_테스트1"
+                });
 
             
 
