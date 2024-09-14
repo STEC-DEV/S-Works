@@ -1,5 +1,6 @@
 ﻿using FamTec.Server.Repository.UseMaintenence;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
 
 namespace FamTec.Server.Services.UseMaintenence
@@ -43,6 +44,68 @@ namespace FamTec.Server.Services.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
                 return new ResponseUnit<UseMaterialDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 사용자재 수정 서비스 - 추가출고 / 입고처리
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async ValueTask<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                string? updater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 현재 유지보수건에 대해서 해당창고의 해당품목에 해당하는게 몇개가 출고됐는지 조회 - 입고 / 출고 구분로직
+                int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID);
+                
+                
+
+                if (dto.Num > ThisUseNum)
+                {
+                    // 출고
+                    // 출고 일떄는 가용 수량을 봐야함.
+                    int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID);
+                    
+                    if (UseAvailableNum is null)
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
+
+
+                    if (UseAvailableNum >= dto.Num - ThisUseNum)
+                    {
+                        // 가능
+                        var temp = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto);
+                    }
+                    else
+                    {
+                        // 가용수량보다 부족해서 안됨
+                    }
+                }
+                else if(dto.Num < ThisUseNum)
+                {
+                    // 입고
+                    var temp = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto);
+                }
+                else
+                {
+                    // 아무것도 아님
+                }
+                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

@@ -237,7 +237,7 @@ namespace FamTec.Server.Repository.Maintenence
         {
 
             /* 실패 리스트 담을곳 */
-            FailResult ReturnResult = new FailResult();
+            FailResult ReturnResult = new FailResult(); // -- 이거를 서비스 단에서 하면 좋을듯.
 
             /* 연속 쿼리는 트랜잭션 적용하지 못함. */
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -913,7 +913,7 @@ namespace FamTec.Server.Repository.Maintenence
                                     }
 
                                     List<StoreTb>? StoreList = await context.StoreTbs
-                                    .Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id).ToListAsync();
+                                    .Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id && m.Inout == 0).ToListAsync();
 
                                     if (StoreList is [_, ..])
                                     {

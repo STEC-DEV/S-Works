@@ -60,6 +60,11 @@
          /// </summary>
          public int Id { get; set; }
 
+        /// <summary>
+        /// 입출고 구분
+        /// </summary>
+        public int InOut { get; set; }
+
          /// <summary>
          /// 수량
          /// </summary>

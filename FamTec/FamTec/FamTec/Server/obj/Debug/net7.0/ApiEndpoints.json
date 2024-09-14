@@ -4807,6 +4807,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.UseMaintenence.UseMaintenenceController",
+    "Method": "UpdateUseMaterial",
+    "RelativePath": "api/UseMaintenence/sign/UpdateUseMaterial",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.User.UserController",
     "Method": "AddUser",
     "RelativePath": "api/User/sign/AddUser",
