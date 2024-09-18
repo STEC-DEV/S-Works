@@ -68,39 +68,72 @@ namespace FamTec.Server.Services.UseMaintenence
 
                 // 현재 유지보수건에 대해서 해당창고의 해당품목에 해당하는게 몇개가 출고됐는지 조회 - 입고 / 출고 구분로직
                 int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID);
-                
-                
+
+
 
                 if (dto.Num > ThisUseNum)
                 {
                     // 출고
                     // 출고 일떄는 가용 수량을 봐야함.
                     int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID);
-                    
+
                     if (UseAvailableNum is null)
-                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 204 };
+                        return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
 
 
                     if (UseAvailableNum >= dto.Num - ThisUseNum)
                     {
                         // 가능
-                        var temp = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto);
+                        int? UpdateResult = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto);
+                        if (UpdateResult > 0)
+                        {
+                            return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                        }
+                        else if (UpdateResult == -1)
+                        {
+                            return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
+                        }
+                        else if (UpdateResult == -2)
+                        {
+                            return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                        }
+                        else
+                        {
+                            return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                        }
                     }
                     else
                     {
                         // 가용수량보다 부족해서 안됨
+                        return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
                     }
                 }
-                else if(dto.Num < ThisUseNum)
+                else if (dto.Num < ThisUseNum)
                 {
                     // 입고
-                    var temp = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto);
+                    int? UpdateResult = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto);
+                    if (UpdateResult > 0)
+                    {
+                        return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                    }
+                    else if (UpdateResult == -1)
+                    {
+                        return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 201 };
+                    }
+                    else if (UpdateResult == -2)
+                    {
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                    }
                 }
                 else
                 {
                     // 아무것도 아님
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
                 }
-                return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
             }
             catch(Exception ex)
             {

@@ -266,7 +266,7 @@ namespace FamTec.Server.Repository.UseMaintenence
 
                         // OutModel 담은 총 개수가 실제 출고할 개수보다 작으면 여기까지 오면 안되는 로직임
                         if (OutModel.Sum(i => i.Num) < InOutNum)
-                            return 0; // 서버에서 처리하지 못함.
+                            return -1; // 서버에서 처리하지 못함.
 
                         if(OutModel is [_, ..])
                         {
@@ -447,7 +447,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                             if (UpdateStoreInfo is null)
                             {
                                 await transaction.RollbackAsync();
-                                return -2;
+                                return -1;
                             }
 
                             UpdateStoreInfo.MaintenenceMaterialTbId = UseMaintenenceMaterialTB.Id;
