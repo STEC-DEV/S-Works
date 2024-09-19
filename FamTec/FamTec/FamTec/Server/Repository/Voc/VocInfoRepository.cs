@@ -208,7 +208,7 @@ namespace FamTec.Server.Repository.Voc
                     .Where(m => Type.Contains(m.Type) &&
                     status.Contains(m.Status) && 
                     BuildingID.Contains(m.BuildingTbId) &&
-                    m.CreateDt >= StartDate && m.CreateDt <= EndDate)
+                    m.CreateDt >= StartDate && m.CreateDt <= EndDate.AddDays(1))
                     .ToListAsync();
 
                 if (VocList is [_, ..])

@@ -7,6 +7,7 @@ using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
+using System.Transactions;
 
 namespace FamTec.Server.Repository.UseMaintenence
 {
@@ -210,6 +211,8 @@ namespace FamTec.Server.Repository.UseMaintenence
         /// <exception cref="NotImplementedException"></exception>
         public async ValueTask<int?> UseMaintanceOutput(int placeid, string updater, UpdateMaintenanceMaterialDTO dto)
         {
+            bool UpdateResult = false;
+
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
             int? result = await strategy.ExecuteAsync(async () =>
             {
@@ -298,8 +301,8 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         }
 
                                         context.Update(OutInventoryTb);
-                                        bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if(!SaveResult)
+                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if(!UpdateResult)
                                         {
                                             // 트랜잭션 에러
                                             await transaction.RollbackAsync();
@@ -333,8 +336,8 @@ namespace FamTec.Server.Repository.UseMaintenence
 
                                         await context.StoreTbs.AddAsync(StoreTB);
 
-                                        bool Save1 = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if (!Save1)
+                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if (!UpdateResult)
                                         {
                                             await transaction.RollbackAsync();
                                             return -1;
@@ -362,8 +365,8 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         }
 
                                         context.Update(OutInventoryTb);
-                                        bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if(!SaveResult)
+                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if(!UpdateResult)
                                         {
                                             await transaction.RollbackAsync();
                                             return -1;
@@ -396,8 +399,8 @@ namespace FamTec.Server.Repository.UseMaintenence
 
                                         await context.StoreTbs.AddAsync(StoreTB);
 
-                                        bool Save1 = await context.SaveChangesAsync() > 0 ? true : false;
-                                        if (!Save1)
+                                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if (!UpdateResult)
                                         {
                                             await transaction.RollbackAsync();
                                             return -1;
@@ -420,7 +423,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                             }
                         }
 
-
+                        
                         UseMaintenenceMaterialTB.Num = dto.Num; // 총수량
                         UseMaintenenceMaterialTB.Totalprice = UseMaintenenceMaterialTB.Totalprice + this_TotalPrice;  // 총금액
                         UseMaintenenceMaterialTB.MaterialTbId = UseMaintenenceMaterialTB.MaterialTbId;
@@ -433,8 +436,8 @@ namespace FamTec.Server.Repository.UseMaintenence
                         UseMaintenenceMaterialTB.UpdateUser = updater;
                         UseMaintenenceMaterialTB.PlaceTbId = placeid;
                         context.UseMaintenenceMaterialTbs.Update(UseMaintenenceMaterialTB);
-                        bool AddMaintenenceMaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!AddMaintenenceMaterialResult)
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!UpdateResult)
                         {
                             /* 저장 실패 - (트랜잭션) */
                             await transaction.RollbackAsync();
@@ -454,8 +457,25 @@ namespace FamTec.Server.Repository.UseMaintenence
                             context.Update(UpdateStoreInfo);
                         }
 
-                        bool UpdateStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!UpdateStoreResult)
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!UpdateResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return -1;
+                        }
+
+                        // - 총금액 변경사항 반영
+                        // 빼는게 아니라 덧셈으로 토탈금액 구해서 유지보수 TotalPrice에 넣어야할듯.
+                        List<UseMaintenenceMaterialTb>? UseMaintenenceList = await context.UseMaintenenceMaterialTbs
+                                        .Where(m => m.DelYn != true && 
+                                                    m.MaintenanceTbId == maintanceHistoryTB.Id)
+                                        .ToListAsync();
+
+                        float maintenence_totalprice = UseMaintenenceList.Sum(m => m.Totalprice);
+                        maintanceHistoryTB.TotalPrice = maintenence_totalprice;
+                        context.MaintenenceHistoryTbs.Update(maintanceHistoryTB);
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!UpdateResult)
                         {
                             await transaction.RollbackAsync();
                             return -1;
@@ -467,9 +487,17 @@ namespace FamTec.Server.Repository.UseMaintenence
                         /* 저장된 유지보수 테이블 ID를 반환한다. */
                         return maintanceHistoryTB.Id;
                     }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
+                        return -1;
+                    }
                     catch (Exception ex)
                     {
-                        return 0;
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
+                        return -1;
                     }
                 }
             });
@@ -602,8 +630,31 @@ namespace FamTec.Server.Repository.UseMaintenence
                         }
 
 
+                        // - 총금액 변경사항 반영
+                        // 빼는게 아니라 덧셈으로 토탈금액 구해서 유지보수 TotalPrice에 넣어야할듯. 
+                        List<UseMaintenenceMaterialTb>? UseMaintenenceList = await context.UseMaintenenceMaterialTbs
+                                        .Where(m => m.DelYn != true &&
+                                                    m.MaintenanceTbId == maintanceHistoryTB.Id)
+                                        .ToListAsync();
+
+                        float maintenence_totalprice = UseMaintenenceList.Sum(m => m.Totalprice);
+                        maintanceHistoryTB.TotalPrice = maintenence_totalprice;
+                        context.MaintenenceHistoryTbs.Update(maintanceHistoryTB);
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!UpdateResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return -1;
+                        }
+
                         await transaction.CommitAsync();
                         return 1;
+                    }
+                    catch(DbUpdateConcurrencyException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
+                        return -1;
                     }
                     catch (Exception ex)
                     {

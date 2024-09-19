@@ -101,14 +101,15 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
+        //public async ValueTask<IActionResult> GetVocFilterList()
         public async ValueTask<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
-                //DateTime StartDate = DateTime.Now.AddDays(-30);
-                //DateTime EndDate = DateTime.Now;
-                //List<int> type = new List<int>() { 0,1, 7 };
-                //List<int> status = new List<int>() { 1, 2 };
+                //DateTime StartDate = new DateTime(2024,8,1);
+                //DateTime EndDate = new DateTime(2024,8,8);
+                //List<int> type = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
+                //List<int> status = new List<int>() { 0, 1, 2 };
                 //List<int> buildingid = new List<int>() { 1 };
 
                 if (HttpContext is null)

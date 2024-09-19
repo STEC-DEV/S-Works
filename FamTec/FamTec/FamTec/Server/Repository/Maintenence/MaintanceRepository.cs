@@ -229,15 +229,94 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
         /// <summary>
-        /// 유지보수 사용자재 등록 -- 출고등록과 비슷하다 보면됨.
+        /// 유지보수 사용자재 (외주작업)등록
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="creater"></param>
+        /// <param name="userid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<FailResult?> AddOutSourcingMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
+        {
+            /* 실패 리스트 담을곳 */
+            FailResult ReturnResult = new FailResult();
+
+            /* 연속 쿼리는 트랜잭션 적용하지 못함. */
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            int? result = await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                /* 디버깅 포인트를 강제로 잡음. */
+                Debugger.Break();
+#endif
+
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
+                        MaintenenceHistory.Name = dto.Name!; // 작업명
+                        MaintenenceHistory.Type = 1; // 외주작업
+                        MaintenenceHistory.Worker = dto.Worker!; // 작업자
+                        MaintenenceHistory.Workdt = dto.WorkDT; // 작업일자
+                        MaintenenceHistory.TotalPrice = dto.TotalPrice!.Value; // 소요비용
+                        MaintenenceHistory.CreateDt = DateTime.Now; // 생성일자
+                        MaintenenceHistory.CreateUser = creater; // 작업자
+                        MaintenenceHistory.UpdateDt = DateTime.Now; // 수정일자
+                        MaintenenceHistory.UpdateUser = creater; // 수정자
+                        MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; // 설비ID
+
+                        await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
+                        bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; // 저장
+                        if(!AddHistoryResult)
+                        {
+                            // 동시성 에러
+                            await transaction.RollbackAsync();
+                            return -1;
+                        }
+
+                        // 유지보수 등록완료
+                        await transaction.CommitAsync();
+                        return MaintenenceHistory.Id;
+                    }
+                    catch(DbUpdateConcurrencyException ex)
+                    {
+                        /* 다른 곳에서 해당 품목을 사용중입니다. */
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage($"동시성 에러 {ex.Message}");
+                        return -1;
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
+                        return -2;
+                    }
+                }
+            });
+
+            ReturnResult.ReturnResult = result;
+            // -1 동시성 에러
+            // -2 삭제된 데이터를 조회하고있음.
+            // 0 출고개수가 부족
+            // 0 >출고완료
+
+            return ReturnResult;
+
+        }
+
+        /// <summary>
+        /// 유지보수 사용자재 (자체작업)등록 -- 출고등록과 비슷하다 보면됨.
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FailResult?> AddMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
+        public async ValueTask<FailResult?> AddSelfMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
         {
 
+            bool UpdateResult = false;
+
             /* 실패 리스트 담을곳 */
-            FailResult ReturnResult = new FailResult(); // -- 이거를 서비스 단에서 하면 좋을듯.
+            FailResult ReturnResult = new FailResult();
 
             /* 연속 쿼리는 트랜잭션 적용하지 못함. */
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -290,17 +369,16 @@ namespace FamTec.Server.Repository.Maintenence
                                 {
                                     /* 수량이 부족함. */
                                     MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == inventoryItem.MaterialID && m.DelYn != true);
-                                    if (MaterialTB is null)
-                                        return -2;
-
                                     RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.Id == inventoryItem.AddStore.RoomID && m.DelYn != true);
-                                    if (RoomTB is null)
+                                    
+                                    if (MaterialTB is null || RoomTB is null)
                                         return -2;
 
                                     int avail_Num = await context.InventoryTbs
                                     .Where(m => m.PlaceTbId == placeid &&
-                                    m.MaterialTbId == inventoryItem.MaterialID &&
-                                    m.RoomTbId == inventoryItem.AddStore.RoomID).SumAsync(m => m.Num);
+                                                m.MaterialTbId == inventoryItem.MaterialID &&
+                                                m.RoomTbId == inventoryItem.AddStore.RoomID)
+                                    .SumAsync(m => m.Num);
 
                                     FailInventory FailInventoryInfo = new FailInventory();
                                     FailInventoryInfo.MaterialID = MaterialTB.Id;
@@ -324,10 +402,9 @@ namespace FamTec.Server.Repository.Maintenence
                         /* 유지보수 이력에 추가. -- 여기서 변경해도 동시성검사 걸림. */
                         MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
                         MaintenenceHistory.Name = dto.Name!; /* 작업명 */
-                        MaintenenceHistory.Type = dto.Type!.Value; /* 작업구분 (자체작업 / 외주작업 ..) */
+                        MaintenenceHistory.Type = 0; /* 작업구분 (자체작업 / 외주작업 ..) */
                         MaintenenceHistory.Worker = dto.Worker!; /* 작업자 */
                         MaintenenceHistory.Workdt = dto.WorkDT; // 작업일자
-                        MaintenenceHistory.TotalPrice = dto.TotalPrice!.Value; /* 소요비용 */
                         MaintenenceHistory.CreateDt = DateTime.Now; /* 생성일자 */
                         MaintenenceHistory.CreateUser = creater; /* 생성자 */
                         MaintenenceHistory.UpdateDt = DateTime.Now; /* 수정일자 */
@@ -335,9 +412,9 @@ namespace FamTec.Server.Repository.Maintenence
                         MaintenenceHistory.FacilityTbId = dto.FacilityID!.Value; /* 설비 ID */
 
                         await context.MaintenenceHistoryTbs.AddAsync(MaintenenceHistory);
-                        bool AddHistoryResult = await context.SaveChangesAsync() > 0 ? true : false; /* 저장 */
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false; /* 저장 */
 
-                        if (!AddHistoryResult)
+                        if (!UpdateResult)
                         {
                             /* 동시성 에러 */
                             await transaction.RollbackAsync();
@@ -404,8 +481,8 @@ namespace FamTec.Server.Repository.Maintenence
                                                 OutInventoryTb.DelUser = creater;
                                             }
                                             context.Update(OutInventoryTb);
-                                            bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if(!SaveResult)
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if(!UpdateResult)
                                             {
                                                 await transaction.RollbackAsync();
                                                 return -1;
@@ -437,8 +514,8 @@ namespace FamTec.Server.Repository.Maintenence
                                             StoreTB.MaintenenceHistoryTbId = MaintenenceHistory.Id;
 
                                             await context.StoreTbs.AddAsync(StoreTB);
-                                            bool Save1 = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if(!Save1)
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if(!UpdateResult)
                                             {
                                                 await transaction.RollbackAsync();
                                                 return -1;
@@ -466,8 +543,8 @@ namespace FamTec.Server.Repository.Maintenence
                                             }
 
                                             context.Update(OutInventoryTb);
-                                            bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if(!SaveResult)
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if(!UpdateResult)
                                             {
                                                 await transaction.RollbackAsync();
                                                 return -1;
@@ -500,8 +577,8 @@ namespace FamTec.Server.Repository.Maintenence
 
                                             await context.StoreTbs.AddAsync(StoreTB);
 
-                                            bool Save1 = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if (!Save1)
+                                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            if (!UpdateResult)
                                             {
                                                 await transaction.RollbackAsync();
                                                 return -1;
@@ -539,15 +616,15 @@ namespace FamTec.Server.Repository.Maintenence
                             MaintenenceMaterialTB.UpdateUser = creater;
                             MaintenenceMaterialTB.PlaceTbId = placeid;
                             await context.UseMaintenenceMaterialTbs.AddAsync(MaintenenceMaterialTB);
-                            bool AddMaintenenceMaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!AddMaintenenceMaterialResult)
+                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!UpdateResult)
                             {
                                 /* 저장 실패 - (트랜잭션) */
                                 await transaction.RollbackAsync();
                                 return -1;
                             }
 
-                            foreach(int ID in StoreID)
+                            foreach (int ID in StoreID)
                             {
                                 StoreTb? UpdateStoreInfo = await context.StoreTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == ID);
                                 if (UpdateStoreInfo is null)
@@ -560,8 +637,17 @@ namespace FamTec.Server.Repository.Maintenence
                                 context.Update(UpdateStoreInfo);
                             }
 
-                            bool UpdateStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!UpdateStoreResult)
+                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!UpdateResult)
+                            {
+                                await transaction.RollbackAsync();
+                                return -1;
+                            }
+
+                            MaintenenceHistory.TotalPrice += this_TotalPrice;
+                            context.MaintenenceHistoryTbs.Update(MaintenenceHistory);
+                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if(!UpdateResult)
                             {
                                 await transaction.RollbackAsync();
                                 return -1;
@@ -586,7 +672,6 @@ namespace FamTec.Server.Repository.Maintenence
                     {
                         await transaction.RollbackAsync();
                         LogService.LogMessage(ex.ToString());
-                        //throw new ArgumentNullException();
                         return -2;
                     }
                 }
@@ -683,12 +768,14 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
         /// <summary>
-        /// 유지보수용 출고내용 삭제 - 출고내용 삭제임. - 이거 20240913 수정함. 확인필요
+        /// 유지보수용 출고내용 삭제 - 출고내용 삭제임 (금액 반영해야함)
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> deleteMaintenanceStoreRecord(List<DeleteMaintanceDTO> DeleteDTO, int placeid, string deleter)
+        public async ValueTask<bool?> deleteMaintenanceStoreRecord(DeleteMaintanceDTO DeleteDTO, int placeid, string deleter)
         {
+
+            bool UpdateResult = false;
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
             bool? result = await strategy.ExecuteAsync(async () =>
@@ -701,64 +788,61 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        bool UpdateResult = false;
+                        MaintenenceHistoryTb? MaintanceHistoryTB = await context.MaintenenceHistoryTbs
+                                .FirstOrDefaultAsync(m => m.Id == DeleteDTO.MaintanceID && m.DelYn != true);
 
-                        foreach (DeleteMaintanceDTO dto in DeleteDTO)
+                        if (MaintanceHistoryTB is null)
+                            return (bool?)null;
+
+                        FacilityTb? FacilityTB = await context.FacilityTbs
+                        .FirstOrDefaultAsync(m => m.Id == MaintanceHistoryTB.FacilityTbId &&
+                                                  m.DelYn != true);
+
+                        if (FacilityTB is null)
+                            return (bool?)null;
+
+                        foreach(int UseMaintanceId in DeleteDTO.UseMaintenenceIDs)
                         {
-                            // 유지보수 History 검사.
-                            MaintenenceHistoryTb? MaintenceHistoryTB = await context.MaintenenceHistoryTbs
-                                .FirstOrDefaultAsync(m => m.Id == dto.MaintanceID && m.DelYn != true);
-
-                            if (MaintenceHistoryTB is null)
-                                return (bool?)null;
-
-                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == MaintenceHistoryTB.FacilityTbId && m.DelYn != true);
-                            if (FacilityTB is null)
-                                return (bool?)null;
-
-
-                            // --- 얘는 여기가 시작임.
-
                             UseMaintenenceMaterialTb? UseTB = await context.UseMaintenenceMaterialTbs
-                                .FirstOrDefaultAsync(m => m.Id == dto.UseMaintenenceID &&
-                                            m.PlaceTbId == placeid &&
-                                            m.DelYn != true);
+                            .FirstOrDefaultAsync(m => m.Id == UseMaintanceId && m.PlaceTbId == placeid && m.DelYn != true);
 
-                            if (UseTB is not null)
+                            if (UseTB is null)
+                                return (bool?)null;
+
+                            UseTB.DelYn = true;
+                            UseTB.DelUser = deleter;
+                            UseTB.DelDt = DateTime.Now;
+
+                            context.UseMaintenenceMaterialTbs.Update(UseTB);
+                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if(!UpdateResult)
                             {
-                                // 사용자재 1건삭제
-                                UseTB.DelYn = true;
-                                UseTB.DelUser = deleter;
-                                UseTB.DelDt = DateTime.Now;
+                                // 트랜잭션 걸림.
+                                await transaction.RollbackAsync();
+                                return false; 
+                            }
 
-                                context.UseMaintenenceMaterialTbs.Update(UseTB);
-                                UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if (!UpdateResult)
-                                {
-                                    await transaction.RollbackAsync();
-                                    return false;
-                                }
+                            List<StoreTb>? StoreList = await context.StoreTbs
+                                        .Where(m => m.MaintenenceMaterialTbId == UseTB.Id && m.DelYn != true && m.Inout == 0)
+                                        .ToListAsync();
 
-
-                                List<StoreTb>? StoreList = await context.StoreTbs
-                                    .Where(m => m.MaintenenceMaterialTbId == UseTB.Id &&
-                                                m.DelYn != true && m.Inout == 0)
-                                    .ToListAsync();
-
+                            if(StoreList is [_, ..])
+                            {
                                 // 사용자재 1건에 대한 로그들 삭제 및 재입고
-                                foreach (StoreTb StoreTB in StoreList)
+                                foreach(StoreTb StoreTB in StoreList)
                                 {
                                     // 로그 삭제처리
                                     StoreTB.DelDt = DateTime.Now;
                                     StoreTB.DelYn = true;
                                     StoreTB.DelUser = deleter;
-                                    StoreTB.Note = dto.Note;
-                                    StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintenceHistoryTB.Name}건 [시스템]삭제";
+                                    StoreTB.Note = DeleteDTO.Note; // 삭제이유 있으면 삽입
+                                    StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintanceHistoryTB.Name}건 [시스템 삭제]";
                                     context.StoreTbs.Update(StoreTB);
 
                                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if (!UpdateResult)
+                                    if(!UpdateResult)
                                     {
+                                        // 트랜잭션 걸림.
                                         await transaction.RollbackAsync();
                                         return false;
                                     }
@@ -774,31 +858,29 @@ namespace FamTec.Server.Repository.Maintenence
                                     NewInventoryTB.PlaceTbId = placeid;
                                     NewInventoryTB.RoomTbId = StoreTB.RoomTbId;
                                     NewInventoryTB.MaterialTbId = StoreTB.MaterialTbId;
-                                    
 
                                     context.InventoryTbs.Add(NewInventoryTB);
                                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if (!UpdateResult)
+                                    if(!UpdateResult)
                                     {
+                                        // 트랜잭션 걸림.
                                         await transaction.RollbackAsync();
                                         return false;
                                     }
 
-                                    // 현재개수 가져와야함.
-                                    int thisCurrentNum = await context.InventoryTbs
-                                        .Where(m => m.DelYn != true &&
-                                                    m.MaterialTbId == StoreTB.MaterialTbId &&
-                                                    m.RoomTbId == StoreTB.RoomTbId &&
-                                                    m.PlaceTbId == placeid)
-                                        .SumAsync(m => m.Num);
-
+                                    // 현재 개수 가져와야함.
+                                    int thisCurrentNum = await context.InventoryTbs.Where(m => m.DelYn != true && 
+                                                                                               m.MaterialTbId == StoreTB.MaterialTbId && 
+                                                                                               m.RoomTbId == StoreTB.RoomTbId && 
+                                                                                               m.PlaceTbId == placeid)
+                                                                                    .SumAsync(m => m.Num);
                                     // 새로 재입고로그
                                     StoreTb NewStoreTB = new StoreTb();
-                                    NewStoreTB.Inout = 1;
-                                    NewStoreTB.Num = StoreTB.Num;
-                                    NewStoreTB.UnitPrice = StoreTB.UnitPrice;
-                                    NewStoreTB.TotalPrice = StoreTB.TotalPrice;
-                                    NewStoreTB.InoutDate = DateTime.Now;
+                                    NewStoreTB.Inout = 1; // 입고
+                                    NewStoreTB.Num = StoreTB.Num; // 출고된 수량만큼 입고
+                                    NewStoreTB.UnitPrice = StoreTB.UnitPrice; // 출고된 단가로 입고
+                                    NewStoreTB.TotalPrice = StoreTB.Num * StoreTB.UnitPrice;
+                                    NewStoreTB.InoutDate = DateTime.Now; // 현재시간으로
                                     NewStoreTB.CreateDt = DateTime.Now;
                                     NewStoreTB.CreateUser = deleter;
                                     NewStoreTB.UpdateDt = DateTime.Now;
@@ -806,12 +888,11 @@ namespace FamTec.Server.Repository.Maintenence
                                     NewStoreTB.CurrentNum = StoreTB.Num + thisCurrentNum;
                                     NewStoreTB.PlaceTbId = placeid;
                                     NewStoreTB.RoomTbId = StoreTB.RoomTbId;
-                                    NewStoreTB.MaterialTbId = StoreTB.MaterialTbId;
-                                    //Note2 = $"{FacilityTB!.Name}설비의 {MaintenceHistoryTB.Name}건 [시스템]재입고"
+                                    NewStoreTB.MaterialTbId = StoreTB.RoomTbId;
 
                                     context.StoreTbs.Add(NewStoreTB);
                                     UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if (!UpdateResult)
+                                    if(!UpdateResult)
                                     {
                                         await transaction.RollbackAsync();
                                         return false;
@@ -820,20 +901,43 @@ namespace FamTec.Server.Repository.Maintenence
                             }
                         }
 
+                        // 유지보수 이력의 총금액 변경해야함.
+                        List<UseMaintenenceMaterialTb>? UseMaterialList = await context.UseMaintenenceMaterialTbs
+                            .Where(m => m.DelYn != true && m.MaintenanceTbId == DeleteDTO.MaintanceID).ToListAsync();
+
+                        if (UseMaterialList is null)
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                        float totalPrice = UseMaterialList.Sum(m => m.Totalprice);
+                        MaintanceHistoryTB.TotalPrice = totalPrice;
+                        
+                        context.MaintenenceHistoryTbs.Update(MaintanceHistoryTB);
+                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(!UpdateResult)
+                        {
+                            // 다른곳에서 해당 품목을 사용중입니다.
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
                         await transaction.CommitAsync();
                         return true;
                     }
-                    catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
+                    catch (DbUpdateConcurrencyException ex) 
                     {
+                        // 다른곳에서 해당 품목을 사용중입니다.
                         await transaction.RollbackAsync();
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return false;
                     }
                     catch (Exception ex)
                     {
+                        // 에러 처리
                         await transaction.RollbackAsync();
                         LogService.LogMessage(ex.ToString());
-                        // 에러 처리
                         return false;
                     }
                 }
@@ -843,7 +947,7 @@ namespace FamTec.Server.Repository.Maintenence
 
 
         /// <summary>
-        /// 유지보수 자체를 삭제
+        /// 유지보수 자체를 삭제 - 금액변경 반영할 필요 X
         /// </summary>
         /// <param name="maintanceid"></param>
         /// <param name="placeid"></param>
@@ -913,7 +1017,10 @@ namespace FamTec.Server.Repository.Maintenence
                                     }
 
                                     List<StoreTb>? StoreList = await context.StoreTbs
-                                    .Where(m => m.DelYn != true && m.MaintenenceMaterialTbId == UseTB.Id && m.Inout == 0).ToListAsync();
+                                    .Where(m => m.DelYn != true && 
+                                                m.MaintenenceMaterialTbId == UseTB.Id && 
+                                                m.Inout == 0)
+                                    .ToListAsync();
 
                                     if (StoreList is [_, ..])
                                     {
@@ -1000,6 +1107,7 @@ namespace FamTec.Server.Repository.Maintenence
                     }
                 }
             });
+
             return result;
         }
 
@@ -1059,7 +1167,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category">설비유형</param>
         /// <param name="type">작업구분</param>
         /// <returns></returns>
-        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string Category, int type)
+        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, List<string> Category, List<int> type)
         {
             try
             {
@@ -1070,88 +1178,83 @@ namespace FamTec.Server.Repository.Maintenence
                 if (BuildingTB is not [_, ..])
                     return null;
 
-                List<FloorTb>? FloorTB = await context.FloorTbs.Where(m => BuildingTB.Select(m => m.Id).Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
+                List<FloorTb>? FloorTB = await context.FloorTbs
+                    .Where(m => BuildingTB.Select(m => m.Id).Contains(m.BuildingTbId) 
+                            && m.DelYn != true)
+                    .ToListAsync();
+
                 if (FloorTB is not [_, ..])
                     return null;
 
-                List<RoomTb>? RoomTB = await context.RoomTbs.Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
+                List<RoomTb>? RoomTB = await context.RoomTbs
+                    .Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) 
+                        && m.DelYn != true)
+                    .ToListAsync();
+
                 if (RoomTB is not [_, ..])
                     return null;
 
                 // 설비유형
-                List<FacilityTb>? FacilityList;
-                if (Category.Equals("전체"))  // 전체
+                List<FacilityTb>? FacilityList = await context.FacilityTbs
+                    .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && 
+                    m.DelYn != true &&
+                    Category.Contains(m.Category))
+                    .ToListAsync();
+
+                // 작업구분 - 전체 or 일부
+                List<MaintenenceHistoryTb>? HistoryList = await context.MaintenenceHistoryTbs
+                    .Where(m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                    m.CreateDt >= StartDate &&
+                    m.CreateDt <= EndDate.AddDays(1) &&
+                    type.Contains(m.Type) && 
+                    m.DelYn != true).ToListAsync();
+
+                if (HistoryList is [_, ..])
                 {
-                    FacilityList = await context.FacilityTbs
-                       .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
-                       .ToListAsync();
-                }
-                else // 그외 모두
-                {
-                    FacilityList = await context.FacilityTbs
-                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true &&
-                      m.Category.Equals(Category))
-                      .ToListAsync();
-                }
-
-                List<MaintenenceHistoryTb>? HistoryList;
-                // 작업구분
-                if (type.Equals(0)) // 전체
-                {
-                    HistoryList = await context.MaintenenceHistoryTbs.Where
-                      (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
-                      m.CreateDt >= StartDate &&
-                      m.CreateDt <= EndDate &&
-                      m.DelYn != true).ToListAsync();
-                }
-                else // 그외 모두
-                {
-                    HistoryList = await context.MaintenenceHistoryTbs.Where
-                        (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
-                        m.CreateDt >= StartDate &&
-                        m.CreateDt <= EndDate &&
-                        m.DelYn != true &&
-                        m.Type == type)
-                        .ToListAsync();
-                }
-
-                List<MaintanceHistoryDTO> HistoryDTO = new List<MaintanceHistoryDTO>();
-                // 반복문에서
-                // 설비유형 일자 이력 작업구분 작업자 사용자재 소요비용
-                foreach (MaintenenceHistoryTb HistoryTB in HistoryList)
-                {
-                    MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
-
-                    FacilityTb? FacilityModel = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
-
-                    HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
-                    HistoryModel.WorkDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
-                    HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
-                    HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
-                    HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
-
-                    List<StoreTb> StoreList = await context.StoreTbs
-                        .Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id &&
-                                    m.DelYn != true &&
-                                    m.Inout == 0)
-                        .ToListAsync();
-
-                    foreach (StoreTb StoreTB in StoreList)
+                    List<MaintanceHistoryDTO> HistoryDTO = new List<MaintanceHistoryDTO>();
+                    // 반복문에서
+                    // 설비유형 일자 이력 작업구분 작업자 사용자재 소요비용
+                    foreach (MaintenenceHistoryTb HistoryTB in HistoryList)
                     {
-                        // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고    
-                        MaterialTb? MaterialTB = await context.MaterialTbs
-                            .FirstOrDefaultAsync(m => m.Id == StoreTB.MaterialTbId);
+                        MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
 
-                        HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                        FacilityTb? FacilityModel = await context.FacilityTbs
+                            .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId &&
+                                                m.DelYn != true);
+
+                        HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
+                        HistoryModel.WorkDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
+                        HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
+                        HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
+                        HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
+
+
+                        List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
+                            .Where(m => m.MaintenanceTbId == HistoryTB.Id &&
+                            m.DelYn != true).ToListAsync();
+
+                        if (UseList is [_, ..])
                         {
-                            MaterialID = MaterialTB!.Id,
-                            MaterialName = MaterialTB.Name
-                        });
+                            foreach (UseMaintenenceMaterialTb UseTB in UseList)
+                            {
+                                MaterialTb? MaterialTB = await context.MaterialTbs
+                                .FirstOrDefaultAsync(m => m.Id == UseTB.MaterialTbId);
+
+                                HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                                {
+                                    MaterialID = MaterialTB!.Id,
+                                    MaterialName = MaterialTB.Name
+                                });
+                            }
+
+                            HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
+                            HistoryDTO.Add(HistoryModel);
+                        }
                     }
-                    HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
-                    HistoryDTO.Add(HistoryModel);
+                    return HistoryDTO;
                 }
-                return HistoryDTO;
+                else
+                    return null;
             }
             catch (Exception ex)
             {
@@ -1161,7 +1264,7 @@ namespace FamTec.Server.Repository.Maintenence
         }
 
 
-        public async ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type)
+        public async ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, List<string> Category, List<int> type)
         {
             try
             {
@@ -1181,94 +1284,83 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
 
                 // 설비유형
-                List<FacilityTb>? FacilityList;
-                if (Category.Equals("전체"))  // 전체
-                {
-                    FacilityList = await context.FacilityTbs
-                       .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true)
-                       .ToListAsync();
-                }
-                else // 그외 모두
-                {
-                    FacilityList = await context.FacilityTbs
-                      .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true &&
-                      m.Category.Equals(Category))
-                      .ToListAsync();
-                }
+                List<FacilityTb>? FacilityList = await context.FacilityTbs
+                    .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && 
+                                m.DelYn != true &&
+                                Category.Contains(m.Category))
+                    .ToListAsync();
 
-                List<MaintenenceHistoryTb>? HistoryList;
                 // 작업구분
-                if (type.Equals(0)) // 전체
+                List<MaintenenceHistoryTb>? HistoryList = await context.MaintenenceHistoryTbs
+                    .Where(m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                    m.DelYn != true &&
+                    type.Contains(m.Type)).ToListAsync();
+
+
+                if (HistoryList is [_, ..])
                 {
-                    HistoryList = await context.MaintenenceHistoryTbs.Where
-                      (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
-                      m.DelYn != true).ToListAsync();
-                }
-                else // 그외 모두
-                {
-                    HistoryList = await context.MaintenenceHistoryTbs.Where
-                       (m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
-                       m.DelYn != true &&
-                       m.Type == type)
-                       .ToListAsync();
-                }
-
-                var GroupHistory = HistoryList
-                  .GroupBy(history => new { history.CreateDt.Year, history.CreateDt.Month })
-                  .Select(group => new
-                  {
-                      Year = group.Key.Year,
-                      Month = group.Key.Month,
-                      Histories = group.ToList()
-                  })
-                  .ToList();
+                    var GroupHistory = HistoryList
+                      .GroupBy(history => new { history.CreateDt.Year, history.CreateDt.Month })
+                      .Select(group => new
+                      {
+                          Year = group.Key.Year,
+                          Month = group.Key.Month,
+                          Histories = group.ToList()
+                      })
+                      .ToList();
 
 
-                List<AllMaintanceHistoryDTO> AllMaintanceList = new List<AllMaintanceHistoryDTO>();
-                foreach (var Group in GroupHistory)
-                {
-                    AllMaintanceHistoryDTO GroupItem = new AllMaintanceHistoryDTO();
-                    GroupItem.Years = Group.Year;
-                    GroupItem.Month = Group.Month;
-
-                    foreach (MaintenenceHistoryTb HistoryTB in Group.Histories)
+                    List<AllMaintanceHistoryDTO> AllMaintanceList = new List<AllMaintanceHistoryDTO>();
+                    foreach (var Group in GroupHistory)
                     {
-                        MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
+                        AllMaintanceHistoryDTO GroupItem = new AllMaintanceHistoryDTO();
+                        GroupItem.Years = Group.Year;
+                        GroupItem.Month = Group.Month;
 
-                        FacilityTb? FacilityModel = await context.FacilityTbs
-                            .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
-
-                        HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
-                        HistoryModel.WorkDT = HistoryTB.Workdt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
-                        HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
-                        HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
-                        HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
-
-                        List<StoreTb> StoreList = await context.StoreTbs
-                            .Where(m => m.MaintenenceHistoryTbId == HistoryTB.Id &&
-                                        m.DelYn != true &&
-                                        m.Inout == 0)
-                            .ToListAsync();
-
-                        foreach (StoreTb StoreTB in StoreList)
+                        foreach (MaintenenceHistoryTb HistoryTB in Group.Histories)
                         {
-                            // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고    
-                            MaterialTb? MaterialTB = await context.MaterialTbs
-                                .FirstOrDefaultAsync(m => m.Id == StoreTB.MaterialTbId);
+                            MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
 
-                            HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                            FacilityTb? FacilityModel = await context.FacilityTbs
+                                .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true);
+
+                            HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
+                            HistoryModel.WorkDT = HistoryTB.Workdt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
+                            HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
+                            HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
+                            HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
+
+                            List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
+                                .Where(m => m.MaintenanceTbId == HistoryTB.Id &&
+                                m.DelYn != true).ToListAsync();
+
+                            if (UseList is [_, ..])
                             {
-                                MaterialID = MaterialTB!.Id,
-                                MaterialName = MaterialTB.Name
-                            });
-                        }
+                                foreach (UseMaintenenceMaterialTb UseTB in UseList)
+                                {
+                                    // 사용자재 --> List<StoreTB> -- MaterialID빼서 Material foreach 사용자재 넣고    
+                                    MaterialTb? MaterialTB = await context.MaterialTbs
+                                        .FirstOrDefaultAsync(m => m.Id == UseTB.MaterialTbId);
 
-                        HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
-                        GroupItem.HistoryList.Add(HistoryModel);
+                                    HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                                    {
+                                        MaterialID = MaterialTB!.Id,
+                                        MaterialName = MaterialTB.Name
+                                    });
+                                }
+
+                                HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
+                                GroupItem.HistoryList.Add(HistoryModel);
+                            }
+                        }
+                        AllMaintanceList.Add(GroupItem);
                     }
-                    AllMaintanceList.Add(GroupItem);
+                    return AllMaintanceList;
                 }
-                return AllMaintanceList;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -1277,270 +1369,7 @@ namespace FamTec.Server.Repository.Maintenence
             }
         }
 
-        // TODO:
-        public async ValueTask<int?> UpdateMaintenanceUseRecord(UpdateMaintenanceMaterialDTO dto, int placeid, string updater)
-        {
-            bool UpdateResult = false;
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    UseMaintenenceMaterialTb? UseMaterialTB = await context.UseMaintenenceMaterialTbs
-                                                                .FirstOrDefaultAsync(m => m.Id == dto.UseMaintanceID &&
-                                                                m.MaterialTbId == dto.MaterialID &&
-                                                                m.RoomTbId == dto.RoomID &&
-                                                                m.PlaceTbId == placeid &&
-                                                                m.DelYn != true);
-                    if (UseMaterialTB is null)
-                        return null;
-
-                    // 넘어온 NUM가 해당 테이블의 NUM보다 클때 -- 추가로 빼야함..
-                    if (dto.Num > UseMaterialTB.Num) // 추가출고가 이루어 져야함.
-                    {
-                        int TargetNumber = dto.Num - UseMaterialTB.Num; // 원래 DB에서 넘어온 DTO 수량 만큼을 빼면 추가 출고가 이루어 져야할 개수임.
-                                                                        // 개수 검사하기 위한 로직
-                        List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, dto.RoomID, dto.MaterialID, TargetNumber);
-
-                        if (InventoryList is not [_, ..])
-                            return -1; /* 수량이 아에 없음 */
-
-                        if (InventoryList.Sum(i => i.Num) < TargetNumber)
-                        {
-                            return -1; /* 수량이 부족함. */
-                        }
-
-                        List<InventoryTb> OutModel = new List<InventoryTb>();
-
-                        int result = 0;
-
-                        foreach (InventoryTb? inventory in InventoryList)
-                        {
-                            if (result <= TargetNumber)
-                            {
-                                OutModel.Add(inventory);
-                                result += inventory.Num;
-                                if (result == TargetNumber)
-                                {
-                                    break; // 반복문 종료
-                                }
-                            }
-                            else
-                                break; // 반복문 종료
-                        }
-                        // === 여기까지 같은 사업장에 같은공간에 같은품목에 대한 출고개수만큼 순서대로 List가 쌓일것임.
-
-                        // 출고 로직
-                        if (OutModel is [_, ..])
-                        {
-
-                            if (result >= TargetNumber) // 출고개수가 충분할때만 동작
-                            {
-                                int checksum = 0;
-                                int outresult = 0;
-
-
-                                foreach (InventoryTb OutInventorytb in OutModel)
-                                {
-                                    outresult += OutInventorytb.Num;
-                                    if (TargetNumber > outresult)
-                                    {
-                                        checksum += OutInventorytb.Num;
-                                        OutInventorytb.Num -= OutInventorytb.Num;
-                                        OutInventorytb.UpdateDt = DateTime.Now;
-                                        OutInventorytb.UpdateUser = updater;
-
-                                        if (OutInventorytb.Num == 0)
-                                        {
-                                            OutInventorytb.DelYn = true;
-                                            OutInventorytb.DelDt = DateTime.Now;
-                                            OutInventorytb.DelUser = updater;
-                                        }
-
-                                        context.InventoryTbs.Update(OutInventorytb);
-                                    }
-                                    else
-                                    {
-                                        checksum += TargetNumber - (outresult - OutInventorytb.Num);
-
-                                        outresult -= TargetNumber;
-                                        OutInventorytb.Num = outresult;
-                                        OutInventorytb.UpdateDt = DateTime.Now;
-                                        OutInventorytb.UpdateUser = updater;
-
-                                        if (OutInventorytb.Num == 0)
-                                        {
-                                            OutInventorytb.DelYn = true;
-                                            OutInventorytb.DelDt = DateTime.Now;
-                                            OutInventorytb.DelUser = updater;
-                                        }
-
-                                        context.InventoryTbs.Update(OutInventorytb);
-                                    }
-                                }
-
-                                if (checksum != TargetNumber)
-                                {
-                                    Console.WriteLine("결과가 다름!");
-                                    await transaction.RollbackAsync();
-                                    return 0;
-                                }
-                                UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if (!UpdateResult)
-                                {
-                                    await transaction.RollbackAsync();
-                                    return 0;
-                                }
-                            }
-
-                            // Inventory 테이블에서 해당 품목의 개수 Sum
-                            int thisCurrentNum = context.InventoryTbs
-                                .Where(m => m.DelYn != true &&
-                                m.MaterialTbId == dto.MaterialID &&
-                                m.RoomTbId == dto.RoomID &&
-                                m.PlaceTbId == placeid)
-                                .Sum(m => m.Num);
-
-
-                            // 여기도 주석해야함.
-                            UseMaintenenceMaterialTb? MaintenenceMaterialTB = await context.UseMaintenenceMaterialTbs
-                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == dto.UseMaintanceID);
-
-                            if (MaintenenceMaterialTB is null)
-                            {
-                                await transaction.RollbackAsync();
-                                return 0;
-                            }
-
-                            MaintenenceMaterialTB.Num += TargetNumber;
-                            MaintenenceMaterialTB.UpdateDt = DateTime.Now;
-                            MaintenenceMaterialTB.UpdateUser = updater;
-                            MaintenenceMaterialTB.Note = dto.Note;
-
-                            context.UseMaintenenceMaterialTbs.Update(MaintenenceMaterialTB);
-                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!UpdateResult)
-                            {
-                                await transaction.RollbackAsync();
-                                return 0;
-                            }
-
-                            StoreTb store = new StoreTb();
-                            store.InoutDate = DateTime.Now; // 현재날짜로 추가출고
-                            store.Inout = 0; // 여기는 출고로직에 해당하는 부분임.
-                            store.Num = TargetNumber; // 추가출고 개수 분량만.
-                            store.UnitPrice = dto.UnitPrice; // 기존 단가
-                            store.TotalPrice = dto.TotalPrice; // 총수량
-                            store.CreateDt = DateTime.Now;
-                            store.CreateUser = updater;
-                            store.UpdateDt = DateTime.Now;
-                            store.UpdateUser = updater;
-                            store.RoomTbId = dto.RoomID; // 공간ID
-                            store.MaterialTbId = dto.MaterialID; // 자재 ID
-                            store.CurrentNum = thisCurrentNum; // 현재수량
-                            store.Note = dto.Note; // 비고
-                            store.PlaceTbId = placeid; // 사업장
-                            store.MaintenenceHistoryTbId = dto.MaintanceID;
-                            store.MaintenenceMaterialTbId = MaintenenceMaterialTB.Id;
-
-                            await context.StoreTbs.AddAsync(store);
-                            UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!UpdateResult)
-                            {
-                                await transaction.RollbackAsync();
-                                return 0;
-                            }
-                        }
-
-                        await transaction.CommitAsync();
-                        return dto.MaintanceID;
-                    }
-                    else if (dto.Num < UseMaterialTB.Num) // 입고가 이루어져야함.
-                    {
-                        // 입고로직 ++
-                        int TargetNumber = UseMaterialTB.Num - dto.Num; // 입고해야할 개수
-
-                        InventoryTb InventoryTB = new InventoryTb();
-                        InventoryTB.Num = TargetNumber; // 입고수량
-                        InventoryTB.UnitPrice = dto.UnitPrice; // 단가
-                        InventoryTB.CreateDt = DateTime.Now;
-                        InventoryTB.CreateUser = updater;
-                        InventoryTB.UpdateDt = DateTime.Now;
-                        InventoryTB.UpdateUser = updater;
-                        InventoryTB.PlaceTbId = placeid;
-                        InventoryTB.RoomTbId = dto.RoomID;
-                        InventoryTB.MaterialTbId = dto.MaterialID;
-                        await context.InventoryTbs.AddAsync(InventoryTB);
-
-                        int thisCurrentNum = await context.InventoryTbs
-                            .Where(m => m.DelYn != true &&
-                            m.MaterialTbId == dto.MaterialID &&
-                            m.RoomTbId == dto.RoomID &&
-                            m.PlaceTbId == placeid)
-                            .SumAsync(m => m.Num);
-
-                        UseMaintenenceMaterialTb? MaintenenceMaterialTB = await context.UseMaintenenceMaterialTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == dto.UseMaintanceID);
-                        if (MaintenenceMaterialTB is null)
-                        {
-                            await transaction.RollbackAsync();
-                            return 0;
-                        }
-
-                        MaintenenceMaterialTB.Num = TargetNumber;
-                        MaintenenceMaterialTB.UpdateDt = DateTime.Now;
-                        MaintenenceMaterialTB.UpdateUser = updater;
-                        MaintenenceMaterialTB.Note = dto.Note;
-
-                        context.UseMaintenenceMaterialTbs.Update(MaintenenceMaterialTB);
-                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!UpdateResult)
-                        {
-                            await transaction.RollbackAsync();
-                            return 0;
-                        }
-
-                        StoreTb store = new StoreTb();
-                        store.InoutDate = DateTime.Now; // 현재날짜로 추가출고
-                        store.Inout = 1; // 여기는 입고로직에 해당하는 부분임.
-                        store.Num = TargetNumber; // 추가출고 개수 분량만.
-                        store.UnitPrice = dto.UnitPrice; // 기존 단가
-                        store.TotalPrice = dto.TotalPrice; // 총수량
-                        store.CreateDt = DateTime.Now;
-                        store.CreateUser = updater;
-                        store.UpdateDt = DateTime.Now;
-                        store.UpdateUser = updater;
-                        store.RoomTbId = dto.RoomID; // 공간ID
-                        store.MaterialTbId = dto.MaterialID; // 자재 ID
-                        store.CurrentNum = thisCurrentNum; // 현재수량
-                        store.Note = dto.Note; // 비고
-                        store.PlaceTbId = placeid; // 사업장
-                        store.MaintenenceHistoryTbId = dto.MaintanceID;
-                        store.MaintenenceMaterialTbId = MaintenenceMaterialTB.Id;
-
-                        await context.StoreTbs.AddAsync(store);
-                        UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!UpdateResult)
-                        {
-                            await transaction.RollbackAsync();
-                            return 0;
-                        }
-
-                        await transaction.CommitAsync();
-                        return dto.MaintanceID;
-                    }
-                    else // 같으면 그대로임.
-                    {
-                        // 아무것도 아님. 현상 그대로 유지
-                        return 0;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-        }
-
+       
         /// <summary>
         /// 유지보수 사용자재 추가 출고
         /// </summary>

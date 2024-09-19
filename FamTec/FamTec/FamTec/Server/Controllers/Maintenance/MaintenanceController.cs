@@ -59,31 +59,7 @@ namespace FamTec.Server.Controllers.Maintenance
             return Ok(temp);
         }
 
-        /// <summary>
-        /// 잠시보류
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("sign/temp")]
-        public async ValueTask<IActionResult> Temp()
-        {
-            UpdateMaintenanceMaterialDTO dto = new UpdateMaintenanceMaterialDTO()
-            {
-                MaterialID = 10,
-                RoomID = 2,
-                UseMaintanceID = 28,
-                MaintanceID = 100,
-                Num = 38,
-                UnitPrice = 100,
-                TotalPrice = 10000,
-                Note = "테스트"
-            };
-        
-            var temp = await MaintanceRepository.UpdateMaintenanceUseRecord(dto, 3, "용");
-            return Ok(temp);
-        }
-
+     
         /// <summary>
         /// 유지보수 수정
         /// </summary>
@@ -213,9 +189,9 @@ namespace FamTec.Server.Controllers.Maintenance
                 // DTO의 Inventory에 역직렬화된 데이터를 할당
                 //AddMaintenanceDTO dto = new AddMaintenanceDTO();
                 //dto.Name = "유지보수이력_1";
-                //dto.Type = 1;
+                //dto.Type = 0;
                 //dto.Worker = "테스트";
-                //dto.TotalPrice = 30 * 500;
+                ////dto.TotalPrice = 30 * 500;
                 //dto.FacilityID = 1;
                 //dto.WorkDT = DateTime.Now;
 
@@ -227,7 +203,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //    {
                 //        InOutDate = DateTime.Now,
                 //        RoomID = 2,
-                //        Num = 21,
+                //        Num = 2,
                 //        Note = "출고등록"
                 //    }
                 //});
@@ -341,22 +317,22 @@ namespace FamTec.Server.Controllers.Maintenance
         }
 
         /// <summary>
-        /// 유지보수 삭제
+        /// 유지보수 자체를 삭제
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
-        //[HttpPost]
+        //[HttpGet]
+        [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        public async ValueTask<IActionResult> DeleteMaintenanceList()
-        //public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        //public async ValueTask<IActionResult> DeleteMaintenanceList()
+        public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
-                DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
-                dto.Note = "테스트 유지보수삭제_20240913";
-                dto.MaintanceID.Add(100);
+                //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
+                //dto.Note = "테스트 유지보수삭제_20240913";
+                //dto.MaintanceID.Add(100);
                 
                 if (HttpContext is null)
                     return BadRequest();
@@ -388,36 +364,31 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        //public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]List<DeleteMaintanceDTO> DeleteList)
+        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
+        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]DeleteMaintanceDTO delInfo)
         {
             try
             {
-                List<DeleteMaintanceDTO> DeleteList = new List<DeleteMaintanceDTO>();
-                DeleteList.Add(new DeleteMaintanceDTO
-                {
-                    MaintanceID = 109,
-                    UseMaintenenceID = 56,
-                    Note = "출고취소_테스트1"
-                });
+                //DeleteMaintanceDTO delInfo = new DeleteMaintanceDTO();
+                //delInfo.MaintanceID = 113;
+                //delInfo.Note = "출고취소_테스트2";
+                //delInfo.UseMaintenenceIDs.Add(62);
+                //delInfo.UseMaintenenceIDs.Add(63);
 
-            
 
                 if (HttpContext is null)
                     return BadRequest();
-                foreach(DeleteMaintanceDTO dto in DeleteList)
-                {
-                    if (dto.MaintanceID is null)
-                        return NoContent();
+                
+                if (delInfo.MaintanceID is 0)
+                    return NoContent();
+                if(!delInfo.UseMaintenenceIDs.Any())
+                    return NoContent();
 
-                    if (String.IsNullOrWhiteSpace(dto.Note))
-                        return NoContent();
-                }
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, DeleteList);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, delInfo);
                 if (model is null)
                     return BadRequest();
 
@@ -446,20 +417,28 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        public async ValueTask<IActionResult> GetDateHistoryList()
-        //public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]string category, [FromQuery]int type)
+        //public async ValueTask<IActionResult> GetDateHistoryList()
+        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
             {
-                DateTime StartDate = DateTime.Now.AddDays(-30);
-                DateTime EndDate = DateTime.Now;
-                string Category = "전체"; // 전체
-                int type = 0; // 전체
+                //DateTime StartDate = DateTime.Now.AddDays(-30);
+                //DateTime EndDate = DateTime.Now;
+                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
+                //List<int> type = new List<int>() { 0,1}; // 전체
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, Category, type);
+                if (category is null || !category.Any())
+                    return NoContent();
+
+                if (type is null || !type.Any())
+                    return NoContent();
+
+                category.ForEach(s => s = s.Trim());
+
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type);
                 if (model is null)
                     return BadRequest();
 
@@ -484,17 +463,26 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllHistoryList")]
-        public async ValueTask<IActionResult> GetAllHistoryList([FromQuery]string category, [FromQuery]int type)
+        //public async ValueTask<IActionResult> GetAllHistoryList()
+        public async ValueTask<IActionResult> GetAllHistoryList([FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
             {
+                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
+                //List<int> type = new List<int>() { 0, 1 };
+                
                 if (HttpContext is null)
                     return BadRequest();
 
-                if (String.IsNullOrWhiteSpace(category))
+                if (category is null || !category.Any())
                     return NoContent();
 
-                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, 0);
+                if (type is null || !type.Any())
+                    return NoContent();
+
+                category.ForEach(s => s = s.Trim());
+
+                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, type);
                 if (model is null)
                     return BadRequest();
 

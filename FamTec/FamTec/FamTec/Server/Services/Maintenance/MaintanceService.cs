@@ -76,15 +76,32 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FailResult? MaintanceId = await MaintanceRepository.AddMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
-                return MaintanceId!.ReturnResult switch
+                if (dto.Type is 0) // 자체작업
                 {
-                    > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
-                    0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 },
-                    -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 },
-                    -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
-                    _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
-                };
+                    FailResult? MaintanceId = await MaintanceRepository.AddSelfMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+                    return MaintanceId!.ReturnResult switch
+                    {
+                        > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
+                        0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 },
+                        -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 },
+                        -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
+                        _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
+                    };
+                }
+                else // 외주작업
+                {
+                    if (dto.TotalPrice is 0)
+                        return new ResponseUnit<FailResult?> { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                    FailResult? MaintanceId = await MaintanceRepository.AddOutSourcingMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+
+                    return MaintanceId!.ReturnResult switch
+                    {
+                        > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
+                        -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
+                        _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -99,7 +116,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, List<DeleteMaintanceDTO> dto)
+        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, DeleteMaintanceDTO dto)
         {
             try
             {
@@ -207,7 +224,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, string category, int type)
+        public async ValueTask<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
         {
             try
             {
@@ -240,7 +257,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, string category, int type)
+        public async ValueTask<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, List<string> category, List<int> type)
         {
             try
             {

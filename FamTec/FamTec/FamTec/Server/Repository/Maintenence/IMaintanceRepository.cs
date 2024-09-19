@@ -21,11 +21,21 @@ namespace FamTec.Server.Repository.Maintenence
         ValueTask<bool> UpdateMaintenanceInfo(MaintenenceHistoryTb model);
 
         /// <summary>
-        /// 유지보수이력 추가
+        /// 유지보수이력 추가 - 자체작업
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<FailResult?> AddMaintanceAsync(AddMaintenanceDTO model, string creater, string userid, int placeid);
+        ValueTask<FailResult?> AddSelfMaintanceAsync(AddMaintenanceDTO model, string creater, string userid, int placeid);
+
+        /// <summary>
+        /// 유지보수이력 추가 - 외주작업
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="creater"></param>
+        /// <param name="userid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        ValueTask<FailResult?> AddOutSourcingMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid);
 
         /// <summary>
         /// 유지보수 사용자재 추가 출고
@@ -58,7 +68,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, string Category, int type);
+        ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, List<string> Category, List<int> type);
 
         /// <summary>
         /// 유지보수 이력 사업장별 전체
@@ -67,7 +77,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, string Category, int type);
+        ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, List<string> Category, List<int> type);
 
         /// <summary>
         /// 유지보수 상세조회
@@ -84,7 +94,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> deleteMaintenanceStoreRecord(List<DeleteMaintanceDTO> DeleteDTO, int placeid, string deleter);
+        ValueTask<bool?> deleteMaintenanceStoreRecord(DeleteMaintanceDTO DeleteDTO, int placeid, string deleter);
 
         /// <summary>
         /// 유지보수 삭제
@@ -95,14 +105,6 @@ namespace FamTec.Server.Repository.Maintenence
         /// <returns></returns>
         ValueTask<bool?> deleteMaintenanceRecord(DeleteMaintanceDTO2 dto, int placeid, string deleter);
 
-        /// <summary>
-        /// 유지보수 입-출고 품목 수정
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="placeid"></param>
-        /// <param name="updater"></param>
-        /// <returns></returns>
-        ValueTask<int?> UpdateMaintenanceUseRecord(UpdateMaintenanceMaterialDTO dto, int placeid, string updater);
 
     }
 }
