@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/select/{voocode}"
+@page "/voc/select/{voccode}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
@@ -30,18 +30,21 @@
 </div>
 
 @code {
-    [Parameter] public string voocode { get; set; }
+    [Parameter] public string voccode { get; set; }
     DetailVocDTO Voc = new DetailVocDTO();
+    List<VocCommentListDTO> VocCommentData = new List<VocCommentListDTO>();
+
 
     protected override async Task OnInitializedAsync()
     {
         await OnLoadVoc();
+        await OnLoadVocComment();
 
     }
     private async Task OnLoadVoc()
     {
         try{
-            ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Hub/VocInfo?voccode={voocode}");
+            ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Hub/VocInfo?voccode={voccode}");
             if(resVoc.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "민원 조회 실패");
@@ -53,6 +56,24 @@
         {
             Console.WriteLine("[Voc][Detail][User] 민원 조회 에러" +ex);
             await JS.InvokeVoidAsync("alert", "민원 조회 에러");
+        }
+    }
+
+    private async Task OnLoadVocComment()
+    {
+        try
+        {
+            ResponseList<VocCommentListDTO> resGet = await apiManager.GetListAsync<VocCommentListDTO>($"Hub/GetVocCommentList?voccode={voccode}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+            }
+            VocCommentData = resGet.data;
+
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
         }
     }
 

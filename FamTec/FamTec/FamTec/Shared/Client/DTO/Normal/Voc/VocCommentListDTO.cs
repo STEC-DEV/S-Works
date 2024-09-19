@@ -38,5 +38,6 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// </summary>
         public int? VocTbId { get; set; }
 
+        public List<byte[]> Images { get; set; } = new List<byte[]>();
     }
 }

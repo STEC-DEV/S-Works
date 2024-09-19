@@ -1,4 +1,5 @@
-﻿using Microsoft.Identity.Client;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -236,6 +237,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         /// 이미지
         /// </summary>
         public byte[]? Image { get; set; }
+        //public IFormFile? Image { get; set; }
+
         public string ImageName { get; set; }
 
 
@@ -292,6 +295,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
 
                 // 배열 타입은 복사된 새로운 배열을 만들어 복사합니다.
                 Image = source.Image != null ? (byte[])source.Image.Clone() : null;
+                
                 ImageName = source.ImageName;
             }
 

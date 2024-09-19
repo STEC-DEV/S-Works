@@ -1,7 +1,10 @@
 ﻿@page "/voc"
+@page "/voc/{SearchParams}"
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
+@using System.Web
+
 
 <div class="voc-container yappear">
     <div class="condition-container">
@@ -12,9 +15,12 @@
             OnMonthDataChanged="OnMonthDataChanged"
             OnSearchClicked="OnSearch"
             ListData="@VocData"
+            SelectTypes="@types"
+            SelectStatus="@states"
+            SelectLocation="@locations"
             />
     </div>
-    @if (IsSearch)
+    @if (IsSearch && SearchParams is not null)
     {
         <div class="content-container">
             <VocHIstory 
@@ -28,16 +34,43 @@
 </div>
 
 @code {
+    [Parameter]
+    public string SearchParams { get; set; }
+
+
     List<ListVocDTO> VocData = new List<ListVocDTO>();
     List<MonthVocListDTO> MonthVocData = new List<MonthVocListDTO>();
-    int DefaultOption;
+
     bool IsSearch = false;
     bool IsLoading = false;
 
+    List<int> types = new List<int>();
+    List<int> states = new List<int>();
+    List<int> locations = new List<int>();
+    string startDt = null;
+    string endDt = null;
+    int DefaultOption;
+
     protected override async Task OnInitializedAsync()
     {
-
+        //파라미터가 있는 경우에 민원 데이터 조회
+        Console.WriteLine(SearchParams);
+        if(SearchParams is not null)
+        {
+            await OnRequestVoc();
+        }
     }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //파라미터가 있는 경우에 민원 데이터 조회
+        Console.WriteLine(SearchParams);
+        if (SearchParams is not null)
+        {
+            await OnRequestVoc();
+        }
+    }
+
 
 
     private async Task OnMonthDataChanged((List<MonthVocListDTO> data, int option) changed)
@@ -61,9 +94,79 @@
 
     private async Task OnSearch()
     {
-        
+
         IsSearch = true;
-        
+
         StateHasChanged();
+    }
+
+
+    //민원 데이터 GET
+    private async Task OnRequestVoc()
+    {
+        try
+        {
+
+            OnParseQueryString();
+            string typesQueryString = string.Join("&type=", types);
+            string statusQueryString = string.Join("&status=", states);
+            string locationQueryString = string.Join("&buildingid=", locations);
+            //월별 조회
+            if (startDt == null || endDt == null)
+            {
+                Console.WriteLine("월별 조회");
+                ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+                if (resGet.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
+                    return;
+                }
+                MonthVocData = resGet.data;
+                DefaultOption = 0;
+            }
+            //기간별 조회
+            else
+            {
+                Console.WriteLine("기간별 조회");
+
+                ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"Voc/sign/GetVocFilterList?StartDate={startDt}&EndDate={endDt}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+                if (resGet.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", "기간조회 실패");
+                    return;
+                }
+                VocData = resGet.data;
+                DefaultOption = 1;
+
+            }
+            OnSearch();
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[Error][민원] voc data request error"+ ex);
+            await JS.InvokeVoidAsync("alert", "[Error][민원] voc data request error");
+        }
+    }
+
+    private void OnParseQueryString()
+    {
+        var parameters = HttpUtility.ParseQueryString(SearchParams);
+        types = ParseIntList(parameters["types"]);
+        states = ParseIntList(parameters["status"]);
+        locations = ParseIntList(parameters["locations"]);
+        startDt = parameters["startDate"];
+        endDt = parameters["endDate"];
+    }
+
+    //쉼표 구분
+    private List<int> ParseIntList(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return new List<int>();
+
+        return value.Split(',')
+                    .Select(s => int.TryParse(s, out int result) ? result : (int?)null)
+                    .Where(n => n.HasValue)
+                    .Select(n => n.Value)
+                    .ToList();
     }
 }

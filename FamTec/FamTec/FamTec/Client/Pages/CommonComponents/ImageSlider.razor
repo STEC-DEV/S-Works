@@ -1,0 +1,64 @@
+﻿
+
+<div class="slider">
+    @if(Label is not null){
+        <label class="label">
+            @Label
+        </label>
+    }
+    <div class="content">
+        <div class="left-btn" @onclick="ShowPreviousImage">
+            &lt;
+        </div>
+        <div class="img-wrap">
+            <div class="img">
+                <img src="@ImageDataUrl[CurrentImageIndex]" alt="이미지" />
+            </div>
+        </div>
+        <div class="right-btn" @onclick="ShowNextImage">
+            &gt;
+        </div>
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public List<byte[]> Images { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+
+    private List<string> ImageDataUrl = new List<string>();
+
+
+    private int CurrentImageIndex = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        ImageDataUrl.Clear(); // 매번 새로 고침할 때 초기화
+        foreach (var i in Images)
+        {
+            var base64String = Convert.ToBase64String(i);
+            ImageDataUrl.Add($"data:image/png;base64,{base64String}");
+        }
+    }
+
+    private async void ShowPreviousImage()
+    {
+        Console.WriteLine("이전 : " + CurrentImageIndex);
+        if (CurrentImageIndex > 0)
+        {
+            CurrentImageIndex--;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void ShowNextImage()
+    {
+        Console.WriteLine("다음 : " + CurrentImageIndex);
+        if (CurrentImageIndex < ImageDataUrl.Count - 1)
+        {
+            CurrentImageIndex++;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+}

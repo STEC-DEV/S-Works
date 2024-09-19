@@ -16,7 +16,7 @@
 
 @code {
     [Parameter] public DateTime CreateDate { get; set; }
-    [Parameter] public EventCallback<string> OnChanged { get; set; }
+    [Parameter] public EventCallback<DateOnly> OnChanged { get; set; }
 
     private DateTime CurrentDate = DateTime.Now;
     private string currentDate;
@@ -25,6 +25,7 @@
     private string DisplayYear;
     private string DisplayMonth;
     private string DisplayDate;
+    private DateTime dateOnly;
 
     protected override void OnInitialized()
     {
@@ -33,7 +34,8 @@
         DisplayYear = CurrentDate.ToString("yyyy");
         DisplayMonth = CurrentDate.ToString("MM");
         DisplayDate = currentDate; // 초기화
-        OnChanged.InvokeAsync(DisplayDate);
+        // OnChanged.InvokeAsync(DisplayDate);
+        OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth),1));
     }
 
     private void OnUpdateDisplayDate()
@@ -45,11 +47,12 @@
     {
         if (int.Parse(DisplayDate) > int.Parse(createDate))
         {
-            DisplayMonth = DisplayMonth == "01" ? "12" : (int.Parse(DisplayMonth) - 1).ToString("00");
+            DisplayMonth = DisplayMonth == "1" ? "12" : (int.Parse(DisplayMonth) - 1).ToString("00");
             DisplayYear = DisplayMonth == "12" ? (int.Parse(DisplayYear) - 1).ToString() : DisplayYear;
 
+            OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth), 1));
             OnUpdateDisplayDate();
-            OnChanged.InvokeAsync(DisplayDate);
+            // OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {
@@ -64,8 +67,9 @@
             DisplayMonth = DisplayMonth == "12" ? "01" : (int.Parse(DisplayMonth) + 1).ToString("00");
             DisplayYear = DisplayMonth == "01" ? (int.Parse(DisplayYear) + 1).ToString() : DisplayYear;
 
+            OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth), 1));
             OnUpdateDisplayDate();
-            OnChanged.InvokeAsync(DisplayDate);
+            // OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {

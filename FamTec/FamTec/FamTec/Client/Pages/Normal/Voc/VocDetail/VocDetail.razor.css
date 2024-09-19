@@ -19,14 +19,12 @@
 .vocdetail-container .vocdetail-info {
     flex: 1;
     width: 100%;
-    box-shadow: var(--default-bs);
+    
 }
 
 .vocdetail-container .vocdetail-comment{
     flex:2;
     width:100%;
-
-     box-shadow : var(--default-bs);
 }
 
 

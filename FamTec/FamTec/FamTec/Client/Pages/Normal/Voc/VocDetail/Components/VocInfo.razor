@@ -27,9 +27,9 @@
         </div>
         <div class="vocinfo-content">
             <div class="content-grid">
-                <TextField Label="접수 번호" Context=@Data.Code />
-                <TextField Label="발생 시각" Context=@Data.CreateDT />
-                <TextField Label="위치" Context=@Data.BuildingName />
+                <TextField2 Label="접수 번호" Value=@Data.Code Color=true/>
+                <TextField2 Label="발생 시각" Value=@Data.CreateDT Color=true />
+                <TextField2 Label="위치" Value=@Data.BuildingName Color=true />
                 @if (EditMode)
                 {
                     <InputSelectField 
@@ -39,14 +39,17 @@
                 }
                 else
                 {
-                    <TextField Label="담당 부서" Context=@Data.Type />
+                    <TextField2 Label="담당 부서" Value=@Data.Type Color=true />
                 }
-                <TextField Label="작성자" Context=@Data.CreateUser />
-                <TextField Label="전화번호" Context=@Data.Phone />
+                <TextField2 Label="작성자" Value=@Data.CreateUser Color=true />
+                <TextField2 Label="전화번호" Value=@Data.Phone Color=true />
             </div>
-            <TextField Label="제목" Context=@Data.Title />
+            <TextField2 Label="제목" Value=@Data.Title Color=true />
             <TextField Label="내용" Context=@Data.Contents Type="textarea" />
-            
+            @if(Data.Images is not null)
+            {
+                <ImageSlider Images="@Data.Images" Label="첨부파일" />
+            }
         </div>
     </div>
 </div>

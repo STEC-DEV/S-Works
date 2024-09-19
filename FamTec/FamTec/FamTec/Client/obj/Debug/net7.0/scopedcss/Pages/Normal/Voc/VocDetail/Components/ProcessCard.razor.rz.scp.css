@@ -1,34 +1,3 @@
-/*.processcard {
-    width : 100%;
-    display : flex;
-    gap : var(--default-pd);
-    padding : var(--default-pd);
-
-    border : var(--default-bd);
-    border-radius : var(--default-rd);
-
-    box-shadow : 0 0 7px 2px #b5b5b5;
-    
-}
-
-.processcard .status{
-    display : flex;
-    align-items : center;
-    padding-right : var(--default-pd);
-    border-right : var(--default-bd);
-
-    white-space :nowrap;
-
-    
-}
-.processcard .content {
-
-    display : flex;
-    flex-direction : column;
-    gap : var(--half-pd);
-    width:100%;
-    background-color : #ffffff;
-}*/
 
 .processcard[b-e9o93o5ovf] {
     width: 100%;
@@ -38,7 +7,7 @@
     padding: var(--default-pd);
     border: var(--default-bd);
     border-radius: var(--default-rd);
-    box-shadow: 0 0 7px 2px #b5b5b5;
+    box-shadow: var(--shadow-1);
 }
 
 .header[b-e9o93o5ovf]{
@@ -71,8 +40,8 @@
     height:100%;
     width:100%;
     display: flex;
-    flex-direction : column;
-    gap: var(--half-pd);
+    /*flex-direction : column;*/
+    gap: var(--default-pd);
     background-color: #ffffff;
 }
 
@@ -80,11 +49,6 @@
     display : flex;
     flex-direction:column;
     gap : var(--default-pd);
-
-    flex: 3
-}
-
-.img[b-e9o93o5ovf] {
-    flex : 2;
-    height: 200px;
+    width:100%;
+    flex: 1
 }

@@ -68,6 +68,7 @@
 }
 
 .inputfield:focus-within .label {
+    font-weight : bold
     color: var(--main-color);
 }
 

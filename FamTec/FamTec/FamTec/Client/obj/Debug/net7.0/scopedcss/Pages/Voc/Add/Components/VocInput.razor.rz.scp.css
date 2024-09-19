@@ -68,6 +68,7 @@
 }
 
 .inputfield:focus-within .label[b-t973amhyoc] {
+    font-weight : bold
     color: var(--main-color);
 }
 

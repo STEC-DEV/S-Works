@@ -54,7 +54,7 @@
 
     // protected override Task OnParametersSetAsync()
     // {
-        
+
     //     return base.OnParametersSetAsync();
     // }
 
@@ -69,7 +69,10 @@
             return;
         }
 
+
         OriginalImage.Add($"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}");
+
+
         // OriginalImage[0] = $"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}";
         EditImage = new List<string>(OriginalImage);
         Console.WriteLine(Building.Image);

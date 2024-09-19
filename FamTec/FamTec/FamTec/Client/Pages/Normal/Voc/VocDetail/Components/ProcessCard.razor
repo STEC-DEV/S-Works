@@ -1,4 +1,5 @@
-﻿@using FamTec.Client.Pages.Normal.Voc.Components
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
 
 <div class="processcard ">
@@ -19,8 +20,7 @@
             <TextField Label="처리 일시" Context="@Data.CreateDT" />
             <TextField Label="처리 내용" Context="해당 타일 교체 완료" Type="textarea"/>
         </div>
-        <div class="img">
-        </div>
+        <ImageSlider Images="@Data.Images" Label="작업 이미지"/>
     </div>
 </div>
 

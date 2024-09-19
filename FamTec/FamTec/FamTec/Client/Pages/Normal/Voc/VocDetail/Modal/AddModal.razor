@@ -65,43 +65,8 @@
     protected override async Task OnInitializedAsync()
     {
         Comment = new AddCommentDTO();
-        await LoadsessionData();
     }
 
-    private async Task LoadsessionData()
-    {
-        var handler = new JwtSecurityTokenHandler();
-
-        string encryptedSession = await customStateProvider.GetTokenAsync();
-        Console.WriteLine("Encrypted Session: " + encryptedSession);
-
-        if (handler.CanReadToken(encryptedSession))
-        {
-            var jwtSecurityToken = handler.ReadToken(encryptedSession) as JwtSecurityToken;
-
-            WriterName = jwtSecurityToken.Claims.FirstOrDefault(C => C.Type == "Name")?.Value.ToString();
-
-        }
-
-    }
-
-
-    //파일
-    private async Task OnFileChange(InputFileChangeEventArgs e)
-    {
-        browserFiles.AddRange(e.GetMultipleFiles());
-        Comment.Image = new List<byte[]>();
-        Comment.ImageName = new List<string>();
-
-        foreach (var file in browserFiles)
-        {
-            using var stream = file.OpenReadStream();
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            Comment.Image.Add(ms.ToArray());
-            Comment.ImageName.Add(file.Name);
-        }
-    }
 
     private void OnCloseModal()
     {
