@@ -98,10 +98,13 @@ namespace FamTec.Server.Repository.Voc
                 context.CommentTbs.Update(model);
                 return await context.SaveChangesAsync() > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+
+                // 파일업로드 실패를 대비해서 Throw하면 실행이 종료되니 return false로 흐름을 이어감.
+                return false;
+                //throw new ArgumentNullException();
             }
         }
     }

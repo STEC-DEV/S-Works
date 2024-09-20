@@ -14,6 +14,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         private readonly WorksContext context;
         private readonly IFileService FileService;
         private ILogService LogService;
+        private DirectoryInfo di = null;
 
         public AdminUserInfoRepository(WorksContext _context, 
             IFileService _fileservice,
@@ -367,6 +368,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             return (bool?)null;
 
                         string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                        
 
                         UserInfo.Image = files is not null ? NewFileName : null;
                         context.UsersTbs.Update(UserInfo);

@@ -789,7 +789,7 @@ namespace FamTec.Server.Services.User
                 model.Status = dto.STATUS!.Value;
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = Name;
-                    
+                
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
                     
                 if(files is not null) // 파일이 공백이 아닌경우
@@ -844,7 +844,6 @@ namespace FamTec.Server.Services.User
                 {
                     return new ResponseUnit<UsersDTO>() { message = "요청이 처리되지 않았습니다.", data = dto, code = 200 };
                 }
-              
             }
             catch(Exception ex)
             {

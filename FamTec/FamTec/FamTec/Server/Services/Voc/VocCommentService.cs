@@ -367,18 +367,6 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(Useridx) || String.IsNullOrWhiteSpace(placeId))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                
-                List<string> NewFileName = new List<string>();
-                List<string> deleteFileName = new List<string>();
-
-                if (files is not null && files.Any()) // 넘어온 파일이 있다면
-                {
-                    foreach(var file in files)
-                    {
-                        NewFileName.Add(FileService.SetNewFileName(Useridx, file)); // 새로운 파일명 생성
-                    }
-                }
-
                 // 내가 쓴건지 확인
                 CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId!.Value);
                 if(model!.UserTbId != Convert.ToInt32(Useridx))
@@ -388,98 +376,217 @@ namespace FamTec.Server.Services.Voc
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
 
+
+                // 파일처리 준비
+                List<string> NewFileName = new List<string>();
+                List<string> deleteFileName = new List<string>();
+
+                // 수정실패 시 돌려놓을 FormFile 들
+                // - 얘는 실패시 생성해야함.
+                List<IFormFile?> AddTemplist = new List<IFormFile?>();
+                // - 얘는 실패시 삭제해야함.
+                List<string> RemoveTemplist = new List<string>();
+
                 // VOC관련한 폴더 경로
                 VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, model.VocTbId);
+                di = new DirectoryInfo(VocCommentFileFolderPath);
+                if (!di.Exists) di.Create();
 
-                if(files is not null) // 파일이 공백이 아닌 경우
+                if (files is not null && files.Any()) //파일이 공백이 아닌경우
                 {
-                    if(!String.IsNullOrWhiteSpace(model.Image1)) // DB에 파일이 있을 경우
+                    for(int i=0;i<files.Count();i++)
                     {
-                        deleteFileName.Add(model.Image1); // 삭제할 이름을 넣는다.
-                    }
-                    if(!String.IsNullOrWhiteSpace(model.Image2))
-                    {
-                        deleteFileName.Add(model.Image2); // 삭제할 이름을 넣는다.
-                    }
-                    if(!String.IsNullOrWhiteSpace(model.Image3))
-                    {
-                        deleteFileName.Add(model.Image3); // 삭제할 이름을 넣는다.
-                    }
+                        var file = files[i];
 
-                    for (int i = 0; i < files.Count(); i++) // 새 파일명을 넣는다.
-                    {
-                        if(i is 0)
+                        if(i == 0) // Image1에 대한 처리
                         {
-                            model.Image1 = NewFileName[i];
+                            if(file.FileName != model.Image1)
+                            {
+                                if(!String.IsNullOrWhiteSpace(model.Image1))
+                                {
+                                    deleteFileName.Add(model.Image1);
+                                }
+
+                                // 새로운 파일명 설정
+                                string newFileName = FileService.SetNewFileName(Useridx, file);
+                                NewFileName.Add(newFileName); // 파일명 리스트에 추가
+                                model.Image1 = newFileName;   // Image1 업데이트
+
+                                RemoveTemplist.Add(newFileName);
+
+                            }
+
+                            // 넘어온 파일이 1개일 경우 Image2와 Image3를 비움.
+                            if(files.Count == 1)
+                            {
+                                if(!String.IsNullOrWhiteSpace(model.Image2))
+                                {
+                                    deleteFileName.Add(model.Image2);
+                                    model.Image2 = null;
+                                }
+                                if(!String.IsNullOrWhiteSpace(model.Image3))
+                                {
+                                    deleteFileName.Add(model.Image3);
+                                    model.Image3 = null;
+                                }
+                            }
                         }
-                        if(i is 1)
+                        else if(i == 1 && files.Count > 1) // Image2에 대한 처리 (파일이 2개일때만)
                         {
-                            model.Image2 = NewFileName[i];
+                            if(file.FileName != model.Image2)
+                            {
+                                if(!String.IsNullOrWhiteSpace(model.Image2))
+                                {
+                                    deleteFileName.Add(model.Image2);
+                                }
+
+                                string newFileName = FileService.SetNewFileName(Useridx, file);
+                                NewFileName.Add(newFileName); // 파일명 리스트에 추가
+                                model.Image2 = newFileName;   // Image2 업데이트
+
+                                RemoveTemplist.Add(newFileName);
+                            }
+
+                            if(files.Count == 2)
+                            {
+                                if(!String.IsNullOrWhiteSpace(model.Image3))
+                                {
+                                    deleteFileName.Add(model.Image3);
+                                    model.Image3 = null;
+                                }
+                            }
                         }
-                        if(i is 2)
+                        else if(i == 2 && files.Count > 2) // Image3에 대한 처리 (파일이 3개일떄만)
                         {
-                            model.Image3 = NewFileName[i];
+                            if(file.FileName != model.Image3)
+                            {
+                                if(!String.IsNullOrWhiteSpace(model.Image3))
+                                {
+                                    deleteFileName.Add(model.Image3);
+                                }
+                                string newFileName = FileService.SetNewFileName(Useridx, file);
+                                NewFileName.Add(newFileName); // 파일명 리스트에 추가
+                                model.Image3 = newFileName;   // Image3 업데이트
+
+                                RemoveTemplist.Add(newFileName);
+                            }
                         }
                     }
                 }
                 else // 파일이 공백인 경우
                 {
-                    if(!String.IsNullOrWhiteSpace(model.Image1))
+                    if (!String.IsNullOrWhiteSpace(model.Image1))
                     {
-                        deleteFileName.Add(model.Image1); // 모델의 파일명을 삭제 명단에 넣는다.
-                        model.Image1 = null; // 모델의 파일명을 비운다.
+                        deleteFileName.Add(model.Image1); // 기존 파일 삭제 목록에 추가
+                        model.Image1 = null; // 모델의 파일명 비우기
                     }
-                    if (!String.IsNullOrWhiteSpace(model.Image2)) 
+                    if (!String.IsNullOrWhiteSpace(model.Image2))
                     {
-                        deleteFileName.Add(model.Image2); // 모델의 파일명을 삭제 명단에 넣는다.
-                        model.Image2 = null; // 모델의 파일명을 비운다
+                        deleteFileName.Add(model.Image2); // 기존 파일 삭제 목록에 추가
+                        model.Image2 = null; // 모델의 파일명 비우기
                     }
                     if (!String.IsNullOrWhiteSpace(model.Image3))
                     {
-                        deleteFileName.Add(model.Image3); // 모델의 파일명을 삭제 명단에 넣는다.
-                        model.Image3 = null; // 모델의 파일명을 비운다.
+                        deleteFileName.Add(model.Image3); // 기존 파일 삭제 목록에 추가
+                        model.Image3 = null; // 모델의 파일명 비우기
                     }
                 }
 
-                bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model);
-                if(UpdateResult == true)
+                
+                // 먼저 파일 삭제 처리
+                for (int i = 0; i < deleteFileName.Count; i++) // 삭제할 파일 처리
                 {
-                    // 파일이 공백이 아닌경우
-                    if (files is not null)
+                    // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환해서 가지고있어야함.
+                    byte[]? temp = await FileService.GetImageFile(VocCommentFileFolderPath, deleteFileName[i]);
+                    // - DB 실패했을경우 IFormFile을 바이트로 변환해서 DB의 해당명칭으로 다시저장해야함.
+                    if (temp is not null)
                     {
-                        for (int i = 0; i < files.Count(); i++) // 파일 넣는다.
-                        {
-                            if(i is 0)
-                            {
-                                bool? AddFile = await FileService.AddResizeImageFile(model.Image1!, VocCommentFileFolderPath, files[i]);
-                            }
-                            if(i is 1)
-                            {
-                                bool? AddFile = await FileService.AddResizeImageFile(model.Image2!, VocCommentFileFolderPath, files[i]);
-                            }
-                            if(i is 2)
-                            {
-                                bool? AddFile = await FileService.AddResizeImageFile(model.Image3!, VocCommentFileFolderPath, files[i]);
-                            }
-                        }
+                        AddTemplist.Add(FileService.ConvertFormFiles(temp, deleteFileName[i]));
+                    }
 
-                        for (int i = 0; i < deleteFileName.Count; i++) // 삭제할거
-                        {
-                            bool DeleteFile = FileService.DeleteImageFile(VocCommentFileFolderPath, deleteFileName[i]); // 삭제
-                        }
-                    }
-                    else // 파일이 공백인 경우
+                    FileService.DeleteImageFile(VocCommentFileFolderPath, deleteFileName[i]); // 파일 삭제
+                }
+
+                // 새 파일 저장
+                if (files is not null && files.Any())
+                {
+                    for (int i = 0; i < files.Count(); i++) // 새 파일을 저장
                     {
-                        for (int i = 0; i < deleteFileName.Count; i++) // 삭제
+                        var file = files[i];
+                        if (i == 0) // Image1 처리
                         {
-                            bool DeleteFile = FileService.DeleteImageFile(VocCommentFileFolderPath, deleteFileName[i]);
+                            if (string.IsNullOrEmpty(model.Image1) || file.FileName != model.Image1)
+                            {
+                                // Image1이 없거나 기존 파일명과 다를 경우에만 파일 저장
+                                await FileService.AddResizeImageFile(model.Image1!, VocCommentFileFolderPath, file);
+                            }
+                        }
+                        else if (i == 1 && files.Count > 1) // Image2 처리
+                        {
+                            if (string.IsNullOrEmpty(model.Image2) || file.FileName != model.Image2)
+                            {
+                                // Image2가 없거나 기존 파일명과 다를 경우에만 파일 저장
+                                await FileService.AddResizeImageFile(model.Image2!, VocCommentFileFolderPath, file);
+                            }
+                        }
+                        else if (i == 2 && files.Count > 2) // Image3 처리
+                        {
+                            if (string.IsNullOrEmpty(model.Image3) || file.FileName != model.Image3)
+                            {
+                                // Image3이 없거나 기존 파일명과 다를 경우에만 파일 저장
+                                await FileService.AddResizeImageFile(model.Image3!, VocCommentFileFolderPath, file);
+                            }
                         }
                     }
+                }
+
+                // 이후 데이터베이스 업데이트
+                bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model);
+                if (UpdateResult == true)
+                {
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
-                    return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = true, code = 404 };
+                    // 여기서 파일 돌려놔야함.
+                    if (AddTemplist.Count > 0)
+                    {
+                        for (int i = 0; i < AddTemplist.Count; i++)
+                        {
+                            try
+                            {
+                                // 파일이 존재하지 않으면 저장
+                                if(FileService.IsFileExists(VocCommentFileFolderPath, AddTemplist[i].FileName) == false)
+                                {
+                                    // 파일을 저장하는 로직 (AddResizeImageFile)
+                                    await FileService.AddResizeImageFile(AddTemplist[i].FileName, VocCommentFileFolderPath, AddTemplist[i]);
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+                                throw;
+                            }
+                        }
+                    }
+
+                    if (RemoveTemplist is [_, ..])
+                    {
+                        for (int i = 0; i < RemoveTemplist.Count; i++)
+                        {
+                            try
+                            {
+                                FileService.DeleteImageFile(VocCommentFileFolderPath, RemoveTemplist[i]);
+                            }
+                            catch(Exception ex)
+                            {
+                                LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+                                throw;
+                            }
+                        }
+                    }
+
+                    return new ResponseUnit<bool?>() { message = "요청을 처리하지 못하였습니다.", data = null, code = 404 };
                 }
             }
             catch(Exception ex)

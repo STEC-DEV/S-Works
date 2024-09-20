@@ -158,26 +158,6 @@ namespace FamTec.Server.Services
                 }
 
                 return null;
-
-                /*
-                string[] FileList = Directory.GetFiles(folderpath);
-                if (FileList is [_, ..])
-                {
-                    foreach (var file in FileList)
-                    {
-                        if (file.Contains(filename))
-                        {
-                            byte[] ImageBytes = await File.ReadAllBytesAsync(file);
-                            return ImageBytes;
-                        }
-                    }
-                    return null;
-                }
-                else
-                {
-                    return null;
-                }
-                */
             }
             catch(Exception ex)
             {
@@ -246,10 +226,55 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
-
-        public Task<string?> AddImageFile(string folderpath, IFormFile files)
+    
+        /// <summary>
+        /// FormFile 변환
+        /// </summary>
+        /// <param name="Images"></param>
+        /// <returns></returns>
+        public IFormFile? ConvertFormFiles(byte[] Images, string fileName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                MemoryStream stream = new MemoryStream(Images);
+                
+                IFormFile? formFile = new FormFile(stream, 0, Images.Length, "files", fileName)
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "image/png", // 파일 타입에 맞게 수정
+                    ContentDisposition = $"form-data; name=\"files\"; filename=\"{fileName}\"; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
+                };
+
+                return formFile;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 파일존재 유무 확인 - 있으면 true 없으면 false
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public bool? IsFileExists(string _path, string _fileName)
+        {
+            try
+            {
+                string filePath = Path.Combine(_path, _fileName);
+
+                FileInfo fileInfo = new FileInfo(filePath);
+
+                return fileInfo.Exists;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return null;
+            }
         }
     }
 }

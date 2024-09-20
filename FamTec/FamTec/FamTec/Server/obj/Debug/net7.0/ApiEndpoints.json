@@ -248,6 +248,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
+    "Method": "Temp",
+    "RelativePath": "api/AdminPlace/temp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "files",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "AddManager",
     "RelativePath": "api/AdminUser/sign/AddManager",
@@ -1403,6 +1419,11 @@
       },
       {
         "Name": "SeptictankCapacity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageName",
         "Type": "System.String",
         "IsRequired": false
       },
@@ -3478,10 +3499,16 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddMaintenence",
     "RelativePath": "api/Maintenance/sign/AddMaintenance",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.AddMaintenanceDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3534,20 +3561,32 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "DeleteMaintenanceList",
     "RelativePath": "api/Maintenance/sign/DeleteMaintenanceList",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO2",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
-    "Method": "DeleteMaintanceHistory",
+    "Method": "DeleteMaintenanceStore",
     "RelativePath": "api/Maintenance/sign/DeleteMaintenanceStore",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "delInfo",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.DeleteMaintanceDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3557,7 +3596,18 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "category",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3567,7 +3617,28 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "StartDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "category",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -5465,36 +5536,6 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
-      {
-        "Name": "VocCommentId",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "Content",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Status",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "CreateDT",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "CreateUser",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Images",
-        "Type": "System.Collections.Generic.List\u00601[[System.Byte[], System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
       {
         "Name": "files",
         "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",

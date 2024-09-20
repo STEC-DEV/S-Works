@@ -48,5 +48,20 @@
         /// <returns></returns>
         public bool DeleteImageFile(string folderPath, string filename);
 
+        /// <summary>
+        /// byte[] => IFormFile로 변환
+        /// </summary>
+        /// <param name="Images"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public IFormFile? ConvertFormFiles(byte[] Images, string fileName);
+
+        /// <summary>
+        /// 파일존재 유무 확인 - 있으면 true 없으면 false
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public bool? IsFileExists(string _path, string _fileName);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace FamTec.Shared.Server.DTO.Building.Building
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>
     /// 건물 상세정보 DTO
@@ -228,9 +230,14 @@
         public string? SeptictankCapacity { get; set; }
 
         /// <summary>
+        /// 이미지 명칭
+        /// </summary>
+        public string? ImageName { get; set; }
+        /// <summary>
         /// 이미지
         /// </summary>
         public byte[]? Image { get; set; }
+        //public IFormFile? Image { get; set; }
 
     }
 }

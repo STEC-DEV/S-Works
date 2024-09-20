@@ -3,6 +3,9 @@ using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
+using System.Collections;
+using System.IO;
+using System.Text;
 
 namespace FamTec.Server.Services.Building
 {
@@ -417,7 +420,17 @@ namespace FamTec.Server.Services.Building
                 string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
-                    dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image);
+                    byte[]? Images = await FileService.GetImageFile(PlaceFileName, model.Image);
+
+                    //var stream = new MemoryStream(Images);
+                    //IFormFile formFile = new FormFile(stream, 0, Images.Length, "files", model.Image)
+                    //{
+                    //    Headers = new HeaderDictionary(),
+                    //    ContentType = "image/png", // 파일 타입에 맞게 수정
+                    //    ContentDisposition = $"form-data; name=\"files\"; filename=\"{model.Image}\"; filename*=UTF-8''{Uri.EscapeDataString(model.Image)}"
+                    //};
+                    dto.ImageName = model.Image;
+                    dto.Image = Images;
                 }
 
                 return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
