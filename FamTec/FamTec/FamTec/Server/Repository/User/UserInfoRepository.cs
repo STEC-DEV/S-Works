@@ -96,40 +96,67 @@ namespace FamTec.Server.Repository.User
         /// <returns></returns>
         public async ValueTask<bool?> AddUserList(List<UsersTb> UserList)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
-                    {
-                        await context.UsersTbs.AddRangeAsync(UserList);
+                    await context.UsersTbs.AddRangeAsync(UserList);
 
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (AddResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
-                    }
-                    catch (Exception ex)
+                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (AddResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+            #region 수정전
+
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        await context.UsersTbs.AddRangeAsync(UserList);
+
+            //                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (AddResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+            #endregion
         }
 
 
@@ -190,58 +217,103 @@ namespace FamTec.Server.Repository.User
         /// <returns></returns>
         public async ValueTask<bool?> DeleteUserInfo(List<int> delIdx, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    foreach (int UserId in delIdx)
                     {
-                        foreach (int UserId in delIdx)
+                        UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
+                        if (UserTB is not null)
                         {
-                            UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
-                            if (UserTB is not null)
-                            {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                UserTB.UserId = $"{UserTB.UserId}_{UserTB.Id}";
-                                UserTB.DelYn = true;
-                                UserTB.DelDt = DateTime.Now;
-                                UserTB.DelUser = deleter;
-                                context.UsersTbs.Update(UserTB);
-                            }
-                            else
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
-                        }
-
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (UpdateResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            UserTB.UserId = $"{UserTB.UserId}_{UserTB.Id}";
+                            UserTB.DelYn = true;
+                            UserTB.DelDt = DateTime.Now;
+                            UserTB.DelUser = deleter;
+                            context.UsersTbs.Update(UserTB);
                         }
                         else
                         {
                             await transaction.RollbackAsync();
                             return false;
                         }
+                    }
 
-                    }
-                    catch (Exception ex)
+                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (UpdateResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
                     }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+            #region 수정전
+
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        foreach (int UserId in delIdx)
+            //                        {
+            //                            UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
+            //                            if (UserTB is not null)
+            //                            {
+            //                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+            //                                UserTB.UserId = $"{UserTB.UserId}_{UserTB.Id}";
+            //                                UserTB.DelYn = true;
+            //                                UserTB.DelDt = DateTime.Now;
+            //                                UserTB.DelUser = deleter;
+            //                                context.UsersTbs.Update(UserTB);
+            //                            }
+            //                            else
+            //                            {
+            //                                await transaction.RollbackAsync();
+            //                                return false;
+            //                            }
+            //                        }
+
+            //                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (UpdateResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+            #endregion
         }
 
 

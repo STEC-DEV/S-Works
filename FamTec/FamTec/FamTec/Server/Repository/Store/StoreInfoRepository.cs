@@ -11,7 +11,8 @@ namespace FamTec.Server.Repository.Store
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public StoreInfoRepository(WorksContext _context, ILogService _logservice)
+        public StoreInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

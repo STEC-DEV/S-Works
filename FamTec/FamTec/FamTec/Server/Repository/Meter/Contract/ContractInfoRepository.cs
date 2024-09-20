@@ -10,7 +10,8 @@ namespace FamTec.Server.Repository.Meter.Contract
         private readonly WorksContext context;
         private ILogService LogServce;
 
-        public ContractInfoRepository(WorksContext _context, ILogService _logservice)
+        public ContractInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogServce = _logservice;

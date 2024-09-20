@@ -3,8 +3,6 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Material
 {
@@ -79,40 +77,67 @@ namespace FamTec.Server.Repository.Material
         /// <returns></returns>
         public async ValueTask<bool?> AddMaterialList(List<MaterialTb> MaterialList)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
-                    {
-                        await context.MaterialTbs.AddRangeAsync(MaterialList);
+                    await context.MaterialTbs.AddRangeAsync(MaterialList);
 
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (AddResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
-                    }
-                    catch (Exception ex)
+                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (AddResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+            #region 수정전
+
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        await context.MaterialTbs.AddRangeAsync(MaterialList);
+
+            //                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (AddResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+            #endregion
         }
 
         /// <summary>
@@ -276,62 +301,112 @@ namespace FamTec.Server.Repository.Material
         /// <exception cref="NotImplementedException"></exception>
         public async ValueTask<bool?> DeleteMaterialInfo(List<int> delidx, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    foreach (int delId in delidx)
                     {
-                        foreach (int delId in delidx)
+                        MaterialTb? MaterialTB = await context.MaterialTbs
+                            .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+
+                        if (MaterialTB is not null)
                         {
-                            MaterialTb? MaterialTB = await context.MaterialTbs
-                                .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            MaterialTB.Code = $"{MaterialTB.Code}_{MaterialTB.Id}";
+                            MaterialTB.DelYn = true;
+                            MaterialTB.DelDt = DateTime.Now;
+                            MaterialTB.DelUser = deleter;
 
-                            if (MaterialTB is not null)
-                            {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                MaterialTB.Code = $"{MaterialTB.Code}_{MaterialTB.Id}";
-                                MaterialTB.DelYn = true;
-                                MaterialTB.DelDt = DateTime.Now;
-                                MaterialTB.DelUser = deleter;
-
-                                context.MaterialTbs.Update(MaterialTB);
-                            }
-                            else
-                            {
-                                // 잘못된 조회결과 (롤백)
-                                await transaction.RollbackAsync();
-                                return (bool?)null;
-                            }
-                        }
-
-                        bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (MaterialResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
+                            context.MaterialTbs.Update(MaterialTB);
                         }
                         else
                         {
-                            // 업데이트 실패시 롤백
+                            // 잘못된 조회결과 (롤백)
                             await transaction.RollbackAsync();
-                            return false;
+                            return (bool?)null;
                         }
                     }
-                    catch (Exception ex)
+
+                    bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (MaterialResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        // 업데이트 실패시 롤백
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+
+            #region 수정전
+
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        foreach (int delId in delidx)
+            //                        {
+            //                            MaterialTb? MaterialTB = await context.MaterialTbs
+            //                                .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+
+            //                            if (MaterialTB is not null)
+            //                            {
+            //                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+            //                                MaterialTB.Code = $"{MaterialTB.Code}_{MaterialTB.Id}";
+            //                                MaterialTB.DelYn = true;
+            //                                MaterialTB.DelDt = DateTime.Now;
+            //                                MaterialTB.DelUser = deleter;
+
+            //                                context.MaterialTbs.Update(MaterialTB);
+            //                            }
+            //                            else
+            //                            {
+            //                                // 잘못된 조회결과 (롤백)
+            //                                await transaction.RollbackAsync();
+            //                                return (bool?)null;
+            //                            }
+            //                        }
+
+            //                        bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (MaterialResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            // 업데이트 실패시 롤백
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+            #endregion
         }
 
         /// <summary>
