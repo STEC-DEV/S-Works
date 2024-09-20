@@ -1,6 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Location
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 @using FamTec.Shared.Server.DTO
@@ -60,14 +61,14 @@
 </div>
 
 @code {
-    [Parameter] public AddStoreDTO AddItem { get; set; }
+    [Parameter] public MaterialDTO AddItem { get; set; }
     [Parameter] public int MaterialId{ get; set; }
-    // [Parameter] public EventCallback<OutContentDTO> ValueChaged { get; set; }
-    [Parameter] public EventCallback<AddStoreDTO> ValueChaged { get; set; }
+    [Parameter] public EventCallback<MaterialDTO> AddItemChanged { get; set; }
+    
 
     List<BuildingNameDTO> Building = new List<BuildingNameDTO>();
     BuildingFloorListDTO SelectedBuilding;
-    OutContentDTO OutData = new OutContentDTO();
+ 
 
     List<LocationMaterialListDTO> LocationMaterial;
 
@@ -82,14 +83,13 @@
     {
         SelectedBuildingId = 0;
         SelectedRoomId = 0;
-        AddItem = new AddStoreDTO();
         await OnLoadBuilding();
     }
 
     protected override async Task OnParametersSetAsync()
     {
 
-        // StateHasChanged(); // UI 업데이트 강제
+        StateHasChanged(); // UI 업데이트 강제
     }
 
     private async Task OnLoadBuilding()
@@ -165,21 +165,19 @@
         AddItem.RoomID = 0;
         AddItem.RoomID = locationId;
         Console.WriteLine("위치 " + locationId);
+        Console.WriteLine("위치임 " + AddItem.RoomID);
+        Console.WriteLine("수량 " + AddItem.Num);
         _usageMaterialNum = LocationMaterial.FirstOrDefault(r => r.RoomId == locationId)?.Num;
 
-        await ValueChaged.InvokeAsync(AddItem);
+        StateHasChanged();
     }
 
 
-    private async void OnValueChange()
-    {
-        
-    }
 
     //내용 초기화
     public void ResetForm()
     {
-        AddItem = new AddStoreDTO();
+        AddItem = new MaterialDTO();
         StateHasChanged();
     }
 }

@@ -22,6 +22,11 @@
     border-bottom : var(--default-bd);
 }
 
+.options{
+    display :flex;
+    gap:var(--half-pd);
+}
+
 .title {
     display: flex;
     align-items: center;
@@ -36,37 +41,3 @@
     gap : var(--wide-pd);
     
 }
-
-/*.filter-item{
-    display : flex;
-    gap : var(--half-pd);
-}
-
-.inputcheck{
-    display : flex;
-    align-items: center;
-    gap: var(--default-pd);
-}
-
-.label{*/
-    /*font-size: var(--normal-size);*/
-    /*font-weight: var(--bold-wt);
-    color: var(--main-color);
-    white-space: nowrap;
-}
-
-.item-wrap{
-    display : flex;
-    gap : var(--default-pd);
-}
-
-.name{*/
-    /*font-weight : var(--bold-wt);*/
-    /*color : var(--main-color);
-}
-
-.item{
-    display : flex;
-    align-items :center;
-    gap : var(--half-pd);
-}*/

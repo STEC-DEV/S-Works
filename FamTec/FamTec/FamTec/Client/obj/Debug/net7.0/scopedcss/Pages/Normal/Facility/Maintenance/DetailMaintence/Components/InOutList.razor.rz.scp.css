@@ -20,6 +20,11 @@
     border-bottom : var(--default-bd);
 }
 
+.option[b-3v5w77a3w0]{
+    display :flex;
+    gap : var(--half-pd);
+}
+
 .title[b-3v5w77a3w0] {
     display: flex;
     align-items: center;

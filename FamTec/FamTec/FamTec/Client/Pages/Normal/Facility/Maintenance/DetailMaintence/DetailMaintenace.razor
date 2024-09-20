@@ -2,6 +2,7 @@
 @inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Components
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 @using FamTec.Shared.Server.DTO
@@ -18,7 +19,7 @@
             <SearchMaterial @bind-Data=@SelectMaterial EditMode=_useMaterialEditMode/>
             @if (SelectMaterial.Id != 0)
             {
-                <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore"/>
+                <OutForm MaterialId="SelectMaterial.Id" @bind-AddItem="@addMaterial" />
                 <div class="btn">
                     <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
                 </div>
@@ -29,6 +30,7 @@
             EditMode=_useMaterialEditMode 
             OnEdit="OnEdit"
             OnLoadMaintenance="OnLoadMaintenance"
+            MaintenanceId=MaintenanceId
             />
     }
 
@@ -38,8 +40,7 @@
     [Parameter] public string FacType { get; set; }
     [Parameter] public int FacId { get; set; }
     [Parameter] public int MaintenanceId {get;set;}
-    // AddMaintenanceDTO Maintenance = new AddMaintenanceDTO();
-    AddStoreDTO MaintenanceStore = new AddStoreDTO();
+
     MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
 
 
@@ -52,7 +53,7 @@
 
     //=====사용자재추가=======
     AddMaintetanceMaterialDTO AddMaintenance = new AddMaintetanceMaterialDTO();
-
+    MaterialDTO addMaterial = new MaterialDTO();
 
 
     //사용자재 목록 편집 상태 변수
@@ -79,6 +80,7 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
+
             Maintenance = new DetailMaintenanceDTO(resGet.data);
             Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
 
@@ -89,53 +91,43 @@
         }
     }
 
-
-
-
-
-
-
-    //출고 목록데이터 받아오는 함수
-    //출고 데이터 목록에 추가
+    //추가항목 추가
     private async Task OnAddMaterial()
     {
         try
         {
-            Console.WriteLine("추가 할 자재명 : " + SelectMaterial.Name);
-            Console.WriteLine("출고 위치 : " + MaintenanceStore.RoomID);
-            Console.WriteLine("출고 수량 : " + MaintenanceStore.Num);
-            if (MaintenanceStore.Num == 0 ||
+            if (addMaterial.Num == 0 ||
                 SelectMaterial.Id == 0 ||
-                MaintenanceStore.RoomID == 0
+                addMaterial.RoomID == 0
             )
             {
                 await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
-                MaintenanceStore = new AddStoreDTO();
+                addMaterial = new MaterialDTO();
                 StateHasChanged();
                 return;
             }
             await OnSum();
 
-            Console.WriteLine("유지보수 아이디 : " + AddMaintenance.MaintanceID);
-            Console.WriteLine("사용 자재 : " + AddMaintenance.MaterialList[0].MaterialID);
-            Console.WriteLine("위치 : " + AddMaintenance.MaterialList[0].RoomID);
-            Console.WriteLine("단가: " + AddMaintenance.MaterialList[0].UnitPrice);
-            Console.WriteLine("수량 : " + AddMaintenance.MaterialList[0].Num);
-            Console.WriteLine("총금액: " + AddMaintenance.MaterialList[0].TotalPrice);
+            ResponseUnit<FailResult> resPost = await apiManager.PostAsync<FailResult>("Maintenance/sign/AddSupMaintenance", AddMaintenance);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            if(resPost.data.ReturnResult == 422)
+            {
+                await JS.InvokeVoidAsync("alert", "현재 수량이 부족합니다.");
+                return;
+            }
 
-            // ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("Maintenance/sign/AddSupMaintenance", AddMaintenance);
-            // if(resPost.code != 200)
-            // {
-            //     await JS.InvokeVoidAsync("alert", resPost.message);
-            //     return;
-            // }
-            // OnLoadMaintenance();
-            // StateHasChanged();
+            await OnLoadMaintenance();
+            StateHasChanged();
 
         }
         catch (Exception ex)
         {
-
+            Console.WriteLine("[유지보수][사용자재] 추가 에러");
+            await JS.InvokeVoidAsync("alert", "[유지보수][사용자재] 추가 에러");
         }
     }
 
@@ -145,11 +137,9 @@
         AddMaintenance.MaintanceID = MaintenanceId;
         MaterialDTO tempMaterial = new MaterialDTO();
         tempMaterial.MaterialID = SelectMaterial.Id;
-        tempMaterial.RoomID = MaintenanceStore.RoomID;
-        tempMaterial.Num = MaintenanceStore.Num;
-        tempMaterial.UnitPrice = MaintenanceStore.UnitPrice;
-        tempMaterial.TotalPrice = MaintenanceStore.TotalPrice;
-        tempMaterial.Note = MaintenanceStore.Note;
+        tempMaterial.RoomID = addMaterial.RoomID;
+        tempMaterial.Num = addMaterial.Num;
+        tempMaterial.Note = addMaterial.Note;
         AddMaintenance.MaterialList.Add(tempMaterial);
     }
 

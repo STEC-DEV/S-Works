@@ -6,13 +6,35 @@
     table-layout:auto;
 }
 
-.table .thead{
+/*.table .thead{
     background-color : var(--default-color);
     position:sticky;
     top:0;
     display: table-header-group;
     width:100%;
 }
+*/
+
+.table .thead{
+    position:sticky;
+    top:0;
+}
+
+.table .tr{
+    background-color : var(--main-color)
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
 
 .table .tr{
     width:100%;
@@ -20,7 +42,7 @@
 
 .table .th{
     text-align : left;
-    border-bottom : 2px solid #ddd;
+    /*border-bottom : 2px solid #ddd;*/
     padding : 0 var(--half-pd);
 }
 
@@ -31,14 +53,14 @@
 .table th>span{
     display : inline-block;
 
-    font-size : 0.9rem;
+    font-size : var(--normal-size);
     font-weight : var(--bold-wt);
-    color : var(--main-color);
+    color : var(--default-color);
 
-    padding : var(--half-pd);
+    /*padding : var(--half-pd);*/
+    padding: var(--three-q-pd) var(--half-pd);
 
-
-    border-bottom : 2px solid #C2C2C2;
+    /*border-bottom : 2px solid #C2C2C2;*/
 }
 
 .table .tbody{

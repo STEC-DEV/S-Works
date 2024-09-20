@@ -9,27 +9,27 @@
         <tr class="tr">
             <th class="th">
                 <span>
-                    User
+                    사용자
                 </span>
             </th>
             <th class="th text-center">
                 <span>
-                    Type
+                    부서
                 </span>
             </th>
             <th class="th">
                 <span>
-                    Email
+                    이메일
                 </span>
             </th>
             <th class="th">
                 <span>
-                    Created
+                    생성 일자
                 </span>
             </th>
             <th class="th text-center">
                 <span>
-                    Status
+                    상태
                 </span>
             </th>
             @if (USEREDIT)
@@ -103,7 +103,7 @@
                     </td>
                     @if (USEREDIT)
                     {
-                        <td class="td">
+                        <td class="td text-center">
                             <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))" />
                         </td>
                     }

@@ -6,16 +6,19 @@
 
 
 <div class="fac-container">
-    <div class="fac-header">
-        <span class="title">
-            @title 설비
-        </span>
-        <div>
-            <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
-            <Button Name="삭제" Width=true Type=1 />
+    <div class="fac-wrap">
+        <div class="fac-header">
+            <span class="title">
+                @title 설비
+            </span>
+            <div>
+                <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
+                <Button Name="삭제" Width=true Type=1 />
+            </div>
         </div>
+        <FacilityTable ListData="ListFacility" FacType="@FacType" />
     </div>
-    <FacilityTable ListData="ListFacility" FacType="@FacType" />
+    
 </div>
 
 @code {

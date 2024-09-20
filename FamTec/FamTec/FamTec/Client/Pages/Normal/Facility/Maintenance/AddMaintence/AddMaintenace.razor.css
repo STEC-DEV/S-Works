@@ -7,3 +7,12 @@
     padding: var(--default-pd);
 }
 
+.btn {
+    display: flex;
+    justify-content: center;
+}
+
+.btns {
+    display: flex;
+    justify-content: right;
+}

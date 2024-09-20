@@ -16,7 +16,7 @@
                 @if (_editMode)
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
-                    @if(checkedMaintenance.Count != 0)
+                    @if (DelMaintenance.MaintanceID.Count != 0)
                     {
                         <Button Name="삭제" Width=true Type="1" OnClick="OnDelMode" />
                     }
@@ -47,7 +47,7 @@
     {
         <ModalBackground>
             <ChildComponent>
-                <DeleteNote  OnClick="OnDelMode"/>
+                <DeleteNote Message="@DelMessage" OnDel="OnDeleteMaintenance" OnClick="OnDelMode" />
             </ChildComponent>
         </ModalBackground>
     }
@@ -56,12 +56,15 @@
 @code {
     [Parameter] public int Id{ get; set; }
     [Parameter] public string FacType{ get; set; }
-    // List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
+
     List<MaintenanceListDTO> ListData;
     private bool _editMode = false;
     private bool _isDel = false;
     List<int?> checkedMaintenance = new List<int?>();
 
+
+    DeleteMaintenanceDTO DelMaintenance = new DeleteMaintenanceDTO();
+    string DelMessage="";
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,21 +100,51 @@
         }
     }
 
+
+    private async Task OnDeleteMaintenance()
+    {
+        try
+        {
+            if (DelMaintenance.MaintanceID.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 항목이 존재하지 않습니다.");
+                return;
+            }
+            DelMaintenance.Note = DelMessage;
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("Maintenance/sign/DeleteMaintenanceList", DelMaintenance);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                OnDelMode();
+                return;
+            }
+            await OnLoadMaintenance();
+            OnDelMode();
+            StateHasChanged();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[설비][유지보수] 삭제 에러 " + ex);
+            await JS.InvokeVoidAsync("alert", "[설비][유지보수] 삭제 에러");
+        }
+    }
+
     private void OnCheck((bool isCheck, MaintenanceListDTO checkdata) data)
     {
         if (data.isCheck)
         {
-            checkedMaintenance.Add(data.checkdata.ID);
+            DelMaintenance.MaintanceID.Add(data.checkdata.ID.Value);
         }
         else
         {
-            checkedMaintenance.Remove(data.checkdata.ID);
+            DelMaintenance.MaintanceID.Remove(data.checkdata.ID.Value);
         }
     }
 
 
     private void OnEdit()
     {
+        DelMaintenance.MaintanceID.Clear();
         _editMode = !_editMode;
     }
 

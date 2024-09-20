@@ -1,4 +1,8 @@
 ﻿.fac-container {
+    padding : var(--default-pd);
+}
+
+.fac-wrap{
     display : flex;
     flex-direction : column;
     gap : var(--default-pd);
