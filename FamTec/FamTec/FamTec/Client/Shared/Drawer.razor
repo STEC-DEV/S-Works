@@ -7,29 +7,39 @@
         @foreach (var category in CategoryList)
         {
             <li class="drawer-item">
-                <NavLink class="drawer-link"
-                            href="@(category.SubCategory == null ? category.Url : null)"
-                            @onclick="() => ToggleDropdown(category)">
-                    <span class="category-title">@category.Name</span>
+                @if(category.Url == null)
+                {
+                    <NavLink class="drawer-link none">
+                        <span class="category-title">@category.Name</span>
+                    </NavLink>
+                }
+                else
+                {
+                    <NavLink class="drawer-link"
+                             href="@(category.SubCategory == null ? category.Url : null)"
+                             @onclick="() => ToggleDropdown(category)">
+                        <span class="category-title">@category.Name</span>
+                        @if (category.SubCategory != null)
+                        {
+                            <span class="arrow">∨</span>
+                        }
+                    </NavLink>
+
                     @if (category.SubCategory != null)
                     {
-                        <span class="arrow">∨</span>
+                        <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
+                            @foreach (var subcategory in category.SubCategory)
+                            {
+                                <li class="drawer-sub-item">
+                                    <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
+                                        <span class="category-title">@subcategory.Name</span>
+                                    </NavLink>
+                                </li>
+                            }
+                        </ul>
                     }
-                </NavLink>
-
-                @if (category.SubCategory != null)
-                {
-                    <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
-                        @foreach (var subcategory in category.SubCategory)
-                        {
-                            <li class="drawer-sub-item">
-                                <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
-                                    <span class="category-title">@subcategory.Name</span>
-                                </NavLink>
-                            </li>
-                        }
-                    </ul>
                 }
+                
             </li>
         }
     </ul>
@@ -142,14 +152,6 @@
             new Category
             {
                 Name = "에너지 관리",
-                Url = "/basic",
-                SubCategory = new List<Category>
-                {
-                    new Category { Name = "건물 정보", Url = "/buildings" },
-                    new Category { Name = "위치 관리", Url = "/locations" },
-                    new Category { Name = "단위 관리", Url = "/units"  },
-
-                }
             },
             new Category
             {

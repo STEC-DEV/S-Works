@@ -35,17 +35,35 @@
     font-weight : var(--bold-wt);
 }
 
+.drawer-container ::deep .none{
+    background-color : #f2f2f2;
+}
+
+.drawer-container ::deep .none .category-title{
+    color : #b7b7b7;
+}
+
+
 .drawer-container ::deep .drawer-link:hover {
     transition: all ease-in-out 0.2s;
     border-radius: var(--default-rd);
     background-color: var(--main-color);
 }
+.drawer-container ::deep .none:hover{
+    background-color : #f2f2f2;
+    border-radius: 0;
+}
+
+
+
 
 .drawer-container ::deep .drawer-link:hover .category-title {
     transition: all ease-in-out 0.2s;
     color: var(--default-color);
 }
-
+.drawer-container ::deep .none:hover .category-title{
+     color : #b7b7b7;
+}
 .drawer-container .arrow {
     width: min-content;
 }
