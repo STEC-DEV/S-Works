@@ -66,6 +66,11 @@
         public string? RoomName { get; set; }
 
         /// <summary>
+        /// 이미지 파일명
+        /// </summary>
+        public string? ImageName { get; set; }
+
+        /// <summary>
         /// 이미지
         /// </summary>
         public byte[]? Image { get; set; }

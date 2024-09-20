@@ -483,7 +483,10 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     }
 
                     // 파일삭제
-                    FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
+                    if (!String.IsNullOrWhiteSpace(deleteFileName))
+                    {
+                        FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
+                    }
 
                     // 새 파일 저장
                     if(files is not null)

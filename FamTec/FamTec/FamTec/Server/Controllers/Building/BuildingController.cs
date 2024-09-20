@@ -301,17 +301,21 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBuilding")]
-        public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
+        //public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
+                DetailBuildingDTO dto = new DetailBuildingDTO();
+                dto.ID = 12;
+                dto.Name = "C건물";
+
+
+
                 if (HttpContext is null)
                     return BadRequest();
 
                 if (dto.ID is null)
-                    return NoContent();
-
-                if (String.IsNullOrWhiteSpace(dto.Code))
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Name))

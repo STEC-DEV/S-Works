@@ -174,7 +174,8 @@ namespace FamTec.Server.Services.Facility.Type.Fire
 
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
-                    dto.Image = await FileService.GetImageFile(FireFileFolderPath, model.Image);
+                    dto.ImageName = model.Image; // 이미지 파일명
+                    dto.Image = await FileService.GetImageFile(FireFileFolderPath, model.Image); // 이미지 Byte[]
                 }
 
                 return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -190,6 +191,16 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         {
             try
             {
+                // 파일처리 준비
+                string? NewFileName = String.Empty;
+                string? deleteFileName = String.Empty;
+
+                // 수정실패 시 돌려놓을 FormFile
+                IFormFile? AddTemp = default;
+
+
+
+
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -200,8 +211,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string? NewFileName = String.Empty;
-                string? deleteFileName = String.Empty;
+                
 
                 if (files is not null)
                 {

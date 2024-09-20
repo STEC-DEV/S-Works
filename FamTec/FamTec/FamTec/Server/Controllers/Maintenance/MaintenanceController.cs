@@ -36,9 +36,9 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/AddSupMaintenance")]
-        public async ValueTask<IActionResult> AddSupMaintenance(AddMaintanceMaterialDTO dto)
+        public async ValueTask<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
         {
             try
             {
