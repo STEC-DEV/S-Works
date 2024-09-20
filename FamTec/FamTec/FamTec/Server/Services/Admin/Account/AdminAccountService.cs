@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Admin.AdminUser;
+﻿using DocumentFormat.OpenXml.EMMA;
+using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
@@ -408,7 +409,8 @@ namespace FamTec.Server.Services.Admin.Account
                 string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
                 if(!String.IsNullOrWhiteSpace(usertb.Image))
                 {
-                    dto.Image = await FileService.GetImageFile(AdminFileName, usertb.Image);
+                    dto.ImageName = usertb.Image; // 이미지명
+                    dto.Image = await FileService.GetImageFile(AdminFileName, usertb.Image); // 이미지 Byte[]
                 }
                 
                 return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };

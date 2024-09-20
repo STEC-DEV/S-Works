@@ -57,6 +57,11 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         public string? Department { get; set; }
 
         /// <summary>
+        /// 이미지 명칭
+        /// </summary>
+        public string? ImageName { get; set; }
+
+        /// <summary>
         /// 관리자 이미지
         /// </summary>
         public byte[]? Image { get; set; }

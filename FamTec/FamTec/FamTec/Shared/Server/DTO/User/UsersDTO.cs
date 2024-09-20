@@ -168,6 +168,11 @@
         public bool? VOC_ETC { get; set; } = false;
 
         /// <summary>
+        /// 이미지 파일명
+        /// </summary>
+        public string? ImageName { get; set; }
+
+        /// <summary>
         /// 이미지 원본
         /// </summary>
         public byte[]? Image { get; set; }

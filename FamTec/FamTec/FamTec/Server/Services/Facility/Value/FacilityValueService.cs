@@ -111,9 +111,6 @@ namespace FamTec.Server.Services.Facility.Value
                 if(ItemValueTb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-
-
-
                 ItemValueTb.DelDt = DateTime.Now;
                 ItemValueTb.DelUser = creater;
                 ItemValueTb.DelYn = true;

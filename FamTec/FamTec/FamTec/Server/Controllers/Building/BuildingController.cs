@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Repository.Building;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
@@ -301,16 +300,14 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBuilding")]
-        public async ValueTask<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
-        //public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
+        //public async ValueTask<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
+        public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
-                DetailBuildingDTO dto = new DetailBuildingDTO();
-                dto.ID = 12;
-                dto.Name = "C건물";
-
-
+                //DetailBuildingDTO dto = new DetailBuildingDTO();
+                //dto.ID = 12;
+                //dto.Name = "C건물";
 
                 if (HttpContext is null)
                     return BadRequest();
