@@ -1,6 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Voc.Components
-@typeparam T
+@using FamTec.Shared.Client.DTO.Normal.Voc
+
 @inject NavigationManager NavigationManager
 
 <table class="table">
@@ -58,34 +59,34 @@
         {
             @foreach(var row in ListData)
             {
-                var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+                @* var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
                 int id = int.Parse(sid);
+ *@
 
-
-                <tr class="tbody-tr" @onclick="() => OnDeatail(id)">
+                <tr class="tbody-tr" @onclick="() => OnDeatail(row.Id)">
                     <td class="td">
-                        @typeof(T).GetProperty("BuildingName")?.GetValue(row)?.ToString()
+                        @row.BuildingName
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
+                        @OnConvertType(row.Type)
                     </td>
                     @* <td class="td">
                         @typeof(T).GetProperty("Writer")?.GetValue(row)?.ToString()
                     </td> *@
                     <td class="td">
-                        @typeof(T).GetProperty("Title")?.GetValue(row)?.ToString()
+                        @row.Title
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("CreateDT")?.GetValue(row)?.ToString()
+                        @row.CreateDT
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("CompleteDT")?.GetValue(row)?.ToString()
+                        @row.CompleteDT
                     </td>
                     <td class="td">
-                        @typeof(T).GetProperty("DurationDT")?.GetValue(row)?.ToString()
+                        @row.CompleteDT
                     </td>
                     <td class="td">
-                        <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
+                        <StatusCard Status=@row.Status.ToString() />
                     </td>
                 </tr>
             }
@@ -95,9 +96,28 @@
 </table>
 
 @code {
-    [Parameter] public List<T> ListData { get; set; }
+    [Parameter] public List<ListVocDTO> ListData { get; set; }
 
-    private void OnDeatail(int Id)
+    private string _type;
+
+    private string OnConvertType(int? type)
+    {
+        return type switch
+        {
+            0 => "미분류",
+            1 => "기계",
+            2 => "전기",
+            3 => "승강",
+            4 => "소방",
+            5 => "건물",
+            6 => "통신",
+            7 => "미화",
+            8 => "보안",
+        };
+    }
+
+
+    private void OnDeatail(int? Id)
     {
         NavigationManager.NavigateTo($"/voc/{Id}");
     }

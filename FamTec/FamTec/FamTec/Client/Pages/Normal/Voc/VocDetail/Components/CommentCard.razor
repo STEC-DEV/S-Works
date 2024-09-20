@@ -1,11 +1,24 @@
-﻿
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
-<div>
 
+<div class="comment">
+    <div class="header">
+        <span>
+            @Data.CreateUser
+        </span>
+        <StatusCard Status="@Data.Status.ToString()"/>
+    </div>
+    <div class="content">
+        <TextField2 Label="처리 일시" Value="@Data.CreateDT" Color=true />
+        <TextField2 Label="처리 내용" Value="@Data.Comment" Color=true />
+        <ImageSlider Label="이미지" Images="@Data.Images"/>
+    </div>
 </div>
 
 @code {
-
+    [Parameter] public VocCommentListDTO Data { get;set; }
 }
 
 

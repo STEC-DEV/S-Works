@@ -1,0 +1,147 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            사용자재(@UseMaterial.MaterialName) 수정
+        </span>
+    </div>
+    <div class="content">
+        <div class="list">
+            <span class="label">
+                입출고 내역
+            </span>
+            <div class="list-wrap">
+                <div class="ul-head">
+                    <span>
+                        구분
+                    </span>
+                    <span>
+                        단가
+                    </span>
+                    <span>
+                        수량
+                    </span>
+                </div>
+                <ul class="ul">
+                    @foreach (UseDetailStoreDTO material in UseMaterial.UseList)
+                    {
+                        <li class="li">
+                            <span class="text">
+                                @(material.InOut == 0 ? "출고" : "입고")
+                            </span>
+                            <span class="text">
+                                @material.UnitPrice
+                            </span>
+                            <span class="text">
+                                @material.Num
+                            </span>
+                        </li>
+                    }
+                </ul>
+            </div>
+                
+        </div>
+        <div class="form">
+            <div class="row">
+                <TextField2 Label="자재 위치" Value="@UseMaterial.RoomName" Color=true />
+                <TextField2 Label="재고 수량" Value="@UseMaterial.Num.ToString()" Color=true />
+            </div>
+            <InputCol Label="수량"
+                      Placeholder="수량"
+                      Max="@(MaxNum)"
+                      Min="1"
+                      ValueType="number"
+                      @bind-Value="@ChangeNum" />
+
+        </div>
+    </div>
+    <div class="btns">
+        <Button Name="수정" Type="0" OnClick="OnUpdate" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int UseMaterialId {get;set;}
+    [Parameter] public int CurMaterialNum { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+    //수정 변수
+    UpdateMaintenanceMaterialDTO UpdateUseMaterial = new UpdateMaintenanceMaterialDTO();
+    //사용자재 상세조회 변수
+    UseMaterialDetailDTO UseMaterial = new UseMaterialDetailDTO();
+    int ChangeNum;
+    int MaxNum;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadDetailUseMaterial();
+        ChangeNum = CurMaterialNum;
+        MaxNum = UseMaterial.Num + CurMaterialNum;
+    }
+
+    private async void OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private async Task OnLoadDetailUseMaterial()
+    {
+        try
+        {
+            ResponseUnit<UseMaterialDetailDTO> resGet = await apiManager.GetUnitAsync<UseMaterialDetailDTO>($"UseMaintenence/sign/GetDetailUseMaterial?useid={UseMaterialId}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            UseMaterial = resGet.data;
+
+        }catch(Exception ex)
+        {
+
+        }
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            if(ChangeNum == CurMaterialNum)
+            {
+                await JS.InvokeVoidAsync("alert", "수량이 변경되지 않았습니다.");
+                return;
+            }
+
+            await OnSumUpdateData();
+
+            ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("UseMaintenence/sign/UpdateUseMaterial",UpdateUseMaterial);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            await OnLoadMaintenance.InvokeAsync();
+            OnCanceled();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[유지보수][사용자재] 수정 에러"+ ex);
+            await JS.InvokeVoidAsync("alert","[유지보수][사용자재] 수정 에러");
+        }
+    }
+
+    private async Task OnSumUpdateData()
+    {
+        UpdateUseMaterial.MaintanceID = UseMaterial.MaintenanceId;
+        UpdateUseMaterial.MaterialID = UseMaterial.MaterialId; //자재 아이디
+        UpdateUseMaterial.RoomID = UseMaterial.RoomId;
+        UpdateUseMaterial.UseMaintanceID = UseMaterial.UseMaterialId;//사용자재 테이블
+        UpdateUseMaterial.Num = ChangeNum;
+
+    }
+}

@@ -1,6 +1,6 @@
 ﻿
 <div class="tabs">
-    @foreach (var item in Tabs.Select((value, idx) => (value, idx)))
+    @foreach (var item in Tabs.Select((value, idx) => (value, idx)).OrderByDescending(x => x.idx))
     {
         <label class="tab @(_defaultCheck ==item.idx ? "active" : "")" @onclick="()=>OnClicked(item.idx)">
             @item.value

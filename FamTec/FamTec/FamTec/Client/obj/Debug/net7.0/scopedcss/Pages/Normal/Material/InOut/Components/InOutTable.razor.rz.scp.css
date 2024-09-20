@@ -51,12 +51,12 @@
     /*overflow:auto;*/
 }
 
-.table .tbody-tr[b-gupr4owxf2]{
+.table .tr[b-gupr4owxf2]{
     border-bottom : var(--layout-bd);
 }
 
 
-.table .tbody-tr:hover td[b-gupr4owxf2]{
+.table .tr:hover td[b-gupr4owxf2]{
     background-color:var(--main-light);
     
 }

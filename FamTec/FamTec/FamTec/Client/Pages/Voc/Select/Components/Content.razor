@@ -3,7 +3,7 @@
 
 <div class="voc-content">
     <div><TextField Label="접수 번호" Value=@Data.Code /></div>
-    <div><TextField Label="처리 상태" Value=@Data.Status.ToString() /></div>
+    <div><TextField Label="처리 상태" Value=@_status /></div>
     <div><TextField Label="접수자" Value=@Data.CreateUser /></div>
     <div><TextField Label="접수 일자" Value=@Data.CreateDT /></div>
     <div><TextField Label="담당 부서" Value=@Data.Type /></div>
@@ -14,4 +14,17 @@
 
 @code {
     [Parameter] public DetailVocDTO  Data {get;set;}
+
+    private string _status;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _status = Data.Status switch
+        {
+            0 => "미처리",
+            1 => "처리중",
+            2 => "처리 완료"
+        };
+    }
+
 }

@@ -4,16 +4,6 @@
         @Label
     </label>
     <div class="content">
-       @*  @if(Type == "textarea")
-        {
-            <InputTextArea  @bind-Value="@Context"  disabled="@(!EditMode)"/>
-        }
-        else
-        {
-            <p class="text @(Type == "textarea" ? "height" : "")">
-                @Context
-            </p>
-        } *@
         <p class="text @(Type == "textarea" ? "height" : "")">
             @Context
         </p>

@@ -1,0 +1,125 @@
+.modal[b-pefcekr261] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+    
+}
+
+
+.modal .header>.title[b-pefcekr261]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.content[b-pefcekr261] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.list[b-pefcekr261]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+    width:100%;
+
+    overflow:hidden;
+}
+
+.label[b-pefcekr261]{
+    font-size:1.01rem;
+    font-weight : bold;
+    color : var(--main-color);
+}
+
+
+.list-wrap[b-pefcekr261]{
+    display:flex;
+    flex-direction:column;
+    /*gap:var(--half-pd);*/
+    padding : var(--default-pd);
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    width:100%;
+    max-height : 300px;
+    /*overflow:auto;*/
+    position:relative;
+    scroll-behavior: smooth;
+}
+
+.ul-head[b-pefcekr261]{
+    position:sticky;
+    top : 0;
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+
+    padding : var(--half-pd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--main-color);
+}
+
+.ul-head>span[b-pefcekr261]{
+    color:var(--default-color);
+    font-size: var(--normal-size);
+}
+.ul[b-pefcekr261]{
+    overflow:auto;
+}
+
+.li[b-pefcekr261]{
+    display :flex;
+    width:100%;
+    justify-content:space-around;
+
+    border-bottom: var(--comp-bd);
+    padding :var(--default-pd) var(--half-pd);
+
+}
+
+.text[b-pefcekr261]{
+    font-size: var(--normal-size);
+    font-weight : bold;
+    color:var(--main-color);
+    flex: 1; /* 균등한 너비 분배 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.form[b-pefcekr261]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--default-pd);
+}
+
+.row[b-pefcekr261]{
+    display:flex;
+    gap:var(--default-pd);
+}
+
+.group[b-pefcekr261]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-pefcekr261]{
+    display : flex;
+    gap : var(--default-pd);
+}

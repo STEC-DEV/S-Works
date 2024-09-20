@@ -41,6 +41,7 @@
     word-break: break-all;
     overflow:hidden;
     font-size : var(--normal-size);
+    background-color : var(--default-color);
 }
 
 .text:focus[b-30vlxjah2w] {

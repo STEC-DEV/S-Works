@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Modal
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
@@ -41,11 +42,15 @@
                     금액
                 </span>
             </th>
-            <th class="th">
-                <span>
+            @if (EditMode)
+            {
+                <th class="th">
+                    <span>
 
-                </span>
-            </th>
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
@@ -69,41 +74,89 @@
         {
             @foreach(UseMaterialDTO row in ListData)
             {
+               
                 <tr class="tr">
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.RoomName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.UnitPrice
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Num
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.TotalPrice
                     </td>
-                    <td class="td">
-                        <input type="checkbox" />
-                    </td>
+                    @if (EditMode)
+                    {
+                        <td class="td">
+                            <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                        </td>
+                    }
+                    
                 </tr>
-            }
+                
         }
-        
-
+        }
     </tbody>
 </table>
+
+@if (showUpdateModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateUseMaterialModal 
+                UseMaterialId="@selectUseMaterialId" 
+                OnCancel="CloseModal" 
+                CurMaterialNum="@selectUseMaterialCurNum"
+                OnLoadMaintenance="OnLoadMaintenance"
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     // [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
     [Parameter] public List<UseMaterialDTO>? ListData { get; set; }
+    [Parameter] public EventCallback<(bool, UseMaterialDTO)> OnCheck{get;set;}
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+
+    private bool showUpdateModal = false;
+    private UseMaterialDTO? selectedMaterial;
+    private int selectUseMaterialId;
+    private int selectUseMaterialCurNum;
+
+    private async void OnChecked(ChangeEventArgs e, UseMaterialDTO material)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, material));
+    }
+
+    private void OnRowClick(UseMaterialDTO material)
+    {
+        if (EditMode)
+        {
+            selectedMaterial = material;
+            showUpdateModal = true;
+            selectUseMaterialId = material.ID;
+            selectUseMaterialCurNum = material.Num;
+        }
+    }
+
+    private void CloseModal()
+    {
+        showUpdateModal = false;
+        selectedMaterial = null;
+    }
 
 }

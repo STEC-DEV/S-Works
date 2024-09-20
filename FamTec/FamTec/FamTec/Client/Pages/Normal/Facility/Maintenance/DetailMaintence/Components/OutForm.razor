@@ -45,6 +45,7 @@
             Label="수량" 
             Placeholder="수량"
             Max="_usageMaterialNum"
+            Min="1"
             Row="true" 
             ValueType="number"
             @bind-Value="@AddItem.Num" />
@@ -59,9 +60,10 @@
 </div>
 
 @code {
-    [Parameter] public AddStoreDTO AddItem { get; set; } = new AddStoreDTO();
+    [Parameter] public AddStoreDTO AddItem { get; set; }
     [Parameter] public int MaterialId{ get; set; }
-    [Parameter] public EventCallback<OutContentDTO> ValueChaged { get; set; }
+    // [Parameter] public EventCallback<OutContentDTO> ValueChaged { get; set; }
+    [Parameter] public EventCallback<AddStoreDTO> ValueChaged { get; set; }
 
     List<BuildingNameDTO> Building = new List<BuildingNameDTO>();
     BuildingFloorListDTO SelectedBuilding;
@@ -78,14 +80,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        SelectedBuildingId = 0;
+        SelectedRoomId = 0;
+        AddItem = new AddStoreDTO();
         await OnLoadBuilding();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        SelectedBuildingId = 0;
-        SelectedRoomId = 0;
-        StateHasChanged(); // UI 업데이트 강제
+
+        // StateHasChanged(); // UI 업데이트 강제
     }
 
     private async Task OnLoadBuilding()
@@ -154,13 +158,16 @@
     }
 
     //위치 선택
-    private void OnLocationChange(int locationId)
+    private async void OnLocationChange(int locationId)
     {
         AddItem.Num = 0;
         AddItem.Note = null;
         AddItem.RoomID = 0;
         AddItem.RoomID = locationId;
+        Console.WriteLine("위치 " + locationId);
         _usageMaterialNum = LocationMaterial.FirstOrDefault(r => r.RoomId == locationId)?.Num;
+
+        await ValueChaged.InvokeAsync(AddItem);
     }
 
 

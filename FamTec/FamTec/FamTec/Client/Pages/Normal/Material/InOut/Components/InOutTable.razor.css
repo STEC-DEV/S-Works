@@ -51,12 +51,12 @@
     /*overflow:auto;*/
 }
 
-.table .tbody-tr{
+.table .tr{
     border-bottom : var(--layout-bd);
 }
 
 
-.table .tbody-tr:hover td{
+.table .tr:hover td{
     background-color:var(--main-light);
     
 }

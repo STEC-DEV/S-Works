@@ -11,3 +11,8 @@
     display : flex;
     gap : var(--half-pd);
 }
+
+.btn[b-3h4umjjuh2]{
+    display:flex;
+    justify-content:center;
+}

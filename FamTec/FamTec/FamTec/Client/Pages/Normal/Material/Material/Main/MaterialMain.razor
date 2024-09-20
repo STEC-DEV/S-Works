@@ -111,11 +111,28 @@
         }
     }
 
+    /// <summary>
+    /// 자재 삭제
+    /// </summary>
+    /// <returns></returns>
     private async Task OnDelete()
     {
         try
         {
-
+            if(CheckList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 재고를 선택해 주세요.");
+                return;
+            }
+            //여기 http 타입 수정해야함
+            ResponseUnit<bool> resGet = await apiManager.PutAsync<bool>("material/sign/deleterMaterial",CheckList);
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            await OnLoadMaterial();
+            StateHasChanged();
         }
         catch (Exception ex)
         {

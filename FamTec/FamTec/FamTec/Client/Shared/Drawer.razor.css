@@ -2,12 +2,14 @@
     min-width: min-content;
     width: 15%;
     border-right: 1px solid #d3d3d3;
+    overflow:auto;
 }
 
 .drawer-container .drawer-wrap {
     display: flex;
     flex-direction: column;
     padding: var(--three-q-pd);
+    overflow:auto;
 }
 
 

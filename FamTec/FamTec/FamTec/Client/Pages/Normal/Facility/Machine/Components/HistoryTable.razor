@@ -65,7 +65,7 @@
             {
                 <tr class="tr">
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
-                        @row.CreateDT
+                        @row.WorkDT?.ToString("yyyy-MM-dd hh:mm:ss")
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.Name

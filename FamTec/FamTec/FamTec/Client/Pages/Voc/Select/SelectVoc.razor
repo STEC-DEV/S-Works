@@ -1,6 +1,7 @@
 ﻿@layout MainLayout2
 @page "/voc/select/{voccode}"
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.Voc.Select.Components
@@ -24,6 +25,20 @@
             <span class="item-title">
                 처리내용
             </span>
+            <div class="comment-wrap">
+                @if(VocCommentData.Count == 0)
+                {
+                    <TextField2 Value="현재 처리 내용이 존재하지 않습니다."/>
+                }
+                else
+                {
+                    @foreach (VocCommentListDTO comment in VocCommentData)
+                    {
+                        <CommentCard Data="@comment" />
+                    }
+                }
+
+            </div>
         </div>
     </div>
     <Button Name="확인" Type="0" OnClick="OnReturn"/>

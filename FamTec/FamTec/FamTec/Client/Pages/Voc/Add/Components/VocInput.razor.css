@@ -7,8 +7,8 @@
 
 .label{
     font-size : var(--normal-size);
-    /*font-weight : var(--bold-wt);*/
-    color : darkgray;
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
 }
 
 .input{
@@ -48,7 +48,7 @@
     background-color :var(--default-color);
     
     font-size : var(--normal-size);
-    font-weight : bold;
+    /*font-weight : bold;*/
 
     transition : all .3s;
 
@@ -67,8 +67,13 @@
     background-color: var(--default-color);
 }
 
+.textarea::placeholder{
+    font-weight:400;
+    color:gray;
+}
+
 .inputfield:focus-within .label {
-    font-weight : bold
+    font-weight: bold;
     color: var(--main-color);
 }
 

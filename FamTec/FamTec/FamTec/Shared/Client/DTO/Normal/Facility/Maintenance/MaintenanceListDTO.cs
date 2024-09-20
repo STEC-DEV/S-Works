@@ -16,7 +16,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// <summary>
         /// 일자
         /// </summary>
-        public DateTime? CreateDT { get; set; }
+        public DateTime? WorkDT { get; set; }
 
         /// <summary>
         /// 유지보수 명

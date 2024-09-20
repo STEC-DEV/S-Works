@@ -13,18 +13,23 @@
 
     @if (Maintenance.Type == 1)
     {
-        @if (USEREDIT)
+        @if (_useMaterialEditMode)
         {
-            <SearchMaterial @bind-Data=@SelectMaterial />
+            <SearchMaterial @bind-Data=@SelectMaterial EditMode=_useMaterialEditMode/>
             @if (SelectMaterial.Id != 0)
             {
-                <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+                <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore"/>
                 <div class="btn">
                     <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
                 </div>
             }
         }
-        <InOutList ListData="@Maintenance.UseMaterialList" />
+        <InOutList 
+            ListData="@Maintenance.UseMaterialList" 
+            EditMode=_useMaterialEditMode 
+            OnEdit="OnEdit"
+            OnLoadMaintenance="OnLoadMaintenance"
+            />
     }
 
 </div>
@@ -37,12 +42,22 @@
     AddStoreDTO MaintenanceStore = new AddStoreDTO();
     MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
 
-    // DetailMaintenanceDTO Maintenance = new DetailMaintenanceDTO();
+
     DetailMaintenanceDTO Maintenance;
-    // DetailMaintenanceDTO OriginalMaintenance = new DetailMaintenanceDTO(); //원본 데이터
+    //원본 유지보수 데이터
     DetailMaintenanceDTO OriginalMaintenance;
 
     List<InOutInventoryDTO> UseMaterial = new List<InOutInventoryDTO>(); //사용자재
+
+
+    //=====사용자재추가=======
+    AddMaintetanceMaterialDTO AddMaintenance = new AddMaintetanceMaterialDTO();
+
+
+
+    //사용자재 목록 편집 상태 변수
+    bool _useMaterialEditMode = false; 
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,6 +65,10 @@
         await OnLoadMaintenance();
     }
 
+    /// <summary>
+    /// 유지보수 정보 조회
+    /// </summary>
+    /// <returns></returns>
     private async Task OnLoadMaintenance()
     {
         try
@@ -62,7 +81,7 @@
             }
             Maintenance = new DetailMaintenanceDTO(resGet.data);
             Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
-            
+
             // await OnConverDTO();
         }catch(Exception ex)
         {
@@ -74,41 +93,43 @@
 
 
 
+
+
     //출고 목록데이터 받아오는 함수
     //출고 데이터 목록에 추가
     private async Task OnAddMaterial()
     {
         try
         {
-            // if (Maintenance.WorkDT== null ||
-            //     MaintenanceStore.Num == 0 ||
-            //     SelectMaterial.Id == 0 ||
-            //     MaintenanceStore.RoomID == 0
-            // )
+            Console.WriteLine("추가 할 자재명 : " + SelectMaterial.Name);
+            Console.WriteLine("출고 위치 : " + MaintenanceStore.RoomID);
+            Console.WriteLine("출고 수량 : " + MaintenanceStore.Num);
+            if (MaintenanceStore.Num == 0 ||
+                SelectMaterial.Id == 0 ||
+                MaintenanceStore.RoomID == 0
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                MaintenanceStore = new AddStoreDTO();
+                StateHasChanged();
+                return;
+            }
+            await OnSum();
+
+            Console.WriteLine("유지보수 아이디 : " + AddMaintenance.MaintanceID);
+            Console.WriteLine("사용 자재 : " + AddMaintenance.MaterialList[0].MaterialID);
+            Console.WriteLine("위치 : " + AddMaintenance.MaterialList[0].RoomID);
+            Console.WriteLine("단가: " + AddMaintenance.MaterialList[0].UnitPrice);
+            Console.WriteLine("수량 : " + AddMaintenance.MaterialList[0].Num);
+            Console.WriteLine("총금액: " + AddMaintenance.MaterialList[0].TotalPrice);
+
+            // ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("Maintenance/sign/AddSupMaintenance", AddMaintenance);
+            // if(resPost.code != 200)
             // {
-            //     await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
-            //     MaintenanceStore = new AddStoreDTO();
-            //     StateHasChanged();
+            //     await JS.InvokeVoidAsync("alert", resPost.message);
             //     return;
             // }
-
-            // ResponseUnit<InOutInventoryDTO> resGet = await apiManager.GetUnitAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={MaintenanceStore.RoomID}&materialid={SelectMaterial.Id}&outcount={MaintenanceStore.Num}");
-            // if (resGet.code != 200)
-            // {
-            //     await JS.InvokeVoidAsync("alert", resGet.message);
-            //     MaintenanceStore = new AddStoreDTO();
-            //     StateHasChanged();
-            //     return;
-            // }
-            // resGet.data.AddStore.InOutDate = ; //추가시 현재 날짜로 들어감
-            // resGet.data.MaterialCode = SelectMaterial.Code; //자재 코드
-            // resGet.data.MaterialName = SelectMaterial.Name; //자재 이름
-            // resGet.data.Unit= SelectMaterial.Unit; //자재 단위
-
-            // Maintenance.Inventory.Add(resGet.data);
-            // Console.WriteLine("인벤토리 카운트 복사"+Maintenance.Inventory.Count);
-            // MaintenanceStore = new AddStoreDTO();
-            // SelectMaterial = new MaterialSearchListDTO();
+            // OnLoadMaintenance();
             // StateHasChanged();
 
         }
@@ -118,69 +139,24 @@
         }
     }
 
-
-    //유지보수 등록
-    private async Task OnAdd()
-    {
-        try
-        {
-            // await OnSum();
-            // if(
-            //     Maintenance.FacilityId == 0 ||
-            //     Maintenance.WorkDT == null ||
-            //     Maintenance.Type == 0
-            // )
-            // {
-            //     await JS.InvokeVoidAsync("alert", "입력 내용을 확인해주세요.");
-            //     return;
-            // }
-            // Console.WriteLine(Maintenance.Inventory.Count);
-            // ResponseUnit<int> resPost = await apiManager.PostAsync<int>("Maintenance/sign/AddMaintenance", Maintenance);
-            // // ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("Maintenance/sign/AddMaintenance", Maintenance);
-            // if(resPost.code != 200)
-            // {
-            //     await JS.InvokeVoidAsync("alert", resPost.message);
-            //     Navigation.NavigateTo($"/facility/{FacType}/{FacId}");
-            //     return;
-            // }
-            // // ResponseUnit<bool> resPostImage = 
-            // Navigation.NavigateTo($"/facility/{FacType}/{FacId}");
-        }catch(Exception ex)
-        {
-
-        }
-    }
-
+    //추가 사용자재 단일이지만 리스트로 구현되어 일단 리스트로 사용하기로함
     private async Task OnSum()
     {
-        // Maintenance.FacilityId = FacId;
+        AddMaintenance.MaintanceID = MaintenanceId;
+        MaterialDTO tempMaterial = new MaterialDTO();
+        tempMaterial.MaterialID = SelectMaterial.Id;
+        tempMaterial.RoomID = MaintenanceStore.RoomID;
+        tempMaterial.Num = MaintenanceStore.Num;
+        tempMaterial.UnitPrice = MaintenanceStore.UnitPrice;
+        tempMaterial.TotalPrice = MaintenanceStore.TotalPrice;
+        tempMaterial.Note = MaintenanceStore.Note;
+        AddMaintenance.MaterialList.Add(tempMaterial);
     }
 
-    //디테일 -> InOuteInventoryDTO
-    // private async Task OnConverDTO()
-    // {
-    //     foreach (var useStore in Maintenance.UseStoreList)
-    //     {
-    //         UseMaterial.Add(
-    //             new InOutInventoryDTO
-    //             {
-    //                 MaterialID = useStore.MaterialID,
-    //                 MaterialName = useStore.MaterialName,
-    //                 MaterialCode = useStore.MaterialCode,
-    //                 Unit = useStore.Unit,
-    //                 AddStore = new AddStoreDTO
-    //                 {
-    //                     RoomID = useStore.RoomID,
-    //                     RoomName = useStore.RoomName,
-    //                     UnitPrice = useStore.UnitPrice,
-    //                     Num = useStore.Num,
-    //                     TotalPrice = useStore.TotalPrice,   
-    //                 }
-    //              }
-    //         );
-            
-            
-    //     }
+ 
 
-    // }
+    private void OnEdit()
+    {
+        _useMaterialEditMode = !_useMaterialEditMode;
+    }
 }
