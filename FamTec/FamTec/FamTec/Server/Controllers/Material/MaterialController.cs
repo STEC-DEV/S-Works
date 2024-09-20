@@ -346,9 +346,9 @@ namespace FamTec.Server.Controllers.Material
         /// <param name="delIdx"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/DeleteMaterial")]
-        public async ValueTask<IActionResult> DeleteMateral([FromQuery]List<int> delIdx)
+        public async ValueTask<IActionResult> DeleteMateral([FromBody]List<int> delIdx)
         {
             try
             {

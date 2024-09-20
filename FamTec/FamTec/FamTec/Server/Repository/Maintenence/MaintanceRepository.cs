@@ -105,6 +105,7 @@ namespace FamTec.Server.Repository.Maintenence
                     Type = maintenenceTB.Type, // 작업구분
                     Worker = maintenenceTB.Worker, // 작업자
                     TotalPrice = maintenenceTB.TotalPrice, // 합계
+                    ImageName = !String.IsNullOrWhiteSpace(maintenenceTB.Image) ? maintenenceTB.Image : null,
                     Image = !string.IsNullOrWhiteSpace(maintenenceTB.Image) ? await FileService.GetImageFile($"{Common.FileServer}\\{placeid}\\Maintance", maintenenceTB.Image) : null
                 };
 

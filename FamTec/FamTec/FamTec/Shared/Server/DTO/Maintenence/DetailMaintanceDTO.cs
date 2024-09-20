@@ -1,4 +1,6 @@
-﻿namespace FamTec.Shared.Server.DTO.Maintenence
+﻿using Microsoft.Identity.Client;
+
+namespace FamTec.Shared.Server.DTO.Maintenence
 {
     public class DetailMaintanceDTO
     {
@@ -31,6 +33,11 @@
         /// 소요비용
         /// </summary>
         public float TotalPrice { get; set; }
+
+        /// <summary>
+        /// 이미지 파일명
+        /// </summary>
+        public string? ImageName { get; set; }
 
         /// <summary>
         /// 이미지

@@ -3326,7 +3326,7 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddSupMaintenance",
     "RelativePath": "api/Maintenance/sign/AddSupMaintenance",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -3590,14 +3590,14 @@
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "DeleteMateral",
     "RelativePath": "api/Material/sign/DeleteMaterial",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "delIdx",
         "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

@@ -181,7 +181,7 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateUser = model.CreateUser; // 민원인
                 dto.Phone = model.Phone; // 민원인 전화번호
 
-                string VocFileName = String.Format(@"{0}\\{1}\\Voc", Common.FileServer, PlaceIdx);
+                string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
                 foreach(var image in imageFiles)

@@ -180,6 +180,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
 
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
+                    dto.ImageName = model.Image; // 이미지 파일명
                     dto.Image = await FileService.GetImageFile(MachineFileFolderPath, model.Image);
                 }
 
@@ -196,6 +197,14 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         {
             try
             {
+                // 파일처리 준비
+                string? NewFileName = String.Empty;
+                string? deleteFileName = String.Empty;
+
+                // 수정실패 시 돌려놓을 FormFile
+                IFormFile? AddTemp = default;
+                string RemoveTemp = String.Empty;
+
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -206,20 +215,18 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                string? NewFileName = String.Empty;
-                string? deleteFileName = String.Empty;
-
-                if (files is not null)
-                {
-                    NewFileName = FileService.SetNewFileName(UserIdx, files);
-                }
+                // 이미지 변경 or 삭제
+                MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                di = new DirectoryInfo(MachineFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
+
                 if(model is null || model.Category.Trim() != "기계")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Category = "기계"; // 카테고리
-                model.Name = dto.Name!; // 설비명칭
+                model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!; // 설비명칭
                 model.Type = dto.Type; // 타입
                 model.Num = dto.Num; // 개수
                 model.Unit = dto.Unit; // 단위
@@ -231,59 +238,101 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 model.UpdateUser = creater;
                 model.RoomTbId = dto.RoomTbId!.Value;
 
-                // 이미지 변경 or 삭제
-                MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
 
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {
-                    if (!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
+                    if(files.FileName != model.Image) // 넘어온 이미지의 이름과 DB에 저장된 이미지의 이름이 다르면
                     {
-                        deleteFileName = model.Image; // 삭제할 이름에 넣는다.
-                        model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
-                    }
-                    else // DB엔 없는 경우
-                    {
-                        model.Image = NewFileName; // 새 파일명을 모델에 넣는다.
+                        if(!String.IsNullOrWhiteSpace(model.Image))
+                        {
+                            deleteFileName = model.Image;
+                        }
+
+                        // 새로운 파일명 설정
+                        string newFileName = FileService.SetNewFileName(UserIdx, files);
+                        NewFileName = newFileName; // 파일명 리스트에 추가
+                        model.Image = newFileName; // DB Image명칭 업데이트
+
+                        RemoveTemp = newFileName; // 실패시 삭제명단에 넣어야함.
                     }
                 }
                 else // 파일이 공백인 경우
                 {
-                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB에 파일이 있는경우
+                    if(!String.IsNullOrWhiteSpace(model.Image)) // DB의 이미지가 공백이 아니면
                     {
-                        deleteFileName = model.Image; // 모델의 파일명을 삭제 명단에 넣는다.
-                        model.Image = null; // 모델의 파일명을 비운다.
+                        deleteFileName = model.Image; // 기존 파일 삭제 목록에 추가
+                        model.Image = null; // 모델의 파일명 비우기
                     }
                 }
 
+                // 먼저 파일 삭제 처리
+                // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환하여 가지고 있어야함.
+                byte[]? ImageBytes = null;
+                if (!String.IsNullOrWhiteSpace(deleteFileName))
+                {
+                    ImageBytes = await FileService.GetImageFile(MachineFileFolderPath, deleteFileName);
+                }
+
+                // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
+                if (ImageBytes is not null)
+                {
+                    AddTemp = FileService.ConvertFormFiles(ImageBytes, deleteFileName);
+                }
+
+                // 삭제할 파일명단에 들어와있으면 파일삭제
+                if (!String.IsNullOrWhiteSpace(deleteFileName))
+                {
+                    FileService.DeleteImageFile(MachineFileFolderPath, deleteFileName);
+                }
+
+                // 새 파일 저장
+                if (files is not null)
+                {
+                    if (String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
+                    {
+                        // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
+                        await FileService.AddResizeImageFile(model.Image!, MachineFileFolderPath, files);
+                    }
+                }
+
+                // 이후 데이터베이스 업데이트
                 bool? updateBuilding = await FacilityInfoRepository.UpdateFacilityInfo(model);
                 if (updateBuilding == true)
                 {
-                    if(files is not null) // 파일이 공백이 아닌경우
-                    {
-                        if(!String.IsNullOrWhiteSpace(model.Image))
-                        {
-                            // 파일넣기
-                            bool? AddFile = await FileService.AddResizeImageFile(NewFileName, MachineFileFolderPath, files);
-                        }
-                        if(!String.IsNullOrWhiteSpace(deleteFileName))
-                        {
-                            // 파일삭제
-                            bool DeleteFile = FileService.DeleteImageFile(MachineFileFolderPath, deleteFileName);
-                        }
-                    }
-                    else // 파일이 공백인 경우
-                    {
-                        if(!String.IsNullOrWhiteSpace(deleteFileName))
-                        {
-                            // 삭제할거
-                            bool DeleteFile = FileService.DeleteImageFile(MachineFileFolderPath, deleteFileName);
-                        }
-                    }
-
+                    // 성공했으면 그걸로 끝
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else
                 {
+                    // 실패했으면 파일을 원래대로 돌려놔야함.
+                    if (AddTemp is not null)
+                    {
+                        try
+                        {
+                            if (FileService.IsFileExists(MachineFileFolderPath, AddTemp.FileName) == false)
+                            {
+                                // 파일을 저장하는 로직
+                                await FileService.AddResizeImageFile(AddTemp.FileName, MachineFileFolderPath, files);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+                        }
+                    }
+
+                    if (!String.IsNullOrWhiteSpace(RemoveTemp))
+                    {
+                        try
+                        {
+                            FileService.DeleteImageFile(MachineFileFolderPath, RemoveTemp);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+                        }
+                    }
+
                     return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
                 }
             }
