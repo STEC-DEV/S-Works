@@ -139,78 +139,140 @@ namespace FamTec.Server.Repository.Facility.Group
         /// <returns></returns>
         public async ValueTask<bool?> DeleteGroupInfo(int groupid, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
+                        .FirstOrDefaultAsync(m => m.Id == groupid);
+
+                    if (GroupTB is null)
+                        return (bool?)null;
+
+                    GroupTB.DelDt = DateTime.Now;
+                    GroupTB.DelUser = deleter;
+                    GroupTB.DelYn = true;
+
+                    context.FacilityItemGroupTbs.Update(GroupTB);
+
+                    List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
+
+                    if (KeyTB is [_, ..])
                     {
-                        FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
-                            .FirstOrDefaultAsync(m => m.Id == groupid);
-
-                        if (GroupTB is null)
-                            return (bool?)null;
-
-                        GroupTB.DelDt = DateTime.Now;
-                        GroupTB.DelUser = deleter;
-                        GroupTB.DelYn = true;
-
-                        context.FacilityItemGroupTbs.Update(GroupTB);
-
-                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
-
-                        if (KeyTB is [_, ..])
+                        foreach (FacilityItemKeyTb KeyModel in KeyTB)
                         {
-                            foreach (FacilityItemKeyTb KeyModel in KeyTB)
+                            KeyModel.DelDt = DateTime.Now;
+                            KeyModel.DelUser = deleter;
+                            KeyModel.DelYn = true;
+
+                            context.FacilityItemKeyTbs.Update(KeyModel);
+
+                            List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
+                            if (ValueTB is [_, ..])
                             {
-                                KeyModel.DelDt = DateTime.Now;
-                                KeyModel.DelUser = deleter;
-                                KeyModel.DelYn = true;
-
-                                context.FacilityItemKeyTbs.Update(KeyModel);
-
-                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
-                                if (ValueTB is [_, ..])
+                                foreach (FacilityItemValueTb ValueModel in ValueTB)
                                 {
-                                    foreach (FacilityItemValueTb ValueModel in ValueTB)
-                                    {
-                                        ValueModel.DelDt = DateTime.Now;
-                                        ValueModel.DelUser = deleter;
-                                        ValueModel.DelYn = true;
+                                    ValueModel.DelDt = DateTime.Now;
+                                    ValueModel.DelUser = deleter;
+                                    ValueModel.DelYn = true;
 
-                                        context.FacilityItemValueTbs.Update(ValueModel);
-                                    }
+                                    context.FacilityItemValueTbs.Update(ValueModel);
                                 }
                             }
                         }
-
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
                     }
-                    catch (Exception ex)
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (DeleteResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
-        }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
+            //                            .FirstOrDefaultAsync(m => m.Id == groupid);
+
+            //                        if (GroupTB is null)
+            //                            return (bool?)null;
+
+            //                        GroupTB.DelDt = DateTime.Now;
+            //                        GroupTB.DelUser = deleter;
+            //                        GroupTB.DelYn = true;
+
+            //                        context.FacilityItemGroupTbs.Update(GroupTB);
+
+            //                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
+
+            //                        if (KeyTB is [_, ..])
+            //                        {
+            //                            foreach (FacilityItemKeyTb KeyModel in KeyTB)
+            //                            {
+            //                                KeyModel.DelDt = DateTime.Now;
+            //                                KeyModel.DelUser = deleter;
+            //                                KeyModel.DelYn = true;
+
+            //                                context.FacilityItemKeyTbs.Update(KeyModel);
+
+            //                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
+            //                                if (ValueTB is [_, ..])
+            //                                {
+            //                                    foreach (FacilityItemValueTb ValueModel in ValueTB)
+            //                                    {
+            //                                        ValueModel.DelDt = DateTime.Now;
+            //                                        ValueModel.DelUser = deleter;
+            //                                        ValueModel.DelYn = true;
+
+            //                                        context.FacilityItemValueTbs.Update(ValueModel);
+            //                                    }
+            //                                }
+            //                            }
+            //                        }
+
+            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (DeleteResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+#endregion
+        }
     }
 }

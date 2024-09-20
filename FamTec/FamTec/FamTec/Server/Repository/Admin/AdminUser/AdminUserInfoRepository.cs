@@ -72,70 +72,56 @@ namespace FamTec.Server.Repository.Admin.AdminUser
        
         public async ValueTask<bool?> DeleteAdminsInfo(List<int> idx, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    foreach (int adminid in idx)
                     {
-                        foreach (int adminid in idx)
+                        AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                        if (admintb is not null)
                         {
-                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
-                            if (admintb is not null)
-                            {
-                                admintb.DelYn = true;
-                                admintb.DelDt = DateTime.Now;
-                                admintb.DelUser = deleter;
-                                context.AdminTbs.Update(admintb);
-                                bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            admintb.DelYn = true;
+                            admintb.DelDt = DateTime.Now;
+                            admintb.DelUser = deleter;
+                            context.AdminTbs.Update(admintb);
+                            bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
 
-                                if (!AdminTbResult) // 실패하면
+                            if (!AdminTbResult) // 실패하면
+                            {
+                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                return false;
+                            }
+
+                            UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+                            if (usertb is not null)
+                            {
+                                // 해당 UserId 재사용을 위함
+                                usertb.UserId = $"{usertb.UserId}_{usertb.Id}";
+                                usertb.DelYn = true;
+                                usertb.DelDt = DateTime.Now;
+                                usertb.DelUser = deleter;
+                                context.UsersTbs.Update(usertb);
+                                bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if (!UserTbResult) // 실패하면
                                 {
                                     await context.Database.RollbackTransactionAsync(); // 롤백
                                     return false;
                                 }
 
-                                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
-                                if (usertb is not null)
+                                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
+                                if (adminplacetb is [_, ..])
                                 {
-                                    // 해당 UserId 재사용을 위함
-                                    usertb.UserId = $"{usertb.UserId}_{usertb.Id}";
-                                    usertb.DelYn = true;
-                                    usertb.DelDt = DateTime.Now;
-                                    usertb.DelUser = deleter;
-                                    context.UsersTbs.Update(usertb);
-                                    bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if (!UserTbResult) // 실패하면
+                                    foreach (AdminPlaceTb AdminPlace in adminplacetb)
                                     {
-                                        await context.Database.RollbackTransactionAsync(); // 롤백
-                                        return false;
-                                    }
-
-                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
-                                    if (adminplacetb is [_, ..])
-                                    {
-                                        foreach (AdminPlaceTb AdminPlace in adminplacetb)
+                                        context.AdminPlaceTbs.Remove(AdminPlace);
+                                        bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        if (!AdminPlaceResult) // 실패하면
                                         {
-                                            context.AdminPlaceTbs.Remove(AdminPlace);
-                                            bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                            if (!AdminPlaceResult) // 실패하면
-                                            {
-                                                await context.Database.RollbackTransactionAsync(); //롤백
-                                                return false;
-                                            }
+                                            await context.Database.RollbackTransactionAsync(); //롤백
+                                            return false;
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
-                                    return false;
                                 }
                             }
                             else
@@ -144,17 +130,106 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 return false;
                             }
                         }
-                        await context.Database.CommitTransactionAsync(); // 커밋
-                        return true;
+                        else
+                        {
+                            await context.Database.RollbackTransactionAsync(); // 롤백
+                            return false;
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
-                    }
+                    await context.Database.CommitTransactionAsync(); // 커밋
+                    return true;
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        foreach (int adminid in idx)
+            //                        {
+            //                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+            //                            if (admintb is not null)
+            //                            {
+            //                                admintb.DelYn = true;
+            //                                admintb.DelDt = DateTime.Now;
+            //                                admintb.DelUser = deleter;
+            //                                context.AdminTbs.Update(admintb);
+            //                                bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+
+            //                                if (!AdminTbResult) // 실패하면
+            //                                {
+            //                                    await context.Database.RollbackTransactionAsync(); // 롤백
+            //                                    return false;
+            //                                }
+
+            //                                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+            //                                if (usertb is not null)
+            //                                {
+            //                                    // 해당 UserId 재사용을 위함
+            //                                    usertb.UserId = $"{usertb.UserId}_{usertb.Id}";
+            //                                    usertb.DelYn = true;
+            //                                    usertb.DelDt = DateTime.Now;
+            //                                    usertb.DelUser = deleter;
+            //                                    context.UsersTbs.Update(usertb);
+            //                                    bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                                    if (!UserTbResult) // 실패하면
+            //                                    {
+            //                                        await context.Database.RollbackTransactionAsync(); // 롤백
+            //                                        return false;
+            //                                    }
+
+            //                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
+            //                                    if (adminplacetb is [_, ..])
+            //                                    {
+            //                                        foreach (AdminPlaceTb AdminPlace in adminplacetb)
+            //                                        {
+            //                                            context.AdminPlaceTbs.Remove(AdminPlace);
+            //                                            bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                                            if (!AdminPlaceResult) // 실패하면
+            //                                            {
+            //                                                await context.Database.RollbackTransactionAsync(); //롤백
+            //                                                return false;
+            //                                            }
+            //                                        }
+            //                                    }
+            //                                }
+            //                                else
+            //                                {
+            //                                    await context.Database.RollbackTransactionAsync(); // 롤백
+            //                                    return false;
+            //                                }
+            //                            }
+            //                            else
+            //                            {
+            //                                await context.Database.RollbackTransactionAsync(); // 롤백
+            //                                return false;
+            //                            }
+            //                        }
+            //                        await context.Database.CommitTransactionAsync(); // 커밋
+            //                        return true;
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+#endregion
         }
 
         /// <summary>
@@ -346,59 +421,274 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         public async ValueTask<bool?> UpdateAdminImageInfo(int adminid, IFormFile? files)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 강제로 디버깅 포인트 잡기.
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    // 파일처리 준비
+                    string NewFileName = String.Empty;
+                    string deleteFileName = String.Empty;
+
+                    // 수정실패 시 돌려놓을 FormFile
+                    IFormFile? AddTemp = default;
+                    string RemoveTemp = String.Empty;
+
+
+                    AdminTb? AdminInfo = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                    if (AdminInfo is null)
+                        return false;
+
+                    UsersTb? UserInfo = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == AdminInfo.UserTbId && m.DelYn != true);
+                    if (UserInfo is null)
+                        return false;
+
+                    string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                    di = new DirectoryInfo(AdminFileFolderPath);
+                    if (!di.Exists) di.Create();
+
+                    // 파일이 공백이 아닌 경우
+                    if(files is not null)
                     {
-                        string? NewFileName = files is not null ? FileService.SetNewFileName(adminid.ToString(), files) : String.Empty;
-
-                        AdminTb? AdminInfo = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
-                        if (AdminInfo is null)
-                            return (bool?)null;
-
-                        UsersTb? UserInfo = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == AdminInfo.UserTbId && m.DelYn != true);
-                        if (UserInfo is null)
-                            return (bool?)null;
-
-                        string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
-                        
-
-                        UserInfo.Image = files is not null ? NewFileName : null;
-                        context.UsersTbs.Update(UserInfo);
-
-                        bool UpdateImageResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if(UpdateImageResult)
+                        if(files.FileName != UserInfo.Image)
                         {
-                            if(files is not null)
+                            if(!String.IsNullOrWhiteSpace(UserInfo.Image))
                             {
-                                // 파일 넣기
-                                await FileService.AddResizeImageFile(NewFileName, AdminFileFolderPath, files);
+                                deleteFileName = UserInfo.Image;
                             }
 
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
+                            // 새로운 파일명 설정
+                            string newFileName = FileService.SetNewFileName(UserInfo.Id.ToString(), files);
+                            NewFileName = newFileName; // 파일명 리스트에 추가
+                            UserInfo.Image = newFileName; // DB Image명칭 업데이트
+
+                            RemoveTemp = newFileName;
                         }
                     }
-                    catch (Exception ex)
+                    else // 파일이 공백인 경우
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        if(!String.IsNullOrWhiteSpace(UserInfo.Image))
+                        {
+                            deleteFileName = UserInfo.Image; // 기존 파일 삭제 목록에 추가
+                            UserInfo.Image = null; // 모델의 파일명 비우기
+                        }
+                    }
+
+                    // 먼저 파일 삭제 처리
+                    // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환하여 가지고 있어야함.
+                    byte[]? ImageBytes = await FileService.GetImageFile(AdminFileFolderPath, deleteFileName);
+                    // - DB 실패했을경우 IFormFile을 바이트로 변환해서 DB의 해당명칭으로 다시저장해야함.
+                    if(ImageBytes is not null)
+                    {
+                        AddTemp = FileService.ConvertFormFiles(ImageBytes, deleteFileName);
+                    }
+
+                    // 파일삭제
+                    FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
+
+                    // 새 파일 저장
+                    if(files is not null)
+                    {
+                        if(String.IsNullOrWhiteSpace(UserInfo.Image) || files.FileName != UserInfo.Image)
+                        {
+                            // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
+                            await FileService.AddResizeImageFile(UserInfo.Image!, AdminFileFolderPath, files);
+                        }
+                    }
+
+                    // 이후 데이터베이스 업데이트
+                    context.UsersTbs.Update(UserInfo);
+                    //bool UpdateImageResult = false;
+
+                    bool UpdateImageResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (UpdateImageResult)
+                    {
+                        // 성공했으면 그걸로 끝.
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        // 실패했으면 파일을 원래대로 돌려놔야함.
+                        if(AddTemp is not null)
+                        {
+                            try
+                            {
+                                if (FileService.IsFileExists(AdminFileFolderPath, AddTemp.FileName) == false)
+                                {
+                                    // 파일을 저장하는 로직 (AddResizeImageFile)
+                                    await FileService.AddResizeImageFile(AddTemp.FileName, AdminFileFolderPath, AddTemp);
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+                            }
+                        }
+
+                        if(!String.IsNullOrWhiteSpace(RemoveTemp))
+                        {
+                            try
+                            {
+                                FileService.DeleteImageFile(AdminFileFolderPath, RemoveTemp);
+                            }
+                            catch(Exception ex)
+                            {
+                                LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+                            }
+                        }
+
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    await transaction.RollbackAsync();
+                    throw new ArgumentNullException();
+                }
+            }
+
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 강제로 디버깅 포인트 잡기.
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        // 파일처리 준비
+            //                        string NewFileName = String.Empty;
+            //                        string deleteFileName = String.Empty;
+
+            //                        // 수정실패 시 돌려놓을 FormFile
+            //                        IFormFile? AddTemp = default;
+            //                        string RemoveTemp = String.Empty;
+
+
+            //                        AdminTb? AdminInfo = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+            //                        if (AdminInfo is null)
+            //                            return false;
+
+            //                        UsersTb? UserInfo = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == AdminInfo.UserTbId && m.DelYn != true);
+            //                        if (UserInfo is null)
+            //                            return false;
+
+            //                        string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+            //                        di = new DirectoryInfo(AdminFileFolderPath);
+            //                        if (!di.Exists) di.Create();
+
+
+            //                        // 파일이 공백이 아닌 경우
+            //                        if(files is not null)
+            //                        {
+            //                            if(files.FileName != UserInfo.Image)
+            //                            {
+            //                                if(!String.IsNullOrWhiteSpace(UserInfo.Image))
+            //                                {
+            //                                    deleteFileName = UserInfo.Image;
+            //                                }
+
+            //                                // 새로운 파일명 설정
+            //                                string newFileName = FileService.SetNewFileName(UserInfo.Id.ToString(), files);
+            //                                NewFileName = newFileName; // 파일명 리스트에 추가
+            //                                UserInfo.Image = newFileName; // DB Image명칭 업데이트
+
+            //                                RemoveTemp = newFileName;
+            //                            }
+            //                        }
+            //                        else // 파일이 공백인 경우
+            //                        {
+            //                            if(!String.IsNullOrWhiteSpace(UserInfo.Image))
+            //                            {
+            //                                deleteFileName = UserInfo.Image; // 기존 파일 삭제 목록에 추가
+            //                                UserInfo.Image = null; // 모델의 파일명 비우기
+            //                            }
+            //                        }
+
+            //                        // 먼저 파일 삭제 처리
+            //                        // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환하여 가지고 있어야함.
+            //                        byte[]? temp = await FileService.GetImageFile(AdminFileFolderPath, deleteFileName);
+            //                        // - DB 실패했을경우 IFormFile을 바이트로 변환해서 DB의 해당명칭으로 다시저장해야함.
+            //                        if(temp is not null)
+            //                        {
+            //                            AddTemp = FileService.ConvertFormFiles(temp, deleteFileName);
+            //                        }
+
+            //                        // 파일삭제
+            //                        FileService.DeleteImageFile(AdminFileFolderPath, deleteFileName);
+
+            //                        // 새 파일 저장
+            //                        if(files is not null)
+            //                        {
+            //                            if(String.IsNullOrWhiteSpace(UserInfo.Image) || files.FileName != UserInfo.Image)
+            //                            {
+            //                                // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
+            //                                await FileService.AddResizeImageFile(UserInfo.Image!, AdminFileFolderPath, files);
+            //                            }
+            //                        }
+
+            //                        // 이후 데이터베이스 업데이트
+            //                        context.UsersTbs.Update(UserInfo);
+            //                        //bool UpdateImageResult = false;
+            //                        bool UpdateImageResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (UpdateImageResult)
+            //                        {
+            //                            // 성공했으면 그걸로 끝.
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            // 실패했으면 파일을 원래대로 돌려놔야함.
+            //                            if(AddTemp is not null)
+            //                            {
+            //                                try
+            //                                {
+            //                                    if (FileService.IsFileExists(AdminFileFolderPath, AddTemp.FileName) == false)
+            //                                    {
+            //                                        // 파일을 저장하는 로직 (AddResizeImageFile)
+            //                                        await FileService.AddResizeImageFile(AddTemp.FileName, AdminFileFolderPath, AddTemp);
+            //                                    }
+            //                                }
+            //                                catch(Exception ex)
+            //                                {
+            //                                    LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+            //                                }
+            //                            }
+
+            //                            if(!String.IsNullOrWhiteSpace(RemoveTemp))
+            //                            {
+            //                                try
+            //                                {
+            //                                    FileService.DeleteImageFile(AdminFileFolderPath, RemoveTemp);
+            //                                }
+            //                                catch(Exception ex)
+            //                                {
+            //                                    LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+            //                                }
+            //                            }
+
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        await transaction.RollbackAsync();
+            //                        //throw new ArgumentNullException();
+            //                        return false;
+            //                    }
+            //                }
+            //            });
+            //            return result;
+#endregion
         }
 
         /// <summary>
@@ -408,186 +698,357 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <returns></returns>
         public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string UserIdx, string creater)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+
+                    AdminTb? adminTB = await context.AdminTbs
+                        .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
+
+                    if (adminTB is null)
+                        return (bool?)null;
+
+                    // 계정정보 변경을 위해 조회
+                    UsersTb? userTB = await context.UsersTbs
+                        .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
+
+                    if (userTB is null)
+                        return (bool?)null;
+
+                    if (!adminTB.Type.Equals("시스템관리자"))
                     {
-
-                        AdminTb? adminTB = await context.AdminTbs
-                            .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
-
-                        if (adminTB is null)
-                            return (bool?)null;
-
-                        // 계정정보 변경을 위해 조회
-                        UsersTb? userTB = await context.UsersTbs
-                            .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
-
-                        if (userTB is null)
-                            return (bool?)null;
-
-                        if (!adminTB.Type.Equals("시스템관리자"))
+                        if (dto.Name != userTB.Name)
                         {
-                            if (dto.Name != userTB.Name)
-                            {
-                                userTB.Name = dto.Name; // 이름
-                            }
-                            userTB.Phone = dto.Phone; // 전화번호
-                            userTB.Email = dto.Email; // 이메일
-                            userTB.UserId = dto.UserId!; // 로그인ID
-                            userTB.Password = dto.Password!; // 비밀번호
-                            userTB.UpdateDt = DateTime.Now; // 수정시간
-                            userTB.UpdateUser = creater; // 수정자
-
-                            context.UsersTbs.Update(userTB);
-
-                            bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!UserUpdate) // 업데이트 실패 - 롤백
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
+                            userTB.Name = dto.Name; // 이름
                         }
+                        userTB.Phone = dto.Phone; // 전화번호
+                        userTB.Email = dto.Email; // 이메일
+                        userTB.UserId = dto.UserId!; // 로그인ID
+                        userTB.Password = dto.Password!; // 비밀번호
+                        userTB.UpdateDt = DateTime.Now; // 수정시간
+                        userTB.UpdateUser = creater; // 수정자
 
-                        if (!adminTB.Type.Equals("시스템관리자"))
+                        context.UsersTbs.Update(userTB);
+
+                        bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!UserUpdate) // 업데이트 실패 - 롤백
                         {
-                            adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
-                            adminTB.UpdateDt = DateTime.Now;
-                            adminTB.UpdateUser = creater;
-                            context.AdminTbs.Update(adminTB);
-
-                            bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!AdminUpdate) // 업데이트 실패 - 롤백
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
+                            await transaction.RollbackAsync();
+                            return false;
                         }
+                    }
 
-                        // DTO의 PlaceID -- 최종 결과물이 되야할 것들
-                        List<int> DTOPlaceIdx = dto.PlaceList!.Select(m => m.Id!.Value).ToList();
+                    if (!adminTB.Type.Equals("시스템관리자"))
+                    {
+                        adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
+                        adminTB.UpdateDt = DateTime.Now;
+                        adminTB.UpdateUser = creater;
+                        context.AdminTbs.Update(adminTB);
 
-                        // 이 관리자의 관리하고있는 사업장ID 조회
-                        List<int> AdminPlaceIdx = await context.AdminPlaceTbs
-                            .Where(m => m.AdminTbId == adminTB.Id && m.DelYn != true)
-                            .Select(m => m.PlaceTbId).ToListAsync();
-
-                        List<int> insertplaceidx = new List<int>();
-                        List<int> deleteplacecidx = new List<int>();
-
-                        if (DTOPlaceIdx is [_, ..]) // 넘어온 사업장이 있으면
+                        bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!AdminUpdate) // 업데이트 실패 - 롤백
                         {
-                            if (AdminPlaceIdx is [_, ..]) // 해당 관리자의 사업장이 있으면
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                    }
+
+                    // DTO의 PlaceID -- 최종 결과물이 되야할 것들
+                    List<int> DTOPlaceIdx = dto.PlaceList!.Select(m => m.Id!.Value).ToList();
+
+                    // 이 관리자의 관리하고있는 사업장ID 조회
+                    List<int> AdminPlaceIdx = await context.AdminPlaceTbs
+                        .Where(m => m.AdminTbId == adminTB.Id && m.DelYn != true)
+                        .Select(m => m.PlaceTbId).ToListAsync();
+
+                    List<int> insertplaceidx = new List<int>();
+                    List<int> deleteplacecidx = new List<int>();
+
+                    if (DTOPlaceIdx is [_, ..]) // 넘어온 사업장이 있으면
+                    {
+                        if (AdminPlaceIdx is [_, ..]) // 해당 관리자의 사업장이 있으면
+                        {
+                            // 내가갖고 있는것
+                            List<int>? MineList = await context.AdminPlaceTbs
+                                .Where(m => DTOPlaceIdx.Contains(Convert.ToInt32(m.PlaceTbId)) &&
+                                m.DelYn != true &&
+                                m.AdminTbId == adminTB.Id)
+                                .Select(m => m.PlaceTbId)
+                                .ToListAsync();
+
+                            if (MineList is [_, ..]) // 가지고 있는게 있으면
                             {
-                                // 내가갖고 있는것
-                                List<int>? MineList = await context.AdminPlaceTbs
-                                    .Where(m => DTOPlaceIdx.Contains(Convert.ToInt32(m.PlaceTbId)) &&
-                                    m.DelYn != true &&
-                                    m.AdminTbId == adminTB.Id)
-                                    .Select(m => m.PlaceTbId)
-                                    .ToListAsync();
+                                // 추가해야할 것
+                                insertplaceidx = DTOPlaceIdx.Except(AdminPlaceIdx).ToList();
+                                // 삭제해야할것
+                                deleteplacecidx = AdminPlaceIdx.Except(MineList).ToList();
 
-                                if (MineList is [_, ..]) // 가지고 있는게 있으면
-                                {
-                                    // 추가해야할 것
-                                    insertplaceidx = DTOPlaceIdx.Except(AdminPlaceIdx).ToList();
-                                    // 삭제해야할것
-                                    deleteplacecidx = AdminPlaceIdx.Except(MineList).ToList();
-
-                                }
-                                else // 검색 후 내가 가진게 없으면
-                                {
-                                    // 전부다 ISERT
-                                    insertplaceidx = DTOPlaceIdx;
-                                    deleteplacecidx = AdminPlaceIdx;
-                                }
                             }
-                            else // 가지고있는게 아에 없으면
+                            else // 검색 후 내가 가진게 없으면
                             {
-                                // 들어온거 INSERT
+                                // 전부다 ISERT
                                 insertplaceidx = DTOPlaceIdx;
+                                deleteplacecidx = AdminPlaceIdx;
                             }
                         }
-                        else
+                        else // 가지고있는게 아에 없으면
                         {
-                            // 없으면 -->
-                            // AllPlaceIdx --> 내용 모두 삭제
-                            deleteplacecidx = AdminPlaceIdx;
+                            // 들어온거 INSERT
+                            insertplaceidx = DTOPlaceIdx;
                         }
-
-
-                        // INSERT 할게 있으면
-                        if (insertplaceidx is [_, ..])
-                        {
-                            foreach (int InsertPlaceID in insertplaceidx)
-                            {
-                                AdminPlaceTb InsertTB = new AdminPlaceTb();
-                                InsertTB.AdminTbId = adminTB.Id;
-                                InsertTB.PlaceTbId = InsertPlaceID;
-                                InsertTB.CreateDt = DateTime.Now;
-                                InsertTB.CreateUser = creater;
-                                InsertTB.UpdateDt = DateTime.Now;
-                                InsertTB.UpdateUser = creater;
-
-                                context.AdminPlaceTbs.Add(InsertTB);
-                                bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
-                                if (!Addresult)
-                                {
-                                    await transaction.RollbackAsync();
-                                    return false;
-                                }
-                            }
-                        }
-
-                        // DELETE 할게 있으면
-                        if (deleteplacecidx is [_, ..])
-                        {
-                            foreach (int DeletePlaceID in deleteplacecidx)
-                            {
-                                AdminPlaceTb? deleteTB = await context.AdminPlaceTbs
-                                    .FirstOrDefaultAsync(m => m.AdminTbId == adminTB.Id &&
-                                    m.PlaceTbId == DeletePlaceID &&
-                                    m.DelYn != true);
-
-                                if (deleteTB is not null)
-                                {
-                                    context.AdminPlaceTbs.Remove(deleteTB);
-                                    bool deleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                                    if (!deleteResult)
-                                    {
-                                        await transaction.RollbackAsync();
-                                        return false;
-                                    }
-                                }
-                                else
-                                {
-                                    await transaction.RollbackAsync();
-                                    return false;
-                                }
-                            }
-                        }
-
-                        
-                        await transaction.CommitAsync();
-                        return true;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        // 없으면 -->
+                        // AllPlaceIdx --> 내용 모두 삭제
+                        deleteplacecidx = AdminPlaceIdx;
                     }
-                }
-            });
 
-            return result;
+
+                    // INSERT 할게 있으면
+                    if (insertplaceidx is [_, ..])
+                    {
+                        foreach (int InsertPlaceID in insertplaceidx)
+                        {
+                            AdminPlaceTb InsertTB = new AdminPlaceTb();
+                            InsertTB.AdminTbId = adminTB.Id;
+                            InsertTB.PlaceTbId = InsertPlaceID;
+                            InsertTB.CreateDt = DateTime.Now;
+                            InsertTB.CreateUser = creater;
+                            InsertTB.UpdateDt = DateTime.Now;
+                            InsertTB.UpdateUser = creater;
+
+                            context.AdminPlaceTbs.Add(InsertTB);
+                            bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!Addresult)
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                    }
+
+                    // DELETE 할게 있으면
+                    if (deleteplacecidx is [_, ..])
+                    {
+                        foreach (int DeletePlaceID in deleteplacecidx)
+                        {
+                            AdminPlaceTb? deleteTB = await context.AdminPlaceTbs
+                                .FirstOrDefaultAsync(m => m.AdminTbId == adminTB.Id &&
+                                m.PlaceTbId == DeletePlaceID &&
+                                m.DelYn != true);
+
+                            if (deleteTB is not null)
+                            {
+                                context.AdminPlaceTbs.Remove(deleteTB);
+                                bool deleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                if (!deleteResult)
+                                {
+                                    await transaction.RollbackAsync();
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                    }
+
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+
+            //                        AdminTb? adminTB = await context.AdminTbs
+            //                            .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
+
+            //                        if (adminTB is null)
+            //                            return (bool?)null;
+
+            //                        // 계정정보 변경을 위해 조회
+            //                        UsersTb? userTB = await context.UsersTbs
+            //                            .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
+
+            //                        if (userTB is null)
+            //                            return (bool?)null;
+
+            //                        if (!adminTB.Type.Equals("시스템관리자"))
+            //                        {
+            //                            if (dto.Name != userTB.Name)
+            //                            {
+            //                                userTB.Name = dto.Name; // 이름
+            //                            }
+            //                            userTB.Phone = dto.Phone; // 전화번호
+            //                            userTB.Email = dto.Email; // 이메일
+            //                            userTB.UserId = dto.UserId!; // 로그인ID
+            //                            userTB.Password = dto.Password!; // 비밀번호
+            //                            userTB.UpdateDt = DateTime.Now; // 수정시간
+            //                            userTB.UpdateUser = creater; // 수정자
+
+            //                            context.UsersTbs.Update(userTB);
+
+            //                            bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+            //                            if (!UserUpdate) // 업데이트 실패 - 롤백
+            //                            {
+            //                                await transaction.RollbackAsync();
+            //                                return false;
+            //                            }
+            //                        }
+
+            //                        if (!adminTB.Type.Equals("시스템관리자"))
+            //                        {
+            //                            adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
+            //                            adminTB.UpdateDt = DateTime.Now;
+            //                            adminTB.UpdateUser = creater;
+            //                            context.AdminTbs.Update(adminTB);
+
+            //                            bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+            //                            if (!AdminUpdate) // 업데이트 실패 - 롤백
+            //                            {
+            //                                await transaction.RollbackAsync();
+            //                                return false;
+            //                            }
+            //                        }
+
+            //                        // DTO의 PlaceID -- 최종 결과물이 되야할 것들
+            //                        List<int> DTOPlaceIdx = dto.PlaceList!.Select(m => m.Id!.Value).ToList();
+
+            //                        // 이 관리자의 관리하고있는 사업장ID 조회
+            //                        List<int> AdminPlaceIdx = await context.AdminPlaceTbs
+            //                            .Where(m => m.AdminTbId == adminTB.Id && m.DelYn != true)
+            //                            .Select(m => m.PlaceTbId).ToListAsync();
+
+            //                        List<int> insertplaceidx = new List<int>();
+            //                        List<int> deleteplacecidx = new List<int>();
+
+            //                        if (DTOPlaceIdx is [_, ..]) // 넘어온 사업장이 있으면
+            //                        {
+            //                            if (AdminPlaceIdx is [_, ..]) // 해당 관리자의 사업장이 있으면
+            //                            {
+            //                                // 내가갖고 있는것
+            //                                List<int>? MineList = await context.AdminPlaceTbs
+            //                                    .Where(m => DTOPlaceIdx.Contains(Convert.ToInt32(m.PlaceTbId)) &&
+            //                                    m.DelYn != true &&
+            //                                    m.AdminTbId == adminTB.Id)
+            //                                    .Select(m => m.PlaceTbId)
+            //                                    .ToListAsync();
+
+            //                                if (MineList is [_, ..]) // 가지고 있는게 있으면
+            //                                {
+            //                                    // 추가해야할 것
+            //                                    insertplaceidx = DTOPlaceIdx.Except(AdminPlaceIdx).ToList();
+            //                                    // 삭제해야할것
+            //                                    deleteplacecidx = AdminPlaceIdx.Except(MineList).ToList();
+
+            //                                }
+            //                                else // 검색 후 내가 가진게 없으면
+            //                                {
+            //                                    // 전부다 ISERT
+            //                                    insertplaceidx = DTOPlaceIdx;
+            //                                    deleteplacecidx = AdminPlaceIdx;
+            //                                }
+            //                            }
+            //                            else // 가지고있는게 아에 없으면
+            //                            {
+            //                                // 들어온거 INSERT
+            //                                insertplaceidx = DTOPlaceIdx;
+            //                            }
+            //                        }
+            //                        else
+            //                        {
+            //                            // 없으면 -->
+            //                            // AllPlaceIdx --> 내용 모두 삭제
+            //                            deleteplacecidx = AdminPlaceIdx;
+            //                        }
+
+
+            //                        // INSERT 할게 있으면
+            //                        if (insertplaceidx is [_, ..])
+            //                        {
+            //                            foreach (int InsertPlaceID in insertplaceidx)
+            //                            {
+            //                                AdminPlaceTb InsertTB = new AdminPlaceTb();
+            //                                InsertTB.AdminTbId = adminTB.Id;
+            //                                InsertTB.PlaceTbId = InsertPlaceID;
+            //                                InsertTB.CreateDt = DateTime.Now;
+            //                                InsertTB.CreateUser = creater;
+            //                                InsertTB.UpdateDt = DateTime.Now;
+            //                                InsertTB.UpdateUser = creater;
+
+            //                                context.AdminPlaceTbs.Add(InsertTB);
+            //                                bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                                if (!Addresult)
+            //                                {
+            //                                    await transaction.RollbackAsync();
+            //                                    return false;
+            //                                }
+            //                            }
+            //                        }
+
+            //                        // DELETE 할게 있으면
+            //                        if (deleteplacecidx is [_, ..])
+            //                        {
+            //                            foreach (int DeletePlaceID in deleteplacecidx)
+            //                            {
+            //                                AdminPlaceTb? deleteTB = await context.AdminPlaceTbs
+            //                                    .FirstOrDefaultAsync(m => m.AdminTbId == adminTB.Id &&
+            //                                    m.PlaceTbId == DeletePlaceID &&
+            //                                    m.DelYn != true);
+
+            //                                if (deleteTB is not null)
+            //                                {
+            //                                    context.AdminPlaceTbs.Remove(deleteTB);
+            //                                    bool deleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                                    if (!deleteResult)
+            //                                    {
+            //                                        await transaction.RollbackAsync();
+            //                                        return false;
+            //                                    }
+            //                                }
+            //                                else
+            //                                {
+            //                                    await transaction.RollbackAsync();
+            //                                    return false;
+            //                                }
+            //                            }
+            //                        }
+
+
+            //                        await transaction.CommitAsync();
+            //                        return true;
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+
+            //            return result;
+#endregion
         }
 
     }

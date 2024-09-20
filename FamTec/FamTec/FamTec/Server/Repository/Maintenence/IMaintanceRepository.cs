@@ -44,7 +44,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="creater"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<int?> AddMaintanceMaterialAsync(AddMaintanceMaterialDTO model, string creater, int placeid);
+        ValueTask<FailResult?> AddMaintanceMaterialAsync(AddMaintanceMaterialDTO model, string creater, int placeid);
 
         /// <summary>
         /// 유지보수 이미지 추가

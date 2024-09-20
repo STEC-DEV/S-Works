@@ -30,33 +30,73 @@ namespace FamTec.Server.Controllers.Maintenance
             this.LogService = _logservice;
         }
 
+        /// <summary>
+        /// 유지보수 출고 - 추가출고
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [Route("sign/temp2")]
-        public async ValueTask<IActionResult> Temp2()
+        [Route("sign/AddSupMaintenance")]
+        public async ValueTask<IActionResult> AddSupMaintenance(AddMaintanceMaterialDTO dto)
         {
-            // 같은품목 + 같은공간 에는 한번만
-            AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
-            dto.MaintanceID = 100;
-            dto.MaterialList = new List<MaterialDTO>();
-            dto.MaterialList.Add(new MaterialDTO
+            try
             {
-                MaterialID = 11,
-                Num = 145,
-                RoomID = 3,
-                UnitPrice = 200, // 프론트에서 계산해줘야함.
-                TotalPrice = 2000 // 프론트에서 계산해줘야함.
-            });
-            dto.MaterialList.Add(new MaterialDTO
+                // 같은품목 + 같은공간 에는 한번만
+                //AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
+                //dto.MaintanceID = 105;
+                //dto.MaterialList = new List<MaterialDTO>();
+                //dto.MaterialList.Add(new MaterialDTO
+                //{
+                //    MaterialID = 10,
+                //    Num = 5,
+                //    RoomID = 2,
+                //});
+                //dto.MaterialList.Add(new MaterialDTO
+                //{
+                //    MaterialID = 11,
+                //    Num = 10,
+                //    RoomID = 3,
+                //});
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+
+                if (dto.MaintanceID is 0)
+                    return NoContent();
+
+                if (dto.MaterialList.Count == 0 || dto.MaterialList is null)
+                    return NoContent();
+
+                foreach (MaterialDTO MaterialInfo in dto.MaterialList)
+                {
+                    if (MaterialInfo.MaterialID is 0)
+                        return NoContent();
+                    if (MaterialInfo.Num is 0)
+                        return NoContent();
+                    if (MaterialInfo.RoomID is 0)
+                        return NoContent();
+                }
+
+                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 422)
+                    return Ok(model);
+                else if (model.code == 409)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
             {
-                MaterialID = 10,
-                Num = 5,
-                RoomID = 3,
-                UnitPrice = 200,
-                TotalPrice = 1000
-            });
-            var temp = await MaintanceRepository.AddMaintanceMaterialAsync(dto, "용", 3);
-            return Ok(temp);
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
         }
 
      

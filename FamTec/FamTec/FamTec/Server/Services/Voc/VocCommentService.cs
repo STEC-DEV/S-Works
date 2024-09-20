@@ -565,7 +565,6 @@ namespace FamTec.Server.Services.Voc
                             catch(Exception ex)
                             {
                                 LogService.LogMessage($"파일 복원실패 : {ex.Message}");
-                                throw;
                             }
                         }
                     }
@@ -581,7 +580,6 @@ namespace FamTec.Server.Services.Voc
                             catch(Exception ex)
                             {
                                 LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
-                                throw;
                             }
                         }
                     }

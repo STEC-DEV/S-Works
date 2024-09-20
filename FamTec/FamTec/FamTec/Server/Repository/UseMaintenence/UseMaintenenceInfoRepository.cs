@@ -472,6 +472,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         .ToListAsync();
 
                         float maintenence_totalprice = UseMaintenenceList.Sum(m => m.Totalprice);
+                        
+                        maintanceHistoryTB.UpdateDt = DateTime.Now;
+                        maintanceHistoryTB.UpdateUser = updater;
                         maintanceHistoryTB.TotalPrice = maintenence_totalprice;
                         context.MaintenenceHistoryTbs.Update(maintanceHistoryTB);
                         UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -638,6 +641,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         .ToListAsync();
 
                         float maintenence_totalprice = UseMaintenenceList.Sum(m => m.Totalprice);
+
+                        maintanceHistoryTB.UpdateDt = DateTime.Now;
+                        maintanceHistoryTB.UpdateUser = updater;
                         maintanceHistoryTB.TotalPrice = maintenence_totalprice;
                         context.MaintenenceHistoryTbs.Update(maintanceHistoryTB);
                         UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;

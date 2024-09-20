@@ -131,55 +131,97 @@ namespace FamTec.Server.Repository.Alarm
         /// <returns></returns>
         public async ValueTask<bool?> AllAlarmDelete(int userid, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    List<AlarmTb>? AlarmList = await context.AlarmTbs
+                        .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                        .OrderBy(m => m.CreateDt)
+                        .ToListAsync();
+
+                    if (!AlarmList.Any())
+                        return true;
+
+                    foreach (AlarmTb AlarmTB in AlarmList)
                     {
-                        List<AlarmTb>? AlarmList = await context.AlarmTbs
-                            .Where(m => m.DelYn != true && m.UsersTbId == userid)
-                            .OrderBy(m => m.CreateDt)
-                            .ToListAsync();
+                        AlarmTB.DelYn = true;
+                        AlarmTB.DelDt = DateTime.Now;
+                        AlarmTB.DelUser = deleter;
 
-                        if (!AlarmList.Any())
-                            return true;
-
-                        foreach (AlarmTb AlarmTB in AlarmList)
-                        {
-                            AlarmTB.DelYn = true;
-                            AlarmTB.DelDt = DateTime.Now;
-                            AlarmTB.DelUser = deleter;
-
-                            context.AlarmTbs.Update(AlarmTB);
-                        }
-
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (DeleteResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
-                        {
-                            await transaction.RollbackAsync();
-                            return false;
-                        }
+                        context.AlarmTbs.Update(AlarmTB);
                     }
-                    catch (Exception ex)
+
+                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (DeleteResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        List<AlarmTb>? AlarmList = await context.AlarmTbs
+            //                            .Where(m => m.DelYn != true && m.UsersTbId == userid)
+            //                            .OrderBy(m => m.CreateDt)
+            //                            .ToListAsync();
+
+            //                        if (!AlarmList.Any())
+            //                            return true;
+
+            //                        foreach (AlarmTb AlarmTB in AlarmList)
+            //                        {
+            //                            AlarmTB.DelYn = true;
+            //                            AlarmTB.DelDt = DateTime.Now;
+            //                            AlarmTB.DelUser = deleter;
+
+            //                            context.AlarmTbs.Update(AlarmTB);
+            //                        }
+
+            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (DeleteResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+            #endregion
+
         }
 
         /// <summary>

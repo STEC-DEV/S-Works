@@ -268,62 +268,108 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <returns></returns>
         public async ValueTask<bool?> DeleteDepartmentInfo(List<int> idx, string deleter)
         {
-            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            bool? result = await strategy.ExecuteAsync(async () =>
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-#if DEBUG
-                // 디버깅 포인트를 강제로 잡음
-                Debugger.Break();
-#endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                try
                 {
-                    try
+                    foreach (int dpId in idx)
                     {
-                        foreach (int dpId in idx)
+                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+                            .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+
+                        if (DepartmentTB is not null)
                         {
-                            DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
+                            DepartmentTB.DelYn = true;
+                            DepartmentTB.DelUser = deleter;
+                            DepartmentTB.DelDt = DateTime.Now;
 
-                            if (DepartmentTB is not null)
-                            {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
-                                DepartmentTB.DelYn = true;
-                                DepartmentTB.DelUser = deleter;
-                                DepartmentTB.DelDt = DateTime.Now;
-
-                                context.DepartmentsTbs.Update(DepartmentTB);
-                            }
-                            else // 잘못됨
-                            {
-                                await transaction.RollbackAsync();
-                                return false;
-                            }
+                            context.DepartmentsTbs.Update(DepartmentTB);
                         }
-
-                        bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (DepartmentResult)
-                        {
-                            await transaction.CommitAsync();
-                            return true;
-                        }
-                        else
+                        else // 잘못됨
                         {
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-                    catch (Exception ex)
+
+                    bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+                    if (DepartmentResult)
                     {
-                        LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
                     }
                 }
-            });
-            return result;
+                catch (Exception ex)
+                {
+                    LogService.LogMessage(ex.ToString());
+                    throw new ArgumentNullException();
+                }
+            }
+#region 수정전
+            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            //            bool? result = await strategy.ExecuteAsync(async () =>
+            //            {
+            //#if DEBUG
+            //                // 디버깅 포인트를 강제로 잡음
+            //                Debugger.Break();
+            //#endif
+            //                using (var transaction = await context.Database.BeginTransactionAsync())
+            //                {
+            //                    try
+            //                    {
+            //                        foreach (int dpId in idx)
+            //                        {
+            //                            DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+            //                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+
+            //                            if (DepartmentTB is not null)
+            //                            {
+            //                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+            //                                DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
+            //                                DepartmentTB.DelYn = true;
+            //                                DepartmentTB.DelUser = deleter;
+            //                                DepartmentTB.DelDt = DateTime.Now;
+
+            //                                context.DepartmentsTbs.Update(DepartmentTB);
+            //                            }
+            //                            else // 잘못됨
+            //                            {
+            //                                await transaction.RollbackAsync();
+            //                                return false;
+            //                            }
+            //                        }
+
+            //                        bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+            //                        if (DepartmentResult)
+            //                        {
+            //                            await transaction.CommitAsync();
+            //                            return true;
+            //                        }
+            //                        else
+            //                        {
+            //                            await transaction.RollbackAsync();
+            //                            return false;
+            //                        }
+            //                    }
+            //                    catch (Exception ex)
+            //                    {
+            //                        LogService.LogMessage(ex.ToString());
+            //                        throw new ArgumentNullException();
+            //                    }
+            //                }
+            //            });
+            //            return result;
+#endregion
         }
 
-   
+
     }
 }

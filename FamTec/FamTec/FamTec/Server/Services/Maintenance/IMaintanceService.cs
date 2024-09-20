@@ -15,6 +15,14 @@ namespace FamTec.Server.Services.Maintenance
         public ValueTask<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto);
 
         /// <summary>
+        /// 사용자재 추가출고
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<FailResult?>> AddSupMaintanceService(HttpContext context, AddMaintanceMaterialDTO dto);
+
+        /// <summary>
         /// 유지보수 이미지 등록
         /// </summary>
         /// <param name="context"></param>
