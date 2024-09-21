@@ -204,22 +204,48 @@ namespace FamTec.Server.Repository.Place
         /// <exception cref="ArgumentNullException"></exception>
         public async ValueTask<bool?> DeletePlaceList(string Name, List<int> placeidx)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach (int PlaceID in placeidx)
-                    {
-                        PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
-                        if (PlaceTB is not null)
-                        {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
-                            PlaceTB.DelYn = true;
-                            PlaceTB.DelDt = DateTime.Now;
-                            PlaceTB.DelUser = Name;
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                            context.PlaceTbs.Update(PlaceTB);
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅 포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
+
+                        foreach (int PlaceID in placeidx)
+                        {
+                            PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
+                            if (PlaceTB is not null)
+                            {
+                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                                PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
+                                PlaceTB.DelYn = true;
+                                PlaceTB.DelDt = DateTime.Now;
+                                PlaceTB.DelUser = Name;
+
+                                context.PlaceTbs.Update(PlaceTB);
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
@@ -227,81 +253,13 @@ namespace FamTec.Server.Repository.Place
                             return false;
                         }
                     }
-
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DeleteResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-            #region 수정전
-
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음.
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        foreach (int PlaceID in placeidx)
-            //                        {
-            //                            PlaceTb? PlaceTB = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id.Equals(PlaceID) && m.DelYn != true);
-            //                            if (PlaceTB is not null)
-            //                            {
-            //                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-            //                                PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
-            //                                PlaceTB.DelYn = true;
-            //                                PlaceTB.DelDt = DateTime.Now;
-            //                                PlaceTB.DelUser = Name;
-
-            //                                context.PlaceTbs.Update(PlaceTB);
-            //                            }
-            //                            else
-            //                            {
-            //                                await transaction.RollbackAsync();
-            //                                return false;
-            //                            }
-            //                        }
-
-            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (DeleteResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-
-            #endregion
+            });
         }
 
         /// <summary>

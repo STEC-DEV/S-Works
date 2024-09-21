@@ -91,100 +91,61 @@ namespace FamTec.Server.Repository.Floor
         /// <returns></returns>
         public async ValueTask<bool?> DeleteFloorInfo(List<int> roomidx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    foreach (int roomid in roomidx)
-                    {
-                        FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
-                        if (floortb is not null)
-                        {
-                            floortb.DelYn = true;
-                            floortb.DelDt = DateTime.Now;
-                            floortb.DelUser = deleter;
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
-                            context.FloorTbs.Update(floortb);
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
+
+                        foreach (int roomid in roomidx)
+                        {
+                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            if (floortb is not null)
+                            {
+                                floortb.DelYn = true;
+                                floortb.DelDt = DateTime.Now;
+                                floortb.DelUser = deleter;
+
+                                context.FloorTbs.Update(floortb);
+                            }
+                            else
+                            {
+                                // 값이 없으면 잘못됨 roolback
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
+                        }
+                        bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (FloorResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
-                            // 값이 없으면 잘못됨 roolback
+                            // 업데이트 실패시 롤백
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-                    bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (FloorResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        // 업데이트 실패시 롤백
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-#region 수정전
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음.
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        foreach (int roomid in roomidx)
-            //                        {
-            //                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
-            //                            if (floortb is not null)
-            //                            {
-            //                                floortb.DelYn = true;
-            //                                floortb.DelDt = DateTime.Now;
-            //                                floortb.DelUser = deleter;
-
-            //                                context.FloorTbs.Update(floortb);
-            //                            }
-            //                            else
-            //                            {
-            //                                // 값이 없으면 잘못됨 roolback
-            //                                await transaction.RollbackAsync();
-            //                                return false;
-            //                            }
-            //                        }
-            //                        bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (FloorResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            // 업데이트 실패시 롤백
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-            #endregion
+            });
         }
 
         /// <summary>

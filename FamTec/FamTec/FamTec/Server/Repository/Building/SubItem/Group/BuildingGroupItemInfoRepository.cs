@@ -2,6 +2,8 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Building.SubItem.Group
 {
@@ -140,147 +142,84 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         /// <returns></returns>
         public async ValueTask<bool?> DeleteGroupInfo(int groupid, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅 포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    BuildingItemGroupTb? GroupTB = await context.BuildingItemGroupTbs
-                        .FirstOrDefaultAsync(m => m.Id == groupid);
-
-                    if (GroupTB is null)
-                        return (bool?)null;
-
-                    GroupTB.DelDt = DateTime.Now;
-                    GroupTB.DelUser = deleter;
-                    GroupTB.DelYn = true;
-
-                    context.BuildingItemGroupTbs.Update(GroupTB);
-
-                    List<BuildingItemKeyTb>? KeyTB = await context.BuildingItemKeyTbs
-                        .Where(m => m.BuildingGroupTbId == groupid)
-                        .ToListAsync();
-
-                    if (KeyTB is [_, ..])
+                    try
                     {
-                        foreach (BuildingItemKeyTb KeyModel in KeyTB)
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
+
+                        BuildingItemGroupTb? GroupTB = await context.BuildingItemGroupTbs
+                            .FirstOrDefaultAsync(m => m.Id == groupid);
+
+                        if (GroupTB is null)
+                            return (bool?)null;
+
+                        GroupTB.DelDt = DateTime.Now;
+                        GroupTB.DelUser = deleter;
+                        GroupTB.DelYn = true;
+
+                        context.BuildingItemGroupTbs.Update(GroupTB);
+
+                        List<BuildingItemKeyTb>? KeyTB = await context.BuildingItemKeyTbs
+                            .Where(m => m.BuildingGroupTbId == groupid)
+                            .ToListAsync();
+
+                        if (KeyTB is [_, ..])
                         {
-                            KeyModel.DelDt = DateTime.Now;
-                            KeyModel.DelUser = deleter;
-                            KeyModel.DelYn = true;
-
-                            context.BuildingItemKeyTbs.Update(KeyModel);
-
-                            List<BuildingItemValueTb>? ValueTB = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyModel.Id).ToListAsync();
-                            if (ValueTB is [_, ..])
+                            foreach (BuildingItemKeyTb KeyModel in KeyTB)
                             {
-                                foreach (BuildingItemValueTb ValueModel in ValueTB)
-                                {
-                                    ValueModel.DelDt = DateTime.Now;
-                                    ValueModel.DelUser = deleter;
-                                    ValueModel.DelYn = true;
+                                KeyModel.DelDt = DateTime.Now;
+                                KeyModel.DelUser = deleter;
+                                KeyModel.DelYn = true;
 
-                                    context.BuildingItemValueTbs.Update(ValueModel);
+                                context.BuildingItemKeyTbs.Update(KeyModel);
+
+                                List<BuildingItemValueTb>? ValueTB = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyModel.Id).ToListAsync();
+                                if (ValueTB is [_, ..])
+                                {
+                                    foreach (BuildingItemValueTb ValueModel in ValueTB)
+                                    {
+                                        ValueModel.DelDt = DateTime.Now;
+                                        ValueModel.DelUser = deleter;
+                                        ValueModel.DelYn = true;
+
+                                        context.BuildingItemValueTbs.Update(ValueModel);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DeleteResult)
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
+                    }
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
-                    }
-
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-                        
-#region 수정전
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음.
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        BuildingItemGroupTb? GroupTB = await context.BuildingItemGroupTbs
-            //                            .FirstOrDefaultAsync(m => m.Id == groupid);
-
-            //                        if (GroupTB is null)
-            //                            return (bool?)null;
-
-            //                        GroupTB.DelDt = DateTime.Now;
-            //                        GroupTB.DelUser = deleter;
-            //                        GroupTB.DelYn = true;
-
-            //                        context.BuildingItemGroupTbs.Update(GroupTB);
-
-            //                        List<BuildingItemKeyTb>? KeyTB = await context.BuildingItemKeyTbs
-            //                            .Where(m => m.BuildingGroupTbId == groupid)
-            //                            .ToListAsync();
-
-            //                        if (KeyTB is [_, ..])
-            //                        {
-            //                            foreach (BuildingItemKeyTb KeyModel in KeyTB)
-            //                            {
-            //                                KeyModel.DelDt = DateTime.Now;
-            //                                KeyModel.DelUser = deleter;
-            //                                KeyModel.DelYn = true;
-
-            //                                context.BuildingItemKeyTbs.Update(KeyModel);
-
-            //                                List<BuildingItemValueTb>? ValueTB = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyModel.Id).ToListAsync();
-            //                                if (ValueTB is [_, ..])
-            //                                {
-            //                                    foreach (BuildingItemValueTb ValueModel in ValueTB)
-            //                                    {
-            //                                        ValueModel.DelDt = DateTime.Now;
-            //                                        ValueModel.DelUser = deleter;
-            //                                        ValueModel.DelYn = true;
-
-            //                                        context.BuildingItemValueTbs.Update(ValueModel);
-            //                                    }
-            //                                }
-            //                            }
-            //                        }
-
-            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (DeleteResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-            #endregion
+            });
         }
 
         /// <summary>

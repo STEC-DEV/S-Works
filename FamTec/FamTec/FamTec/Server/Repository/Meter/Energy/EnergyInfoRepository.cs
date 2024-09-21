@@ -3,6 +3,8 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Meter.Energy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Meter.Energy
 {
@@ -25,84 +27,99 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <returns></returns>
         public async ValueTask<EnergyDayUsageTb?> AddAsync(EnergyDayUsageTb model)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    await context.EnergyDayUsageTbs.AddAsync(model);
-
-                    bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (!AddResult)
+                    try
                     {
-                        await transaction.RollbackAsync();
-                        return null;
-                    }
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                    // MONTH TB 있는지 검사
-                    EnergyMonthUsageTb ? MonthTBInfo = await context.EnergyMonthUsageTbs
-                        .FirstOrDefaultAsync(m => m.DelYn != true &&
-                        m.MeterItemId == model.MeterItemId &&
-                        m.Year == model.MeterDt.Year);
+                        await context.EnergyDayUsageTbs.AddAsync(model);
 
-                    // 월별
-                    if (MonthTBInfo is null)
-                    {
-                        MonthTBInfo = new EnergyMonthUsageTb
-                        {
-                            TotalUsage = 0,
-                            Year = model.MeterDt.Year,
-                            Month = model.MeterDt.Month,
-                            CreateDt = DateTime.Now,
-                            CreateUser = model.CreateUser,
-                            UpdateDt = DateTime.Now,
-                            UpdateUser = model.CreateUser,
-                            MeterItemId = model.MeterItemId
-                        };
-
-                        await context.EnergyMonthUsageTbs.AddAsync(MonthTBInfo);
-                        AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                         if (!AddResult)
                         {
                             await transaction.RollbackAsync();
                             return null;
                         }
+
+                        // MONTH TB 있는지 검사
+                        EnergyMonthUsageTb? MonthTBInfo = await context.EnergyMonthUsageTbs
+                            .FirstOrDefaultAsync(m => m.DelYn != true &&
+                            m.MeterItemId == model.MeterItemId &&
+                            m.Year == model.MeterDt.Year);
+
+                        // 월별
+                        if (MonthTBInfo is null)
+                        {
+                            MonthTBInfo = new EnergyMonthUsageTb
+                            {
+                                TotalUsage = 0,
+                                Year = model.MeterDt.Year,
+                                Month = model.MeterDt.Month,
+                                CreateDt = DateTime.Now,
+                                CreateUser = model.CreateUser,
+                                UpdateDt = DateTime.Now,
+                                UpdateUser = model.CreateUser,
+                                MeterItemId = model.MeterItemId
+                            };
+
+                            await context.EnergyMonthUsageTbs.AddAsync(MonthTBInfo);
+                            AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            if (!AddResult)
+                            {
+                                await transaction.RollbackAsync();
+                                return null;
+                            }
+                        }
+
+                        float amount_result = await context.EnergyDayUsageTbs
+                            .Where(m => m.DelYn != true &&
+                                        m.MeterItemId == model.MeterItemId &&
+                                        m.MeterDt.Year == model.MeterDt.Year &&
+                                        m.MeterDt.Month == model.MeterDt.Month)
+                            .SumAsync(m => m.TotalAmount);
+
+                        EnergyMonthUsageTb? MonthUsageTB = await context.EnergyMonthUsageTbs
+                            .FirstOrDefaultAsync(m => m.DelYn != true && m.Year == model.MeterDt.Year && m.Month == model.MeterDt.Month && m.MeterItemId == model.MeterItemId);
+
+                        if (MonthUsageTB is null)
+                        {
+                            await transaction.RollbackAsync();
+                            return null;
+                        }
+
+                        MonthUsageTB.TotalUsage = amount_result;
+                        context.EnergyMonthUsageTbs.Update(MonthTBInfo);
+
+                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!UpdateResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return null;
+                        }
+
+                        await transaction.CommitAsync();
+                        return model;
                     }
-
-                    float amount_result  = await context.EnergyDayUsageTbs
-                        .Where(m => m.DelYn != true &&
-                                    m.MeterItemId == model.MeterItemId &&
-                                    m.MeterDt.Year == model.MeterDt.Year && 
-                                    m.MeterDt.Month == model.MeterDt.Month)
-                        .SumAsync(m => m.TotalAmount);
-
-                    EnergyMonthUsageTb? MonthUsageTB = await context.EnergyMonthUsageTbs
-                        .FirstOrDefaultAsync(m => m.DelYn != true && m.Year == model.MeterDt.Year && m.Month == model.MeterDt.Month && m.MeterItemId == model.MeterItemId);
-
-                    if(MonthUsageTB is null)
+                    catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
-                        return null;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
-
-                    MonthUsageTB.TotalUsage = amount_result;
-                    context.EnergyMonthUsageTbs.Update(MonthTBInfo);
-
-                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (!UpdateResult)
-                    {
-                        await transaction.RollbackAsync();
-                        return null;
-                    }
-
-                    await transaction.CommitAsync();
-                    return model;
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
+            });
         }
 
         /// <summary>

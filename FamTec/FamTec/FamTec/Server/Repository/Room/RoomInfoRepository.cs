@@ -4,6 +4,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Room;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Room
@@ -204,110 +205,66 @@ namespace FamTec.Server.Repository.Room
         /// <returns></returns>
         public async ValueTask<bool?> DeleteRoomInfo(List<int> idx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    if (idx is null || !idx.Any())
-                        return (bool?)null;
-
-                    foreach (int roomid in idx)
+                    try
                     {
-                        RoomTb? RoomTB = await context.RoomTbs
-                            .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        if (RoomTB is not null)
+                        if (idx is null || !idx.Any())
+                            return (bool?)null;
+
+                        foreach (int roomid in idx)
                         {
-                            RoomTB.DelYn = true;
-                            RoomTB.DelDt = DateTime.Now;
-                            RoomTB.DelUser = deleter;
+                            RoomTb? RoomTB = await context.RoomTbs
+                                .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
 
-                            context.RoomTbs.Update(RoomTB);
+                            if (RoomTB is not null)
+                            {
+                                RoomTB.DelYn = true;
+                                RoomTB.DelDt = DateTime.Now;
+                                RoomTB.DelUser = deleter;
+
+                                context.RoomTbs.Update(RoomTB);
+                            }
+                            else
+                            {
+                                // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
                         }
-                        else
+
+                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (UpdateResult) // 성공시 커밋
                         {
-                            // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else // 실패시 롤백
+                        {
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-
-                    bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (UpdateResult) // 성공시 커밋
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else // 실패시 롤백
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-            #region 수정전
-
-            //            var strategy = context.Database.CreateExecutionStrategy();
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음.
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        if (idx is null || !idx.Any())
-            //                            return (bool?)null;
-
-            //                        foreach (int roomid in idx)
-            //                        {
-            //                            RoomTb? RoomTB = await context.RoomTbs
-            //                                .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
-
-            //                            if (RoomTB is not null)
-            //                            {
-            //                                RoomTB.DelYn = true;
-            //                                RoomTB.DelDt = DateTime.Now;
-            //                                RoomTB.DelUser = deleter;
-
-            //                                context.RoomTbs.Update(RoomTB);
-            //                            }
-            //                            else
-            //                            {
-            //                                // 공간정보 없음 -- 데이터가 잘못됨 (롤백)
-            //                                await transaction.RollbackAsync();
-            //                                return false;
-            //                            }
-            //                        }
-
-            //                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (UpdateResult) // 성공시 커밋
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else // 실패시 롤백
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-            #endregion
+            });
         }
 
 

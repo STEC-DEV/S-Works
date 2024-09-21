@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FamTec.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bcbb1879c96290e8cbac6af1f70367c2442e4315")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+53a52e9e3e8c83d4c2459d14f425aa75ab77e329")]
 [assembly: System.Reflection.AssemblyProductAttribute("FamTec.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FamTec.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

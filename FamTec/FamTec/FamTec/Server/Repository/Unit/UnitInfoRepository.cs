@@ -130,104 +130,62 @@ namespace FamTec.Server.Repository.Unit
         /// <returns></returns>
         public async ValueTask<bool?> DeleteUnitInfo(List<int> idx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    foreach (int unitid in idx)
+                    try
                     {
-                        UnitTb? UnitModel = await context.UnitTbs
-                            .FirstOrDefaultAsync(m => m.Id == unitid &&
-                                                        m.DelYn != true);
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        if (UnitModel is null)
-                            return (bool?)null;
+                        foreach (int unitid in idx)
+                        {
+                            UnitTb? UnitModel = await context.UnitTbs
+                                .FirstOrDefaultAsync(m => m.Id == unitid &&
+                                                            m.DelYn != true);
 
-                        // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                        UnitModel.Unit = $"{UnitModel.Unit}_{UnitModel.Id}";
-                        UnitModel.DelDt = DateTime.Now;
-                        UnitModel.DelUser = deleter;
-                        UnitModel.DelYn = true;
+                            if (UnitModel is null)
+                                return (bool?)null;
 
-                        context.UnitTbs.Update(UnitModel);
+                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                            UnitModel.Unit = $"{UnitModel.Unit}_{UnitModel.Id}";
+                            UnitModel.DelDt = DateTime.Now;
+                            UnitModel.DelUser = deleter;
+                            UnitModel.DelYn = true;
+
+                            context.UnitTbs.Update(UnitModel);
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+
                     }
-
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DeleteResult)
-                    {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
+                    catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        return false;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
-
                 }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-            #region 수정전
-
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음.
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        foreach (int unitid in idx)
-            //                        {
-            //                            UnitTb? UnitModel = await context.UnitTbs
-            //                                .FirstOrDefaultAsync(m => m.Id == unitid &&
-            //                                                          m.DelYn != true);
-
-            //                            if (UnitModel is null)
-            //                                return (bool?)null;
-
-            //                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-            //                            UnitModel.Unit = $"{UnitModel.Unit}_{UnitModel.Id}";
-            //                            UnitModel.DelDt = DateTime.Now;
-            //                            UnitModel.DelUser = deleter;
-            //                            UnitModel.DelYn = true;
-
-            //                            context.UnitTbs.Update(UnitModel);
-            //                        }
-
-            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (DeleteResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        await transaction.RollbackAsync();
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-
-            #endregion
+            });
         }
 
         /// <summary>

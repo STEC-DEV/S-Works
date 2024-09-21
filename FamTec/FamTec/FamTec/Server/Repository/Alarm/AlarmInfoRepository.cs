@@ -131,97 +131,59 @@ namespace FamTec.Server.Repository.Alarm
         /// <returns></returns>
         public async ValueTask<bool?> AllAlarmDelete(int userid, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    List<AlarmTb>? AlarmList = await context.AlarmTbs
-                        .Where(m => m.DelYn != true && m.UsersTbId == userid)
-                        .OrderBy(m => m.CreateDt)
-                        .ToListAsync();
-
-                    if (!AlarmList.Any())
-                        return true;
-
-                    foreach (AlarmTb AlarmTB in AlarmList)
+                    try
                     {
-                        AlarmTB.DelYn = true;
-                        AlarmTB.DelDt = DateTime.Now;
-                        AlarmTB.DelUser = deleter;
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        context.AlarmTbs.Update(AlarmTB);
+                        List<AlarmTb>? AlarmList = await context.AlarmTbs
+                            .Where(m => m.DelYn != true && m.UsersTbId == userid)
+                            .OrderBy(m => m.CreateDt)
+                            .ToListAsync();
+
+                        if (!AlarmList.Any())
+                            return true;
+
+                        foreach (AlarmTb AlarmTB in AlarmList)
+                        {
+                            AlarmTB.DelYn = true;
+                            AlarmTB.DelDt = DateTime.Now;
+                            AlarmTB.DelUser = deleter;
+
+                            context.AlarmTbs.Update(AlarmTB);
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
                     }
-
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DeleteResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
                         return false;
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-#region 수정전
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        List<AlarmTb>? AlarmList = await context.AlarmTbs
-            //                            .Where(m => m.DelYn != true && m.UsersTbId == userid)
-            //                            .OrderBy(m => m.CreateDt)
-            //                            .ToListAsync();
-
-            //                        if (!AlarmList.Any())
-            //                            return true;
-
-            //                        foreach (AlarmTb AlarmTB in AlarmList)
-            //                        {
-            //                            AlarmTB.DelYn = true;
-            //                            AlarmTB.DelDt = DateTime.Now;
-            //                            AlarmTB.DelUser = deleter;
-
-            //                            context.AlarmTbs.Update(AlarmTB);
-            //                        }
-
-            //                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (DeleteResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-            #endregion
-
+            });
         }
 
         /// <summary>

@@ -268,106 +268,64 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <returns></returns>
         public async ValueTask<bool?> DeleteDepartmentInfo(List<int> idx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                // 강제로 디버깅 포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    foreach (int dpId in idx)
+                    try
                     {
-                        DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-                            .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        if (DepartmentTB is not null)
+                        foreach (int dpId in idx)
                         {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
-                            DepartmentTB.DelYn = true;
-                            DepartmentTB.DelUser = deleter;
-                            DepartmentTB.DelDt = DateTime.Now;
+                            DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
+                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
 
-                            context.DepartmentsTbs.Update(DepartmentTB);
+                            if (DepartmentTB is not null)
+                            {
+                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                                DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
+                                DepartmentTB.DelYn = true;
+                                DepartmentTB.DelUser = deleter;
+                                DepartmentTB.DelDt = DateTime.Now;
+
+                                context.DepartmentsTbs.Update(DepartmentTB);
+                            }
+                            else // 잘못됨
+                            {
+                                await transaction.RollbackAsync();
+                                return false;
+                            }
                         }
-                        else // 잘못됨
+
+                        bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DepartmentResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
                         {
                             await transaction.RollbackAsync();
                             return false;
                         }
                     }
-
-                    bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DepartmentResult)
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
                         return false;
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-#region 수정전
-            //            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-            //            bool? result = await strategy.ExecuteAsync(async () =>
-            //            {
-            //#if DEBUG
-            //                // 디버깅 포인트를 강제로 잡음
-            //                Debugger.Break();
-            //#endif
-            //                using (var transaction = await context.Database.BeginTransactionAsync())
-            //                {
-            //                    try
-            //                    {
-            //                        foreach (int dpId in idx)
-            //                        {
-            //                            DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-            //                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
-
-            //                            if (DepartmentTB is not null)
-            //                            {
-            //                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-            //                                DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
-            //                                DepartmentTB.DelYn = true;
-            //                                DepartmentTB.DelUser = deleter;
-            //                                DepartmentTB.DelDt = DateTime.Now;
-
-            //                                context.DepartmentsTbs.Update(DepartmentTB);
-            //                            }
-            //                            else // 잘못됨
-            //                            {
-            //                                await transaction.RollbackAsync();
-            //                                return false;
-            //                            }
-            //                        }
-
-            //                        bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
-            //                        if (DepartmentResult)
-            //                        {
-            //                            await transaction.CommitAsync();
-            //                            return true;
-            //                        }
-            //                        else
-            //                        {
-            //                            await transaction.RollbackAsync();
-            //                            return false;
-            //                        }
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        LogService.LogMessage(ex.ToString());
-            //                        throw new ArgumentNullException();
-            //                    }
-            //                }
-            //            });
-            //            return result;
-#endregion
+            });
         }
 
 

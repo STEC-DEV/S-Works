@@ -2,6 +2,8 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics;
 
 namespace FamTec.Server.Repository.BlackList
 {
@@ -174,109 +176,64 @@ namespace FamTec.Server.Repository.BlackList
         /// <returns></returns>
         public async ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter)
         {
-            using (var transaction = await context.Database.BeginTransactionAsync())
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                try
+#if DEBUG
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
-                    foreach (int BlackListID in delIdx)
+                    try
                     {
-                        BlacklistTb? BlackListTB = await context.BlacklistTbs
-                            .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
+                        // 교착상태 방지용 타임아웃
+                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        if (BlackListTB is not null)
+                        foreach (int BlackListID in delIdx)
                         {
-                            // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                            BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
-                            BlackListTB.DelYn = true;
-                            BlackListTB.DelDt = DateTime.Now;
-                            BlackListTB.DelUser = deleter;
+                            BlacklistTb? BlackListTB = await context.BlacklistTbs
+                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
 
-                            context.BlacklistTbs.Update(BlackListTB);
+                            if (BlackListTB is not null)
+                            {
+                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
+                                BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
+                                BlackListTB.DelYn = true;
+                                BlackListTB.DelDt = DateTime.Now;
+                                BlackListTB.DelUser = deleter;
+
+                                context.BlacklistTbs.Update(BlackListTB);
+                            }
+                            else
+                            {
+                                // 조회결과가 없음
+                                return (bool?)null;
+                            }
+                        }
+
+                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (DeleteResult)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
                         }
                         else
                         {
-                            // 조회결과가 없음
-                            return (bool?)null;
+                            await transaction.RollbackAsync();
+                            return false;
                         }
-                    }
 
-                    bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                    if (DeleteResult)
+                    }
+                    catch (Exception ex)
                     {
-                        await transaction.CommitAsync();
-                        return true;
+                        LogService.LogMessage(ex.ToString());
+                        throw new ArgumentNullException();
                     }
-                    else
-                    {
-                        await transaction.RollbackAsync();
-                        return false;
-                    }
-
                 }
-                catch (Exception ex)
-                {
-                    LogService.LogMessage(ex.ToString());
-                    throw new ArgumentNullException();
-                }
-            }
-           
-#region 수정전
-//            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
-//            bool? result = await strategy.ExecuteAsync(async () =>
-//            {
-//#if DEBUG
-//                // 디버깅 포인트를 강제로 잡음.
-//                Debugger.Break();
-//#endif
-//                using (var transaction = await context.Database.BeginTransactionAsync())
-//                {
-//                    try
-//                    {
-//                        foreach (int BlackListID in delIdx)
-//                        {
-//                            BlacklistTb? BlackListTB = await context.BlacklistTbs
-//                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
-
-//                            if (BlackListTB is not null)
-//                            {
-//                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-//                                BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
-//                                BlackListTB.DelYn = true;
-//                                BlackListTB.DelDt = DateTime.Now;
-//                                BlackListTB.DelUser = deleter;
-
-//                                context.BlacklistTbs.Update(BlackListTB);
-//                            }
-//                            else
-//                            {
-//                                // 조회결과가 없음
-//                                return (bool?)null;
-//                            }
-//                        }
-
-//                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-//                        if (DeleteResult)
-//                        {
-//                            await transaction.CommitAsync();
-//                            return true;
-//                        }
-//                        else
-//                        {
-//                            await transaction.RollbackAsync();
-//                            return false;
-//                        }
-
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        LogService.LogMessage(ex.ToString());
-//                        throw new ArgumentNullException();
-//                    }
-//                }
-//            });
-//            return result;
-#endregion
+            });
         }
 
         /// <summary>
