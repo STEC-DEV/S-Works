@@ -56,10 +56,14 @@ namespace FamTec.Shared.Server.DTO.Voc
         public string? Phone { get; set; }
 
         /// <summary>
+        /// 이미지 파일명
+        /// </summary>
+        public List<string?> ImageName { get; set; } = new List<string?>();
+
+        /// <summary>
         /// 이미지
         /// </summary>
-        public List<byte[]>? Images { get; set; } = new List<byte[]>();
-
+        public List<byte[]?> Images { get; set; } = new List<byte[]?>();
 
     }
 }

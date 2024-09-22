@@ -292,19 +292,28 @@ namespace FamTec.Server.Services.Voc.Hub
                 VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, BuildingModel.PlaceTbId, VocModel.Id);
 
                 var imageFiles = new[] { VocModel.Image1, VocModel.Image2, VocModel.Image3 };
-                foreach(var image in imageFiles)
+                foreach (var image in imageFiles)
                 {
-                    if (!String.IsNullOrWhiteSpace(image))
+                    if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
                         byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, image);
-                        if(ImageBytes is not null)
+                        if (ImageBytes is not null)
                         {
-                            dto.Images!.Add(ImageBytes);
-
+                            dto.ImageName.Add(image);
+                            dto.Images.Add(ImageBytes);
+                        }
+                        else
+                        {
+                            dto.ImageName.Add(null);
+                            dto.Images.Add(null);
                         }
                     }
+                    else // 이미지 명칭에 DB에 없으면.
+                    {
+                        dto.ImageName.Add(null);
+                        dto.Images.Add(null);
+                    }
                 }
-
                 return new ResponseUnit<VocUserDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch (Exception ex)
@@ -353,15 +362,26 @@ namespace FamTec.Server.Services.Voc.Hub
                     dtoModel.VocTbId = model[i].VocTbId;
 
                     var imageFiles = new[] { model[i].Image1, model[i].Image2, model[i].Image3 };
-                    foreach(var image in imageFiles)
+                    foreach (var image in imageFiles)
                     {
-                        if (!String.IsNullOrWhiteSpace(image))
+                        if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                         {
                             byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
-                            if(ImageBytes is not null)
+                            if (ImageBytes is not null)
                             {
+                                dtoModel.ImageName.Add(image);
                                 dtoModel.Images.Add(ImageBytes);
                             }
+                            else
+                            {
+                                dtoModel.ImageName.Add(null);
+                                dtoModel.Images.Add(null);
+                            }
+                        }
+                        else // 이미지 명칭에 DB에 없으면.
+                        {
+                            dtoModel.ImageName.Add(null);
+                            dtoModel.Images.Add(null);
                         }
                     }
 
@@ -412,15 +432,26 @@ namespace FamTec.Server.Services.Voc.Hub
                 VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, PlaceTB.Id, VocTB.Id);
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
-                foreach(var image in imageFiles)
+                foreach (var image in imageFiles)
                 {
-                    if(!String.IsNullOrWhiteSpace(image))
+                    if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
                         byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
-                        if(ImageBytes is not null)
+                        if (ImageBytes is not null)
                         {
-                            dto.Images!.Add(ImageBytes);
+                            dto.ImageName.Add(image);
+                            dto.Images.Add(ImageBytes);
                         }
+                        else
+                        {
+                            dto.ImageName.Add(null);
+                            dto.Images.Add(null);
+                        }
+                    }
+                    else // 이미지 명칭에 DB에 없으면.
+                    {
+                        dto.ImageName.Add(null);
+                        dto.Images.Add(null);
                     }
                 }
 

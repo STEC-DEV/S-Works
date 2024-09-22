@@ -184,15 +184,26 @@ namespace FamTec.Server.Services.Voc
                 string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
-                foreach(var image in imageFiles)
+                foreach (var image in imageFiles)
                 {
-                    if(!String.IsNullOrWhiteSpace(image))
+                    if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
                         byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image);
-                        if(ImageBytes is not null)
+                        if (ImageBytes is not null)
                         {
-                            dto.Images!.Add(ImageBytes);
+                            dto.ImageName.Add(image);
+                            dto.Images.Add(ImageBytes);
                         }
+                        else
+                        {
+                            dto.ImageName.Add(null);
+                            dto.Images.Add(null);
+                        }
+                    }
+                    else // 이미지 명칭에 DB에 없으면.
+                    {
+                        dto.ImageName.Add(null);
+                        dto.Images.Add(null);
                     }
                 }
 
