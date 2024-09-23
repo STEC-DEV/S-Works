@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Inventory;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Inventory;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
@@ -12,6 +13,7 @@ namespace FamTec.Server.Controllers.Store
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class StoreController : ControllerBase
     {
         private IInVentoryService InStoreService;

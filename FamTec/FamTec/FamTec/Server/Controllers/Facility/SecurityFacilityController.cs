@@ -4,11 +4,13 @@ using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
+using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class SecurityFacilityController : ControllerBase
     {
         private ISecurityFacilityService SecurityFacilityService;

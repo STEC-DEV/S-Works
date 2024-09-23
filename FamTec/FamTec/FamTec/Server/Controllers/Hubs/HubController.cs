@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Hubs;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Shared.Server.DTO;
@@ -10,6 +11,7 @@ namespace FamTec.Server.Controllers.Hubs
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class HubController : ControllerBase
     {
         private IHubService HubService;

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Alarm;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Alarm;
@@ -11,6 +12,7 @@ namespace FamTec.Server.Controllers.Alarm
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AlarmController : ControllerBase
     {
         private readonly IAlarmService AlarmService;

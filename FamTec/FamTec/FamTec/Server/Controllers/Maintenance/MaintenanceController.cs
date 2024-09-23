@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Maintenence;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Shared.Server.DTO;
@@ -11,6 +12,7 @@ namespace FamTec.Server.Controllers.Maintenance
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MaintenanceController : ControllerBase
     {
         private IMaintanceService MaintanceService;

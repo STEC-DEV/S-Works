@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
@@ -12,6 +13,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminPlaceController : ControllerBase
     {
         private IAdminPlaceService AdminPlaceService;

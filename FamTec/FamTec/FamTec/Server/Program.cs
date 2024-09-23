@@ -202,35 +202,40 @@ builder.Services.AddRateLimiter(options =>
     options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
     {
         config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
-        config.PermitLimit = 1; // 60초 동안 최대 100개의 요청 허용
+        config.PermitLimit = 300; // 30초 동안 최대 300개의 요청 허용
         config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
         config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        config.QueueLimit = 1; // 제한시 5개의 요청만 대기열에 추가
+        config.QueueLimit = 5; // 제한시 10개의 요청만 대기열에 추가
     });
     // 전역 기본 정책 설정
-    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정 (예: Too Many Requests)
+    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
 });
 
-//builder.Services.AddSingleton(sp =>
-//{
-//    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
-//    return options.Build<HttpContext>();
-//});
-
-
-/*
-// Fixed windoww limit 알고리즘 방식으로 속도 제한 처리
-builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "LimiterPolicy", options =>
+builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
 {
-    // 요청 허용 갯수 :1
-    options.PermitLimit = 1;
-    // 창 이동시간 5초 [5초 동안 최대 1개의 요청만 처리 가능]
-    options.Window = TimeSpan.FromSeconds(5);
-    options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-    // 제한 시 10개의 요청만 대기열에 추가
-    options.QueueLimit = 10;
-}));
-*/
+    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
+
+    return PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        // HttpContext에서 partition key로 사용할 값 설정
+        var partitionKey = context.Request.Path.ToString();
+        // Sliding Window Rate Limiter 생성 및 반환
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromSeconds(30), // 윈도우 크기
+                PermitLimit = 300,                  // 허용되는 요청 수
+                SegmentsPerWindow = 6,            // 세그먼트 수
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 10                  // 대기열 제한
+            });
+    });
+});
+
+builder.Services.AddScoped<SlidingWindowPolicyFilter>();
+
+
 #endregion
 #region JWT
 builder.Services.AddAuthentication(options =>

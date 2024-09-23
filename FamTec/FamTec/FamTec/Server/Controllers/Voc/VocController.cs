@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FamTec.Server.Middleware;
 using FamTec.Server.Repository.Voc;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
@@ -12,6 +13,7 @@ namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocController : ControllerBase
     {
         private readonly IVocService VocService;

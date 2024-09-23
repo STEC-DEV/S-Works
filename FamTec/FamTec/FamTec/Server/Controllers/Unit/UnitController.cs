@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Unit;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Unit;
@@ -9,6 +10,7 @@ namespace FamTec.Server.Controllers.Unit
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class UnitController : ControllerBase
     {
         private IUnitService UnitService;

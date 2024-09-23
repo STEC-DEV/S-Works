@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Server.Services.User;
@@ -12,6 +13,7 @@ namespace FamTec.Server.Controllers.Login
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class LoginController : ControllerBase
     {
         private IAdminAccountService AdminAccountService;

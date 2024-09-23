@@ -5,12 +5,12 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocCommentController : ControllerBase
     {
         private IVocCommentService VocCommentService;
@@ -101,7 +101,6 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
         [Route("sign/GetVocCommentList")]
         public async ValueTask<IActionResult> GetVocComment([FromQuery]int vocid)
         {
@@ -133,6 +132,7 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
+        [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
         [Route("sign/VocCommentDetail")]
         public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {

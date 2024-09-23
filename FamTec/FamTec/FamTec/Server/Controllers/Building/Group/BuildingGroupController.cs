@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Group;
 using FamTec.Shared.Client.DTO;
 using FamTec.Shared.Server.DTO;
@@ -10,6 +11,7 @@ namespace FamTec.Server.Controllers.Building.Group
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class BuildingGroupController : ControllerBase
     {
         private IBuildingGroupService GroupService;

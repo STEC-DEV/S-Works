@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
@@ -10,6 +11,7 @@ namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MachineFacilityController : ControllerBase
     {
         private IMachineFacilityService MachineFacilityService;

@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Databases;
+using FamTec.Server.Middleware;
 using FamTec.Shared.Client.DTO;
 using FamTec.Shared.Client.DTO.Place;
 using FamTec.Shared.Model;
@@ -11,6 +12,7 @@ namespace FamTec.Server.Controllers.ClientController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class PlaceController : ControllerBase
     {
         private readonly WorksContext _workContext;

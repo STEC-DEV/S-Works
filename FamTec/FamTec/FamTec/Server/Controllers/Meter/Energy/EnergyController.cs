@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Meter.Energy;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Meter.Energy;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Meter.Energy;
 using FamTec.Shared.Server.DTO;
@@ -11,6 +12,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class EnergyController : ControllerBase
     {
         private IEnergyService EnergyService;

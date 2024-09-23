@@ -6,11 +6,13 @@ using FamTec.Shared.Client.DTO.Normal.Users;
 using Microsoft.AspNetCore.Authorization;
 using FamTec.Server.Services;
 using Microsoft.JSInterop.Infrastructure;
+using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class UserController : ControllerBase
     {
         private IUserService UserService;

@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using DocumentFormat.OpenXml.Wordprocessing;
+using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class ElectronicFacilityController : ControllerBase
     {
         private IElectronicFacilityService ElectronicFacilityService;

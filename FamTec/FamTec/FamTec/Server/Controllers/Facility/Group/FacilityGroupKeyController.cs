@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using FamTec.Client.Pages.Admin.Manager.ManagerDetail.Components;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Key;
 using FamTec.Shared.Server.DTO;
@@ -11,6 +12,7 @@ namespace FamTec.Server.Controllers.Facility.Group
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class FacilityGroupKeyController : ControllerBase
     {
         private IFacilityKeyService FacilityKeyService;

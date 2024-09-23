@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Meter.Contract;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter.Contract;
@@ -9,6 +10,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class ContractController : ControllerBase
     {
         private IContractService ContractService;

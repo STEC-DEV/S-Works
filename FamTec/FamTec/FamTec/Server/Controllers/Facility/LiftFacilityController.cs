@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Type.Lift;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
@@ -9,6 +10,7 @@ namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class LiftFacilityController : ControllerBase
     {
         private ILiftFacilityService LiftFacilityService;

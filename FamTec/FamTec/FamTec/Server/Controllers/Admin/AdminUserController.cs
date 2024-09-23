@@ -6,11 +6,13 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
+using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminUserController : ControllerBase
     {
         private IAdminAccountService AdminAccountService;

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Meter;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter;
@@ -10,6 +11,7 @@ namespace FamTec.Server.Controllers.Meter
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MeterController : ControllerBase
     {
         private IMeterService MeterService;

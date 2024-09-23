@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Material;
@@ -9,6 +10,7 @@ namespace FamTec.Server.Controllers.Material
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MaterialController : ControllerBase
     {
         private IMaterialService MaterialService;
