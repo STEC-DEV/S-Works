@@ -378,13 +378,13 @@ namespace FamTec.Server.Services.Material
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                model.Code = dto.Code!; // 품목코드
+                //model.Code = dto.Code!; // 품목코드
                 model.Name = dto.Name!; // 품목명
                 model.Unit = dto.Unit; // 단위
-                model.Standard = dto.Standard; // 규격
-                model.ManufacturingComp = dto.ManufacturingComp; // 제조사
+                //model.Standard = dto.Standard; // 규격
+                //model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 model.SafeNum = dto.SafeNum; // 안전재고수량
-                model.DefaultLocation = dto.RoomID!.Value; // 공간위치
+                //model.DefaultLocation = dto.RoomID!.Value; // 공간위치
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
 
