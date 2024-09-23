@@ -89,9 +89,9 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/DeleteValue")]
-        public async ValueTask<IActionResult> DeleteGroupValue([FromQuery]int valueid)
+        public async ValueTask<IActionResult> DeleteGroupValue([FromBody]int valueid)
         {
             try
             {
