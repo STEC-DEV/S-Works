@@ -167,16 +167,17 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/VocCommentUpdate")]
-        public async ValueTask<IActionResult> UpdateVocComment([FromForm] List<IFormFile>? files)
-        //public async ValueTask<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
+        //public async ValueTask<IActionResult> UpdateVocComment([FromForm] List<IFormFile>? files)
+        public async ValueTask<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
             {
 
-                VocCommentDetailDTO dto = new VocCommentDetailDTO();
-                dto.VocCommentId = 15;
-                dto.Content = "수저된내용";
-                dto.Status = 1;
+                //VocCommentDetailDTO dto = new VocCommentDetailDTO();
+                //dto.VocCommentId = 15;
+                //dto.Content = "수저된내용";
+                //dto.Status = 1;
+
                 //files = files.OrderBy(file => Path.GetFileName(file.FileName)).ToList();
                 if (HttpContext is null) // NULL CHECK
                     return BadRequest();
