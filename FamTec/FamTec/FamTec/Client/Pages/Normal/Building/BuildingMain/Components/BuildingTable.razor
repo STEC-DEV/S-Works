@@ -95,7 +95,7 @@
                     </td>
                     @if (USEREDIT)
                     {
-                        <td class="td text-right">
+                        <td class="td">
                             <input type="checkbox"
                                    checked="@checkedItems.Contains(id)"
                                    @onchange="(e)=>OnChecked(e,id)" />
@@ -117,6 +117,12 @@
     private DateTime currentDateTime = DateTime.Now;
     private HashSet<int> checkedItems = new HashSet<int>();
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        //권한
+        await base.OnInitializedAsync();
+    }
 
     private void OnDetail(int id)
     {

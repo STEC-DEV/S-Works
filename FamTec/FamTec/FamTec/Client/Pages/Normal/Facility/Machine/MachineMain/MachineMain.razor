@@ -3,7 +3,7 @@
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
-
+@inherits PermissionComponentBase
 
 <div class="fac-container">
     <div class="fac-wrap">
@@ -11,10 +11,14 @@
             <span class="title">
                 @title 설비
             </span>
-            <div>
-                <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
-                <Button Name="삭제" Width=true Type=1 />
-            </div>
+            @if (USEREDIT)
+            {
+                <div class="header-options">
+                    <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
+                    <Button Name="삭제" Width=true Type=1 />
+                </div>
+            }
+            
         </div>
         <FacilityTable ListData="ListFacility" FacType="@FacType" />
     </div>
@@ -29,6 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        base.OnInitializedAsync();
         ConvertType();
         // ListFacility = new List<FacilityListDTO>();
         await OnLoadMahine();

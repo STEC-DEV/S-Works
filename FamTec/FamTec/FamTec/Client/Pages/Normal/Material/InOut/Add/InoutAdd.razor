@@ -22,12 +22,14 @@
         {
             <InForm AddItem="@AddInItem"/>
         }
+
+        <div class="btn">
+            <Button Name="추가" Width=true Type="0" OnClick=@(_tab == 0 ? OnAddList : OnInDataAdd) />
+        </div>
     }
 
 
-    <div class="btn">
-        <Button Name="추가" Width=true Type="0" OnClick=@(_tab == 0 ? OnAddList : OnInDataAdd) />
-    </div>
+    
     <InOutList Title="@(_tab==1 ? "입고 목록" : "출고 목록")" ListData="@AddInventoryListData" />
     <Button Name="@(_tab==1 ? "입고 등록" : "출고 등록")" OnClick="HandleClick" />
 </div>
@@ -88,6 +90,7 @@
                 StateHasChanged();
                 return;
             }
+            //여기서 서버에서 자재코드 자재명 단위가 와야함
             AddInventoryListData.Add(resGet.data);
             AddItem = new OutContentDTO();
             SelectMaterial = new MaterialSearchListDTO();
@@ -120,8 +123,10 @@
                 return;
             }
 
+
+
             // AddInventoryListData.Add(AddInItem);
-            OnInDateDoubleCheck();
+            OnInDataDoubleCheck();
             AddInItem = new InOutInventoryDTO();
             SelectMaterial = new MaterialSearchListDTO();
             StateHasChanged();
@@ -173,11 +178,9 @@
         }
         catch (Exception ex)
         {
-            
+
         }
     }
-
-
 
 
     private void OnSumData()
@@ -190,7 +193,7 @@
     }
 
     //입고 데이터 중복 체크 
-    private void OnInDateDoubleCheck()
+    private void OnInDataDoubleCheck()
     {
         var existingItem = AddInventoryListData.FirstOrDefault(item =>
                 item.MaterialID == AddInItem.MaterialID &&
@@ -209,6 +212,7 @@
         }
 
     }
+
 
     private void HandleClick()
     {

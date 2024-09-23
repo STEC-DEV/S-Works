@@ -45,16 +45,6 @@
 
     }
 
-    // private async Task OnLoadPerms()
-    // {
-    //     //관리자 권한
-    //     bool isAdmin = await (_authStateProvider as CustomAuthProvider).IsAdminAsync();
-    //     //사용자 권한
-    //     int userPerm = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Basic");
-    //     USEREDIT = isAdmin || userPerm == 2;
-    //     Console.WriteLine("수정 권한"+USEREDIT);
-    // }
-
     private async Task OnLoadBuilding()
     {
         ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
@@ -88,11 +78,16 @@
     {
         try
         {
+            if(DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제 항목이 없습니다.");
+                return;
+            }
             //Put으로 변경해야함
             ResponseUnit<bool> resDelete = await apiManager.PutAsync<bool>("Building/sign/DeleteBuilding", DelList);
             if(resDelete.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "삭제 불가 건물이 존재합니다.");
+                await JS.InvokeVoidAsync("alert", resDelete.message);
                 return;
             }
             await OnLoadBuilding();

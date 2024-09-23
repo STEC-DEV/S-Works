@@ -54,6 +54,7 @@
     [Parameter] public int Value{ get; set; }
     [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
     [Parameter] public EventCallback<int> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> ReturnName { get; set; }
     [Parameter] public bool EditMode {get;set;}
     [Parameter] public string? Label { get; set; }
     [Parameter] public bool? Row { get; set; }
@@ -77,7 +78,7 @@
     //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
     // public void OnSelectRow(object row)
     // {
-        
+
     //     if(row == null)
     //     {
     //         SelectName = "Select";
@@ -100,6 +101,7 @@
             if (selectedItem != null)
             {
                 SelectName = selectedItem.GetType().GetProperty("Name").GetValue(selectedItem).ToString();
+                
             }
             else
             {
@@ -132,17 +134,24 @@
             int id = (int)row.GetType().GetProperty("Id").GetValue(row);
             Value = id;
             SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+            OnReturnName(SelectName);
         }
         OnActive();
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
-        
+
         StateHasChanged();
     }
 
     public void OnActive()
     {
         IsActive = !IsActive;
+    }
+
+
+    private async void OnReturnName(string name)
+    {
+        await ReturnName.InvokeAsync(name);
     }
 
 }

@@ -7,17 +7,29 @@
         </label>
     }
     <div class="content">
-        <div class="left-btn" @onclick="ShowPreviousImage">
-            &lt;
-        </div>
+        @if(ImageDataUrl.Count > 1)
+        {
+            <div class="left-btn" @onclick="ShowPreviousImage">
+                &lt;
+            </div>
+        }
+
         <div class="img-wrap">
             <div class="img">
-                <img src="@ImageDataUrl[CurrentImageIndex]" alt="이미지" />
+                @if(ImageDataUrl.Count != 0)
+                {
+                    <img src="@ImageDataUrl[CurrentImageIndex]" alt="이미지" />
+                }
+
             </div>
         </div>
-        <div class="right-btn" @onclick="ShowNextImage">
-            &gt;
-        </div>
+        @if (ImageDataUrl.Count > 1)
+        {
+            <div class="right-btn" @onclick="ShowNextImage">
+                &gt;
+            </div>
+        }
+
     </div>
     
 </div>
@@ -32,14 +44,20 @@
 
     private int CurrentImageIndex = 0;
 
-    protected override async Task OnParametersSetAsync()
+    protected override Task OnParametersSetAsync()
     {
-        ImageDataUrl.Clear(); // 매번 새로 고침할 때 초기화
-        foreach (var i in Images)
+
+        if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
         {
-            var base64String = Convert.ToBase64String(i);
-            ImageDataUrl.Add($"data:image/png;base64,{base64String}");
+            ImageDataUrl.Clear();
+            foreach (var image in Images)
+            {
+                var base64String = Convert.ToBase64String(image);
+                ImageDataUrl.Add($"data:image/png;base64,{base64String}");
+            }
+            CurrentImageIndex = 0;
         }
+        return Task.CompletedTask;
     }
 
     private async void ShowPreviousImage()

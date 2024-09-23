@@ -34,6 +34,14 @@
 }
 
 .floor .floor-contents[b-mmvc68315j]{
+    display :flex;
+    flex-direction : column;
+    gap : var(--default-pd);
     overflow:auto;
     height:100%;
+}
+
+.floor-btns[b-mmvc68315j]{
+    display : flex;
+    gap : var(--half-pd);
 }

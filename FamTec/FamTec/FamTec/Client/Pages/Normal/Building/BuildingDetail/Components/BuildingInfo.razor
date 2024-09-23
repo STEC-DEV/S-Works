@@ -48,6 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //권한 조회
         await base.OnInitializedAsync();
         ConvertToImageUrl();
     }
@@ -78,7 +79,7 @@
         Console.WriteLine(Building.Image);
     }
 
-
+    //편집모드 전환
     private void OnEditMode()
     {
         EditMode = !EditMode;
@@ -91,16 +92,17 @@
         StateHasChanged();
     }
 
+
+    //수정 
     private async Task OnUpdate()
     {
         try
         {
-            Console.WriteLine(_editBuilding.Image);
+            Console.WriteLine("데이타 : " + _editBuilding.Name);
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Building/sign/UpdateBuilding",_editBuilding, true);
-            // ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Building/sign/UpdateBuilding",_editBuilding);
             if(resUpdate.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "[건물][수정] 기본정보 수정 실패!");
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
             }
 
             await OnLoad.InvokeAsync();

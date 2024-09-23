@@ -1,23 +1,67 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
 
 
 <div class="modal">
     <div class="header">
-        <span>
-            층 등록
+        <span class="title">
+            @BuildingName 층 등록
         </span>
     </div>
     <div class="content">
-
+        <InputCol
+            Label="층 이름"
+            @bind-Value="@NewFloor.Name"
+            Placeholder="층 이름"
+            />
     </div>
     <div class="btns">
-        <Button Name="등록" Type="0"/>
+        <Button Name="등록" Type="0" OnClick="OnAddFloor"/>
         <Button Name="닫기" Type="1" OnClick="OnClosed" />
     </div>
 </div>
 
 @code {
+    [Parameter] public int BuildingId { get; set; }
+    [Parameter] public string BuildingName { get; set; }
     [Parameter] public EventCallback OnClose{ get; set; }
+    [Parameter] public EventCallback OnLoadFloor{ get; set; }
+
+    AddFlooorDTO NewFloor = new AddFlooorDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewFloor.BuildingTbId = BuildingId;
+    }
+
+    //층추가
+    private async Task OnAddFloor()
+    {
+        try
+        {
+            if (String.IsNullOrEmpty(NewFloor.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "층 이름을 입력해주세요.");
+                return;
+            }
+            ResponseUnit<AddFlooorDTO> resPost = await apiManager.PostAsync<AddFlooorDTO>("Floor/sign/AddFloor",NewFloor);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+
+            await OnLoadFloor.InvokeAsync();
+            OnClosed();
+
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[위치][층] 추가 에러!");
+        }
+    }
+
 
     private async void OnClosed()
     {

@@ -23,6 +23,11 @@
     border-bottom : var(--default-bd);
 }
 
+.fac-container .header-options[b-74h6h1kpt4]{
+    display :flex;
+    gap : var(--half-pd);
+}
+
 .fac-container .title[b-74h6h1kpt4]{
      white-space: nowrap;
     font-size: var(--title-size);

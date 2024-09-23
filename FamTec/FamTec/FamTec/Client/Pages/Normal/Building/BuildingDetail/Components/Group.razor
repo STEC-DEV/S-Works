@@ -2,6 +2,7 @@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Buildings.Group
 @using FamTec.Client.Pages.Normal.Building.BuildingDetail.Modal
+@using FamTec.Shared.Server.DTO
 
 
 
@@ -17,7 +18,7 @@
                 @if (EditMode)
                 {
                     <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-                    <Button Name="삭제" Width=true Type="1" />
+                    <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelGroup(GroupData.id)" />
                     <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
                 }
                 else
@@ -54,10 +55,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        //권한
         await base.OnInitializedAsync();
     }
 
+    //그룹삭제
+    private async Task OnDelGroup(int groupid)
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("BuilidngGroup/sign/DeleteGroup",groupid);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await LoadGroup.InvokeAsync();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[건물][그룹] 삭제 에러!");
+        }
+    }
 
 
     private void OnModal()

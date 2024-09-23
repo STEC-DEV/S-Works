@@ -1,17 +1,30 @@
 ﻿
-.floor-ul .floor-li{
-    display :flex;
+.floor-ul{
+    display:flex;
     flex-direction : column;
-    gap : var(--half-pd);
+    gap : var(--default-pd);
 }
 
+.floor-ul .floor-li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+}
+
+.li-wrap{
+    display : flex;
+    justify-content : space-between;
+}
 
 .floor-ul .title {
-    display : block;
+    /*display : block;*/
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
 
     border-radius : var(--default-rd);
 
-    padding: var(--default-pd);
+    padding: var(--half-pd);
     color : var(--main-color);
     font-size : var(--noraml-size);
     font-weight : var(--bold-wt);
@@ -19,16 +32,16 @@
     transition : all 0.2s ease-in-out;
 }
 
-.floor-ul .floor-li:focus .title{
+/*.floor-ul .floor-li:focus .title{
     background-color : var(--main-color);
     color:var(--default-color);
-}
+}*/
 
-.floor-ul .title:hover {
+/*.floor-ul .title:hover {
     background-color : var(--main-color);
     color:var(--default-color);
     transition : all 0.2s ease-in-out;
-}
+}*/
 
 .floor-ul .floor-inner-ul{
     visibility : hidden;
@@ -38,28 +51,35 @@
     opacity: 0;
     transition: all 0.2s ease;
 }
-/*
-.floor-ul floor-inner-li{
-    display : block;
+
+.floor-ul .floor-inner-li {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: var(--half-pd);
+    border-radius : var(--default-rd);
+}
+
+/*.floor-ul .floor-inner-li:focus .inner-title {
+    background-color: var(--main-light);
 }*/
 
-.floor-ul .floor-inner-li:focus .inner-title {
+.floor-ul .floor-inner-li:hover{
     background-color: var(--main-light);
 }
 
 .floor-ul .inner-title{
     display : block;
-    padding : var(--half-pd) var(--wide-pd);
     font-size:var(--normal-size);
     color : var(--main-color);
 
     border-radius : var(--default-rd);
 }
 
-.floor-ul .inner-title:hover{
+/*.floor-ul .inner-title:hover{
     
     background-color : var(--main-light);
-}
+}*/
 
 .floor-ul .floor-li:focus-within .floor-inner-ul {
     transition: all 0.2s ease-in;
@@ -69,10 +89,4 @@
     transition: all 0.2s ease;
     opacity: 1;
     margin-top: var(--half-pd);
-}
-
-.floor-ul .title:hover {
-    background-color: var(--main-color);
-    color: var(--default-color);
-    transition: all 0.3s ease-in-out;
 }

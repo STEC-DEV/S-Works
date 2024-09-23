@@ -29,9 +29,8 @@
 .content[b-1iwoq2861v] {
     padding: var(--default-pd);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
-    /*gap: 30px var(--pad-wide);*/
-    grid-row-gap : var(--wide-pd);
+    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+    gap: var(--wide-pd);
 }
 
 

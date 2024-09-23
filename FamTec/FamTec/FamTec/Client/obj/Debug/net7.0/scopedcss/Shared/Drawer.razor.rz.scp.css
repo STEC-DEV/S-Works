@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     padding: var(--three-q-pd);
-    overflow:auto;
+    /*overflow:auto;*/
 }
 
 

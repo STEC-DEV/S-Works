@@ -2,6 +2,7 @@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
 @using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
 
 
 <div class="floor yappear">
@@ -12,75 +13,82 @@
             </span>
         </div>
         <div class="floor-contents">
-            <FloorList Buildings=@ListData />
+            <FloorList Buildings=@ListData EditMode=@_editMode OnLoadFloor=OnLoadFloor OnCheck=OnChecked />
         </div>
         @if (USEREDIT)
         {
             <div class="floor-btns">
-            <Button 
-                Name="편집" 
-                Type="0" 
-                OnClick=OnEdit />
-        </div>
+                @if (_editMode)
+                {
+                    <Button Name="닫기" Type="0" OnClick="OnEdit"/>
+                    <Button Name="삭제" Type="1" OnClick="OnDelete" />
+                }
+                else
+                {
+                    <Button Name="편집"
+                            Type="0"
+                            OnClick=OnEdit />
+                }
+                
+            </div>
         }
 
     </div>
-    @if (USEREDIT && _editMode)
-    {
-        <ModalBackground>
-            <ChildComponent>
-                <AddFloor
-                    OnClose="OnEdit"
-                    />
-            </ChildComponent>
-        </ModalBackground>
-    }
-
 </div>
 
 @code {
     [Parameter] public List<BuildingFloorListDTO> ListData { get; set; }
+    [Parameter] public EventCallback OnLoadFloor { get; set; }
 
     private bool _editMode = false;
+    private List<int> CheckList = new List<int>();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    private List<BuildingDTO> Buildings = new List<BuildingDTO>
+    private void OnChecked((bool isCheck, int floorId) data)
     {
-        new BuildingDTO
+        if (data.isCheck)
         {
-            Id = 1,
-            Name = "강남우체국",
-            Floors = new List<FloorDTO>
-            {
-                new FloorDTO {Id = 1, Name = "1층"},
-                new FloorDTO {Id = 2, Name = "2층"},
-                new FloorDTO {Id = 3, Name = "3층"},
-                new FloorDTO {Id = 4, Name = "4층"},
-            }
-        },
-        new BuildingDTO
+            CheckList.Add(data.floorId);
+        }
+        else
         {
-            Id = 2,
-            Name = "SH 서울주택공사",
-            Floors = new List<FloorDTO>
-            {
-                new FloorDTO {Id = 1, Name = "1층"},
-                new FloorDTO {Id = 2, Name = "2층"},
-                new FloorDTO {Id = 3, Name = "3층"},
-                new FloorDTO {Id = 4, Name = "4층"},
-                new FloorDTO {Id = 5, Name = "5층"},
-                new FloorDTO {Id = 6, Name = "6층"},
-            }
-        },
-    };
+            CheckList.Remove(data.floorId);
+        }
+    }
 
     private void OnEdit()
     {
         _editMode = !_editMode;
+        CheckList = new List<int>();
     }
+
+    //OnDelete
+    private async Task OnDelete()
+    {
+        try
+        {
+            if(CheckList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 층이 존재하지 않습니다.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("Floor/sign/DeleteFloor", CheckList);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoadFloor.InvokeAsync();
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[위치][층] 삭제 에러!");
+        }
+    }
+
 
 }

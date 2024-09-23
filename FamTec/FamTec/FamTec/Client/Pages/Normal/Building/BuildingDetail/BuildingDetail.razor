@@ -43,7 +43,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //권한 조회
         await base.OnInitializedAsync();
+
         await OnLoadBuilding();
         await OnLoadGroup();
     }

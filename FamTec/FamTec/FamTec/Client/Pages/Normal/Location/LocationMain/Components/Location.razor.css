@@ -30,13 +30,17 @@
     border-bottom : var(--default-bd);
 }
 
-.location-container .title{
+.location-options{
     display : flex;
-    align-items:center;
-    font-size : var(--title-size);
-    font-weight : var(--bold-wt
-    );
-    color : var(--main-color);
+    gap : var(--half-pd);
+}
+
+.location-container .title {
+    display: flex;
+    align-items: center;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt );
+    color: var(--main-color);
 }
 
 .location-container .location-contents{

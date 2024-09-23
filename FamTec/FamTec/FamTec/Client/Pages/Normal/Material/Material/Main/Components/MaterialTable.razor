@@ -1,5 +1,7 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Material
-
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.Material.Main.Modal
+@using FamTec.Shared.Client.DTO.Normal.Material
+@inherits PermissionComponentBase
 
 <table class="table">
     <thead class="thead">
@@ -39,10 +41,14 @@
                     이미지
                 </span>
             </th>
-            <th class="th">
-                <span>
-                </span>
-            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+                    <span>
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
@@ -55,45 +61,70 @@
             foreach(var row in ListData)
             {
                 <tr class="tbody-tr">
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Code
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Name
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Standard
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.ManufacturingComp
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Unit
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.SafeNum
                     </td>
                     <td class="td">
                         @row.Image
                     </td>
-                    <td class="td">
-                        <input 
-                            type="checkbox"
-                            checked=@(_checkItem.Contains(row.ID))
-                            @onchange="(e)=>OnChecked(e,row)"
-                            />
-                    </td>
+                    @if (USEREDIT)
+                    {
+                        <td class="td">
+                            <input type="checkbox"
+                                   checked=@(_checkItem.Contains(row.ID))
+                                   @onchange="(e)=>OnChecked(e,row)" />
+                        </td>
+                    }
+                    
                 </tr>
             }
         }
 
     </tbody>
 </table>
+@if(USEREDIT && _updateModal && materialId != 0)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateMaterial
+                MaterialId="@materialId"
+                OnClose="@OnCancleUpdateModal"
+                OnLoadMaterial=OnLoadMaterial
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public List<MaterialListDTO>? ListData { get; set; }
     [Parameter] public EventCallback<(bool, MaterialListDTO)> OnCheck { get; set; }
-    private HashSet<int> _checkItem = new HashSet<int>(); 
+    [Parameter] public EventCallback OnLoadMaterial { get; set; }
+
+    private HashSet<int> _checkItem = new HashSet<int>();
+
+
+    private bool _updateModal = false;
+    private int materialId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+    }
 
     private async void OnChecked(ChangeEventArgs e, MaterialListDTO material)
     {
@@ -106,5 +137,16 @@
         {
             _checkItem.Remove(material.ID);
         }
+    }
+
+    private void OnUpdateModal(int materialid)
+    {
+        _updateModal = true;
+        materialId = materialid;
+    }
+
+    private void OnCancleUpdateModal()
+    {
+        _updateModal = false;
     }
 }

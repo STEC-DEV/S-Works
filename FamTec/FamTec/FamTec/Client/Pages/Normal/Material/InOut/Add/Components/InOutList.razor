@@ -7,10 +7,10 @@
         <span class="title">
             @Title
         </span>
-        <Button Name="삭제" Width=true />
+        <Button Name="삭제" Width=true Type="1" OnClick="OnDelItem" />
     </div>
     <div class="content">
-        <InOutTable ListData="@ListData" />
+        <InOutTable ListData="@ListData" OnCheck="OnChecked" />
     </div>
 </div>
 
@@ -18,6 +18,28 @@
     [Parameter] public string Title{ get; set; }
     [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
 
+    List<InOutInventoryDTO> CheckData = new List<InOutInventoryDTO>();
 
+    private void OnDelItem()
+    {
+        ListData = ListData.Where(item => !CheckData.Contains(item)).ToList();
+        CheckData.Clear();
+        StateHasChanged();
+    }
 
+    private void OnChecked((bool isChecked, InOutInventoryDTO data)checkItem )
+    {
+        if (checkItem.isChecked)
+        {
+            // 체크된 항목을 리스트에 추가
+            if (!CheckData.Contains(checkItem.data))
+            {
+                CheckData.Add(checkItem.data);
+            }
+        }
+        else
+        {
+            CheckData.Remove(checkItem.data);
+        }
+    }
 }

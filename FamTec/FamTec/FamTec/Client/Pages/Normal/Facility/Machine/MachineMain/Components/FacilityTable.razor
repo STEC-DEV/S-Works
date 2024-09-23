@@ -1,5 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Facility
+@inherits PermissionComponentBase
 
 <table class="table">
     <thead class="thead">
@@ -104,9 +105,13 @@
                     <td class="td">
                         <Button Name="QR" Width=true Type=0/>
                     </td>
-                    <td class="td">
-                        <input type="checkbox"/>
-                    </td>
+                    @if (USEREDIT)
+                    {
+                        <td class="td">
+                            <input type="checkbox" />
+                        </td>
+                    }
+                    
                 </tr>
             }
         }
@@ -117,6 +122,12 @@
 @code {
     [Parameter] public List<FacilityListDTO?> ListData { get; set; }
     [Parameter] public string FacType { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+    }
+
     private void OnDetail(int Id)
     {
         Navigation.NavigateTo($"/facility/{FacType}/{Id}");

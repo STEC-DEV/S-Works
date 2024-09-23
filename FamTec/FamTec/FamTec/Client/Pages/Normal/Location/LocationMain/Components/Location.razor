@@ -13,7 +13,7 @@
             </span>
             @if (USEREDIT)
             {
-                <div class="location=options">
+                <div class="location-options">
                     <Button Name="@(isAddingRow ?"취소" :  "추가")"
                             Width=true
                             OnClick="@OnAddMode"
@@ -58,6 +58,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //권한
         await base.OnInitializedAsync();
         AddLocation = new AddLoactionDTO();
         // await OnLoadBuilding();

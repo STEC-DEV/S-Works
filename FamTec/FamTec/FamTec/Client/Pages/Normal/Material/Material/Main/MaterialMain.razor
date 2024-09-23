@@ -36,6 +36,7 @@
         <div class="content">
             <MaterialTable 
                 ListData="@FilterData" 
+                OnLoadMaterial=OnLoadMaterial
                 OnCheck=OnCheck
                 />
         </div>
@@ -125,7 +126,7 @@
                 return;
             }
             //여기 http 타입 수정해야함
-            ResponseUnit<bool> resGet = await apiManager.PutAsync<bool>("material/sign/deleterMaterial",CheckList);
+            ResponseUnit<bool> resGet = await apiManager.PostAsync<bool>("material/sign/deleteMaterial",CheckList);
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);

@@ -1,27 +1,115 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Location
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
+@using FamTec.Shared.Client.DTO.Normal.Location
 
 
 <ul class="floor-ul">
+    
     @foreach(var building in Buildings.Select((value, idx)=> (value, idx)))
     {
         <li class="floor-li" tabindex="@building.idx">
-            <span class="title">@building.value.Name</span>
+            <div class="li-wrap">
+                <span class="title">@building.value.Name</span>
+                @if (EditMode)
+                {
+                    <Button Name="추가" Width=true Type="0" OnClick="()=>OnAddModal(building.value.Id.Value, building.value.Name)" />
+                }
+                
+            </div>
+            
             <ul class="floor-inner-ul">
                 @foreach(var floor in building.value.FloorList.Select((v,idx) => (v,idx)))
                 {
                     <li class="floor-inner-li" tabindex="@floor.idx" >
-                        <span class="inner-title">
+                        <span class="inner-title" @onclick="@(EditMode ? ()=>OnUpdateModal(floor.v.Id.Value , floor.v.Name) : null  )">
                             @floor.v.Name
                         </span>
+                        @if (EditMode)
+                        {
+                            <input type="checkbox" @onchange="(e)=>OnChecked(e,floor.v.Id.Value)" />
+                        }
                     </li>
                 }
             </ul>
+            
         </li>
     }
 </ul>
+@* 추가 모달 *@
+@if (EditMode && _addModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <AddFloor
+                BuildingId="@_addBuildingId"
+                BuildingName="@_addBuildingName"
+                OnLoadFloor=OnLoadFloor
+                OnClose="OnCancle"
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
+
+@* 수정모달 *@
+@if (EditMode && _updateModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateFloor FloorId="@_updateFloorId"
+                      FloorName="@_updateFloorName"
+                      OnLoadFloor=OnLoadFloor
+                        OnClose="OnCancleUpdateModal" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public List<BuildingFloorListDTO> Buildings { get; set; }
+    [Parameter] public EventCallback OnLoadFloor { get; set; }
+    [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+
+    //층 추가 정보 변수
+    private bool _addModal = false;
+    private int _addBuildingId;
+    private string _addBuildingName;
+
+    //층 수정 정보 변수
+    private bool _updateModal = false;
+    private int _updateFloorId;
+    private string _updateFloorName;
+
+    //층 추가 모달 활성화
+    private void OnAddModal(int id, string name)
+    {
+        _addModal = true;
+        _addBuildingId = id;
+        _addBuildingName = name;
+    }
+
+    //층 수정 모달 활성화
+    private void OnUpdateModal(int floorid, string floorname)
+    {
+        _updateModal = true;
+        _updateFloorId = floorid;
+        _updateFloorName = floorname;
+    }
 
 
+    private async void OnChecked(ChangeEventArgs e, int floorId)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, floorId));
+    }
+
+    private void OnCancleUpdateModal()
+    {
+        _updateModal = false;
+    }
+
+
+    //층 추가 모달 캔슬
+    private void OnCancle()
+    {
+        _addModal = false;
+    }
 }

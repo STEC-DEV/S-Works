@@ -6,11 +6,12 @@
 <div class="form">
     <div class="buildinginfo-contents">
         <div class="building-img">
+            <PreviewBox ImageUrls=@Image  />
             @if (EditMode)
             {
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <Button Name="삭제" Width=true Type="1" OnClick="@OnDelImg" />
             }
-            <PreviewBox ImageUrls=@Image />
         </div>
         <div class="infosection-1">
             <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@(Building.Code)" />
@@ -98,7 +99,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-       
+
     }
 
 
@@ -125,6 +126,12 @@
 
 
         StateHasChanged();
+    }
+
+    private void OnDelImg()
+    {
+        Building.Image = null;
+        Building.ImageName = null;
     }
 
 

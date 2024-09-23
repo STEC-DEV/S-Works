@@ -14,7 +14,8 @@
 .building-img {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap : var(--half-pd);
     width: 400px;
     max-width: 100%;
 }

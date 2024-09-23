@@ -20,10 +20,15 @@
     border-bottom : var(--default-bd);
 }
 
-.buildinginfo .title{
-    font-size : var(--title-size);
-    font-weight : var(--bold-wt);
-    color : var(--main-color);
+.header-btns{
+    display:flex;
+    gap:var(--half-pd);
+}
+
+.buildinginfo .title {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
 }
 
 .buildinginfo .buildinginfo-contents{

@@ -95,6 +95,12 @@
     {
         try
         {
+            if (_selectedMaterialList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "조회 품목이 존재하지 않습니다.");
+                return;
+            }
+
             foreach (var i in SelectedMaterialList)
             {
                 _selectMaterial.Add(i.Id);
@@ -120,7 +126,7 @@
             {
                 Console.WriteLine(row.Name);
             }
-
+            _selectMaterial = new List<int>();
             StateHasChanged();
         }
         catch (Exception ex)

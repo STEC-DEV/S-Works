@@ -35,6 +35,7 @@
                 @bind-Value="SelectedRoomId" 
                 Label="위치"
                 Row="true"
+                ReturnName="OnReturnRoomName"
                 OnChange="OnLocationChange" 
                 EditMode="true" />
         }
@@ -218,6 +219,12 @@
     private async void OnValueChange()
     {
 
+    }
+
+
+    private void OnReturnRoomName(string name)
+    {
+        AddItem.AddStore.RoomName=name;
     }
 
 
