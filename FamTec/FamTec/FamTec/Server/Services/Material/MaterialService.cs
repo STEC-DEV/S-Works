@@ -87,13 +87,13 @@ namespace FamTec.Server.Services.Material
                     Standard = dto.Standard, // 규격
                     ManufacturingComp = dto.ManufacturingComp, // 제조사
                     SafeNum = dto.SafeNum, // 안전재고수량
-                    DefaultLocation = dto.DefaultLocation!.Value, // 공간위치 인덱스
                     CreateDt = DateTime.Now,
                     CreateUser = Creater,
                     UpdateDt = DateTime.Now,
                     UpdateUser = Creater,
-                    PlaceTbId = Int32.Parse(placeidx), // 사업장ID
-                    Image = NewFileName
+                    Image = NewFileName,
+                    RoomTbId = dto.RoomID!.Value, // 공간위치 인덱스
+                    PlaceTbId = Int32.Parse(placeidx) // 사업장ID
                 };
 
                 MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
@@ -115,7 +115,7 @@ namespace FamTec.Server.Services.Material
                     Standard = model.Standard, // 규격
                     ManufacturingComp = model.ManufacturingComp, // 제조사
                     SafeNum = model.SafeNum, // 안전재고수량
-                    DefaultLocation = model.DefaultLocation, // 기본위치
+                    RoomID = model.RoomTbId, // 기본위치
                 }, code = 200 };
             }
             catch(Exception ex)
@@ -317,7 +317,7 @@ namespace FamTec.Server.Services.Material
                     dto.Standard = model.Standard; // 규격
                     dto.ManufacturingComp = model.ManufacturingComp; // 제조사
                     dto.SafeNum = model.SafeNum; // 안전재고 수량
-                    dto.RoomID = model.DefaultLocation; // 기본위치
+                    dto.RoomID = model.RoomTbId; // 기본위치
 
                     MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
 
@@ -655,7 +655,7 @@ namespace FamTec.Server.Services.Material
                                                       CreateUser = creater,
                                                       UpdateDt = DateTime.Now,
                                                       UpdateUser = creater,
-                                                      DefaultLocation = Room.Id,
+                                                      RoomTbId = Room.Id,
                                                       PlaceTbId = Convert.ToInt32(placeidx)
                                                   }).ToList();
 

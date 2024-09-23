@@ -12,6 +12,7 @@ namespace FamTec.Shared.Model;
 [Table("material_tb")]
 [Index("PlaceTbId", "Code", Name = "UK_PlaceCode", IsUnique = true)]
 [Index("PlaceTbId", Name = "fk_material_tb_place_tb1_idx")]
+[Index("RoomTbId", Name = "fk_room_tb_id")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MaterialTb
 {
@@ -83,14 +84,14 @@ public partial class MaterialTb
     [StringLength(255)]
     public string? DelUser { get; set; }
 
+    [StringLength(255)]
+    public string? Image { get; set; }
+
     /// <summary>
     /// 기본위치
     /// </summary>
-    [Column("DEFAULT_LOCATION", TypeName = "int(11)")]
-    public int DefaultLocation { get; set; }
-
-    [StringLength(255)]
-    public string? Image { get; set; }
+    [Column("ROOM_TB_ID", TypeName = "int(11)")]
+    public int RoomTbId { get; set; }
 
     [Column("PLACE_TB_ID", TypeName = "int(11)")]
     public int PlaceTbId { get; set; }

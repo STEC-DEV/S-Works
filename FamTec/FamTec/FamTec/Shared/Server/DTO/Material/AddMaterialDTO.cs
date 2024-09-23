@@ -35,7 +35,7 @@
         /// <summary>
         /// 자재위치
         /// </summary>
-        public int? DefaultLocation { get; set; }
+        public int? RoomID { get; set; }
 
     }
 }

@@ -48,7 +48,7 @@ namespace FamTec.Server.Controllers.Material
                 if(String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if(dto.DefaultLocation is null)
+                if(dto.RoomID is null)
                     return NoContent();
 
                 if (files is not null)

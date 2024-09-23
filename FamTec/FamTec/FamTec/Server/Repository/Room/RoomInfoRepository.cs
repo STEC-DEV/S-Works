@@ -36,7 +36,7 @@ namespace FamTec.Server.Repository.Room
             {
                 bool FacilityCheck = await context.FacilityTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
                 bool InventoryCheck = await context.InventoryTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
-                bool MaterialCheck = await context.MaterialTbs.AnyAsync(m => m.DefaultLocation == roomid && m.DelYn != true);
+                bool MaterialCheck = await context.MaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
                 bool StoreCheck = await context.StoreTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
                 bool UseMaintenenceMartialCheck = await context.UseMaintenenceMaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true);
 

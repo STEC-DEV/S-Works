@@ -86,11 +86,13 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
+
         // 쿼리스트링 사용
         modelBuilder.Entity<MaterialInventory>(entity =>
         {
             entity.HasNoDiscriminator();
         });
+
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -548,8 +550,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.RowVersion)
-                 .IsConcurrencyToken() // 추가
-                 .HasColumnType("BIGINT"); // 추가
+               .IsConcurrencyToken() // 추가
+               .HasColumnType("BIGINT"); // 추가
 
             entity.HasOne(d => d.MaterialTb).WithMany(p => p.InventoryTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -616,10 +618,10 @@ public partial class WorksContext : DbContext
 
             entity.Property(e => e.Code).HasComment("품목코드");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.DefaultLocation).HasComment("기본위치");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.ManufacturingComp).HasComment("제조사");
             entity.Property(e => e.Name).HasComment("자재명");
+            entity.Property(e => e.RoomTbId).HasComment("기본위치");
             entity.Property(e => e.SafeNum).HasComment("안전재고수량");
             entity.Property(e => e.Standard).HasComment("규격");
             entity.Property(e => e.Unit).HasComment("단위");
@@ -873,6 +875,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

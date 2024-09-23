@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +14,9 @@ public partial class InventoryTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    /// <summary>
+    /// 동시성 검사
+    /// </summary>
     [ConcurrencyCheck]
     [Column("NUM", TypeName = "int(11)")]
     public int Num { get; set; }
@@ -56,6 +57,9 @@ public partial class InventoryTb
     [Column("MATERIAL_TB_ID", TypeName = "int(11)")]
     public int MaterialTbId { get; set; }
 
+    /// <summary>
+    /// 동시성 검사
+    /// </summary>
     [ConcurrencyCheck]
     [Column("ROW_VERSION", TypeName = "bigint(20)")]
     public long RowVersion { get; set; }
