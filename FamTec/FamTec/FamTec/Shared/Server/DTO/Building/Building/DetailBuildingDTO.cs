@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
+﻿
 namespace FamTec.Shared.Server.DTO.Building.Building
 {
     /// <summary>

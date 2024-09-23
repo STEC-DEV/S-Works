@@ -50,6 +50,42 @@ namespace FamTec.Server.Controllers.Room
         }
 
         /// <summary>
+        /// 룸 명칭 조회
+        /// </summary>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetRoomName")]
+        public async ValueTask<IActionResult> GetRoomName([FromQuery]int roomid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (roomid is 0)
+                    return NoContent();
+
+                ResponseUnit<string?> model = await RoomService.GetRoomNameService(HttpContext, roomid);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        /// <summary>
         /// 공간정보 추가
         /// </summary>
         /// <param name="dto"></param>

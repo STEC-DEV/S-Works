@@ -4362,6 +4362,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Room.RoomController",
+    "Method": "GetRoomName",
+    "RelativePath": "api/Room/sign/GetRoomName",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roomid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Room.RoomController",
     "Method": "UpdateRoom",
     "RelativePath": "api/Room/sign/UpdateRoom",
     "HttpMethod": "PUT",

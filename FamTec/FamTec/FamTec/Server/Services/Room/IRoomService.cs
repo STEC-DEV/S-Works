@@ -42,5 +42,13 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <returns></returns>
         public ValueTask<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context);
+
+        /// <summary>
+        /// 공간ID로 공간명칭 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        ValueTask<ResponseUnit<string?>> GetRoomNameService(HttpContext context, int roomid);
     }
 }

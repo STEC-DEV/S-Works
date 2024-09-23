@@ -142,6 +142,35 @@ namespace FamTec.Server.Services.Room
         }
 
         /// <summary>
+        /// 공간ID로 공간명칭 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<string?>> GetRoomNameService(HttpContext context, int roomid)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                if(roomid is 0)
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                RoomTb? model = await RoomInfoRepository.GetRoomInfo(roomid);
+                if (model is not null)
+                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Name, code = 200 };
+                else
+                    return new ResponseUnit<string?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 204 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
         /// 공간 정보 수정
         /// </summary>
         /// <param name="context"></param>
