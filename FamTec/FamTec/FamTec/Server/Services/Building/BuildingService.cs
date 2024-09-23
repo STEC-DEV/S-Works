@@ -483,11 +483,14 @@ namespace FamTec.Server.Services.Building
 
                 if(!String.IsNullOrWhiteSpace(dto.Code))
                 {
-                    bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
-                    if (BuildingCodeCheck != true)
-                        return new ResponseUnit<bool?>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
-                    else
-                        model.BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!; /* 건물코드 */
+                    if (dto.Code != model.BuildingCd)
+                    {
+                        bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
+                        if (BuildingCodeCheck != true)
+                            return new ResponseUnit<bool?>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
+                        else
+                            model.BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!; /* 건물코드 */
+                    }
                 }
                 
                 model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!; /* 건물명 */

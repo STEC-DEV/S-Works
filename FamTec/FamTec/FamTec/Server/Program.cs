@@ -73,6 +73,9 @@ using FamTec.Server.Repository.Meter.Energy;
 using FamTec.Server.Services.Meter.Energy;
 using FamTec.Server.Repository.UseMaintenence;
 using FamTec.Server.Services.UseMaintenence;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -188,10 +191,33 @@ builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 #region 속도제한 LIMIT 
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
+    {
+        config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
+        config.PermitLimit = 1; // 60초 동안 최대 100개의 요청 허용
+        config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
+        config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        config.QueueLimit = 1; // 제한시 5개의 요청만 대기열에 추가
+    });
+    // 전역 기본 정책 설정
+    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정 (예: Too Many Requests)
+});
+
+//builder.Services.AddSingleton(sp =>
+//{
+//    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
+//    return options.Build<HttpContext>();
+//});
+
+
 /*
 // Fixed windoww limit 알고리즘 방식으로 속도 제한 처리
 builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "LimiterPolicy", options =>
@@ -337,11 +363,12 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 #endregion
 
 var app = builder.Build();
-/*
+
+
 #region 속도제한 사용
 app.UseRateLimiter();
 #endregion
-*/
+
 
 //app.UseHttpsRedirection();
 
@@ -430,8 +457,6 @@ string[]? userPaths = new string[]
     "/api/Energy/sign",
     "/api/UseMaintenence/sign"
 };
-
-
 
 foreach (var path in adminPaths)
 {
