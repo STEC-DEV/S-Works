@@ -180,9 +180,10 @@ namespace FamTec.Server.Controllers.Building.Group
         /// <param name="keyid"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPut]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/DeleteKey")]
-        public async ValueTask<IActionResult> DeleteGroupKey([FromQuery]int keyid)
+        public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {
             try
             {
