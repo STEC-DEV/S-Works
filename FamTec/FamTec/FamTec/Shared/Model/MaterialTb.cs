@@ -12,7 +12,7 @@ namespace FamTec.Shared.Model;
 [Table("material_tb")]
 [Index("PlaceTbId", "Code", Name = "UK_PlaceCode", IsUnique = true)]
 [Index("PlaceTbId", Name = "fk_material_tb_place_tb1_idx")]
-[Index("RoomTbId", Name = "fk_room_tb_id")]
+[Index("RoomTbId", Name = "fk_room_Tb_id")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class MaterialTb
 {
@@ -102,6 +102,10 @@ public partial class MaterialTb
     [ForeignKey("PlaceTbId")]
     [InverseProperty("MaterialTbs")]
     public virtual PlaceTb PlaceTb { get; set; } = null!;
+
+    [ForeignKey("RoomTbId")]
+    [InverseProperty("MaterialTbs")]
+    public virtual RoomTb RoomTb { get; set; } = null!;
 
     [InverseProperty("MaterialTb")]
     public virtual ICollection<StoreTb> StoreTbs { get; set; } = new List<StoreTb>();

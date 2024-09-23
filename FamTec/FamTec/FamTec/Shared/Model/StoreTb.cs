@@ -34,7 +34,7 @@ public partial class StoreTb
     /// <summary>
     /// 단가
     /// </summary>
-    [Column("UNIT_PRICE")]
+    [Column("UNIT_PRICE", TypeName = "float unsigned")]
     public float UnitPrice { get; set; }
 
     /// <summary>
