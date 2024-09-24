@@ -295,9 +295,6 @@ namespace FamTec.Server.Controllers.Material
                 if (dto.Id is null)
                     return NoContent();
 
-                if (String.IsNullOrWhiteSpace(dto.Code))
-                    return NoContent();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 

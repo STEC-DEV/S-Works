@@ -10,7 +10,7 @@
         /// <summary>
         /// 품목 코드
         /// </summary>
-        public string? Code { get; set; }
+        //public string? Code { get; set; }
 
         /// <summary>
         /// 품목명
@@ -25,12 +25,12 @@
         /// <summary>
         /// 규격
         /// </summary>
-        public string? Standard { get; set; }
+        //public string? Standard { get; set; }
 
         /// <summary>
         /// 제조사
         /// </summary>
-        public string? ManufacturingComp { get; set; }
+        //public string? ManufacturingComp { get; set; }
 
         /// <summary>
         /// 안전재고 수량
