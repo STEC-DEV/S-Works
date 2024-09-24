@@ -71,5 +71,11 @@ namespace FamTec.Server.Services.Building
         /// <returns></returns>
         public ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext context, List<int> buildingid);
 
+        /// <summary>
+        /// 건물 ID로 이름반환
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<string?>> GetBuildingName(int buildingid);
     }
 }

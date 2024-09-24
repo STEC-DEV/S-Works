@@ -750,6 +750,26 @@ namespace FamTec.Server.Services.Building
             }
         }
 
-       
+        /// <summary>
+        /// 건물ID로 건물이름 반환
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<string?>> GetBuildingName(int buildingid)
+        {
+            try
+            {
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(buildingid);
+                if (BuildingTB is not null)
+                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = BuildingTB.Name, code = 200 };
+                else
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

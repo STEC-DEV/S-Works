@@ -175,6 +175,7 @@ namespace FamTec.Server.Services.Admin.Account
                 var token = new JwtSecurityToken(
                     issuer: Configuration["JWT:Issuer"],
                     audience: Configuration["JWT:Audience"],
+                    //expires: DateTime.Now.AddSeconds(20),
                     expires: DateTime.Now.AddDays(1),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));

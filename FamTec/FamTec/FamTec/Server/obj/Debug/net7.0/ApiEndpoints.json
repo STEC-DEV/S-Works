@@ -837,6 +837,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "GetBuildingName",
+    "RelativePath": "api/Building/GetBuildingName",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "buildingid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
     "Method": "AddBuilding",
     "RelativePath": "api/Building/sign/AddBuilding",
     "HttpMethod": "POST",
@@ -3996,27 +4012,12 @@
         "IsRequired": false
       },
       {
-        "Name": "Code",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "Name",
         "Type": "System.String",
         "IsRequired": false
       },
       {
         "Name": "Unit",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Standard",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "ManufacturingComp",
         "Type": "System.String",
         "IsRequired": false
       },
@@ -4303,6 +4304,22 @@
       {
         "Name": "FileName",
         "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Place.PlaceController",
+    "Method": "GetPlaceName",
+    "RelativePath": "api/Place/GetPlaceName",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "placeid",
+        "Type": "System.Int32",
         "IsRequired": false
       }
     ],

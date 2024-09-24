@@ -633,6 +633,26 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
-
+        /// <summary>
+        /// 사업장 이름 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async ValueTask<ResponseUnit<string?>> GetPlaceName(int placeid)
+        {
+            try
+            {
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(placeid);
+                if (PlaceTB is not null)
+                    return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = PlaceTB.Name, code = 200 };
+                else
+                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

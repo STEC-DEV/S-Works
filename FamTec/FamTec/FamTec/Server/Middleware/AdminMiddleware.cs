@@ -38,38 +38,49 @@ namespace FamTec.Server.Middleware
             var tokenHandler = new JwtSecurityTokenHandler();
             var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
 
-            tokenHandler.ValidateToken(accessToken, new TokenValidationParameters
+            try
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+                tokenHandler.ValidateToken(accessToken, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+          
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
+            
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
 
 
-            // 토큰분해
-            JObject? jobj = TokenComm.TokenConvert(context.Request);
+                // 토큰분해
+                JObject? jobj = TokenComm.TokenConvert(context.Request);
 
-            if (jobj is null)
+                if (jobj is null)
+                    return;
+
+                context.Items.Add("UserIdx", jobj["UserIdx"]!.ToString());
+                context.Items.Add("Name", jobj["Name"]!.ToString());
+                context.Items.Add("jti", jobj["jti"]!.ToString());
+                context.Items.Add("UserType", jobj["UserType"]!.ToString());
+                context.Items.Add("AdminIdx", jobj["AdminIdx"]!.ToString());
+                context.Items.Add("DepartIdx", jobj["DepartIdx"]!.ToString());
+                context.Items.Add("DepartmentName", jobj["DepartmentName"]!.ToString());
+                context.Items.Add("Role", jobj["Role"]!.ToString());
+                await Next(context);
+
                 return;
-
-            context.Items.Add("UserIdx", jobj["UserIdx"]!.ToString());
-            context.Items.Add("Name", jobj["Name"]!.ToString());
-            context.Items.Add("jti", jobj["jti"]!.ToString());
-            context.Items.Add("UserType", jobj["UserType"]!.ToString());
-            context.Items.Add("AdminIdx", jobj["AdminIdx"]!.ToString());
-            context.Items.Add("DepartIdx", jobj["DepartIdx"]!.ToString());
-            context.Items.Add("DepartmentName", jobj["DepartmentName"]!.ToString());
-            context.Items.Add("Role", jobj["Role"]!.ToString());
-            await Next(context);
-
-            return;
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+                //Console.WriteLine(ex);
+            }
         }
-
 
     }
 }

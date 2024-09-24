@@ -104,6 +104,7 @@ namespace FamTec.Server.Services.User
                     new Claim("PlaceName", placeInfo.Name!.ToString()) // 사업장 명
                 };
 
+                /*
                 string? role = context.Items["Role"] switch
                 {
                     "시스템관리자" => "SystemManager",
@@ -111,13 +112,55 @@ namespace FamTec.Server.Services.User
                     "매니저" => "Manager",
                     _ => null
                 };
+                */
 
-                if(String.IsNullOrWhiteSpace(role))
+                var roleMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "시스템관리자", "SystemManager" },
+                    { "마스터", "Master" },
+                    { "매니저", "Manager" },
+                    { "SystemManager", "SystemManager" },
+                    { "Master", "Master" },
+                    { "Manager", "Manager" }
+                };
+
+                // Get the role from context
+                string? role = Convert.ToString(context.Items["Role"]);
+
+                // Try to map the role using the dictionary
+                if (role != null && roleMapping.TryGetValue(role, out var mappedRole))
+                {
+                    role = mappedRole;
+                }
+                else
+                {
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
+
+                //string? role = Convert.ToString(context.Items["Role"]);
+                //if (role == "시스템관리자")
+                //    role = "SystemManager";
+                //else if (role == "마스터")
+                //    role = "Master";
+                //else if (role == "매니저")
+                //    role = "Manager";
+                //else if (role == "SystemManager")
+                //    role = "SystemManager";
+                //else if (role == "Master")
+                //    role = "Master";
+                //else if (role == "Manager")
+                //    role = "Manager";
+                //else
+                //    role = null;
+
+                //if (String.IsNullOrWhiteSpace(role))
+                //{
+                //    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                //}
 
                 authClaims.Add(new Claim("Role", role));
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
-
+                
                 /* USER 권한 TOKEN 검사 */
                 var checkPermToken = new[]
                 {

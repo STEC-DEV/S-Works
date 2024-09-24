@@ -359,6 +359,34 @@ namespace FamTec.Server.Controllers.Building
             }
         }
 
+        /// <summary>
+        /// 건물이름 조회
+        /// </summary>
+        /// <param name="buildingid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetBuildingName")]
+        public async ValueTask<IActionResult> GetBuildingName([FromQuery]int buildingid)
+        {
+            try
+            {
+                if (buildingid is 0)
+                    return NoContent();
+
+                ResponseUnit<string?> model = await BuildingService.GetBuildingName(buildingid);
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
 
 

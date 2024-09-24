@@ -36,7 +36,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context);
+        public ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context);
 
         /// <summary>
         /// 전체 사업장 조회
@@ -108,6 +108,11 @@ namespace FamTec.Server.Services.Admin.Place
         /// <returns>TRUE & FALSE</returns>
         public ValueTask<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx);
 
-
+        /// <summary>
+        /// 사업장 이름 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<string?>> GetPlaceName(int placeid);
     }
 }
