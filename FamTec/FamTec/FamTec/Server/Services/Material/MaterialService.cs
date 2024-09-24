@@ -306,33 +306,35 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid);
-                if(model is not null)
+                MaterialTb? materialTB = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid);
+                if(materialTB is null)
+                    return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
+
+                RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(materialTB.RoomTbId);
+                if(RoomTB is null)
+                    return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
+                
+
+                DetailMaterialDTO dto = new DetailMaterialDTO();
+                dto.Id = materialTB.Id; // 품목 ID
+                dto.Code = materialTB.Code; // 품목코드
+                dto.Name = materialTB.Name; // 품목명
+                dto.Unit = materialTB.Unit; // 품목단위
+                dto.Standard = materialTB.Standard; // 규격
+                dto.ManufacturingComp = materialTB.ManufacturingComp; // 제조사
+                dto.SafeNum = materialTB.SafeNum; // 안전재고 수량
+                dto.RoomID = materialTB.RoomTbId; // 기본위치
+                dto.RoomName = RoomTB.Name;
+
+                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+
+                if(!String.IsNullOrWhiteSpace(materialTB.Image))
                 {
-                    DetailMaterialDTO dto = new DetailMaterialDTO();
-                    dto.Id = model.Id; // 품목 ID
-                    dto.Code = model.Code; // 품목코드
-                    dto.Name = model.Name; // 품목명
-                    dto.Unit = model.Unit; // 품목단위
-                    dto.Standard = model.Standard; // 규격
-                    dto.ManufacturingComp = model.ManufacturingComp; // 제조사
-                    dto.SafeNum = model.SafeNum; // 안전재고 수량
-                    dto.RoomID = model.RoomTbId; // 기본위치
-
-                    MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
-
-                    if(!String.IsNullOrWhiteSpace(model.Image))
-                    {
-                        dto.ImageName = model.Image; // 이미지 파일명
-                        dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, model.Image); // 이미지 Byte[]
-                    }
-
-                    return new ResponseUnit<DetailMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    dto.ImageName = materialTB.Image; // 이미지 파일명
+                    dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image); // 이미지 Byte[]
                 }
-                else
-                {
-                    return new ResponseUnit<DetailMaterialDTO>() { message = "데이터가 존재하지 않습니다.", data = new DetailMaterialDTO(), code = 404 };
-                }
+
+                return new ResponseUnit<DetailMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch(Exception ex)
             {
