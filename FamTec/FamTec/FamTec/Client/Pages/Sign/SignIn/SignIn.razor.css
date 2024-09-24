@@ -40,3 +40,11 @@
     gap : var(--default-pd);
     padding : var(--default-pd);
 }
+
+
+@media (max-width: 768px){
+    .signup-container .signup-wrap {
+        width: 80%;
+    }
+}
+

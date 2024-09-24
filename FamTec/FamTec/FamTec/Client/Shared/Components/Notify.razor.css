@@ -1,0 +1,30 @@
+.notify
+{
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+
+    padding : var(--half-pd);
+    
+    border : 1px solid #91caff;
+    border-radius : var(--default-rd);
+    background-color : #e6f4ff;
+}
+
+.label{
+    font-size : var(--normal-size);
+    color : #000000E0;
+    font-weight:500;
+}
+
+.context{
+    font-size : var(--normal-size);
+    color : #000000E0;
+    font-weight:400;
+}
+
+.read{
+    border : 1px solid #d3d3d3;
+    background-color : #f1f1f1;
+}
+

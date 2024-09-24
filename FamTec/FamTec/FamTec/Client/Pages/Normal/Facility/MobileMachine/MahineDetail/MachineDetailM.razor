@@ -1,0 +1,55 @@
+﻿@layout MainLayout2
+@page "/m/facility/{FacType}/{FacId:int}"
+
+
+@using FamTec.Client.Pages.Normal.Facility.Machine.Components
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Components
+@using FamTec.Client.Pages.Normal.Facility.MobileMachine.MahineDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+
+
+<div class="machine">
+    <Info FacType="@FacType" FacId="@FacId" />
+
+    @foreach (var group in Group)
+    {
+        <MGroup GroupData="@group"/>
+    }
+    <Maintenance FacType="@FacType" Id="@FacId"/>
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+
+
+    //그룹 정보
+    List<GroupDTO> Group = new List<GroupDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadGroup();
+    }
+
+
+    //그룹 조회
+    private async Task OnLoadGroup()
+    {
+        try
+        {
+            ResponseList<GroupDTO> resGroup = await apiManager.GetListAsync<GroupDTO>($"FacilityGroup/sign/GetFacilityGroup?facilityid={FacId}");
+            if (resGroup.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "그룹 조회 실패");
+                return;
+            }
+            Group = resGroup.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Facility][Detail] 그룹 조회 실패" + ex);
+        }
+    }
+}

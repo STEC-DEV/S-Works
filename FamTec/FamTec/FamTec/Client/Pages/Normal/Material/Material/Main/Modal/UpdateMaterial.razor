@@ -119,10 +119,6 @@
     {
         try
         {
-            {
-                await JS.InvokeVoidAsync("alert", "수정된 내용이 없습니다.");
-                return;
-            }
             ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Material/sign/UpdateMaterial", EditMaterial);
             if(resUpdate.code != 200)
             {

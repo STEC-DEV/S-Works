@@ -1,0 +1,71 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
+
+
+<div class="info">
+    <div class="header">
+        <span class="title">
+            유지보수 정보
+        </span>
+    </div>
+    <div class="content">
+        <div class="img">
+            @if (MaintenanceImages.Count != 0)
+            {
+                <ImageSlider Label="이미지" Images="@MaintenanceImages" />
+            }
+        </div>
+        <div class="grid">
+            <TextField2 Label="작업일자"
+                        Color=true
+                        Row=true
+                        Value="@Maintenance.WorkDT" />
+            <TextField2 Label="작업명"
+                        Color=true
+                        Row=true
+                        Value="@Maintenance.WorkName" />
+            <TextField2 Label="위치"
+                        Color=true
+                        Row=true
+                        Value=@(Maintenance.Type == 1? "자체 작업" : "외주 작업") />
+            <TextField2 Label="작업자"
+                        Color=true
+                        Row=true
+                        Value="@Maintenance.Worker" />
+            <TextField2 Label="소요비용"
+                        Color=true
+                        Row=true
+                        Value="@Maintenance.TotalPrice.ToString()" />
+
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public DetailMaintenanceDTO Maintenance { get; set; }
+    [Parameter] public int MaintenanceId { get; set; }
+
+    //이미지
+    List<byte[]> MaintenanceImages = new List<byte[]>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnImageConvert();
+    }
+
+    //이미지 배열변환
+    private async Task OnImageConvert()
+    {
+        if (Maintenance.Image == null)
+        {
+            return;
+        }
+        MaintenanceImages = new List<byte[]>();
+        MaintenanceImages.Add(Maintenance.Image);
+    }
+
+}

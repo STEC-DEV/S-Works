@@ -102,3 +102,21 @@
     cursor : pointer;
     color: var(--default-color);
 }
+
+.nav-tab-item,
+.nav-usertype,
+.nav-username
+{
+    display:flex;
+    gap : var(--one-q-pd);
+    align-items : center;
+}
+
+.scale{
+    transition : all .3s;
+}
+
+.scale:hover {
+    transform: scale(1.2);
+    cursor : pointer;
+}

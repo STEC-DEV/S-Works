@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/add"
+@page "/voc/add/{PlaceId:int}/{BuildingId:int}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Voc.Add.Components
 @using FamTec.Shared.Client.Class
@@ -9,7 +9,7 @@
 <div class="voc ">
     <div class="header yappear">
         <span class="title">
-            민원 접수
+            @PlaceName [@BuildingName] 민원 접수
         </span>
     </div>
     <div class="content yappear">
@@ -36,11 +36,55 @@
 </div>
 
 @code {
-    [Parameter] public int PlaceId { get; set; } = 3;
-    [Parameter] public int BuildingId { get; set; } = 1;
+    [Parameter] public int PlaceId { get; set; }
+    [Parameter] public int BuildingId { get; set; }
     AddVoc Voc = new AddVoc();
     AddVocReturnDTO ResponseData = new AddVocReturnDTO();
     int maxAllowedFiles = 3;
+
+    string PlaceName = "";
+    string BuildingName = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuildingName();
+        await OnLoadPlaceName();
+    }
+
+    private async Task OnLoadBuildingName()
+    {
+        try
+        {
+            ResponseUnit<string> resGet = await apiManager.GetUnitAsync<string>($"Building/GetBuildingName?buildingid={BuildingId}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            BuildingName = resGet.data;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[민원] 건물조회 에러");
+        }
+    }
+
+    private async Task OnLoadPlaceName()
+    {
+        try
+        {
+            ResponseUnit<string> resGet = await apiManager.GetUnitAsync<string>($"Place/GetPlaceName?placeid={BuildingId}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            PlaceName = resGet.data;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[민원] 건물조회 에러");
+        }
+    }
 
     private async Task OnAdd()
     {

@@ -53,18 +53,18 @@
         
         <div class="group">
             <SelectField 
-                T="BuildingFloorListDTO" 
+                T="PlaceRoomListDTO" 
                 Key="building" 
-                SelectData="Locations" 
+                SelectData="PlaceLocation" 
                 Value="SelectedBuildingId" 
                 OnChange="OnBuildingChange" 
                 Label="건물"
                 EditMode="true" />
-            @if (SelectedBuilding != null && SelectedBuilding.FloorList.Any())
+            @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
             {
                 <SelectField  
                     Key="floor" 
-                    SelectData="SelectedBuilding.FloorList" 
+                    SelectData="PlaceRoom" 
                     Value="SelectedFloorId" 
                     Label="위치"
                     OnChange="OnFloorChange" 
@@ -86,14 +86,26 @@
     AddMaterialDTO AddMaterial = new AddMaterialDTO();
     List<BuildingFloorListDTO> Locations = new List<BuildingFloorListDTO>();
     BuildingFloorListDTO SelectedBuilding;
+
     int SelectedBuildingId;
     int SelectedFloorId;
+
+
+    //새 건물 룸 데이터
+    List<PlaceRoomListDTO> PlaceLocation = new List<PlaceRoomListDTO>();
+    PlaceRoomListDTO PlaceLocationSelect = new PlaceRoomListDTO();
+    List<PlaceRoom> PlaceRoom = new List<PlaceRoom>();
+
+    //건물 선택 시 할당받을 위치 변수
+    List<BuildingFloor> Room = new List<BuildingFloor>();
+
+    int SelectedRoomId;
 
 
     protected override async Task OnInitializedAsync()
     {
         await OnLoadLocation();
-
+        await OnLoadBuilginRoom();
     }
 
 
@@ -119,10 +131,63 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[Material]자재 등록 에러");
+            Console.WriteLine("[Material]자재 등록 에러"+ex);
             await JS.InvokeVoidAsync("alert", "자재 등록 에러");
 
         }
+    }
+
+    //건물 + 위치 + 공간 조회
+    private async Task OnLoadBuilginRoom()
+    {
+        try
+        {
+            ResponseList<PlaceRoomListDTO> resGet = await apiManager.GetListAsync<PlaceRoomListDTO>("Room/sign/GetPlaceRoomGroup");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            PlaceLocation = resGet.data;
+
+            foreach (var i in PlaceLocation)
+            {
+                Console.WriteLine();
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+
+    //건물선택
+    private async Task OnBuildingChange(int buildingId)
+    {
+
+        if (buildingId == 0)
+        {
+            Room = null;
+            SelectedRoomId = 0;
+            StateHasChanged();
+            return;
+        }
+        SelectedBuildingId = buildingId;
+
+        //건물선택
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        //해당건물에 층전체 반복하여 위치 리스트 추가
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+
+        SelectedRoomId = 0; // Reset floor selection when building changes
+        StateHasChanged();
     }
 
     private async Task OnLoadLocation()
@@ -160,19 +225,19 @@
     }
 
 
-    private void OnBuildingChange(int buildingId)
-    {
-        SelectedBuildingId = buildingId;
+    // private void OnBuildingChange(int buildingId)
+    // {
+    //     SelectedBuildingId = buildingId;
 
-        SelectedBuilding = Locations.FirstOrDefault(b => b.Id == buildingId);
-        SelectedFloorId = 0; // Reset floor selection when building changes
-        StateHasChanged();
-    }
+    //     SelectedBuilding = Locations.FirstOrDefault(b => b.Id == buildingId);
+    //     SelectedFloorId = 0; // Reset floor selection when building changes
+    //     StateHasChanged();
+    // }
 
     private void OnFloorChange(int floorId)
     {
         SelectedFloorId = floorId;
-        AddMaterial.DefaultLocation = floorId;
+        AddMaterial.RoomId = floorId;
     }
 
 }

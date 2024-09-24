@@ -103,7 +103,13 @@
                         @row.ChangeDT.ToString()
                     </td>
                     <td class="td">
-                        <Button Name="QR" Width=true Type=0/>
+                        <QR 
+                        BaseUrl="facility"
+                        BtnName="QR"
+                        Type="facility"
+                        DetailType="@FacType" 
+                        Id="@row.Id"
+                        />
                     </td>
                     @if (USEREDIT)
                     {

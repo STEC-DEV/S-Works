@@ -92,6 +92,13 @@
                         @row.CreateDt
                     </td>
                     <td class="td">
+                        <QR
+                            BaseUrl="voc/banner"
+                            BtnName="QR"
+                            Type="building"
+                            PlaceId="PLACEIDX.Value"
+                            Id="@row.Id"
+                            />
                     </td>
                     @if (USEREDIT)
                     {
@@ -122,6 +129,7 @@
     {
         //권한
         await base.OnInitializedAsync();
+        Console.WriteLine(PLACEIDX);
     }
 
     private void OnDetail(int id)

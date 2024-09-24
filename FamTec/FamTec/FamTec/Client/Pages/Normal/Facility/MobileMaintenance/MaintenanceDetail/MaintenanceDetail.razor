@@ -1,0 +1,58 @@
+﻿@layout MainLayout2
+@page "/m/facility/{FacType}/{FacId:int}/maintenance/{MaintenanceId:int}"
+@using FamTec.Client.Pages.Normal.Facility.MobileMaintenance.MaintenanceDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
+
+<div class="maintenance">
+    <Info MaintenanceId="@MaintenanceId" Maintenance=Maintenance />
+
+     @if (Maintenance.Type == 1)
+    {
+        <Material
+            ListData="@Maintenance.UseMaterialList" 
+            />
+    }
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+    [Parameter] public int MaintenanceId { get; set; }
+
+    //유지보수 정보
+    DetailMaintenanceDTO Maintenance;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaintenance();
+    }
+
+    /// <summary>
+    /// 유지보수 정보 조회
+    /// </summary>
+    /// <returns></returns>
+    private async Task OnLoadMaintenance()
+    {
+        try
+        {
+            ResponseUnit<DetailMaintenanceDTO> resGet = await apiManager.GetUnitAsync<DetailMaintenanceDTO>($"Maintenance/sign/GetDetailMaintance?Maintanceid={MaintenanceId}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if (resGet.data == null)
+            {
+                Maintenance = new DetailMaintenanceDTO();
+            }
+            Maintenance = new DetailMaintenanceDTO(resGet.data);
+            Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+}

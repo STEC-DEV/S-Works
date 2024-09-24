@@ -1,0 +1,75 @@
+﻿
+
+<div class="timeline">
+    <div class="header">
+        <span class="title">
+            최근 알림
+        </span>
+    </div>
+    <div class="content">
+        @foreach (alert i in mockup)
+        {
+            <Notify 
+                Title="@i.title" 
+                Context="@i.context" 
+                Url="@i.url"
+                IsRead=@i.isread
+                />
+        }
+    </div>
+    <button class="btn">모두 읽음</button>
+</div>
+
+@code {
+    public class alert
+    {
+        public string title { get; set; }
+        public string context { get; set; }
+        public string url { get; set; }
+        public bool isread { get; set; }
+    }
+
+    List<alert> mockup = new List<alert>
+    {
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = true,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+
+    };
+}

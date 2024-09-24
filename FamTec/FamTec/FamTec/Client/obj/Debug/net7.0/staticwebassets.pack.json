@@ -145,6 +145,10 @@
       "PackagePath": "staticwebassets\\js\\mac.js"
     },
     {
+      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
+      "PackagePath": "staticwebassets\\js\\qr.js"
+    },
+    {
       "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qrcode.js",
       "PackagePath": "staticwebassets\\js\\qrcode.js"
     },

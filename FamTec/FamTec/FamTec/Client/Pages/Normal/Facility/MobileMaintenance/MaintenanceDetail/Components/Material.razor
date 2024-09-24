@@ -1,0 +1,16 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+
+<div class="material yappear">
+    <div class="header">
+        <span class="title">
+            사용 자재 목록
+        </span>
+    </div>
+    <div class="content">
+        <Table ListData="@ListData" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<UseMaterialDTO> ListData { get; set; }
+}

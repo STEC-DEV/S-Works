@@ -1,0 +1,20 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+
+
+<div class="item">
+    <label class="label">
+        @item.ItemKey
+    </label>
+    <div class="values">
+        @foreach(var i in item.valueList)
+        {
+            <span class="value">
+                @i.itemValue
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public ItemDTO item { get; set; }
+}

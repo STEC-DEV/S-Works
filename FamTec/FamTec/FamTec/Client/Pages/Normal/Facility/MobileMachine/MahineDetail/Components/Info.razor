@@ -1,0 +1,106 @@
+﻿
+
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+
+
+<div class="info">
+    <div class="header">
+        <span class="title">
+            장비 제원
+        </span>
+    </div>
+    <div class="content">
+        <div class="img">
+            @if (FacilityImages.Count != 0)
+            {
+                <ImageSlider Label="이미지" Images="@FacilityImages" />
+            }
+        </div>
+        <div class="grid">
+            <TextField2 Label="장비명"
+                        Color=true
+                        Row=true
+                        Value="@Facility.Name" />
+            <TextField2 Label="형식"
+                        Color=true
+                        Row=true
+                        Value="@Facility.Type" />
+            <TextField2 Label="위치"
+                        Color=true
+                        Row=true
+                        Value="@Facility.RoomName" />
+            <TextField2 Label="규격 용량"
+                        Color=true
+                        Row=true
+                        Value="@Facility.Standard_capacity" />
+            <TextField2 Label="수량"
+                        Color=true
+                        Row=true
+                        Value="@Facility.Num.ToString()" />
+            <TextField2 Label="내용년수"
+                        Color=true
+                        Row=true
+                        Value="@Facility.LifeSpan" />
+            <TextField2 Label="설치년월"
+                        Color=true
+                        Row=true
+                        Value="@Facility.EquipDT?.ToString("yyyy-MM-dd")" />
+            <TextField2 Label="교체년월"
+                        Color=true
+                        Row=true
+                        Value="@Facility.ChangeDT?.ToString("yyyy-MM-dd")" />
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+
+    //이미지
+    List<byte[]> FacilityImages = new List<byte[]>();
+
+    //설비 정보
+    FacilityDetailDTO Facility = new FacilityDetailDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadFacility();
+    }
+
+    //설비 조회
+    private async Task OnLoadFacility()
+    {
+        ResponseUnit<FacilityDetailDTO> resGet = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={FacId}");
+        if (resGet.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");
+            return;
+        }
+        if (resGet.data == null)
+        {
+            Facility = new FacilityDetailDTO();
+        }
+        Facility = resGet.data;
+    }
+
+
+
+    //이미지 배열변환
+    private async Task OnImageConvert()
+    {
+        if (Facility.Image == null)
+        {
+            return;
+        }
+        FacilityImages = new List<byte[]>();
+        FacilityImages.Add(Facility.Image);
+    }
+
+}

@@ -19,10 +19,10 @@
                              href="@(category.SubCategory == null ? category.Url : null)"
                              @onclick="() => ToggleDropdown(category)">
                         <span class="category-title">@category.Name</span>
-                        @if (category.SubCategory != null)
+                        @* @if (category.SubCategory != null)
                         {
                             <span class="arrow">∨</span>
-                        }
+                        } *@
                     </NavLink>
 
                     @if (category.SubCategory != null)

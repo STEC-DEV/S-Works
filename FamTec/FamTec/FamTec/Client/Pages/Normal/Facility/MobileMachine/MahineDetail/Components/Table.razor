@@ -1,0 +1,94 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+
+
+<table class="table">
+    @if (ListData is not null)
+    {
+        <thead class="thead">
+            <tr class="th-tr">
+                <th class="th">
+                    <span>
+                        작업 일자
+                    </span>
+                </th>
+                <th class="th">
+                    <span>
+                        수리 및 보수 이력
+                    </span>
+                </th>
+                <th class="th">
+                    <span>
+                        작업 구분
+                    </span>
+                </th>
+                <th class="th">
+                    <span>
+                        작업자
+                    </span>
+                </th>
+                <th class="th">
+                    <span>
+                        소요비용
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        
+    }
+    <tbody class="tbody">
+        @if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
+        else if (ListData.Count == 0 )
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach(var row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @row.WorkDT?.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @row.Name
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @(row.Type == 1 ? "자체 작업" : "외주 작업")
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @row.Worker
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                        @row.TotalPrice
+                    </td>
+                </tr>
+            }
+        }
+
+        
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<MaintenanceListDTO> ListData { get; set; }
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+
+
+    private void OnDetail(int? maintenanceId)
+    {
+        Navigation.NavigateTo($"/m/facility/{FacType}/{FacId}/maintenance/{maintenanceId}");
+    }
+}

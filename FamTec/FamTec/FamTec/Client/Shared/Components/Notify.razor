@@ -1,0 +1,24 @@
+﻿
+
+<div class="notify @(IsRead ?"read" :"")">
+    <label class="label">
+        @Title
+    </label>
+    <p class="context">
+        @Context
+    </p>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Context { get; set; }
+    [Parameter] public string Url { get; set; }
+    [Parameter] public bool IsRead{ get; set; }
+
+
+    //링크 이동
+    private void OnMove()
+    {
+        Navigation.NavigateTo(Url);
+    }
+}

@@ -1,7 +1,7 @@
 {
   "entryAssembly": "FamTec.Client",
   "resources": {
-    "hash": "sha256-lr7qH3kD9N/uohAdDr/RuhtYmQqOaK5GS5jiATPx4bc=",
+    "hash": "sha256-aFX0uGsKQJ/HDfLyIIUHga6B53A4vCfcZ9ckQs2xgiI=",
     "runtime": {
       "dotnet.7.0.16.v4x92qokea.js": "sha256-4BiArKugJJtpQrznGF5zWfmJ2TB98+p6rKsyoqhtMk4=",
       "dotnet.timezones.blat": "sha256-rwyJqJu36keQwNmm/O1XV7tnkkVldIOK8GIjn4gTUt4=",
@@ -85,6 +85,7 @@
       "MySqlConnector.dll": "sha256-SvUnC2U+xrLDeKZ+ZR1DOaZcC0qNNzA4ncgVlM6LtOI=",
       "Newtonsoft.Json.dll": "sha256-IsZJ91/OW+fHzNqIgEc7Y072ns8z9dGritiSyvR9Wgc=",
       "Pomelo.EntityFrameworkCore.MySql.dll": "sha256-syJhjtABMnhsBya48+Hse+WM7BMonlaQBL303Bl5sYQ=",
+      "QRCoder.dll": "sha256-PFZ09nqX/Z7TjdU32JLunv0yivrU1sHWf5n94sEI3Vc=",
       "SixLabors.Fonts.dll": "sha256-4eLxB+fHj7hZ8bIzgxB6ElrNizp0cBQIUNqm9vbEXZ8=",
       "System.CodeDom.dll": "sha256-Wux4xpM0/BzRySb0qchXJg3S4D/xc56W3vHWgpa4a4s=",
       "System.Configuration.ConfigurationManager.dll": "sha256-0nS91x919QBfyuwCiSH3HYnLbWIgItdNLgeJejodFBo=",
@@ -267,12 +268,12 @@
       "mscorlib.dll": "sha256-7yxnoj0sx/xIMKjSCkfYzaeQKDj1UsUSr/JXW7fRggs=",
       "netstandard.dll": "sha256-c9xgB5oQro5/rBTTHeD+4cqLi9QOB+6fhaP3jmkeGo4=",
       "System.Private.CoreLib.dll": "sha256-FGXoQzMt7mcWfUZbWXoXgg8tPIt7PF+QZoXXBQWegAQ=",
-      "FamTec.Shared.dll": "sha256-txR2nvLKtNzWcL9rQ/ipK+RDwWmDTUlc1rC62h4dk1w=",
-      "FamTec.Client.dll": "sha256-dGKmqICnIwH4j1QIhZrWZ7cxhwN2FMeS+GT+QD/423g="
+      "FamTec.Shared.dll": "sha256-mfAkl33CwOU7ylbkQ+1xO2QnRClPp2Nz7VXj3A3TjjQ=",
+      "FamTec.Client.dll": "sha256-1WdZ8a73V3zf50/NqQteBGdgI1H4C8mdTsJYrCUw3UA="
     },
     "pdb": {
-      "FamTec.Shared.pdb": "sha256-gCgfc7DwgnVs0E6DP1+GdSY/q4uzVt5zkvP5bha70Jk=",
-      "FamTec.Client.pdb": "sha256-5Jz2Ls9AizZPbeoq/A4rDRx6JEPgHG8kMhm20qXjRMg="
+      "FamTec.Shared.pdb": "sha256-ncwjIDyno0ZmsP7Cc3i6CHwDU3HQHL0moL72spJ1k0Q=",
+      "FamTec.Client.pdb": "sha256-LwE2AeJVTnwK5Dall0hnekorOKvr9wcATxKufNkbnY0="
     },
     "runtimeAssets": {
       "dotnet.wasm": {

@@ -136,6 +136,10 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "QRCoder": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
             "Tewr.Blazor.FileReader": {
               "target": "Package",
               "version": "[3.3.2.23201, )"

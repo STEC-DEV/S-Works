@@ -1,0 +1,55 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
+
+
+<div class="maintenance yappear">
+    <div class="header">
+        <span class="title">
+            유지보수 이력
+        </span>
+    </div>
+    <div class="content">
+        <Table ListData="@ListData" FacId="@Id" FacType="@FacType"/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public string FacType { get; set; }
+
+    List<MaintenanceListDTO> ListData;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaintenance();
+    }
+
+    private async Task OnLoadMaintenance()
+    {
+        try
+        {
+            ResponseList<MaintenanceListDTO> resGet = await apiManager.GetListAsync<MaintenanceListDTO>($"Maintenance/sign/GetMaintanceHistory?facilityid={Id}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+
+            if (resGet.data == null)
+            {
+                ListData = new List<MaintenanceListDTO>();
+            }
+            else
+            {
+                ListData = resGet.data;
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("유지보수 이력조회 실패");
+            await JS.InvokeVoidAsync("alert", "유지보수 이력 조회 에러");
+        }
+    }
+}

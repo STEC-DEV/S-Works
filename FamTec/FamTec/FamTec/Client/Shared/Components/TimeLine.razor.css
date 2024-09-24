@@ -1,0 +1,44 @@
+﻿
+.timeline{
+    position : absolute;
+    top : 110%;
+    right : 1%;
+    display : flex;
+    flex-direction:column;
+    gap:var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    padding : var(--default-pd);
+
+    background-color : var(--default-color);
+    width : 15%;
+    height : 300px;
+    box-shadow : var(--shadow-1);
+    overflow : hidden;
+}
+
+.content {
+    position:relative;
+    display :flex;
+    flex-direction :column;
+    gap : var(--default-pd);
+
+    overflow : auto;
+}
+
+.btn{
+    outline :none;
+    border :none;
+
+    padding : var(--one-q-pd);
+    font-size : 0.7rem;
+    
+    transition : all .3s;
+    background-color : var(--content-back-color);
+}
+
+.btn:hover{
+    background-color : var(--main-light);
+}

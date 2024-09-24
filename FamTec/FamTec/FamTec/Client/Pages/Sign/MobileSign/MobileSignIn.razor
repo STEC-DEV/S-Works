@@ -1,0 +1,90 @@
+﻿
+@layout MainLayout2
+@page "/m/sign"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Login
+
+<div class="sign">
+    <div class="form">
+        <span class="title">
+            LOGIN
+        </span>
+        <div class="input-wrap">
+            <InputCol Label="아이디"
+                      Placeholder="아이디"
+                      @bind-Value=@user.UserID />
+            <InputCol Label="비밀번호"
+                      Placeholder="비밀번호"
+                      @bind-Value=@user.UserPassword />
+        </div>
+        <Button Name="로그인" Type="0" OnClick="OnSignUp" />
+    </div>
+</div>
+
+@code {
+    LoginDTO user = new LoginDTO();
+
+    private async Task OnSignUp()
+    {
+        try
+        {
+            // 아이디 비밀번호 공백 처리
+            if (string.IsNullOrWhiteSpace(user.UserID) || string.IsNullOrWhiteSpace(user.UserPassword))
+            {
+                await JS.InvokeVoidAsync("alert", "아이디 또는 패스워드가 공백입니다.");
+                user = new LoginDTO();
+                return;
+            }
+
+            //로그인 요청
+            ResponseUnit<string> response = await apiManager.PostLoginAsync<string>("Login/Login", user);
+
+            if (response.code == 404)
+            {
+                await JS.InvokeVoidAsync("alert", "아이디 또는 패스워드가 일치하지 않습니다.");
+                user = new LoginDTO();
+                return;
+            }
+            if (response.code == 500)
+            {
+                await JS.InvokeVoidAsync("alert", "로그인 에러");
+                user = new LoginDTO();
+                return;
+            }
+            string? token = response.data;
+
+            // if (response.code == 201)
+            // {
+            //     // Navigation.NavigateTo($"/select/{token}");
+            //     Navigation.NavigateTo($"/select");
+            //     await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+            //     await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
+            //     (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+            //     return;
+            // }
+            // await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+            // await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
+            // (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+
+            // if (response.code == 200)
+            // {
+            //     if (LoginMode)
+            //     {
+            //         Navigation.NavigateTo("/admin/place");
+            //     }
+            //     else
+            //     {
+            //         Navigation.NavigateTo("/user");
+            //     }
+
+            // }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
+        }
+        Console.WriteLine(user.UserID);
+        Console.WriteLine(user.UserPassword);
+    }
+}

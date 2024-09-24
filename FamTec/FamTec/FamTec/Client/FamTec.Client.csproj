@@ -31,6 +31,8 @@
 
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+
     <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.2.23201" />
   </ItemGroup>
 
@@ -43,6 +45,7 @@
     <Folder Include="Pages\Normal\Material\InOut\Modal\" />
     <Folder Include="Pages\Normal\Material\Material\Store\" />
     <Folder Include="Pages\Normal\Voc\VocCreate\" />
+    <Folder Include="Uitll\" />
     <Folder Include="wwwroot\css\open-iconic\NewFolder\" />
   </ItemGroup>
 

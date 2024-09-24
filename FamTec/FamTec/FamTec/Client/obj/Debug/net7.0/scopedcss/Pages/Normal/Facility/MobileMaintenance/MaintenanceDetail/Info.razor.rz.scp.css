@@ -1,0 +1,39 @@
+
+.info[b-eo8i7k40tt] {
+    display: flex;
+    flex-direction: column;
+
+    gap:var(--default-pd);
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color : var(--default-color);
+}
+
+.header[b-eo8i7k40tt]{
+
+}
+
+.content[b-eo8i7k40tt]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.img[b-eo8i7k40tt]{
+    
+}
+
+.title[b-eo8i7k40tt] {
+    font-size: 1rem;
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.grid[b-eo8i7k40tt]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}

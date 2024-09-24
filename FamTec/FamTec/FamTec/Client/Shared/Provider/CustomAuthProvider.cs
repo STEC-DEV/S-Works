@@ -69,6 +69,21 @@ namespace FamTec.Client.Shared.Provider
             return user.Claims.Any(c => c.Type == "AdminYN" && c.Value == "True");
         }
 
+        //
+        public async Task<int> GetPlaceIdx()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var placeIdxClaim = user.FindFirst("PlaceIdx");
+
+            if (placeIdxClaim != null)
+            {
+                return user.Claims.ToList().IndexOf(placeIdxClaim);
+            }
+
+            return -1; // PlaceIdx 클레임이 없는 경우
+        }
+
         public async Task<int> GetUserPermission(string permName)
         {
             var authState = await GetAuthenticationStateAsync();

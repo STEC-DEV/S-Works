@@ -1,0 +1,12 @@
+﻿
+
+.qr-btn{
+    outline:none;
+    border :none;
+
+    padding : var(--half-pd) var(--default-pd);
+    border-radius : var(--default-rd);
+
+    color : var(--default-color);
+    background-color : var(--main-color);
+}

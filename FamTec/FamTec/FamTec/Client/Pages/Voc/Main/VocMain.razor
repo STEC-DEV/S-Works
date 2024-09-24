@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/banner"
+@page "/m/voc/banner/{PlaceId:int}/{BuildingId:int}"
 
 
 @using FamTec.Client.Pages.Voc.Main.Components
@@ -14,7 +14,7 @@
         <SelectInput Label="접수번호" Placeholder="접수번호"/>
         <BannerBtn 
             Label="민원 접수"
-            Url="/voc/add"
+            Url="@($"/voc/add/{PlaceId}/{BuildingId}")"
             />
     </div>
 </div>
@@ -22,6 +22,6 @@
 
 @code {
     //아래는 연결후 커넥트
-    [Parameter] public int placeid{ get; set; }
-    [Parameter] public int BulidingId { get; set; }
+    [Parameter] public int PlaceId { get; set; }
+    [Parameter] public int BuildingId { get; set; }
 }

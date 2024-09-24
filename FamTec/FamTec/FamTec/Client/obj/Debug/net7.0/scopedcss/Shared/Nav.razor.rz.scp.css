@@ -102,3 +102,21 @@
     cursor : pointer;
     color: var(--default-color);
 }
+
+.nav-tab-item[b-wg5fiaa4ah],
+.nav-usertype[b-wg5fiaa4ah],
+.nav-username[b-wg5fiaa4ah]
+{
+    display:flex;
+    gap : var(--one-q-pd);
+    align-items : center;
+}
+
+.scale[b-wg5fiaa4ah]{
+    transition : all .3s;
+}
+
+.scale:hover[b-wg5fiaa4ah] {
+    transform: scale(1.2);
+    cursor : pointer;
+}

@@ -1,0 +1,29 @@
+﻿.item {
+    display :flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.label{
+    font-size : 0.8rem;
+    font-weight:bold;
+    color : var(--main-color);
+}
+
+.values{
+    display :flex;
+    flex-wrap:wrap;
+    gap: var(--half-pd);
+}
+
+.value{
+
+    font-size : 0.8rem;
+
+    border : var(--default-bd);
+    border-radius : var(--default-rd);
+    padding : var(--half-pd);
+
+    background-color : var(--content-back-color);
+
+}
