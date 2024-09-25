@@ -1,6 +1,0 @@
-[2024-08-02 오후 4:07:10]	System.InvalidOperationException: Nullable object must have a value.
-   at System.Nullable`1.get_Value()
-   at FamTec.Server.Repository.Building.SubItem.ItemKey.BuildingItemKeyInfoRepository.<>c.<UpdateKeyInfo>b__7_2(GroupValueListDTO m) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Building\SubItem\ItemKey\BuildingItemKeyInfoRepository.cs:line 174
-   at System.Linq.Enumerable.SelectListIterator`2.ToList()
-   at FamTec.Server.Repository.Building.SubItem.ItemKey.BuildingItemKeyInfoRepository.UpdateKeyInfo(UpdateKeyDTO dto, String updater) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Building\SubItem\ItemKey\BuildingItemKeyInfoRepository.cs:line 174
-[2024-08-02 오후 4:07:10]	Value cannot be null.

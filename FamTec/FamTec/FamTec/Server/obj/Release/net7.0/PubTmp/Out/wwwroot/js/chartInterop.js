@@ -17,7 +17,8 @@ window.createStackedBarChart = (canvasId, labels, dataset1, dataset2, dataset3, 
         data: {
             labels: labels,
             datasets: [
-            {
+                {
+
                 label: '미분류',
                 data: dataset1,
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',

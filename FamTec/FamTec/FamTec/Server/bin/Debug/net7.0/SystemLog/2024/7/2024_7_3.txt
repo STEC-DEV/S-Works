@@ -1,6 +1,0 @@
-[2024-07-03 오후 1:10:41]	System.NotImplementedException: The method or operation is not implemented.
-   at FamTec.Server.Repository.Admin.AdminPlaces.AdminPlaceInfoRepository.DeleteMyWorks(AdminPlaceTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Admin\AdminPlaces\AdminPlaceInfoRepository.cs:line 219
-   at FamTec.Server.Services.Admin.Account.AdminAccountService.DeleteAdminService(HttpContext context, List`1 useridx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Account\AdminAccountService.cs:line 298
-[2024-07-03 오후 1:16:16]	System.NotImplementedException: The method or operation is not implemented.
-   at FamTec.Server.Repository.Admin.AdminPlaces.AdminPlaceInfoRepository.DeleteMyWorks(AdminPlaceTb model) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Admin\AdminPlaces\AdminPlaceInfoRepository.cs:line 219
-   at FamTec.Server.Services.Admin.Account.AdminAccountService.DeleteAdminService(HttpContext context, List`1 useridx) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Account\AdminAccountService.cs:line 298

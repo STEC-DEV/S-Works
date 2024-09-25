@@ -76,6 +76,7 @@ using FamTec.Server.Services.UseMaintenence;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.StaticFiles;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -409,7 +410,32 @@ else
 }
 
 app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정
-app.UseStaticFiles(); // 정적 파일 제공 설정
+
+// MIME 타입 및 압축 헤더 설정
+var provider = new FileExtensionContentTypeProvider();
+// 기본 제공되지 않는 MIME 타입 추가
+provider.Mappings[".wasm"] = "application/wasm";
+provider.Mappings[".gz"] = "application/octet-stream";
+provider.Mappings[".br"] = "application/octet-stream";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider,
+    OnPrepareResponse = ctx =>
+    {
+        // 압축된 파일에 대한 Content-Encoding 헤더 설정
+        if (ctx.File.Name.EndsWith(".gz"))
+        {
+            ctx.Context.Response.Headers["Content-Encoding"] = "gzip";
+        }
+        else if (ctx.File.Name.EndsWith(".br"))
+        {
+            ctx.Context.Response.Headers["Content-Encoding"] = "br";
+        }
+    }
+});
+
+//app.UseStaticFiles(); // 정적 파일 제공 설정
 
 app.UseRouting();
 

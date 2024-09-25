@@ -1,3 +1,0 @@
-[2024-07-26 오후 3:30:27]	System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
-   at System.Collections.Generic.List`1.get_Item(Int32 index)
-   at FamTec.Server.Repository.Inventory.InventoryInfoRepository.GetInventoryRecord2(Nullable`1 placeid, List`1 MaterialIdx, Nullable`1 type) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Inventory\InventoryInfoRepository.cs:line 233
