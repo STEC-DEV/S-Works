@@ -108,6 +108,7 @@
                         BtnName="QR"
                         Type="facility"
                         DetailType="@FacType" 
+                        PlaceId="@PLACEIDX.Value"
                         Id="@row.Id"
                         />
                     </td>
@@ -132,6 +133,7 @@
     protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
+        Console.WriteLine("현재 사업장아이디 : "+PLACEIDX);
     }
 
     private void OnDetail(int Id)

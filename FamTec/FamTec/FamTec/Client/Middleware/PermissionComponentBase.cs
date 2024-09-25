@@ -13,7 +13,10 @@ namespace FamTec.Client.Middleware
         protected string? ADMINJOB { get; private set; }
 
         protected int? PLACEIDX { get; private set; }
+        protected bool ISADMIN { get; private set; }
+        protected bool ISLOGIN { get; private set; }
 
+        protected string PLACENAME { get; private set; }
         // 각 페이지에서 오버라이드할 속성
         protected virtual string RequiredPermission => "UserPerm_Basic";
 
@@ -24,6 +27,9 @@ namespace FamTec.Client.Middleware
             await LoadAdminModePermissions();
             await LoadAdminJob();
             await LoadPlaceIdx();
+            await LoadIsAdmin();
+            await LoadIsLogin();
+            //await LoadPlaceName();
         }
 
         //일반 권한
@@ -51,9 +57,25 @@ namespace FamTec.Client.Middleware
             PLACEIDX = _placeIdx;
         }
 
+        //관리자 여부
+        protected virtual async Task LoadIsAdmin()
+        {
+            ISADMIN = await PermissionService.IsAdmin();
+        }
+
         protected virtual async Task LoadAdminJob()
         {
             ADMINJOB= await PermissionService.HasAdminModeEditPerm();
+        }
+
+        protected virtual async Task LoadIsLogin()
+        {
+            ISLOGIN = await PermissionService.IsLogin();
+        }
+
+        protected virtual async Task LoadPlaceName()
+        {
+            PLACENAME= await PermissionService.GetPlaceName();
         }
     }
 }

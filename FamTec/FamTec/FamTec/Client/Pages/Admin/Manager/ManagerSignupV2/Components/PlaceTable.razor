@@ -1,5 +1,6 @@
-﻿@using FamTec.Shared.Client.DTO
-
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@inherits PermissionComponentBase
 
 <table class="table">
     <thead class="thead">
@@ -19,15 +20,31 @@
                     계약번호
                 </span>
             </th>
-            <th class="th">
-                
-            </th>
+            @if (ADMINEDIT)
+            {
+                <th class="th">
+
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
-        @if(ListData == null)
+        @if (ListData.Count == 0)
         {
-            <p>...Lodaing</p>
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
         }
         else
         {
@@ -43,9 +60,15 @@
                     <td class="td">
                        @row.ContractNum
                     </td>
-                    <td class="td">
-                        <input type="checkbox" checked="@IsChecked(row)" @onchange=" e => onCheckItem(e, row)" />
-                    </td>
+                    @if (ADMINEDIT)
+                    {
+                        <td class="td">
+                            <input type="checkbox" 
+                                checked=@(_checkItem.Contains(row.Id)) 
+                                @onchange=" e => onCheckItem(e, row)" />
+                        </td>
+                    }
+                    
                 </tr>
             }
         }
@@ -59,27 +82,32 @@
 
     List<PlaceTableDTO> CheckedData = new List<PlaceTableDTO>();
 
+    //체크
+    private HashSet<int> _checkItem = new HashSet<int>();
 
-    private bool IsChecked(PlaceTableDTO place)
+    protected override async Task OnInitializedAsync()
     {
-        // CheckedData 리스트에서 현재 행에 해당하는 place가 있는지 확인
-        return CheckedData != null && CheckedData.Any(x => x.PlaceCd == place.PlaceCd);
+        base.OnInitializedAsync();
     }
+
+
 
     private async void onCheckItem(ChangeEventArgs e,PlaceTableDTO place)
     {
         //현재 컴포넌트내에서 검색과 체크 동기화
-        if((bool)e.Value == true)
+        if((bool)e.Value)
         {
-            CheckedData.Add(place);
+            _checkItem.Add(place.Id);
         }
         else
         {
-            CheckedData.Remove(place);
+            _checkItem.Remove(place.Id);
         }
 
 
         //체크여부 부모로 넘김
         await OnCheck.InvokeAsync(((bool)e.Value, place));
     }
+
+
 }

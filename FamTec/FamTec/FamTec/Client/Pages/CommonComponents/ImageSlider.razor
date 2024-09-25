@@ -52,6 +52,11 @@
             ImageDataUrl.Clear();
             foreach (var image in Images)
             {
+                if (image== null)
+                {
+                    Console.WriteLine($"Image at index {image} is null");
+                    continue; // null인 이미지는 건너뜁니다.
+                }
                 var base64String = Convert.ToBase64String(image);
                 ImageDataUrl.Add($"data:image/png;base64,{base64String}");
             }

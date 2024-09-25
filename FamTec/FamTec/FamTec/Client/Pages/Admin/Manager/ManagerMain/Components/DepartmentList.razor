@@ -122,7 +122,10 @@
 
     private void OnModal(int id)
     {
-        Console.WriteLine("동작함");
+        if (!Edit)
+        {
+            return;
+        }
         openModalId = id;
     }
 

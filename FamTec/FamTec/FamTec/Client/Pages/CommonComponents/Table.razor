@@ -1,10 +1,9 @@
-﻿@typeparam T
-@using System.Reflection
+﻿@using System.Reflection
 @using System.ComponentModel.DataAnnotations
 @using FamTec.Shared.Client.DTO
 @inject NavigationManager Navigation
-
-<table class="table-container">
+@inherits PermissionComponentBase
+@* <table class="table-container">
     <thead class="table-head">
         <tr class="thead-tr">
             @foreach (var property in typeof(T).GetProperties())
@@ -30,7 +29,14 @@
                     <Empty />
                 </td>
             </tr>
-
+        }
+        else if (DataList is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
         }
         else
         {
@@ -81,46 +87,142 @@
         
         
     </tbody>
+</table> *@
+<table class="table-container">
+    <thead class="table-head">
+        <tr class="thead-tr">
+            <th class="table-th">
+                
+                아이디
+                
+            </th>
+            <th class="table-th">
+                이름
+            </th>
+            <th class="table-th">
+                부서
+            </th>
+            @if (ADMINEDIT)
+            {
+                <th class="table-th">
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        @if (ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @* @foreach (var item in DataList)
+            {
+                <tr class="tbody-tr">
+                    @foreach (var property in typeof(T).GetProperties())
+                    {
+                        if (property.Name != "IsSelect" && property.Name != "Id")
+                        {
+                            if (property.Name == "Name" && Detail)
+                            {
+                                var idValue = item.GetType().GetProperty("Id").GetValue(item);
+                                var link = $"{Navigation.Uri}/{idValue}";
+                                <td class="table-td">
+                                    <NavLink class="table-td-link" href=@link>
+                                        @property.GetValue(item)
+                                    </NavLink>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="table-td">@property.GetValue(item)</td>
+                            }
+                        }
+                        else if (property.Name == "Id")
+                        {
+
+                        }
+                        else
+                        {
+                            var idValue = (int)item.GetType().GetProperty("Id").GetValue(item);
+                            bool isChecked = CheckedItems.Contains(idValue);
+
+                            <td class="table-td">
+                                <input type="checkbox"
+                                       value="@idValue"
+                                       checked="@isChecked"
+                                       @onchange="e=> InVokeCheckboxSelect(e,idValue, item)" />
+                            </td>
+                        }
+
+                    }
+                </tr>
+            } *@
+            @foreach(ManagerDTO row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                        @row.UserId
+                    </td>
+                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Name
+                    </td>
+                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Department
+                    </td>
+                    @if (ADMINEDIT)
+                    {
+                        <td class="table-td">
+                            <input type="checkbox" @onchange="e=> InVokeCheckboxSelect(e,row.Id, row)" />
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        }
+
+
+
+    </tbody>
 </table>
 
 @code {
-    [Parameter] public List<T> DataList { get; set; }
-    [Parameter] public EventCallback<(bool, int)> Select { get; set; }
-    [Parameter] public EventCallback<(bool, object)> SelectItem { get; set; }
+    [Parameter] public List<ManagerDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool, ManagerDTO)> OnCheck { get; set; }
     [Parameter] public string Url { get; set; }
     [Parameter] public bool Detail { get; set; }
     [Parameter] public string ReturnType { get; set; }
 
     private HashSet<int> CheckedItems = new HashSet<int>();
 
-    private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id,T item)
+    protected override async Task OnInitializedAsync()
     {
-        bool isChecked = (bool)(e.Value ?? false);
-        Console.WriteLine("체크 index값 : "+ id);
-        if (isChecked)
-        {
-            Console.WriteLine("1");
-            CheckedItems.Add(id);
-        }
-        else
-        {
-            Console.WriteLine("2");
-            CheckedItems.Remove(id);
-        }
-
-        if (ReturnType == "object")
-        {
-            Console.WriteLine("3");
-            Console.WriteLine("DD");
-            await SelectItem.InvokeAsync((isChecked, item));
-        }
-        else
-        {
-            Console.WriteLine("4");
-            await Select.InvokeAsync((isChecked, id));
-        }
+        await base.OnInitializedAsync();
     }
 
-    
+    private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id, ManagerDTO item)
+    {
+        bool isChecked = (bool)(e.Value ?? false);
+
+        await OnCheck.InvokeAsync(((bool)e.Value, item));
+    }
+
+    private async Task OnDetail(int id)
+    {
+        Navigation.NavigateTo($"/admin/manager/{id}");
+    }
 
 }

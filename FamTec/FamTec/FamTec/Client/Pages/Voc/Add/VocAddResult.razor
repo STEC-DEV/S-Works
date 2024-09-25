@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/add/result"
+@page "/voc/add/result"    
 
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Voc.Select.Components
@@ -42,9 +42,11 @@
     [Parameter] 
     [SupplyParameterFromQuery(Name = "Dt")]
     public string Dt { get; set; }
+    [Parameter] public int PlaceId { get; set; }
+    [Parameter] public int BuildingId { get; set; }
 
     private void OnHome()
     {
-        Navigation.NavigateTo("/voc/banner");
+        Navigation.NavigateTo("/m/voc/banner");
     }
 }

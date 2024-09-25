@@ -20,14 +20,10 @@
                 사업장 목록
             </span>
             <div class="table-header-option">
-                <Input Placeholder="search" ValueChanged="OnSearchTextChanged" />
+                <Input Placeholder="search" Type="text" ValueChanged="OnSearchTextChanged" />
 
                 @if (ADMINEDIT)
                 {
-                    @* <Button Name="등록"
-                            Width="true"
-                            Type=0
-                            OnClick="@onAddPlace" /> *@
                     <Button Name="등록"
                             Width="true"
                             Type=0
@@ -41,7 +37,10 @@
             </div>
         </div>
         <div class="place-table">
-            <PlaceTable ListData="FilterPlaceList" Select="@OnSelected" CheckedItems="@CheckedItems" />
+            <PlaceTable 
+                ListData="FilterPlaceList" 
+                Select="@OnSelected" 
+                CheckedItems="@CheckedItems" />
         </div>
         @if (is_openModal)
         {
@@ -56,7 +55,7 @@
      * 테이블 데이터
     */
     List<PlaceTableDTO> PlaceList;
-    List<PlaceTableDTO> SelecList = new List<PlaceTableDTO>();
+    // List<PlaceTableDTO> SelecList = new List<PlaceTableDTO>();
     List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
     // DeleteDTO DeletePlace = new DeleteDTO();
     List<int> DeletePlace = new List<int>();
@@ -77,26 +76,9 @@
     {
         //관리자 권한 검사
         await base.OnInitializedAsync();
-        /*
-        * fetch 서버 요청
-        */
-        Console.WriteLine("[사업장 OnInitializedAsync]");
-        // await LoadSession();
 
         await LoadPlace();
     }
-
-    // private async Task LoadSession()
-    // {
-    //     var session = await sessionStorage.GetItemAsStringAsync("SWORKSSESSION");
-    //     _Role = await SessionService.GetClaimValue(session, "Role");
-    //     LoginMode = await sessionStorage.GetItemAsync<bool>("LoginMode");
-    // }
-
-    // private async Task OnLoadStorage(List<Claim> claims)
-    // {
-    //     var Role = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
-    // }
 
 
     /*
@@ -113,8 +95,11 @@
                 await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
                 return;
             }
-            PlaceList = res.data;
+            PlaceList = res.data ?? new List<PlaceTableDTO>();
             FilterPlaceList = PlaceList;
+            
+            // UI 갱신
+            await InvokeAsync(StateHasChanged);
         }
         catch(Exception ex)
         {
@@ -129,16 +114,19 @@
     /*
     * 검색 데이터 필터링
     */
-    private void OnSearchTextChanged(string text)
+    private async void OnSearchTextChanged(string text)
     {
-        // searchText = e.Value.ToString();
         searchText = text;
-        FilterPlaceList = string.IsNullOrEmpty(searchText)
-            ? PlaceList
-            : PlaceList.Where(p => p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                   p.PlaceCd.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                   p.ContractNum.Contains(searchText, StringComparison.OrdinalIgnoreCase))
-                        .ToList();
+        FilterPlaceList = String.IsNullOrEmpty(searchText) 
+                                    ? PlaceList
+                                    : PlaceList.Where(p => (p.PlaceCd?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                    (p.Name?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                    (p.ContractNum?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                            ).ToList();
+
+                                                                    
+
+        await InvokeAsync(StateHasChanged);
     }
 
     /*

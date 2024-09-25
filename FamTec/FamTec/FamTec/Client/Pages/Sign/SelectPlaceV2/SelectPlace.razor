@@ -1,0 +1,131 @@
+﻿@page "/select"
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Sign.SelectPlaceV2.Components
+@inject ILocalStorageService _localStorageService
+@inherits PermissionComponentBase
+
+<div class="selectplace-container">
+    <div class="wrap">
+        <div class="header">
+            <span class="title">
+                사업장 목록
+            </span>
+        </div>
+        <div class="content">
+            @if(placeData.Count == 0)
+            {
+                <Empty/>
+            }else if(placeData == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+                <ul class="ul">
+                    @foreach (PlaceTableDTO place in placeData)
+                    {
+                        <li class="li">
+                            @place.Name
+                            <input type="radio" name="place" value="@place.Id" @onclick="()=>HandlePlaceSelected(place.Id)" />
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        <div class="btns">
+            <Button Name="Enter" Type="0" OnClick="EnterPlace"/>
+            <Button Name="Exit" Type="1" OnClick="OnExit" />
+        </div>
+        
+
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public string token { get; set; }
+    // [Parameter] public bool Admin { get; set; }
+    List<PlaceTableDTO> placeData;
+    int SelectPlaceId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("여기옴");
+        await base.OnInitializedAsync();
+        Console.WriteLine("사업장 선택"+ISADMIN);
+        if (!ISADMIN)
+        {
+            await OnExit();
+            return;
+        }
+        await OnLoadPlaceList();
+        
+    }
+
+    private async Task OnLoadPlaceList()
+    {
+        try
+        {
+            ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>($"Login/sign/AdminPlaceList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", res.message);
+            }
+            if (res.data == null)
+            {
+                placeData = new List<PlaceTableDTO>();
+            }
+            placeData = res.data;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+        }
+
+    }
+
+    private void HandlePlaceSelected(int selectedId)
+    {
+        SelectPlaceId = selectedId;
+    }
+
+    private async Task EnterPlace()
+    {
+        if (SelectPlaceId == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장을 선택해주세요.");
+            return;
+        }
+        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
+
+        if (res.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", res.message);
+            return;
+        }
+        await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
+        SelectPlaceId = 0;
+        Navigation.NavigateTo("/user");
+    }
+
+    private async Task OnExit()
+    {
+        try
+        {
+            await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+            // 로그인 모드 정보 제거
+            await _localStorageService.RemoveItemAsync("loginMode");
+
+            // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+            (_authStateProvider as CustomAuthProvider).NotifyLogout();
+
+            Navigation.NavigateTo("/");
+        }catch(Exception ex)
+        {
+            
+        }
+    }
+}

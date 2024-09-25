@@ -1,7 +1,7 @@
 .vocinfo-container[b-exbaw6icmy] {
     /*display: flex;
     flex-direction: column;*/
-    height: 100%;
+    /*height: 100%;*/
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--back-default-color);
@@ -26,6 +26,12 @@
     padding:var(--default-pd);
 
     border-bottom : var(--default-bd);
+}
+
+.option[b-exbaw6icmy] {
+    display: flex;
+    align-items: center;
+    gap: var(--default-pd);
 }
 
 .vocinfo-container .title[b-exbaw6icmy]{

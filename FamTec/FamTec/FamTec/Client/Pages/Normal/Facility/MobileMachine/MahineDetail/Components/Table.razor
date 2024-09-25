@@ -85,10 +85,11 @@
     [Parameter] public List<MaintenanceListDTO> ListData { get; set; }
     [Parameter] public string FacType { get; set; }
     [Parameter] public int FacId { get; set; }
+    [Parameter] public int PlaceId{ get; set; }
 
 
     private void OnDetail(int? maintenanceId)
     {
-        Navigation.NavigateTo($"/m/facility/{FacType}/{FacId}/maintenance/{maintenanceId}");
+        Navigation.NavigateTo($"/m/facility/{PlaceId}/{FacType}/{FacId}/maintenance/{maintenanceId}");
     }
 }

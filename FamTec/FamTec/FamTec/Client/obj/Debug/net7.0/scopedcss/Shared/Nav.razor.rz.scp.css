@@ -101,6 +101,7 @@
 .nav-container[b-wg5fiaa4ah]  .nav-tab-link {
     cursor : pointer;
     color: var(--default-color);
+    font-size :var(--normal-size);
 }
 
 .nav-tab-item[b-wg5fiaa4ah],
@@ -116,7 +117,11 @@
     transition : all .3s;
 }
 
+.alarm:hover[b-wg5fiaa4ah]{
+    cursor:pointer;
+}
+
 .scale:hover[b-wg5fiaa4ah] {
     transform: scale(1.2);
-    cursor : pointer;
+    /*cursor : pointer;*/
 }

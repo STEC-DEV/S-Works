@@ -57,7 +57,7 @@
     [Parameter] public List<AdminPlaceDTO> PlaceList { get; set; }
     [Parameter] public bool EditMode {get;set;}
 
-    List<AdminPlaceDTO> OriginalPlace = new List<AdminPlaceDTO>();
+    List<AdminPlaceDTO> OriginalPlace;
     List<AdminPlaceDTO> FilterPlace = new List<AdminPlaceDTO>();
 
 
@@ -70,10 +70,6 @@
     int SelectCount = 0;
     bool isOpen = false;
 
-    //검색 변수
-    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
-    //원본 리스트
-    List<PlaceTableDTO> OriginalPlaceList = new List<PlaceTableDTO>();
 
 
     string _searchText = string.Empty;
@@ -109,6 +105,10 @@
                 await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
                 //이전페이지로 되돌릴지 말지 선택
                 return;
+            }
+            if(resManagerPlace.data.Count == 0)
+            {
+                OriginalPlace = new List<AdminPlaceDTO>();
             }
             PlaceList = resManagerPlace.data;
             OriginalPlace = resManagerPlace.data;
@@ -154,7 +154,7 @@
 
         await InvokeAsync(StateHasChanged);
     }
-
+    
 
     /*
     * add 이벤트

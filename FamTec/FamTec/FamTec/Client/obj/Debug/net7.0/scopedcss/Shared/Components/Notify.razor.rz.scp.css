@@ -9,6 +9,13 @@
     border : 1px solid #91caff;
     border-radius : var(--default-rd);
     background-color : #e6f4ff;
+
+    transition : all .3s;
+}
+
+.notify:hover[b-xtv5ecru9b]{
+    transform : scale(1.05);
+    cursor : pointer;
 }
 
 .label[b-xtv5ecru9b]{

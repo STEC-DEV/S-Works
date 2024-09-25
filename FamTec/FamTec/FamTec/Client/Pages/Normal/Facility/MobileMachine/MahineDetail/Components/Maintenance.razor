@@ -9,13 +9,19 @@
         </span>
     </div>
     <div class="content">
-        <Table ListData="@ListData" FacId="@Id" FacType="@FacType"/>
+        <Table
+            ListData="@ListData" 
+            FacId="@Id" 
+            FacType="@FacType"
+            PlaceId="PlaceId"
+            />
     </div>
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
     [Parameter] public string FacType { get; set; }
+    [Parameter] public int PlaceId{ get; set; }
 
     List<MaintenanceListDTO> ListData;
 

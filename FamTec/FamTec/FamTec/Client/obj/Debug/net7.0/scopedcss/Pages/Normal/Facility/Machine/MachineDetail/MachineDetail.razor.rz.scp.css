@@ -32,6 +32,6 @@
 
 
 .sub-btn:hover[b-gwravcy8kl]{
-    color: var(--main-color);
-    background-color: var(--default-color);
+    /*color: var(--main-color);*/
+    background-color: var(--main-hover);
 }

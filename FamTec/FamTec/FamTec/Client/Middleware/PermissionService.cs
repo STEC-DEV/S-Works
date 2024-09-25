@@ -30,6 +30,13 @@ namespace FamTec.Client.Middleware
             return role;
         }
 
+        public async Task<bool> IsAdmin()
+        {
+            var authProvider = _authStateProvider as CustomAuthProvider;
+            bool isAdmin = await authProvider.IsAdminAsync();
+            return isAdmin;
+        }
+
         //사업장 아이디 조회
         public async Task<int> GetPlaceIdx()
         {
@@ -38,5 +45,20 @@ namespace FamTec.Client.Middleware
             await Console.Out.WriteLineAsync("사업장인덱스"+placeIdx);
             return placeIdx;
         }
+
+        public async Task<bool> IsLogin()
+        {
+            var authProvider = _authStateProvider as CustomAuthProvider;
+            bool isLogin = await authProvider.HasJwtTokenAsync();
+            return isLogin;
+        }
+
+        public async Task<string> GetPlaceName()
+        {
+            var authProvider = _authStateProvider as CustomAuthProvider;
+            string name = await authProvider.GetPlaceName();
+            return name;
+        }
+        
     }
 }

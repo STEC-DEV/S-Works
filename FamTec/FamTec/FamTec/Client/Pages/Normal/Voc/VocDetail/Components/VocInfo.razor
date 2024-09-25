@@ -46,9 +46,9 @@
             </div>
             <TextField2 Label="제목" Value=@Data.Title Color=true />
             <TextField Label="내용" Context=@Data.Contents Type="textarea" />
-            @if(Data.Images is not null)
+            @if(images.Count != 0 )
             {
-                <ImageSlider Images="@Data.Images" Label="첨부파일" />
+                <ImageSlider Images="@images" Label="첨부파일" />
             }
         </div>
     </div>
@@ -58,6 +58,9 @@
     [Parameter] public DetailVocDTO Data { get; set; }
     [Parameter] public bool EditPerm {get;set;}
     bool EditMode = false;
+    List<byte[]> images = new List<byte[]>();
+    List<int> nullIndex = new List<int>();
+
     // UpdateVocTypeDTO type
 
     protected override Task OnInitializedAsync()
@@ -114,6 +117,32 @@
             Id = 8,
         },
     };
+
+    
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnIMGConvert();
+
+
+    }
+
+    private async Task OnIMGConvert()
+    {
+        images = new List<byte[]>();
+        foreach (var data in Data.Images.Select((value, idx) => (value, idx)))
+        {
+            if (data.value == null)
+            {
+                nullIndex.Add(data.idx);
+                return;
+            }
+            images.Add(data.value);
+        }
+
+        Console.WriteLine("이미지수 " + images);
+        StateHasChanged();
+    }
 
     private void OnEdit()
     {

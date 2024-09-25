@@ -61,6 +61,21 @@ namespace FamTec.Client.Shared.Provider
             return null;
         }
 
+        //관리자 여부조회
+        public async Task<bool> IsAdmin()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var AdminYnClaim = user.FindFirst("AdminYN");
+
+            if (AdminYnClaim != null && bool.TryParse(AdminYnClaim.Value, out bool isAdmin))
+            {
+                return isAdmin;
+            }
+
+            return false; // 클레임이 없거나 값이 변환되지 않으면 false 반환
+        }
+
         //일반 사용자 관리자 구분
         public async Task<bool> IsAdminAsync()
         {
@@ -69,16 +84,16 @@ namespace FamTec.Client.Shared.Provider
             return user.Claims.Any(c => c.Type == "AdminYN" && c.Value == "True");
         }
 
-        //
+        //사업장조회
         public async Task<int> GetPlaceIdx()
         {
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
             var placeIdxClaim = user.FindFirst("PlaceIdx");
-
+            Console.WriteLine("사업장" + placeIdxClaim);
             if (placeIdxClaim != null)
             {
-                return user.Claims.ToList().IndexOf(placeIdxClaim);
+                return int.Parse(placeIdxClaim.Value);
             }
 
             return -1; // PlaceIdx 클레임이 없는 경우
@@ -111,6 +126,15 @@ namespace FamTec.Client.Shared.Provider
 
             return 0; // 권한이 없거나 파싱할 수 없는 경우 0 반환
         }
+
+        //사업장 이름 조회
+        public async Task<string> GetPlaceName()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            string name = user.FindFirst(c => c.Type == "PlaceName").Value;
+            return name;
+        }
         
 
         public async Task<bool> GetLoginMode()
@@ -124,6 +148,12 @@ namespace FamTec.Client.Shared.Provider
             return await _localStorageService.GetItemAsync<string>("sworks-jwt-token");
         }
 
+        public async Task<bool> HasJwtTokenAsync()
+        {
+            var jwt = await _localStorageService.GetItemAsync<string>("sworks-jwt-token");
+            return !String.IsNullOrEmpty(jwt);
+        }
+
         public void NotifyAuthState()
         {
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
@@ -134,6 +164,36 @@ namespace FamTec.Client.Shared.Provider
             // 비로그인 상태로 설정
             var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
             NotifyAuthenticationStateChanged(authState);
+        }
+
+
+        public async Task<bool> HasFacilityReadPerm(string permKey)
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            var userPerms = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
+            if (string.IsNullOrEmpty(userPerms)) return false;
+
+            try
+            {
+                //// UserPerms 값을 JSON으로 변환합니다.
+                var perms = JsonSerializer.Deserialize<Dictionary<string, int>>(userPerms);
+
+                //// 전달된 키(permKey)가 있는지 확인하고, 해당 값이 0이 아니면 권한이 있는 것으로 간주합니다.
+                if (perms != null && perms.ContainsKey(permKey))
+                {
+                    Console.WriteLine("읽기 권한 : " + perms[permKey]);
+                    return perms[permKey] != 0;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error parsing UserPerms: {ex.Message}");
+            }
+             // 해당 키가 없거나 값이 0이면 권한 없음
+            return false;
         }
     }
 }

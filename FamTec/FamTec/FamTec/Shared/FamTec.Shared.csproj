@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Client\DTO\NewFolder\" />
     <Folder Include="Client\DTO\Normal\Facility\NewFolder\" />
     <Folder Include="Model\NewFolder\" />
   </ItemGroup>

@@ -1,0 +1,19 @@
+﻿.btn { 
+    border-radius :50%;
+    width : 12px;
+    height : 12px;
+    border : none;
+}
+
+.color-0 {
+    background-color: #e33c3c;
+}
+
+.color-1 {
+    
+    background-color: #f9d720;
+}
+
+.color-2 {
+    background-color: #1ac71a;
+}

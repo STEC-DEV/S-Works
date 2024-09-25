@@ -73,7 +73,7 @@
     {
         try
         {
-            ResponseUnit<string> resGet = await apiManager.GetUnitAsync<string>($"Place/GetPlaceName?placeid={BuildingId}");
+            ResponseUnit<string> resGet = await apiManager.GetUnitAsync<string>($"Place/GetPlaceName?placeid={PlaceId}");
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);

@@ -5,7 +5,7 @@
 @using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server.DTO
 
-<div class="container">
+<div class="container ">
     <div class="section">
         <PlaceInfo Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
     </div>
@@ -16,7 +16,7 @@
             SelectList="@(_editMode ? UpdateManagerList: OriginalManagerList)" 
             EditMode=@_editMode />
     </div>
-    <div class="btns">
+    <div class="btns yappear">
         @if (_editMode)
         {
             <Button Name="저장" Width=true Type=0 OnClick="OnUpdate" />

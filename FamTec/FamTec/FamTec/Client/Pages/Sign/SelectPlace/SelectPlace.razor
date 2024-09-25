@@ -1,4 +1,4 @@
-﻿@page "/select"
+﻿@* @page "/select" *@
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.CommonComponents
@@ -32,7 +32,7 @@
 @code {
     [Parameter] public string token { get; set; }
     // [Parameter] public bool Admin { get; set; }
-    List<PlaceTableDTO> placeData = new List<PlaceTableDTO>();
+    List<PlaceTableDTO> placeData;
     int SelectPlaceId;
 
     protected override async Task OnInitializedAsync()
@@ -48,6 +48,10 @@
             if (res.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+            }
+            if(res.data == null)
+            {
+                placeData = new List<PlaceTableDTO>();
             }
 
             placeData = res.data;
@@ -67,17 +71,21 @@
 
     private async void EnterPlace()
     {
-        Console.WriteLine(SelectPlaceId);
-        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
-
-        if(res.code == 200)
+        if(SelectPlaceId == 0)
         {
-            // customStateProvider.UpdateTokenAsync(res.data);
-            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
-            Navigation.NavigateTo("/user");
+            await JS.InvokeVoidAsync("alert", "사업장을 선택해주세요.");
             return;
         }
+        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
 
-        Console.WriteLine(res.data);
+        if(res.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", res.message);
+            return;
+        }
+        await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
+        SelectPlaceId = 0;
+        Navigation.NavigateTo("/user");
+        
     }
 }

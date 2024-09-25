@@ -1,6 +1,7 @@
-﻿@using FamTec.Shared.Client.DTO
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
 @inject NavigationManager NavigationManager
-
+@inherits PermissionComponentBase
 <table class="table">
     <thead class="thead">
         <tr class="thead-tr">
@@ -34,26 +35,38 @@
                     계약상태
                 </span>
             </th>
+            @if (ADMINEDIT)
+            {
+                <th class="th">
+                    <span>
 
-            <th class="th">
-                <span>
-                    
-                </span>
-            </th>
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
-        @if (ListData == null)
+        @if (ListData.Count == 0)
         {
-            <p>...Loading</p>
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
         }
         else
         {
             @foreach (var row in ListData)
             {
-                @* var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
-                int id = int.Parse(sid);
- *@
 
                 <tr class="tbody-tr">
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
@@ -74,9 +87,16 @@
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
                         <StatusCard Status="@(row.Status)" />
                     </td>
-                    <td class="td">
-                        <input type="checkbox" checked="@CheckedItems?.Contains(row.Id)"  @onchange="e=> OnSelect(e, row.Id)" />
-                    </td>
+                    @if (ADMINEDIT)
+                    {
+                        <td class="td">
+                            <input 
+                                type="checkbox" 
+                                checked="@CheckItems.Contains(row.Id)" 
+                                @onchange="e=> OnSelect(e, row.Id)" />
+                        </td>
+                    }
+                    
                 </tr>
             }
         }
@@ -90,6 +110,11 @@
     [Parameter] public HashSet<int>? CheckedItems { get; set; }
     private HashSet<int> CheckItems = new HashSet<int>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
     private void OnDeatail(int Id)
     {
         NavigationManager.NavigateTo($"/admin/place/{Id}");
@@ -97,11 +122,15 @@
 
     private async Task OnSelect(ChangeEventArgs e, int id)
     {
-        CheckedItems = new HashSet<int>();
+        
         bool isChecked = (bool)(e.Value ?? false);
         if (isChecked)
         {
-            CheckedItems.Add(id);
+            CheckItems.Add(id);
+        }
+        else
+        {
+            CheckItems.Remove(id);
         }
         await Select.InvokeAsync((isChecked, id));
     }

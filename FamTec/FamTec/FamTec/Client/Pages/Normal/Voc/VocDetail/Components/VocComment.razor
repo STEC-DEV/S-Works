@@ -51,32 +51,10 @@
 
     protected override Task OnInitializedAsync()
     {
-        Console.WriteLine("ss"+EditMode);
         return base.OnInitializedAsync();
     }
 
 
-
-
-    /*
-    * Session 조회
-    */
-    private async Task LoadsessionData()
-    {
-        var handler = new JwtSecurityTokenHandler();
-
-        string encryptedSession = await customStateProvider.GetTokenAsync();
-        Console.WriteLine("Encrypted Session: " + encryptedSession);
-
-        if (handler.CanReadToken(encryptedSession))
-        {
-            var jwtSecurityToken = handler.ReadToken(encryptedSession) as JwtSecurityToken;
-
-            WriterName = jwtSecurityToken.Claims.FirstOrDefault(C => C.Type == "Name")?.Value.ToString();
-
-        }
-
-    }
 
     private async void OnUpdate()
     {

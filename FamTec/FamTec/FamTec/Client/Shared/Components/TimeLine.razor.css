@@ -5,12 +5,12 @@
     right : 1%;
     display : flex;
     flex-direction:column;
-    gap:var(--default-pd);
+    /*gap:var(--default-pd);*/
 
     border : var(--comp-bd);
     border-radius : var(--default-rd);
 
-    padding : var(--default-pd);
+    padding : var(--default-pd) 0;
 
     background-color : var(--default-color);
     width : 15%;
@@ -19,13 +19,18 @@
     overflow : hidden;
 }
 
-.content {
-    position:relative;
-    display :flex;
-    flex-direction :column;
-    gap : var(--default-pd);
+.header {
+    padding: 0 var(--default-pd);
+}
 
-    overflow : auto;
+.content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--half-pd) var(--default-pd);
+    margin: var(--default-pd) 0;
+    overflow: auto;
 }
 
 .btn{
@@ -37,6 +42,7 @@
     
     transition : all .3s;
     background-color : var(--content-back-color);
+    margin: 0 var(--default-pd);
 }
 
 .btn:hover{

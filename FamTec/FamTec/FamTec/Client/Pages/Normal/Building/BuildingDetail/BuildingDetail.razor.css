@@ -25,6 +25,6 @@
 
 
 .sub-btn:hover{
-    color: var(--main-color);
-    background-color: var(--default-color);
+    /*color: var(--main-color);*/
+    background-color: var(--main-hover);
 }

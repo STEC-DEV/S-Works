@@ -74,7 +74,6 @@
     //사용자 권한 체크
     private async Task OnPermCheck()
     {
-        Console.WriteLine("hello");
         var auth = await _authStateProvider.GetAuthenticationStateAsync();
         var user = auth.User;
         var userType = user.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
@@ -93,7 +92,6 @@
             "보안민원" => "VocSecurity",
             _ => "",
         };
-        Console.WriteLine(checkVocType);
 
         //관리자면 전체 권한 분류 미
         if(userType == "ADMIN")

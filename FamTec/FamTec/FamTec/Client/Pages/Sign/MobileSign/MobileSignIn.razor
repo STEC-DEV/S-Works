@@ -1,9 +1,12 @@
 ﻿
 @layout MainLayout2
-@page "/m/sign"
+@page "/m/sign/{PlaceId:int}/{FacType}/{FacId:int}"
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Msign
 @using FamTec.Shared.Server.DTO
 @using FamTec.Shared.Server.DTO.Login
+@inject ILocalStorageService _localStorageService;
 
 <div class="sign">
     <div class="form">
@@ -13,7 +16,7 @@
         <div class="input-wrap">
             <InputCol Label="아이디"
                       Placeholder="아이디"
-                      @bind-Value=@user.UserID />
+                      @bind-Value=@user.UserId />
             <InputCol Label="비밀번호"
                       Placeholder="비밀번호"
                       @bind-Value=@user.UserPassword />
@@ -23,68 +26,50 @@
 </div>
 
 @code {
-    LoginDTO user = new LoginDTO();
+    [Parameter] public int PlaceId{ get; set; }
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+
+    QRLoginDTO user = new QRLoginDTO();
 
     private async Task OnSignUp()
     {
         try
         {
             // 아이디 비밀번호 공백 처리
-            if (string.IsNullOrWhiteSpace(user.UserID) || string.IsNullOrWhiteSpace(user.UserPassword))
+            if (string.IsNullOrWhiteSpace(user.UserId) || string.IsNullOrWhiteSpace(user.UserPassword))
             {
                 await JS.InvokeVoidAsync("alert", "아이디 또는 패스워드가 공백입니다.");
-                user = new LoginDTO();
+                user = new QRLoginDTO();
                 return;
             }
+            user.placeid = PlaceId;
 
             //로그인 요청
-            ResponseUnit<string> response = await apiManager.PostLoginAsync<string>("Login/Login", user);
-
+            ResponseUnit<string> response = await apiManager.PostAsync<string>("Login/QRLogin", user);
             if (response.code == 404)
             {
                 await JS.InvokeVoidAsync("alert", "아이디 또는 패스워드가 일치하지 않습니다.");
-                user = new LoginDTO();
+                user = new QRLoginDTO();
                 return;
             }
-            if (response.code == 500)
+            else if (response.code != 200 && response.code != 201)
             {
-                await JS.InvokeVoidAsync("alert", "로그인 에러");
-                user = new LoginDTO();
+                await JS.InvokeVoidAsync("alert", response.message);
+                user = new QRLoginDTO();
                 return;
             }
             string? token = response.data;
+            Console.WriteLine(token);
+            await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
+            await _localStorageService.SetItemAsync<bool>("loginMode", false);
+            (_authStateProvider as CustomAuthProvider).NotifyAuthState();
 
-            // if (response.code == 201)
-            // {
-            //     // Navigation.NavigateTo($"/select/{token}");
-            //     Navigation.NavigateTo($"/select");
-            //     await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
-            //     await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
-            //     (_authStateProvider as CustomAuthProvider).NotifyAuthState();
-            //     return;
-            // }
-            // await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
-            // await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
-            // (_authStateProvider as CustomAuthProvider).NotifyAuthState();
-
-            // if (response.code == 200)
-            // {
-            //     if (LoginMode)
-            //     {
-            //         Navigation.NavigateTo("/admin/place");
-            //     }
-            //     else
-            //     {
-            //         Navigation.NavigateTo("/user");
-            //     }
-
-            // }
+            Navigation.NavigateTo($"/m/facility/{PlaceId}/{FacType}/{FacId}");
         }
         catch (Exception ex)
         {
             Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
         }
-        Console.WriteLine(user.UserID);
-        Console.WriteLine(user.UserPassword);
     }
 }

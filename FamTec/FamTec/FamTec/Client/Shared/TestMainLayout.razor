@@ -24,17 +24,14 @@
                 </main>
         </Authorized>
         <NotAuthorized>
-                
             <main>
                 <div class="wrap">
                         @if (!Navigation.Uri.Contains("/login") && !Navigation.Uri.Contains("/select"))
                         {
-                            Console.WriteLine("12");
                             Navigation.NavigateTo("/login", forceLoad: true);
                         }
                         else
                         {
-                            Console.WriteLine("34");
                             @Body
                         }
                 </div>
@@ -78,7 +75,7 @@
 
         Console.WriteLine("선택 사업장"+userPlace);
         Console.WriteLine(userPlace==null);
-        
+
         // 비로그인 시 리턴
         if (!user.Identity.IsAuthenticated) return;
 
@@ -129,6 +126,10 @@
         await _localStorageService.RemoveItemAsync("sworks-jwt-token");
         await _localStorageService.RemoveItemAsync("loginMode");
         (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        // 인증 상태 변경을 기다린 후에 리디렉션을 처리
+        await Task.Delay(100); // 상태 변경이 반영될 시간을 주기 위함
+
         await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");
+        Navigation.NavigateTo("/login");
     }
 }
