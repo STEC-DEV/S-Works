@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "J8FQboFuXgquJ0ubX1KZJxpO8Ur1zKYelRETEGA07ytO8126C5q0pH5xBo5QD+wN1cTFJSDasWm7dr8lP9TGlQ==",
+  "dgSpecHash": "gj9/5iLOt1w=",
   "success": true,
   "projectFilePath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\FamTec.Server.csproj",
   "expectedPackageFiles": [
@@ -219,7 +219,7 @@
     "C:\\Users\\kyw\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\tewr.blazor.filereader\\3.3.2.23201\\tewr.blazor.filereader.3.3.2.23201.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\xlparser\\1.5.2\\xlparser.1.5.2.nupkg.sha512",
-    "C:\\Users\\kyw\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\7.0.16\\microsoft.netcore.app.host.linux-x64.7.0.16.nupkg.sha512"
+    "C:\\Users\\kyw\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\7.0.20\\microsoft.netcore.app.host.linux-x64.7.0.20.nupkg.sha512"
   ],
   "logs": []
 }

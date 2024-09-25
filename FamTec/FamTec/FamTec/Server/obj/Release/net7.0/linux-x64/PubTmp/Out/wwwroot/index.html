@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/chartInterop.js"></script>
     <script src="js/excel.js"></script>
+   
 </head>
 
 <body>
@@ -28,17 +29,21 @@
         </div>
         -->
         <!--
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    <<<<<<< HEAD
-    </div>-->
+        <div id="blazor-error-ui">
+            An unhandled error has occurred.
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        <<<<<<< HEAD
+        </div>-->
 
     </div>
 
     <script src="_framework/blazor.webassembly.js"></script>
- 
+    <script>
+        window.getReferrer = function () {
+            return document.referrer;
+        };
+    </script>
 </body>
 
 </html>

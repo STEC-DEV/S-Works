@@ -311,8 +311,10 @@ builder.Services.AddCors(opts =>
             "http://123.2.156.28:5247",
             "https://123.2.156.28:5248",
             "http://123.2.156.148:5245", 
-            "https://123.2.156.148:5246", 
-            "http://123.2.156.229:5245", 
+            "https://123.2.156.148:5246",
+            "http://123.2.156.229:5245",
+            "http://125.131.105.172:5245",
+            "https://125.131.105.172:5246",
             "https://123.2.156.229:5246")
         .AllowAnyMethod()
         .AllowAnyHeader()
@@ -327,7 +329,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpectificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://123.2.156.229:5245")
+                          policy.WithOrigins("http://125.131.105.172:5245")
+                           // policy.WithOrigins("http://123.2.156.148:5245")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -402,7 +405,7 @@ else
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    app.UseHttpsRedirection(); // 위치변경
+    //app.UseHttpsRedirection(); // 위치변경
 }
 
 app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정

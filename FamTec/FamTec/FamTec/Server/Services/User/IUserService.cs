@@ -1,15 +1,20 @@
-﻿using Azure;
-using FamTec.Shared.Client.DTO.Normal.Users;
-using FamTec.Shared.Model;
+﻿using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.User;
-using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Services.User
 {
     public interface IUserService
     {
+        /// <summary>
+        /// QR로그인
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public ValueTask<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto);
+
+
         /// <summary>
         /// 일반페이지 로그인 서비스
         /// </summary>

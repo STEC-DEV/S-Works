@@ -1846,7 +1846,10 @@
           "Tewr.Blazor.FileReader": "3.3.2.23201"
         },
         "runtime": {
-          "FamTec.Client.dll": {}
+          "FamTec.Client.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "FamTec.Shared/1.0.0": {
@@ -1857,7 +1860,10 @@
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0"
         },
         "runtime": {
-          "FamTec.Shared.dll": {}
+          "FamTec.Shared.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

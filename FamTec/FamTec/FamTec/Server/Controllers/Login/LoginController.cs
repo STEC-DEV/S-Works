@@ -65,6 +65,37 @@ namespace FamTec.Server.Controllers.Login
             }
         }
 
+        [HttpPost]
+        [Route("QRLogin")]
+        public async ValueTask<IActionResult> QRLogin([FromBody] QRLoginDTO dto)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(dto.UserId))
+                    return NoContent();
+                if (String.IsNullOrWhiteSpace(dto.UserPassword))
+                    return NoContent();
+
+                ResponseUnit<string?> model = await UserService.GetQRLogin(dto);
+
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 201)
+                    return Ok(model);
+                else
+                    return BadRequest();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+
         /// <summary>
         /// 로그인 API - 모든사람 접근가능
         /// </summary>
@@ -195,7 +226,7 @@ namespace FamTec.Server.Controllers.Login
             }
         }
 
-     
+        
 
     }
 }
