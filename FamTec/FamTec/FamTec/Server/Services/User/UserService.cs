@@ -944,6 +944,9 @@ namespace FamTec.Server.Services.User
                     dto.VOC_ETC = model.VocEtc;
 
                     string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
+                    di = new DirectoryInfo(PlaceFileName);
+                    if (!di.Exists) di.Create();
+
                     if(!String.IsNullOrWhiteSpace(model.Image))
                     {
                         dto.ImageName = model.Image; // 이미지 파일명

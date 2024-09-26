@@ -741,6 +741,8 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     // 여기서 DTO에 이미지 변환시켜 넣어야함.
                     MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                    di = new DirectoryInfo(MaintanceFileFolderPath);
+                    if (!di.Exists) di.Create();
 
                     foreach (MaintenenceHistoryTb HistoryTB in MainTenenceList)
                     {

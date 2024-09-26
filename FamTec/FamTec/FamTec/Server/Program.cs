@@ -81,9 +81,6 @@ using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? Http = builder.Configuration["Kestrel:Endpoints:Http:Url"]; // HTTP
-string? Https = builder.Configuration["Kestrel:Endpoints:Https:Url"]; // HTTPS
-
 #region Kestrel 서버
 builder.WebHost.UseKestrel((context, options) =>
 {
@@ -330,8 +327,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpectificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://125.131.105.172:5245")
-                           // policy.WithOrigins("http://123.2.156.148:5245")
+                          //policy.WithOrigins("http://125.131.105.172:5245")
+                            policy.WithOrigins("http://123.2.156.148:5245")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -340,7 +337,7 @@ builder.Services.AddCors(options =>
 });
 #endif
 
-
+// 응답압축 설정
 builder.Services.AddResponseCompression(opts =>
 {
     opts.EnableForHttps = true; // HTTPS 요청에서도 응답압축 활성화
@@ -379,8 +376,6 @@ app.UseRateLimiter();
 #endregion
 
 
-//app.UseHttpsRedirection();
-
 #region 역방향 프록시 서버 사용
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
@@ -412,7 +407,7 @@ else
 app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정
 
 // MIME 타입 및 압축 헤더 설정
-var provider = new FileExtensionContentTypeProvider();
+FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
 // 기본 제공되지 않는 MIME 타입 추가
 provider.Mappings[".wasm"] = "application/wasm";
 provider.Mappings[".gz"] = "application/octet-stream";
@@ -435,7 +430,6 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 
-//app.UseStaticFiles(); // 정적 파일 제공 설정
 
 app.UseRouting();
 
@@ -514,12 +508,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-/*
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-*/
+
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

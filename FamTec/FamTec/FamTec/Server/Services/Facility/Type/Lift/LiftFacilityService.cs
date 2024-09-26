@@ -176,6 +176,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 dto.RoomName = room.Name;
 
                 LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
+                di = new DirectoryInfo(LiftFileFolderPath);
+                if (!di.Exists) di.Create();
+
 
                 if (!String.IsNullOrWhiteSpace(model.Image))
                 {
@@ -237,7 +240,6 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 model.RoomTbId = dto.RoomTbId!.Value;
 
                 
-
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {
                     if(files.FileName != model.Image) // 넘어온 이미지의 이름과 DB에 저장된 이미지의 이름이 다르면

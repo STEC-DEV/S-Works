@@ -327,6 +327,8 @@ namespace FamTec.Server.Services.Material
                 dto.RoomName = RoomTB.Name;
 
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                di = new DirectoryInfo(MaterialFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 if(!String.IsNullOrWhiteSpace(materialTB.Image))
                 {

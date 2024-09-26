@@ -368,7 +368,6 @@ namespace FamTec.Server.Services.Building
                 if (model is null)
                     return new ResponseUnit<DetailBuildingDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
-
                 DetailBuildingDTO dto = new DetailBuildingDTO()
                 {
                     ID = model.Id, // 건물인덱스
@@ -419,6 +418,9 @@ namespace FamTec.Server.Services.Building
                 };
 
                 string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
+                di = new DirectoryInfo(PlaceFileName);
+                if (!di.Exists) di.Create();
+
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
                     byte[]? Images = await FileService.GetImageFile(PlaceFileName, model.Image);

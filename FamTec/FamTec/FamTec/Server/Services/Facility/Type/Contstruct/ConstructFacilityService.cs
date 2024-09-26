@@ -177,6 +177,9 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
                 dto.RoomName = room.Name;
 
                 ConstructFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Construct", Common.FileServer, placeid);
+                di = new DirectoryInfo(ConstructFileFolderPath);
+                if (!di.Exists) di.Create();
+
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
                     dto.ImageName = model.Image; // 이미지 파일명

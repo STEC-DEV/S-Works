@@ -170,8 +170,10 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 dto.RoomName = !String.IsNullOrWhiteSpace(room.Name) ? room.Name.Trim() : room.Name;
 
                 BeautyFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Beauty", Common.FileServer, placeid);
+                di = new DirectoryInfo(BeautyFileFolderPath);
+                if (!di.Exists) di.Create();
 
-                if(!String.IsNullOrWhiteSpace(model.Image))
+                if (!String.IsNullOrWhiteSpace(model.Image))
                 {
                     dto.ImageName = model.Image; // 이미지 파일명
                     dto.Image = await FileService.GetImageFile(BeautyFileFolderPath, model.Image); // 이미지 Byte[]
@@ -231,7 +233,6 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 model.UpdateDt = DateTime.Now;
                 model.UpdateUser = creater;
                 model.RoomTbId = dto.RoomTbId!.Value;
-
                 
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {

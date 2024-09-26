@@ -171,6 +171,8 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 dto.RoomName = room.Name;
 
                 NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeid);
+                di = new DirectoryInfo(NetworkFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 if (!String.IsNullOrWhiteSpace(model.Image))
                 {

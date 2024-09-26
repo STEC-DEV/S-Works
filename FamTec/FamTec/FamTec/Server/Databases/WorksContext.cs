@@ -78,7 +78,7 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("server=125.131.105.172,3306;database=works;user id=sworks;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
+        => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

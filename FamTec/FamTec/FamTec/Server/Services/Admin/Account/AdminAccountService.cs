@@ -408,6 +408,9 @@ namespace FamTec.Server.Services.Admin.Account
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
                 string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
+                di = new DirectoryInfo(AdminFileName);
+                if (!di.Exists) di.Create();
+
                 if(!String.IsNullOrWhiteSpace(usertb.Image))
                 {
                     dto.ImageName = usertb.Image; // 이미지명

@@ -161,27 +161,15 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateDT = model.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 민원 신청일
                 dto.Status = model.Status; // 민원상태
                 dto.BuildingName = building.Name; // 건물명
-
-                dto.Type = model.Type switch
-                {
-                    0 => "미분류",
-                    1 => "기계민원",
-                    2 => "전기민원",
-                    3 => "승강민원",
-                    4 => "소방민원",
-                    5 => "건축민원",
-                    6 => "통신민원",
-                    7 => "미화민원",
-                    8 => "보안민원",
-                    _ => "미분류"
-                };
-
+                dto.Type = model.Type;
                 dto.Title = model.Title; // 민원제목
                 dto.Contents = model.Content; // 민원내용
                 dto.CreateUser = model.CreateUser; // 민원인
                 dto.Phone = model.Phone; // 민원인 전화번호
 
                 string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
+                di = new DirectoryInfo(VocFileName);
+                if (!di.Exists) di.Create();
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
                 foreach (var image in imageFiles)
@@ -273,7 +261,7 @@ namespace FamTec.Server.Services.Voc
                             // 소켓전송
                             
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
                         }
 
@@ -298,7 +286,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다");
                         }
@@ -324,7 +312,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다");
                         }
@@ -348,11 +336,11 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다");
                         }
-                                
+
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
 #endregion
 
@@ -373,7 +361,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다");
                         }
@@ -398,7 +386,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다");
                         }
@@ -424,7 +412,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다");
                         }
@@ -450,7 +438,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다");
                         }
@@ -476,7 +464,7 @@ namespace FamTec.Server.Services.Voc
                             await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
                             await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다");
                         }

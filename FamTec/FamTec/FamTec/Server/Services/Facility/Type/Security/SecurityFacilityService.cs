@@ -170,7 +170,9 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 dto.RoomName = room.Name;
 
                 SecurityFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Security", Common.FileServer, placeid);
-                        
+                di = new DirectoryInfo(SecurityFileFolderPath);
+                if (!di.Exists) di.Create();
+
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
                     dto.ImageName = model.Image; // 이미지 파일명

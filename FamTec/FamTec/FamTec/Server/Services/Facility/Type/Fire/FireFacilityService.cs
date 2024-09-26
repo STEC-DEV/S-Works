@@ -171,6 +171,8 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 dto.RoomName = room.Name;
 
                 FireFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Fire", Common.FileServer, placeid);
+                di = new DirectoryInfo(FireFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {

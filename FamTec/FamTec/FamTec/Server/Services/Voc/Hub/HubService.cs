@@ -290,6 +290,8 @@ namespace FamTec.Server.Services.Voc.Hub
 
 
                 VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, BuildingModel.PlaceTbId, VocModel.Id);
+                di = new DirectoryInfo(VocFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 var imageFiles = new[] { VocModel.Image1, VocModel.Image2, VocModel.Image3 };
                 foreach (var image in imageFiles)
@@ -349,6 +351,8 @@ namespace FamTec.Server.Services.Voc.Hub
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
+                di = new DirectoryInfo(VocCommentFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
                 for (int i = 0; i < model.Count; i++)
@@ -430,6 +434,8 @@ namespace FamTec.Server.Services.Voc.Hub
                 dto.CreateUser = model.CreateUser; // 댓글 작성자
 
                 VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, PlaceTB.Id, VocTB.Id);
+                di = new DirectoryInfo(VocCommentFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
                 foreach (var image in imageFiles)

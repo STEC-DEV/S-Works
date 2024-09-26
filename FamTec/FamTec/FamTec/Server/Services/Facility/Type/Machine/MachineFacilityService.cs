@@ -177,6 +177,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 dto.RoomName = room.Name;
 
                 MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
+                di = new DirectoryInfo(MachineFileFolderPath);
+                if (!di.Exists) di.Create();
 
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {

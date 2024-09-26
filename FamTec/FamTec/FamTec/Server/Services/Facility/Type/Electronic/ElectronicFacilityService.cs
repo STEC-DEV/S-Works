@@ -183,6 +183,9 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 dto.RoomName = room.Name;
 
                 ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                di = new DirectoryInfo(ElectronicFileFolderPath);
+                if (!di.Exists) di.Create();
+
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
                     dto.ImageName = model.Image; // 이미지 파일명
@@ -241,7 +244,6 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 model.UpdateUser = creater;
                 model.RoomTbId = dto.RoomTbId!.Value;
 
-                
                 if (files is not null) // 파일이 공백이 아닌 경우
                 {
                     if(files.FileName != model.Image) // 넘어온 이미지의 이름과 DB에 저장된 이미지의 이름이 다르면

@@ -182,7 +182,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteManager")]
-        public async ValueTask<IActionResult> DeleteManager(List<int> adminidx)
+        public async ValueTask<IActionResult> DeleteManager([FromBody]List<int> adminidx)
         {
             try
             {

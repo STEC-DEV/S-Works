@@ -253,6 +253,9 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
+                di = new DirectoryInfo(VocCommentFileFolderPath);
+                if (!di.Exists) di.Create();
+
 
                 List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
                 for (int i = 0; i < model.Count; i++)
