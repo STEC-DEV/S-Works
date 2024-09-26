@@ -64,3 +64,19 @@ await HubObject.hubConnection.StartAsync();
 
 await builder.Build().RunAsync();
 
+//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
+//HubObject.hubConnection = new HubConnectionBuilder()
+//      .WithUrl(HubUrl, options =>
+//      {
+//          options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
+//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
+//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+//      })
+//    .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결
+//    .ConfigureLogging(logging =>
+//    {
+//        //logging.AddConsole();
+//        // This will set ALL logging to Debug level
+//        logging.SetMinimumLevel(LogLevel.Debug);
+//    })
+//   .Build();

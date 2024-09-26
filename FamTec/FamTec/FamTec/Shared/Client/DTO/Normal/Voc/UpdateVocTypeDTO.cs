@@ -8,7 +8,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
 {
     public class UpdateVocTypeDTO
     {
-        public int Id { get; set; }
+        public int VocId { get; set; }
         public int Type { get; set; }
     }
 }

@@ -69,38 +69,29 @@
         await base.OnParametersSetAsync();
     }
 
-    // public void Reset()
-    // {
-    //     SelectName = "Select";
-    //     StateHasChanged();
-    // }
-
-    //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
-    // public void OnSelectRow(object row)
-    // {
-
-    //     if(row == null)
-    //     {
-    //         SelectName = "Select";
-    //         OnChange.InvokeAsync(0);
-    //         OnActive();
-    //         return;
-    //     }
-    //     int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-    //     SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-
-    //     OnChange.InvokeAsync(id);
-    //     OnActive();
-    //     StateHasChanged();
-    // }
     private async Task UpdateSelectName()
     {
-        if (Value != 0 && SelectData != null)
+        if (Value != 0 && SelectData != null && SelectData.Any())
         {
-            var selectedItem = SelectData.FirstOrDefault(item => (int)item.GetType().GetProperty("Id").GetValue(item) == Value);
+            // var selectedItem = SelectData.FirstOrDefault(item => (int)item.GetType().GetProperty("Id").GetValue(item) == Value);
+            // 선택된 항목을 가져옴
+            var selectedItem = SelectData.FirstOrDefault(item =>
+                item != null &&
+                item.GetType().GetProperty("Id") != null &&
+                (int)item.GetType().GetProperty("Id").GetValue(item) == Value
+            );
             if (selectedItem != null)
             {
-                SelectName = selectedItem.GetType().GetProperty("Name").GetValue(selectedItem).ToString();
+                var nameProperty = selectedItem.GetType().GetProperty("Name");
+                if(nameProperty != null)
+                {
+                    SelectName = selectedItem.GetType().GetProperty("Name").GetValue(selectedItem).ToString();
+                }
+                else
+                {
+                    SelectName = "Select";
+                }
+
                 
             }
             else

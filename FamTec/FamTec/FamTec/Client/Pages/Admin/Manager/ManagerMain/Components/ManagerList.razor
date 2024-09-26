@@ -59,7 +59,7 @@
             {
                 managerList = resManager.data;
             }
-            
+
             return;
         }
         catch (Exception ex)
@@ -98,26 +98,20 @@
     {
         try
         {
-            if(deleteManagerList == null)
+            if(deleteManagerList.Count == 0)
             {
                 Console.WriteLine("선택 매니저 없음");
             }
             else
             {
-                var resDeleteManager = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/AdminUser/DeleteManager", deleteManagerList);
-                if (resDeleteManager.IsSuccessStatusCode)
+                ResponseUnit<bool> resDeleteManager = await apiManager.PutAsync<bool>("AdminUser/sign/DeleteManager", deleteManagerList);
+                if (resDeleteManager.code != 200)
                 {
-                    ResponseUnit<int> resDeleteManagerData = await resDeleteManager.Content.ReadFromJsonAsync<ResponseUnit<int>>();
-                    deleteManagerList.Clear();
-                    Console.WriteLine("매니저 삭제 성공");
-                    await OnLoadManagers();
+                    await JS.InvokeVoidAsync("alert", resDeleteManager.message);
+                    return;
                 }
-                else
-                {
-                    deleteManagerList.Clear();
-                    Console.WriteLine("매니저 삭제 실패");
-                    await OnLoadManagers();
-                }
+                deleteManagerList.Clear();
+                await OnLoadManagers();
             }
 
         }

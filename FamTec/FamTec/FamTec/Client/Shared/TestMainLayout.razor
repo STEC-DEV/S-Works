@@ -1,7 +1,7 @@
 ﻿@using System.Security.Claims
 @using FamTec.Client.Shared.Provider
 @inherits LayoutComponentBase
-@inject AuthenticationStateProvider _authStateProvider
+@* @inject AuthenticationStateProvider _authStateProvider *@
 @inject ILocalStorageService _localStorageService
 
 <div class="page">
@@ -48,7 +48,7 @@
     private bool isAdminMode;
 
     protected override async Task OnInitializedAsync()
-    {
+   {
         await OnUserCheck();
     }
 
@@ -69,20 +69,22 @@
 
     private async Task OnUserCheck()
     {
-        var authState = await authenticationStateTask;
+        var authState = await (_authStateProvider as CustomAuthProvider).GetAuthenticationStateAsync();
         var user = authState.User;
         var userPlace = user.Claims.FirstOrDefault(c => c.Type == "PlaceIdx")?.Value;
 
-        Console.WriteLine("선택 사업장"+userPlace);
-        Console.WriteLine(userPlace==null);
+        Console.WriteLine($"Is user authenticated: {user.Identity.IsAuthenticated}");
+        Console.WriteLine($"User identity name: {user.Identity.Name}");
 
         // 비로그인 시 리턴
-        if (!user.Identity.IsAuthenticated) return;
+        if (!user.Identity.IsAuthenticated)
+        {
+            Console.WriteLine("User is not authenticated. Returning from OnUserCheck.");
+            return;
+        }
 
         var isAdmin = user.IsInRole("SystemManager") || user.IsInRole("Master") || user.IsInRole("Manager");
         isAdminMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
-        Console.WriteLine(isAdmin);
-
         if (Navigation.Uri.Contains("/admin"))
         {
             if (!isAdmin || !isAdminMode)
@@ -99,7 +101,7 @@
                 return;
             }
         }
-        else if (Navigation.Uri.Contains("/user"))
+        else if (!Navigation.Uri.Contains("/select") && !Navigation.Uri.Contains("/select"))
         {
             if (isAdminMode)
             {
@@ -125,7 +127,7 @@
     {
         await _localStorageService.RemoveItemAsync("sworks-jwt-token");
         await _localStorageService.RemoveItemAsync("loginMode");
-        (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        await (_authStateProvider as CustomAuthProvider).NotifyLogout();
         // 인증 상태 변경을 기다린 후에 리디렉션을 처리
         await Task.Delay(100); // 상태 변경이 반영될 시간을 주기 위함
 

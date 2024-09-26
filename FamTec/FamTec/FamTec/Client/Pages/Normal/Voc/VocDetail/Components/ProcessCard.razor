@@ -20,7 +20,10 @@
             <TextField Label="처리 일시" Context="@Data.CreateDT" />
             <TextField Label="처리 내용" Context="해당 타일 교체 완료" Type="textarea"/>
         </div>
-        <ImageSlider Images="@images" Label="작업 이미지" />
+        @if(images.Count != 0)
+        {
+            <ImageSlider Images="@images" Label="작업 이미지" />
+        }
     </div>
 </div>
 

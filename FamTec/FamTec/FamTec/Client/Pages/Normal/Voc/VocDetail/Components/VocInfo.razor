@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Shared.Server.DTO
 
 <div class="vocinfo-container">
     <div class="vocinfo-wrap">
@@ -14,7 +16,7 @@
                 {
                     @if (EditMode)
                     {
-                        <Button Name="저장" Width=true Type="0" />
+                        <Button Name="저장" Width=true Type="0" OnClick="OnUpdateType" />
                         <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
                     }
                     else
@@ -32,14 +34,17 @@
                 <TextField2 Label="위치" Value=@Data.BuildingName Color=true />
                 @if (EditMode)
                 {
-                    <InputSelectField 
-                        Label="담당 부서"
-                        SelectData="@Departments"
-                        />
+                   <SelectField 
+                        Key="department" 
+                        SelectData="@Departments" 
+                        @bind-Value="SelectedDepartment" 
+                        OnChange="OnChangeType" 
+                        Label="건물"
+                        EditMode="true" />
                 }
                 else
                 {
-                    <TextField2 Label="담당 부서" Value=@Data.Type Color=true />
+                    <TextField2 Label="담당 부서" Value=@SelectDepartmentName Color=true />
                 }
                 <TextField2 Label="작성자" Value=@Data.CreateUser Color=true />
                 <TextField2 Label="전화번호" Value=@Data.Phone Color=true />
@@ -57,17 +62,25 @@
 @code {
     [Parameter] public DetailVocDTO Data { get; set; }
     [Parameter] public bool EditPerm {get;set;}
+    [Parameter] public EventCallback OnLoad { get; set; }
+
     bool EditMode = false;
     List<byte[]> images = new List<byte[]>();
     List<int> nullIndex = new List<int>();
-
+    int SelectedDepartment = 0;
+    string SelectDepartmentName;
     // UpdateVocTypeDTO type
 
-    protected override Task OnInitializedAsync()
+    UpdateVocTypeDTO updateType = new UpdateVocTypeDTO();
+
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("분류 권한" + EditPerm);
-        return base.OnInitializedAsync();
+
+
     }
+
+
+
 
     List<object> Departments = new List<object>()
     {
@@ -104,7 +117,7 @@
         new
         {
             Name = "통신",
-            value = 6,
+            Id = 6,
         },
         new
         {
@@ -118,13 +131,41 @@
         },
     };
 
-    
+
+
+
 
     protected override async Task OnParametersSetAsync()
     {
         await OnIMGConvert();
+        if (Data != null && Data.Type.HasValue)
+        {
+            SelectedDepartment = Data.Type.Value;
+            OnConvertType();
+        }else
+        {
+            // 처리할 수 없는 값일 경우 예외 처리
+            SelectedDepartment = -1; // 또는 기본값 할당
+        }
 
+    }
 
+    private async Task OnConvertType()
+    {
+        SelectDepartmentName = Data.Type switch
+        {
+            0 => "미분류",
+            1 => "기계",
+            2 => "전기",
+            3 => "승강",
+            4 => "소방",
+            5 => "건축",
+            6 => "통신",
+            7 => "미화",
+            8 => "보안",
+            _ => "Unknown"
+        };
+        StateHasChanged();
     }
 
     private async Task OnIMGConvert()
@@ -140,8 +181,40 @@
             images.Add(data.value);
         }
 
-        Console.WriteLine("이미지수 " + images);
         StateHasChanged();
+    }
+
+    //타입 변경 이벤트
+    private void OnChangeType(int typeid)
+    {
+        SelectedDepartment = typeid;
+        updateType.Type = typeid;
+    }
+
+    //서버 전송
+    private async Task OnUpdateType()
+    {
+        try
+        {
+            if(Data.Type == updateType.Type)
+            {
+                await JS.InvokeVoidAsync("alert", "동일한 부서입니다.");
+                return;
+            }
+            updateType.VocId = Data.Id.Value;
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Voc/sign/UpdateVocType",updateType);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            await OnLoad.InvokeAsync();
+            StateHasChanged();
+            OnEdit();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "만원 타입 변경 에러");
+        }
     }
 
     private void OnEdit()

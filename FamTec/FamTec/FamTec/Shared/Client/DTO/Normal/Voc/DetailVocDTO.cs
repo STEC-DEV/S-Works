@@ -36,7 +36,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// <summary>
         /// 민원 유형
         /// </summary>
-        public string? Type { get; set; }
+        public int? Type { get; set; }
 
         /// <summary>
         /// 민원 제목

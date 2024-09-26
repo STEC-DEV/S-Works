@@ -18,7 +18,6 @@ namespace FamTec.Client.Middleware
 
             bool isAdmin = await authProvider.IsAdminAsync();
             int userPerm = await authProvider.GetUserPermission(permName);
-            Console.WriteLine("미들웨어 권한 확인" + (isAdmin || userPerm == 2));
             return (isAdmin || userPerm == 2);
         }
 
@@ -26,7 +25,6 @@ namespace FamTec.Client.Middleware
         {
             var authProvider = _authStateProvider as CustomAuthProvider;
             string role = await authProvider.AdminRole();
-            await Console.Out.WriteLineAsync(role);
             return role;
         }
 
@@ -42,7 +40,6 @@ namespace FamTec.Client.Middleware
         {
             var authProvider = _authStateProvider as CustomAuthProvider;
             int placeIdx = await authProvider.GetPlaceIdx();
-            await Console.Out.WriteLineAsync("사업장인덱스"+placeIdx);
             return placeIdx;
         }
 

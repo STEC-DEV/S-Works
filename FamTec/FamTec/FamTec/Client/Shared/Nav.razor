@@ -10,7 +10,7 @@
 @inherits PermissionComponentBase
 <div class="nav-container">
     <div class="nav-logo">
-        <NavLink href="@(LoginMode ? "/admin/place" : "/user")" class="nav-wrap-img">
+        <NavLink href="@(LoginMode ? "/admin/place" : "/basic/buildings")" class="nav-wrap-img">
             <img src="img/Stec_Logo.png" />
         </NavLink>
     </div>
@@ -26,6 +26,12 @@
                               d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
                     </svg>
                 </li>
+                
+                    <div class="count">
+                        @alarmCount
+                    </div>
+                
+                
                 @if (_timelineActive)
                 {
                     <TimeLine/>
@@ -74,6 +80,9 @@
     private bool _timelineActive = false;
     private string PalceName = "";
 
+
+    private int alarmCount = 0;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -81,7 +90,16 @@
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
 
-        Socket();
+        // HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
+        //   {
+        //       Console.WriteLine(message);
+        //       alarmCount = alarmCount + 1;
+        //       Console.WriteLine("알람수" + alarmCount);
+        //       StateHasChanged();
+        //   });
+
+
+        // await Socket();
     }
 
 
@@ -89,38 +107,36 @@
     {
         LoginMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
         StateHasChanged();
-        Console.WriteLine("로그인 모드:"+LoginMode);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        Console.WriteLine("설마안타?");
-        if (firstRender)
-        {
-            #region SIGNAL R 메시지 받는곳
-            HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
-            {
-                Console.WriteLine(message);
-            });
-        }
-        #endregion
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         #region SIGNAL R 메시지 받는곳
+    //         HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
+    //         {
+    //             Console.WriteLine(message);
+    //             alarmCount = alarmCount + 1;
+    //             Console.WriteLine("알람수" + alarmCount);
+    //             StateHasChanged();
+    //         });
 
-        // 다시재연결 필요하면 이거 쓰면될듯
+            
+    //     }
+    //     #endregion
 
-        HubObject.hubConnection!.Closed += async (exception) =>
-        {
-            await HubObject.hubConnection.StartAsync(); // 다시재연결
-        };
-    }
+    //     // 다시재연결 필요하면 이거 쓰면될듯
+
+    //     // HubObject.hubConnection!.Closed += async (exception) =>
+    //     // {
+    //     //     await HubObject.hubConnection.StartAsync(); // 다시재연결
+    //     // };
+    // }
 
 
     private async Task OnLogOut()
     {
-        Console.WriteLine("로그아웃 동작");
-        // await sessionStorage.RemoveItemAsync("SWORKSSESSION");
-        // await sessionStorage.RemoveItemAsync("LoginMode");
-        // await sessionStorage.RemoveItemAsync("IsLogin");
-        // StateHasChanged();
 
         await _localStorageService.RemoveItemAsync("sworks-jwt-token");
 
@@ -161,29 +177,28 @@
         _ = hubConnection.DisposeAsync();
     }
 
-    private void Socket()
-    {
-        int PlaceIdx = 3;
-        HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PlaceIdx}_BEAUTYRoom");
-
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/broadcastHub"))
-            .Build();
+    // private async Task Socket()
+    // {
+    //     // //소켓 연결
+    //     // await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PLACEIDX}_BEAUTYRoom");
 
 
-        hubConnection.On<string>("ReceiveVoc", (message) =>
-        {
-            /*
-             * message : {
-             *  group : machine, network, ...
-             *  data : {
-             * }
-             * }
-             */
-            Console.WriteLine(message);
-        });
+    //     // //리시버
+    //     // // hubConnection = new HubConnectionBuilder()
+    //     // //     .WithUrl(Navigation.ToAbsoluteUri("/VoctHub"))
+    //     // //     .Build();
 
-    }
+
+
+    //     HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
+    //       {
+    //           Console.WriteLine(message);
+    //           alarmCount = alarmCount + 1;
+    //           Console.WriteLine("알람수" + alarmCount);
+    //           StateHasChanged();
+    //       });
+
+    // }
 
     private void OnSelectPlace()
     {

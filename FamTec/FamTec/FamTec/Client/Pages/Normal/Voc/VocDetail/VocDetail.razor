@@ -9,7 +9,7 @@
 <div class="vocdetail-container">
     <div class="vocdetail-wrap">
         <div class="vocdetail-info">
-            <VocInfo Data="VocData" EditPerm=IsEditPerm/>
+            <VocInfo Data="VocData" EditPerm=IsEditPerm OnLoad="OnLoadVocDetail" />
         </div>
         <div class="vocdetail-comment">
             <VocComment 
@@ -47,7 +47,6 @@
             return;
         }
         VocData = resGet.data;
-        Console.WriteLine(resGet.data.Phone);
     }
 
 
@@ -79,20 +78,20 @@
         var userType = user.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
         var userPerm = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
         var userVocPerm = user.Claims.FirstOrDefault(c => c.Type == "VocPerms")?.Value;
+        
         string checkVocType = VocData.Type switch
         {
-            "미분류" => "",
-            "기계민원" => "VocMacine",
-            "전기민원" => "VocElec",
-            "승강민원" => "VocLift",
-            "소방민원" => "VocFire",
-            "건축민원" => "VocConstruct",
-            "통신민원" => "VocNetwork",
-            "미화민원" => "VocBeauty",
-            "보안민원" => "VocSecurity",
+            0 => "",
+            1 => "VocMacine",
+            2 => "VocElec",
+            3 => "VocLift",
+            4 => "VocFire",
+            5 => "VocConstruct",
+            6 => "VocNetwork",
+            7 => "VocBeauty",
+            8 => "VocSecurity",
             _ => "",
         };
-
         //관리자면 전체 권한 분류 미
         if(userType == "ADMIN")
         {
@@ -109,7 +108,6 @@
                 if (jsonPerm.TryGetValue("UserPerm_Voc", out string vocPermValue))
                 {
                     IsEditPerm = vocPermValue == "2";
-                    Console.WriteLine("voc 읽기/쓰기 권한"+ vocPermValue);
                 };
             }catch(Exception ex)
             {
@@ -127,8 +125,6 @@
                 if (!string.IsNullOrEmpty(checkVocType) && jsonPerm.TryGetValue(checkVocType, out string permValue))
                 {
                     IsEditCommnet = permValue.Equals("True", StringComparison.OrdinalIgnoreCase);
-                    Console.WriteLine(checkVocType +IsEditCommnet);
-                    Console.WriteLine(IsEditCommnet);
                 }
             }
             catch (Exception ex)
