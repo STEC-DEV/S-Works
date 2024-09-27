@@ -129,13 +129,17 @@ namespace FamTec.Server.Repository.Alarm
                 List<AlarmDTO?> dto = (from Alarm in AlarmTB
                                        join VocTB in context.VocTbs.Where(m => m.DelYn != true)
                                        on Alarm.VocTbId equals VocTB.Id
+                                       join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true)
+                                       on  VocTB.BuildingTbId equals BuildingTB.Id
                                        select new AlarmDTO
                                        {
                                            AlarmID = Alarm.Id,
                                            Type = Alarm.Type,
                                            VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title,
                                            UserID = Alarm.UsersTbId,
-                                           VocID = Alarm.VocTbId
+                                           VocID = Alarm.VocTbId,
+                                           BuildingName = BuildingTB.Name,
+                                           CODE = VocTB.Code
                                        }).ToList();
 
                 if (dto is [_, ..])
@@ -173,13 +177,17 @@ namespace FamTec.Server.Repository.Alarm
                 List<AlarmDTO> dto = (from Alarm in AlarmTB
                                       join VocTB in context.VocTbs.Where(m => m.DelYn != true)
                                       on Alarm.VocTbId equals VocTB.Id
+                                      join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true)
+                                       on VocTB.BuildingTbId equals BuildingTB.Id
                                       select new AlarmDTO
                                       {
                                           AlarmID = Alarm.Id,
                                           Type = Alarm.Type,
                                           VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title,
                                           UserID = Alarm.UsersTbId,
-                                          VocID = Alarm.VocTbId
+                                          VocID = Alarm.VocTbId,
+                                          BuildingName = BuildingTB.Name,
+                                          CODE = VocTB.Code
                                       }).ToList();
 
                 if (dto is [_, ..])

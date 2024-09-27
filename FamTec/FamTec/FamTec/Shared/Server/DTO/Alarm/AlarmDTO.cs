@@ -29,5 +29,15 @@
         /// VOC 테이블 ID
         /// </summary>
         public int? VocID { get; set; }
+
+        /// <summary>
+        /// 접수코드
+        /// </summary>
+        public string? CODE { get; set; }
+
+        /// <summary>
+        /// 건물명
+        /// </summary>
+        public string? BuildingName { get; set; }
     }
 }
