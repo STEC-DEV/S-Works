@@ -27,7 +27,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddGroup")]
-        public async ValueTask<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
+        public async Task<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuildingGroup")]
-        public async ValueTask<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
+        public async Task<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetBuildingGroup")]
-        public async ValueTask<IActionResult> GetDetailBuilding(int buildingid)
+        public async Task<IActionResult> GetDetailBuilding(int buildingid)
         {
             try
             {
@@ -188,7 +188,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
-        public async ValueTask<IActionResult> UpdateBuildingGroup([FromBody] UpdateGroupDTO dto)
+        public async Task<IActionResult> UpdateBuildingGroup([FromBody] UpdateGroupDTO dto)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace FamTec.Server.Controllers.Building.Group
         //[HttpGet]
         [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteBuildingGroup([FromBody]int groupid)
+        public async Task<IActionResult> DeleteBuildingGroup([FromBody]int groupid)
         {
             try
             {

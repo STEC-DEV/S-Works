@@ -35,7 +35,7 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPlaceUsers")]
-        public async ValueTask<IActionResult> GetUserList()
+        public async Task<IActionResult> GetUserList()
         {
             try
             {
@@ -68,8 +68,8 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUser")]
-        //public async ValueTask<IActionResult> AddUser([FromForm] IFormFile? files)
-        public async ValueTask<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
+        //public async Task<IActionResult> AddUser([FromForm] IFormFile? files)
+        public async Task<IActionResult> AddUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailUser")]
-        public async ValueTask<IActionResult> DetailUser([FromQuery]int id)
+        public async Task<IActionResult> DetailUser([FromQuery]int id)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DeleteUser")]
-        public async ValueTask<IActionResult> DeleteUser([FromQuery] List<int> delIdx)
+        public async Task<IActionResult> DeleteUser([FromQuery] List<int> delIdx)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateUser")]
-        public async ValueTask<IActionResult> UpdateUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
+        public async Task<IActionResult> UpdateUser([FromForm]UsersDTO dto, [FromForm]IFormFile? files)
         {
             try
             {

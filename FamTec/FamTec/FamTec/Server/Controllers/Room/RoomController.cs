@@ -26,7 +26,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPlaceRoomGroup")]
-        public async ValueTask<IActionResult> GetPlaceRoomGroup()
+        public async Task<IActionResult> GetPlaceRoomGroup()
         {
             try
             {
@@ -57,7 +57,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetRoomName")]
-        public async ValueTask<IActionResult> GetRoomName([FromQuery]int roomid)
+        public async Task<IActionResult> GetRoomName([FromQuery]int roomid)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddRoom")]
-        public async ValueTask<IActionResult> AddRoom([FromBody] RoomDTO dto)
+        public async Task<IActionResult> AddRoom([FromBody] RoomDTO dto)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllRoomList")]
-        public async ValueTask<IActionResult> GetAllRoomList()
+        public async Task<IActionResult> GetAllRoomList()
         {
             try
             {
@@ -162,7 +162,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateRoom")]
-        public async ValueTask<IActionResult> UpdateRoom([FromBody] UpdateRoomDTO dto)
+        public async Task<IActionResult> UpdateRoom([FromBody] UpdateRoomDTO dto)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace FamTec.Server.Controllers.Room
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteRoom")]
-        public async ValueTask<IActionResult> DeleteRoom([FromBody]List<int> idx)
+        public async Task<IActionResult> DeleteRoom([FromBody]List<int> idx)
         {
             try
             {

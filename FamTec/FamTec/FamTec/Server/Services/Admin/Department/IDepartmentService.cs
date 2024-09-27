@@ -10,33 +10,33 @@ namespace FamTec.Server.Services.Admin.Department
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto);
+        public Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto);
 
         /// <summary>
         /// 부서전체조회
         /// </summary>
         /// <returns></returns>
-        public ValueTask<ResponseList<DepartmentDTO>> GetAllDepartmentService();
+        public Task<ResponseList<DepartmentDTO>> GetAllDepartmentService();
 
         /// <summary>
         /// 관리부서 전체조회
         /// </summary>
         /// <returns></returns>
-        public ValueTask<ResponseList<DepartmentDTO>> ManageDepartmentService();
+        public Task<ResponseList<DepartmentDTO>> ManageDepartmentService();
 
         /// <summary>
         /// 부서삭제
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> index);
+        public Task<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> index);
 
         /// <summary>
         /// 부서수정
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context, DepartmentDTO dto);
+        public Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context, DepartmentDTO dto);
 
     }
 }

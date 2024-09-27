@@ -28,7 +28,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddKey")]
-        public async ValueTask<IActionResult> AddGroupKey([FromBody]AddKeyDTO dto)
+        public async Task<IActionResult> AddGroupKey([FromBody]AddKeyDTO dto)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateKey")]
-        public async ValueTask<IActionResult> UpdateGroupKey([FromBody]UpdateKeyDTO dto)
+        public async Task<IActionResult> UpdateGroupKey([FromBody]UpdateKeyDTO dto)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteKeyList")]
-        public async ValueTask<IActionResult> DeleteGroupKeyList([FromBody]List<int> keylist)
+        public async Task<IActionResult> DeleteGroupKeyList([FromBody]List<int> keylist)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteKey")]
-        public async ValueTask<IActionResult> DeleteGroupKey([FromBody]int keyid)
+        public async Task<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {
             try
             {

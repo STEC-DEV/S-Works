@@ -35,8 +35,8 @@ namespace FamTec.Server.Controllers.Store
         //[HttpGet]
         [HttpPost]
         [Route("sign/AddInStore")]
-        //public async ValueTask<IActionResult> AddInStore()
-        public async ValueTask<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
+        //public async Task<IActionResult> AddInStore()
+        public async Task<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
         {
             try
             {
@@ -113,8 +113,8 @@ namespace FamTec.Server.Controllers.Store
         //[HttpGet]
         [HttpPost]
         [Route("sign/OutInventory")]
-        //public async ValueTask<IActionResult> OutInventoryService()
-        public async ValueTask<IActionResult> OutInventoryService([FromBody] List<InOutInventoryDTO> dto)
+        //public async Task<IActionResult> OutInventoryService()
+        public async Task<IActionResult> OutInventoryService([FromBody] List<InOutInventoryDTO> dto)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetHistory")]
-        public async ValueTask<IActionResult> GetInoutHistory()
+        public async Task<IActionResult> GetInoutHistory()
         {
             try
             {
@@ -222,7 +222,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPageNationHistory")]
-        public async ValueTask<IActionResult> GetInoutPageNationHistory([FromQuery] int pagenum, [FromQuery] int pagesize)
+        public async Task<IActionResult> GetInoutPageNationHistory([FromQuery] int pagenum, [FromQuery] int pagesize)
         {
             try
             {
@@ -258,7 +258,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllInoutPlaceCount")]
-        public async ValueTask<IActionResult> GetAllInoutPlaceCount()
+        public async Task<IActionResult> GetAllInoutPlaceCount()
         {
             try
             {
@@ -290,8 +290,8 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPlaceInventoryStatus")]
-        //public async ValueTask<IActionResult> GetPlaceInventoryStatus()
-        public async ValueTask<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int> materialid, [FromQuery]bool type)
+        //public async Task<IActionResult> GetPlaceInventoryStatus()
+        public async Task<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int> materialid, [FromQuery]bool type)
         {
             try
             {
@@ -334,7 +334,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async ValueTask<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
+        public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
@@ -370,7 +370,7 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetLocationMaterial")]
-        public async ValueTask<IActionResult> GetLocationMaterial([FromQuery]int materialid, [FromQuery]int buildingid)
+        public async Task<IActionResult> GetLocationMaterial([FromQuery]int materialid, [FromQuery]int buildingid)
         {
             try
             {
@@ -405,8 +405,8 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/AddOutStoreList")]
-        //public async ValueTask<IActionResult> AddOutStoreList()
-        public async ValueTask<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
+        //public async Task<IActionResult> AddOutStoreList()
+        public async Task<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
         {
             try
             {

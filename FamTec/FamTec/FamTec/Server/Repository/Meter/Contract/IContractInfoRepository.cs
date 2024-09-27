@@ -9,14 +9,14 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ValueTask<ContractTypeTb?> AddAsync(ContractTypeTb model);
+        public Task<ContractTypeTb?> AddAsync(ContractTypeTb model);
 
         /// <summary>
         /// 사업장에 속한 계약종류 전체반환
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public ValueTask<List<ContractTypeTb>?> GetAllContractList(int placeid);
+        public Task<List<ContractTypeTb>?> GetAllContractList(int placeid);
 
         /// <summary>
         /// 계약명칭으로 검색
@@ -24,13 +24,13 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// <param name="placeid"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ValueTask<ContractTypeTb?> GetContractName(int placeid, string name);
+        public Task<ContractTypeTb?> GetContractName(int placeid, string name);
 
         /// <summary>
         /// 계약종류 ID에 해당하는 계약종류정보 반환
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ValueTask<ContractTypeTb?> GetContractInfo(int id);
+        public Task<ContractTypeTb?> GetContractInfo(int id);
     }
 }

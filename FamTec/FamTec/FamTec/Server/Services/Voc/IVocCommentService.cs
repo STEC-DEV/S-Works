@@ -12,14 +12,14 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files);
+        public Task<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files);
 
         /// <summary>
         /// 해당 민원에 대한 댓글 리스트 조회
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid);
+        public Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid);
 
         /// <summary>
         /// 해당 민원에 대한 댓글 상세보기
@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid);
+        public Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid);
 
         /// <summary>
         /// VOC 댓글 자기것만 수정
@@ -36,7 +36,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List<IFormFile>? files);
+        public Task<ResponseUnit<bool?>> UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List<IFormFile>? files);
 
     }
 }

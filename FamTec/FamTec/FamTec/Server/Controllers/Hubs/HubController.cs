@@ -116,7 +116,7 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("VocInfo")]
-        public async ValueTask<IActionResult> GetVocInfo([FromQuery]string voccode)
+        public async Task<IActionResult> GetVocInfo([FromQuery]string voccode)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("GetVocCommentList")]
-        public async ValueTask<IActionResult> GetVocComment([FromQuery]string voccode)
+        public async Task<IActionResult> GetVocComment([FromQuery]string voccode)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace FamTec.Server.Controllers.Hubs
         /// <returns></returns>
         [HttpGet]
         [Route("VocCommentDetail")]
-        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
+        public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {
             try
             {

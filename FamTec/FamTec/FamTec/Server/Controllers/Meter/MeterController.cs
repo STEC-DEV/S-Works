@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.Meter
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMeter")]
-        public async ValueTask<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
+        public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
         {
             try
             {

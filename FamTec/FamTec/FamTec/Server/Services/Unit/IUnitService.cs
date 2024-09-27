@@ -9,21 +9,21 @@ namespace FamTec.Server.Services.Unit
         /// 해당 사업장의 단위리스트 조회
         /// </summary>
         /// <returns></returns>
-        ValueTask<ResponseList<UnitsDTO>> GetUnitList(HttpContext context);
+        Task<ResponseList<UnitsDTO>> GetUnitList(HttpContext context);
 
         /// <summary>
         /// 단위정보 추가
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext context, UnitsDTO dto);
+        public Task<ResponseUnit<UnitsDTO>> AddUnitService(HttpContext context, UnitsDTO dto);
 
         /// <summary>
         /// 단위정보 삭제
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeleteUnitService(HttpContext context, List<int> unitid);
+        public Task<ResponseUnit<bool?>> DeleteUnitService(HttpContext context, List<int> unitid);
 
         /// <summary>
         /// 단위정보 수정
@@ -31,7 +31,7 @@ namespace FamTec.Server.Services.Unit
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UnitsDTO>> UpdateUnitService(HttpContext context, UnitsDTO dto);
+        public Task<ResponseUnit<UnitsDTO>> UpdateUnitService(HttpContext context, UnitsDTO dto);
 
     }
 }

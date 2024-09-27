@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<RoomDTO>> AddRoomService(HttpContext context, RoomDTO dto)
+        public async Task<ResponseUnit<RoomDTO>> AddRoomService(HttpContext context, RoomDTO dto)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<RoomListDTO>> GetRoomListService(HttpContext context)
+        public async Task<ResponseList<RoomListDTO>> GetRoomListService(HttpContext context)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> GetRoomNameService(HttpContext context, int roomid)
+        public async Task<ResponseUnit<string?>> GetRoomNameService(HttpContext context, int roomid)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateRoomService(HttpContext context, UpdateRoomDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateRoomService(HttpContext context, UpdateRoomDTO dto)
         {
             try
             {
@@ -220,7 +220,7 @@ namespace FamTec.Server.Services.Room
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteRoomService(HttpContext context, List<int> del)
+        public async Task<ResponseUnit<bool?>> DeleteRoomService(HttpContext context, List<int> del)
         {
             try
             {
@@ -274,7 +274,7 @@ namespace FamTec.Server.Services.Room
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context)
+        public async Task<ResponseList<PlaceRoomListDTO>> GetPlaceAllGroupRoomInfo(HttpContext context)
         {
             try
             {

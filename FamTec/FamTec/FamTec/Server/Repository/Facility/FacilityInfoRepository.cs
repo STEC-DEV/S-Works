@@ -4,6 +4,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Facility
@@ -26,7 +27,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="Facilityid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DelFacilityCheck(int Facilityid)
+        public async Task<bool?> DelFacilityCheck(int Facilityid)
         {
             try
             {
@@ -36,7 +37,12 @@ namespace FamTec.Server.Repository.Facility
 
                 return MaintenenceCheck;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -48,7 +54,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityTb?> AddAsync(FacilityTb model)
+        public async Task<FacilityTb?> AddAsync(FacilityTb model)
         {
             try
             {
@@ -61,7 +67,17 @@ namespace FamTec.Server.Repository.Facility
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -73,7 +89,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityTb>?> GetAllFacilityList(int roomid)
+        public async Task<List<FacilityTb>?> GetAllFacilityList(int roomid)
         {
             try
             {
@@ -88,7 +104,12 @@ namespace FamTec.Server.Repository.Facility
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -100,7 +121,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityTb?> GetFacilityInfo(int id)
+        public async Task<FacilityTb?> GetFacilityInfo(int id)
         {
             try
             {
@@ -113,7 +134,12 @@ namespace FamTec.Server.Repository.Facility
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -125,14 +151,24 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateFacilityInfo(FacilityTb model)
+        public async Task<bool?> UpdateFacilityInfo(FacilityTb model)
         {
             try
             {
                 context.FacilityTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -144,7 +180,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteFacilityInfo(List<int> facilityid, string deleter)
+        public async Task<bool?> DeleteFacilityInfo(List<int> facilityid, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -162,9 +198,6 @@ namespace FamTec.Server.Repository.Facility
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int fcid in facilityid)
                         {
                             FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == fcid).ConfigureAwait(false);
@@ -244,6 +277,21 @@ namespace FamTec.Server.Repository.Facility
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -259,7 +307,7 @@ namespace FamTec.Server.Repository.Facility
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceMachineFacilityList(int placeid)
         {
             try
             {
@@ -297,10 +345,14 @@ namespace FamTec.Server.Repository.Facility
                 else
                 {
                     return null;
-                }
-               
+                }  
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -312,7 +364,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceElectronicFacilityList(int placeid)
         {
             try
             {
@@ -351,7 +403,12 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -363,7 +420,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceLiftFacilityList(int placeid)
         {
             try
             {
@@ -402,6 +459,11 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -414,7 +476,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceFireFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceFireFacilityList(int placeid)
         {
             try
             {
@@ -453,6 +515,11 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -465,7 +532,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceConstructFacilityList(int placeid)
         {
             try
             {
@@ -504,6 +571,11 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -516,7 +588,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceNetworkFacilityList(int placeid)
         {
             try
             {
@@ -555,6 +627,11 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -567,7 +644,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceBeautyFacilityList(int placeid)
         {
             try
             {
@@ -606,6 +683,11 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -618,7 +700,7 @@ namespace FamTec.Server.Repository.Facility
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int placeid)
+        public async Task<List<FacilityListDTO>?> GetPlaceSecurityFacilityList(int placeid)
         {
             try
             {
@@ -657,11 +739,34 @@ namespace FamTec.Server.Repository.Facility
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
+        }
+
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace FamTec.Server.Repository.Meter
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<MeterItemTb?> AddAsync(MeterItemTb model)
+        public async Task<MeterItemTb?> AddAsync(MeterItemTb model)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace FamTec.Server.Repository.Meter
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<MeterItemTb>?> GetAllMeterList(int placeid)
+        public async Task<List<MeterItemTb>?> GetAllMeterList(int placeid)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace FamTec.Server.Repository.Meter
         /// <param name="placeid"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public async ValueTask<List<MeterItemTb>?> GetAllCategoryMeterList(int placeid, string category)
+        public async Task<List<MeterItemTb>?> GetAllCategoryMeterList(int placeid, string category)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace FamTec.Server.Repository.Meter
         /// <param name="placeid"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async ValueTask<MeterItemTb?> GetMeterName(int placeid, string name)
+        public async Task<MeterItemTb?> GetMeterName(int placeid, string name)
         {
             try
             {

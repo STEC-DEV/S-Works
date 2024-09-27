@@ -56,7 +56,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files)
+        public async Task<ResponseUnit<AddVocCommentDTO?>> AddVocCommentService(HttpContext context, AddVocCommentDTO dto, List<IFormFile> files)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid)
+        public async Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid)
+        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid)
         {
             try
             {
@@ -380,7 +380,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List<IFormFile>? files)
+        public async Task<ResponseUnit<bool?>> UpdateCommentService(HttpContext context, VocCommentDetailDTO dto, List<IFormFile>? files)
         {
             try
             {

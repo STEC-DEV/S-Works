@@ -27,7 +27,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddValue")]
-        public async ValueTask<IActionResult> AddGroupValue([FromBody] AddValueDTO dto)
+        public async Task<IActionResult> AddGroupValue([FromBody] AddValueDTO dto)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateValue")]
-        public async ValueTask<IActionResult> UpdateGroupValue([FromBody]UpdateValueDTO dto)
+        public async Task<IActionResult> UpdateGroupValue([FromBody]UpdateValueDTO dto)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace FamTec.Server.Controllers.Building.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteValue")]
-        public async ValueTask<IActionResult> DeleteGroupValue([FromBody]int valueid)
+        public async Task<IActionResult> DeleteGroupValue([FromBody]int valueid)
         {
             try
             {

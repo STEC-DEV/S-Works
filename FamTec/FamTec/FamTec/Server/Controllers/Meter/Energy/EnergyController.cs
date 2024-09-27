@@ -35,8 +35,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         //[HttpPost]
         [HttpGet]
         [Route("sign/AddEnergy")]
-        public async ValueTask<IActionResult> AddEnergy()
-        //public async ValueTask<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
+        public async Task<IActionResult> AddEnergy()
+        //public async Task<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
         {
             try
             {
@@ -80,8 +80,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMonthList")]
-        public async ValueTask<IActionResult> GetMonthList()
-        //public async ValueTask<IActionResult> GetMonthList([FromQuery] DateTime SearchDate)
+        public async Task<IActionResult> GetMonthList()
+        //public async Task<IActionResult> GetMonthList([FromQuery] DateTime SearchDate)
         {
             try
             {
@@ -117,8 +117,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMeterMonthList")]
-        //public async ValueTask<IActionResult> GetMeterMonthList()
-        public async ValueTask<IActionResult> GetMeterMonthList([FromQuery] DateTime SearchDate, [FromQuery] List<int> MeterId)
+        //public async Task<IActionResult> GetMeterMonthList()
+        public async Task<IActionResult> GetMeterMonthList([FromQuery] DateTime SearchDate, [FromQuery] List<int> MeterId)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetYearList")]
-        public async ValueTask<IActionResult> GetYearList([FromQuery]int year)
+        public async Task<IActionResult> GetYearList([FromQuery]int year)
         {
             try
             {
@@ -188,8 +188,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMeterYearList")]
-        //public async ValueTask<IActionResult> GetMeterYearList()
-        public async ValueTask<IActionResult> GetYearList([FromQuery] List<int> MeterId, [FromQuery] int year)
+        //public async Task<IActionResult> GetMeterYearList()
+        public async Task<IActionResult> GetYearList([FromQuery] List<int> MeterId, [FromQuery] int year)
         {
             try
             {
@@ -223,8 +223,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDayList")]
-        //public async ValueTask<IActionResult> GetDayList()
-        public async ValueTask<IActionResult> GetDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
+        //public async Task<IActionResult> GetDayList()
+        public async Task<IActionResult> GetDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate)
         {
             try
             {
@@ -260,8 +260,8 @@ namespace FamTec.Server.Controllers.Meter.Energy
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMeterDayList")]
-        //public async ValueTask<IActionResult> GetMeterDayList()
-        public async ValueTask<IActionResult> GetMeterDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> MeterId)
+        //public async Task<IActionResult> GetMeterDayList()
+        public async Task<IActionResult> GetMeterDayList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> MeterId)
         {
             try
             {

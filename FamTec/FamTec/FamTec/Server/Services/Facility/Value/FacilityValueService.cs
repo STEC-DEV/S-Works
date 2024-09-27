@@ -22,7 +22,7 @@ namespace FamTec.Server.Services.Facility.Value
         }
 
 
-        public async ValueTask<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto)
+        public async Task<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace FamTec.Server.Services.Facility.Value
             }
         }
 
-        public async ValueTask<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto)
+        public async Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace FamTec.Server.Services.Facility.Value
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid)
+        public async Task<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid)
         {
             try
             {

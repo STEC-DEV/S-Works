@@ -28,7 +28,7 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context)
+        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace FamTec.Server.Services.KakaoLog
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> GetKakaoLogCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetKakaoLogCountService(HttpContext context)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace FamTec.Server.Services.KakaoLog
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<KakaoLogListDTO>> GetKakaoLogPageNationListService(HttpContext context, int pagenumber, int pagesize)
         {
             try
             {

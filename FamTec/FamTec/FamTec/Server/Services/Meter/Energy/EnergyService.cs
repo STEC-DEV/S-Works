@@ -24,7 +24,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<AddEnergyDTO>> AddEnergyService(HttpContext context, AddEnergyDTO dto)
+        public async Task<ResponseUnit<AddEnergyDTO>> AddEnergyService(HttpContext context, AddEnergyDTO dto)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DayEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate)
+        public async Task<ResponseList<DayEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate)
         {
             if (context is null)
                 return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -98,7 +98,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="MeterId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseList<DayEnergyDTO>> GetMonthSelectListService(HttpContext context, DateTime SearchDate, List<int> MeterId)
+        public async Task<ResponseList<DayEnergyDTO>> GetMonthSelectListService(HttpContext context, DateTime SearchDate, List<int> MeterId)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="context"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<YearsTotalEnergyDTO>> GetYearListService(HttpContext context, int year)
+        public async Task<ResponseList<YearsTotalEnergyDTO>> GetYearListService(HttpContext context, int year)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="MeterId"></param>
         /// <param name="year"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<YearsTotalEnergyDTO>> GetYearSelectListService(HttpContext context, List<int> MeterId, int year)
+        public async Task<ResponseList<YearsTotalEnergyDTO>> GetYearSelectListService(HttpContext context, List<int> MeterId, int year)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DayEnergyDTO>> GetDaysListService(HttpContext context, DateTime StartDate, DateTime EndDate)
+        public async Task<ResponseList<DayEnergyDTO>> GetDaysListService(HttpContext context, DateTime StartDate, DateTime EndDate)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace FamTec.Server.Services.Meter.Energy
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DayEnergyDTO>> GetDaysSelectListService(HttpContext context, List<int> MeterId, DateTime StartDate, DateTime EndDate)
+        public async Task<ResponseList<DayEnergyDTO>> GetDaysSelectListService(HttpContext context, List<int> MeterId, DateTime StartDate, DateTime EndDate)
         {
             try
             {

@@ -49,7 +49,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddMaterialDTO>> AddMaterialService(HttpContext context, AddMaterialDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<AddMaterialDTO>> AddMaterialService(HttpContext context, AddMaterialDTO dto, IFormFile? files)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context)
+        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialSearchListDTO>> GetAllPlaecMaterialSearchService(HttpContext context)
+        public async Task<ResponseList<MaterialSearchListDTO>> GetAllPlaecMaterialSearchService(HttpContext context)
         {
             try
             {
@@ -218,7 +218,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> GetPlaceMaterialCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetPlaceMaterialCountService(HttpContext context)
         {
             try
             {
@@ -247,7 +247,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialListDTO>> GetPlaceMaterialPageNationListService(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialPageNationListService(HttpContext context, int pagenumber, int pagesize)
         {
             try
             {
@@ -297,7 +297,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="materialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid)
+        public async Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid)
         {
             try
             {
@@ -353,7 +353,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<bool?>> UpdateMaterialService(HttpContext context, UpdateMaterialDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMaterialService(HttpContext context, UpdateMaterialDTO dto, IFormFile? files)
         {
             try
             {
@@ -504,7 +504,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx)
         {
             try
             {
@@ -559,7 +559,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files)
+        public async Task<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files)
         {
             try
             {
@@ -693,7 +693,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="context"></param>
         /// <param name="searchData"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData)
+        public async Task<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData)
         {
             try
             {

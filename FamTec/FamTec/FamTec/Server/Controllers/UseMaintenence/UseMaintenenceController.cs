@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailUseMaterial")]
-        public async ValueTask<IActionResult> GetDetailUseMaterial([FromQuery]int useid)
+        public async Task<IActionResult> GetDetailUseMaterial([FromQuery]int useid)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
         //[HttpGet]
         [HttpPost]
         [Route("sign/UpdateUseMaterial")]
-        public async ValueTask<IActionResult> UpdateUseMaterial([FromBody] UpdateMaintenanceMaterialDTO dto)
+        public async Task<IActionResult> UpdateUseMaterial([FromBody] UpdateMaintenanceMaterialDTO dto)
         {
             try
             {

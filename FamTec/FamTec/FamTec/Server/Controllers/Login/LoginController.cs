@@ -39,7 +39,7 @@ namespace FamTec.Server.Controllers.Login
         /// <returns></returns>
         [HttpPost]
         [Route("SettingLogin")]
-        public async ValueTask<IActionResult> SettingLogin([FromBody] LoginDTO dto)
+        public async Task<IActionResult> SettingLogin([FromBody] LoginDTO dto)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace FamTec.Server.Controllers.Login
 
         [HttpPost]
         [Route("QRLogin")]
-        public async ValueTask<IActionResult> QRLogin([FromBody] QRLoginDTO dto)
+        public async Task<IActionResult> QRLogin([FromBody] QRLoginDTO dto)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace FamTec.Server.Controllers.Login
         /// <returns></returns>
         [HttpPost]
         [Route("Login")]
-        public async ValueTask<IActionResult> Login([FromBody] LoginDTO dto)
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace FamTec.Server.Controllers.Login
         /*
         [HttpGet]
         [Route("AdminSelectList")]
-        public async ValueTask<IActionResult> AdminSelectList([FromQuery]string token)
+        public async Task<IActionResult> AdminSelectList([FromQuery]string token)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace FamTec.Server.Controllers.Login
         [Authorize(Roles = "SystemManager,Master,Manager")]
         [HttpGet]
         [Route("sign/AdminPlaceList")]
-        public async ValueTask<IActionResult> SelectPlaceList()
+        public async Task<IActionResult> SelectPlaceList()
         {
             try
             {
@@ -203,7 +203,7 @@ namespace FamTec.Server.Controllers.Login
         [Authorize(Roles = "SystemManager,Master,Manager")]
         [HttpGet]
         [Route("sign/SelectPlace")]
-        public async ValueTask<IActionResult> SelectPlace([FromQuery]int placeid)
+        public async Task<IActionResult> SelectPlace([FromQuery]int placeid)
         {
             try
             {

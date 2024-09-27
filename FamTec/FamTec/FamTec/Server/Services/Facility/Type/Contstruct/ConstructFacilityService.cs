@@ -36,7 +36,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddConstructFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddConstructFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetConstructFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetConstructFacilityListService(HttpContext context)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetConstructDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetConstructDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateConstructFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateConstructFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -349,7 +349,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         }
 
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteConstructFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteConstructFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

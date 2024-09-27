@@ -29,7 +29,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         }
 
 
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetBeautyFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetBeautyFacilityListService(HttpContext context)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
         }
      
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateBeautyFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -341,7 +341,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteBeautyFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteBeautyFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

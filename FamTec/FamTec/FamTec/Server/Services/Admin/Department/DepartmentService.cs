@@ -24,7 +24,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto)
+        public async Task<ResponseUnit<AddDepartmentDTO>> AddDepartmentService(HttpContext context, AddDepartmentDTO dto)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// 부서 전체조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DepartmentDTO>> GetAllDepartmentService()
+        public async Task<ResponseList<DepartmentDTO>> GetAllDepartmentService()
         {
             try
             {
@@ -116,7 +116,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// 관리부서 전체조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<ResponseList<DepartmentDTO>> ManageDepartmentService()
+        public async Task<ResponseList<DepartmentDTO>> ManageDepartmentService()
         {
             try
             {
@@ -151,7 +151,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="index"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
+        public async Task<ResponseUnit<bool?>> DeleteDepartmentService(HttpContext context, List<int> departmentidx)
         {
             try
             {
@@ -204,7 +204,7 @@ namespace FamTec.Server.Services.Admin.Department
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context,DepartmentDTO dto)
+        public async Task<ResponseUnit<DepartmentDTO>> UpdateDepartmentService(HttpContext context,DepartmentDTO dto)
         {
             try
             {

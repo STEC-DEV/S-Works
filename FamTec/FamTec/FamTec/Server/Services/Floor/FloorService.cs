@@ -32,7 +32,7 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FloorDTO>> AddFloorService(HttpContext context, FloorDTO dto)
+        public async Task<ResponseUnit<FloorDTO>> AddFloorService(HttpContext context, FloorDTO dto)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace FamTec.Server.Services.Floor
         /// </summary>
         /// <param name="buildingtbid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid)
+        public async Task<ResponseList<FloorDTO>> GetFloorListService(int buildingtbid)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace FamTec.Server.Services.Floor
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateFloorService(HttpContext context, UpdateFloorDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateFloorService(HttpContext context, UpdateFloorDTO dto)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace FamTec.Server.Services.Floor
 
         // 층삭제
         // 층에 물려있는 공간이 있으면 삭제 XX
-        public async ValueTask<ResponseUnit<bool?>> DeleteFloorService(HttpContext context, List<int> del)
+        public async Task<ResponseUnit<bool?>> DeleteFloorService(HttpContext context, List<int> del)
         {
             try
             {

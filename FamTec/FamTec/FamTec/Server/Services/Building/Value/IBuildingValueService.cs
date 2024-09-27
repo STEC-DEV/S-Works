@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto);
+        public Task<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto);
 
         /// <summary>
         /// value - 업데이트 (단일)
@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto);
+        public Task<ResponseUnit<UpdateValueDTO>> UpdateValueService(HttpContext context, UpdateValueDTO dto);
 
 
         /// <summary>
@@ -29,6 +29,6 @@ namespace FamTec.Server.Services.Building.Value
         /// <param name="context"></param>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid);
+        public Task<ResponseUnit<bool?>> DeleteValueService(HttpContext context, int valueid);
     }
 }

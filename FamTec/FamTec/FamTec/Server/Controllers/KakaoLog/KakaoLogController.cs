@@ -29,7 +29,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetKakaoLogList")]
-        public async ValueTask<IActionResult> GetKakaoLogList()
+        public async Task<IActionResult> GetKakaoLogList()
         {
             try
             {
@@ -61,7 +61,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllKakaoLogCount")]
-        public async ValueTask<IActionResult> GetAllKakaoLogCount()
+        public async Task<IActionResult> GetAllKakaoLogCount()
         {
             try
             {
@@ -94,7 +94,7 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationKakaoLog")]
-        public async ValueTask<IActionResult> GetAllPageNationKakaoLog([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllPageNationKakaoLog([FromQuery]int pagenum, [FromQuery]int pagesize)
         {
             try
             {

@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.KakaoLog
 {
@@ -21,7 +22,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<KakaoLogTb?> AddAsync(KakaoLogTb model)
+        public async Task<KakaoLogTb?> AddAsync(KakaoLogTb model)
         {
             try
             {
@@ -32,7 +33,17 @@ namespace FamTec.Server.Repository.KakaoLog
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -43,7 +54,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// 카카오 알림톡 발송로그 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList(int placeid)
+        public async Task<List<KakaoLogTb>?> GetKakaoLogList(int placeid)
         {
             try
             {
@@ -58,7 +69,12 @@ namespace FamTec.Server.Repository.KakaoLog
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -71,7 +87,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogList(DateTime StartDate, DateTime EndDate)
+        public async Task<List<KakaoLogTb>?> GetKakaoLogList(DateTime StartDate, DateTime EndDate)
         {
             try
             {
@@ -86,7 +102,12 @@ namespace FamTec.Server.Repository.KakaoLog
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -98,7 +119,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<int?> GetKakaoLogCount(int placeid)
+        public async Task<int?> GetKakaoLogCount(int placeid)
         {
             try
             {
@@ -110,7 +131,12 @@ namespace FamTec.Server.Repository.KakaoLog
 
                 return count;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -124,7 +150,7 @@ namespace FamTec.Server.Repository.KakaoLog
         /// <param name="pagenum"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async ValueTask<List<KakaoLogTb>?> GetKakaoLogPageNationList(int placeid, int pagenumber, int pagesize)
+        public async Task<List<KakaoLogTb>?> GetKakaoLogPageNationList(int placeid, int pagenumber, int pagesize)
         {
             try
             {
@@ -141,7 +167,12 @@ namespace FamTec.Server.Repository.KakaoLog
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;

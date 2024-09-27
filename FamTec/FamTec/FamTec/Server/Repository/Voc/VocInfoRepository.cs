@@ -5,6 +5,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Voc
 {
@@ -25,7 +26,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate)
+        public async Task<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate)
         {
             // Step 1: 날짜 범위 생성
             var allDates = Enumerable.Range(0, 1 + EndDate.AddDays(-1).Subtract(StartDate).Days)
@@ -100,7 +101,7 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<VocTb?> AddAsync(VocTb model)
+        public async Task<VocTb?> AddAsync(VocTb model)
         {
             try
             {
@@ -112,6 +113,16 @@ namespace FamTec.Server.Repository.Voc
                     return model;
                 else
                     return null;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -125,7 +136,7 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid)
+        public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid)
         {
             try
             {
@@ -190,7 +201,12 @@ namespace FamTec.Server.Repository.Voc
                     return null;
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -203,7 +219,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="buildinglist"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async ValueTask<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status,List<int> BuildingID)
+        public async Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status,List<int> BuildingID)
         {
             try
             {
@@ -241,7 +257,12 @@ namespace FamTec.Server.Repository.Voc
                     return null;
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -253,11 +274,10 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<VocTb?> GetVocInfoById(int vocid)
+        public async Task<VocTb?> GetVocInfoById(int vocid)
         {
             try
             {
-
                 VocTb? model = await context.VocTbs
                     .FirstOrDefaultAsync(m => m.Id == vocid && m.DelYn != true)
                     .ConfigureAwait(false);
@@ -267,7 +287,12 @@ namespace FamTec.Server.Repository.Voc
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -282,11 +307,10 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="code"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<VocTb?> GetVocInfoByCode(string code)
+        public async Task<VocTb?> GetVocInfoByCode(string code)
         {
             try
             {
-
                 VocTb? model = await context.VocTbs
                     .FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true)
                     .ConfigureAwait(false);
@@ -303,7 +327,7 @@ namespace FamTec.Server.Repository.Voc
             }
         }
 
-        public async ValueTask<bool> UpdateVocInfo(VocTb model)
+        public async Task<bool> UpdateVocInfo(VocTb model)
         {
             try
             {

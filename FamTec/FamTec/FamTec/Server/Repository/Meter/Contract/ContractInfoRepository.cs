@@ -2,19 +2,20 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Meter.Contract
 {
     public class ContractInfoRepository : IContractInfoRepository
     {
         private readonly WorksContext context;
-        private ILogService LogServce;
+        private ILogService LogService;
 
         public ContractInfoRepository(WorksContext _context,
             ILogService _logservice)
         {
             this.context = _context;
-            this.LogServce = _logservice;
+            this.LogService = _logservice;
         }
 
 
@@ -23,7 +24,7 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<ContractTypeTb?> AddAsync(ContractTypeTb model)
+        public async Task<ContractTypeTb?> AddAsync(ContractTypeTb model)
         {
             try
             {
@@ -35,9 +36,19 @@ namespace FamTec.Server.Repository.Meter.Contract
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                LogServce.LogMessage(ex.ToString());
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }
@@ -48,7 +59,7 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<List<ContractTypeTb>?> GetAllContractList(int placeid)
+        public async Task<List<ContractTypeTb>?> GetAllContractList(int placeid)
         {
             try
             {
@@ -62,10 +73,20 @@ namespace FamTec.Server.Repository.Meter.Contract
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
             {
-                LogServce.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
             }
         }
 
@@ -75,7 +96,7 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// <param name="placeid"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async ValueTask<ContractTypeTb?> GetContractName(int placeid, string name)
+        public async Task<ContractTypeTb?> GetContractName(int placeid, string name)
         {
             try
             {
@@ -89,9 +110,14 @@ namespace FamTec.Server.Repository.Meter.Contract
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
             {
-                LogServce.LogMessage(ex.ToString());
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }
@@ -101,7 +127,7 @@ namespace FamTec.Server.Repository.Meter.Contract
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<ContractTypeTb?> GetContractInfo(int id)
+        public async Task<ContractTypeTb?> GetContractInfo(int id)
         {
             try
             {
@@ -114,9 +140,14 @@ namespace FamTec.Server.Repository.Meter.Contract
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
             {
-                LogServce.LogMessage(ex.ToString());
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }

@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Facility.ItemValue
 {
@@ -21,7 +22,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemValueTb?> AddAsync(FacilityItemValueTb model)
+        public async Task<FacilityItemValueTb?> AddAsync(FacilityItemValueTb model)
         {
             try
             {
@@ -34,7 +35,17 @@ namespace FamTec.Server.Repository.Facility.ItemValue
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -46,7 +57,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<List<FacilityItemValueTb>?> GetAllValueList(int keyid)
+        public async Task<List<FacilityItemValueTb>?> GetAllValueList(int keyid)
         {
             try
             {
@@ -61,7 +72,12 @@ namespace FamTec.Server.Repository.Facility.ItemValue
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -73,7 +89,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         /// </summary>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public async ValueTask<FacilityItemValueTb?> GetValueInfo(int valueid)
+        public async Task<FacilityItemValueTb?> GetValueInfo(int valueid)
         {
             try
             {
@@ -86,7 +102,12 @@ namespace FamTec.Server.Repository.Facility.ItemValue
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -98,14 +119,24 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateValueInfo(FacilityItemValueTb model)
+        public async Task<bool?> UpdateValueInfo(FacilityItemValueTb model)
         {
             try
             {
                 context.FacilityItemValueTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -117,12 +148,22 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteValueInfo(FacilityItemValueTb model)
+        public async Task<bool?> DeleteValueInfo(FacilityItemValueTb model)
         {
             try
             {
                 context.FacilityItemValueTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {

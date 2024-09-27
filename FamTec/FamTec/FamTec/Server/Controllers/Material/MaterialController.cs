@@ -35,7 +35,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaterial")]
-        public async ValueTask<IActionResult> AddMaterial([FromForm] AddMaterialDTO dto, [FromForm]IFormFile? files)
+        public async Task<IActionResult> AddMaterial([FromForm] AddMaterialDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllMaterial")]
-        public async ValueTask<IActionResult> GetAllMaterial()
+        public async Task<IActionResult> GetAllMaterial()
         {
             try
             {
@@ -130,7 +130,7 @@ namespace FamTec.Server.Controllers.Material
         [HttpGet]
         [Route("sign/GetAllSearchMaterialList")]
 
-        public async ValueTask<IActionResult> GetAllSearchMaterialList()
+        public async Task<IActionResult> GetAllSearchMaterialList()
         {
             try
             {
@@ -160,7 +160,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllMaterialCount")]
-        public async ValueTask<IActionResult> GetAllMaterialCount()
+        public async Task<IActionResult> GetAllMaterialCount()
         {
             try
             {
@@ -188,7 +188,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationMaterial")]
-        public async ValueTask<IActionResult> GetAllPageNationMaterial([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllPageNationMaterial([FromQuery]int pagenum, [FromQuery]int pagesize)
         {
             try
             {
@@ -229,7 +229,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllCursorPageNationMaterial")]
-        public async ValueTask<IActionResult> GetAllCursorPageNationMaterial([FromQuery] int id, [FromQuery] int pagesize)// 조회ID - pagesize / return: nextid
+        public async Task<IActionResult> GetAllCursorPageNationMaterial([FromQuery] int id, [FromQuery] int pagesize)// 조회ID - pagesize / return: nextid
         {
             if (pagesize > 20)
                 return BadRequest(); // 사이즈 초과
@@ -253,7 +253,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMaterial")]
-        public async ValueTask<IActionResult> DetailMaterial([FromQuery]int materialid)
+        public async Task<IActionResult> DetailMaterial([FromQuery]int materialid)
         {
             try
             {
@@ -285,7 +285,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateMaterial")]
-        public async ValueTask<IActionResult> UpdateMaterial([FromForm]UpdateMaterialDTO dto, [FromForm]IFormFile? files)
+        public async Task<IActionResult> UpdateMaterial([FromForm]UpdateMaterialDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -347,7 +347,7 @@ namespace FamTec.Server.Controllers.Material
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteMaterial")]
-        public async ValueTask<IActionResult> DeleteMateral([FromBody]List<int> delIdx)
+        public async Task<IActionResult> DeleteMateral([FromBody]List<int> delIdx)
         {
             try
             {

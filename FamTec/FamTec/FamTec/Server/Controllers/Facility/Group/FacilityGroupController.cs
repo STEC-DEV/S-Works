@@ -27,7 +27,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddGroup")]
-        public async ValueTask<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
+        public async Task<IActionResult> AddGroup([FromBody] AddGroupInfoDTO dto)
         {
             try
             {
@@ -61,8 +61,8 @@ namespace FamTec.Server.Controllers.Facility.Group
         //[HttpGet]
         [HttpPost]
         [Route("sign/AddFacilityGroup")]
-        //public async ValueTask<IActionResult> AddFacilityGroup()
-        public async ValueTask<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO dto)
+        //public async Task<IActionResult> AddFacilityGroup()
+        public async Task<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFacilityGroup")]
-        public async ValueTask<IActionResult> GetDetailFacility([FromQuery]int Facilityid)
+        public async Task<IActionResult> GetDetailFacility([FromQuery]int Facilityid)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateGroup")]
-        public async ValueTask<IActionResult> UpdateFacilityGroup([FromBody] UpdateGroupDTO dto)
+        public async Task<IActionResult> UpdateFacilityGroup([FromBody] UpdateGroupDTO dto)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DeleteGroup")]
-        public async ValueTask<IActionResult> DeleteFacilityGroup([FromQuery]int groupid)
+        public async Task<IActionResult> DeleteFacilityGroup([FromQuery]int groupid)
         {
             try
             {

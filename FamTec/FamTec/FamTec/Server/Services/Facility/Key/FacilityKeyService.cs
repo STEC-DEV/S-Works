@@ -30,7 +30,7 @@ namespace FamTec.Server.Services.Facility.Key
         }
 
 
-        public async ValueTask<ResponseUnit<AddKeyDTO>> AddKeyService(HttpContext context, AddKeyDTO dto)
+        public async Task<ResponseUnit<AddKeyDTO>> AddKeyService(HttpContext context, AddKeyDTO dto)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace FamTec.Server.Services.Facility.Key
             }
         }
 
-        public async ValueTask<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(HttpContext context, UpdateKeyDTO dto)
+        public async Task<ResponseUnit<UpdateKeyDTO>> UpdateKeyService(HttpContext context, UpdateKeyDTO dto)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace FamTec.Server.Services.Facility.Key
         }
 
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId)
+        public async Task<ResponseUnit<bool?>> DeleteKeyService(HttpContext context, int KeyId)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace FamTec.Server.Services.Facility.Key
         /// <param name="context"></param>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeletKeyListService(HttpContext? context, List<int> KeyId)
+        public async Task<ResponseUnit<bool?>> DeletKeyListService(HttpContext? context, List<int> KeyId)
         {
             try
             {

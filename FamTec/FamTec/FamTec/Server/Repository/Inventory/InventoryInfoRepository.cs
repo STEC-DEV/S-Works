@@ -4,6 +4,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
 
@@ -29,7 +30,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<int?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid)
+        public async Task<int?> AddAsync(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -47,9 +48,6 @@ namespace FamTec.Server.Repository.Inventory
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         // ADD 작업
                         foreach (InOutInventoryDTO InventoryDTO in dto)
                         {
@@ -111,11 +109,26 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.CommitAsync().ConfigureAwait(false);
                         return 1;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
                     catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return -1;
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
                     }
                     catch (Exception ex)
                     {
@@ -133,7 +146,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<PeriodicDTO>?> GetInventoryRecord(int placeid,List<int> materialid, DateTime startDate, DateTime endDate)
+        public async Task<List<PeriodicDTO>?> GetInventoryRecord(int placeid,List<int> materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
@@ -186,7 +199,12 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return new List<PeriodicDTO>();
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -201,7 +219,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="MaterialIdx"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int placeid, List<int> MaterialIdx, bool type)
+        public async Task<List<MaterialHistory>?> GetPlaceInventoryRecord(int placeid, List<int> MaterialIdx, bool type)
         {
             try
             {
@@ -437,7 +455,12 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return null;
@@ -453,7 +476,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="delcount"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount)
+        public async Task<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delcount)
         {
             try
             {
@@ -484,14 +507,19 @@ namespace FamTec.Server.Repository.Inventory
                 else // 개수 조회결과가 아에없음
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-        public async ValueTask<InventoryTb?> GetInventoryInfo(int id)
+        public async Task<InventoryTb?> GetInventoryInfo(int id)
         {
             try
             {
@@ -504,7 +532,12 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -519,7 +552,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        public async ValueTask<FailResult?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid)
+        public async Task<FailResult?> SetOutInventoryInfo(List<InOutInventoryDTO> dto, string creater, int placeid)
         {
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
@@ -538,9 +571,6 @@ namespace FamTec.Server.Repository.Inventory
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (InOutInventoryDTO model in dto)
                         {
                             // 출고할게 여러곳에 있으니 Check 개수 Check
@@ -833,6 +863,21 @@ namespace FamTec.Server.Repository.Inventory
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return ReturnResult;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         ReturnResult.ReturnResult = -2;
@@ -846,7 +891,7 @@ namespace FamTec.Server.Repository.Inventory
         }
 
         // IN - OUT시 이용가능한지 CHECK
-        public async ValueTask<bool?> AvailableCheck(int placeid, int roomid, int materialid)
+        public async Task<bool?> AvailableCheck(int placeid, int roomid, int materialid)
         {
             try
             {
@@ -864,7 +909,11 @@ namespace FamTec.Server.Repository.Inventory
                     return false;
                 else
                     return true;
-
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -879,7 +928,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int placeid, int materialid)
+        public async Task<List<InventoryTb>?> GetPlaceMaterialInventoryList(int placeid, int materialid)
         {
             try
             {
@@ -896,7 +945,12 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 return null;
@@ -910,7 +964,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid)
+        public async Task<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid)
         {
             try
             {
@@ -959,7 +1013,12 @@ namespace FamTec.Server.Repository.Inventory
                     return new List<InOutLocationDTO>();
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -975,7 +1034,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="outcount"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<InOutInventoryDTO>?> AddOutStoreList(int placeid,int roomid, int materialid, int outcount)
+        public async Task<List<InOutInventoryDTO>?> AddOutStoreList(int placeid,int roomid, int materialid, int outcount)
         {
             try
             {
@@ -1054,13 +1113,40 @@ namespace FamTec.Server.Repository.Inventory
                     return dto;
                 else
                     return new List<InOutInventoryDTO>();
-            }   
-            catch(Exception ex)
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

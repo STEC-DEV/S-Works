@@ -51,7 +51,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="adminid"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int adminid, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int adminid, IFormFile? files)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="userid"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> AdminLoginService(LoginDTO dto)
+        public async Task<ResponseUnit<string?>> AdminLoginService(LoginDTO dto)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext context, AddManagerDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<int?>> AdminRegisterService(HttpContext context, AddManagerDTO dto, IFormFile? files)
         {
             try
             {
@@ -322,7 +322,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="context"></param>
         /// <param name="useridx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteAdminService(HttpContext context, List<int> adminidx)
+        public async Task<ResponseUnit<bool?>> DeleteAdminService(HttpContext context, List<int> adminidx)
         {
             try
             {
@@ -372,7 +372,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx)
+        public async Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx)
         {
             try
             {
@@ -433,7 +433,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UserIdCheckService(string userid)
+        public async Task<ResponseUnit<bool?>> UserIdCheckService(string userid)
         {
             try
             {

@@ -33,7 +33,7 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(HttpContext context, AddGroupDTO dto)
+        public async Task<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(HttpContext context, AddGroupDTO dto)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddGroupInfoDTO>> AddFacilityGroupInfoService(HttpContext context, AddGroupInfoDTO dto)
+        public async Task<ResponseUnit<AddGroupInfoDTO>> AddFacilityGroupInfoService(HttpContext context, AddGroupInfoDTO dto)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace FamTec.Server.Services.Facility.Group
             }
         }
 
-        public async ValueTask<ResponseList<GroupListDTO>> GetFacilityGroupListService(HttpContext context, int facilityid)
+        public async Task<ResponseList<GroupListDTO>> GetFacilityGroupListService(HttpContext context, int facilityid)
         {
             try
             {
@@ -224,7 +224,7 @@ namespace FamTec.Server.Services.Facility.Group
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace FamTec.Server.Services.Facility.Group
         /// <param name="context"></param>
         /// <param name="groupid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
+        public async Task<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
         {
             try
             {

@@ -54,7 +54,7 @@ namespace FamTec.Server.Services.User
             this.LogService = _logservice;
         }
      
-        public async ValueTask<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto)
+        public async Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto)
         {
             try
             {
@@ -292,7 +292,7 @@ namespace FamTec.Server.Services.User
         }
        
 
-        public async ValueTask<ResponseUnit<string?>> LoginSelectPlaceService(HttpContext context, int placeid)
+        public async Task<ResponseUnit<string?>> LoginSelectPlaceService(HttpContext context, int placeid)
         {
             try
             {
@@ -527,7 +527,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> UserLoginService(LoginDTO dto)
+        public async Task<ResponseUnit<string?>> UserLoginService(LoginDTO dto)
         {
             try
             {
@@ -728,7 +728,7 @@ namespace FamTec.Server.Services.User
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<ListUser>> GetPlaceUserList(HttpContext context)
+        public async Task<ResponseList<ListUser>> GetPlaceUserList(HttpContext context)
         {
             try
             {
@@ -779,7 +779,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UsersDTO>> AddUserService(HttpContext context, UsersDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<UsersDTO>> AddUserService(HttpContext context, UsersDTO dto, IFormFile? files)
         {
             try
             {
@@ -885,7 +885,7 @@ namespace FamTec.Server.Services.User
         }
 
 
-        public async ValueTask<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id)
+        public async Task<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id)
         {
             try
             {
@@ -980,7 +980,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="del"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteUserService(HttpContext context, List<int> del)
+        public async Task<ResponseUnit<bool?>> DeleteUserService(HttpContext context, List<int> del)
         {
             try
             {
@@ -1020,7 +1020,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext context, UsersDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext context, UsersDTO dto, IFormFile? files)
         {
             try
             {
@@ -1198,7 +1198,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file)
+        public async Task<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file)
         {
             try
             {

@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO.Building;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Building.SubItem.ItemKey
@@ -27,7 +28,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb model)
+        public async Task<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb model)
         {
             try
             {
@@ -40,7 +41,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -52,7 +63,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="groupitemid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemKeyTb>?> GetAllKeyList(int groupitemid)
+        public async Task<List<BuildingItemKeyTb>?> GetAllKeyList(int groupitemid)
         {
             try
             {
@@ -67,7 +78,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -79,7 +95,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemKeyTb?> GetKeyInfo(int keyid)
+        public async Task<BuildingItemKeyTb?> GetKeyInfo(int keyid)
         {
             try
             {
@@ -92,7 +108,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -104,14 +125,24 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(BuildingItemKeyTb model)
+        public async Task<bool?> UpdateKeyInfo(BuildingItemKeyTb model)
         {
             try
             {
                 context.BuildingItemKeyTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -124,7 +155,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="dto"></param>
         /// <param name="updater"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater)
+        public async Task<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -142,9 +173,6 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs
                             .FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true).ConfigureAwait(false);
 
@@ -276,6 +304,21 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                             return (bool?)null;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -290,12 +333,22 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteKeyInfo(BuildingItemKeyTb model)
+        public async Task<bool?> DeleteKeyInfo(BuildingItemKeyTb model)
         {
             try
             {
                 context.BuildingItemKeyTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -309,7 +362,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="KeyList"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter)
+        public async Task<bool?> DeleteKeyList(List<int> KeyList, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -327,9 +380,6 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int KeyId in KeyList)
                         {
                             BuildingItemKeyTb? KeyTB = await context.BuildingItemKeyTbs
@@ -375,6 +425,21 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -390,7 +455,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemKeyTb>?> ContainsKeyList(List<int> GroupItemId)
+        public async Task<List<BuildingItemKeyTb>?> ContainsKeyList(List<int> GroupItemId)
         {
             try
             {
@@ -405,7 +470,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -417,7 +487,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemKeyTb>?> NotContainsKeyList(List<int> GroupItemId)
+        public async Task<List<BuildingItemKeyTb>?> NotContainsKeyList(List<int> GroupItemId)
         {
             try
             {
@@ -432,6 +502,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -439,6 +514,22 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
             }
         }
 
-   
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

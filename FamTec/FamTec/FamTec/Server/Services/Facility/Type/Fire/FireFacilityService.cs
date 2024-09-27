@@ -30,7 +30,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         }
 
 
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetFireFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetFireFacilityListService(HttpContext context)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetFireDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetFireDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateFireFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -343,7 +343,7 @@ namespace FamTec.Server.Services.Facility.Type.Fire
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteFireFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteFireFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

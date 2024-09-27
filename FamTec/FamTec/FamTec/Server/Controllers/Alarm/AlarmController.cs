@@ -30,7 +30,7 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAlarmList")]
-        public async ValueTask<IActionResult> GetAlarmList()
+        public async Task<IActionResult> GetAlarmList()
         {
             try
             {
@@ -62,7 +62,7 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAlarmDateList")]
-        public async ValueTask<IActionResult> GetAlarmDateList()
+        public async Task<IActionResult> GetAlarmDateList()
         {
             try
             {
@@ -95,7 +95,7 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/AllAlarmDelete")]
-        public async ValueTask<IActionResult> AllAlarmDelete()
+        public async Task<IActionResult> AllAlarmDelete()
         {
             try
             {
@@ -126,7 +126,7 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/AlarmDelete")]
-        public async ValueTask<IActionResult> AlarmDelete([FromBody]int delId)
+        public async Task<IActionResult> AlarmDelete([FromBody]int delId)
         {
             try
             {

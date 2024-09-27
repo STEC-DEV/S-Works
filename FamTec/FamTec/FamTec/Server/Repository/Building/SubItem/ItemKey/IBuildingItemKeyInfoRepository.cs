@@ -10,28 +10,28 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb model);
+        Task<BuildingItemKeyTb?> AddAsync(BuildingItemKeyTb model);
 
         /// <summary>
         /// 그룹 KEY 리스트 상세검색 groupitemid로 검색
         /// </summary>
         /// <param name="groupitemid"></param>
         /// <returns></returns>
-        ValueTask<List<BuildingItemKeyTb>?> GetAllKeyList(int groupitemid);
+        Task<List<BuildingItemKeyTb>?> GetAllKeyList(int groupitemid);
 
         /// <summary>
         /// 그룹 KEY 상세검색 keyid로 검색
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        ValueTask<BuildingItemKeyTb?> GetKeyInfo(int keyid);
+        Task<BuildingItemKeyTb?> GetKeyInfo(int keyid);
         
         /// <summary>
         /// 그룹 KEY 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateKeyInfo(BuildingItemKeyTb model);
+        Task<bool?> UpdateKeyInfo(BuildingItemKeyTb model);
 
         /// <summary>
         /// 그룹 KEY - VALUE 업데이트
@@ -39,34 +39,34 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemKey
         /// <param name="dto"></param>
         /// <param name="updater"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater);
+        Task<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater);
 
         /// <summary>
         /// 그룹 KEY 삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteKeyInfo(BuildingItemKeyTb model);
+        Task<bool?> DeleteKeyInfo(BuildingItemKeyTb model);
 
         /// <summary>
         /// 그룹 KEY 리스트 삭제 - Value 까지 삭제됨
         /// </summary>
         /// <param name="KeyList"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter);
+        Task<bool?> DeleteKeyList(List<int> KeyList, string deleter);
 
         /// <summary>
         /// 넘어온 GroupItemId에 포함되어있는 KeyTb 반환
         /// </summary>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        ValueTask<List<BuildingItemKeyTb>?> ContainsKeyList(List<int> GroupItemId);
+        Task<List<BuildingItemKeyTb>?> ContainsKeyList(List<int> GroupItemId);
 
         /// <summary>
         /// 넘어온 GroupItemId에 포함되어있지 않은 KeyTb 반환
         /// </summary>
         /// <param name="KeyId"></param>
         /// <returns></returns>
-        ValueTask<List<BuildingItemKeyTb>?> NotContainsKeyList(List<int> GroupItemId);
+        Task<List<BuildingItemKeyTb>?> NotContainsKeyList(List<int> GroupItemId);
     }
 }

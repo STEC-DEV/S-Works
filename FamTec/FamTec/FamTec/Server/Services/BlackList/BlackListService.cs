@@ -23,7 +23,7 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddBlackListDTO>> AddBlackList(HttpContext context, AddBlackListDTO dto)
+        public async Task<ResponseUnit<AddBlackListDTO>> AddBlackList(HttpContext context, AddBlackListDTO dto)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace FamTec.Server.Services.BlackList
         /// 블랙리스트 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BlackListDTO>> GetAllBlackList(HttpContext context)
+        public async Task<ResponseList<BlackListDTO>> GetAllBlackList(HttpContext context)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> GetBlackListCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetBlackListCountService(HttpContext context)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace FamTec.Server.Services.BlackList
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BlackListDTO>> GetAllBlackListPageNation(HttpContext context, int pagenumber, int pagesize)
+        public async Task<ResponseList<BlackListDTO>> GetAllBlackListPageNation(HttpContext context, int pagenumber, int pagesize)
         {
             try
             {
@@ -167,7 +167,7 @@ namespace FamTec.Server.Services.BlackList
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateBlackList(HttpContext context, BlackListDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateBlackList(HttpContext context, BlackListDTO dto)
         {
             try
             {
@@ -210,7 +210,7 @@ namespace FamTec.Server.Services.BlackList
         /// <param name="delIdx"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteBlackList(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteBlackList(HttpContext context, List<int> delIdx)
         {
             try
             {

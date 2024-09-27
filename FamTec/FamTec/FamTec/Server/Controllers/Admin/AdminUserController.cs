@@ -42,8 +42,8 @@ namespace FamTec.Server.Controllers.Admin
         [HttpPost]
         //[HttpGet]
         [Route("sign/AddManager")]
-        //public async ValueTask<IActionResult> AddManager( [FromForm] IFormFile? files)
-        public async ValueTask<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
+        //public async Task<IActionResult> AddManager( [FromForm] IFormFile? files)
+        public async Task<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/DetailManagerInfo")]
-        public async ValueTask<IActionResult> GetManagerInfo([FromQuery]int adminid)
+        public async Task<IActionResult> GetManagerInfo([FromQuery]int adminid)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/AddManagerWorks")]
-        public async ValueTask<IActionResult> AddManagerWorks([FromBody] AddManagerPlaceDTO dto)
+        public async Task<IActionResult> AddManagerWorks([FromBody] AddManagerPlaceDTO dto)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteManager")]
-        public async ValueTask<IActionResult> DeleteManager([FromBody]List<int> adminidx)
+        public async Task<IActionResult> DeleteManager([FromBody]List<int> adminidx)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManagerImage")]
-        public async ValueTask<IActionResult> UpdateManagerImage([FromForm]int adminid, [FromForm]IFormFile? files)
+        public async Task<IActionResult> UpdateManagerImage([FromForm]int adminid, [FromForm]IFormFile? files)
         {
             try
             {
@@ -279,9 +279,9 @@ namespace FamTec.Server.Controllers.Admin
         [HttpPut]
         //[HttpGet]
         [Route("sign/UpdateManager")]
-        //public async ValueTask<IActionResult> UpdateManager()
+        //public async Task<IActionResult> UpdateManager()
 
-        public async ValueTask<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
+        public async Task<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
         {
             try
             {
@@ -346,7 +346,7 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/UserIdCheck")]
-        public async ValueTask<IActionResult> UserIdCheck([FromBody] string userid)
+        public async Task<IActionResult> UserIdCheck([FromBody] string userid)
         {
             try
             {

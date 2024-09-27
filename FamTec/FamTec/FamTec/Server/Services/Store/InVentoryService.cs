@@ -28,7 +28,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async Task<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
+        public async Task<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context)
+        public async Task<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context)
+        public async Task<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="pagenum"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize)
+        public async Task<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate)
+        public async Task<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type)
+        public async Task<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type)
         {
             try
             {
@@ -265,7 +265,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="MaterialId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid)
+        public async Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid)
         {
             try
             {
@@ -297,7 +297,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
+        public async Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount)
         {
             try
             {

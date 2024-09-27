@@ -40,7 +40,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddSupMaintenance")]
-        public async ValueTask<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
+        public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
         {
             try
             {
@@ -113,8 +113,8 @@ namespace FamTec.Server.Controllers.Maintenance
         //[HttpGet]
         [HttpPut]
         [Route("sign/UpdateMaintenance")]
-        //public async ValueTask<IActionResult> UpdateMaintenance([FromForm] IFormFile? files)
-        public async ValueTask<IActionResult> UpdateMaintenance([FromForm]UpdateMaintenanceDTO dto, [FromForm]IFormFile? files)
+        //public async Task<IActionResult> UpdateMaintenance([FromForm] IFormFile? files)
+        public async Task<IActionResult> UpdateMaintenance([FromForm]UpdateMaintenanceDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -167,7 +167,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMaintenanceImage")]
-        public async ValueTask<IActionResult> AddMaintenanceImage([FromForm] int id, [FromForm] IFormFile? files)
+        public async Task<IActionResult> AddMaintenanceImage([FromForm] int id, [FromForm] IFormFile? files)
         {
             try
             {
@@ -224,8 +224,8 @@ namespace FamTec.Server.Controllers.Maintenance
         [HttpPost]
         //[HttpGet]
         [Route("sign/AddMaintenance")]
-        //public async ValueTask<IActionResult> AddMaintenence()
-        public async ValueTask<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
+        //public async Task<IActionResult> AddMaintenence()
+        public async Task<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
             {
@@ -310,7 +310,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetMaintanceHistory")]
-        public async ValueTask<IActionResult> GetMaintanceHistory([FromQuery]int facilityid)
+        public async Task<IActionResult> GetMaintanceHistory([FromQuery]int facilityid)
         {
             try
             {
@@ -336,7 +336,7 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailMaintance")]
-        public async ValueTask<IActionResult> GetDetailMaintance([FromQuery]int Maintanceid)
+        public async Task<IActionResult> GetDetailMaintance([FromQuery]int Maintanceid)
         {
             try
             {
@@ -368,8 +368,8 @@ namespace FamTec.Server.Controllers.Maintenance
         //[HttpGet]
         [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        //public async ValueTask<IActionResult> DeleteMaintenanceList()
-        public async ValueTask<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
+        //public async Task<IActionResult> DeleteMaintenanceList()
+        public async Task<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
@@ -410,8 +410,8 @@ namespace FamTec.Server.Controllers.Maintenance
         [HttpPost]
         //[HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        //public async ValueTask<IActionResult> DeleteMaintanceHistory()
-        public async ValueTask<IActionResult> DeleteMaintenanceStore([FromBody]DeleteMaintanceDTO delInfo)
+        //public async Task<IActionResult> DeleteMaintanceHistory()
+        public async Task<IActionResult> DeleteMaintenanceStore([FromBody]DeleteMaintanceDTO delInfo)
         {
             try
             {
@@ -460,8 +460,8 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        //public async ValueTask<IActionResult> GetDateHistoryList()
-        public async ValueTask<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]List<string> category, [FromQuery]List<int> type)
+        //public async Task<IActionResult> GetDateHistoryList()
+        public async Task<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
             {
@@ -506,8 +506,8 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllHistoryList")]
-        //public async ValueTask<IActionResult> GetAllHistoryList()
-        public async ValueTask<IActionResult> GetAllHistoryList([FromQuery]List<string> category, [FromQuery]List<int> type)
+        //public async Task<IActionResult> GetAllHistoryList()
+        public async Task<IActionResult> GetAllHistoryList([FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
             {

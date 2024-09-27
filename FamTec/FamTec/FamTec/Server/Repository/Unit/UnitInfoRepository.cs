@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Unit
@@ -23,7 +24,7 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<UnitTb?> AddAsync(UnitTb model)
+        public async Task<UnitTb?> AddAsync(UnitTb model)
         {
             try
             {
@@ -36,20 +37,29 @@ namespace FamTec.Server.Repository.Unit
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-
         /// <summary>
         /// 사업장별 단위 리스트 조회
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<UnitTb>?> GetUnitList(int placeid)
+        public async Task<List<UnitTb>?> GetUnitList(int placeid)
         {
             try
             {
@@ -63,22 +73,25 @@ namespace FamTec.Server.Repository.Unit
                     return model;
                 else
                     return null;
-                
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-
         /// <summary>
         /// 단위정보 인덱스로 단위모델 조회
         /// </summary>
         /// <param name="UnitIdx"></param>
         /// <returns></returns>
-        public async ValueTask<UnitTb?> GetUnitInfo(int UnitIdx)
+        public async Task<UnitTb?> GetUnitInfo(int UnitIdx)
         {
             try
             {
@@ -89,10 +102,14 @@ namespace FamTec.Server.Repository.Unit
                 if (model is not null)
                     return model;
                 else
-                    return null;
-                
+                    return null;   
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -105,7 +122,7 @@ namespace FamTec.Server.Repository.Unit
         /// <param name="unit"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddUnitInfoCheck(string unit, int placeid)
+        public async Task<bool?> AddUnitInfoCheck(string unit, int placeid)
         {
             try
             {
@@ -120,7 +137,12 @@ namespace FamTec.Server.Repository.Unit
                 else
                     return true;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -132,7 +154,7 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteUnitInfo(List<int> idx, string deleter)
+        public async Task<bool?> DeleteUnitInfo(List<int> idx, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -150,9 +172,6 @@ namespace FamTec.Server.Repository.Unit
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int unitid in idx)
                         {
                             UnitTb? UnitModel = await context.UnitTbs
@@ -183,7 +202,21 @@ namespace FamTec.Server.Repository.Unit
                             await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
-
+                    }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
                     }
                     catch (Exception ex)
                     {
@@ -200,12 +233,22 @@ namespace FamTec.Server.Repository.Unit
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateUnitInfo(UnitTb model)
+        public async Task<bool?> UpdateUnitInfo(UnitTb model)
         {
             try
             {
                 context.UnitTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -214,6 +257,22 @@ namespace FamTec.Server.Repository.Unit
             }
         }
 
-     
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

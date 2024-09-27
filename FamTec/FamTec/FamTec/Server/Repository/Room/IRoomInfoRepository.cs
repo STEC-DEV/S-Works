@@ -10,35 +10,35 @@ namespace FamTec.Server.Repository.Room
         /// </summary>
         /// <param name="roomid"></param>
         /// <returns></returns>
-        ValueTask<bool?> DelRoomCheck(int roomid);
+        Task<bool?> DelRoomCheck(int roomid);
 
         /// <summary>
         /// 공간 정보 추가
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<RoomTb?> AddAsync(RoomTb model);
+        Task<RoomTb?> AddAsync(RoomTb model);
 
         /// <summary>
         /// 층에 해당하는 공간 List 반환
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<List<RoomTb>?> GetRoomList(int flooridx);
+        Task<List<RoomTb>?> GetRoomList(int flooridx);
 
         /// <summary>
         /// 층에 해당하는 공간 List 조회
         /// </summary>
         /// <param name="FloorList"></param>
         /// <returns></returns>
-        ValueTask<List<RoomTb>?> GetFloorRoomList(List<FloorTb> FloorList);
+        Task<List<RoomTb>?> GetFloorRoomList(List<FloorTb> FloorList);
 
         /// <summary>
         /// 공간 인덱스로 공간 검색
         /// </summary>
         /// <param name="roomidx"></param>
         /// <returns></returns>
-        ValueTask<RoomTb?> GetRoomInfo(int roomidx);
+        Task<RoomTb?> GetRoomInfo(int roomidx);
 
         /// <summary>
         /// 공간 삭제검사
@@ -46,21 +46,21 @@ namespace FamTec.Server.Repository.Room
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        ValueTask<bool?> RoomDeleteCheck(int placeid, int roomidx);
+        Task<bool?> RoomDeleteCheck(int placeid, int roomidx);
 
         /// <summary>
         /// 공간정보 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateRoomInfo(RoomTb model);
+        Task<bool?> UpdateRoomInfo(RoomTb model);
 
         /// <summary>
         /// 공간정보 삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteRoomInfo(RoomTb model);
+        Task<bool?> DeleteRoomInfo(RoomTb model);
 
         /// <summary>
         /// 공간정보 삭제
@@ -68,13 +68,13 @@ namespace FamTec.Server.Repository.Room
         /// <param name="idx"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteRoomInfo(List<int> idx, string deleter);
+        Task<bool?> DeleteRoomInfo(List<int> idx, string deleter);
 
         /// <summary>
         /// 사업장에 해당하는 전체건물 - 전체층 - 전체공간 Group
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<PlaceRoomListDTO>?> GetPlaceAllGroupRoomInfo(int placeid);
+        Task<List<PlaceRoomListDTO>?> GetPlaceAllGroupRoomInfo(int placeid);
     }
 }

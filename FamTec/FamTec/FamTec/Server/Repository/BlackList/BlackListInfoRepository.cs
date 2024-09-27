@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.BlackList
@@ -24,7 +25,7 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> AddAsync(BlacklistTb model)
+        public async Task<BlacklistTb?> AddAsync(BlacklistTb model)
         {
             try
             {
@@ -37,7 +38,17 @@ namespace FamTec.Server.Repository.BlackList
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -48,7 +59,7 @@ namespace FamTec.Server.Repository.BlackList
         /// 블랙리스트 전체조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<BlacklistTb>?> GetBlackList()
+        public async Task<List<BlacklistTb>?> GetBlackList()
         {
             try
             {
@@ -63,7 +74,12 @@ namespace FamTec.Server.Repository.BlackList
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -77,7 +93,7 @@ namespace FamTec.Server.Repository.BlackList
         /// <param name="pagesize"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<BlacklistTb>?> GetBlackListPaceNationList(int pagenumber, int pagesize)
+        public async Task<List<BlacklistTb>?> GetBlackListPaceNationList(int pagenumber, int pagesize)
         {
             try
             {
@@ -94,7 +110,12 @@ namespace FamTec.Server.Repository.BlackList
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -105,7 +126,7 @@ namespace FamTec.Server.Repository.BlackList
         /// 블랙리스트 개수 반환
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<int> GetBlackListCount()
+        public async Task<int> GetBlackListCount()
         {
             try
             {
@@ -116,7 +137,12 @@ namespace FamTec.Server.Repository.BlackList
 
                 return count;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -128,7 +154,7 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> GetBlackListInfo(string PhoneNumber)
+        public async Task<BlacklistTb?> GetBlackListInfo(string PhoneNumber)
         {
             try
             {
@@ -141,7 +167,12 @@ namespace FamTec.Server.Repository.BlackList
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -153,7 +184,7 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<BlacklistTb?> GetBlackListInfo(int id)
+        public async Task<BlacklistTb?> GetBlackListInfo(int id)
         {
             try
             {
@@ -165,9 +196,13 @@ namespace FamTec.Server.Repository.BlackList
                     return model;
                 else
                     return null;
-
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -179,7 +214,7 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter)
+        public async Task<bool?> DeleteBlackList(List<int> delIdx, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -196,9 +231,6 @@ namespace FamTec.Server.Repository.BlackList
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int BlackListID in delIdx)
                         {
                             BlacklistTb? BlackListTB = await context.BlacklistTbs
@@ -233,7 +265,21 @@ namespace FamTec.Server.Repository.BlackList
                             await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
-
+                    }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
                     }
                     catch (Exception ex)
                     {
@@ -249,20 +295,46 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateBlackList(BlacklistTb model)
+        public async Task<bool?> UpdateBlackList(BlacklistTb model)
         {
             try
             {
                 context.BlacklistTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
 
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

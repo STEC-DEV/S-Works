@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddContract")]
-        public async ValueTask<IActionResult> AddContract([FromBody]AddContractDTO dto)
+        public async Task<IActionResult> AddContract([FromBody]AddContractDTO dto)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace FamTec.Server.Controllers.Meter.Contract
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllContract")]
-        public async ValueTask<IActionResult> GetAllContract()
+        public async Task<IActionResult> GetAllContract()
         {
             try
             {

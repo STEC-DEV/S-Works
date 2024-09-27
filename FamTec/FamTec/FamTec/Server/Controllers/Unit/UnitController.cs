@@ -30,7 +30,7 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/SelectUnitList")]
-        public async ValueTask<IActionResult> GetUnitList()
+        public async Task<IActionResult> GetUnitList()
         {
             try
             {
@@ -61,7 +61,7 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddUnitInfo")]
-        public async ValueTask<IActionResult> AddUnitInfo([FromBody] UnitsDTO dto)
+        public async Task<IActionResult> AddUnitInfo([FromBody] UnitsDTO dto)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteUnitInfo")]
-        public async ValueTask<IActionResult> DeleteUnitInfo([FromBody] List<int> unitid)
+        public async Task<IActionResult> DeleteUnitInfo([FromBody] List<int> unitid)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace FamTec.Server.Controllers.Unit
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateUnitInfo")]
-        public async ValueTask<IActionResult> UpdateUnitInfo([FromBody] UnitsDTO dto)
+        public async Task<IActionResult> UpdateUnitInfo([FromBody] UnitsDTO dto)
         {
             try
             {

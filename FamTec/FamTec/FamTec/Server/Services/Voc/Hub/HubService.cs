@@ -70,7 +70,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="obj"></param>
         /// <param name="image"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO dto, List<IFormFile>? files)
+        public async Task<ResponseUnit<AddVocReturnDTO?>> AddVocService(AddVocDTO dto, List<IFormFile>? files)
         {
             try
             {
@@ -265,7 +265,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// </summary>
         /// <param name="voccode"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode)
+        public async Task<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode)
         {
             try
             {
@@ -347,7 +347,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="voccode"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode)
+        public async Task<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode)
         {
             try
             {
@@ -423,7 +423,7 @@ namespace FamTec.Server.Services.Voc.Hub
         /// </summary>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid)
+        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid)
         {
             try
             {

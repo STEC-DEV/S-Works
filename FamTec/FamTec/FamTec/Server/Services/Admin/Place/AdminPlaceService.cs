@@ -39,7 +39,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="context">JWT 토큰</param>
         /// <returns>ResponseList<AllPlaceDTO></returns>
-        public async ValueTask<ResponseList<AllPlaceDTO>> GetAllWorksService(HttpContext context)
+        public async Task<ResponseList<AllPlaceDTO>> GetAllWorksService(HttpContext context)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksService(int adminid)
+        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksService(int adminid)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context)
+        public async Task<ResponseList<AdminPlaceDTO>> GetMyWorksList(HttpContext context)
         {
             try
             {
@@ -194,7 +194,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// 관리자정보 전체조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<ResponseList<ManagerListDTO>> GetAllManagerListService()
+        public async Task<ResponseList<ManagerListDTO>> GetAllManagerListService()
         {
             try
             {
@@ -218,7 +218,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">사업장 추가 DTO</param>
         /// <returns>추가된 사업장ID</returns>
-        public async ValueTask<ResponseUnit<int?>> AddPlaceService(HttpContext context, AddPlaceDTO dto)
+        public async Task<ResponseUnit<int?>> AddPlaceService(HttpContext context, AddPlaceDTO dto)
         {
             try
             {
@@ -283,7 +283,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="dto">수정할 DTO</param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto)
+        public async Task<ResponseUnit<UpdatePlaceDTO>> UpdatePlaceService(HttpContext context, UpdatePlaceDTO dto)
         {
             try
             {
@@ -349,7 +349,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<PlaceDetailDTO>> GetPlaceService(int placeid)
+        public async Task<ResponseUnit<PlaceDetailDTO>> GetPlaceService(int placeid)
         {
             try
             {
@@ -376,7 +376,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placemanager">추가할 관리자 정보 DTO</param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> placemanager)
+        public async Task<ResponseUnit<bool?>> AddPlaceManagerService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> placemanager)
         {
             try
             {
@@ -438,7 +438,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto)
+        public async Task<ResponseUnit<bool?>> AddManagerPlaceSerivce(HttpContext context, AddManagerPlaceDTO dto)
         {
             try
             {
@@ -504,7 +504,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> dto)
+        public async Task<ResponseUnit<bool?>> DeleteManagerPlaceService(HttpContext context, AddPlaceManagerDTO<ManagerListDTO> dto)
         {
             try
             {
@@ -542,7 +542,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeidx">삭제할 사업장 인덱스</param>
         /// <returns>TRUE & FALSE</returns>
-        public async ValueTask<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx)
+        public async Task<ResponseUnit<bool?>> DeletePlaceService(HttpContext context, List<int> placeidx)
         {
             try
             {
@@ -584,7 +584,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="placeid">사업장 ID</param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<ManagerListDTO>> NotContainManagerList(HttpContext context, int placeid)
+        public async Task<ResponseList<ManagerListDTO>> NotContainManagerList(HttpContext context, int placeid)
         {
             try
             {
@@ -615,7 +615,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="context">JWT 토큰</param>
         /// <param name="adminid">관리자 ID</param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AdminPlaceDTO>> NotContainPlaceList(HttpContext context, int adminid)
+        public async Task<ResponseList<AdminPlaceDTO>> NotContainPlaceList(HttpContext context, int adminid)
         {
             try
             {
@@ -646,7 +646,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> GetPlaceName(int placeid)
+        public async Task<ResponseUnit<string?>> GetPlaceName(int placeid)
         {
             try
             {

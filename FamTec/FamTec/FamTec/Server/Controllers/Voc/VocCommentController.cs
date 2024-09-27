@@ -36,7 +36,7 @@ namespace FamTec.Server.Controllers.Voc
         [HttpPost]
         [Route("sign/AddVocComment")]
 
-        public async ValueTask<IActionResult> AddVocComment([FromForm]AddVocCommentDTO dto, [FromForm] List<IFormFile>? files)
+        public async Task<IActionResult> AddVocComment([FromForm]AddVocCommentDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocCommentList")]
-        public async ValueTask<IActionResult> GetVocComment([FromQuery]int vocid)
+        public async Task<IActionResult> GetVocComment([FromQuery]int vocid)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace FamTec.Server.Controllers.Voc
         [HttpGet]
         [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
         [Route("sign/VocCommentDetail")]
-        public async ValueTask<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
+        public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {
             try
             {
@@ -167,8 +167,8 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/VocCommentUpdate")]
-        //public async ValueTask<IActionResult> UpdateVocComment([FromForm] List<IFormFile>? files)
-        public async ValueTask<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
+        //public async Task<IActionResult> UpdateVocComment([FromForm] List<IFormFile>? files)
+        public async Task<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
             {

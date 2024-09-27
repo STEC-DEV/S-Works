@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Store
 {
@@ -18,7 +19,7 @@ namespace FamTec.Server.Repository.Store
             this.LogService = _logservice;
         }
 
-        public async ValueTask<StoreTb?> AddAsync(StoreTb model)
+        public async Task<StoreTb?> AddAsync(StoreTb model)
         {
             try
             {
@@ -31,7 +32,17 @@ namespace FamTec.Server.Repository.Store
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -44,7 +55,7 @@ namespace FamTec.Server.Repository.Store
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<InOutHistoryListDTO>?> GetInOutList(int placeid)
+        public async Task<List<InOutHistoryListDTO>?> GetInOutList(int placeid)
         {
             try
             {
@@ -82,7 +93,12 @@ namespace FamTec.Server.Repository.Store
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -97,7 +113,7 @@ namespace FamTec.Server.Repository.Store
         /// <param name="pagesize"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<List<InOutHistoryListDTO>?> GetInOutPageNationList(int placeid, int pagenumber, int pagesize)
+        public async Task<List<InOutHistoryListDTO>?> GetInOutPageNationList(int placeid, int pagenumber, int pagesize)
         {
             try
             {
@@ -136,9 +152,13 @@ namespace FamTec.Server.Repository.Store
                     return model;
                 else
                     return null;
-
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -150,7 +170,7 @@ namespace FamTec.Server.Repository.Store
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<int> GetPlaceInOutCount(int placeid)
+        public async Task<int> GetPlaceInOutCount(int placeid)
         {
             try
             {
@@ -162,7 +182,12 @@ namespace FamTec.Server.Repository.Store
 
                 return count;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;

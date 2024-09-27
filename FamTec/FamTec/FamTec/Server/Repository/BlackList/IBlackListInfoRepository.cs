@@ -9,27 +9,27 @@ namespace FamTec.Server.Repository.BlackList
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> AddAsync(BlacklistTb model);
+        Task<BlacklistTb?> AddAsync(BlacklistTb model);
 
         /// <summary>
         /// 블랙리스트 휴대폰번호로 조회
         /// </summary>
         /// <param name="PhoneNumber"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> GetBlackListInfo(string PhoneNumber);
+        Task<BlacklistTb?> GetBlackListInfo(string PhoneNumber);
 
         /// <summary>
         /// 블랙리스트 인덱스로 조회
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ValueTask<BlacklistTb?> GetBlackListInfo(int id);
+        Task<BlacklistTb?> GetBlackListInfo(int id);
 
         /// <summary>
         /// 블랙리스트 전체조회
         /// </summary>
         /// <returns></returns>
-        ValueTask<List<BlacklistTb>?> GetBlackList();
+        Task<List<BlacklistTb>?> GetBlackList();
 
         /// <summary>
         /// 블랙리스트 페이지네이션 조회
@@ -37,26 +37,26 @@ namespace FamTec.Server.Repository.BlackList
         /// <param name="pagenumber"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        ValueTask<List<BlacklistTb>?> GetBlackListPaceNationList(int pagenumber, int pagesize);
+        Task<List<BlacklistTb>?> GetBlackListPaceNationList(int pagenumber, int pagesize);
 
         /// <summary>
         /// 블랙리스트 개수 조회
         /// </summary>
         /// <returns></returns>
-        ValueTask<int> GetBlackListCount();
+        Task<int> GetBlackListCount();
 
         /// <summary>
         /// 블랙리스트 정보 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateBlackList(BlacklistTb model);
+        Task<bool?> UpdateBlackList(BlacklistTb model);
 
         /// <summary>
         /// 블랙리스트 삭제
         /// </summary>
         /// <param name="delIdx"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteBlackList(List<int> delIdx, string deleter);
+        Task<bool?> DeleteBlackList(List<int> delIdx, string deleter);
     }
 }

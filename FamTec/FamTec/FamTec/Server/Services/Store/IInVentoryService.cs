@@ -12,21 +12,21 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto);
+        public Task<ResponseUnit<int?>> AddInStoreService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 입출고 이력
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context);
+        public Task<ResponseList<InOutHistoryListDTO>> GetInOutHistoryService(HttpContext context);
 
         /// <summary>
         /// 사업장의 입-출고 이력 개수 반환
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context);
+        public Task<ResponseUnit<int?>> GetPlaceInOutCountService(HttpContext context);
 
         /// <summary>
         /// 입-출고 이력 페이지네이션 조회
@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="pagenum"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize);
+        public Task<ResponseList<InOutHistoryListDTO>> GetInoutPageNationHistoryService(HttpContext context, int pagenum, int pagesize);
 
         /// <summary>
         /// 출고 등록
@@ -43,7 +43,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
+        public Task<ResponseUnit<FailResult?>> OutInventoryService(HttpContext context, List<InOutInventoryDTO> dto);
 
         /// <summary>
         /// 품목별 기간별 입출고내역
@@ -53,7 +53,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate);
+        public Task<ResponseList<PeriodicDTO>> PeriodicInventoryRecordService(HttpContext context, List<int> materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 사업장별 재고 현황
@@ -62,7 +62,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type);
+        public Task<ResponseList<MaterialHistory>> GetPlaceInventoryRecordService(HttpContext context, List<int> materialid, bool type);
 
         /// <summary>
         /// 해당 품목의 재고수량 반환
@@ -70,7 +70,7 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <param name="MaterialId"></param>
         /// <returns></returns>
-        public ValueTask<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid);
+        public Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid);
 
         /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용
@@ -80,6 +80,6 @@ namespace FamTec.Server.Services.Store
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount);
+        public Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount);
     }
 }

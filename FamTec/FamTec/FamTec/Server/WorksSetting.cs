@@ -23,7 +23,7 @@ namespace FamTec.Server
             };
         }
 
-        public async ValueTask DefaultSetting()
+        public async Task DefaultSetting()
         {
             List<string>? unittb = await context.UnitTbs
                 .Where(m => m.DelYn != true &&

@@ -12,7 +12,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<string?>> AdminLoginService(LoginDTO dto);
+        public Task<ResponseUnit<string?>> AdminLoginService(LoginDTO dto);
 
         /// <summary>
         /// 관리자 계정 생성
@@ -20,14 +20,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="dto"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<int?>> AdminRegisterService(HttpContext context, AddManagerDTO dto, IFormFile? files);
+        public Task<ResponseUnit<int?>> AdminRegisterService(HttpContext context, AddManagerDTO dto, IFormFile? files);
 
         /// <summary>
         /// 관리자 계정 삭제
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> DeleteAdminService(HttpContext context, List<int> adminidx);
+        public Task<ResponseUnit<bool?>> DeleteAdminService(HttpContext context, List<int> adminidx);
        
 
         /// <summary>
@@ -35,14 +35,14 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx);
+        public Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx);
 
         /// <summary>
         /// 매니저 정보 수정
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto);
+        public Task<ResponseUnit<bool?>> UpdateAdminService(HttpContext context, UpdateManagerDTO dto);
 
         /// <summary>
         /// 매니저 이미지 수정
@@ -51,13 +51,13 @@ namespace FamTec.Server.Services.Admin.Account
         /// <param name="id"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int id, IFormFile? files);
+        public Task<ResponseUnit<bool?>> UpdateAdminImageService(HttpContext context, int id, IFormFile? files);
 
         /// <summary>
         /// 아이디 중복검사
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public ValueTask<ResponseUnit<bool?>> UserIdCheckService(string userid);
+        public Task<ResponseUnit<bool?>> UserIdCheckService(string userid);
     }
 }

@@ -6,6 +6,7 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 
@@ -27,7 +28,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAsync(List<AdminPlaceTb> model)
+        public async Task<bool?> AddAsync(List<AdminPlaceTb> model)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -43,9 +44,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         await context.AdminPlaceTbs.AddRangeAsync(model).ConfigureAwait(false);
 
                         bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
@@ -60,6 +58,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -69,13 +72,14 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             });
         }
 
+      
 
         /// <summary>
         /// 관리자에 해당하는 사업장리스트 반환
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceTb>?> GetMyWorksList(int adminid)
+        public async Task<List<AdminPlaceTb>?> GetMyWorksList(int adminid)
         {
             try
             {
@@ -102,7 +106,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceDTO>?> GetMyWorks(int adminid)
+        public async Task<List<AdminPlaceDTO>?> GetMyWorks(int adminid)
         {
             try
             {
@@ -159,7 +163,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<DManagerDTO?> GetManagerDetails(int adminidx)
+        public async Task<DManagerDTO?> GetManagerDetails(int adminidx)
         {
             try
             {
@@ -212,7 +216,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> DeleteMyWorks(AdminPlaceTb model)
+        public async Task<bool?> DeleteMyWorks(AdminPlaceTb model)
         {
             try
             {
@@ -231,7 +235,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<PlaceDetailDTO?> GetWorksInfo(int placeid)
+        public async Task<PlaceDetailDTO?> GetWorksInfo(int placeid)
         {
             try
             {
@@ -309,7 +313,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> GetWorksModelInfo(int placeid)
+        public async Task<AdminPlaceTb?> GetWorksModelInfo(int placeid)
         {
             try
             {
@@ -335,7 +339,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> RemoveAdminPlace(List<int> adminid, int placeid)
+        public async Task<bool?> RemoveAdminPlace(List<int> adminid, int placeid)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -351,9 +355,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int id in adminid)
                         {
                             AdminPlaceTb? admintb = await context.AdminPlaceTbs
@@ -375,6 +376,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.CommitAsync().ConfigureAwait(false);
                         return true;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -390,7 +396,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="admintbid"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> GetPlaceAdminInfo(int admintbid, int placeid)
+        public async Task<AdminPlaceTb?> GetPlaceAdminInfo(int admintbid, int placeid)
         {
             try
             {
@@ -416,7 +422,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<bool?> DeleteAdminPlaceManager(AdminPlaceTb model)
+        public async Task<bool?> DeleteAdminPlaceManager(AdminPlaceTb model)
         {
             try
             {
@@ -436,7 +442,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="placeidx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<List<AdminPlaceTb>?> SelectPlaceAdminList(List<int> placeidx)
+        public async Task<List<AdminPlaceTb>?> SelectPlaceAdminList(List<int> placeidx)
         {
             try
             {
@@ -469,7 +475,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int adminid, List<int> placeidx)
+        public async Task<(List<int>? insert, List<int>? delete)?> DisassembleUpdateAdminInfo(int adminid, List<int> placeidx)
         {
             try
             {
@@ -530,7 +536,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminPlaceTb?> AddAdminPlaceInfo(AdminPlaceTb model)
+        public async Task<AdminPlaceTb?> AddAdminPlaceInfo(AdminPlaceTb model)
         {
             try
             {
@@ -557,7 +563,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteAdminPlaceInfo(AdminPlaceTb model)
+        public async Task<bool?> DeleteAdminPlaceInfo(AdminPlaceTb model)
         {
             try
             {
@@ -576,7 +582,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceDTO>?> GetNotContainsPlaceList(int adminid)
+        public async Task<List<AdminPlaceDTO>?> GetNotContainsPlaceList(int adminid)
         {
             try
             {
@@ -648,7 +654,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminPlaceDTO>?> LoginSelectPlaceList(int adminid)
+        public async Task<List<AdminPlaceDTO>?> LoginSelectPlaceList(int adminid)
         {
             try
             {
@@ -678,6 +684,26 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 throw;
             }
         }
+
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
+
+
 
     }
 }

@@ -35,7 +35,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBeautyFacility")]
-        public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
+        public async Task<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllBeautyFacility")]
-        public async ValueTask<IActionResult> GetAllBeautyFacility()
+        public async Task<IActionResult> GetAllBeautyFacility()
         {
             try
             {
@@ -131,7 +131,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBeautyFacility")]
-        public async ValueTask<IActionResult> DetailBeautyFacility([FromQuery] int facilityid)
+        public async Task<IActionResult> DetailBeautyFacility([FromQuery] int facilityid)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateBeautyFacility")]
-        public async ValueTask<IActionResult> UpdateBeautyFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
+        public async Task<IActionResult> UpdateBeautyFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteBeautyFacility")]
-        public async ValueTask<IActionResult> DeleteBeautyFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteBeautyFacility([FromBody] List<int> delIdx)
         {
             try
             {

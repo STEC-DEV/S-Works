@@ -32,7 +32,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocWeekCount")]
-        public async ValueTask<IActionResult> GetVocWeekCount()
+        public async Task<IActionResult> GetVocWeekCount()
         {
             try
             {
@@ -62,7 +62,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
-        public async ValueTask<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
+        public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
@@ -103,8 +103,8 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
-        //public async ValueTask<IActionResult> GetVocFilterList()
-        public async ValueTask<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
+        //public async Task<IActionResult> GetVocFilterList()
+        public async Task<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/VocInfo")]
-        public async ValueTask<IActionResult> GetDetailVoc([FromQuery] int VocId)
+        public async Task<IActionResult> GetDetailVoc([FromQuery] int VocId)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateVocType")]
-        public async ValueTask<IActionResult> UpdateVocType([FromBody]UpdateVocDTO dto)
+        public async Task<IActionResult> UpdateVocType([FromBody]UpdateVocDTO dto)
         {
             try
             {

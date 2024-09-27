@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<EnergyDayUsageTb?> AddAsync(EnergyDayUsageTb model)
+        public async Task<EnergyDayUsageTb?> AddAsync(EnergyDayUsageTb model)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -42,9 +42,6 @@ namespace FamTec.Server.Repository.Meter.Energy
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         await context.EnergyDayUsageTbs.AddAsync(model);
 
                         bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
@@ -127,7 +124,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<DayEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid)
+        public async Task<List<DayEnergyDTO>?> GetMonthList(DateTime SearchDate, int placeid)
         {
             try
             {
@@ -228,7 +225,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="MeterId"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<DayEnergyDTO>?> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid)
+        public async Task<List<DayEnergyDTO>?> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid)
         {
             try
             {
@@ -330,7 +327,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="year"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<YearsTotalEnergyDTO>> GetYearsList(int year, int placeid)
+        public async Task<List<YearsTotalEnergyDTO>> GetYearsList(int year, int placeid)
         {
             try
             {
@@ -392,7 +389,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="MeterId"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<YearsTotalEnergyDTO>> GetMeterYearsList(int year, List<int> MeterId, int placeid)
+        public async Task<List<YearsTotalEnergyDTO>> GetMeterYearsList(int year, List<int> MeterId, int placeid)
         {
             try
             {
@@ -457,7 +454,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="EndDate"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<DayEnergyDTO>> GetDaysList(DateTime StartDate, DateTime EndDate, int placeid)
+        public async Task<List<DayEnergyDTO>> GetDaysList(DateTime StartDate, DateTime EndDate, int placeid)
         {
             try
             {
@@ -558,7 +555,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="MeterId"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<DayEnergyDTO>> GetMeterDaysList(DateTime StartDate, DateTime EndDate, List<int> MeterId, int placeid)
+        public async Task<List<DayEnergyDTO>> GetMeterDaysList(DateTime StartDate, DateTime EndDate, List<int> MeterId, int placeid)
         {
             try
             {
@@ -658,7 +655,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="SearchDate"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<GetUseCompareDTO>> GetUseCompareList(DateTime SearchDate, int placeid)
+        public async Task<List<GetUseCompareDTO>> GetUseCompareList(DateTime SearchDate, int placeid)
         {
             try
             {

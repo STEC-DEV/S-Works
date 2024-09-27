@@ -12,14 +12,14 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<VocTb?> AddAsync(VocTb model);
+        Task<VocTb?> AddAsync(VocTb model);
 
         /// <summary>
         /// 사업장별 민원리스트 조회
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        ValueTask<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid);
+        Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid);
 
         /// <summary>
         /// 조건별 민원리스트 조회
@@ -27,24 +27,24 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        ValueTask<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingID);
+        Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingID);
 
         /// <summary>
         /// ID로 민원 상세조회
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        ValueTask<VocTb?> GetVocInfoById(int vocid);
+        Task<VocTb?> GetVocInfoById(int vocid);
 
         /// <summary>
         /// VOC 코드로 단일모델 조회
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        ValueTask<VocTb?> GetVocInfoByCode(string code);
+        Task<VocTb?> GetVocInfoByCode(string code);
 
 
-        ValueTask<bool> UpdateVocInfo(VocTb model);
+        Task<bool> UpdateVocInfo(VocTb model);
 
         /// <summary>
         /// DashBoard 용 일주일치 각 타입별 카운트
@@ -52,7 +52,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        ValueTask<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate);
+        Task<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate);
       
     }
 }

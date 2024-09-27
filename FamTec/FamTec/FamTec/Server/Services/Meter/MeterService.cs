@@ -29,7 +29,7 @@ namespace FamTec.Server.Services.Meter
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddMeterDTO>> AddMeterService(HttpContext context, AddMeterDTO dto)
+        public async Task<ResponseUnit<AddMeterDTO>> AddMeterService(HttpContext context, AddMeterDTO dto)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace FamTec.Server.Services.Meter
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MeterDTO>> GetAllMeterListService(HttpContext context)
+        public async Task<ResponseList<MeterDTO>> GetAllMeterListService(HttpContext context)
         {
             try
             {

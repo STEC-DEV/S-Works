@@ -23,7 +23,7 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="usematerialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid)
+        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateDetailUseMaterialService(HttpContext context, UpdateMaintenanceMaterialDTO dto)
         {
             try
             {

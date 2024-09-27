@@ -70,7 +70,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid)
+        public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid)
+        public async Task<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid)
+        public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid)
         {
             try
             {
@@ -210,7 +210,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto)
         {
             try
             {
@@ -502,7 +502,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="VocName"></param>
         /// <param name="VocTableIdx"></param>
         /// <returns></returns>
-        public async ValueTask<bool> SetMessage(List<UsersTb>? userlist, string Creater, int VocTableIdx)
+        public async Task<bool> SetMessage(List<UsersTb>? userlist, string Creater, int VocTableIdx)
         {
             try
             {
@@ -542,7 +542,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<VocWeekCountDTO>?> GetVocDashBoardDataService(HttpContext context)
+        public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardDataService(HttpContext context)
         {
             try
             {

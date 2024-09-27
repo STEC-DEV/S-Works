@@ -30,7 +30,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddMachineFacility")]
-        public async ValueTask<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm]IFormFile? files)
+        public async Task<IActionResult> AddFacility([FromForm] FacilityDTO dto, [FromForm]IFormFile? files)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllMachineFacility")]
-        public async ValueTask<IActionResult> GetAllMachineFacility()
+        public async Task<IActionResult> GetAllMachineFacility()
         {
             try
             {
@@ -123,7 +123,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailMachineFacility")]
-        public async ValueTask<IActionResult> DetailMachineFacility([FromQuery]int facilityid)
+        public async Task<IActionResult> DetailMachineFacility([FromQuery]int facilityid)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateMachineFacility")]
-        public async ValueTask<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
+        public async Task<IActionResult> UpdateMachineFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace FamTec.Server.Controllers.Facility
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteMachineFacility")]
-        public async ValueTask<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
+        public async Task<IActionResult> DeleteMachineFacility([FromBody] List<int> delIdx)
         {
             //List<int> delIdx = new List<int>() { 3, 4 };
 

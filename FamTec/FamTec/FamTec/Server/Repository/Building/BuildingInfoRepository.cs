@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Building
@@ -26,7 +27,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DelBuildingCheck(int buildingid)
+        public async Task<bool?> DelBuildingCheck(int buildingid)
         {
             try
             {
@@ -36,7 +37,12 @@ namespace FamTec.Server.Repository.Building
 
                 return FloorCheck || KakaoLogCheck || VocCheck;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -48,7 +54,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<int?> TotalBuildingCount(int placeid)
+        public async Task<int?> TotalBuildingCount(int placeid)
         {
             try
             {
@@ -58,7 +64,12 @@ namespace FamTec.Server.Repository.Building
 
                 return totalCount;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -70,7 +81,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingTb?> AddAsync(BuildingTb model)
+        public async Task<BuildingTb?> AddAsync(BuildingTb model)
         {
             try
             {
@@ -83,7 +94,17 @@ namespace FamTec.Server.Repository.Building
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -96,7 +117,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="placeid">로그인한 사업장정보</param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> GetAllBuildingList(int placeid)
+        public async Task<List<BuildingTb>?> GetAllBuildingList(int placeid)
         {
             try
             {
@@ -112,7 +133,12 @@ namespace FamTec.Server.Repository.Building
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -126,7 +152,7 @@ namespace FamTec.Server.Repository.Building
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> GetAllBuildingPageList(int placeid, int skip, int take)
+        public async Task<List<BuildingTb>?> GetAllBuildingPageList(int placeid, int skip, int take)
         {
             try
             {
@@ -143,7 +169,12 @@ namespace FamTec.Server.Repository.Building
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -155,7 +186,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingTb?> GetBuildingInfo(int buildingId)
+        public async Task<BuildingTb?> GetBuildingInfo(int buildingId)
         {
             try
             {
@@ -169,7 +200,12 @@ namespace FamTec.Server.Repository.Building
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -181,7 +217,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingcode"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> CheckBuildingCD(string buildingcode)
+        public async Task<bool?> CheckBuildingCD(string buildingcode)
         {
             try
             {
@@ -194,7 +230,12 @@ namespace FamTec.Server.Repository.Building
                 else
                     return false;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -206,14 +247,24 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateBuildingInfo(BuildingTb model)
+        public async Task<bool?> UpdateBuildingInfo(BuildingTb model)
         {
             try
             {
                 context.BuildingTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -226,7 +277,7 @@ namespace FamTec.Server.Repository.Building
         /// <param name="buildingId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<List<BuildingTb>?> GetDeleteList(List<int> buildingId)
+        public async Task<List<BuildingTb>?> GetDeleteList(List<int> buildingId)
         {
             try
             {
@@ -261,7 +312,12 @@ namespace FamTec.Server.Repository.Building
                     return null;
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -274,7 +330,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> GetBuildings(List<int> buildingid)
+        public async Task<List<BuildingTb>?> GetBuildings(List<int> buildingid)
         {
             try
             {
@@ -289,14 +345,19 @@ namespace FamTec.Server.Repository.Building
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-        public async ValueTask<bool?> DeleteBuildingInfo(BuildingTb model)
+        public async Task<bool?> DeleteBuildingInfo(BuildingTb model)
         {
             try
             {
@@ -305,7 +366,17 @@ namespace FamTec.Server.Repository.Building
                 context.BuildingTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -317,7 +388,7 @@ namespace FamTec.Server.Repository.Building
         /// </summary>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingTb>?> SelectPlaceBuildingList(List<int> placeidx)
+        public async Task<List<BuildingTb>?> SelectPlaceBuildingList(List<int> placeidx)
         {
             try
             {
@@ -333,7 +404,12 @@ namespace FamTec.Server.Repository.Building
                     return null;
                
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -346,7 +422,7 @@ namespace FamTec.Server.Repository.Building
         /// <param name="buildingid"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteBuildingList(List<int> buildingid, string deleter)
+        public async Task<bool?> DeleteBuildingList(List<int> buildingid, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -364,9 +440,6 @@ namespace FamTec.Server.Repository.Building
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         if (buildingid is null || !buildingid.Any())
                             return (bool?)null;
 
@@ -474,6 +547,21 @@ namespace FamTec.Server.Repository.Building
                         await transaction.CommitAsync().ConfigureAwait(false); // 커밋
                         return true;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -483,6 +571,22 @@ namespace FamTec.Server.Repository.Building
             });
         }
 
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
 
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

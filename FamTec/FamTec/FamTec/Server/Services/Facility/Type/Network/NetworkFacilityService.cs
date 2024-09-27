@@ -29,7 +29,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         }
 
 
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddNetworkFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddNetworkFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetNetworkFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetNetworkFacilityListService(HttpContext context)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetNetworkDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetNetworkDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateNetworkFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateNetworkFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -342,7 +342,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteNetworkFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteNetworkFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

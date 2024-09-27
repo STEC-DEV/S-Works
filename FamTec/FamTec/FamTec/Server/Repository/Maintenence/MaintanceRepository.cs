@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
 
@@ -34,7 +35,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async ValueTask<MaintenenceHistoryTb?> GetMaintenanceInfo(int id)
+        public async Task<MaintenenceHistoryTb?> GetMaintenanceInfo(int id)
         {
             try
             {
@@ -46,6 +47,11 @@ namespace FamTec.Server.Repository.Maintenence
                     return model;
                 else
                     return null;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -59,7 +65,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool> UpdateMaintenanceInfo(MaintenenceHistoryTb model)
+        public async Task<bool> UpdateMaintenanceInfo(MaintenenceHistoryTb model)
         {
             try
             {
@@ -71,6 +77,16 @@ namespace FamTec.Server.Repository.Maintenence
                     return true;
                 else
                     return false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -86,7 +102,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid)
+        public async Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid)
         {
             try
             {
@@ -151,6 +167,11 @@ namespace FamTec.Server.Repository.Maintenence
 
                 return maintanceDTO;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -165,7 +186,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddMaintanceImageAsync(int id, int placeid, IFormFile? files)
+        public async Task<bool?> AddMaintanceImageAsync(int id, int placeid, IFormFile? files)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -183,9 +204,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         string? NewFileName = files is not null ? FileService.SetNewFileName(id.ToString(), files) : String.Empty;
 
                         MaintenenceHistoryTb? MaintenenceHistory = await context.MaintenenceHistoryTbs
@@ -228,6 +246,21 @@ namespace FamTec.Server.Repository.Maintenence
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return false;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션 롤백
@@ -246,7 +279,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="userid"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<FailResult?> AddOutSourcingMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
+        public async Task<FailResult?> AddOutSourcingMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -272,9 +305,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         MaintenenceHistoryTb? MaintenenceHistory = new MaintenenceHistoryTb();
                         MaintenenceHistory.Name = dto.Name!; // 작업명
                         MaintenenceHistory.Type = 1; // 외주작업
@@ -310,6 +340,21 @@ namespace FamTec.Server.Repository.Maintenence
                         ReturnResult.ReturnResult = -1;
                         return ReturnResult;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
@@ -326,7 +371,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<FailResult?> AddSelfMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
+        public async Task<FailResult?> AddSelfMaintanceAsync(AddMaintenanceDTO dto, string creater, string userid, int placeid)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -353,9 +398,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         /* 수량 체크 */
                         foreach (InOutInventoryDTO inventoryItem in dto.Inventory!)
                         {
@@ -495,7 +537,6 @@ namespace FamTec.Server.Repository.Maintenence
                                 else
                                     break; /* 반복문 종료 */
                             }
-
 
                             List<int> StoreID = new List<int>(); // 외래키 박기위해서 리스트에 담음.
                             float this_TotalPrice = 0;
@@ -731,6 +772,21 @@ namespace FamTec.Server.Repository.Maintenence
                         ReturnResult.ReturnResult = -1;
                         return ReturnResult;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
@@ -747,7 +803,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async ValueTask<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid)
+        public async Task<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid)
         {
             try
             {
@@ -821,6 +877,11 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -833,7 +894,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> deleteMaintenanceStoreRecord(DeleteMaintanceDTO DeleteDTO, int placeid, string deleter)
+        public async Task<bool?> deleteMaintenanceStoreRecord(DeleteMaintanceDTO DeleteDTO, int placeid, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -853,9 +914,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         MaintenenceHistoryTb? MaintanceHistoryTB = await context.MaintenenceHistoryTbs
                                 .FirstOrDefaultAsync(m => m.Id == DeleteDTO.MaintanceID && m.DelYn != true)
                                 .ConfigureAwait(false);
@@ -1011,6 +1069,21 @@ namespace FamTec.Server.Repository.Maintenence
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return false;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         // 에러 처리
@@ -1031,7 +1104,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> deleteMaintenanceRecord(DeleteMaintanceDTO2 dto, int placeid, string deleter)
+        public async Task<bool?> deleteMaintenanceRecord(DeleteMaintanceDTO2 dto, int placeid, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -1049,9 +1122,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         bool UpdateResult = false;
 
                         foreach (int MaintanceID in dto.MaintanceID)
@@ -1184,6 +1254,21 @@ namespace FamTec.Server.Repository.Maintenence
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return false;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
@@ -1203,7 +1288,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="delCount"></param>
         /// <param name="Guid"></param>
         /// <returns></returns>
-        public async ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount)
+        public async Task<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid, int delCount)
         {
             try
             {
@@ -1234,6 +1319,11 @@ namespace FamTec.Server.Repository.Maintenence
                 else // 개수 조회결과가 아에없음
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -1250,7 +1340,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="Category">설비유형</param>
         /// <param name="type">작업구분</param>
         /// <returns></returns>
-        public async ValueTask<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, List<string> Category, List<int> type)
+        public async Task<List<MaintanceHistoryDTO>?> GetDateHistoryList(int placeid, DateTime StartDate, DateTime EndDate, List<string> Category, List<int> type)
         {
             try
             {
@@ -1339,6 +1429,11 @@ namespace FamTec.Server.Repository.Maintenence
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -1346,8 +1441,7 @@ namespace FamTec.Server.Repository.Maintenence
             }
         }
 
-
-        public async ValueTask<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, List<string> Category, List<int> type)
+        public async Task<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, List<string> Category, List<int> type)
         {
             try
             {
@@ -1379,7 +1473,6 @@ namespace FamTec.Server.Repository.Maintenence
                     m.DelYn != true &&
                     type.Contains(m.Type)).ToListAsync().ConfigureAwait(false);
 
-
                 if (HistoryList is [_, ..])
                 {
                     var GroupHistory = HistoryList
@@ -1391,7 +1484,6 @@ namespace FamTec.Server.Repository.Maintenence
                           Histories = group.ToList()
                       })
                       .ToList();
-
 
                     List<AllMaintanceHistoryDTO> AllMaintanceList = new List<AllMaintanceHistoryDTO>();
                     foreach (var Group in GroupHistory)
@@ -1445,6 +1537,11 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -1460,7 +1557,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="creater"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<FailResult?> AddMaintanceMaterialAsync(AddMaintanceMaterialDTO model, string creater, int placeid)
+        public async Task<FailResult?> AddMaintanceMaterialAsync(AddMaintanceMaterialDTO model, string creater, int placeid)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -1488,9 +1585,6 @@ namespace FamTec.Server.Repository.Maintenence
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         // 유지보수 이력 Check
                         MaintenenceHistoryTb? MainteneceTB = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == model.MaintanceID && m.DelYn != true).ConfigureAwait(false);
                         if (MainteneceTB is null)
@@ -1847,6 +1941,21 @@ namespace FamTec.Server.Repository.Maintenence
                         ReturnResult.ReturnResult = -1;
                         return ReturnResult;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
@@ -1858,5 +1967,22 @@ namespace FamTec.Server.Repository.Maintenence
             });
         }
 
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
     }
 }

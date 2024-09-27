@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetLiftFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetLiftFacilityListService(HttpContext context)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetLiftDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetLiftDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateLiftFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -348,7 +348,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteLiftFacilityService(HttpContext? context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteLiftFacilityService(HttpContext? context, List<int> delIdx)
         {
             try
             {

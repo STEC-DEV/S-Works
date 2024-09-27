@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/AddDepartment")]
-        public async ValueTask<IActionResult> AddDepartment([FromBody] AddDepartmentDTO dto)
+        public async Task<IActionResult> AddDepartment([FromBody] AddDepartmentDTO dto)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles ="SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/GetDepartmentList")]
-        public async ValueTask<IActionResult> GetAllDepartment()
+        public async Task<IActionResult> GetAllDepartment()
         {
             try
             {
@@ -100,7 +100,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpGet]
         [Route("sign/GetManageDepartmentList")]
-        public async ValueTask<IActionResult> GetManageDepartmentList()
+        public async Task<IActionResult> GetManageDepartmentList()
         {
             try
             {
@@ -132,7 +132,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/DeleteDepartment")]
-        public async ValueTask<IActionResult> DeleteDepartmentList([FromBody]List<int> departmentidx)
+        public async Task<IActionResult> DeleteDepartmentList([FromBody]List<int> departmentidx)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace FamTec.Server.Controllers.Admin.Department
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPost]
         [Route("sign/UpdateDepartment")]
-        public async ValueTask<IActionResult> UpdateDepartment([FromBody] DepartmentDTO dto)
+        public async Task<IActionResult> UpdateDepartment([FromBody] DepartmentDTO dto)
         {
             try
             {

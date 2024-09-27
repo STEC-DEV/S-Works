@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Admin.Departmnet
@@ -25,7 +26,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="departmentid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DelDepartmentCheck(int departmentid)
+        public async Task<bool?> DelDepartmentCheck(int departmentid)
         {
             try
             {
@@ -34,7 +35,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
 
                 return AdminCheck || DepartmentCheck;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -46,7 +52,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<DepartmentsTb?> AddAsync(DepartmentsTb model)
+        public async Task<DepartmentsTb?> AddAsync(DepartmentsTb model)
         {
             try
             {
@@ -59,7 +65,17 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
                 throw;
@@ -73,14 +89,24 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateDepartmentInfo(DepartmentsTb model)
+        public async Task<bool?> UpdateDepartmentInfo(DepartmentsTb model)
         {
             try
             {
                 context.DepartmentsTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -93,7 +119,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<List<DepartmentsTb>?> GetAllList()
+        public async Task<List<DepartmentsTb>?> GetAllList()
         {
             try
             {
@@ -108,7 +134,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -119,7 +150,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// 관리부서 조회
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<DepartmentsTb>?> GetManageDepartmentList()
+        public async Task<List<DepartmentsTb>?> GetManageDepartmentList()
         {
             try
             {
@@ -134,7 +165,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -146,7 +182,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="departmentidx"></param>
         /// <returns></returns>
-        public async ValueTask<DepartmentsTb?> GetDepartmentInfo(int Id)
+        public async Task<DepartmentsTb?> GetDepartmentInfo(int Id)
         {
             try
             {
@@ -159,7 +195,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -172,7 +213,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <param name="departmentname"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<DepartmentsTb?> GetDepartmentInfo(string Name)
+        public async Task<DepartmentsTb?> GetDepartmentInfo(string Name)
         {
             try
             {
@@ -184,6 +225,11 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                     return model;
                 else
                     return null;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -197,7 +243,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="departmentidx"></param>
         /// <returns></returns>
-        public async ValueTask<List<AdminTb>?> SelectDepartmentAdminList(List<int> departmentidx)
+        public async Task<List<AdminTb>?> SelectDepartmentAdminList(List<int> departmentidx)
         {
             try
             {
@@ -212,7 +258,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -225,7 +276,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<DepartmentsTb?> GetDeleteDepartmentInfo(int id)
+        public async Task<DepartmentsTb?> GetDeleteDepartmentInfo(int id)
         {
             try
             {
@@ -238,7 +289,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -250,7 +306,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteDepartment(DepartmentsTb model)
+        public async Task<bool?> DeleteDepartment(DepartmentsTb model)
         {
             try
             {
@@ -258,6 +314,16 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 model.Name = $"{model.Name}_{model.Id}"; 
                 context.DepartmentsTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -272,7 +338,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         /// <param name="idx"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteDepartmentInfo(List<int> idx, string deleter)
+        public async Task<bool?> DeleteDepartmentInfo(List<int> idx, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -290,9 +356,6 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int dpId in idx)
                         {
                             DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
@@ -328,6 +391,21 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -337,6 +415,23 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             });
         }
 
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
 
     }
 }

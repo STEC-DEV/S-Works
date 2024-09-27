@@ -5,6 +5,7 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Admin.Place;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Admin.AdminUser
@@ -30,7 +31,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> AddAdminUserInfo(AdminTb model)
+        public async Task<AdminTb?> AddAdminUserInfo(AdminTb model)
         {
             try
             {
@@ -43,7 +44,17 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -55,14 +66,24 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteAdminInfo(AdminTb model)
+        public async Task<bool?> DeleteAdminInfo(AdminTb model)
         {
             try
             {
                 context.AdminTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -70,7 +91,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         }
 
        
-        public async ValueTask<bool?> DeleteAdminsInfo(List<int> idx, string deleter)
+        public async Task<bool?> DeleteAdminsInfo(List<int> idx, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -88,9 +109,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         foreach (int adminid in idx)
                         {
                             AdminTb? admintb = await context.AdminTbs
@@ -165,6 +183,21 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.CommitAsync().ConfigureAwait(false); // 커밋
                         return true;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -179,7 +212,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="adminid"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> GetAdminIdInfo(int adminid)
+        public async Task<AdminTb?> GetAdminIdInfo(int adminid)
         {
             try
             {
@@ -192,7 +225,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -207,7 +245,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <param name="adminuseridx"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async ValueTask<AdminTb?> GetAdminUserInfo(int usertbid)
+        public async Task<AdminTb?> GetAdminUserInfo(int usertbid)
         {
             try
             {
@@ -220,6 +258,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -227,13 +270,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             }
         }
 
-
-
         /// <summary>
         /// 관리자 DTO 반환
         /// </summary>
         /// <returns></returns>
-        public async ValueTask<List<ManagerListDTO>?> GetAllAdminUserList()
+        public async Task<List<ManagerListDTO>?> GetAllAdminUserList()
         {
             try
             {
@@ -256,7 +297,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -268,7 +314,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async ValueTask<List<ManagerListDTO>?> GetNotContainsAdminList(int placeid)
+        public async Task<List<ManagerListDTO>?> GetNotContainsAdminList(int placeid)
         {
             try
             {
@@ -328,6 +374,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     return model;
                 }
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -340,7 +391,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<AdminTb?> UpdateAdminInfo(AdminTb model)
+        public async Task<AdminTb?> UpdateAdminInfo(AdminTb model)
         {
             try
             {
@@ -351,6 +402,16 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     return model;
                 else
                     return null;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -365,7 +426,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// <param name="id"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateAdminImageInfo(int adminid, IFormFile? files)
+        public async Task<bool?> UpdateAdminImageInfo(int adminid, IFormFile? files)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -383,9 +444,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         // 파일처리 준비
                         string NewFileName = String.Empty;
                         string deleteFileName = String.Empty;
@@ -511,6 +569,21 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -526,7 +599,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string UserIdx, string creater)
+        public async Task<bool?> UpdateAdminInfo(UpdateManagerDTO dto, string UserIdx, string creater)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -544,9 +617,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         AdminTb? adminTB = await context.AdminTbs
                             .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && 
                                                       m.DelYn != true)
@@ -713,6 +783,21 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.CommitAsync().ConfigureAwait(false);
                         return true;
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -720,6 +805,24 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                     }
                 }
             });
+        }
+
+        /// <summary>
+        /// 데드락 감지
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
         }
 
     }

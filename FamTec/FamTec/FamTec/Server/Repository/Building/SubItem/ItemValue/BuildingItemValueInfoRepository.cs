@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Building.SubItem.ItemValue
 {
@@ -21,7 +22,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemValueTb?> AddAsync(BuildingItemValueTb model)
+        public async Task<BuildingItemValueTb?> AddAsync(BuildingItemValueTb model)
         {
             try
             {
@@ -34,7 +35,17 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -46,7 +57,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        public async ValueTask<List<BuildingItemValueTb>?> GetAllValueList(int keyid)
+        public async Task<List<BuildingItemValueTb>?> GetAllValueList(int keyid)
         {
             try
             {
@@ -62,7 +73,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -74,7 +90,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="valueid"></param>
         /// <returns></returns>
-        public async ValueTask<BuildingItemValueTb?> GetValueInfo(int valueid)
+        public async Task<BuildingItemValueTb?> GetValueInfo(int valueid)
         {
             try
             {
@@ -86,10 +102,14 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 if (model is not null)
                     return model;
                 else
-                    return null;
-                
+                    return null;   
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -101,14 +121,24 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateValueInfo(BuildingItemValueTb model)
+        public async Task<bool?> UpdateValueInfo(BuildingItemValueTb model)
         {
             try
             {
                 context.BuildingItemValueTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
@@ -120,21 +150,31 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> DeleteValueInfo(BuildingItemValueTb model)
+        public async Task<bool?> DeleteValueInfo(BuildingItemValueTb model)
         {
             try
             {
                 context.BuildingItemValueTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-        public async ValueTask<List<BuildingItemValueTb>?> ContainsKeyList(List<int> KeyitemId)
+        public async Task<List<BuildingItemValueTb>?> ContainsKeyList(List<int> KeyitemId)
         {
             try
             {
@@ -149,6 +189,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -156,7 +201,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             }
         }
 
-        public async ValueTask<List<BuildingItemValueTb>?> NotContainsKeyList(List<int> KeyitemId)
+        public async Task<List<BuildingItemValueTb>?> NotContainsKeyList(List<int> KeyitemId)
         {
             try
             {
@@ -170,6 +215,11 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                     return keytb;
                 else
                     return null;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {

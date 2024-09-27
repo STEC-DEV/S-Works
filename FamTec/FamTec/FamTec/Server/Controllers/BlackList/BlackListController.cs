@@ -31,7 +31,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBlackList")]
-        public async ValueTask<IActionResult> AddBlackList([FromBody]AddBlackListDTO dto)
+        public async Task<IActionResult> AddBlackList([FromBody]AddBlackListDTO dto)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllBlackList")]
-        public async ValueTask<IActionResult> GetAllBlackList()
+        public async Task<IActionResult> GetAllBlackList()
         {
             try
             {
@@ -94,7 +94,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetBlackListCount")]
-        public async ValueTask<IActionResult> GetAllBlackListCount()
+        public async Task<IActionResult> GetAllBlackListCount()
         {
             try
             {
@@ -124,7 +124,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllPageNationBlackList")]
-        public async ValueTask<IActionResult> GetAllBlackList([FromQuery]int pagenum, [FromQuery]int pagesize)
+        public async Task<IActionResult> GetAllBlackList([FromQuery]int pagenum, [FromQuery]int pagesize)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBlackList")]
-        public async ValueTask<IActionResult> UpdateBlackList(BlackListDTO dto)
+        public async Task<IActionResult> UpdateBlackList(BlackListDTO dto)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace FamTec.Server.Controllers.BlackList
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteBlackList")]
-        public async ValueTask<IActionResult> DeleteBlackList(List<int> delIdx)
+        public async Task<IActionResult> DeleteBlackList(List<int> delIdx)
         {
             try
             {

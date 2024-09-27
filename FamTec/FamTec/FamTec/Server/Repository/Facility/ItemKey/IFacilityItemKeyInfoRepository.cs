@@ -10,28 +10,28 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<FacilityItemKeyTb?> AddAsync(FacilityItemKeyTb model);
+        Task<FacilityItemKeyTb?> AddAsync(FacilityItemKeyTb model);
 
         /// <summary>
         /// 그룹ID에 포함되어있는 KEY 리스트 전체 반환
         /// </summary>
         /// <param name="groupitemid"></param>
         /// <returns></returns>
-        ValueTask<List<FacilityItemKeyTb>?> GetAllKeyList(int groupitemid);
+        Task<List<FacilityItemKeyTb>?> GetAllKeyList(int groupitemid);
 
         /// <summary>
         /// KeyID에 해당하는 KEY모델 반환
         /// </summary>
         /// <param name="keyid"></param>
         /// <returns></returns>
-        ValueTask<FacilityItemKeyTb?> GetKeyInfo(int keyid);
+        Task<FacilityItemKeyTb?> GetKeyInfo(int keyid);
 
         /// <summary>
         /// Key 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateKeyInfo(FacilityItemKeyTb model);
+        Task<bool?> UpdateKeyInfo(FacilityItemKeyTb model);
 
         /// <summary>
         /// 그룹 KEY - VALUE 업데이트
@@ -39,14 +39,14 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// <param name="dto"></param>
         /// <param name="updater"></param>
         /// <returns></returns>
-        ValueTask<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater);
+        Task<bool?> UpdateKeyInfo(UpdateKeyDTO dto, string updater);
 
         /// <summary>
         /// Key 삭제
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteKeyInfo(FacilityItemKeyTb model);
+        Task<bool?> DeleteKeyInfo(FacilityItemKeyTb model);
 
         /// <summary>
         /// Key List삭제 - Value까지
@@ -54,7 +54,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         /// <param name="KeyList"></param>
         /// <param name="deleter"></param>
         /// <returns></returns>
-        ValueTask<bool?> DeleteKeyList(List<int> KeyList, string deleter);
+        Task<bool?> DeleteKeyList(List<int> KeyList, string deleter);
 
     }
 }

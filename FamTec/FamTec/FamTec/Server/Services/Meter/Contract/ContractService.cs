@@ -24,7 +24,7 @@ namespace FamTec.Server.Services.Meter.Contract
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddContractDTO>> AddContractService(HttpContext context, AddContractDTO dto)
+        public async Task<ResponseUnit<AddContractDTO>> AddContractService(HttpContext context, AddContractDTO dto)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace FamTec.Server.Services.Meter.Contract
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<ContractDTO>> GetAllContractListService(HttpContext context)
+        public async Task<ResponseList<ContractDTO>> GetAllContractListService(HttpContext context)
         {
             try
             {

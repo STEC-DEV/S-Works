@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace FamTec.Server.Repository.Voc
 {
@@ -22,7 +23,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<CommentTb?> AddAsync(CommentTb model)
+        public async Task<CommentTb?> AddAsync(CommentTb model)
         {
             try
             {
@@ -35,16 +36,24 @@ namespace FamTec.Server.Repository.Voc
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-
-
-        public async ValueTask<List<CommentTb>?> GetCommentList(int vocid)
+        public async Task<List<CommentTb>?> GetCommentList(int vocid)
         {
             try
             {
@@ -57,17 +66,20 @@ namespace FamTec.Server.Repository.Voc
                     return model;
                 else
                     return null;
-                
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-
-        public async ValueTask<CommentTb?> GetCommentInfo(int commentid)
+        public async Task<CommentTb?> GetCommentInfo(int commentid)
         {
             try
             {
@@ -80,25 +92,39 @@ namespace FamTec.Server.Repository.Voc
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
 
-
         /// <summary>
         /// 댓글 수정
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> UpdateCommentInfo(CommentTb model)
+        public async Task<bool?> UpdateCommentInfo(CommentTb model)
         {
             try
             {
                 context.CommentTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {

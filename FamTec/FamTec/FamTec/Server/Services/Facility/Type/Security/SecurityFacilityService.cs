@@ -30,7 +30,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
             this.LogService = _logService;
         }
 
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddSecurityFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddSecurityFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetSecurityFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetSecurityFacilityListService(HttpContext context)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetSecurityDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetSecurityDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
             }
         }
      
-        public async ValueTask<ResponseUnit<bool?>> UpdateSecurityFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateSecurityFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -341,7 +341,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteSecurityFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteSecurityFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

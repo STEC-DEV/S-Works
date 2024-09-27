@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetMachineFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetMachineFacilityListService(HttpContext context)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetMachineDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetMachineDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -195,7 +195,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMachineFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -347,7 +347,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteMachineFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteMachineFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

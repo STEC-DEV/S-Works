@@ -34,7 +34,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddGroupDTO>> AddBuildingGroupService(HttpContext context, AddGroupDTO dto)
+        public async Task<ResponseUnit<AddGroupDTO>> AddBuildingGroupService(HttpContext context, AddGroupDTO dto)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddGroupInfoDTO>> AddBuildingGroupInfoService(HttpContext? context, AddGroupInfoDTO dto)
+        public async Task<ResponseUnit<AddGroupInfoDTO>> AddBuildingGroupInfoService(HttpContext? context, AddGroupInfoDTO dto)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<GroupListDTO?>> GetBuildingGroupListService(HttpContext context, int buildingId)
+        public async Task<ResponseList<GroupListDTO?>> GetBuildingGroupListService(HttpContext context, int buildingId)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
+        public async Task<ResponseUnit<bool?>> UpdateGroupNameService(HttpContext context, UpdateGroupDTO dto)
         {
             try
             {
@@ -281,7 +281,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="groupid"></param>
         /// <returns></returns>
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
+        public async Task<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
         {
             try
             {

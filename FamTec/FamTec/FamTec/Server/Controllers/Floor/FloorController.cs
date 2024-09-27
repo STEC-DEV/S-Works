@@ -26,7 +26,7 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddFloor")]
-        public async ValueTask<IActionResult> AddFloorInfo([FromBody]FloorDTO dto)
+        public async Task<IActionResult> AddFloorInfo([FromBody]FloorDTO dto)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetFloorList")]
-        public async ValueTask<IActionResult> GetFloorList([FromQuery] int buildingid)
+        public async Task<IActionResult> GetFloorList([FromQuery] int buildingid)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/UpdateFloor")]
-        public async ValueTask<IActionResult> UpdateFloor([FromBody] UpdateFloorDTO dto)
+        public async Task<IActionResult> UpdateFloor([FromBody] UpdateFloorDTO dto)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace FamTec.Server.Controllers.Floor
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteFloor")]
-        public async ValueTask<IActionResult> DeleteFloor([FromBody] List<int> idx)
+        public async Task<IActionResult> DeleteFloor([FromBody] List<int> idx)
         {
             try
             {

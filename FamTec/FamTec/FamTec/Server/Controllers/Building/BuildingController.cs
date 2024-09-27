@@ -29,7 +29,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/TotalBuildingCount")]
-        public async ValueTask<IActionResult> GetTotalBuildingCount()
+        public async Task<IActionResult> GetTotalBuildingCount()
         {
             try
             {
@@ -60,7 +60,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/MyBuildings")]
-        public async ValueTask<IActionResult> SelectMyBuilding()
+        public async Task<IActionResult> SelectMyBuilding()
         {
             try
             {
@@ -93,7 +93,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/MyBuildingPage")]
-        public async ValueTask<IActionResult> SelectMyBuildingPage([FromQuery]int skip, [FromQuery]int take)
+        public async Task<IActionResult> SelectMyBuildingPage([FromQuery]int skip, [FromQuery]int take)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPlaceBuilding")]
-        public async ValueTask<IActionResult> PlaceBuildingList()
+        public async Task<IActionResult> PlaceBuildingList()
         {
             try
             {
@@ -151,7 +151,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/PlaceBuildingList")]
-        public async ValueTask<IActionResult> SelectPlaceBuilding()
+        public async Task<IActionResult> SelectPlaceBuilding()
         {
             try
             {
@@ -183,7 +183,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddBuilding")]
-        public async ValueTask<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm] IFormFile? files)
+        public async Task<IActionResult> AddBuilding([FromForm] AddBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -242,7 +242,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/DetailBuilding")]
-        public async ValueTask<IActionResult> DetailBuilding([FromQuery] int buildingid)
+        public async Task<IActionResult> DetailBuilding([FromQuery] int buildingid)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteBuilding")]
-        public async ValueTask<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
+        public async Task<IActionResult> DeleteBuilding([FromBody] List<int> buildingidx)
         {
             try
             {
@@ -305,8 +305,8 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBuilding")]
-        //public async ValueTask<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
-        public async ValueTask<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
+        //public async Task<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
+        public async Task<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace FamTec.Server.Controllers.Building
         /// <returns></returns>
         [HttpGet]
         [Route("GetBuildingName")]
-        public async ValueTask<IActionResult> GetBuildingName([FromQuery]int buildingid)
+        public async Task<IActionResult> GetBuildingName([FromQuery]int buildingid)
         {
             try
             {

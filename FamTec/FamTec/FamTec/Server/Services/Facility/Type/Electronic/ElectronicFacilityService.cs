@@ -37,7 +37,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="dto"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FacilityDTO>> AddElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<FacilityDTO>> AddElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<FacilityListDTO>> GetElectronicFacilityListService(HttpContext context)
+        public async Task<ResponseList<FacilityListDTO>> GetElectronicFacilityListService(HttpContext context)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         /// <param name="context"></param>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FacilityDetailDTO>> GetElectronicDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetElectronicDetailFacilityService(HttpContext context, int facilityId)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
             }
         }
 
-        public async ValueTask<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateElectronicFacilityService(HttpContext context, FacilityDTO dto, IFormFile? files)
         {
             try
             {
@@ -353,7 +353,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
         }
 
 
-        public async ValueTask<ResponseUnit<bool?>> DeleteElectronicFacilityService(HttpContext context, List<int> delIdx)
+        public async Task<ResponseUnit<bool?>> DeleteElectronicFacilityService(HttpContext context, List<int> delIdx)
         {
             try
             {

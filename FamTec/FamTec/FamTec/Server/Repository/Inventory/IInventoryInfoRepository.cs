@@ -13,9 +13,9 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<int?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid);
+        Task<int?> AddAsync(List<InOutInventoryDTO> model, string creater, int placeid);
 
-        ValueTask<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount);
+        Task<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount);
 
         /// <summary>
         /// 출고등록
@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="GUID"></param>
         /// <returns></returns>
-        ValueTask<FailResult?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
+        Task<FailResult?> SetOutInventoryInfo(List<InOutInventoryDTO> model, string creater, int placeid);
 
         /// <summary>
         /// 기간별 - 품목별 입출고 리스트 출력
@@ -35,7 +35,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        ValueTask<List<PeriodicDTO>?> GetInventoryRecord(int placeid, List<int> materialid, DateTime startDate, DateTime endDate);
+        Task<List<PeriodicDTO>?> GetInventoryRecord(int placeid, List<int> materialid, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// 품목별 창고별 재고현황
@@ -44,7 +44,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="MaterialId"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        ValueTask<List<MaterialHistory>?> GetPlaceInventoryRecord(int placeid, List<int> MaterialId, bool type);
+        Task<List<MaterialHistory>?> GetPlaceInventoryRecord(int placeid, List<int> MaterialId, bool type);
 
         /// <summary>
         /// 사업장 - 품목ID에 해당하는 재고리스트 반환
@@ -52,7 +52,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        ValueTask<List<InventoryTb>?> GetPlaceMaterialInventoryList(int placeid, int materialid);
+        Task<List<InventoryTb>?> GetPlaceMaterialInventoryList(int placeid, int materialid);
 
         /// <summary>
         /// 사업장 - 품목ID에 해당하는 위치 재고수량 반환
@@ -60,7 +60,7 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="placeid"></param>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        ValueTask<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid);
+        Task<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid);
 
         /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용
@@ -70,6 +70,6 @@ namespace FamTec.Server.Repository.Inventory
         /// <param name="materialid"></param>
         /// <param name="outcount"></param>
         /// <returns></returns>
-        ValueTask<List<InOutInventoryDTO>?> AddOutStoreList(int placeid, int roomid, int materialid, int outcount);
+        Task<List<InOutInventoryDTO>?> AddOutStoreList(int placeid, int roomid, int materialid, int outcount);
     }
 }

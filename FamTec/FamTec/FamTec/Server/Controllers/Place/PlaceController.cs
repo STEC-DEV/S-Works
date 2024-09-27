@@ -22,7 +22,7 @@ namespace FamTec.Server.Controllers.Place
 
         [HttpGet]
         [Route("GetPlaceName")]
-        public async ValueTask<IActionResult> GetPlaceName([FromQuery]int placeid)
+        public async Task<IActionResult> GetPlaceName([FromQuery]int placeid)
         {
             try
             {

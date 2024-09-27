@@ -4,6 +4,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Alarm;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySqlConnector;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Alarm
@@ -25,7 +26,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async ValueTask<AlarmTb?> AddAsync(AlarmTb model)
+        public async Task<AlarmTb?> AddAsync(AlarmTb model)
         {
             try
             {
@@ -37,6 +38,16 @@ namespace FamTec.Server.Repository.Alarm
                     return model;
                 else
                     return null;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
             }
             catch (Exception ex)
             {
@@ -53,7 +64,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="AlarmType"></param>
         /// <param name="VocTBId"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId)
+        public async Task<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -99,6 +110,21 @@ namespace FamTec.Server.Repository.Alarm
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
@@ -114,7 +140,7 @@ namespace FamTec.Server.Repository.Alarm
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<List<AlarmDTO>?> GetAlarmList(int userid)
+        public async Task<List<AlarmDTO>?> GetAlarmList(int userid)
         {
             try
             {
@@ -148,6 +174,11 @@ namespace FamTec.Server.Repository.Alarm
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -161,7 +192,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="userid"></param>
         /// <param name="StartDate"></param>
         /// <returns></returns>
-        public async ValueTask<List<AlarmDTO>?> GetAlarmListByDate(int userid, DateTime StartDate)
+        public async Task<List<AlarmDTO>?> GetAlarmListByDate(int userid, DateTime StartDate)
         {
             try
             {
@@ -197,6 +228,11 @@ namespace FamTec.Server.Repository.Alarm
                 else
                     return null;
             }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
@@ -209,7 +245,7 @@ namespace FamTec.Server.Repository.Alarm
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public async ValueTask<bool?> AllAlarmDelete(int userid, string deleter)
+        public async Task<bool?> AllAlarmDelete(int userid, string deleter)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -227,9 +263,6 @@ namespace FamTec.Server.Repository.Alarm
                 {
                     try
                     {
-                        // 교착상태 방지용 타임아웃
-                        context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
-
                         List<AlarmTb>? AlarmList = await context.AlarmTbs
                             .Where(m => m.DelYn != true && m.UsersTbId == userid)
                             .OrderBy(m => m.CreateDt)
@@ -260,6 +293,21 @@ namespace FamTec.Server.Repository.Alarm
                             return false;
                         }
                     }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        throw;
+                    }
+                    catch (MySqlException mysqlEx)
+                    {
+                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        throw;
+                    }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
@@ -275,7 +323,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="alarmId"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async ValueTask<bool?> AlarmDelete(int alarmId, string deleter)
+        public async Task<bool?> AlarmDelete(int alarmId, string deleter)
         {
             try
             {
@@ -299,14 +347,40 @@ namespace FamTec.Server.Repository.Alarm
                 else
                     return false;
             }
+            catch (DbUpdateException dbEx)
+            {
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                throw;
+            }
+            catch (MySqlException mysqlEx)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
         }
-    
 
-   
+        /// <summary>
+        /// 데드락 감지코드
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private bool IsDeadlockException(Exception ex)
+        {
+            // MySqlException 및 MariaDB의 교착 상태 오류 코드는 일반적으로 1213입니다.
+            if (ex is MySqlException mysqlEx && mysqlEx.Number == 1213)
+                return true;
+
+            // InnerException에도 동일한 확인 로직을 적용
+            if (ex.InnerException is MySqlException innerMySqlEx && innerMySqlEx.Number == 1213)
+                return true;
+
+            return false;
+        }
+
     }
 }

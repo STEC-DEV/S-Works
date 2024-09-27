@@ -31,7 +31,7 @@ namespace FamTec.Server.Services.Maintenance
             this.LogService = _logservice;
         }
 
-        public async ValueTask<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
+        public async Task<ResponseUnit<FailResult?>> AddMaintanceService(HttpContext context, AddMaintenanceDTO dto)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<FailResult?>> AddSupMaintanceService(HttpContext context, AddMaintanceMaterialDTO dto)
+        public async Task<ResponseUnit<FailResult?>> AddSupMaintanceService(HttpContext context, AddMaintanceMaterialDTO dto)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, DeleteMaintanceDTO dto)
+        public async Task<ResponseUnit<bool?>> DeleteMaintenanceStoreRecordService(HttpContext context, DeleteMaintanceDTO dto)
         {
             try
             {
@@ -187,7 +187,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteMaintenanceRecordService(HttpContext context, DeleteMaintanceDTO2 dto)
+        public async Task<ResponseUnit<bool?>> DeleteMaintenanceRecordService(HttpContext context, DeleteMaintanceDTO2 dto)
         {
             try
             {
@@ -221,7 +221,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="facilityid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(HttpContext context, int facilityid)
+        public async Task<ResponseList<MaintanceListDTO>> GetMaintanceHistoryService(HttpContext context, int facilityid)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
+        public async Task<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type)
         {
             try
             {
@@ -295,7 +295,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, List<string> category, List<int> type)
+        public async Task<ResponseList<AllMaintanceHistoryDTO>?> GetAllHistoryList(HttpContext context, List<string> category, List<int> type)
         {
             try
             {
@@ -327,7 +327,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="MaintanceID"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID)
+        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateMaintenanceService(HttpContext context, UpdateMaintenanceDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateMaintenanceService(HttpContext context, UpdateMaintenanceDTO dto, IFormFile? files)
         {
             try
             {

@@ -21,7 +21,7 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AlarmDTO>> GetAllAlarmService(HttpContext? context)
+        public async Task<ResponseList<AlarmDTO>> GetAllAlarmService(HttpContext? context)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace FamTec.Server.Services.Alarm
         /// <param name="context"></param>
         /// <param name="StartDate"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<AlarmDTO>> GetAllAlarmByDateService(HttpContext? context, DateTime StartDate)
+        public async Task<ResponseList<AlarmDTO>> GetAllAlarmByDateService(HttpContext? context, DateTime StartDate)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AllAlarmDelete(HttpContext? context)
+        public async Task<ResponseUnit<bool?>> AllAlarmDelete(HttpContext? context)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace FamTec.Server.Services.Alarm
         /// </summary>
         /// <param name="alarmid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> AlarmDelete(HttpContext? context, int? alarmid)
+        public async Task<ResponseUnit<bool?>> AlarmDelete(HttpContext? context, int? alarmid)
         {
             try
             {

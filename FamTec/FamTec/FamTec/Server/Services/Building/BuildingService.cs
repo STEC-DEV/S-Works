@@ -40,7 +40,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<int?>> TotalBuildingCount(HttpContext context)
+        public async Task<ResponseUnit<int?>> TotalBuildingCount(HttpContext context)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="dto"></param>
         /// <param name="placeidx"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<AddBuildingDTO>> AddBuildingService(HttpContext? context, AddBuildingDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<AddBuildingDTO>> AddBuildingService(HttpContext? context, AddBuildingDTO dto, IFormFile? files)
         {
             try
             {
@@ -225,7 +225,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context)
+        public async Task<ResponseList<BuildinglistDTO>> GetBuilidngListService(HttpContext context)
         {
             try
             {
@@ -271,7 +271,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<BuildinglistDTO>> GetBuildingListPageService(HttpContext context, int skip, int take)
+        public async Task<ResponseList<BuildinglistDTO>> GetBuildingListPageService(HttpContext context, int skip, int take)
         {
             try
             {
@@ -315,7 +315,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService(HttpContext context)
+        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceBuildingNameService(HttpContext context)
         {
             try
             {
@@ -355,7 +355,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId)
+        public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId)
         {
             try
             {
@@ -453,7 +453,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> UpdateBuildingService(HttpContext context, DetailBuildingDTO dto, IFormFile? files)
+        public async Task<ResponseUnit<bool?>> UpdateBuildingService(HttpContext context, DetailBuildingDTO dto, IFormFile? files)
         {
             try
             {
@@ -656,7 +656,7 @@ namespace FamTec.Server.Services.Building
         /// <param name="context"></param>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<bool?>> DeleteBuildingService(HttpContext context, List<int> buildingid)
+        public async Task<ResponseUnit<bool?>> DeleteBuildingService(HttpContext context, List<int> buildingid)
         {
             try
             {
@@ -707,7 +707,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext context)
+        public async Task<ResponseList<PlaceBuildingListDTO>> GetPlaceBuildingService(HttpContext context)
         {
             try
             {
@@ -760,7 +760,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingid"></param>
         /// <returns></returns>
-        public async ValueTask<ResponseUnit<string?>> GetBuildingName(int buildingid)
+        public async Task<ResponseUnit<string?>> GetBuildingName(int buildingid)
         {
             try
             {
