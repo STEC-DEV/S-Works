@@ -96,8 +96,10 @@ namespace FamTec.Server.Services.Voc.Hub
                     if(PhoneNumber is null)
                         return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
-                
-                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid!.Value);
+
+                DateTime ThisDate = DateTime.Now;
+
+                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(dto.Buildingid!.Value).ConfigureAwait(false);
                 if (buildingtb is null)
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "존재하지 않는 건물입니다.", data = null, code = 404 };
 
@@ -112,9 +114,9 @@ namespace FamTec.Server.Services.Voc.Hub
                     model.ReplyYn = false;
                 else
                     model.ReplyYn = true;
-                model.CreateDt = DateTime.Now;
+                model.CreateDt = ThisDate;
                 model.CreateUser = dto.Name; // 작성자
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = dto.Name; // 작성자
                 model.BuildingTbId = dto.Buildingid.Value;
 
@@ -127,7 +129,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     // VOC 에서 SELECT
                     ReceiptCode = KakaoService.RandomCode();
                     model.Code = ReceiptCode;
-                } while (await VocInfoRepository.GetVocInfoByCode(ReceiptCode) != null);
+                } while (await VocInfoRepository.GetVocInfoByCode(ReceiptCode).ConfigureAwait(false) != null);
 
 
                 // 파일이 있으면
@@ -143,11 +145,11 @@ namespace FamTec.Server.Services.Voc.Hub
                 }
 
                 // 여기서 블랙리스트 조회 
-                BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(model.Phone!);
+                BlacklistTb? BlackListTB = await BlackListInfoRepository.GetBlackListInfo(model.Phone!).ConfigureAwait(false);
                 if (BlackListTB is not null) // 블랙리스트임.
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? result = await VocInfoRepository.AddAsync(model);
+                VocTb? result = await VocInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (result is not null)
                 {
                     // VOC관련한 폴더 없으면 만들기 - bin/fileserevice/3/Voc/1
@@ -159,14 +161,14 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         for (int i = 0; i < files.Count; i++) 
                         {
-                            await FileService.AddResizeImageFile(newFileName[i], VocFileFolderPath, files[i]);
+                            await FileService.AddResizeImageFile(newFileName[i], VocFileFolderPath, files[i]).ConfigureAwait(false);
                         }
                     }
 
                     // 소켓알림! + 카카오 API 알림
                     if (result.ReplyYn == true)
                     {
-                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId);
+                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(result.BuildingTbId).ConfigureAwait(false);
 
                         if (placeTB is null)
                             return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -192,23 +194,23 @@ namespace FamTec.Server.Services.Voc.Hub
 
                         // 카카오 API 전송
                         // 보낸 USER 휴대폰번호에 전송.
-                        AddKakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel);
+                        AddKakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel).ConfigureAwait(false);
                         if (LogDTO is not null)
                         {
                             // 카카오 메시지 성공
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = LogDTO.Code!;
                             LogTB.Message = LogDTO.Message!;
-                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = model.CreateUser;
-                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateDt = ThisDate;
                             LogTB.UpdateUser = model.UpdateUser;
                             LogTB.VocTbId = model.Id; // 민원ID
                             LogTB.PlaceTbId = dto.Placeid!.Value; // 사업장ID
                             LogTB.BuildingTbId = dto.Buildingid!.Value; // 건물ID
 
                             // 카카오API 로그 테이블에 쌓아야함.
-                            await KakaoLogInfoRepository.AddAsync(LogTB);
+                            await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                         }
                         else
                         {
@@ -216,28 +218,28 @@ namespace FamTec.Server.Services.Voc.Hub
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = "ERROR";
                             LogTB.Message = "ERROR";
-                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = model.CreateUser;
-                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateDt = ThisDate;
                             LogTB.UpdateUser = model.UpdateUser;
                             LogTB.VocTbId = model.Id; // 민원ID
                             LogTB.PlaceTbId = dto.Placeid!.Value; // 사업장ID
                             LogTB.BuildingTbId = dto.Buildingid!.Value; // 건물ID
 
                             // 카카오API 로그 테이블에 쌓아야함.
-                            await KakaoLogInfoRepository.AddAsync(LogTB);
+                            await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                         }
                     }
 
-                    List<UsersTb>? UserList = await UserInfoRepository.GetVocDefaultList(dto.Placeid!.Value);
+                    List<UsersTb>? UserList = await UserInfoRepository.GetVocDefaultList(dto.Placeid!.Value).ConfigureAwait(false);
                     if(UserList is [_, ..])
                     {
-                        await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id);
+                        await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id).ConfigureAwait(false);
                     }
                    
                     // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                    await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
-                    await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
+                    await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                     
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO
                     {
@@ -270,11 +272,11 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (String.IsNullOrWhiteSpace(voccode))
                     return new ResponseUnit<VocUserDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocModel = await VocInfoRepository.GetVocInfoByCode(voccode);
+                VocTb? VocModel = await VocInfoRepository.GetVocInfoByCode(voccode).ConfigureAwait(false);
                 if (VocModel is null)
                     return new ResponseUnit<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
-                BuildingTb? BuildingModel = await BuildingInfoRepository.GetBuildingInfo(VocModel.BuildingTbId);
+                BuildingTb? BuildingModel = await BuildingInfoRepository.GetBuildingInfo(VocModel.BuildingTbId).ConfigureAwait(false);
                 if (BuildingModel is null)
                     return new ResponseUnit<VocUserDetailDTO?>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
@@ -312,7 +314,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 {
                     if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, image);
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocFileFolderPath, image).ConfigureAwait(false);
                         if (ImageBytes is not null)
                         {
                             dto.ImageName.Add(image);
@@ -352,15 +354,15 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (String.IsNullOrWhiteSpace(voccode))
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoByCode(voccode);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoByCode(voccode).ConfigureAwait(false);
                 if(VocTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
-                List<CommentTb>? model = await VocCommentRepository.GetCommentList(VocTB.Id);
+                List<CommentTb>? model = await VocCommentRepository.GetCommentList(VocTB.Id).ConfigureAwait(false);
                 if(model is null || model.Count == 0)
                     return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<VocCommentListDTO>(), code = 200 };
 
-                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId);
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId).ConfigureAwait(false);
                 if(BuildingTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -384,7 +386,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     {
                         if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                         {
-                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
                             if (ImageBytes is not null)
                             {
                                 dtoModel.ImageName.Add(image);
@@ -428,15 +430,15 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (commentid is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid.Value);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid.Value).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId).ConfigureAwait(false);
                 if(VocTB is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 
-                PlaceTb? PlaceTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId);
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId).ConfigureAwait(false);
                 if (PlaceTB is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -456,7 +458,7 @@ namespace FamTec.Server.Services.Voc.Hub
                 {
                     if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
                         if (ImageBytes is not null)
                         {
                             dto.ImageName.Add(image);

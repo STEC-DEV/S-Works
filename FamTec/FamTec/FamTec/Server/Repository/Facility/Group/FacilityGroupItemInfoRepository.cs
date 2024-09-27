@@ -27,9 +27,9 @@ namespace FamTec.Server.Repository.Facility.Group
         {
             try
             {
-                await context.FacilityItemGroupTbs.AddAsync(model);
-             
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.FacilityItemGroupTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -39,7 +39,7 @@ namespace FamTec.Server.Repository.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -55,9 +55,10 @@ namespace FamTec.Server.Repository.Facility.Group
                 List<FacilityItemGroupTb>? model = await context.FacilityItemGroupTbs
                     .Where(m => m.FacilityTbId == facilityId && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -65,7 +66,7 @@ namespace FamTec.Server.Repository.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -79,7 +80,8 @@ namespace FamTec.Server.Repository.Facility.Group
             try
             {
                 FacilityItemGroupTb? model = await context.FacilityItemGroupTbs
-                    .FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == groupid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -89,7 +91,7 @@ namespace FamTec.Server.Repository.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -103,12 +105,12 @@ namespace FamTec.Server.Repository.Facility.Group
             try
             {
                 context.FacilityItemGroupTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -122,12 +124,12 @@ namespace FamTec.Server.Repository.Facility.Group
             try
             {
                 context.FacilityItemGroupTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -142,6 +144,8 @@ namespace FamTec.Server.Repository.Facility.Group
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -149,7 +153,7 @@ namespace FamTec.Server.Repository.Facility.Group
                 // 강제로 디버깅 포인트잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -157,35 +161,43 @@ namespace FamTec.Server.Repository.Facility.Group
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
                         FacilityItemGroupTb? GroupTB = await context.FacilityItemGroupTbs
-                            .FirstOrDefaultAsync(m => m.Id == groupid);
+                            .FirstOrDefaultAsync(m => m.Id == groupid)
+                            .ConfigureAwait(false);
 
                         if (GroupTB is null)
                             return (bool?)null;
 
-                        GroupTB.DelDt = DateTime.Now;
+                        GroupTB.DelDt = ThisDate;
                         GroupTB.DelUser = deleter;
                         GroupTB.DelYn = true;
 
                         context.FacilityItemGroupTbs.Update(GroupTB);
 
-                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs.Where(m => m.FacilityItemGroupTbId == groupid).ToListAsync();
+                        List<FacilityItemKeyTb>? KeyTB = await context.FacilityItemKeyTbs
+                        .Where(m => m.FacilityItemGroupTbId == groupid)
+                        .ToListAsync()
+                        .ConfigureAwait(false);
 
                         if (KeyTB is [_, ..])
                         {
                             foreach (FacilityItemKeyTb KeyModel in KeyTB)
                             {
-                                KeyModel.DelDt = DateTime.Now;
+                                KeyModel.DelDt = ThisDate;
                                 KeyModel.DelUser = deleter;
                                 KeyModel.DelYn = true;
 
                                 context.FacilityItemKeyTbs.Update(KeyModel);
 
-                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs.Where(m => m.FacilityItemKeyTbId == KeyModel.Id).ToListAsync();
+                                List<FacilityItemValueTb>? ValueTB = await context.FacilityItemValueTbs
+                                .Where(m => m.FacilityItemKeyTbId == KeyModel.Id)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
+
                                 if (ValueTB is [_, ..])
                                 {
                                     foreach (FacilityItemValueTb ValueModel in ValueTB)
                                     {
-                                        ValueModel.DelDt = DateTime.Now;
+                                        ValueModel.DelDt = ThisDate;
                                         ValueModel.DelUser = deleter;
                                         ValueModel.DelYn = true;
 
@@ -195,22 +207,22 @@ namespace FamTec.Server.Repository.Facility.Group
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });

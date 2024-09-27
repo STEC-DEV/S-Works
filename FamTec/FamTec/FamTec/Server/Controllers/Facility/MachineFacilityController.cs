@@ -76,7 +76,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO> model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO> model = await MachineFacilityService.AddMachineFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -103,7 +103,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await MachineFacilityService.GetMachineFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -130,7 +130,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -197,7 +197,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await MachineFacilityService.UpdateMachineFacilityService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -231,7 +231,8 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await MachineFacilityService.DeleteMachineFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

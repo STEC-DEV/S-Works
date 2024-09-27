@@ -40,7 +40,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddFacilityGroupInfoService(HttpContext, dto);
+                ResponseUnit<AddGroupInfoDTO> model = await GroupService.AddFacilityGroupInfoService(HttpContext, dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -101,7 +101,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<AddGroupDTO> model = await GroupService.AddFacilityGroupService(HttpContext, dto);
+                ResponseUnit<AddGroupDTO> model = await GroupService.AddFacilityGroupService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -128,7 +128,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<GroupListDTO> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid);
+                ResponseList<GroupListDTO> model = await GroupService.GetFacilityGroupListService(HttpContext, Facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -166,7 +166,8 @@ namespace FamTec.Server.Controllers.Facility.Group
                     return NoContent();
 
 
-                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto);
+                ResponseUnit<bool?> model = await GroupService.UpdateGroupNameService(HttpContext, dto).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -197,7 +198,8 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid);
+                ResponseUnit<bool?> model = await GroupService.DeleteGroupService(HttpContext, groupid).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
                 

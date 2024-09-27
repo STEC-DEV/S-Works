@@ -29,7 +29,7 @@ namespace FamTec.Server.Controllers.Place
                 if (placeid is 0)
                     return NoContent();
 
-                ResponseUnit<string?> model = await AdminPlaceService.GetPlaceName(placeid);
+                ResponseUnit<string?> model = await AdminPlaceService.GetPlaceName(placeid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

@@ -25,8 +25,8 @@ namespace FamTec.Server.Repository.KakaoLog
         {
             try
             {
-                await context.KakaoLogTbs.AddAsync(model);
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.KakaoLogTbs.AddAsync(model).ConfigureAwait(false);
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 if (AddResult)
                     return model;
                 else
@@ -35,7 +35,7 @@ namespace FamTec.Server.Repository.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -50,7 +50,8 @@ namespace FamTec.Server.Repository.KakaoLog
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
                     .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -60,7 +61,7 @@ namespace FamTec.Server.Repository.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -77,7 +78,8 @@ namespace FamTec.Server.Repository.KakaoLog
                 List<KakaoLogTb>? model = await context.KakaoLogTbs
                     .Where(m => m.DelYn != true && m.CreateDt >= StartDate && m.CreateDt <= EndDate)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -87,7 +89,7 @@ namespace FamTec.Server.Repository.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -103,14 +105,15 @@ namespace FamTec.Server.Repository.KakaoLog
                 int count = await context.KakaoLogTbs
                     .Where(m => m.PlaceTbId == placeid && 
                                 m.DelYn != true)
-                    .CountAsync();
+                    .CountAsync()
+                    .ConfigureAwait(false);
 
                 return count;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -130,7 +133,8 @@ namespace FamTec.Server.Repository.KakaoLog
                     .OrderBy(m => m.CreateDt)
                     .Skip((pagenumber - 1) * pagesize)
                     .Take(pagesize)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -140,7 +144,7 @@ namespace FamTec.Server.Repository.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

@@ -73,7 +73,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await BeautyFacilityService.AddBeautyFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO>? model = await BeautyFacilityService.AddBeautyFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -105,7 +105,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await BeautyFacilityService.GetBeautyFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await BeautyFacilityService.GetBeautyFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -138,7 +138,8 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -204,7 +205,8 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await BeautyFacilityService.UpdateBeautyFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await BeautyFacilityService.UpdateBeautyFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -242,7 +244,8 @@ namespace FamTec.Server.Controllers.Facility
                     return NoContent();
 
 
-                ResponseUnit<bool?> model = await BeautyFacilityService.DeleteBeautyFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await BeautyFacilityService.DeleteBeautyFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

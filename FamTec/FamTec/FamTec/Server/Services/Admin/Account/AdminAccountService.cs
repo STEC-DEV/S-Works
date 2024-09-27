@@ -58,7 +58,7 @@ namespace FamTec.Server.Services.Admin.Account
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? ImageAddResult = await AdminUserInfoRepository.UpdateAdminImageInfo(adminid, files);
+                bool? ImageAddResult = await AdminUserInfoRepository.UpdateAdminImageInfo(adminid, files).ConfigureAwait(false);
 
                 return ImageAddResult switch
                 {
@@ -90,16 +90,16 @@ namespace FamTec.Server.Services.Admin.Account
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value);
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(dto.AdminIndex!.Value).ConfigureAwait(false);
                 if (admintb is null) // 받아온 dto의 관리자ID에 해당하는 관리자가 없을때
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 계정정보 변경을 위해 UserTB 조회
-                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId).ConfigureAwait(false);
                 if (usertb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater);
+                bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater).ConfigureAwait(false);
                 return UpdateResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -124,7 +124,7 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!);
+                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 
                 if(usertb is null)
                     return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 200 };
@@ -132,11 +132,11 @@ namespace FamTec.Server.Services.Admin.Account
                 if(usertb.AdminYn != true)
                     return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 200 };
 
-                AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id);
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id).ConfigureAwait(false);
                 if(admintb is null)
                     return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 401 };
 
-                DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
+                DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId).ConfigureAwait(false);
                 if(departmenttb is null)
                     return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 200 };
                 
@@ -218,9 +218,11 @@ namespace FamTec.Server.Services.Admin.Account
                 di = new DirectoryInfo(AdminFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(!String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!);
+                UsersTb? AlreadyCheck = await UserInfoRepository.UserIdCheck(!String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!).ConfigureAwait(false);
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<int?>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
+
+                DateTime ThisTime = DateTime.Now;
 
                 UsersTb model = new UsersTb();
                 model.UserId = !String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!;
@@ -253,22 +255,22 @@ namespace FamTec.Server.Services.Admin.Account
                 model.AdminYn = true;
                 model.AlarmYn = true;
                 model.Status = 2;
-                model.CreateDt = DateTime.Now;
+                model.CreateDt = ThisTime;
                 model.CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisTime;
                 //model.UpdateUser = creater;
                 model.UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.Image = files is not null ? NewFileName : null;
                 
 
-                UsersTb? userresult = await UserInfoRepository.AddAsync(model);
+                UsersTb? userresult = await UserInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (userresult is null)
                     return new ResponseUnit<int?> { message = "요청이 처리되지 않았습니다.", data = null, code = 404 };
                 
                 if (files is not null)
                 {
                     // 파일넣기
-                    bool? AddFile = await FileService.AddResizeImageFile(NewFileName, AdminFileFolderPath, files);
+                    bool? AddFile = await FileService.AddResizeImageFile(NewFileName, AdminFileFolderPath, files).ConfigureAwait(false);
                 }
 
                 var adminModel = new AdminTb
@@ -279,16 +281,16 @@ namespace FamTec.Server.Services.Admin.Account
                         "마스터" => "매니저",
                         _ => string.Empty
                     },
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater,
                     DelYn = false,
                     UserTbId = userresult.Id,
                     DepartmentTbId = dto.DepartmentId!.Value
                 };
 
-                AdminTb? adminresult = await AdminUserInfoRepository.AddAdminUserInfo(adminModel);
+                AdminTb? adminresult = await AdminUserInfoRepository.AddAdminUserInfo(adminModel).ConfigureAwait(false);
                     
                 // 요청이 정상 처리되었을 경우
                 if (adminresult is not null)
@@ -333,11 +335,11 @@ namespace FamTec.Server.Services.Admin.Account
 
                 foreach(int AdminID in adminidx)
                 {
-                    AdminTb? adminTB = await AdminUserInfoRepository.GetAdminIdInfo(AdminID);
+                    AdminTb? adminTB = await AdminUserInfoRepository.GetAdminIdInfo(AdminID).ConfigureAwait(false);
                     if(adminTB is null)
                         return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                     
-                    UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(adminTB.UserTbId);
+                    UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(adminTB.UserTbId).ConfigureAwait(false);
                     if(UserTB is null)
                         return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                     
@@ -347,7 +349,7 @@ namespace FamTec.Server.Services.Admin.Account
                     }
                 }
 
-                bool? result = await AdminUserInfoRepository.DeleteAdminsInfo(adminidx, creater);
+                bool? result = await AdminUserInfoRepository.DeleteAdminsInfo(adminidx, creater).ConfigureAwait(false);
                 return result switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -374,15 +376,15 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx);
+                AdminTb? admintb = await AdminUserInfoRepository.GetAdminIdInfo(adminidx).ConfigureAwait(false);
                 if (admintb is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
-                DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId);
+                DepartmentsTb? departmenttb = await DepartmentInfoRepository.GetDepartmentInfo(admintb.DepartmentTbId).ConfigureAwait(false);
                 if (departmenttb is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
-                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId);
+                UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId).ConfigureAwait(false);
                 if(usertb is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
@@ -435,7 +437,7 @@ namespace FamTec.Server.Services.Admin.Account
         {
             try
             {
-                UsersTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid);
+                UsersTb? UserIdCheck = await UserInfoRepository.UserIdCheck(userid).ConfigureAwait(false);
                 if (UserIdCheck is not null)
                 {
                     // 이미 사용중인 아이디

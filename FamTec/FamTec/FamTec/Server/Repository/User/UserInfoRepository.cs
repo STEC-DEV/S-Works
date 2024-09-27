@@ -29,16 +29,16 @@ namespace FamTec.Server.Repository.User
         {
             try
             {
-                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true);
-                bool AlarmCheck = await context.AlarmTbs.AnyAsync(m => m.UsersTbId == id && m.DelYn != true);
-                bool CommentCheck = await context.CommentTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true);
+                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true).ConfigureAwait(false);
+                bool AlarmCheck = await context.AlarmTbs.AnyAsync(m => m.UsersTbId == id && m.DelYn != true).ConfigureAwait(false);
+                bool CommentCheck = await context.CommentTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true).ConfigureAwait(false);
 
                 return AdminCheck || AlarmCheck || CommentCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -53,9 +53,9 @@ namespace FamTec.Server.Repository.User
         {
             try
             {
-                await context.UsersTbs.AddAsync(model);
+                await context.UsersTbs.AddAsync(model).ConfigureAwait(false);
              
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -65,7 +65,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -74,18 +74,19 @@ namespace FamTec.Server.Repository.User
             try
             {
                 UsersTb? search = await context.UsersTbs
-                    .FirstOrDefaultAsync(m => m.UserId == model.UserId);
+                    .FirstOrDefaultAsync(m => m.UserId == model.UserId)
+                    .ConfigureAwait(false);
 
                 if(search is not null)
                     return false;
                 else
                     context.UsersTbs.Add(model);
-                    return await context.SaveChangesAsync() > 0 ? true: false;
+                    return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true: false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -106,31 +107,31 @@ namespace FamTec.Server.Repository.User
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
                         // 교착상태 방지용 타임아웃
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        await context.UsersTbs.AddRangeAsync(UserList);
+                        await context.UsersTbs.AddRangeAsync(UserList).ConfigureAwait(false);
 
                         bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
                         if (AddResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -147,7 +148,8 @@ namespace FamTec.Server.Repository.User
             try
             {
                 UsersTb? model = await context.UsersTbs
-                    .FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == useridx && m.DelYn != true)
+                    .ConfigureAwait(false);
                     
                 if(model is not null)
                     return model;
@@ -158,7 +160,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -172,7 +174,8 @@ namespace FamTec.Server.Repository.User
             try
             {
                 UsersTb? model = await context.UsersTbs
-                    .FirstOrDefaultAsync(m => m.Id == useridx);
+                    .FirstOrDefaultAsync(m => m.Id == useridx)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -182,7 +185,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -196,7 +199,7 @@ namespace FamTec.Server.Repository.User
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
-
+            DateTime ThisDate = DateTime.Now;
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -204,7 +207,7 @@ namespace FamTec.Server.Repository.User
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -213,13 +216,16 @@ namespace FamTec.Server.Repository.User
 
                         foreach (int UserId in delIdx)
                         {
-                            UsersTb? UserTB = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true);
+                            UsersTb? UserTB = await context.UsersTbs
+                            .FirstOrDefaultAsync(m => m.Id == UserId && m.DelYn != true)
+                            .ConfigureAwait(false);
+
                             if (UserTB is not null)
                             {
                                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                                 UserTB.UserId = $"{UserTB.UserId}_{UserTB.Id}";
                                 UserTB.DelYn = true;
-                                UserTB.DelDt = DateTime.Now;
+                                UserTB.DelDt = ThisDate;
                                 UserTB.DelUser = deleter;
                                 context.UsersTbs.Update(UserTB);
                             }
@@ -230,15 +236,15 @@ namespace FamTec.Server.Repository.User
                             }
                         }
 
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (UpdateResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
 
@@ -246,7 +252,7 @@ namespace FamTec.Server.Repository.User
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -267,7 +273,8 @@ namespace FamTec.Server.Repository.User
                 UsersTb? model = await context.UsersTbs
                     .FirstOrDefaultAsync(m => 
                     m.UserId!.Equals(userid) &&
-                    m.Password!.Equals(password));
+                    m.Password!.Equals(password))
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -277,7 +284,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -291,9 +298,10 @@ namespace FamTec.Server.Repository.User
             try
             {
                 UsersTb? model = await context.UsersTbs
-                    .FirstOrDefaultAsync(m => m.UserId == userid && m.DelYn != true);
-                
-                if(model is not null)
+                    .FirstOrDefaultAsync(m => m.UserId == userid && m.DelYn != true)
+                    .ConfigureAwait(false);
+
+                if (model is not null)
                     return model;
                 else
                     return null;
@@ -301,7 +309,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -320,12 +328,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 기계인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocMachine == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocMachine == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -336,7 +346,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -349,10 +359,12 @@ namespace FamTec.Server.Repository.User
         {
             try
             {
-                List<UsersTb>? model = await context.UsersTbs.Where(m => 
-                m.PlaceTbId == placeidx &&
-                m.AdminYn != true &&
-                m.DelYn != true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.AdminYn != true &&
+                                m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -362,7 +374,7 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -382,12 +394,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 전기 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocElec == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocElec == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -397,7 +411,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -418,12 +432,14 @@ namespace FamTec.Server.Repository.User
                  * Voc권한이 승강인 List 반환
                  */
                 
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocLift == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocLift == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -433,7 +449,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -455,12 +471,14 @@ namespace FamTec.Server.Repository.User
                  * Voc권한이 소방인 List 반환
                  */
                
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocFire == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocFire == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -471,7 +489,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
 
         }
@@ -493,12 +511,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 건축인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocConstruct == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocConstruct == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -509,7 +529,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -529,12 +549,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 통신인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocNetwork == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocNetwork == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -545,7 +567,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -566,12 +588,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 미화인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocBeauty == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocBeauty == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -582,7 +606,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -603,12 +627,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 보안인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocSecurity == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocSecurity == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -619,7 +645,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -639,12 +665,14 @@ namespace FamTec.Server.Repository.User
                  * 알람 받기유무가 Yes 이고
                  * Voc권한이 기계인 List 반환
                  */
-                List<UsersTb>? model = await context.UsersTbs.Where(m =>
-                m.PlaceTbId == placeidx &&
-                m.PermVoc == 2 &&
-                m.AlarmYn == true &&
-                m.DelYn != true &&
-                m.VocEtc == true).ToListAsync();
+                List<UsersTb>? model = await context.UsersTbs
+                    .Where(m => m.PlaceTbId == placeidx &&
+                                m.PermVoc == 2 &&
+                                m.AlarmYn == true &&
+                                m.DelYn != true &&
+                                m.VocEtc == true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -655,7 +683,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -671,7 +699,11 @@ namespace FamTec.Server.Repository.User
             {
                 int count = 0;
 
-                List<UsersTb>? UserList = context.UsersTbs.Where(m => Useridx.Contains(m.Id)).ToList();
+                List<UsersTb>? UserList = await context.UsersTbs
+                    .Where(m => Useridx.Contains(m.Id))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
                 foreach(var Users in UserList)
                 {
                     Users.DelYn = true;
@@ -688,7 +720,7 @@ namespace FamTec.Server.Repository.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -702,13 +734,13 @@ namespace FamTec.Server.Repository.User
             try
             {
                 context.Update(model);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait(false);
                 return model;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -722,7 +754,8 @@ namespace FamTec.Server.Repository.User
             {
                 List<UsersTb>? UserList = await context.UsersTbs
                     .Where(m => m.DelYn != true)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (UserList is [_, ..])
                     return UserList;
@@ -732,10 +765,9 @@ namespace FamTec.Server.Repository.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
-
     
     }
 }

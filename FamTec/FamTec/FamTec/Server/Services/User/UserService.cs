@@ -64,12 +64,12 @@ namespace FamTec.Server.Services.User
                 if(dto.placeid is 0)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                UsersTb? UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword);
+                UsersTb? UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword).ConfigureAwait(false);
                 if (UserTB is null)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid);
-                if(PlaceTB is null)
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid).ConfigureAwait(false);
+                if (PlaceTB is null)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
                 if (PlaceTB.Status == false)
@@ -162,7 +162,7 @@ namespace FamTec.Server.Services.User
                 else
                 {
                     // 관리자
-                    AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id);
+                    AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(UserTB.Id).ConfigureAwait(false);
                     if (admintb is null || String.IsNullOrWhiteSpace(admintb.Type))
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -303,16 +303,16 @@ namespace FamTec.Server.Services.User
                 if (adminidx is null)
                     return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx));
-                if(adminplace is null || !adminplace.Any())
+                List<AdminPlaceTb>? adminplace = await AdminPlaceInfoRepository.GetMyWorksList(Convert.ToInt32(adminidx)).ConfigureAwait(false);
+                if (adminplace is null || !adminplace.Any())
                     return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
 
                 AdminPlaceTb? selectplace = adminplace.FirstOrDefault(m => m.PlaceTbId == placeid);
                 if(selectplace is null)
                     return new ResponseUnit<string?>() { message = "해당 관리자는 선택된 사업장의 권한이 없습니다.", data = null, code = 404 };
 
-                PlaceTb? placeInfo = await PlaceInfoRepository.GetByPlaceInfo(placeid);
-                if(placeInfo is null || placeInfo.Name is null)
+                PlaceTb? placeInfo = await PlaceInfoRepository.GetByPlaceInfo(placeid).ConfigureAwait(false);
+                if (placeInfo is null || placeInfo.Name is null)
                     return new ResponseUnit<string?>() { message = "사업장이 존재하지 않습니다.", data = null, code = 404 };
 
                 /*
@@ -531,16 +531,16 @@ namespace FamTec.Server.Services.User
         {
             try
             {
-                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!);
+                UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 if (usertb is null)
                     return new ResponseUnit<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 200 };
 
                 bool? AdminYN = usertb.AdminYn;
                 if(AdminYN == false) // 일반유저
                 {
-                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value);
-                    
-                    if(placetb is null)
+                    PlaceTb? placetb = await PlaceInfoRepository.GetByPlaceInfo(usertb.PlaceTbId!.Value).ConfigureAwait(false);
+
+                    if (placetb is null)
                         return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     /*
@@ -739,7 +739,7 @@ namespace FamTec.Server.Services.User
                 if(String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<ListUser>() { message = "잘못된 요청입니다.", data = new List<ListUser>(), code = 404 };
 
-                List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx));
+                List<UsersTb>? model = await UserInfoRepository.GetPlaceUserList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
                 if (model is [_, ..])
                 {
@@ -790,17 +790,19 @@ namespace FamTec.Server.Services.User
                 string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(PlaceIdx) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (TokenChk is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 if (TokenChk.PermUser != 2)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UsersTb? CheckUserId = await UserInfoRepository.UserIdCheck(dto.USERID!);
+                UsersTb? CheckUserId = await UserInfoRepository.UserIdCheck(dto.USERID!).ConfigureAwait(false);
                 if (CheckUserId is not null)
                     return new ResponseUnit<UsersDTO>() { message = "이미 존재하는 아이디입니다.", data = null, code = 204 };
                 
@@ -838,9 +840,9 @@ namespace FamTec.Server.Services.User
                 model.AdminYn = false; // 관리자 아님
                 model.AlarmYn = dto.ALRAM_YN!.Value; // 알람 여부
                 model.Status = 2; // 재직여부
-                model.CreateDt = DateTime.Now;
+                model.CreateDt = ThisDate;
                 model.CreateUser = Creater; // 생성자
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = Creater; // 수정자
                 model.Job = dto.JOB;
                 model.VocMachine = dto.VOC_MACHINE!.Value; // VOC 기계권한
@@ -855,13 +857,13 @@ namespace FamTec.Server.Services.User
                 model.PlaceTbId = Int32.Parse(PlaceIdx);
                 model.Image = NewFileName;
 
-                bool? result = await UserInfoRepository.AddUserAsync(model);
+                bool? result = await UserInfoRepository.AddUserAsync(model).ConfigureAwait(false);
                 if (result == true)
                 {
                     if(files is not null)
                     {
                         // 파일 넣기
-                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files);
+                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, PlaceFileFolderPath, files).ConfigureAwait(false);
                     }
 
                     return new ResponseUnit<UsersDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -898,14 +900,14 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx));
+                UsersTb? TokenChk = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (TokenChk is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 if (TokenChk.PermUser < 1)
                     return new ResponseUnit<UsersDTO>() { message = "접근 권한이 없습니다.", data = new UsersDTO(), code = 200 };
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id);
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(id).ConfigureAwait(false);
 
                 // 조회내용이 있으면 반환
                 if (model is not null)
@@ -950,7 +952,7 @@ namespace FamTec.Server.Services.User
                     if(!String.IsNullOrWhiteSpace(model.Image))
                     {
                         dto.ImageName = model.Image; // 이미지 파일명
-                        dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image); // 이미지 Byte[]
+                        dto.Image = await FileService.GetImageFile(PlaceFileName, model.Image).ConfigureAwait(false); // 이미지 Byte[]
                     }
 
                     return new ResponseUnit<UsersDTO>()
@@ -992,12 +994,12 @@ namespace FamTec.Server.Services.User
                 // 삭제체크
                 foreach (int id in del) 
                 {
-                    bool? DelCheck = await UserInfoRepository.DelUserCheck(id);
+                    bool? DelCheck = await UserInfoRepository.DelUserCheck(id).ConfigureAwait(false);
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
-                bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater);
+                bool? DeleteResult = await UserInfoRepository.DeleteUserInfo(del, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -1037,6 +1039,8 @@ namespace FamTec.Server.Services.User
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(Name) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
@@ -1044,8 +1048,8 @@ namespace FamTec.Server.Services.User
                 di = new DirectoryInfo(PlaceFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value);
-                if(model is null)
+                UsersTb? model = await UserInfoRepository.GetUserIndexInfo(dto.ID!.Value).ConfigureAwait(false);
+                if (model is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
                 model.UserId = dto.USERID!;
@@ -1080,7 +1084,7 @@ namespace FamTec.Server.Services.User
                 model.VocEtc = dto.VOC_ETC!.Value;
                 model.AlarmYn = dto.ALRAM_YN!.Value;
                 model.Status = dto.STATUS!.Value;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = Name;
                 
                 if(files is not null) // 파일이 공백이 아닌경우
@@ -1114,7 +1118,7 @@ namespace FamTec.Server.Services.User
                 byte[]? ImageBytes = null;
                 if(!String.IsNullOrWhiteSpace(deleteFileName))
                 {
-                    ImageBytes = await FileService.GetImageFile(PlaceFileFolderPath, deleteFileName);
+                    ImageBytes = await FileService.GetImageFile(PlaceFileFolderPath, deleteFileName).ConfigureAwait(false);
                 }
 
                 // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
@@ -1135,12 +1139,12 @@ namespace FamTec.Server.Services.User
                     if(String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
                     {
                         // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                        await FileService.AddResizeImageFile(model.Image!, PlaceFileFolderPath, files);
+                        await FileService.AddResizeImageFile(model.Image!, PlaceFileFolderPath, files).ConfigureAwait(false);
                     }
                 }
 
                 // 이후 데이터베이스 업데이트
-                UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model);
+                UsersTb? updatemodel = await UserInfoRepository.UpdateUserInfo(model).ConfigureAwait(false);
                 if (updatemodel is not null)
                 {
                     // 성공했으면 그걸로 끝
@@ -1156,7 +1160,7 @@ namespace FamTec.Server.Services.User
                             if(FileService.IsFileExists(PlaceFileFolderPath, AddTemp.FileName) == false)
                             {
                                 // 파일을 저장하는 로직
-                                await FileService.AddResizeImageFile(AddTemp.FileName, PlaceFileFolderPath, files);
+                                await FileService.AddResizeImageFile(AddTemp.FileName, PlaceFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex)
@@ -1203,6 +1207,8 @@ namespace FamTec.Server.Services.User
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+
+                DateTime ThisDate = DateTime.Now;
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -1273,7 +1279,7 @@ namespace FamTec.Server.Services.User
                         }
 
                         // DB에서 사용자데이터 전체조회 - 공백일시 DB 중복검사 안함.
-                        List<UsersTb>? placeusers = await UserInfoRepository.GetAllUserList();
+                        List<UsersTb>? placeusers = await UserInfoRepository.GetAllUserList().ConfigureAwait(false);
                         if (placeusers is [_, ..])
                         {
                             // 엑셀에 중복된 데이터를 기입했는지 검사
@@ -1320,15 +1326,15 @@ namespace FamTec.Server.Services.User
                             AdminYn = false, // 관리자 여부
                             AlarmYn = false, // 알람여부
                             Status = 2, // 재직여부 (재직)
-                            CreateDt = DateTime.Now, // 생성일자
+                            CreateDt = ThisDate, // 생성일자
                             CreateUser = creater, // 생성자
-                            UpdateDt = DateTime.Now, // 수정일자
+                            UpdateDt = ThisDate, // 수정일자
                             UpdateUser = creater, // 수정자
                             Job = null,
                             PlaceTbId = Int32.Parse(placeidx)
                         }).ToList();
 
-                        bool? AddResult = await UserInfoRepository.AddUserList(model);
+                        bool? AddResult = await UserInfoRepository.AddUserList(model).ConfigureAwait(false);
 
                         return AddResult switch
                         {

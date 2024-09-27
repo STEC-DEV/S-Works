@@ -34,6 +34,8 @@ namespace FamTec.Server.Repository.Inventory
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -41,7 +43,7 @@ namespace FamTec.Server.Repository.Inventory
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -58,67 +60,68 @@ namespace FamTec.Server.Repository.Inventory
                             //Storetb.TotalPrice = InventoryDTO.AddStore.TotalPrice!.Value;
                             Storetb.TotalPrice = InventoryDTO.AddStore!.Num!.Value * InventoryDTO.AddStore.UnitPrice!.Value;
                             Storetb.InoutDate = InventoryDTO.AddStore.InOutDate;
-                            Storetb.CreateDt = DateTime.Now;
+                            Storetb.CreateDt = ThisDate;
                             Storetb.CreateUser = creater;
-                            Storetb.UpdateDt = DateTime.Now;
+                            Storetb.UpdateDt = ThisDate;
                             Storetb.UpdateUser = creater;
                             Storetb.Note = InventoryDTO.AddStore.Note;
                             Storetb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
                             Storetb.PlaceTbId = placeid;
                             Storetb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                             Storetb.MaintenenceHistoryTbId = null;
-                            await context.StoreTbs.AddAsync(Storetb);
+                            await context.StoreTbs.AddAsync(Storetb).ConfigureAwait(false);
 
-                            bool? AddStoreResult = await context.SaveChangesAsync() > 0 ? true : false;
+                            bool? AddStoreResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                             if (AddStoreResult != true)
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return -1; // 다른곳에서 해당 품목을 사용중입니다.
                             }
 
                             InventoryTb Inventorytb = new InventoryTb();
                             Inventorytb.Num = InventoryDTO.AddStore.Num!.Value;
                             Inventorytb.UnitPrice = InventoryDTO.AddStore.UnitPrice!.Value;
-                            Inventorytb.CreateDt = DateTime.Now;
+                            Inventorytb.CreateDt = ThisDate;
                             Inventorytb.CreateUser = creater;
-                            Inventorytb.UpdateDt = DateTime.Now;
+                            Inventorytb.UpdateDt = ThisDate;
                             Inventorytb.UpdateUser = creater;
                             Inventorytb.PlaceTbId = placeid;
                             Inventorytb.RoomTbId = InventoryDTO.AddStore.RoomID!.Value;
                             Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
-                            await context.InventoryTbs.AddAsync(Inventorytb);
+                            await context.InventoryTbs.AddAsync(Inventorytb).ConfigureAwait(false);
 
                             int thisCurrentNum = await context.InventoryTbs
                                 .Where(m => m.DelYn != true &&
                                             m.MaterialTbId == InventoryDTO.MaterialID &&
                                             m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                                             m.PlaceTbId == placeid)
-                                .SumAsync(m => m.Num);
+                                .SumAsync(m => m.Num)
+                                .ConfigureAwait(false);
 
                             Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
                             context.Update(Storetb);
                             bool? UpdateStoreTB = await context.SaveChangesAsync() > 0 ? true : false;
                             if (UpdateStoreTB != true) // 다른곳에서 해당 품목을 사용중입니다.
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return -1;
                             }
                         }
 
-                        await transaction.CommitAsync();
+                        await transaction.CommitAsync().ConfigureAwait(false);
                         return 1;
                     }
                     catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                     {
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return -1;
                     }
                     catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -140,9 +143,10 @@ namespace FamTec.Server.Repository.Inventory
                     m.CreateDt >= startDate &&
                     m.CreateDt <= endDate)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
-            
-                if(StoreList is null || !StoreList.Any())
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (StoreList is null || !StoreList.Any())
                     return null;
 
                 List<PeriodicDTO>? dtoList = (from StoreTB in StoreList
@@ -185,7 +189,7 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -252,7 +256,8 @@ namespace FamTec.Server.Repository.Inventory
                                                              M_CODE = subQueryA.M_CODE,
                                                              M_NM = subQueryA.M_NM,
                                                              TOTAL = inventory.TOTAL ?? 0
-                                                         }).ToListAsync(); // 비동기 ToListAsync() 사용
+                                                         }).ToListAsync()
+                                                         .ConfigureAwait(false); // 비동기 ToListAsync() 사용
 
                   
                     if (model is null)
@@ -277,7 +282,8 @@ namespace FamTec.Server.Repository.Inventory
                                                         DelUser = room.DelUser,
                                                         FloorTbId = room.FloorTbId
                                                     }).OrderBy(m => m.CreateDt)
-                                .ToListAsync(); // 비동기 ToListAsync() 사용
+                                .ToListAsync()
+                                .ConfigureAwait(false); // 비동기 ToListAsync() 사용
                   
                     if (roomlist is null)
                         return null;
@@ -363,7 +369,8 @@ namespace FamTec.Server.Repository.Inventory
                                                                     M_CODE = subQueryA.M_CODE,
                                                                     M_NM = subQueryA.M_NM,
                                                                     TOTAL = inventory.TOTAL ?? 0
-                                                                }).ToListAsync();
+                                                                }).ToListAsync()
+                                                                .ConfigureAwait(false);
 
                     model = model
                     .GroupBy(m => m.M_ID)
@@ -392,7 +399,8 @@ namespace FamTec.Server.Repository.Inventory
                                                             DelUser = room.DelUser,
                                                             FloorTbId = room.FloorTbId
                                                         }).OrderBy(m => m.CreateDt)
-                                     .ToListAsync(); // 비동기 메서드 사용
+                                     .ToListAsync()
+                                     .ConfigureAwait(false); // 비동기 메서드 사용
 
 
                         int materialcount = model.GroupBy(m => m.M_ID).Count();
@@ -455,7 +463,8 @@ namespace FamTec.Server.Repository.Inventory
                                                                                 m.PlaceTbId == placeid &&
                                                                                 m.DelYn != true)
                                                                         .OrderBy(m => m.CreateDt)
-                                                                        .ToListAsync();
+                                                                        .ToListAsync()
+                                                                        .ConfigureAwait(false);
 
                 // 개수가 뭐라도 있으면
                 if (model is [_, ..])
@@ -478,7 +487,7 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -487,7 +496,8 @@ namespace FamTec.Server.Repository.Inventory
             try
             {
                 InventoryTb? model = await context.InventoryTbs
-                    .FirstOrDefaultAsync(m => m.Id == id);
+                    .FirstOrDefaultAsync(m => m.Id == id)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -497,7 +507,7 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -513,6 +523,8 @@ namespace FamTec.Server.Repository.Inventory
         {
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -522,7 +534,7 @@ namespace FamTec.Server.Repository.Inventory
 #endif
                 /* 실패 리스트 담을곳 */
                 FailResult ReturnResult = new FailResult();
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                using (var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -532,18 +544,25 @@ namespace FamTec.Server.Repository.Inventory
                         foreach (InOutInventoryDTO model in dto)
                         {
                             // 출고할게 여러곳에 있으니 Check 개수 Check
-                            List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
+                            List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value)
+                            .ConfigureAwait(false);
 
                             if (InventoryList is null || !InventoryList.Any())
                             {
-                                MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == model.MaterialID!.Value && m.DelYn != true);
+                                MaterialTb? MaterialTB = await context.MaterialTbs
+                                .FirstOrDefaultAsync(m => m.Id == model.MaterialID!.Value && m.DelYn != true)
+                                .ConfigureAwait(false);
+
                                 if (MaterialTB is null)
                                 {
                                     ReturnResult.ReturnResult = -2;
                                     return ReturnResult;
                                 }
 
-                                RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.Id == model.AddStore!.RoomID!.Value && m.DelYn != true);
+                                RoomTb? RoomTB = await context.RoomTbs
+                                .FirstOrDefaultAsync(m => m.Id == model.AddStore!.RoomID!.Value && m.DelYn != true)
+                                .ConfigureAwait(false);
+
                                 if (RoomTB is null)
                                 {
                                     ReturnResult.ReturnResult = -2;
@@ -553,7 +572,9 @@ namespace FamTec.Server.Repository.Inventory
                                 int avail_Num = await context.InventoryTbs
                                 .Where(m => m.PlaceTbId == placeid &&
                                 m.MaterialTbId == model.MaterialID &&
-                                m.RoomTbId == model.AddStore.RoomID).SumAsync(m => m.Num);
+                                m.RoomTbId == model.AddStore.RoomID)
+                                .SumAsync(m => m.Num)
+                                .ConfigureAwait(false);
 
                                 FailInventory FailInventoryInfo = new FailInventory();
                                 FailInventoryInfo.MaterialID = MaterialTB.Id;
@@ -570,14 +591,20 @@ namespace FamTec.Server.Repository.Inventory
                                 if (InventoryList.Sum(i => i.Num) < model.AddStore.Num)
                                 {
                                     // 수량이 부족함.
-                                    MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == model.MaterialID!.Value && m.DelYn != true);
+                                    MaterialTb? MaterialTB = await context.MaterialTbs
+                                    .FirstOrDefaultAsync(m => m.Id == model.MaterialID!.Value && m.DelYn != true)
+                                    .ConfigureAwait(false);
+
                                     if (MaterialTB is null)
                                     {
                                         ReturnResult.ReturnResult = -2;
                                         return ReturnResult;
                                     }
 
-                                    RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.Id == model.AddStore!.RoomID!.Value && m.DelYn != true);
+                                    RoomTb? RoomTB = await context.RoomTbs
+                                    .FirstOrDefaultAsync(m => m.Id == model.AddStore!.RoomID!.Value && m.DelYn != true)
+                                    .ConfigureAwait(false);
+
                                     if (RoomTB is null)
                                     {
                                         ReturnResult.ReturnResult = -2;
@@ -587,7 +614,9 @@ namespace FamTec.Server.Repository.Inventory
                                     int avail_Num = await context.InventoryTbs
                                     .Where(m => m.PlaceTbId == placeid &&
                                     m.MaterialTbId == model.MaterialID &&
-                                    m.RoomTbId == model.AddStore.RoomID).SumAsync(m => m.Num);
+                                    m.RoomTbId == model.AddStore.RoomID)
+                                    .SumAsync(m => m.Num)
+                                    .ConfigureAwait(false);
 
                                     FailInventory FailInventoryInfo = new FailInventory();
                                     FailInventoryInfo.MaterialID = MaterialTB.Id;
@@ -615,7 +644,9 @@ namespace FamTec.Server.Repository.Inventory
                             int? result = 0;
 
                             // 추가해야함
-                            List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value);
+                            List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, model.AddStore!.RoomID!.Value, model.MaterialID!.Value, model.AddStore.Num!.Value)
+                            .ConfigureAwait(false);
+
                             if (InventoryList is not [_, ..])
                             {
                                 // 출고개수가 부족함
@@ -662,20 +693,20 @@ namespace FamTec.Server.Repository.Inventory
 
 
                                             OutInventoryTb.Num -= OutInventoryTb.Num;
-                                            OutInventoryTb.UpdateDt = DateTime.Now;
+                                            OutInventoryTb.UpdateDt = ThisDate;
                                             OutInventoryTb.UpdateUser = creater;
 
                                             if (OutInventoryTb.Num == 0)
                                             {
                                                 OutInventoryTb.DelYn = true;
-                                                OutInventoryTb.DelDt = DateTime.Now;
+                                                OutInventoryTb.DelDt = ThisDate;
                                                 OutInventoryTb.DelUser = creater;
                                             }
                                             context.Update(OutInventoryTb);
-                                            bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            bool SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                             if (!SaveResult)
                                             {
-                                                await transaction.RollbackAsync();
+                                                await transaction.RollbackAsync().ConfigureAwait(false);
                                                 ReturnResult.ReturnResult = -1;
                                                 return ReturnResult;
                                             }
@@ -685,7 +716,8 @@ namespace FamTec.Server.Repository.Inventory
                                                                             m.MaterialTbId == model.MaterialID &&
                                                                             m.RoomTbId == model.AddStore.RoomID &&
                                                                             m.PlaceTbId == placeid)
-                                                                .SumAsync(m => m.Num);
+                                                                .SumAsync(m => m.Num)
+                                                                .ConfigureAwait(false);
 
                                             StoreTb StoreTB = new StoreTb();
                                             StoreTB.Inout = 0;
@@ -693,9 +725,9 @@ namespace FamTec.Server.Repository.Inventory
                                             StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                             StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice;
                                             StoreTB.InoutDate = model.AddStore.InOutDate;
-                                            StoreTB.CreateDt = DateTime.Now;
+                                            StoreTB.CreateDt = ThisDate;
                                             StoreTB.CreateUser = creater;
-                                            StoreTB.UpdateDt = DateTime.Now;
+                                            StoreTB.UpdateDt = ThisDate;
                                             StoreTB.UpdateUser = creater;
                                             StoreTB.RoomTbId = model.AddStore.RoomID!.Value;
                                             StoreTB.MaterialTbId = model.MaterialID!.Value;
@@ -703,7 +735,7 @@ namespace FamTec.Server.Repository.Inventory
                                             StoreTB.Note = model.AddStore.Note;
                                             StoreTB.PlaceTbId = placeid;
 
-                                            await context.StoreTbs.AddAsync(StoreTB);
+                                            await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
                                             #endregion
 
                                         }
@@ -717,20 +749,20 @@ namespace FamTec.Server.Repository.Inventory
 
                                             outresult -= model.AddStore.Num!.Value;
                                             OutInventoryTb.Num = outresult;
-                                            OutInventoryTb.UpdateDt = DateTime.Now;
+                                            OutInventoryTb.UpdateDt = ThisDate;
                                             OutInventoryTb.UpdateUser = creater;
 
                                             if (OutInventoryTb.Num == 0)
                                             {
                                                 OutInventoryTb.DelYn = true;
-                                                OutInventoryTb.DelDt = DateTime.Now;
+                                                OutInventoryTb.DelDt = ThisDate;
                                                 OutInventoryTb.DelUser = creater;
                                             }
                                             context.Update(OutInventoryTb);
-                                            bool SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            bool SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                             if (!SaveResult)
                                             {
-                                                await transaction.RollbackAsync();
+                                                await transaction.RollbackAsync().ConfigureAwait(false);
                                                 ReturnResult.ReturnResult = -1;
                                                 return ReturnResult;
                                             }
@@ -740,7 +772,8 @@ namespace FamTec.Server.Repository.Inventory
                                                         m.MaterialTbId == model.MaterialID &&
                                                         m.RoomTbId == model.AddStore.RoomID &&
                                                         m.PlaceTbId == placeid)
-                                            .SumAsync(m => m.Num);
+                                            .SumAsync(m => m.Num)
+                                            .ConfigureAwait(false);
 
                                             StoreTb StoreTB = new StoreTb();
                                             StoreTB.Inout = 0;
@@ -748,16 +781,16 @@ namespace FamTec.Server.Repository.Inventory
                                             StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                             StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총금액
                                             StoreTB.InoutDate = model.AddStore.InOutDate;
-                                            StoreTB.CreateDt = DateTime.Now;
+                                            StoreTB.CreateDt = ThisDate;
                                             StoreTB.CreateUser = creater;
-                                            StoreTB.UpdateDt = DateTime.Now;
+                                            StoreTB.UpdateDt = ThisDate;
                                             StoreTB.UpdateUser = creater;
                                             StoreTB.RoomTbId = model.AddStore.RoomID!.Value;
                                             StoreTB.MaterialTbId = model.MaterialID!.Value;
                                             StoreTB.CurrentNum = CurrentTotalNum;
                                             StoreTB.Note = model.AddStore.Note;
                                             StoreTB.PlaceTbId = placeid;
-                                            await context.StoreTbs.AddAsync(StoreTB);
+                                            await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
                                             #endregion
                                         }
                                     }
@@ -765,7 +798,7 @@ namespace FamTec.Server.Repository.Inventory
                                     if (checksum != model.AddStore.Num)
                                     {
                                         Console.WriteLine("결과가 다름 RollBack!");
-                                        await transaction.RollbackAsync();
+                                        await transaction.RollbackAsync().ConfigureAwait(false);
                                         ReturnResult.ReturnResult = -1;
                                         return ReturnResult;
                                     }
@@ -777,18 +810,18 @@ namespace FamTec.Server.Repository.Inventory
                         // -2 삭제된 데이터를 조회하고있음.
                         // 0 출고개수가 부족
                         // 출고완료
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (UpdateResult)
                         {
                             ReturnResult.ReturnResult = 1;
-                            await transaction.CommitAsync(); // 출고 완료
+                            await transaction.CommitAsync().ConfigureAwait(false); // 출고 완료
                             return ReturnResult;
                         }
                         else
                         {
                             // 다른곳에서 해당 품목을 사용중입니다.
                             ReturnResult.ReturnResult = -1;
-                            await transaction.RollbackAsync(); // 출고실패
+                            await transaction.RollbackAsync().ConfigureAwait(false); // 출고실패
                             return ReturnResult;
                         }
                     }
@@ -796,14 +829,14 @@ namespace FamTec.Server.Repository.Inventory
                     {
                         // 다른곳에서 해당 품목을 사용중입니다.
                         ReturnResult.ReturnResult = -1;
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         return ReturnResult;
                     }
                     catch (Exception ex)
                     {
                         ReturnResult.ReturnResult = -2;
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
                         //throw new ArgumentNullException();
                         return ReturnResult;
@@ -821,7 +854,9 @@ namespace FamTec.Server.Repository.Inventory
                       .Where(m => m.PlaceTbId == placeid &&
                       m.RoomTbId == roomid &&
                       m.MaterialTbId == materialid &&
-                      m.DelYn != true).ToListAsync();
+                      m.DelYn != true)
+                      .ToListAsync()
+                      .ConfigureAwait(false);
 
                 List<InventoryTb>? check = Occupant.Where(m => !String.IsNullOrWhiteSpace(m.RowVersion!.ToString())).ToList();
 
@@ -834,7 +869,7 @@ namespace FamTec.Server.Repository.Inventory
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -853,7 +888,8 @@ namespace FamTec.Server.Repository.Inventory
                     m.MaterialTbId == materialid && 
                     m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (InventoryList is [_, ..])
                     return InventoryList;
@@ -879,15 +915,15 @@ namespace FamTec.Server.Repository.Inventory
             try
             {
 
-                BuildingTb? buildingtb = await context.BuildingTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid && m.Id == buildingid);
+                BuildingTb? buildingtb = await context.BuildingTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid && m.Id == buildingid).ConfigureAwait(false);
                 if (buildingtb is null)
                     return new List<InOutLocationDTO>();
 
-                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtb.Id && m.DelYn != true).ToListAsync();
-                if(FloorList is null || !FloorList.Any())
+                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => m.BuildingTbId == buildingtb.Id && m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                if (FloorList is null || !FloorList.Any())
                     return new List<InOutLocationDTO>();
 
-                List<RoomTb>? RoomList = await context.RoomTbs.Where(e => FloorList.Select(m => m.Id).Contains(e.FloorTbId) && e.DelYn != true).ToListAsync();
+                List<RoomTb>? RoomList = await context.RoomTbs.Where(e => FloorList.Select(m => m.Id).Contains(e.FloorTbId) && e.DelYn != true).ToListAsync().ConfigureAwait(false);
                 if (RoomList is null || !RoomList.Any())
                     return new List<InOutLocationDTO>();
 
@@ -901,7 +937,8 @@ namespace FamTec.Server.Repository.Inventory
                         MaterialTbId = g.First().MaterialTbId, // 그룹의 임의 항목에서 MaterialTbId 가져오기
                         Num = g.Sum(m => m.Num), // 각 그룹의 Num 필드 합계 계산
                     })
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if(model is not null && model.Any())
                 {
@@ -925,7 +962,7 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -943,9 +980,11 @@ namespace FamTec.Server.Repository.Inventory
             try
             {
                 List<InventoryTb>? model = await context.InventoryTbs
-                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.RoomTbId == roomid && m.MaterialTbId == materialid).ToListAsync();
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.RoomTbId == roomid && m.MaterialTbId == materialid)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                
+
                 if (model is null || !model.Any())
                     return null; // 개수가 부족함
 
@@ -1019,7 +1058,7 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

@@ -67,7 +67,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO>? model = await FireFacilityService.AddFireFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -95,7 +95,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await FireFacilityService.GetFireFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await FireFacilityService.GetFireFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -122,7 +122,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -182,7 +182,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await FireFacilityService.UpdateFireFacilityService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -214,7 +214,7 @@ namespace FamTec.Server.Controllers.Facility
                 if(delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FireFacilityService.DeleteFireFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await FireFacilityService.DeleteFireFacilityService(HttpContext, delIdx).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

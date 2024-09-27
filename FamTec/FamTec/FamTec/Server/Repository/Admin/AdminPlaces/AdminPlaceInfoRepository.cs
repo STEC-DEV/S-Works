@@ -39,31 +39,31 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
                         // 교착상태 방지용 타임아웃
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        await context.AdminPlaceTbs.AddRangeAsync(model);
+                        await context.AdminPlaceTbs.AddRangeAsync(model).ConfigureAwait(false);
 
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (AddResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -82,9 +82,10 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
                     .Where(m => m.AdminTbId == adminid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(adminplacetb is [_, ..])
+                if (adminplacetb is [_, ..])
                     return adminplacetb;
                 else
                     return null;
@@ -92,7 +93,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -105,13 +106,20 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             try
             {
-                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
-                if(!adminplacetb.Any())
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
+                    .Where(m => m.AdminTbId == adminid && m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (!adminplacetb.Any())
                     return null;
 
                
-                List<PlaceTb>? placetb = await context.PlaceTbs.ToListAsync();
-                if(!placetb.Any())
+                List<PlaceTb>? placetb = await context.PlaceTbs
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (!placetb.Any())
                     return null;
 
                 List<AdminPlaceDTO>? result = (from admin in adminplacetb
@@ -141,7 +149,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -155,19 +163,27 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             try
             {
-                AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != true);
-                if(admintb is null)
+                AdminTb? admintb = await context.AdminTbs
+                    .FirstOrDefaultAsync(m => m.Id == adminidx && m.DelYn != true)
+                    .ConfigureAwait(false);
+
+                if (admintb is null)
                     return null;
 
                 DepartmentsTb? departmenttb = await context.DepartmentsTbs
                     .FirstOrDefaultAsync(m => m.Id == admintb.DepartmentTbId && 
-                                              m.DelYn != true);
-                if(departmenttb is null)
+                                              m.DelYn != true)
+                    .ConfigureAwait(false);
+
+                if (departmenttb is null)
                     return null;
 
                 
-                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
-                if(usertb is null)
+                UsersTb? usertb = await context.UsersTbs
+                    .FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true)
+                    .ConfigureAwait(false);
+
+                if (usertb is null)
                     return null;
 
                 DManagerDTO dto = new DManagerDTO
@@ -186,7 +202,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -201,12 +217,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 context.AdminPlaceTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -220,11 +236,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 
-                PlaceTb? placetb = await context.PlaceTbs.FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != true);
-                if(placetb is null )
-                    return null;
+                PlaceTb? placetb = await context.PlaceTbs
+                    .FirstOrDefaultAsync(m => m.Id == placeid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
-               
+                if (placetb is null )
+                    return null;
 
                 List<ManagerListDTO>? ManagerDTO = (from admintb in context.AdminTbs.ToList()
                                                     join adminplacetb in context.AdminPlaceTbs.Where(m => m.PlaceTbId == placeid).ToList()
@@ -255,7 +272,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 PlaceDetail.PlaceInfo.Note = placetb.Note;
                         
                 DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-                    .FirstOrDefaultAsync(m => m.Id == placetb.DepartmentTbId);
+                    .FirstOrDefaultAsync(m => m.Id == placetb.DepartmentTbId).ConfigureAwait(false);
                         
                 if (DepartmentTB is not null)
                 {
@@ -283,7 +300,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -297,9 +314,10 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 AdminPlaceTb? adminplacetb = await context.AdminPlaceTbs
-                    .FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid);
+                    .FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid)
+                    .ConfigureAwait(false);
 
-                if(adminplacetb is not null)
+                if (adminplacetb is not null)
                     return adminplacetb;
                 else
                     return null;
@@ -307,7 +325,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -321,6 +339,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -328,7 +347,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 // 강제로 디버깅 포인트를 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -338,27 +357,28 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         foreach (int id in adminid)
                         {
                             AdminPlaceTb? admintb = await context.AdminPlaceTbs
-                                .FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid);
+                                .FirstOrDefaultAsync(m => m.AdminTbId == id && m.PlaceTbId == placeid)
+                                .ConfigureAwait(false);
 
                             if (admintb is null)
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return false;
                             }
                             else
                             {
                                 context.AdminPlaceTbs.Remove(admintb);
-                                await context.SaveChangesAsync();
+                                await context.SaveChangesAsync().ConfigureAwait(false);
                             }
                         }
 
-                        await transaction.CommitAsync();
+                        await transaction.CommitAsync().ConfigureAwait(false);
                         return true;
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -375,7 +395,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 AdminPlaceTb? model = await context.AdminPlaceTbs
-                    .FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceTbId == placeid);
+                    .FirstOrDefaultAsync(m => m.AdminTbId == admintbid && m.PlaceTbId == placeid)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -385,7 +406,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -400,12 +421,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 context.AdminPlaceTbs.Remove(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -422,7 +443,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
                     .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (adminplacetb is not null && adminplacetb.Any())
                 {
@@ -437,7 +459,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -455,7 +477,11 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 List<int>? insertplaceidx = null;
                 List<int>? deleteplaceidx = null;
                 
-                List<int> allplaceidx = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).Select(m => m.PlaceTbId).ToListAsync();
+                List<int> allplaceidx = await context.AdminPlaceTbs
+                    .Where(m => m.AdminTbId == adminid && m.DelYn != true)
+                    .Select(m => m.PlaceTbId)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (placeidx is [_, ..])
                 {
@@ -463,7 +489,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                     if (allplaceidx is [_, ..])
                     {
                         // 넘어온 PlaceID중에서 내가 갖고 있는것.
-                        selectplaceidx = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true && m.AdminTbId == adminid).Select(m => m.PlaceTbId).ToListAsync();
+                        selectplaceidx = await context.AdminPlaceTbs.Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true && m.AdminTbId == adminid).Select(m => m.PlaceTbId).ToListAsync().ConfigureAwait(false);
                         if (selectplaceidx is [_, ..]) // 가지고 있는게 있으면
                         {
                             // 추가사업장 구하기
@@ -495,7 +521,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -508,8 +534,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         {
             try
             {
-                await context.AdminPlaceTbs.AddAsync(model);
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.AdminPlaceTbs.AddAsync(model).ConfigureAwait(false);
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 if (AddResult)
                 {
                     return model;
@@ -522,7 +548,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -536,12 +562,12 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 context.AdminPlaceTbs.Remove(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -555,18 +581,18 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             try
             {
                 // 관리자 있는지 Check
-                AdminTb? AdminCheck = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                AdminTb? AdminCheck = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true).ConfigureAwait(false);
                 if (AdminCheck is null)
                     return null;
 
 
-                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync();
-                if(adminplacetb is [_, ..])
+                List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == adminid && m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                if (adminplacetb is [_, ..])
                 {
                     List<int> adminplacetbid = adminplacetb.Select(m => m.PlaceTbId).ToList();
 
-                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync();
-                    if(placetb is [_, ..])
+                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(e => !adminplacetbid.Contains(e.Id) && e.DelYn != true).ToListAsync().ConfigureAwait(false);
+                    if (placetb is [_, ..])
                     {
                         List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
                         {
@@ -588,7 +614,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 }
                 else // 이사람은 아무 사업장도 없음
                 {
-                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(m => m.DelYn != true).ToListAsync();
+                    List<PlaceTb>? placetb = await context.PlaceTbs.Where(m => m.DelYn != true).ToListAsync().ConfigureAwait(false); ;
                     if(placetb is [_, ..])
                     {
                         List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
@@ -613,7 +639,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -638,7 +664,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                   Note = PlaceTB.Note,
                                                   ContractDt = PlaceTB.ContractDt,
                                                   ContractNum = PlaceTB.ContractNum
-                                              }).ToListAsync();
+                                              }).ToListAsync()
+                                              .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -648,7 +675,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

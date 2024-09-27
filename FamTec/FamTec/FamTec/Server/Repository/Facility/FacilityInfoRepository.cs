@@ -31,14 +31,15 @@ namespace FamTec.Server.Repository.Facility
             try
             {
                 bool MaintenenceCheck = await context.MaintenenceHistoryTbs
-                    .AnyAsync(m => m.FacilityTbId == Facilityid && m.DelYn != true);
+                    .AnyAsync(m => m.FacilityTbId == Facilityid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 return MaintenenceCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -51,9 +52,9 @@ namespace FamTec.Server.Repository.Facility
         {
             try
             {
-                await context.FacilityTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.FacilityTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                
                 if (AddResult)
                     return model;
@@ -63,7 +64,7 @@ namespace FamTec.Server.Repository.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -79,9 +80,10 @@ namespace FamTec.Server.Repository.Facility
                 List<FacilityTb>? model = await context.FacilityTbs
                     .Where(m => m.RoomTbId == roomid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -89,7 +91,7 @@ namespace FamTec.Server.Repository.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -103,8 +105,9 @@ namespace FamTec.Server.Repository.Facility
             try
             {
                 FacilityTb? model = await context.FacilityTbs.
-                    FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
-                    
+                    FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true)
+                    .ConfigureAwait(false);
+
                 if (model is not null)
                     return model;
                 else
@@ -113,7 +116,7 @@ namespace FamTec.Server.Repository.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -127,12 +130,12 @@ namespace FamTec.Server.Repository.Facility
             try
             {
                 context.FacilityTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -146,6 +149,8 @@ namespace FamTec.Server.Repository.Facility
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -153,7 +158,7 @@ namespace FamTec.Server.Repository.Facility
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -162,20 +167,21 @@ namespace FamTec.Server.Repository.Facility
 
                         foreach (int fcid in facilityid)
                         {
-                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == fcid);
+                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == fcid).ConfigureAwait(false);
 
                             if (FacilityTB is null)
                                 return (bool?)null;
 
                             FacilityTB.DelYn = true;
-                            FacilityTB.DelDt = DateTime.Now;
+                            FacilityTB.DelDt = ThisDate;
                             FacilityTB.DelUser = deleter;
 
                             context.FacilityTbs.Update(FacilityTB);
 
                             List<FacilityItemGroupTb>? GroupList = await context.FacilityItemGroupTbs
                                 .Where(m => m.FacilityTbId == FacilityTB.Id && m.DelYn != true)
-                                .ToListAsync();
+                                .ToListAsync()
+                                .ConfigureAwait(false);
 
                             if (GroupList is [_, ..])
                             {
@@ -184,35 +190,37 @@ namespace FamTec.Server.Repository.Facility
                                     // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                                     GroupTB.Name = $"{GroupTB.Name}_{GroupTB.Id}";
                                     GroupTB.DelYn = true;
-                                    GroupTB.DelDt = DateTime.Now;
+                                    GroupTB.DelDt = ThisDate;
                                     GroupTB.DelUser = deleter;
 
                                     context.FacilityItemGroupTbs.Update(GroupTB);
 
                                     List<FacilityItemKeyTb>? KeyList = await context.FacilityItemKeyTbs
                                         .Where(m => m.FacilityItemGroupTbId == GroupTB.Id && m.DelYn != true)
-                                        .ToListAsync();
+                                        .ToListAsync()
+                                        .ConfigureAwait(false);
 
                                     if (KeyList is [_, ..])
                                     {
                                         foreach (FacilityItemKeyTb KeyTB in KeyList)
                                         {
                                             KeyTB.DelYn = true;
-                                            KeyTB.DelDt = DateTime.Now;
+                                            KeyTB.DelDt = ThisDate;
                                             KeyTB.DelUser = deleter;
 
                                             context.FacilityItemKeyTbs.Update(KeyTB);
 
                                             List<FacilityItemValueTb>? ValueList = await context.FacilityItemValueTbs
                                                 .Where(m => m.FacilityItemKeyTbId == KeyTB.Id && m.DelYn != true)
-                                                .ToListAsync();
+                                                .ToListAsync()
+                                                .ConfigureAwait(false);
 
                                             if (ValueList is [_, ..])
                                             {
                                                 foreach (FacilityItemValueTb ValueTB in ValueList)
                                                 {
                                                     ValueTB.DelYn = true;
-                                                    ValueTB.DelDt = DateTime.Now;
+                                                    ValueTB.DelDt = ThisDate;
                                                     ValueTB.DelUser = deleter;
 
                                                     context.FacilityItemValueTbs.Update(ValueTB);
@@ -224,22 +232,22 @@ namespace FamTec.Server.Repository.Facility
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -278,7 +286,8 @@ namespace FamTec.Server.Repository.Facility
                                                                LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                                ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                            }).OrderBy(m => m.Id)
-                                            .ToListAsync();
+                                            .ToListAsync()
+                                            .ConfigureAwait(false);
 
 
                 if (machinelist is [_, ..])
@@ -294,7 +303,7 @@ namespace FamTec.Server.Repository.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -330,9 +339,10 @@ namespace FamTec.Server.Repository.Facility
                                                                LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                                ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                            }).OrderBy(m => m.Id)
-                                          .ToListAsync();
+                                          .ToListAsync()
+                                          .ConfigureAwait(false);
 
-                if(electlist is [_, ..])
+                if (electlist is [_, ..])
                 {
                     return electlist;
                 }
@@ -344,7 +354,7 @@ namespace FamTec.Server.Repository.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -380,7 +390,8 @@ namespace FamTec.Server.Repository.Facility
                                                              LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                              ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                          }).OrderBy(m => m.Id)
-                                           .ToListAsync();
+                                           .ToListAsync()
+                                           .ConfigureAwait(false); 
 
                 if (liftlist is [_, ..])
                 {
@@ -394,7 +405,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -430,7 +441,8 @@ namespace FamTec.Server.Repository.Facility
                                                             LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                             ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                         }).OrderBy(m => m.Id)
-                                           .ToListAsync();
+                                           .ToListAsync()
+                                           .ConfigureAwait(false);
 
                 if (firelist is [_, ..])
                 {
@@ -444,7 +456,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -480,7 +492,8 @@ namespace FamTec.Server.Repository.Facility
                                                             LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                             ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                         }).OrderBy(m => m.Id)
-                                       .ToListAsync();
+                                       .ToListAsync()
+                                       .ConfigureAwait(false);
 
                 if (Constructlist is [_, ..])
                 {
@@ -494,7 +507,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -530,7 +543,8 @@ namespace FamTec.Server.Repository.Facility
                                                                  LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                                  ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                              }).OrderBy(m => m.Id)
-                                   .ToListAsync();
+                                   .ToListAsync()
+                                   .ConfigureAwait(false);
 
                 if (Networklist is [_, ..])
                 {
@@ -544,7 +558,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -580,7 +594,8 @@ namespace FamTec.Server.Repository.Facility
                                                               LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                               ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                           }).OrderBy(m => m.Id)
-                                                          .ToListAsync();
+                                                          .ToListAsync()
+                                                          .ConfigureAwait(false);
 
                 if (Beautylist is [_, ..])
                 {
@@ -594,7 +609,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -630,7 +645,8 @@ namespace FamTec.Server.Repository.Facility
                                                               LifeSpan = facilitytb.Lifespan, /* 내용연수 */
                                                               ChangeDT = facilitytb.ChangeDt /* 교체년월 */
                                                           }).OrderBy(m => m.Id)
-                                                    .ToListAsync();
+                                                    .ToListAsync()
+                                                    .ConfigureAwait(false);
 
                 if (Securitylist is [_, ..])
                 {
@@ -644,7 +660,7 @@ namespace FamTec.Server.Repository.Facility
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
     }

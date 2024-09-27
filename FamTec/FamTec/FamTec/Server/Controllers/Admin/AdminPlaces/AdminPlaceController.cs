@@ -77,7 +77,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService(HttpContext);
+                ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest(model);
 
@@ -108,7 +108,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ManagerListDTO> model = await AdminPlaceService.GetAllManagerListService();
+                ResponseList<ManagerListDTO> model = await AdminPlaceService.GetAllManagerListService().ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -140,7 +140,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksService(adminid);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksService(adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -174,7 +174,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<PlaceDetailDTO> model = await AdminPlaceService.GetPlaceService(placeid);
+                ResponseUnit<PlaceDetailDTO> model = await AdminPlaceService.GetPlaceService(placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -268,7 +268,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(HttpContext, dto);
+                ResponseUnit<int?> model = await AdminPlaceService.AddPlaceService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -309,7 +309,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (placeidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx);
+                ResponseUnit<bool?> model = await AdminPlaceService.DeletePlaceService(HttpContext, placeidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -428,7 +428,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UpdatePlaceDTO> model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto);
+                ResponseUnit<UpdatePlaceDTO> model = await AdminPlaceService.UpdatePlaceService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -465,7 +465,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (placeid is 0)
                     return NoContent();
 
-                ResponseList<ManagerListDTO> model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid);
+                ResponseList<ManagerListDTO> model = await AdminPlaceService.NotContainManagerList(HttpContext, placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -500,7 +500,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (adminid is 0)
                     return NoContent();
 
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.NotContainPlaceList(HttpContext, adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -555,7 +555,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager);
+                ResponseUnit<bool?> model = await AdminPlaceService.AddPlaceManagerService(HttpContext, placemanager).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -612,7 +612,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto);
+                ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);

@@ -72,7 +72,7 @@ namespace FamTec.Server.Controllers.Building.Group
                     }
                 }
 
-                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(HttpContext, dto);
+                ResponseUnit<AddKeyDTO> model = await BuildingKeyService.AddKeyService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -126,7 +126,8 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto);
+                ResponseUnit<UpdateKeyDTO> model = await BuildingKeyService.UpdateKeyService(HttpContext, dto).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -157,7 +158,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(HttpContext, keylist);
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyListService(HttpContext, keylist).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -190,7 +191,7 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(HttpContext, keyid);
+                ResponseUnit<bool?> model = await BuildingKeyService.DeleteKeyService(HttpContext, keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

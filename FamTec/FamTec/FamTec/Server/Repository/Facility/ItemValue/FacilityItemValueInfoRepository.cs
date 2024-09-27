@@ -25,9 +25,9 @@ namespace FamTec.Server.Repository.Facility.ItemValue
         {
             try
             {
-                await context.FacilityItemValueTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.FacilityItemValueTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -37,7 +37,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -53,9 +53,10 @@ namespace FamTec.Server.Repository.Facility.ItemValue
                 List<FacilityItemValueTb>? model = await context.FacilityItemValueTbs
                     .Where(m => m.FacilityItemKeyTbId == keyid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -63,7 +64,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -77,8 +78,9 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             try
             {
                 FacilityItemValueTb? model = await context.FacilityItemValueTbs
-                    .FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true);
-                
+                    .FirstOrDefaultAsync(m => m.Id == valueid && m.DelYn != true)
+                    .ConfigureAwait(false);
+
                 if (model is not null)
                     return model;
                 else
@@ -87,7 +89,7 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -101,12 +103,12 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             try
             {
                 context.FacilityItemValueTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -120,12 +122,12 @@ namespace FamTec.Server.Repository.Facility.ItemValue
             try
             {
                 context.FacilityItemValueTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

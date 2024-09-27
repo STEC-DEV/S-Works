@@ -30,16 +30,16 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                bool FloorCheck = await context.FloorTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
-                bool KakaoLogCheck = await context.KakaoLogTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
-                bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true);
+                bool FloorCheck = await context.FloorTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
+                bool KakaoLogCheck = await context.KakaoLogTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
+                bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
 
                 return FloorCheck || KakaoLogCheck || VocCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -53,14 +53,15 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 int totalCount = await context.BuildingTbs
-                    .CountAsync(m => m.PlaceTbId == placeid && m.DelYn != true);
+                    .CountAsync(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 return totalCount;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -73,9 +74,9 @@ namespace FamTec.Server.Repository.Building
         {
             try
             {
-                await context.BuildingTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.BuildingTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
              
                 if (AddResult)
                     return model;
@@ -85,7 +86,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -103,7 +104,8 @@ namespace FamTec.Server.Repository.Building
                     .Where(m => m.PlaceTbId == placeid &&
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -113,7 +115,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -133,7 +135,8 @@ namespace FamTec.Server.Repository.Building
                     .OrderBy(m => m.CreateDt)
                     .Skip(skip) // 건너뛸 개수
                     .Take(take) // 출력할 개수
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -143,7 +146,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -158,7 +161,8 @@ namespace FamTec.Server.Repository.Building
             {
                 BuildingTb? model = await context.BuildingTbs
                     .FirstOrDefaultAsync(m => m.Id == buildingId && 
-                                              m.DelYn != true);
+                                              m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -168,7 +172,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -182,8 +186,9 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 BuildingTb? model = await context.BuildingTbs
-                    .FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode));
-                
+                    .FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode))
+                    .ConfigureAwait(false);
+
                 if (model is null)
                     return true;
                 else
@@ -192,7 +197,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -206,12 +211,12 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 context.BuildingTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -228,7 +233,8 @@ namespace FamTec.Server.Repository.Building
                 List<BuildingTb>? buildinglist = await context.BuildingTbs
                                 .Where(m => buildingId.Contains(m.Id) && 
                                             m.DelYn != true)
-                                .ToListAsync();
+                                .ToListAsync()
+                                .ConfigureAwait(false);
 
                 if (buildinglist is [_, ..])
                 {
@@ -258,7 +264,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -275,7 +281,8 @@ namespace FamTec.Server.Repository.Building
                 List<BuildingTb>? model = await context.BuildingTbs
                     .Where(m => buildingid.Contains(m.Id))
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -285,7 +292,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -296,12 +303,12 @@ namespace FamTec.Server.Repository.Building
                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                 model.BuildingCd = $"{model.BuildingCd}_{model.Id}";
                 context.BuildingTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -317,9 +324,10 @@ namespace FamTec.Server.Repository.Building
                 List<BuildingTb>? buildingtb = await context.BuildingTbs
                     .Where(m => placeidx.Contains(Convert.ToInt32(m.PlaceTbId)) && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(buildingtb is not null && buildingtb.Any())
+                if (buildingtb is not null && buildingtb.Any())
                     return buildingtb;
                 else
                     return null;
@@ -328,7 +336,7 @@ namespace FamTec.Server.Repository.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -343,6 +351,8 @@ namespace FamTec.Server.Repository.Building
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -350,7 +360,7 @@ namespace FamTec.Server.Repository.Building
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -363,81 +373,88 @@ namespace FamTec.Server.Repository.Building
                         foreach (int bdid in buildingid)
                         {
                             BuildingTb? BuildingTB = await context.BuildingTbs
-                                .FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true);
+                                .FirstOrDefaultAsync(m => m.Id == bdid && m.DelYn != true)
+                                .ConfigureAwait(false);
 
                             if (BuildingTB is not null)
                             {
                                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                                 BuildingTB.BuildingCd = $"{BuildingTB.BuildingCd}_{BuildingTB.Id}";
                                 BuildingTB.DelYn = true;
-                                BuildingTB.DelDt = DateTime.Now;
+                                BuildingTB.DelDt = ThisDate;
                                 BuildingTB.DelUser = deleter;
 
                                 context.BuildingTbs.Update(BuildingTB);
-                                bool BuildingResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                bool BuildingResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                 if (!BuildingResult)
                                 {
                                     // 업데이트 실패시 롤백
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
+                                    await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                     return false;
                                 }
 
                                 List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs
                                     .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
-                                    .ToListAsync();
+                                    .ToListAsync()
+                                    .ConfigureAwait(false);
 
                                 if (GroupList is [_, ..])
                                 {
                                     foreach (BuildingItemGroupTb GroupTB in GroupList)
                                     {
                                         GroupTB.DelYn = true;
-                                        GroupTB.DelDt = DateTime.Now;
+                                        GroupTB.DelDt = ThisDate;
                                         GroupTB.DelUser = deleter;
 
                                         context.BuildingItemGroupTbs.Update(GroupTB);
-                                        bool GroupResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                        bool GroupResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                         if (!GroupResult)
                                         {
                                             // 업데이트 실패시 롤백
-                                            await context.Database.RollbackTransactionAsync();
+                                            await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                             return false;
                                         }
                                         List<BuildingItemKeyTb>? KeyList = await context.BuildingItemKeyTbs
                                             .Where(m => m.BuildingGroupTbId == GroupTB.Id && m.DelYn != true)
-                                            .ToListAsync();
+                                            .ToListAsync()
+                                            .ConfigureAwait(false);
 
                                         if (KeyList is [_, ..])
                                         {
                                             foreach (BuildingItemKeyTb KeyTB in KeyList)
                                             {
                                                 KeyTB.DelYn = true;
-                                                KeyTB.DelDt = DateTime.Now;
+                                                KeyTB.DelDt = ThisDate;
                                                 KeyTB.DelUser = deleter;
 
                                                 context.BuildingItemKeyTbs.Update(KeyTB);
-                                                bool KeyResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                                bool KeyResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                                 if (!KeyResult)
                                                 {
                                                     // 업데이트 실패시 롤백
-                                                    await context.Database.RollbackTransactionAsync();
+                                                    await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                                     return false;
                                                 }
 
-                                                List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyTB.Id && m.DelYn != true).ToListAsync();
+                                                List<BuildingItemValueTb>? ValueList = await context.BuildingItemValueTbs
+                                                .Where(m => m.BuildingKeyTbId == KeyTB.Id && m.DelYn != true)
+                                                .ToListAsync()
+                                                .ConfigureAwait(false);
+
                                                 if (ValueList is [_, ..])
                                                 {
                                                     foreach (BuildingItemValueTb ValueTB in ValueList)
                                                     {
                                                         ValueTB.DelYn = true;
-                                                        ValueTB.DelDt = DateTime.Now;
+                                                        ValueTB.DelDt = ThisDate;
                                                         ValueTB.DelUser = deleter;
 
                                                         context.BuildingItemValueTbs.Update(ValueTB);
-                                                        bool ValueResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                                        bool ValueResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                                         if (!ValueResult)
                                                         {
                                                             // 업데이트 실패시 롤백
-                                                            await context.Database.RollbackTransactionAsync();
+                                                            await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                                             return false;
                                                         }
                                                     }
@@ -449,18 +466,18 @@ namespace FamTec.Server.Repository.Building
                             }
                             else
                             {
-                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                 return (bool?)null;
                             }
                         }
 
-                        await context.Database.CommitTransactionAsync(); // 커밋
+                        await transaction.CommitAsync().ConfigureAwait(false); // 커밋
                         return true;
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });

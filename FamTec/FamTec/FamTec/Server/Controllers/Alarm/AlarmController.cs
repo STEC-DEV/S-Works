@@ -37,7 +37,7 @@ namespace FamTec.Server.Controllers.Alarm
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmService(HttpContext);
+                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 
@@ -71,7 +71,7 @@ namespace FamTec.Server.Controllers.Alarm
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmByDateService(HttpContext, StartDate);
+                ResponseList<AlarmDTO> model = await AlarmService.GetAllAlarmByDateService(HttpContext, StartDate).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -102,7 +102,7 @@ namespace FamTec.Server.Controllers.Alarm
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AlarmService.AllAlarmDelete(HttpContext);
+                ResponseUnit<bool?> model = await AlarmService.AllAlarmDelete(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -133,7 +133,7 @@ namespace FamTec.Server.Controllers.Alarm
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AlarmService.AlarmDelete(HttpContext, delId);
+                ResponseUnit<bool?> model = await AlarmService.AlarmDelete(HttpContext, delId).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

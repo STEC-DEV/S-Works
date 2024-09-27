@@ -49,7 +49,8 @@ namespace FamTec.Server.Controllers.Login
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto);
+                ResponseUnit<string?> model = await AdminAccountService.AdminLoginService(dto).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest(model);
 
@@ -76,7 +77,7 @@ namespace FamTec.Server.Controllers.Login
                 if (String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<string?> model = await UserService.GetQRLogin(dto);
+                ResponseUnit<string?> model = await UserService.GetQRLogin(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -113,7 +114,7 @@ namespace FamTec.Server.Controllers.Login
                 if(String.IsNullOrWhiteSpace(dto.UserPassword))
                     return NoContent();
 
-                ResponseUnit<string?> model = await UserService.UserLoginService(dto);
+                ResponseUnit<string?> model = await UserService.UserLoginService(dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -177,7 +178,7 @@ namespace FamTec.Server.Controllers.Login
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext);
+                ResponseList<AdminPlaceDTO> model = await AdminPlaceService.GetMyWorksList(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -209,7 +210,7 @@ namespace FamTec.Server.Controllers.Login
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(HttpContext, placeid);
+                ResponseUnit<string?> model = await UserService.LoginSelectPlaceService(HttpContext, placeid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

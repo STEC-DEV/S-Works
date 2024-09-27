@@ -41,7 +41,9 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
-                RoomTb? RoomInfo = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId!.Value);
+                DateTime ThisDate = DateTime.Now;
+
+                RoomTb? RoomInfo = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId!.Value).ConfigureAwait(false);
                 if (RoomInfo is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -74,21 +76,21 @@ namespace FamTec.Server.Services.Facility.Type.Security
                     Lifespan = dto.LifeSpan, // 내용연수
                     StandardCapacity = dto.Standard_capacity, // 규격용량
                     ChangeDt = dto.ChangeDT, // 교체년월
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisDate,
                     CreateUser = creator,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisDate,
                     UpdateUser = creator,
                     RoomTbId = dto.RoomTbId.Value, // 공간 ID
                     Image = NewFileName
                 };
 
-                FacilityTb? result = await FacilityInfoRepository.AddAsync(model);
+                FacilityTb? result = await FacilityInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if (result is not null)
                 {
                     if(files is not null)
                     {
                         // 파일 넣기
-                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, SecurityFileFolderPath, files);
+                        bool? AddFile = await FileService.AddResizeImageFile(NewFileName, SecurityFileFolderPath, files).ConfigureAwait(false);
                     }
                     return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
@@ -118,7 +120,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<FacilityListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<FacilityListDTO>? model = await FacilityInfoRepository.GetPlaceSecurityFacilityList(Convert.ToInt32(placeidx));
+                List<FacilityListDTO>? model = await FacilityInfoRepository.GetPlaceSecurityFacilityList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
 
                 if (model is [_, ..])
                 {
@@ -147,11 +149,11 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(facilityId).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
-                RoomTb? room = await RoomInfoRepository.GetRoomInfo(model.RoomTbId);
+                RoomTb? room = await RoomInfoRepository.GetRoomInfo(model.RoomTbId).ConfigureAwait(false);
                 if(room is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
@@ -176,7 +178,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if(!String.IsNullOrWhiteSpace(model.Image))
                 {
                     dto.ImageName = model.Image; // 이미지 파일명
-                    dto.Image = await FileService.GetImageFile(SecurityFileFolderPath, model.Image); // 이미지 Byte[]
+                    dto.Image = await FileService.GetImageFile(SecurityFileFolderPath, model.Image).ConfigureAwait(false); // 이미지 Byte[]
                 }
 
                 return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -203,6 +205,8 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                DateTime ThisDate = DateTime.Now;
+
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
@@ -215,7 +219,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 di = new DirectoryInfo(SecurityFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value);
+                FacilityTb? model = await FacilityInfoRepository.GetFacilityInfo(dto.ID!.Value).ConfigureAwait(false);
                 if(model is null || model.Category.Trim() != "보안")
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -228,7 +232,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 model.Lifespan = dto.LifeSpan; // 내용연수
                 model.StandardCapacity = dto.Standard_capacity;
                 model.ChangeDt = dto.ChangeDT;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
                 model.RoomTbId = dto.RoomTbId!.Value;
 
@@ -264,7 +268,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 byte[]? ImageBytes = null;
                 if (!String.IsNullOrWhiteSpace(deleteFileName))
                 {
-                    ImageBytes = await FileService.GetImageFile(SecurityFileFolderPath, deleteFileName);
+                    ImageBytes = await FileService.GetImageFile(SecurityFileFolderPath, deleteFileName).ConfigureAwait(false);
                 }
 
                 // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
@@ -285,12 +289,12 @@ namespace FamTec.Server.Services.Facility.Type.Security
                     if (String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
                     {
                         // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                        await FileService.AddResizeImageFile(model.Image!, SecurityFileFolderPath, files);
+                        await FileService.AddResizeImageFile(model.Image!, SecurityFileFolderPath, files).ConfigureAwait(false);
                     }
                 }
 
                 // 이후 데이터베이스 업데이트
-                bool? updateBuilding = await FacilityInfoRepository.UpdateFacilityInfo(model);
+                bool? updateBuilding = await FacilityInfoRepository.UpdateFacilityInfo(model).ConfigureAwait(false);
                 if (updateBuilding == true)
                 {
                     // 성공했으면 그걸로 끝
@@ -306,7 +310,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                             if (FileService.IsFileExists(SecurityFileFolderPath, AddTemp.FileName) == false)
                             {
                                 // 파일을 저장하는 로직
-                                await FileService.AddResizeImageFile(AddTemp.FileName, SecurityFileFolderPath, files);
+                                await FileService.AddResizeImageFile(AddTemp.FileName, SecurityFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex)
@@ -353,12 +357,12 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 // 삭제가능여부 체크
                 foreach (int id in delIdx) 
                 {
-                    bool? DelCheck = await FacilityInfoRepository.DelFacilityCheck(id);
+                    bool? DelCheck = await FacilityInfoRepository.DelFacilityCheck(id).ConfigureAwait(false);
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
-                bool? DeleteResult = await FacilityInfoRepository.DeleteFacilityInfo(delIdx, creater);
+                bool? DeleteResult = await FacilityInfoRepository.DeleteFacilityInfo(delIdx, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },

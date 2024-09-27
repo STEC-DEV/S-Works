@@ -28,14 +28,15 @@ namespace FamTec.Server.Repository.Floor
             {
                 // 참조된 테이블이 하나라도 있으면 true 반환
                 bool RoomCheck = await context.RoomTbs
-                    .AnyAsync(r => r.FloorTbId == floorTbId && r.DelYn != true);
+                    .AnyAsync(r => r.FloorTbId == floorTbId && r.DelYn != true)
+                    .ConfigureAwait(false);
 
                 return RoomCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -49,9 +50,9 @@ namespace FamTec.Server.Repository.Floor
         {
             try
             {
-                await context.FloorTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.FloorTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -61,7 +62,7 @@ namespace FamTec.Server.Repository.Floor
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -75,12 +76,12 @@ namespace FamTec.Server.Repository.Floor
             try
             {
                 context.FloorTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -94,6 +95,8 @@ namespace FamTec.Server.Repository.Floor
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -101,7 +104,7 @@ namespace FamTec.Server.Repository.Floor
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -110,11 +113,14 @@ namespace FamTec.Server.Repository.Floor
 
                         foreach (int roomid in roomidx)
                         {
-                            FloorTb? floortb = await context.FloorTbs.FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true);
+                            FloorTb? floortb = await context.FloorTbs
+                            .FirstOrDefaultAsync(m => m.Id == roomid && m.DelYn != true)
+                            .ConfigureAwait(false);
+
                             if (floortb is not null)
                             {
                                 floortb.DelYn = true;
-                                floortb.DelDt = DateTime.Now;
+                                floortb.DelDt = ThisDate;
                                 floortb.DelUser = deleter;
 
                                 context.FloorTbs.Update(floortb);
@@ -122,27 +128,27 @@ namespace FamTec.Server.Repository.Floor
                             else
                             {
                                 // 값이 없으면 잘못됨 roolback
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return false;
                             }
                         }
-                        bool FloorResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool FloorResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (FloorResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
                             // 업데이트 실패시 롤백
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -160,7 +166,8 @@ namespace FamTec.Server.Repository.Floor
                 
 
                 FloorTb? model = await context.FloorTbs
-                    .FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == flooridx && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -170,7 +177,7 @@ namespace FamTec.Server.Repository.Floor
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -188,7 +195,8 @@ namespace FamTec.Server.Repository.Floor
                 List<FloorTb>? model = await context.FloorTbs
                     .Where(m => m.BuildingTbId == buildingtbid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {
@@ -201,7 +209,7 @@ namespace FamTec.Server.Repository.Floor
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -216,8 +224,12 @@ namespace FamTec.Server.Repository.Floor
             try
             {
                 
-                List<FloorTb>? floor = await context.FloorTbs.Where(m => m.DelYn != true).ToListAsync();
-                if(floor is null || !floor.Any())
+                List<FloorTb>? floor = await context.FloorTbs
+                    .Where(m => m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (floor is null || !floor.Any())
                     return null;
 
                 List<FloorTb>? result = (from bdtb in model
@@ -249,7 +261,7 @@ namespace FamTec.Server.Repository.Floor
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -263,12 +275,12 @@ namespace FamTec.Server.Repository.Floor
             try
             {
                 context.FloorTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
     

@@ -44,7 +44,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(HttpContext, dto);
+                ResponseUnit<AddKeyDTO> model = await FacilityKeyService.AddKeyService(HttpContext, dto).ConfigureAwait(false);
 
                 if (dto.GroupID is null)
                     return NoContent();
@@ -103,7 +103,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
-                ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(HttpContext, dto);
+                ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -132,10 +132,11 @@ namespace FamTec.Server.Controllers.Facility.Group
 
                 if (keylist is null)
                     return NoContent();
+                
                 if(keylist.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(HttpContext, keylist);
+                ResponseUnit<bool?> model = await FacilityKeyService.DeletKeyListService(HttpContext, keylist).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -162,7 +163,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(HttpContext, keyid);
+                ResponseUnit<bool?> model = await FacilityKeyService.DeleteKeyService(HttpContext, keyid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

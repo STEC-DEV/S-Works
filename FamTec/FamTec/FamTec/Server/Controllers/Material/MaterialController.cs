@@ -73,7 +73,7 @@ namespace FamTec.Server.Controllers.Material
                     }
                 }
 
-                ResponseUnit<AddMaterialDTO> model = await MaterialService.AddMaterialService(HttpContext, dto, files);
+                ResponseUnit<AddMaterialDTO> model = await MaterialService.AddMaterialService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -106,7 +106,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(HttpContext);
+                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -137,7 +137,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaterialSearchListDTO> model = await MaterialService.GetAllPlaecMaterialSearchService(HttpContext);
+                ResponseList<MaterialSearchListDTO> model = await MaterialService.GetAllPlaecMaterialSearchService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -167,7 +167,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await MaterialService.GetPlaceMaterialCountService(HttpContext);
+                ResponseUnit<int?> model = await MaterialService.GetPlaceMaterialCountService(HttpContext).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -201,7 +201,7 @@ namespace FamTec.Server.Controllers.Material
                 if (pagesize == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(HttpContext, pagenum, pagesize);
+                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialPageNationListService(HttpContext, pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -260,7 +260,7 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(HttpContext, materialid);
+                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(HttpContext, materialid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -323,7 +323,7 @@ namespace FamTec.Server.Controllers.Material
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await MaterialService.UpdateMaterialService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -360,7 +360,7 @@ namespace FamTec.Server.Controllers.Material
                 if(delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -406,7 +406,7 @@ namespace FamTec.Server.Controllers.Material
                     }
                 }
 
-                ResponseUnit<string?> model = await MaterialService.ImportMaterialService(HttpContext, files);
+                ResponseUnit<string?> model = await MaterialService.ImportMaterialService(HttpContext, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -440,7 +440,7 @@ namespace FamTec.Server.Controllers.Material
                 if (String.IsNullOrWhiteSpace(searchData))
                     return NoContent();
 
-                ResponseList<MaterialSearchListDTO>? model = await MaterialService.GetMaterialSearchService(HttpContext, searchData);
+                ResponseList<MaterialSearchListDTO>? model = await MaterialService.GetMaterialSearchService(HttpContext, searchData).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

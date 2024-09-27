@@ -25,9 +25,9 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
         {
             try
             {
-                await context.BuildingItemValueTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.BuildingItemValueTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -37,7 +37,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -54,9 +54,10 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                     .Where(m => m.BuildingKeyTbId == keyid && 
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -64,7 +65,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -79,7 +80,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             {
                 BuildingItemValueTb? model = await context.BuildingItemValueTbs
                     .FirstOrDefaultAsync(m => m.Id == valueid && 
-                                              m.DelYn != true);
+                                              m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -90,7 +92,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -104,12 +106,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             try
             {
                 context.BuildingItemValueTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -123,12 +125,12 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             try
             {
                 context.BuildingItemValueTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -139,7 +141,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
                     .Where(e => KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (keytb is not null && keytb.Any())
                     return keytb;
@@ -149,7 +152,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -160,7 +163,8 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
                 List<BuildingItemValueTb>? keytb = await context.BuildingItemValueTbs
                     .Where(e => !KeyitemId.Contains(Convert.ToInt32(e.BuildingKeyTbId)) && e.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (keytb is not null && keytb.Any())
                     return keytb;
@@ -170,7 +174,7 @@ namespace FamTec.Server.Repository.Building.SubItem.ItemValue
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
     }

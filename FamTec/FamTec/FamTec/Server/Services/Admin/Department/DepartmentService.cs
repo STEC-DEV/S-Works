@@ -35,21 +35,23 @@ namespace FamTec.Server.Services.Admin.Department
                 if (String.IsNullOrWhiteSpace(Creater))
                     return new ResponseUnit<AddDepartmentDTO> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!);
+                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!).ConfigureAwait(false);
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<AddDepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
+
+                DateTime ThisTime = DateTime.Now;
 
                 DepartmentsTb? DepartmentTB = new DepartmentsTb
                 {
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = !String.IsNullOrWhiteSpace(Creater) ? Creater.Trim() : Creater,
                     ManagementYn = dto.ManagerYN!.Value
                 };
 
-                DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(DepartmentTB);
+                DepartmentsTb? result = await DepartmentInfoRepository.AddAsync(DepartmentTB).ConfigureAwait(false);
 
                 if (result is not null)
                 {
@@ -84,7 +86,7 @@ namespace FamTec.Server.Services.Admin.Department
         {
             try
             {
-                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetAllList();
+                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetAllList().ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {
@@ -118,7 +120,7 @@ namespace FamTec.Server.Services.Admin.Department
         {
             try
             {
-                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetManageDepartmentList();
+                List<DepartmentsTb>? model = await DepartmentInfoRepository.GetManageDepartmentList().ConfigureAwait(false);
 
                 if(model is not null && model.Any())
                 {
@@ -161,18 +163,18 @@ namespace FamTec.Server.Services.Admin.Department
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 // 해당 부서 인덱스와 AdminTb의 DepartmentID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
-                List<AdminTb>? admintb = await DepartmentInfoRepository.SelectDepartmentAdminList(departmentidx);
+                List<AdminTb>? admintb = await DepartmentInfoRepository.SelectDepartmentAdminList(departmentidx).ConfigureAwait(false);
                 if (admintb is not null && admintb.Any())
                     return new ResponseUnit<bool?>() { message = "해당 부서에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
 
                 // 부서존재하는지 + 시스템 부서가 있는지 검사
                 foreach(int DepartmentID in departmentidx)
                 {
-                    bool? DelCheck = await DepartmentInfoRepository.DelDepartmentCheck(DepartmentID);
+                    bool? DelCheck = await DepartmentInfoRepository.DelDepartmentCheck(DepartmentID).ConfigureAwait(false);
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "참조하는 하위 정보가 있어 삭제가 불가능합니다.", data = false, code = 200 };
 
-                    DepartmentsTb? CheckTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(DepartmentID);
+                    DepartmentsTb? CheckTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(DepartmentID).ConfigureAwait(false);
                     if(CheckTB is null)
                         return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 200 };
                     
@@ -181,7 +183,7 @@ namespace FamTec.Server.Services.Admin.Department
                 }
 
                 // 부서삭제
-                bool? DeleteResult = await DepartmentInfoRepository.DeleteDepartmentInfo(departmentidx, creater);
+                bool? DeleteResult = await DepartmentInfoRepository.DeleteDepartmentInfo(departmentidx, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -213,11 +215,11 @@ namespace FamTec.Server.Services.Admin.Department
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<DepartmentDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
                 
-                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!);
+                DepartmentsTb? AlreadyCheck = await DepartmentInfoRepository.GetDepartmentInfo(dto.Name!).ConfigureAwait(false);
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<DepartmentDTO>() { message = "이미 존재하는 부서명입니다.", data = null, code = 204 };
 
-                DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id!.Value);
+                DepartmentsTb? DepartmentTB = await DepartmentInfoRepository.GetDepartmentInfo(dto.Id!.Value).ConfigureAwait(false);
                 if(DepartmentTB is null)
                     return new ResponseUnit<DepartmentDTO>() { message = "해당 부서가 존재하지 않습니다.", data = null, code = 404 };
 
@@ -226,7 +228,7 @@ namespace FamTec.Server.Services.Admin.Department
                 DepartmentTB.UpdateDt = DateTime.Now;
                 DepartmentTB.ManagementYn = dto.ManagerYN!.Value;
 
-                bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB);
+                bool? result = await DepartmentInfoRepository.UpdateDepartmentInfo(DepartmentTB).ConfigureAwait(false);
                 return result switch
                 {
                     true => new ResponseUnit<DepartmentDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },

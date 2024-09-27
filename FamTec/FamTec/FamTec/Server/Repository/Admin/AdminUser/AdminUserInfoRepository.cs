@@ -34,9 +34,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         {
             try
             {
-                await context.AdminTbs.AddAsync(model);
-                
-                bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.AdminTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool Addresult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
              
                 if(Addresult)
                     return model;
@@ -46,7 +46,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -60,12 +60,12 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 context.AdminTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -75,6 +75,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -82,7 +84,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -91,47 +93,58 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                         foreach (int adminid in idx)
                         {
-                            AdminTb? admintb = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                            AdminTb? admintb = await context.AdminTbs
+                            .FirstOrDefaultAsync(m => m.Id == adminid && 
+                                                      m.DelYn != true)
+                            .ConfigureAwait(false);
+
                             if (admintb is not null)
                             {
                                 admintb.DelYn = true;
-                                admintb.DelDt = DateTime.Now;
+                                admintb.DelDt = ThisDate;
                                 admintb.DelUser = deleter;
                                 context.AdminTbs.Update(admintb);
-                                bool AdminTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                bool AdminTbResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
 
                                 if (!AdminTbResult) // 실패하면
                                 {
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
+                                    await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                     return false;
                                 }
 
-                                UsersTb? usertb = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true);
+                                UsersTb? usertb = await context.UsersTbs
+                                .FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true)
+                                .ConfigureAwait(false);
+
                                 if (usertb is not null)
                                 {
                                     // 해당 UserId 재사용을 위함
                                     usertb.UserId = $"{usertb.UserId}_{usertb.Id}";
                                     usertb.DelYn = true;
-                                    usertb.DelDt = DateTime.Now;
+                                    usertb.DelDt = ThisDate;
                                     usertb.DelUser = deleter;
                                     context.UsersTbs.Update(usertb);
-                                    bool UserTbResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                    bool UserTbResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                     if (!UserTbResult) // 실패하면
                                     {
-                                        await context.Database.RollbackTransactionAsync(); // 롤백
+                                        await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                         return false;
                                     }
 
-                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs.Where(m => m.AdminTbId == admintb.Id && m.DelYn != true).ToListAsync();
+                                    List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
+                                    .Where(m => m.AdminTbId == admintb.Id && m.DelYn != true)
+                                    .ToListAsync()
+                                    .ConfigureAwait(false);
+
                                     if (adminplacetb is [_, ..])
                                     {
                                         foreach (AdminPlaceTb AdminPlace in adminplacetb)
                                         {
                                             context.AdminPlaceTbs.Remove(AdminPlace);
-                                            bool AdminPlaceResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                            bool AdminPlaceResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                             if (!AdminPlaceResult) // 실패하면
                                             {
-                                                await context.Database.RollbackTransactionAsync(); //롤백
+                                                await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                                 return false;
                                             }
                                         }
@@ -139,23 +152,23 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 }
                                 else
                                 {
-                                    await context.Database.RollbackTransactionAsync(); // 롤백
+                                    await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                     return false;
                                 }
                             }
                             else
                             {
-                                await context.Database.RollbackTransactionAsync(); // 롤백
+                                await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                 return false;
                             }
                         }
-                        await context.Database.CommitTransactionAsync(); // 커밋
+                        await transaction.CommitAsync().ConfigureAwait(false); // 커밋
                         return true;
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -171,8 +184,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 AdminTb? model = await context.AdminTbs
-                    .FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true);
-                
+                    .FirstOrDefaultAsync(m => m.Id.Equals(adminid) && m.DelYn != true)
+                    .ConfigureAwait(false);
+
                 if (model is not null)
                     return model;
                 else
@@ -181,7 +195,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -198,8 +212,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 AdminTb? model = await context.AdminTbs
-                    .FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true);
-                
+                    .FirstOrDefaultAsync(m => m.UserTbId.Equals(usertbid) && m.DelYn != true)
+                    .ConfigureAwait(false);
+
                 if (model is not null)
                     return model;
                 else
@@ -208,7 +223,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -232,8 +247,10 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         UserId = m.UserTb!.UserId!,
                         Name = m.UserTb.Name!,
                         Department = m.DepartmentTb!.Name!
-                    }).ToListAsync();
-                
+                    })
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
                 if (model is [_, ..])
                     return model;
                 else
@@ -242,7 +259,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -256,8 +273,10 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 List<AdminPlaceTb>? adminplacetb = await context.AdminPlaceTbs
-                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
-                    .ToListAsync();
+                    .Where(m => m.PlaceTbId == placeid &&
+                                m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (adminplacetb is [_, ..])
                 {
@@ -265,7 +284,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                     List<AdminTb>? admintb = await context.AdminTbs
                         .Where(e => !admintbid.Contains(e.Id) && e.DelYn != true)
-                        .ToListAsync();
+                        .ToListAsync()
+                        .ConfigureAwait(false);
 
                     if (admintb is [_, ..])
                     {
@@ -305,18 +325,15 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                                         Department = Department.Name
                                                     }).ToList();
 
-
                     return model;
                 }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
-
-   
 
         /// <summary>
         /// 관리자 정보 수정
@@ -328,7 +345,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             try
             {
                 context.AdminTbs.Update(model);
-                bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (UpdateResult)
                     return model;
@@ -338,7 +355,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -353,6 +370,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -360,7 +379,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 // 강제로 디버깅포인트 잡음
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -375,11 +394,18 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         IFormFile? AddTemp = default;
                         string RemoveTemp = String.Empty;
 
-                        AdminTb? AdminInfo = await context.AdminTbs.FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true);
+                        AdminTb? AdminInfo = await context.AdminTbs
+                        .FirstOrDefaultAsync(m => m.Id == adminid && m.DelYn != true)
+                        .ConfigureAwait(false);
+
                         if (AdminInfo is null)
                             return false;
 
-                        UsersTb? UserInfo = await context.UsersTbs.FirstOrDefaultAsync(m => m.Id == AdminInfo.UserTbId && m.DelYn != true);
+                        UsersTb? UserInfo = await context.UsersTbs
+                        .FirstOrDefaultAsync(m => m.Id == AdminInfo.UserTbId &&
+                                                  m.DelYn != true)
+                        .ConfigureAwait(false);
+
                         if (UserInfo is null)
                             return false;
 
@@ -416,7 +442,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                         // 먼저 파일 삭제 처리
                         // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환하여 가지고 있어야함.
-                        byte[]? ImageBytes = await FileService.GetImageFile(AdminFileFolderPath, deleteFileName);
+                        byte[]? ImageBytes = await FileService.GetImageFile(AdminFileFolderPath, deleteFileName).ConfigureAwait(false);
                         // - DB 실패했을경우 IFormFile을 바이트로 변환해서 DB의 해당명칭으로 다시저장해야함.
                         if (ImageBytes is not null)
                         {
@@ -435,7 +461,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             if (String.IsNullOrWhiteSpace(UserInfo.Image) || files.FileName != UserInfo.Image)
                             {
                                 // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                                await FileService.AddResizeImageFile(UserInfo.Image!, AdminFileFolderPath, files);
+                                await FileService.AddResizeImageFile(UserInfo.Image!, AdminFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
 
@@ -443,11 +469,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         context.UsersTbs.Update(UserInfo);
                         //bool UpdateImageResult = false;
 
-                        bool UpdateImageResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool UpdateImageResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (UpdateImageResult)
                         {
                             // 성공했으면 그걸로 끝.
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
@@ -460,7 +486,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                     if (FileService.IsFileExists(AdminFileFolderPath, AddTemp.FileName) == false)
                                     {
                                         // 파일을 저장하는 로직 (AddResizeImageFile)
-                                        await FileService.AddResizeImageFile(AddTemp.FileName, AdminFileFolderPath, AddTemp);
+                                        await FileService.AddResizeImageFile(AddTemp.FileName, AdminFileFolderPath, AddTemp).ConfigureAwait(false);
                                     }
                                 }
                                 catch (Exception ex)
@@ -481,14 +507,14 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 }
                             }
 
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         return false;
                     }
                 }
@@ -505,6 +531,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -512,7 +540,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -520,14 +548,18 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
                         AdminTb? adminTB = await context.AdminTbs
-                            .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && m.DelYn != true);
+                            .FirstOrDefaultAsync(m => m.Id == dto.AdminIndex && 
+                                                      m.DelYn != true)
+                            .ConfigureAwait(false);
 
                         if (adminTB is null)
                             return (bool?)null;
 
                         // 계정정보 변경을 위해 조회
                         UsersTb? userTB = await context.UsersTbs
-                            .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && m.DelYn != true);
+                            .FirstOrDefaultAsync(m => m.Id == adminTB.UserTbId && 
+                                                      m.DelYn != true)
+                            .ConfigureAwait(false);
 
                         if (userTB is null)
                             return (bool?)null;
@@ -542,15 +574,15 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             userTB.Email = dto.Email; // 이메일
                             userTB.UserId = dto.UserId!; // 로그인ID
                             userTB.Password = dto.Password!; // 비밀번호
-                            userTB.UpdateDt = DateTime.Now; // 수정시간
+                            userTB.UpdateDt = ThisDate; // 수정시간
                             userTB.UpdateUser = creater; // 수정자
 
                             context.UsersTbs.Update(userTB);
 
-                            bool UserUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                            bool UserUpdate = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                             if (!UserUpdate) // 업데이트 실패 - 롤백
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return false;
                             }
                         }
@@ -558,14 +590,14 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         if (!adminTB.Type.Equals("시스템관리자"))
                         {
                             adminTB.DepartmentTbId = dto.DepartmentId!.Value; // 부서
-                            adminTB.UpdateDt = DateTime.Now;
+                            adminTB.UpdateDt = ThisDate;
                             adminTB.UpdateUser = creater;
                             context.AdminTbs.Update(adminTB);
 
-                            bool AdminUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                            bool AdminUpdate = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                             if (!AdminUpdate) // 업데이트 실패 - 롤백
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return false;
                             }
                         }
@@ -575,8 +607,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                         // 이 관리자의 관리하고있는 사업장ID 조회
                         List<int> AdminPlaceIdx = await context.AdminPlaceTbs
-                            .Where(m => m.AdminTbId == adminTB.Id && m.DelYn != true)
-                            .Select(m => m.PlaceTbId).ToListAsync();
+                            .Where(m => m.AdminTbId == adminTB.Id && 
+                                        m.DelYn != true)
+                            .Select(m => m.PlaceTbId)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         List<int> insertplaceidx = new List<int>();
                         List<int> deleteplacecidx = new List<int>();
@@ -588,10 +623,11 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 // 내가갖고 있는것
                                 List<int>? MineList = await context.AdminPlaceTbs
                                     .Where(m => DTOPlaceIdx.Contains(Convert.ToInt32(m.PlaceTbId)) &&
-                                    m.DelYn != true &&
-                                    m.AdminTbId == adminTB.Id)
+                                                m.DelYn != true &&
+                                                m.AdminTbId == adminTB.Id)
                                     .Select(m => m.PlaceTbId)
-                                    .ToListAsync();
+                                    .ToListAsync()
+                                    .ConfigureAwait(false);
 
                                 if (MineList is [_, ..]) // 가지고 있는게 있으면
                                 {
@@ -630,16 +666,16 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 AdminPlaceTb InsertTB = new AdminPlaceTb();
                                 InsertTB.AdminTbId = adminTB.Id;
                                 InsertTB.PlaceTbId = InsertPlaceID;
-                                InsertTB.CreateDt = DateTime.Now;
+                                InsertTB.CreateDt = ThisDate;
                                 InsertTB.CreateUser = creater;
-                                InsertTB.UpdateDt = DateTime.Now;
+                                InsertTB.UpdateDt = ThisDate;
                                 InsertTB.UpdateUser = creater;
 
                                 context.AdminPlaceTbs.Add(InsertTB);
-                                bool Addresult = await context.SaveChangesAsync() > 0 ? true : false;
+                                bool Addresult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                 if (!Addresult)
                                 {
-                                    await transaction.RollbackAsync();
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
                                     return false;
                                 }
                             }
@@ -652,28 +688,29 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                             {
                                 AdminPlaceTb? deleteTB = await context.AdminPlaceTbs
                                     .FirstOrDefaultAsync(m => m.AdminTbId == adminTB.Id &&
-                                    m.PlaceTbId == DeletePlaceID &&
-                                    m.DelYn != true);
+                                                              m.PlaceTbId == DeletePlaceID &&
+                                                              m.DelYn != true)
+                                    .ConfigureAwait(false);
 
                                 if (deleteTB is not null)
                                 {
                                     context.AdminPlaceTbs.Remove(deleteTB);
-                                    bool deleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                                    bool deleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                                     if (!deleteResult)
                                     {
-                                        await transaction.RollbackAsync();
+                                        await transaction.RollbackAsync().ConfigureAwait(false);
                                         return false;
                                     }
                                 }
                                 else
                                 {
-                                    await transaction.RollbackAsync();
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
                                     return false;
                                 }
                             }
                         }
 
-                        await transaction.CommitAsync();
+                        await transaction.CommitAsync().ConfigureAwait(false);
                         return true;
                     }
                     catch (Exception ex)

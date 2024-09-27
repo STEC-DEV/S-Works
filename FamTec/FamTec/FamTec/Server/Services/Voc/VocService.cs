@@ -81,7 +81,7 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid);
+                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid).ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return new ResponseList<AllVocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -113,7 +113,7 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
 
-                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid);
+                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid).ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -147,11 +147,11 @@ namespace FamTec.Server.Services.Voc
                 if(String.IsNullOrWhiteSpace(PlaceIdx))
                     return new ResponseUnit<VocEmployeeDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid);
+                VocTb? model = await VocInfoRepository.GetVocInfoById(vocid).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<VocEmployeeDetailDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
-                BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(model.BuildingTbId);
+                BuildingTb? building = await BuildingInfoRepository.GetBuildingInfo(model.BuildingTbId).ConfigureAwait(false);
                 if(building is null)
                     return new ResponseUnit<VocEmployeeDetailDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 200 };
 
@@ -176,7 +176,7 @@ namespace FamTec.Server.Services.Voc
                 {
                     if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image);
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image).ConfigureAwait(false);
                         if (ImageBytes is not null)
                         {
                             dto.ImageName.Add(image);
@@ -222,19 +222,21 @@ namespace FamTec.Server.Services.Voc
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 string? creater = Convert.ToString(context.Items["Name"]);
-                
+
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID!.Value);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID!.Value).ConfigureAwait(false);
                 if(VocTB is null)
                     return new ResponseUnit<bool?>() { message = "조회결과가 존재하지 않습니다.", data = null, code = 404 };
 
                 VocTB.Type = dto.Type!.Value;
-                VocTB.UpdateDt = DateTime.Now;
+                VocTB.UpdateDt = ThisDate;
                 VocTB.UpdateUser = creater;
 
-                bool UpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
+                bool UpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB).ConfigureAwait(false);
                 if(!UpdateResult)
                     return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
 
@@ -245,25 +247,25 @@ namespace FamTec.Server.Services.Voc
                 {
 #region 기타민원 타입변경
                     case 0:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if(VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocDefaultList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocDefaultList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if (Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 소켓전송
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
-                            await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -271,26 +273,26 @@ namespace FamTec.Server.Services.Voc
 
 #region 기계민원 타입변경
                     case 1:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if(VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if (BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocMachineList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocMachineList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
 
                         if (Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -298,51 +300,51 @@ namespace FamTec.Server.Services.Voc
 
 #region 전기민원 타입변경
                     case 2:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocElecList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocElecList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
 
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
 #endregion
 #region 승강민원 타입변경
                     case 3:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocLiftList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocLiftList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -350,25 +352,25 @@ namespace FamTec.Server.Services.Voc
 
 #region 소방민원 타입변경
                     case 4:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocFireList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocFireList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -376,25 +378,25 @@ namespace FamTec.Server.Services.Voc
 
 #region 건축민원 타입변경
                     case 5:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if (BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocConstructList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocConstructList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -403,25 +405,25 @@ namespace FamTec.Server.Services.Voc
 #region 통신민원 타입변경
                     // 통신
                     case 6:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocNetWorkList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocNetWorkList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -430,25 +432,25 @@ namespace FamTec.Server.Services.Voc
 #region 미화민원 타입변경
                     // 미화
                     case 7:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if(BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocBeautyList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocBeautyList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -457,25 +459,25 @@ namespace FamTec.Server.Services.Voc
 #region 보안민원 타입변경
                     // 보안
                     case 8:
-                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value);
+                        VocTB = await VocInfoRepository.GetVocInfoById(dto.VocID.Value).ConfigureAwait(false);
                         if (VocTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId);
+                        BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB!.BuildingTbId).ConfigureAwait(false);
                         if (BuildingTB is null)
                             return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        Users = await UserInfoRepository.GetVocSecurityList(BuildingTB!.PlaceTbId);
+                        Users = await UserInfoRepository.GetVocSecurityList(BuildingTB!.PlaceTbId).ConfigureAwait(false);
                         if(Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
-                            await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다");
+                            await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -507,20 +509,22 @@ namespace FamTec.Server.Services.Voc
                 if(userlist is null || !userlist.Any())
                     return true;
 
+                DateTime ThisDate = DateTime.Now;
+
                 foreach (var user in userlist)
                 {
                     // 사용자 수만큼 Alarm 테이블에 Insert
                     AlarmTb alarm = new AlarmTb()
                     {
-                        CreateDt = DateTime.Now,
+                        CreateDt = ThisDate,
                         CreateUser = Creater,
-                        UpdateDt = DateTime.Now,
+                        UpdateDt = ThisDate,
                         UpdateUser = Creater,
                         UsersTbId = user.Id,
                         VocTbId = VocTableIdx
                     };
 
-                    AlarmTb? alarm_result = await AlarmInfoRepository.AddAsync(alarm);
+                    AlarmTb? alarm_result = await AlarmInfoRepository.AddAsync(alarm).ConfigureAwait(false);
                     if (alarm_result is null)
                         return false;
                 }
@@ -566,7 +570,7 @@ namespace FamTec.Server.Services.Voc
                 DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
                 DateTime EndOfWeek = startOfWeek.AddDays(7);
 
-                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek);
+                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek).ConfigureAwait(false);
                 if (model is not null && model.Any())
                 {
                     return new ResponseList<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };

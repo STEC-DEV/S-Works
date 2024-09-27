@@ -39,7 +39,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Value))
                     return NoContent();
 
-                ResponseUnit<AddValueDTO?> model = await FacilityValueService.AddValueService(HttpContext, dto);
+                ResponseUnit<AddValueDTO?> model = await FacilityValueService.AddValueService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -72,7 +72,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.ItemValue))
                     return NoContent();
 
-                ResponseUnit<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(HttpContext, dto);
+                ResponseUnit<UpdateValueDTO> model = await FacilityValueService.UpdateValueService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -98,7 +98,7 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await FacilityValueService.DeleteValueService(HttpContext, valueid);
+                ResponseUnit<bool?> model = await FacilityValueService.DeleteValueService(HttpContext, valueid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

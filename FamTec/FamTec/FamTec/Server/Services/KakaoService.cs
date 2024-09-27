@@ -34,8 +34,8 @@ namespace FamTec.Server.Services
                     { "userid", Common.KakaoUserId }
                 });
 
-                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s/", Content);
-                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s/", Content).ConfigureAwait(false);
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 JObject? Jobj = JObject.Parse(HttpResponseResult);
                 string? token = Convert.ToString(Jobj["token"]);
@@ -74,14 +74,14 @@ namespace FamTec.Server.Services
                     { "button_1",buttonResult.ToString()}
                 });
 
-                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content);
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content).ConfigureAwait(false);
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
                 {
                     CharSet = "euc-kr"
                 };
 
 
-                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 Jobj = JObject.Parse(HttpResponseResult);
                 
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
@@ -116,8 +116,8 @@ namespace FamTec.Server.Services
                     { "userid", Common.KakaoUserId}
                 });
 
-                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s/", Content);
-                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s/", Content).ConfigureAwait(false);
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 JObject? Jobj = JObject.Parse(HttpResponseResult);
                 string? token = Convert.ToString(Jobj["token"]);
@@ -152,13 +152,13 @@ namespace FamTec.Server.Services
                     { "button_1",buttonResult.ToString()}
                 });
 
-                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content);
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content).ConfigureAwait(false);
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
                 {
                     CharSet = "euc-kr"
                 };
 
-                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync();
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 Jobj = JObject.Parse(HttpResponseResult);
 
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();

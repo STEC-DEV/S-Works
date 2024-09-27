@@ -91,7 +91,7 @@ namespace FamTec.Server.Controllers.Admin
                     }
                 }
 
-                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files);
+                ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -125,7 +125,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid);
+                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -157,7 +157,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto);
+                ResponseUnit<bool?> model = await AdminPlaceService.AddManagerPlaceSerivce(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -195,7 +195,7 @@ namespace FamTec.Server.Controllers.Admin
                 if (adminidx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx);
+                ResponseUnit<bool?> model = await AdminAccountService.DeleteAdminService(HttpContext, adminidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -254,7 +254,7 @@ namespace FamTec.Server.Controllers.Admin
                     }
                 }
 
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(HttpContext, adminid, files);
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminImageService(HttpContext, adminid, files).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -320,9 +320,8 @@ namespace FamTec.Server.Controllers.Admin
                 if (String.IsNullOrWhiteSpace(dto.Password))
                     return NoContent();
 
-
-
-                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto);
+                ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -354,7 +353,8 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid);
+                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

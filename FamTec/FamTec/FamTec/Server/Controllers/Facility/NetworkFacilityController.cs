@@ -67,7 +67,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO>? model = await NetworkFacilityService.AddNetworkFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -94,7 +94,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await NetworkFacilityService.GetNetworkFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await NetworkFacilityService.GetNetworkFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(); 
@@ -121,7 +121,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await NetworkFacilityService.GetNetworkDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await NetworkFacilityService.GetNetworkDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -181,7 +181,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await NetworkFacilityService.UpdateNetworkFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await NetworkFacilityService.UpdateNetworkFacilityService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -213,7 +213,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await NetworkFacilityService.DeleteNetworkFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await NetworkFacilityService.DeleteNetworkFacilityService(HttpContext, delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

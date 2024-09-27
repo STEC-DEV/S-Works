@@ -34,7 +34,7 @@ namespace FamTec.Server.Services.UseMaintenence
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.GetDetailUseStoreList(usematerialid, Int32.Parse(placeid));
+                UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.GetDetailUseStoreList(usematerialid, Int32.Parse(placeid)).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -67,7 +67,7 @@ namespace FamTec.Server.Services.UseMaintenence
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 현재 유지보수건에 대해서 해당창고의 해당품목에 해당하는게 몇개가 출고됐는지 조회 - 입고 / 출고 구분로직
-                int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID);
+                int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID).ConfigureAwait(false);
 
 
 
@@ -75,7 +75,7 @@ namespace FamTec.Server.Services.UseMaintenence
                 {
                     // 출고
                     // 출고 일떄는 가용 수량을 봐야함.
-                    int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID);
+                    int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID).ConfigureAwait(false);
 
                     if (UseAvailableNum is null)
                         return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };
@@ -84,7 +84,7 @@ namespace FamTec.Server.Services.UseMaintenence
                     if (UseAvailableNum >= dto.Num - ThisUseNum)
                     {
                         // 가능
-                        int? UpdateResult = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto);
+                        int? UpdateResult = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                         if (UpdateResult > 0)
                         {
                             return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -111,7 +111,7 @@ namespace FamTec.Server.Services.UseMaintenence
                 else if (dto.Num < ThisUseNum)
                 {
                     // 입고
-                    int? UpdateResult = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto);
+                    int? UpdateResult = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                     if (UpdateResult > 0)
                     {
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };

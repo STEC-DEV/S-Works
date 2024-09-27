@@ -78,7 +78,7 @@ namespace FamTec.Server.Controllers.Voc
                 }
 
                 // 밑에 추가로 작성
-                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(HttpContext, dto, files);
+                ResponseUnit<AddVocCommentDTO?> model = await VocCommentService.AddVocCommentService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -109,7 +109,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid);
+                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -141,7 +141,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid);
+                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -217,7 +217,7 @@ namespace FamTec.Server.Controllers.Voc
                     }
                 }
 
-                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)

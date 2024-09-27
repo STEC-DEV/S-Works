@@ -33,19 +33,21 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
-                FacilityItemKeyTb? KeyTb = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.KeyID!.Value);
+                DateTime ThisDate = DateTime.Now;
+
+                FacilityItemKeyTb? KeyTb = await FacilityItemKeyInfoRepository.GetKeyInfo(dto.KeyID!.Value).ConfigureAwait(false);
                 if (KeyTb is null)
                     return new ResponseUnit<AddValueDTO>() { message = "잘못된 요청입니다.", data = new AddValueDTO(), code = 404 };
 
                 FacilityItemValueTb ValueTb = new FacilityItemValueTb();
                 ValueTb.ItemValue = dto.Value!;
-                ValueTb.CreateDt = DateTime.Now;
+                ValueTb.CreateDt = ThisDate;
                 ValueTb.CreateUser = creater;
-                ValueTb.UpdateDt = DateTime.Now;
+                ValueTb.UpdateDt = ThisDate;
                 ValueTb.UpdateUser = creater;
                 ValueTb.FacilityItemKeyTbId = dto.KeyID.Value;
 
-                FacilityItemValueTb? AddValueResult = await FacilityItemValueInfoRepository.AddAsync(ValueTb);
+                FacilityItemValueTb? AddValueResult = await FacilityItemValueInfoRepository.AddAsync(ValueTb).ConfigureAwait(false);
                 if(AddValueResult is not null)
                 {
                     return new ResponseUnit<AddValueDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -73,15 +75,17 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<UpdateValueDTO>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(dto.ID!.Value);
+                DateTime ThisDate = DateTime.Now;
+
+                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(dto.ID!.Value).ConfigureAwait(false);
                 if(ItemValueTb is null)
                     return new ResponseUnit<UpdateValueDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 ItemValueTb.ItemValue = dto.ItemValue!;
-                ItemValueTb.UpdateDt = DateTime.Now;
+                ItemValueTb.UpdateDt = ThisDate;
                 ItemValueTb.UpdateUser = creater;
 
-                bool? UpdateValueResult = await FacilityItemValueInfoRepository.UpdateValueInfo(ItemValueTb);
+                bool? UpdateValueResult = await FacilityItemValueInfoRepository.UpdateValueInfo(ItemValueTb).ConfigureAwait(false);
                 return UpdateValueResult switch
                 {
                     true => new ResponseUnit<UpdateValueDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 },
@@ -107,15 +111,17 @@ namespace FamTec.Server.Services.Facility.Value
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(valueid);
+                DateTime ThisDate = DateTime.Now;
+
+                FacilityItemValueTb? ItemValueTb = await FacilityItemValueInfoRepository.GetValueInfo(valueid).ConfigureAwait(false);
                 if(ItemValueTb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                ItemValueTb.DelDt = DateTime.Now;
+                ItemValueTb.DelDt = ThisDate;
                 ItemValueTb.DelUser = creater;
                 ItemValueTb.DelYn = true;
 
-                bool? UpdateValueResult = await FacilityItemValueInfoRepository.DeleteValueInfo(ItemValueTb);
+                bool? UpdateValueResult = await FacilityItemValueInfoRepository.DeleteValueInfo(ItemValueTb).ConfigureAwait(false);
                 return UpdateValueResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },

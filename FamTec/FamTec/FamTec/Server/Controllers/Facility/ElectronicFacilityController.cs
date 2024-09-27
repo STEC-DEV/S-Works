@@ -68,7 +68,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await ElectronicFacilityService.AddElectronicFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO>? model = await ElectronicFacilityService.AddElectronicFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -95,7 +95,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await ElectronicFacilityService.GetElectronicFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await ElectronicFacilityService.GetElectronicFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -122,7 +122,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await ElectronicFacilityService.GetElectronicDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -183,7 +183,8 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await ElectronicFacilityService.UpdateElectronicFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await ElectronicFacilityService.UpdateElectronicFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -215,7 +216,8 @@ namespace FamTec.Server.Controllers.Facility
                 if(delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await ElectronicFacilityService.DeleteElectronicFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

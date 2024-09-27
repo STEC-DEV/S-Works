@@ -25,7 +25,7 @@ namespace FamTec.Server.Services
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
-                    await files.CopyToAsync(fileStream);
+                    await files.CopyToAsync(fileStream).ConfigureAwait(false);
                     return true;
                 }
             }
@@ -60,7 +60,7 @@ namespace FamTec.Server.Services
                 string filePath = Path.Combine(folderpath, All_newFileName); // 파일경로 매핑
                 using (var memoryStream = new MemoryStream())
                 {
-                    await files.CopyToAsync(memoryStream);
+                    await files.CopyToAsync(memoryStream).ConfigureAwait(false);
                     memoryStream.Position = 0;
 
 

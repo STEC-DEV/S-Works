@@ -60,6 +60,8 @@ namespace FamTec.Server.Services.Material
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<AddMaterialDTO>() { message = "잘못된 요청입니다.", data = new AddMaterialDTO(), code = 404 };
 
@@ -70,7 +72,7 @@ namespace FamTec.Server.Services.Material
                 }
 
                 // 중복코드 검사
-                bool? MaterialCheck = await MaterialInfoRepository.GetPlaceMaterialCheck(Int32.Parse(placeidx), dto.Code);
+                bool? MaterialCheck = await MaterialInfoRepository.GetPlaceMaterialCheck(Int32.Parse(placeidx), dto.Code).ConfigureAwait(false);
                 if(MaterialCheck != true)
                     return new ResponseUnit<AddMaterialDTO>() { message = "이미 존재하는 코드입니다.", data = null, code = 201 };
 
@@ -87,16 +89,16 @@ namespace FamTec.Server.Services.Material
                     Standard = dto.Standard, // 규격
                     ManufacturingComp = dto.ManufacturingComp, // 제조사
                     SafeNum = dto.SafeNum, // 안전재고수량
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisDate,
                     CreateUser = Creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisDate,
                     UpdateUser = Creater,
                     Image = NewFileName,
                     RoomTbId = dto.RoomID!.Value, // 공간위치 인덱스
                     PlaceTbId = Int32.Parse(placeidx) // 사업장ID
                 };
 
-                MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb);
+                MaterialTb? model = await MaterialInfoRepository.AddAsync(matertialtb).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<AddMaterialDTO>() { message = "요청이 처리되지 않았습니다.", data = new AddMaterialDTO(), code = 404 };
 
@@ -104,7 +106,7 @@ namespace FamTec.Server.Services.Material
                 if(files is not null)
                 {
                     // 파일 넣기
-                    await FileService.AddResizeImageFile(NewFileName, MaterialFileFolderPath, files);
+                    await FileService.AddResizeImageFile(NewFileName, MaterialFileFolderPath, files).ConfigureAwait(false);
                 }
 
                 return new ResponseUnit<AddMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = new AddMaterialDTO()
@@ -143,7 +145,7 @@ namespace FamTec.Server.Services.Material
 
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
                 
-                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid));
+                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid)).ConfigureAwait(false);
                 if(model is null || !model.Any())
                     return new ResponseList<MaterialListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialListDTO>(), code = 200 };
             
@@ -189,7 +191,7 @@ namespace FamTec.Server.Services.Material
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid));
+                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid)).ConfigureAwait(false);
                 
                 if (model is null || !model.Any())
                     return new ResponseList<MaterialSearchListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialSearchListDTO>(), code = 200 };
@@ -227,7 +229,7 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int count = await MaterialInfoRepository.GetPlaceAllMaterialCount(Int32.Parse(placeid));
+                int count = await MaterialInfoRepository.GetPlaceAllMaterialCount(Int32.Parse(placeid)).ConfigureAwait(false);
 
                 return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
             }
@@ -258,7 +260,7 @@ namespace FamTec.Server.Services.Material
 
                 MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
 
-                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialPageNationList(Int32.Parse(placeid), pagenumber, pagesize);
+                List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialPageNationList(Int32.Parse(placeid), pagenumber, pagesize).ConfigureAwait(false);
                 if (model is null || !model.Any())
                     return new ResponseList<MaterialListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialListDTO>(), code = 200 };
 
@@ -274,7 +276,7 @@ namespace FamTec.Server.Services.Material
                         Standard = MaterialTB.Standard, // 규격
                         ManufacturingComp = MaterialTB.ManufacturingComp, // 제조사
                         SafeNum = MaterialTB.SafeNum, // 안전재고수량
-                        Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image) : null
+                        Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false) : null
                     };
 
                     ListDTO.Add(DTO);
@@ -306,12 +308,12 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                MaterialTb? materialTB = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid);
+                MaterialTb? materialTB = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), materialid).ConfigureAwait(false);
                 if(materialTB is null)
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
-                RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(materialTB.RoomTbId);
-                if(RoomTB is null)
+                RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(materialTB.RoomTbId).ConfigureAwait(false);
+                if (RoomTB is null)
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
                 
 
@@ -333,7 +335,7 @@ namespace FamTec.Server.Services.Material
                 if(!String.IsNullOrWhiteSpace(materialTB.Image))
                 {
                     dto.ImageName = materialTB.Image; // 이미지 파일명
-                    dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image); // 이미지 Byte[]
+                    dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image).ConfigureAwait(false); // 이미지 Byte[]
                 }
 
                 return new ResponseUnit<DetailMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
@@ -366,6 +368,8 @@ namespace FamTec.Server.Services.Material
                 if (context is null || dto is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                DateTime ThisDate = DateTime.Now;
+
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
@@ -378,7 +382,7 @@ namespace FamTec.Server.Services.Material
                 if (!di.Exists) di.Create();
 
 
-                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id!.Value);
+                MaterialTb? model = await MaterialInfoRepository.GetDetailMaterialInfo(Int32.Parse(placeid), dto.Id!.Value).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -389,7 +393,7 @@ namespace FamTec.Server.Services.Material
                 //model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 model.SafeNum = dto.SafeNum; // 안전재고수량
                 //model.DefaultLocation = dto.RoomID!.Value; // 공간위치
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
 
                 if(files is not null) // 파일이 공백이 아닌 경우
@@ -423,7 +427,7 @@ namespace FamTec.Server.Services.Material
                 byte[]? ImageBytes = null;
                 if(!String.IsNullOrWhiteSpace(deleteFileName))
                 {
-                    ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, deleteFileName);
+                    ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, deleteFileName).ConfigureAwait(false);
                 }
 
                 // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
@@ -443,12 +447,12 @@ namespace FamTec.Server.Services.Material
                     if(String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
                     {
                         // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                        await FileService.AddResizeImageFile(model.Image!, MaterialFileFolderPath, files);
+                        await FileService.AddResizeImageFile(model.Image!, MaterialFileFolderPath, files).ConfigureAwait(false);
                     }
                 }
 
                 // 이후 데이터베이스 업데이트
-                bool? updateMaterial = await MaterialInfoRepository.UpdateMaterialInfo(model);
+                bool? updateMaterial = await MaterialInfoRepository.UpdateMaterialInfo(model).ConfigureAwait(false);
                 if(updateMaterial == true)
                 {
                     // 성공했으면 그걸로 끝
@@ -464,7 +468,7 @@ namespace FamTec.Server.Services.Material
                             if(FileService.IsFileExists(MaterialFileFolderPath, AddTemp.FileName) == false)
                             {
                                 // 파일을 저장하는 로직
-                                await FileService.AddResizeImageFile(AddTemp.FileName, MaterialFileFolderPath, files);
+                                await FileService.AddResizeImageFile(AddTemp.FileName, MaterialFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex)
@@ -520,7 +524,7 @@ namespace FamTec.Server.Services.Material
                         return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
 
 
-                    List<InventoryTb>? Inventory = await InventoryInfoRepository.GetPlaceMaterialInventoryList(Convert.ToInt32(placeid), index);
+                    List<InventoryTb>? Inventory = await InventoryInfoRepository.GetPlaceMaterialInventoryList(Convert.ToInt32(placeid), index).ConfigureAwait(false);
                     
                     if (Inventory is [_, ..])
                     {
@@ -534,7 +538,7 @@ namespace FamTec.Server.Services.Material
                 }
 
                 //  품목삭제 하면됨
-                bool? DeleteResult = await MaterialInfoRepository.DeleteMaterialInfo(delIdx, creater);
+                bool? DeleteResult = await MaterialInfoRepository.DeleteMaterialInfo(delIdx, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -564,6 +568,8 @@ namespace FamTec.Server.Services.Material
 
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+
+                DateTime ThisDate = DateTime.Now;
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -621,16 +627,16 @@ namespace FamTec.Server.Services.Material
                         // 사업장 -빌딩
                         // 빌딩- 층
                         // 층 - 룸 List
-                        List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx));
+                        List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
                         if (BuildingList is not [_, ..])
                             return new ResponseUnit<string?>() { message = "건물정보가 존재하지 않습니다.", data = null, code = 200 };
 
 
-                        List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(BuildingList);
+                        List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(BuildingList).ConfigureAwait(false);
                         if (FloorList is not [_, ..])
                             return new ResponseUnit<string?>() { message = "층정보가 존재하지 않습니다.", data = null, code = 200 };
 
-                        List<RoomTb>? RoomList = await RoomInfoRepository.GetFloorRoomList(FloorList);
+                        List<RoomTb>? RoomList = await RoomInfoRepository.GetFloorRoomList(FloorList).ConfigureAwait(false);
                         if (RoomList is not [_, ..])
                             return new ResponseUnit<string?>() { message = "공간 정보가 존재하지 않습니다.", data = null, code = 200 };
 
@@ -655,15 +661,15 @@ namespace FamTec.Server.Services.Material
                                                       Standard = ExcelList.Standard,
                                                       ManufacturingComp = ExcelList.MFC,
                                                       SafeNum = Convert.ToInt32(ExcelList.SafeNum),
-                                                      CreateDt = DateTime.Now,
+                                                      CreateDt = ThisDate,
                                                       CreateUser = creater,
-                                                      UpdateDt = DateTime.Now,
+                                                      UpdateDt = ThisDate,
                                                       UpdateUser = creater,
                                                       RoomTbId = Room.Id,
                                                       PlaceTbId = Convert.ToInt32(placeidx)
                                                   }).ToList();
 
-                        bool? AddResult = await MaterialInfoRepository.AddMaterialList(model);
+                        bool? AddResult = await MaterialInfoRepository.AddMaterialList(model).ConfigureAwait(false);
                         return AddResult switch
                         {
                             true => new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Count.ToString(), code = 200 },
@@ -698,7 +704,7 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialSearchListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaterialSearchListDTO> model = await MaterialInfoRepository.GetMaterialSearchInfo(Int32.Parse(placeid), searchData);
+                List<MaterialSearchListDTO> model = await MaterialInfoRepository.GetMaterialSearchInfo(Int32.Parse(placeid), searchData).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseList<MaterialSearchListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else

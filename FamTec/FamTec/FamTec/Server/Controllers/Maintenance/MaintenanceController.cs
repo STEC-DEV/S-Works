@@ -81,7 +81,7 @@ namespace FamTec.Server.Controllers.Maintenance
                         return NoContent();
                 }
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto);
+                ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
             
@@ -128,10 +128,10 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (files is not null)
                 {
-                    if (files.Length > Common.MEGABYTE_1)
-                    {
-                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    }
+                    //if (files.Length > Common.MEGABYTE_1)
+                    //{
+                    //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    //}
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -148,7 +148,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await MaintanceService.UpdateMaintenanceService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -179,10 +179,10 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (files is not null)
                 {
-                    if (files.Length > Common.MEGABYTE_1)
-                    {
-                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    }
+                    //if (files.Length > Common.MEGABYTE_1)
+                    //{
+                    //    return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    //}
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
@@ -199,7 +199,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     }
                 }
 
-                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(HttpContext, id, files);
+                ResponseUnit<bool?> model = await MaintanceService.AddMaintanceImageService(HttpContext, id, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -282,7 +282,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.Inventory is null || !dto.Inventory.Any())
                     return NoContent();
 
-                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto);
+                ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -317,7 +317,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(HttpContext, facilityid);
+                ResponseList<MaintanceListDTO> model = await MaintanceService.GetMaintanceHistoryService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -343,7 +343,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid);
+                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -383,7 +383,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (dto.MaintanceID is null || !dto.MaintanceID.Any())
                     return NoContent();
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(HttpContext, dto);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceRecordService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -431,7 +431,7 @@ namespace FamTec.Server.Controllers.Maintenance
                     return NoContent();
 
 
-                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, delInfo);
+                ResponseUnit<bool?> model = await MaintanceService.DeleteMaintenanceStoreRecordService(HttpContext, delInfo).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -481,7 +481,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type);
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -525,7 +525,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, type);
+                ResponseList<AllMaintanceHistoryDTO>? model = await MaintanceService.GetAllHistoryList(HttpContext, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

@@ -29,9 +29,9 @@ namespace FamTec.Server.Repository.Facility.ItemKey
         {
             try
             {
-                await context.FacilityItemKeyTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.FacilityItemKeyTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -41,7 +41,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -57,9 +57,10 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                 List<FacilityItemKeyTb>? model = await context.FacilityItemKeyTbs
                     .Where(m => m.FacilityItemGroupTbId == groupitemid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -68,7 +69,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
 
         }
@@ -83,7 +84,8 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             try
             {
                 FacilityItemKeyTb? model = await context.FacilityItemKeyTbs
-                    .FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == keyid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -94,7 +96,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -108,12 +110,12 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             try
             {
                 context.FacilityItemKeyTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -128,6 +130,8 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -135,7 +139,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -143,7 +147,8 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
                         FacilityItemKeyTb? KeyTB = await context.FacilityItemKeyTbs
-                            .FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true);
+                            .FirstOrDefaultAsync(m => m.Id == dto.ID && m.DelYn != true)
+                            .ConfigureAwait(false);
 
                         if (KeyTB is null)
                             return (bool?)null;
@@ -152,19 +157,20 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                         KeyTB.Unit = dto.Unit!;
 
                         context.FacilityItemKeyTbs.Update(KeyTB);
-                        bool KeyUpdate = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool KeyUpdate = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
 
                         if (!KeyUpdate)
                         {
                             // KEY 업데이트 실패시 Rollback
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false); ;
                             return false;
                         }
 
                         // SELECT VALUE 정보 반환
                         List<FacilityItemValueTb>? ValueList = await context.FacilityItemValueTbs
                             .Where(m => m.FacilityItemKeyTbId == dto.ID && m.DelYn != true)
-                            .ToListAsync();
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         // NULL 인값 INSERT OR UPDATE OR DELETE
                         if (dto.ValueList is [_, ..])
@@ -186,9 +192,9 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             {
                                 FacilityItemValueTb InsertTB = new FacilityItemValueTb();
                                 InsertTB.ItemValue = InsertInfo.ItemValue!;
-                                InsertTB.CreateDt = DateTime.Now;
+                                InsertTB.CreateDt = ThisDate;
                                 InsertTB.CreateUser = updater;
-                                InsertTB.UpdateDt = DateTime.Now;
+                                InsertTB.UpdateDt = ThisDate;
                                 InsertTB.UpdateUser = updater;
                                 InsertTB.FacilityItemKeyTbId = dto.ID!.Value;
                                 context.FacilityItemValueTbs.Add(InsertTB);
@@ -198,18 +204,19 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             foreach (GroupValueListDTO UpdateInfo in UPDATELIST)
                             {
                                 FacilityItemValueTb? UpdateTB = await context.FacilityItemValueTbs.
-                                    FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true);
+                                    FirstOrDefaultAsync(m => m.Id == UpdateInfo.ID && m.DelYn != true)
+                                    .ConfigureAwait(false);
 
                                 if (UpdateTB is not null)
                                 {
                                     UpdateTB.ItemValue = UpdateInfo.ItemValue!;
-                                    UpdateTB.UpdateDt = DateTime.Now;
+                                    UpdateTB.UpdateDt = ThisDate;
                                     UpdateTB.UpdateUser = updater;
                                     context.FacilityItemValueTbs.Update(UpdateTB);
                                 }
                                 else
                                 {
-                                    await transaction.RollbackAsync();
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
                                     return false;
                                 }
                             }
@@ -218,18 +225,19 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             foreach (int DelID in delIdx)
                             {
                                 FacilityItemValueTb? DeleteTB = await context.FacilityItemValueTbs
-                                    .FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true);
+                                    .FirstOrDefaultAsync(m => m.Id == DelID && m.DelYn != true)
+                                    .ConfigureAwait(false);
 
                                 if (DeleteTB is not null)
                                 {
-                                    DeleteTB.DelDt = DateTime.Now;
+                                    DeleteTB.DelDt = ThisDate;
                                     DeleteTB.DelYn = true;
                                     DeleteTB.DelUser = updater;
                                     context.FacilityItemValueTbs.Update(DeleteTB);
                                 }
                                 else
                                 {
-                                    await transaction.RollbackAsync();
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
                                     return false;
                                 }
                             }
@@ -240,7 +248,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             {
                                 foreach (FacilityItemValueTb ValueTB in ValueList)
                                 {
-                                    ValueTB.DelDt = DateTime.Now;
+                                    ValueTB.DelDt = ThisDate;
                                     ValueTB.DelYn = true;
                                     ValueTB.DelUser = updater;
                                     context.FacilityItemValueTbs.Update(ValueTB);
@@ -248,22 +256,22 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -279,12 +287,12 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             try
             {
                 context.FacilityItemKeyTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -299,6 +307,8 @@ namespace FamTec.Server.Repository.Facility.ItemKey
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -306,7 +316,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -315,22 +325,29 @@ namespace FamTec.Server.Repository.Facility.ItemKey
 
                         foreach (int KeyId in KeyList)
                         {
-                            FacilityItemKeyTb? KeyTB = await context.FacilityItemKeyTbs.FirstOrDefaultAsync(m => m.Id == KeyId && m.DelYn != true);
+                            FacilityItemKeyTb? KeyTB = await context.FacilityItemKeyTbs
+                            .FirstOrDefaultAsync(m => m.Id == KeyId && m.DelYn != true)
+                            .ConfigureAwait(false);
+
                             if (KeyTB is null)
                                 return (bool?)null;
 
-                            KeyTB.DelDt = DateTime.Now;
+                            KeyTB.DelDt = ThisDate;
                             KeyTB.DelUser = deleter;
                             KeyTB.DelYn = true;
 
                             context.FacilityItemKeyTbs.Update(KeyTB);
 
-                            List<FacilityItemValueTb>? ValueList = await context.FacilityItemValueTbs.Where(m => m.Id == KeyTB.Id && m.DelYn != true).ToListAsync();
+                            List<FacilityItemValueTb>? ValueList = await context.FacilityItemValueTbs
+                            .Where(m => m.Id == KeyTB.Id && m.DelYn != true)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
+
                             if (ValueList is [_, ..])
                             {
                                 foreach (FacilityItemValueTb ValueTB in ValueList)
                                 {
-                                    ValueTB.DelDt = DateTime.Now;
+                                    ValueTB.DelDt = ThisDate;
                                     ValueTB.DelUser = deleter;
                                     ValueTB.DelYn = true;
 
@@ -339,22 +356,22 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });

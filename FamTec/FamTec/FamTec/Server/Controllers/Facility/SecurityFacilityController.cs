@@ -67,7 +67,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO> model = await SecurityFacilityService.AddSecurityFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO> model = await SecurityFacilityService.AddSecurityFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -94,7 +94,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO> model = await SecurityFacilityService.GetSecurityFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO> model = await SecurityFacilityService.GetSecurityFacilityListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -121,7 +121,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await SecurityFacilityService.GetSecurityDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await SecurityFacilityService.GetSecurityDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -181,7 +181,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await SecurityFacilityService.UpdateSecurityFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await SecurityFacilityService.UpdateSecurityFacilityService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -214,7 +214,7 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await SecurityFacilityService.DeleteSecurityFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await SecurityFacilityService.DeleteSecurityFacilityService(HttpContext, delIdx).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

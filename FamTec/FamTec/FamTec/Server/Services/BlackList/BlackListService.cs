@@ -34,16 +34,18 @@ namespace FamTec.Server.Services.BlackList
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddBlackListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                DateTime ThisTime = DateTime.Now;
+
                 BlacklistTb model = new BlacklistTb()
                 {
                     Phone = dto.PhoneNumber!,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = creater
                 };
 
-                BlacklistTb? AddResult = await BlackListInfoRepository.AddAsync(model);
+                BlacklistTb? AddResult = await BlackListInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if(AddResult is not null)
                 {
                     return new ResponseUnit<AddBlackListDTO>() 
@@ -79,7 +81,7 @@ namespace FamTec.Server.Services.BlackList
                 if (context is null)
                     return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackList();
+                List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackList().ConfigureAwait(false);
                 if(model is not null && model.Any())
                 {
                     List<BlackListDTO> dto = model.Select(e => new BlackListDTO
@@ -114,7 +116,7 @@ namespace FamTec.Server.Services.BlackList
                 if (context is null)
                     return new ResponseUnit<int?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                int count = await BlackListInfoRepository.GetBlackListCount();
+                int count = await BlackListInfoRepository.GetBlackListCount().ConfigureAwait(false);
                 return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
             }
             catch(Exception ex)
@@ -137,7 +139,7 @@ namespace FamTec.Server.Services.BlackList
                 if (context is null)
                     return new ResponseList<BlackListDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackListPaceNationList(pagenumber, pagesize);
+                List<BlacklistTb>? model = await BlackListInfoRepository.GetBlackListPaceNationList(pagenumber, pagesize).ConfigureAwait(false);
                 if (model is not null && model.Any())
                 {
                     List<BlackListDTO> dto = model.Select(e => new BlackListDTO
@@ -176,15 +178,17 @@ namespace FamTec.Server.Services.BlackList
                 if(String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID!.Value);
+                DateTime ThisTime = DateTime.Now;
+
+                BlacklistTb? model = await BlackListInfoRepository.GetBlackListInfo(dto.ID!.Value).ConfigureAwait(false);
                 if (model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Phone = dto.PhoneNumber!;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisTime;
                 model.UpdateUser = updater;
 
-                bool? UpdateResult = await BlackListInfoRepository.UpdateBlackList(model);
+                bool? UpdateResult = await BlackListInfoRepository.UpdateBlackList(model).ConfigureAwait(false);
                 
                 return UpdateResult switch
                 {
@@ -221,7 +225,7 @@ namespace FamTec.Server.Services.BlackList
                 if (String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? DeleteResult = await BlackListInfoRepository.DeleteBlackList(delIdx, deleter);
+                bool? DeleteResult = await BlackListInfoRepository.DeleteBlackList(delIdx, deleter).ConfigureAwait(false);
 
                 return DeleteResult switch
                 {

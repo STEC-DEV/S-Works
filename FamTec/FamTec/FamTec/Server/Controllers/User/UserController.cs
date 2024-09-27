@@ -42,7 +42,7 @@ namespace FamTec.Server.Controllers.User
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<ListUser>? model = await UserService.GetPlaceUserList(HttpContext);
+                ResponseList<ListUser>? model = await UserService.GetPlaceUserList(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -154,7 +154,7 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
-                ResponseUnit<UsersDTO> model = await UserService.AddUserService(HttpContext, dto, files);
+                ResponseUnit<UsersDTO> model = await UserService.AddUserService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -183,7 +183,7 @@ namespace FamTec.Server.Controllers.User
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id);
+                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -215,7 +215,7 @@ namespace FamTec.Server.Controllers.User
                 if (delIdx.Count == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UserService.DeleteUserService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await UserService.DeleteUserService(HttpContext, delIdx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -322,7 +322,7 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
-                ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(HttpContext, dto, files);
+                ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -374,7 +374,7 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
-                ResponseUnit<string?> model = await UserService.ImportUserService(HttpContext, files);
+                ResponseUnit<string?> model = await UserService.ImportUserService(HttpContext, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

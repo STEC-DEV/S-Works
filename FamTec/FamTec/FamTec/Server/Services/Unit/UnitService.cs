@@ -33,28 +33,29 @@ namespace FamTec.Server.Services.Unit
                 string? creator = Convert.ToString(context.Items["Name"]);
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
 
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(creator) || String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
-                bool? AddCheck = await UnitInfoRepository.AddUnitInfoCheck(dto.Unit!, Int32.Parse(placeidx));
+                bool? AddCheck = await UnitInfoRepository.AddUnitInfoCheck(dto.Unit!, Int32.Parse(placeidx)).ConfigureAwait(false);
                 if(AddCheck != true)
                     return new ResponseUnit<UnitsDTO>() { message = "이미 해당사업장에 생성한 적 있는 단위명칭 입니다.", data = new UnitsDTO(), code = 201 };
 
                 UnitTb? model = new UnitTb()
                 {
                     Unit = dto.Unit!,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisDate,
                     CreateUser = creator,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisDate,
                     UpdateUser = creator,
                     PlaceTbId = Int32.Parse(placeidx)
                 };
 
-                UnitTb? result = await UnitInfoRepository.AddAsync(model);
+                UnitTb? result = await UnitInfoRepository.AddAsync(model).ConfigureAwait(false);
                 if(result is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = new UnitsDTO(), code = 404 };
 
-                
                 return new ResponseUnit<UnitsDTO>()
                 {
                     message = "데이터가 정상 처리되었습니다.",
@@ -90,7 +91,7 @@ namespace FamTec.Server.Services.Unit
                 if(String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<UnitsDTO>() { message = "잘못된 요청입니다.", data = new List<UnitsDTO>(), code = 404 };
 
-                List<UnitTb>? model = await UnitInfoRepository.GetUnitList(Int32.Parse(placeidx));
+                List<UnitTb>? model = await UnitInfoRepository.GetUnitList(Int32.Parse(placeidx)).ConfigureAwait(false);
 
                 if(model is not null && model.Any())
                 {
@@ -137,7 +138,7 @@ namespace FamTec.Server.Services.Unit
 
                 foreach (int id in unitid)
                 {
-                    UnitTb? model = await UnitInfoRepository.GetUnitInfo(id);
+                    UnitTb? model = await UnitInfoRepository.GetUnitInfo(id).ConfigureAwait(false);
                     if(model is null)
                         return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -146,7 +147,7 @@ namespace FamTec.Server.Services.Unit
                 }
 
 
-                bool? result = await UnitInfoRepository.DeleteUnitInfo(unitid, creater);
+                bool? result = await UnitInfoRepository.DeleteUnitInfo(unitid, creater).ConfigureAwait(false);
 
                 return result switch
                 {
@@ -179,15 +180,17 @@ namespace FamTec.Server.Services.Unit
                 if (String.IsNullOrWhiteSpace(creator))
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UnitTb? model = await UnitInfoRepository.GetUnitInfo(dto.Id!.Value);
-                if(model is null)
+                DateTime ThisDate = DateTime.Now;
+
+                UnitTb? model = await UnitInfoRepository.GetUnitInfo(dto.Id!.Value).ConfigureAwait(false);
+                if (model is null)
                     return new ResponseUnit<UnitsDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
            
                 model.Unit = dto.Unit!;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = creator;
 
-                bool? result = await UnitInfoRepository.UpdateUnitInfo(model);
+                bool? result = await UnitInfoRepository.UpdateUnitInfo(model).ConfigureAwait(false);
 
                 return result switch
                 {

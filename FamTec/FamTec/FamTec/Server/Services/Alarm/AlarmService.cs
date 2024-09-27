@@ -32,7 +32,7 @@ namespace FamTec.Server.Services.Alarm
                 if(String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmList(Convert.ToInt32(UserIdx));
+                List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmList(Convert.ToInt32(UserIdx)).ConfigureAwait(false);
                 if (model is not null && model.Any())
                     return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -62,7 +62,7 @@ namespace FamTec.Server.Services.Alarm
                 if (String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseList<AlarmDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmListByDate(Convert.ToInt32(UserIdx), StartDate);
+                List<AlarmDTO>? model = await AlarmInfoRepository.GetAlarmListByDate(Convert.ToInt32(UserIdx), StartDate).ConfigureAwait(false);
                 if (model is not null && model.Any())
                     return new ResponseList<AlarmDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Alarm
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 여기수정
-                bool? result = await AlarmInfoRepository.AllAlarmDelete(Convert.ToInt32(UserIdx), deleter);
+                bool? result = await AlarmInfoRepository.AllAlarmDelete(Convert.ToInt32(UserIdx), deleter).ConfigureAwait(false);
                 
                 return result switch
                 {
@@ -126,7 +126,7 @@ namespace FamTec.Server.Services.Alarm
                 if (String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? result = await AlarmInfoRepository.AlarmDelete(alarmid.Value, deleter);
+                bool? result = await AlarmInfoRepository.AlarmDelete(alarmid.Value, deleter).ConfigureAwait(false);
                 return result switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 }, // 성공

@@ -42,7 +42,7 @@ namespace FamTec.Server.Services.Store
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = 0, code = 404 };
 
                 // 인벤토리 테이블에 ADD
-                int? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid));
+                int? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 return AddInStore switch
                 {
                     1 => new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 },
@@ -78,7 +78,7 @@ namespace FamTec.Server.Services.Store
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                FailResult? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid));
+                FailResult? OutResult = await InventoryInfoRepository.SetOutInventoryInfo(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 /*
                     0 : 출고수량이 부족함
                     1 : 출고성공
@@ -119,7 +119,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int count = await StoreInfoRepository.GetPlaceInOutCount(Int32.Parse(placeid));
+                int count = await StoreInfoRepository.GetPlaceInOutCount(Int32.Parse(placeid)).ConfigureAwait(false);
                 return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
             }
             catch(Exception ex)
@@ -145,7 +145,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<InOutHistoryListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InOutHistoryListDTO>? model = await StoreInfoRepository.GetInOutList(Convert.ToInt32(placeid));
+                List<InOutHistoryListDTO>? model = await StoreInfoRepository.GetInOutList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (model is not null && model.Any())
                     return new ResponseList<InOutHistoryListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -178,7 +178,7 @@ namespace FamTec.Server.Services.Store
                     return new ResponseList<InOutHistoryListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                List<InOutHistoryListDTO>? model = await StoreInfoRepository.GetInOutPageNationList(Convert.ToInt32(placeid), pagenum, pagesize);
+                List<InOutHistoryListDTO>? model = await StoreInfoRepository.GetInOutPageNationList(Convert.ToInt32(placeid), pagenum, pagesize).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return new ResponseList<InOutHistoryListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -211,7 +211,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<PeriodicDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate);
+                List<PeriodicDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate).ConfigureAwait(false);
                 
                 if (model is [_, ..])
                     return new ResponseList<PeriodicDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -243,7 +243,7 @@ namespace FamTec.Server.Services.Store
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaterialHistory>? model = await InventoryInfoRepository.GetPlaceInventoryRecord(Convert.ToInt32(placeid), materialid, type);
+                List<MaterialHistory>? model = await InventoryInfoRepository.GetPlaceInventoryRecord(Convert.ToInt32(placeid), materialid, type).ConfigureAwait(false);
                 
                 if(model is null)
                     return new ResponseList<MaterialHistory>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -276,7 +276,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InOutLocationDTO>? model = await InventoryInfoRepository.GetLocationMaterialInventoryList(Int32.Parse(placeid), MaterialId, buildingid);
+                List<InOutLocationDTO>? model = await InventoryInfoRepository.GetLocationMaterialInventoryList(Int32.Parse(placeid), MaterialId, buildingid).ConfigureAwait(false);
                 if (model is not null && model.Any())
                     return new ResponseList<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -308,7 +308,7 @@ namespace FamTec.Server.Services.Store
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<InOutInventoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<InOutInventoryDTO>? model = await InventoryInfoRepository.AddOutStoreList(Int32.Parse(placeid), roomid, materialid, outcount);
+                List<InOutInventoryDTO>? model = await InventoryInfoRepository.AddOutStoreList(Int32.Parse(placeid), roomid, materialid, outcount).ConfigureAwait(false);
                 if (model is not null && model.Any())
                     return new ResponseUnit<InOutInventoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model[0], code = 200 };
                 else

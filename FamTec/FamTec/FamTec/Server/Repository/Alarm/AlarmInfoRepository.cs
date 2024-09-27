@@ -29,9 +29,9 @@ namespace FamTec.Server.Repository.Alarm
         {
             try
             {
-                await context.AlarmTbs.AddAsync(model);
+                await context.AlarmTbs.AddAsync(model).ConfigureAwait(false);
 
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
 
                 if (AddResult)
                     return model;
@@ -41,7 +41,7 @@ namespace FamTec.Server.Repository.Alarm
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -58,6 +58,8 @@ namespace FamTec.Server.Repository.Alarm
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -65,7 +67,7 @@ namespace FamTec.Server.Repository.Alarm
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (var transaction = await context.Database.BeginTransactionAsync())
+                using (var transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -76,38 +78,36 @@ namespace FamTec.Server.Repository.Alarm
                                 Type = AlarmType,
                                 UsersTbId = UserTB.Id,
                                 VocTbId = VocTBId,
-                                CreateDt = DateTime.Now,
+                                CreateDt = ThisDate,
                                 CreateUser = Creater,
-                                UpdateDt = DateTime.Now,
+                                UpdateDt = ThisDate,
                                 UpdateUser = Creater
                             };
 
-                            await context.AlarmTbs.AddAsync(AlarmTB);
+                            await context.AlarmTbs.AddAsync(AlarmTB).ConfigureAwait(false);
                         }
 
-                        bool Result = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool Result = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (Result)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
-                        await transaction.RollbackAsync();
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
                         return false;
                     }
                 }
             });
-
         }
-
 
         /// <summary>
         /// 사용자의 안읽은 알람 전체조회
@@ -121,7 +121,8 @@ namespace FamTec.Server.Repository.Alarm
                 List<AlarmTb>? AlarmTB = await context.AlarmTbs
                     .Where(m => m.DelYn != true && m.UsersTbId == userid)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (AlarmTB is null || !AlarmTB.Any())
                     return null;
@@ -150,7 +151,7 @@ namespace FamTec.Server.Repository.Alarm
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -169,7 +170,8 @@ namespace FamTec.Server.Repository.Alarm
                                m.UsersTbId == userid &&
                                m.CreateDt >= StartDate.AddDays(-14))
                    .OrderBy(m => m.CreateDt)
-                   .ToListAsync();
+                   .ToListAsync()
+                   .ConfigureAwait(false);
 
                 if (AlarmTB is null || !AlarmTB.Any())
                     return null;
@@ -198,7 +200,7 @@ namespace FamTec.Server.Repository.Alarm
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -212,6 +214,8 @@ namespace FamTec.Server.Repository.Alarm
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -219,7 +223,7 @@ namespace FamTec.Server.Repository.Alarm
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -229,7 +233,8 @@ namespace FamTec.Server.Repository.Alarm
                         List<AlarmTb>? AlarmList = await context.AlarmTbs
                             .Where(m => m.DelYn != true && m.UsersTbId == userid)
                             .OrderBy(m => m.CreateDt)
-                            .ToListAsync();
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         if (!AlarmList.Any())
                             return true;
@@ -237,21 +242,21 @@ namespace FamTec.Server.Repository.Alarm
                         foreach (AlarmTb AlarmTB in AlarmList)
                         {
                             AlarmTB.DelYn = true;
-                            AlarmTB.DelDt = DateTime.Now;
+                            AlarmTB.DelDt = ThisDate;
                             AlarmTB.DelUser = deleter;
 
                             context.AlarmTbs.Update(AlarmTB);
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
@@ -275,7 +280,8 @@ namespace FamTec.Server.Repository.Alarm
             try
             {
                 AlarmTb? AlarmTB = await context.AlarmTbs
-                    .FirstOrDefaultAsync(m => m.Id == alarmId && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == alarmId && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (AlarmTB is null)
                     return null;
@@ -286,7 +292,7 @@ namespace FamTec.Server.Repository.Alarm
 
                 context.AlarmTbs.Update(AlarmTB);
 
-                bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
 
                 if (DeleteResult)
                     return true;
@@ -296,7 +302,7 @@ namespace FamTec.Server.Repository.Alarm
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
     

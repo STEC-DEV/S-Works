@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Databases;
+﻿using DocumentFormat.OpenXml.Drawing;
+using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Material;
@@ -32,18 +33,18 @@ namespace FamTec.Server.Repository.Material
             try
             {
                 bool InventoryCheck = await context.InventoryTbs
-                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true).ConfigureAwait(false);
                 bool StoreCheck = await context.StoreTbs
-                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true).ConfigureAwait(false);
                 bool UseMaterialCheck = await context.UseMaintenenceMaterialTbs
-                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true);
+                    .AnyAsync(m => m.MaterialTbId == materialid && m.DelYn != true).ConfigureAwait(false);
 
                 return InventoryCheck || StoreCheck || UseMaterialCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -57,8 +58,8 @@ namespace FamTec.Server.Repository.Material
         {
             try
             {
-                await context.MaterialTbs.AddAsync(model);
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.MaterialTbs.AddAsync(model).ConfigureAwait(false);
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -68,7 +69,7 @@ namespace FamTec.Server.Repository.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -82,6 +83,8 @@ namespace FamTec.Server.Repository.Material
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -89,31 +92,31 @@ namespace FamTec.Server.Repository.Material
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
                         // 교착상태 방지용 타임아웃
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
-                        await context.MaterialTbs.AddRangeAsync(MaterialList);
+                        await context.MaterialTbs.AddRangeAsync(MaterialList).ConfigureAwait(false);
 
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (AddResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -132,7 +135,8 @@ namespace FamTec.Server.Repository.Material
                 MaterialTb? MaterialTB = await context.MaterialTbs
                     .FirstOrDefaultAsync(m => m.DelYn != true && 
                                               m.Code == code && 
-                                              m.PlaceTbId == placeid);
+                                              m.PlaceTbId == placeid)
+                    .ConfigureAwait(false);
 
                 if (MaterialTB is null)
                     return true;
@@ -142,7 +146,7 @@ namespace FamTec.Server.Repository.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -158,9 +162,10 @@ namespace FamTec.Server.Repository.Material
                 List<MaterialTb>? model = await context.MaterialTbs
                     .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is [_, ..])
+                if (model is [_, ..])
                     return model;
                 else
                     return null;
@@ -168,7 +173,7 @@ namespace FamTec.Server.Repository.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -184,14 +189,15 @@ namespace FamTec.Server.Repository.Material
                 int count = await context.MaterialTbs
                     .Where(m => m.PlaceTbId == placeid && 
                                 m.DelYn != true)
-                    .CountAsync();
+                    .CountAsync()
+                    .ConfigureAwait(false);
 
                 return count;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -212,7 +218,8 @@ namespace FamTec.Server.Repository.Material
                     .OrderBy(m => m.CreateDt)
                     .Skip((pagenumber - 1) * pagesize)
                     .Take(pagesize)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -222,7 +229,7 @@ namespace FamTec.Server.Repository.Material
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -239,7 +246,8 @@ namespace FamTec.Server.Repository.Material
                 MaterialTb? model = await context.MaterialTbs
                     .FirstOrDefaultAsync(m => m.Id == materialId && 
                                               m.PlaceTbId == placeid &&
-                                              m.DelYn != true);
+                                              m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -249,7 +257,7 @@ namespace FamTec.Server.Repository.Material
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -263,12 +271,12 @@ namespace FamTec.Server.Repository.Material
             try
             {
                 context.MaterialTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -283,6 +291,8 @@ namespace FamTec.Server.Repository.Material
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -291,7 +301,7 @@ namespace FamTec.Server.Repository.Material
                 Debugger.Break();
 #endif
 
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -301,14 +311,15 @@ namespace FamTec.Server.Repository.Material
                         foreach (int delId in delidx)
                         {
                             MaterialTb? MaterialTB = await context.MaterialTbs
-                                .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true);
+                                .FirstOrDefaultAsync(m => m.Id == delId && m.DelYn != true)
+                                .ConfigureAwait(false);
 
                             if (MaterialTB is not null)
                             {
                                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                                 MaterialTB.Code = $"{MaterialTB.Code}_{MaterialTB.Id}";
                                 MaterialTB.DelYn = true;
-                                MaterialTB.DelDt = DateTime.Now;
+                                MaterialTB.DelDt = ThisDate;
                                 MaterialTB.DelUser = deleter;
 
                                 context.MaterialTbs.Update(MaterialTB);
@@ -316,28 +327,28 @@ namespace FamTec.Server.Repository.Material
                             else
                             {
                                 // 잘못된 조회결과 (롤백)
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return (bool?)null;
                             }
                         }
 
-                        bool MaterialResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool MaterialResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (MaterialResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
                             // 업데이트 실패시 롤백
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -361,9 +372,10 @@ namespace FamTec.Server.Repository.Material
                                m.PlaceTbId == placeid)
                     .GroupBy(m => m.Id) // ID 기준으로 그룹화
                     .Select(g => g.First()) // 각 그룹에서 첫 번째 항목 선택
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(MaterialList is not null && MaterialList.Any())
+                if (MaterialList is not null && MaterialList.Any())
                 {
                     List<MaterialSearchListDTO> model = MaterialList.Select(e => new MaterialSearchListDTO
                     {
@@ -385,7 +397,7 @@ namespace FamTec.Server.Repository.Material
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

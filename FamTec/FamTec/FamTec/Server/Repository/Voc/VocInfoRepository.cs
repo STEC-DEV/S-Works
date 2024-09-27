@@ -46,7 +46,8 @@ namespace FamTec.Server.Repository.Voc
                             m.Type == 8 ) &&  // 보안
                             m.CreateDt >= StartDate && m.CreateDt <= EndDate)
                 .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             // Step 3: 날짜별 데이터와 모든 날짜를 조인하여 결과 구성
             List<VocWeekCountDTO> model = allDates
@@ -105,7 +106,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 await context.VocTbs.AddAsync(model);
              
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -115,7 +116,7 @@ namespace FamTec.Server.Repository.Voc
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -132,7 +133,8 @@ namespace FamTec.Server.Repository.Voc
                     status.Contains(m.Status) && 
                     buildingid.Contains(m.BuildingTbId))
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if(VocList is [_, ..])
                 {
@@ -171,7 +173,8 @@ namespace FamTec.Server.Repository.Voc
                                                     CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
                                                     CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
                                                     DurationDT = VocTB.DurationDt // 민원처리 소요시간
-                                                }).OrderBy(m => m.CreateDT).ToList();
+                                                }).OrderBy(m => m.CreateDT)
+                                                .ToList();
 
                         VocItem.VocList = dto;
                         AllVocList.Add(VocItem);
@@ -190,7 +193,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -209,7 +212,8 @@ namespace FamTec.Server.Repository.Voc
                     status.Contains(m.Status) && 
                     BuildingID.Contains(m.BuildingTbId) &&
                     m.CreateDt >= StartDate && m.CreateDt <= EndDate.AddDays(1))
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (VocList is [_, ..])
                 {
@@ -226,7 +230,8 @@ namespace FamTec.Server.Repository.Voc
                                                 Status = VocTB.Status, // 민원상태
                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
                                                 DurationDT = VocTB.DurationDt // 소요시간
-                                            }).OrderBy(m => m.CreateDT).ToList();
+                                            }).OrderBy(m => m.CreateDT)
+                                            .ToList();
 
                     return dto;
                 }
@@ -239,12 +244,9 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
-
-    
-
 
         /// <summary>
         /// ID로 민원 상세조회
@@ -257,7 +259,8 @@ namespace FamTec.Server.Repository.Voc
             {
 
                 VocTb? model = await context.VocTbs
-                    .FirstOrDefaultAsync(m => m.Id == vocid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == vocid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if(model is not null)
                     return model;
@@ -267,7 +270,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -285,7 +288,8 @@ namespace FamTec.Server.Repository.Voc
             {
 
                 VocTb? model = await context.VocTbs
-                    .FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Code == code && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -295,7 +299,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -304,12 +308,12 @@ namespace FamTec.Server.Repository.Voc
             try
             {
                 context.VocTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

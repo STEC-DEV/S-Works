@@ -42,7 +42,7 @@ namespace FamTec.Server.Services.Maintenance
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files);
+                bool? ImageAddResult = await MaintanceRepository.AddMaintanceImageAsync(id, Int32.Parse(placeid), files).ConfigureAwait(false);
                 return ImageAddResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -79,7 +79,7 @@ namespace FamTec.Server.Services.Maintenance
 
                 if (dto.Type is 0) // 자체작업
                 {
-                    FailResult? MaintanceId = await MaintanceRepository.AddSelfMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+                    FailResult? MaintanceId = await MaintanceRepository.AddSelfMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
                     return MaintanceId!.ReturnResult switch
                     {
                         > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
@@ -94,7 +94,7 @@ namespace FamTec.Server.Services.Maintenance
                     if (dto.TotalPrice is 0)
                         return new ResponseUnit<FailResult?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                    FailResult? MaintanceId = await MaintanceRepository.AddOutSourcingMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid));
+                    FailResult? MaintanceId = await MaintanceRepository.AddOutSourcingMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
 
                     return MaintanceId!.ReturnResult switch
                     {
@@ -131,7 +131,7 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(userid))
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                FailResult? MaintanceId = await MaintanceRepository.AddMaintanceMaterialAsync(dto, creater, Convert.ToInt32(placeid));
+                FailResult? MaintanceId = await MaintanceRepository.AddMaintanceMaterialAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
                 return MaintanceId!.ReturnResult switch
                 {
                     > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
@@ -166,7 +166,7 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter);
+                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -199,7 +199,7 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(deleter))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
-                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter);
+                bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
 
                 return DeleteResult switch
                 {
@@ -233,11 +233,11 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 // 여기 더 추가해야함
                 
-                FacilityTb? VaildFacility = await FacilityInfoRepository.GetFacilityInfo(facilityid);
+                FacilityTb? VaildFacility = await FacilityInfoRepository.GetFacilityInfo(facilityid).ConfigureAwait(false);
                 if(VaildFacility is null)
                     return new ResponseList<MaintanceListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid, Int32.Parse(placeid));
+                List<MaintanceListDTO>? dto = await MaintanceRepository.GetFacilityHistoryList(facilityid, Int32.Parse(placeid)).ConfigureAwait(false);
                 
 
                 if (dto is not null && dto.Any())
@@ -273,7 +273,7 @@ namespace FamTec.Server.Services.Maintenance
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetDateHistoryList(Convert.ToInt32(placeid), StartDate, EndDate, category, type);
+                List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetDateHistoryList(Convert.ToInt32(placeid), StartDate, EndDate, category, type).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -306,7 +306,7 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AllMaintanceHistoryDTO>? model = await MaintanceRepository.GetAllHistoryList(Convert.ToInt32(placeid), category, type);
+                List<AllMaintanceHistoryDTO>? model = await MaintanceRepository.GetAllHistoryList(Convert.ToInt32(placeid), category, type).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -338,7 +338,7 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid));
+                DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid)).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -375,7 +375,9 @@ namespace FamTec.Server.Services.Maintenance
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
                 string? updater = Convert.ToString(context.Items["Name"]);
-                
+
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(UserIdx) || String.IsNullOrWhiteSpace(updater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -383,14 +385,14 @@ namespace FamTec.Server.Services.Maintenance
                 di = new DirectoryInfo(MaintanceFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                MaintenenceHistoryTb? model = await MaintanceRepository.GetMaintenanceInfo(dto.Id);
+                MaintenenceHistoryTb? model = await MaintanceRepository.GetMaintenanceInfo(dto.Id).ConfigureAwait(false);
 
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Name = dto.Name!; // 유지보수명
                 model.Worker = dto.Worker!; // 작업자
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = updater;
 
                 
@@ -425,7 +427,7 @@ namespace FamTec.Server.Services.Maintenance
                 byte[]? ImageBytes = null;
                 if(!String.IsNullOrWhiteSpace(deleteFileName))
                 {
-                    ImageBytes = await FileService.GetImageFile(MaintanceFileFolderPath, deleteFileName);
+                    ImageBytes = await FileService.GetImageFile(MaintanceFileFolderPath, deleteFileName).ConfigureAwait(false);
                 }
 
                 // - DB 실패했을경우 iFormFile을 바이트로 변환하여 DB의 해당명칭으로 다시 저장해야함.
@@ -446,12 +448,12 @@ namespace FamTec.Server.Services.Maintenance
                     if(String.IsNullOrWhiteSpace(model.Image) || files.FileName != model.Image)
                     {
                         // Image가 없거나 혹은 기존 파일명과 다른 경우에만 파일 저장
-                        await FileService.AddResizeImageFile(model.Image!, MaintanceFileFolderPath, files);
+                        await FileService.AddResizeImageFile(model.Image!, MaintanceFileFolderPath, files).ConfigureAwait(false);
                     }
                 }
 
                 // 이후 데이터베이스 업데이트
-                bool? updateMaintance = await MaintanceRepository.UpdateMaintenanceInfo(model);
+                bool? updateMaintance = await MaintanceRepository.UpdateMaintenanceInfo(model).ConfigureAwait(false);
                 if(updateMaintance == true)
                 {
                     // 성공하면 그걸로 끝
@@ -467,7 +469,7 @@ namespace FamTec.Server.Services.Maintenance
                             if(FileService.IsFileExists(MaintanceFileFolderPath, AddTemp.FileName) == false)
                             {
                                 // 파일을 저장하는 로직
-                                await FileService.AddResizeImageFile(AddTemp.FileName, MaintanceFileFolderPath, files);
+                                await FileService.AddResizeImageFile(AddTemp.FileName, MaintanceFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex)

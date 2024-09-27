@@ -44,17 +44,19 @@ namespace FamTec.Server.Services.Room
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<RoomDTO>() { message = "요청이 잘못되었습니다.", data = new RoomDTO(), code = 404 };
 
+                DateTime ThisDate = DateTime.Now;
+
                 RoomTb roomtb = new RoomTb()
                 {
                     Name = dto.Name!,
                     FloorTbId = dto.FloorID!.Value,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisDate,
                     CreateUser = creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisDate,
                     UpdateUser = creater
                 };
 
-                RoomTb? result = await RoomInfoRepository.AddAsync(roomtb);
+                RoomTb? result = await RoomInfoRepository.AddAsync(roomtb).ConfigureAwait(false);
                 if(result is not null)
                     return new ResponseUnit<RoomDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
@@ -85,7 +87,7 @@ namespace FamTec.Server.Services.Room
                     return new ResponseList<RoomListDTO>() { message = "요청이 잘못되었습니다.", data = new List<RoomListDTO>(), code = 404 };
 
 
-                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(PlaceIdx));
+                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(PlaceIdx)).ConfigureAwait(false);
 
                 List<RoomListDTO> result = new List<RoomListDTO>();
 
@@ -93,13 +95,13 @@ namespace FamTec.Server.Services.Room
                 {
                     for (int i = 0; i < buildinglist.Count(); i++)
                     {
-                        List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildinglist[i].Id);
+                        List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildinglist[i].Id).ConfigureAwait(false);
 
                         if (floortb is [_, ..])
                         {
                             for (int j = 0; j < floortb.Count(); j++)
                             {
-                                List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(floortb[j].Id);
+                                List<RoomTb>? roomtb = await RoomInfoRepository.GetRoomList(floortb[j].Id).ConfigureAwait(false);
 
                                 if (roomtb is [_, ..])
                                 {
@@ -157,7 +159,7 @@ namespace FamTec.Server.Services.Room
                 if(roomid is 0)
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                RoomTb? model = await RoomInfoRepository.GetRoomInfo(roomid);
+                RoomTb? model = await RoomInfoRepository.GetRoomInfo(roomid).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Name, code = 200 };
                 else
@@ -187,15 +189,17 @@ namespace FamTec.Server.Services.Room
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value);
+                DateTime ThisDate = DateTime.Now;
+
+                RoomTb? model = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Name = dto.Name!;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
 
-                bool? UpdateRoomResult = await RoomInfoRepository.UpdateRoomInfo(model);
+                bool? UpdateRoomResult = await RoomInfoRepository.UpdateRoomInfo(model).ConfigureAwait(false);
                 return UpdateRoomResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -233,7 +237,7 @@ namespace FamTec.Server.Services.Room
 
                 foreach(int index in del)
                 {
-                    bool? DelCheck = await RoomInfoRepository.DelRoomCheck(index);
+                    bool? DelCheck = await RoomInfoRepository.DelRoomCheck(index).ConfigureAwait(false);
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "해당 정보를 참조하는 데이터가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
@@ -250,7 +254,7 @@ namespace FamTec.Server.Services.Room
                 //}
 
 
-                bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater);
+                bool? DeleteResult = await RoomInfoRepository.DeleteRoomInfo(del, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -281,7 +285,7 @@ namespace FamTec.Server.Services.Room
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<PlaceRoomListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<PlaceRoomListDTO>? model = await RoomInfoRepository.GetPlaceAllGroupRoomInfo(Int32.Parse(placeid));
+                List<PlaceRoomListDTO>? model = await RoomInfoRepository.GetPlaceAllGroupRoomInfo(Int32.Parse(placeid)).ConfigureAwait(false);
                 if (model is [_, ..])
                     return new ResponseList<PlaceRoomListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else

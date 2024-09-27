@@ -39,7 +39,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDataService(HttpContext);
+                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDataService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -74,7 +74,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid);
+                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -132,7 +132,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (buildingid.Count == 0)
                     return NoContent();
 
-                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid);
+                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -165,7 +165,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocEmployeeDetailDTO> dto = await VocService.GetVocDetail(HttpContext, VocId);
+                ResponseUnit<VocEmployeeDetailDTO> dto = await VocService.GetVocDetail(HttpContext, VocId).ConfigureAwait(false);
 
                 if (dto is null)
                     return BadRequest();
@@ -205,7 +205,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (dto.Type is null)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(HttpContext, dto);
+                ResponseUnit<bool?> model = await VocService.UpdateVocTypeService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

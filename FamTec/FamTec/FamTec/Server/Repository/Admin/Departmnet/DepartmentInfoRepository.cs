@@ -29,15 +29,15 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         {
             try
             {
-                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true);
-                bool DepartmentCheck = await context.PlaceTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true);
+                bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true).ConfigureAwait(false);
+                bool DepartmentCheck = await context.PlaceTbs.AnyAsync(m => m.DepartmentTbId == departmentid && m.DelYn != true).ConfigureAwait(false);
 
                 return AdminCheck || DepartmentCheck;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -50,9 +50,9 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         {
             try
             {
-                await context.DepartmentsTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.DepartmentsTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
              
                 if (AddResult)
                     return model;
@@ -62,7 +62,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -78,12 +78,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             try
             {
                 context.DepartmentsTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -100,7 +100,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 List<DepartmentsTb>? model = await context.DepartmentsTbs
                     .Where(m => m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -110,7 +111,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -125,7 +126,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 List<DepartmentsTb>? model = await context.DepartmentsTbs
                     .Where(m => m.DelYn != true && m.ManagementYn == true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -135,7 +137,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -149,7 +151,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             try
             {
                 DepartmentsTb? model = await context.DepartmentsTbs
-                    .FirstOrDefaultAsync(m => m.Id.Equals(Id) && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id.Equals(Id) && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -159,7 +162,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -174,7 +177,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             try
             {
                 DepartmentsTb? model = await context.DepartmentsTbs
-                    .FirstOrDefaultAsync(m => m.Name.Equals(Name) && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Name.Equals(Name) && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -184,7 +188,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -200,7 +204,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 List<AdminTb>? model = await context.AdminTbs
                     .Where(m => departmentidx.Contains(Convert.ToInt32(m.DepartmentTbId)) && m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -210,7 +215,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -225,7 +230,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             try
             {
                 DepartmentsTb? model = await context.DepartmentsTbs
-                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id))
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -235,7 +241,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -251,12 +257,12 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                 model.Name = $"{model.Name}_{model.Id}"; 
                 context.DepartmentsTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -271,6 +277,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -278,7 +286,7 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -288,7 +296,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                         foreach (int dpId in idx)
                         {
                             DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
-                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true);
+                                .FirstOrDefaultAsync(m => m.Id == dpId && m.DelYn != true)
+                                .ConfigureAwait(false);
 
                             if (DepartmentTB is not null)
                             {
@@ -296,26 +305,26 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                                 DepartmentTB.Name = $"{DepartmentTB.Name}_{DepartmentTB.Id}";
                                 DepartmentTB.DelYn = true;
                                 DepartmentTB.DelUser = deleter;
-                                DepartmentTB.DelDt = DateTime.Now;
+                                DepartmentTB.DelDt = ThisDate;
 
                                 context.DepartmentsTbs.Update(DepartmentTB);
                             }
                             else // 잘못됨
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return false;
                             }
                         }
 
-                        bool DepartmentResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DepartmentResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DepartmentResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
                     }

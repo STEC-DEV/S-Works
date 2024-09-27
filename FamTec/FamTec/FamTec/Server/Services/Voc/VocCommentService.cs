@@ -70,6 +70,8 @@ namespace FamTec.Server.Services.Voc
                 string? Creater = Convert.ToString(context.Items["Name"]);
                 string? Useridx = Convert.ToString(context.Items["UserIdx"]);
 
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(placeId) || String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(Useridx))
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -96,9 +98,9 @@ namespace FamTec.Server.Services.Voc
                 CommentTb? comment = new CommentTb();
                 comment.Content = dto.Content!;
                 comment.Status = dto.Status!.Value;
-                comment.CreateDt = DateTime.Now;
+                comment.CreateDt = ThisDate;
                 comment.CreateUser = Creater;
-                comment.UpdateDt = DateTime.Now;
+                comment.UpdateDt = ThisDate;
                 comment.UpdateUser = Creater;
                 comment.VocTbId = dto.VocTbId!.Value;
                 comment.UserTbId = Convert.ToInt32(Useridx);
@@ -115,7 +117,7 @@ namespace FamTec.Server.Services.Voc
                     }
                 }
 
-                CommentTb? model = await VocCommentRepository.AddAsync(comment);
+                CommentTb? model = await VocCommentRepository.AddAsync(comment).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -123,12 +125,12 @@ namespace FamTec.Server.Services.Voc
                 {
                     for (int i = 0; i < files.Count; i++)
                     {
-                        await FileService.AddResizeImageFile(newFileName[i], VocCommentFileFolderPath, files[i]);
+                        await FileService.AddResizeImageFile(newFileName[i], VocCommentFileFolderPath, files[i]).ConfigureAwait(false);
                     }
                 }
 
                 // 등록했으면 원래꺼 상태변경
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId).ConfigureAwait(false);
                 if(VocTB is null)
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -139,16 +141,16 @@ namespace FamTec.Server.Services.Voc
                 }
 
                 VocTB.Status = dto.Status.Value;
-                VocTB.UpdateDt = DateTime.Now;
+                VocTB.UpdateDt = ThisDate;
                 VocTB.UpdateUser = Creater;
-                bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB);
+                bool VocUpdateResult = await VocInfoRepository.UpdateVocInfo(VocTB).ConfigureAwait(false);
 
                 if (VocUpdateResult)
                 {
                     // 만약 처리결과를 받는다고 했었으면.
                     if(VocTB.ReplyYn == true)
                     {
-                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId);
+                        PlaceTb? placeTB = await PlaceInfoRepository.GetBuildingPlace(VocTB.BuildingTbId).ConfigureAwait(false);
 
                         if (placeTB is null)
                             return new ResponseUnit<AddVocCommentDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -176,7 +178,7 @@ namespace FamTec.Server.Services.Voc
                         }
 
                         // 카카오 API 전송
-                        AddKakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel);
+                        AddKakaoLogDTO? LogDTO = await KakaoService.UpdateVocAnswer(VocTB.Code!, StatusResult, receiver, url, placetel).ConfigureAwait(false);
 
                         if(LogDTO is not null)
                         {
@@ -184,16 +186,16 @@ namespace FamTec.Server.Services.Voc
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = LogDTO.Code!;
                             LogTB.Message = LogDTO.Message!;
-                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = Creater;
-                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateDt = ThisDate;
                             LogTB.UpdateUser = Creater;
                             LogTB.VocTbId = VocTB.Id; // 민원ID
                             LogTB.PlaceTbId = placeTB.Id; // 사업장ID
                             LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
 
                             // 카카오API 로그 테이블에 쌓아야함
-                            KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB);
+                            KakaoLogTb? LogResult = await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                         }
                         else
                         {
@@ -201,16 +203,16 @@ namespace FamTec.Server.Services.Voc
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = "ERROR";
                             LogTB.Message = "ERROR";
-                            LogTB.CreateDt = DateTime.Now;
+                            LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = Creater;
-                            LogTB.UpdateDt = DateTime.Now;
+                            LogTB.UpdateDt = ThisDate;
                             LogTB.UpdateUser = Creater;
                             LogTB.VocTbId = VocTB.Id; // 민원ID
                             LogTB.PlaceTbId = placeTB.Id; // 사업장ID
                             LogTB.BuildingTbId = VocTB.BuildingTbId; // 건물ID
 
                             // 카카오API 로그 테이블에 쌓아야함
-                            await KakaoLogInfoRepository.AddAsync(LogTB);
+                            await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                         }
                     }
 
@@ -240,15 +242,15 @@ namespace FamTec.Server.Services.Voc
                 if (context is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(vocid);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(vocid).ConfigureAwait(false);
                 if (VocTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
-                List<CommentTb>? model = await VocCommentRepository.GetCommentList(vocid);
+                List<CommentTb>? model = await VocCommentRepository.GetCommentList(vocid).ConfigureAwait(false);
                 if(model is null || model.Count == 0)
                     return new ResponseList<VocCommentListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<VocCommentListDTO>(), code = 200 };
 
-                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId);
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(VocTB.BuildingTbId).ConfigureAwait(false);
                 if(BuildingTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -273,7 +275,7 @@ namespace FamTec.Server.Services.Voc
                     {
                         if(!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                         {
-                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
                             if (ImageBytes is not null)
                             {
                                 dtoModel.ImageName.Add(image);
@@ -321,11 +323,11 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeId))
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(commentid).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId);
+                VocTb? VocTB = await VocInfoRepository.GetVocInfoById(model.VocTbId).ConfigureAwait(false);
                 if (VocTB is null)
                     return new ResponseUnit<VocCommentDetailDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
@@ -343,7 +345,7 @@ namespace FamTec.Server.Services.Voc
                 {
                     if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image);
+                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
                         if (ImageBytes is not null)
                         {
                             dto.ImageName.Add(image);
@@ -388,17 +390,19 @@ namespace FamTec.Server.Services.Voc
                 string? creater = Convert.ToString(context.Items["Name"]);
                 string? Useridx = Convert.ToString(context.Items["UserIdx"]);
                 string? placeId = Convert.ToString(context.Items["PlaceIdx"]);
-                
+
+                DateTime ThisDate = DateTime.Now;
+
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(Useridx) || String.IsNullOrWhiteSpace(placeId))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 내가 쓴건지 확인
-                CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId!.Value);
+                CommentTb? model = await VocCommentRepository.GetCommentInfo(dto.VocCommentId!.Value).ConfigureAwait(false);
                 if(model!.UserTbId != Convert.ToInt32(Useridx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 model.Content = dto.Content!;
-                model.UpdateDt = DateTime.Now;
+                model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
 
 
@@ -522,7 +526,7 @@ namespace FamTec.Server.Services.Voc
                 for (int i = 0; i < deleteFileName.Count; i++) // 삭제할 파일 처리
                 {
                     // DB 실패했을경우 대비해서 해당파일을 미리 뽑아서 iFormFile로 변환해서 가지고있어야함.
-                    byte[]? temp = await FileService.GetImageFile(VocCommentFileFolderPath, deleteFileName[i]);
+                    byte[]? temp = await FileService.GetImageFile(VocCommentFileFolderPath, deleteFileName[i]).ConfigureAwait(false);
                     // - DB 실패했을경우 IFormFile을 바이트로 변환해서 DB의 해당명칭으로 다시저장해야함.
                     if (temp is not null)
                     {
@@ -543,7 +547,7 @@ namespace FamTec.Server.Services.Voc
                             if (string.IsNullOrEmpty(model.Image1) || file.FileName != model.Image1)
                             {
                                 // Image1이 없거나 기존 파일명과 다를 경우에만 파일 저장
-                                await FileService.AddResizeImageFile(model.Image1!, VocCommentFileFolderPath, file);
+                                await FileService.AddResizeImageFile(model.Image1!, VocCommentFileFolderPath, file).ConfigureAwait(false);
                             }
                         }
                         else if (i == 1 && files.Count > 1) // Image2 처리
@@ -551,7 +555,7 @@ namespace FamTec.Server.Services.Voc
                             if (string.IsNullOrEmpty(model.Image2) || file.FileName != model.Image2)
                             {
                                 // Image2가 없거나 기존 파일명과 다를 경우에만 파일 저장
-                                await FileService.AddResizeImageFile(model.Image2!, VocCommentFileFolderPath, file);
+                                await FileService.AddResizeImageFile(model.Image2!, VocCommentFileFolderPath, file).ConfigureAwait(false);
                             }
                         }
                         else if (i == 2 && files.Count > 2) // Image3 처리
@@ -559,14 +563,14 @@ namespace FamTec.Server.Services.Voc
                             if (string.IsNullOrEmpty(model.Image3) || file.FileName != model.Image3)
                             {
                                 // Image3이 없거나 기존 파일명과 다를 경우에만 파일 저장
-                                await FileService.AddResizeImageFile(model.Image3!, VocCommentFileFolderPath, file);
+                                await FileService.AddResizeImageFile(model.Image3!, VocCommentFileFolderPath, file).ConfigureAwait(false);
                             }
                         }
                     }
                 }
 
                 // 이후 데이터베이스 업데이트
-                bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model);
+                bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model).ConfigureAwait(false);
                 if (UpdateResult == true)
                 {
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
@@ -584,7 +588,7 @@ namespace FamTec.Server.Services.Voc
                                 if(FileService.IsFileExists(VocCommentFileFolderPath, AddTemplist[i].FileName) == false)
                                 {
                                     // 파일을 저장하는 로직 (AddResizeImageFile)
-                                    await FileService.AddResizeImageFile(AddTemplist[i].FileName, VocCommentFileFolderPath, AddTemplist[i]);
+                                    await FileService.AddResizeImageFile(AddTemplist[i].FileName, VocCommentFileFolderPath, AddTemplist[i]).ConfigureAwait(false);
                                 }
                             }
                             catch(Exception ex)

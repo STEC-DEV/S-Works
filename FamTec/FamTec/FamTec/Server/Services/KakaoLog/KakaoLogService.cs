@@ -39,11 +39,11 @@ namespace FamTec.Server.Services.KakaoLog
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid));
+                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if(BuildingList is null || !BuildingList.Any())
                     return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
-                List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogList(Convert.ToInt32(placeid));
+                List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (KakaoList is not null && KakaoList.Any())
                 {
                     List<KakaoLogListDTO>? dto = (from LogTB in KakaoList
@@ -89,7 +89,7 @@ namespace FamTec.Server.Services.KakaoLog
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int? count = await KakaoLogInfoRepository.GetKakaoLogCount(Int32.Parse(placeid));
+                int? count = await KakaoLogInfoRepository.GetKakaoLogCount(Int32.Parse(placeid)).ConfigureAwait(false);
                 return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = count, code = 200 };
             }
             catch(Exception ex)
@@ -117,11 +117,11 @@ namespace FamTec.Server.Services.KakaoLog
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<KakaoLogListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid));
+                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 if (BuildingList is null || !BuildingList.Any())
                     return new ResponseList<KakaoLogListDTO>() { message = "데이터 조회결과가 없습니다.", data = null, code = 200 };
 
-                List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogPageNationList(Convert.ToInt32(placeid), pagenumber, pagesize);
+                List<KakaoLogTb>? KakaoList = await KakaoLogInfoRepository.GetKakaoLogPageNationList(Convert.ToInt32(placeid), pagenumber, pagesize).ConfigureAwait(false);
                 if (KakaoList is not null && KakaoList.Any())
                 {
                     List<KakaoLogListDTO>? dto = (from LogTB in KakaoList

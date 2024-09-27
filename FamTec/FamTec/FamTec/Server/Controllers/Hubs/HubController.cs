@@ -90,7 +90,7 @@ namespace FamTec.Server.Controllers.Hubs
                     }
                 }
 
-                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files);
+                ResponseUnit<AddVocReturnDTO?> model = await HubService.AddVocService(dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -123,7 +123,7 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
-                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode);
+                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -154,7 +154,7 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
-                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode);
+                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -181,7 +181,7 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
-                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid);
+                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

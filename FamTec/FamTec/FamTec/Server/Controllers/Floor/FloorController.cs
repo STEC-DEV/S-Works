@@ -39,7 +39,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (dto.BuildingTBID is null)
                     return NoContent();
 
-                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(HttpContext, dto);
+                ResponseUnit<FloorDTO> model = await FloorService.AddFloorService(HttpContext, dto).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();
@@ -66,7 +66,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid);
+                ResponseList<FloorDTO> model = await FloorService.GetFloorListService(buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -98,7 +98,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto);
+                ResponseUnit<bool?> model = await FloorService.UpdateFloorService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -124,7 +124,7 @@ namespace FamTec.Server.Controllers.Floor
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(HttpContext, idx);
+                ResponseUnit<bool?> model = await FloorService.DeleteFloorService(HttpContext, idx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

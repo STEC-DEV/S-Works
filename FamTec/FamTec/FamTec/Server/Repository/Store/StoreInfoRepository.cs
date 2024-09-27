@@ -22,9 +22,9 @@ namespace FamTec.Server.Repository.Store
         {
             try
             {
-                await context.StoreTbs.AddAsync(model);
-                
-                bool AddResult =await context.SaveChangesAsync() > 0 ? true : false;
+                await context.StoreTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult =await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -34,7 +34,7 @@ namespace FamTec.Server.Repository.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -52,7 +52,8 @@ namespace FamTec.Server.Repository.Store
                     .Where(m => m.DelYn != true && 
                     m.PlaceTbId == placeid)
                     .OrderByDescending(m => m.InoutDate)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
 
                 List<InOutHistoryListDTO> model = (from Store in StoreList
@@ -84,7 +85,7 @@ namespace FamTec.Server.Repository.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -106,7 +107,8 @@ namespace FamTec.Server.Repository.Store
                     .Skip((pagenumber - 1) * pagesize)
                     .Take(pagesize)
                     .OrderByDescending(m => m.InoutDate)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
 
                 List<InOutHistoryListDTO> model = (from Store in StoreList
@@ -139,7 +141,7 @@ namespace FamTec.Server.Repository.Store
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -155,14 +157,15 @@ namespace FamTec.Server.Repository.Store
                 int count = await context.StoreTbs
                     .Where(m => m.PlaceTbId == placeid &&
                            m.DelYn != true)
-                    .CountAsync();
+                    .CountAsync()
+                    .ConfigureAwait(false);
 
                 return count;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

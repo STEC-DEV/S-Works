@@ -41,7 +41,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 if (useid is 0)
                     return NoContent();
 
-                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(HttpContext, useid);
+                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(HttpContext, useid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -89,7 +89,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 if (dto.MaterialID is 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto);
+                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

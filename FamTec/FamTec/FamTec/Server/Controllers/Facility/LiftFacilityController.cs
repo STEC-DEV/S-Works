@@ -68,7 +68,8 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<FacilityDTO>? model = await LiftFacilityService.AddLiftFacilityService(HttpContext, dto, files);
+                ResponseUnit<FacilityDTO>? model = await LiftFacilityService.AddLiftFacilityService(HttpContext, dto, files).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 
@@ -94,7 +95,8 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<FacilityListDTO>? model = await LiftFacilityService.GetLiftFacilityListService(HttpContext);
+                ResponseList<FacilityListDTO>? model = await LiftFacilityService.GetLiftFacilityListService(HttpContext).ConfigureAwait(false);
+
                 if (model is null)
                     return BadRequest();
 
@@ -120,7 +122,8 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await LiftFacilityService.GetLiftDetailFacilityService(HttpContext, facilityid);
+                ResponseUnit<FacilityDetailDTO> model = await LiftFacilityService.GetLiftDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
+
                 if (model is null)
                     return BadRequest();
 
@@ -181,7 +184,7 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
-                ResponseUnit<bool?> model = await LiftFacilityService.UpdateLiftFacilityService(HttpContext, dto, files);
+                ResponseUnit<bool?> model = await LiftFacilityService.UpdateLiftFacilityService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -214,7 +217,8 @@ namespace FamTec.Server.Controllers.Facility
                 if (delIdx.Count() == 0)
                     return NoContent();
 
-                ResponseUnit<bool?> model = await LiftFacilityService.DeleteLiftFacilityService(HttpContext, delIdx);
+                ResponseUnit<bool?> model = await LiftFacilityService.DeleteLiftFacilityService(HttpContext, delIdx).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

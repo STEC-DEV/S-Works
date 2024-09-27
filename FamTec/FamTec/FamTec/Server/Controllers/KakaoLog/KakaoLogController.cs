@@ -36,7 +36,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(HttpContext);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -68,7 +68,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService(HttpContext);
+                ResponseUnit<int?> model = await KakaoLogService.GetKakaoLogCountService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -104,7 +104,7 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (pagenum == 0)
                     return BadRequest(); // 잘못된 요청
 
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(HttpContext, pagenum, pagesize);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogPageNationListService(HttpContext, pagenum, pagesize).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

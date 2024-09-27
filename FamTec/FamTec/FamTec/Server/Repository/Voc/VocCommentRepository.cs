@@ -26,9 +26,9 @@ namespace FamTec.Server.Repository.Voc
         {
             try
             {
-                await context.CommentTbs.AddAsync(model);
+                await context.CommentTbs.AddAsync(model).ConfigureAwait(false);
              
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if(AddResult)
                     return model;
@@ -38,7 +38,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -50,7 +50,8 @@ namespace FamTec.Server.Repository.Voc
             {
                 List<CommentTb>? model = await context.CommentTbs
                     .Where(m => m.VocTbId == vocid && m.DelYn != true)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -61,7 +62,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -71,7 +72,8 @@ namespace FamTec.Server.Repository.Voc
             try
             {
                 CommentTb? model = await context.CommentTbs
-                    .FirstOrDefaultAsync(m => m.Id == commentid && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == commentid && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -81,7 +83,7 @@ namespace FamTec.Server.Repository.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -96,7 +98,7 @@ namespace FamTec.Server.Repository.Voc
             try
             {
                 context.CommentTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {

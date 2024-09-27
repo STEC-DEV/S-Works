@@ -48,7 +48,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if(dto.ManagerYN is null)
                     return NoContent();
 
-                ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto);
+                ResponseUnit<AddDepartmentDTO>? model = await DepartmentService.AddDepartmentService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -81,7 +81,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService();
+                ResponseList<DepartmentDTO>? model = await DepartmentService.GetAllDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest(model);
 
@@ -107,7 +107,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<DepartmentDTO>? model = await DepartmentService.ManageDepartmentService();
+                ResponseList<DepartmentDTO>? model = await DepartmentService.ManageDepartmentService().ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
                 if (model.code == 200)
@@ -139,7 +139,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx);
+                ResponseUnit<bool?> model = await DepartmentService.DeleteDepartmentService(HttpContext, departmentidx).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);
@@ -179,7 +179,7 @@ namespace FamTec.Server.Controllers.Admin.Department
                 if (dto.ManagerYN is null)
                     return NoContent();
 
-                ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto);
+                ResponseUnit<DepartmentDTO>? model = await DepartmentService.UpdateDepartmentService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

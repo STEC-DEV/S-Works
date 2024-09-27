@@ -51,7 +51,7 @@ namespace FamTec.Server.Services.Building
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<int?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                int? Count = await BuildingInfoRepository.TotalBuildingCount(Convert.ToInt32(placeid));
+                int? Count = await BuildingInfoRepository.TotalBuildingCount(Convert.ToInt32(placeid)).ConfigureAwait(false);
                 return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = Count, code = 200 };
             }
             catch (Exception ex)
@@ -81,9 +81,11 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<AddBuildingDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                DateTime ThisTime = DateTime.Now;
+
                 string NewFileName = files is not null ? FileService.SetNewFileName(UserIdx, files) : String.Empty;
 
-                bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
+                bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!).ConfigureAwait(false);
                 if (BuildingCodeCheck != true)
                     return new ResponseUnit<AddBuildingDTO>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
 
@@ -135,15 +137,15 @@ namespace FamTec.Server.Services.Building
                     WomenToiletNum = dto.WomenToiletNum, // 여자화장실 개소
                     FireRating = dto.FireRating, // 소방등급
                     SepticTankCapacity = dto.SeptictankCapacity,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = Creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = Creater,
                     PlaceTbId = Int32.Parse(placeidx),
                     Image = files is not null ? NewFileName : null
                 };
 
-                BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model);
+                BuildingTb? buildingtb = await BuildingInfoRepository.AddAsync(model).ConfigureAwait(false);
                 
                 if(buildingtb is not null)
                 {
@@ -234,7 +236,7 @@ namespace FamTec.Server.Services.Building
                 if(String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
+                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx)).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {
@@ -280,7 +282,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<BuildinglistDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingPageList(Int32.Parse(placeidx), skip, take);
+                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingPageList(Int32.Parse(placeidx), skip, take).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {
@@ -324,7 +326,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx));
+                List<BuildingTb>? model = await BuildingInfoRepository.GetAllBuildingList(Int32.Parse(placeidx)).ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                 {
@@ -364,7 +366,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId);
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(buildingId).ConfigureAwait(false);
                 if (model is null)
                     return new ResponseUnit<DetailBuildingDTO>() { message = "데이터가 존재하지 않습니다.", data = null, code = 404 };
 
@@ -478,8 +480,9 @@ namespace FamTec.Server.Services.Building
                 di = new DirectoryInfo(PlaceFileFolderPath);
                 if (!di.Exists) di.Create();
 
+                DateTime ThisTime = DateTime.Now;
 
-                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value);
+                BuildingTb? model = await BuildingInfoRepository.GetBuildingInfo(dto.ID!.Value).ConfigureAwait(false);
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
@@ -487,7 +490,7 @@ namespace FamTec.Server.Services.Building
                 {
                     if (dto.Code != model.BuildingCd)
                     {
-                        bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!);
+                        bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!).ConfigureAwait(false);
                         if (BuildingCodeCheck != true)
                             return new ResponseUnit<bool?>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
                         else
@@ -538,7 +541,7 @@ namespace FamTec.Server.Services.Building
                 model.WomenToiletNum = dto.WomenToiletNum; // 여자화장실 개소
                 model.FireRating = dto.FireRating; // 소방등급
                 model.SepticTankCapacity = dto.SeptictankCapacity; // 정화조용량
-                model.UpdateDt = DateTime.Now; // 수정일자
+                model.UpdateDt = ThisTime; // 수정일자
                 model.UpdateUser = creater; // 수정자
                 model.PlaceTbId = Convert.ToInt32(placeid);
                     
@@ -600,7 +603,7 @@ namespace FamTec.Server.Services.Building
                 }
 
                 // 이후 데이터베이스 업데이트
-                bool? updateBuilding = await BuildingInfoRepository.UpdateBuildingInfo(model);
+                bool? updateBuilding = await BuildingInfoRepository.UpdateBuildingInfo(model).ConfigureAwait(false);
                 if(updateBuilding == true)
                 {
                     // 성공했으면 그걸로 끝.
@@ -616,7 +619,7 @@ namespace FamTec.Server.Services.Building
                             if(FileService.IsFileExists(PlaceFileFolderPath, AddTemp.FileName) == false)
                             {
                                 // 파일을 저장하는 로직
-                                await FileService.AddResizeImageFile(AddTemp.FileName, PlaceFileFolderPath, files);
+                                await FileService.AddResizeImageFile(AddTemp.FileName, PlaceFileFolderPath, files).ConfigureAwait(false);
                             }
                         }
                         catch(Exception ex)
@@ -671,7 +674,7 @@ namespace FamTec.Server.Services.Building
                 // - 건물 삭제시 하위 추가내용들 전체삭제
                 foreach(int delIdx in buildingid)
                 {
-                    bool? DelCheck = await BuildingInfoRepository.DelBuildingCheck(delIdx);
+                    bool? DelCheck = await BuildingInfoRepository.DelBuildingCheck(delIdx).ConfigureAwait(false);
                     if (DelCheck == true)
                         return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
@@ -684,7 +687,7 @@ namespace FamTec.Server.Services.Building
                 //        return new ResponseUnit<bool?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 //}
 
-                bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater);
+                bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
@@ -715,7 +718,7 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(placeidx))
                     return new ResponseList<PlaceBuildingListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx));
+                List<BuildingTb>? buildinglist = await BuildingInfoRepository.GetAllBuildingList(Convert.ToInt32(placeidx)).ConfigureAwait(false);
                 if(buildinglist is not { Count: > 0})
                     return new ResponseList<PlaceBuildingListDTO>() { message = "조회결과가 없습니다.", data = new List<PlaceBuildingListDTO>(), code = 200 };
 
@@ -728,7 +731,7 @@ namespace FamTec.Server.Services.Building
                     buidlingDTO.Id = Building.Id; // 건물ID
                     buidlingDTO.Name = Building.Name; // 건물명
 
-                    List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id);
+                    List<FloorTb>? FloorList = await FloorInfoRepository.GetFloorList(Building.Id).ConfigureAwait(false);
                     if(FloorList is not null && FloorList.Any())
                     {
                         foreach(FloorTb Floor in FloorList)
@@ -761,7 +764,7 @@ namespace FamTec.Server.Services.Building
         {
             try
             {
-                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(buildingid);
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(buildingid).ConfigureAwait(false);
                 if (BuildingTB is not null)
                     return new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = BuildingTB.Name, code = 200 };
                 else

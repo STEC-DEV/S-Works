@@ -28,9 +28,9 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         {
             try
             {
-                await context.BuildingItemGroupTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.BuildingItemGroupTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 if (AddResult)
                     return model;
                 else
@@ -39,7 +39,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -56,7 +56,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                     .Where(m => m.BuildingTbId == buildingid && 
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return model;
@@ -67,7 +68,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -82,7 +83,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 BuildingItemGroupTb? model = await context.BuildingItemGroupTbs
                     .FirstOrDefaultAsync(m => m.Id == groupid && 
-                                              m.DelYn != true);
+                                              m.DelYn != true)
+                    .ConfigureAwait(false); ;
 
                 if (model is not null)
                     return model;
@@ -92,7 +94,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -106,12 +108,12 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             try
             {
                 context.BuildingItemGroupTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -125,12 +127,12 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             try
             {
                 context.BuildingItemGroupTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -145,6 +147,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -152,7 +156,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                 // 강제로 디버깅 포인트 잡음.
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -160,12 +164,13 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(30));
 
                         BuildingItemGroupTb? GroupTB = await context.BuildingItemGroupTbs
-                            .FirstOrDefaultAsync(m => m.Id == groupid);
+                            .FirstOrDefaultAsync(m => m.Id == groupid)
+                            .ConfigureAwait(false);
 
                         if (GroupTB is null)
                             return (bool?)null;
 
-                        GroupTB.DelDt = DateTime.Now;
+                        GroupTB.DelDt = ThisDate;
                         GroupTB.DelUser = deleter;
                         GroupTB.DelYn = true;
 
@@ -173,24 +178,29 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
 
                         List<BuildingItemKeyTb>? KeyTB = await context.BuildingItemKeyTbs
                             .Where(m => m.BuildingGroupTbId == groupid)
-                            .ToListAsync();
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         if (KeyTB is [_, ..])
                         {
                             foreach (BuildingItemKeyTb KeyModel in KeyTB)
                             {
-                                KeyModel.DelDt = DateTime.Now;
+                                KeyModel.DelDt = ThisDate;
                                 KeyModel.DelUser = deleter;
                                 KeyModel.DelYn = true;
 
                                 context.BuildingItemKeyTbs.Update(KeyModel);
 
-                                List<BuildingItemValueTb>? ValueTB = await context.BuildingItemValueTbs.Where(m => m.BuildingKeyTbId == KeyModel.Id).ToListAsync();
+                                List<BuildingItemValueTb>? ValueTB = await context.BuildingItemValueTbs
+                                .Where(m => m.BuildingKeyTbId == KeyModel.Id)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
+
                                 if (ValueTB is [_, ..])
                                 {
                                     foreach (BuildingItemValueTb ValueModel in ValueTB)
                                     {
-                                        ValueModel.DelDt = DateTime.Now;
+                                        ValueModel.DelDt = ThisDate;
                                         ValueModel.DelUser = deleter;
                                         ValueModel.DelYn = true;
 
@@ -200,15 +210,15 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
 
@@ -216,7 +226,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -234,7 +244,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                 List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs
                     .Where(e => GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (grouptb is [_, ..])
                     return grouptb;
@@ -244,7 +255,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -260,7 +271,8 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                 List<BuildingItemGroupTb>? grouptb = await context.BuildingItemGroupTbs
                     .Where(e => !GroupId.Contains(e.Id) && e.Id == buildingid && e.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (grouptb is [_, ..])
                     return grouptb;
@@ -270,7 +282,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 

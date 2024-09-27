@@ -45,17 +45,19 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
 
+                DateTime ThisTime = DateTime.Now;
+
                 BuildingItemGroupTb GroupTB = new BuildingItemGroupTb()
                 {
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 그룹이름 */
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = creater,
                     BuildingTbId = dto.BuildingIdx!.Value // 빌딩인덱스
                 };
 
-                BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB);
+                BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB).ConfigureAwait(false);
                 if(AddGroupTable is null)
                     return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
                 
@@ -67,14 +69,14 @@ namespace FamTec.Server.Services.Building.Group
                         {
                             Name = !String.IsNullOrWhiteSpace(KeyDTO.Name) ? KeyDTO.Name.Trim() : KeyDTO.Name!, /* 키 명칭 */
                             Unit = !String.IsNullOrWhiteSpace(KeyDTO.Unit) ? KeyDTO.Unit.Trim() : KeyDTO.Unit!, /* 키 단위 */
-                            CreateDt = DateTime.Now,
+                            CreateDt = ThisTime,
                             CreateUser = creater,
-                            UpdateDt = DateTime.Now,
+                            UpdateDt = ThisTime,
                             UpdateUser = creater,
                             BuildingGroupTbId = AddGroupTable.Id
                         };
 
-                        BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB);
+                        BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB).ConfigureAwait(false);
                         if(AddKeyTable is null)
                             return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
 
@@ -86,14 +88,14 @@ namespace FamTec.Server.Services.Building.Group
                                 BuildingItemValueTb ValueTB = new BuildingItemValueTb()
                                 {
                                     ItemValue = !String.IsNullOrWhiteSpace(ValueDTO.Values) ? ValueDTO.Values.Trim() : ValueDTO.Values!,
-                                    CreateDt = DateTime.Now,
+                                    CreateDt = ThisTime,
                                     CreateUser = creater,
-                                    UpdateDt = DateTime.Now,
+                                    UpdateDt = ThisTime,
                                     UpdateUser = creater,
                                     BuildingKeyTbId = AddKeyTable.Id
                                 };
 
-                                BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB);
+                                BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB).ConfigureAwait(false);
                                 
                                 if (AddValueTable is null)
                                     return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
@@ -128,17 +130,19 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddGroupInfoDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                DateTime ThisTime = DateTime.Now;
+
                 BuildingItemGroupTb GroupTb = new BuildingItemGroupTb()
                 {
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!,
-                    CreateDt = DateTime.Now,
+                    CreateDt = ThisTime,
                     CreateUser = creater,
-                    UpdateDt = DateTime.Now,
+                    UpdateDt = ThisTime,
                     UpdateUser = creater,
                     BuildingTbId = dto.BuildingIdx!.Value
                 };
 
-                BuildingItemGroupTb? AddResult = await BuildingGroupItemInfoRepository.AddAsync(GroupTb);
+                BuildingItemGroupTb? AddResult = await BuildingGroupItemInfoRepository.AddAsync(GroupTb).ConfigureAwait(false);
                 if (AddResult is not null)
                     return new ResponseUnit<AddGroupInfoDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
@@ -169,7 +173,7 @@ namespace FamTec.Server.Services.Building.Group
                 List<GroupListDTO?> groupList = new List<GroupListDTO?>(); // 그룹 [1]
 
                 // Fetch all groups for the specified building ID
-                List<BuildingItemGroupTb>? groupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId);
+                List<BuildingItemGroupTb>? groupListTB = await BuildingGroupItemInfoRepository.GetAllGroupList(buildingId).ConfigureAwait(false);
 
                 if (groupListTB is not null && groupListTB.Any())
                 {
@@ -178,7 +182,7 @@ namespace FamTec.Server.Services.Building.Group
                         List<GroupKeyListDTO?> groupKeyList = new List<GroupKeyListDTO?>(); // 키 [2]
 
                         // Fetch all keys for each group
-                        List<BuildingItemKeyTb>? groupKeyTB = await BuildingItemKeyInfoRepository.GetAllKeyList(group.Id);
+                        List<BuildingItemKeyTb>? groupKeyTB = await BuildingItemKeyInfoRepository.GetAllKeyList(group.Id).ConfigureAwait(false);
                         if (groupKeyTB is not null && groupKeyTB.Any())
                         {
                             foreach (BuildingItemKeyTb key in groupKeyTB)
@@ -186,7 +190,7 @@ namespace FamTec.Server.Services.Building.Group
                                 List<GroupValueListDTO> groupValueList = new List<GroupValueListDTO>(); // 값 [3]
 
                                 // Fetch all values for each key
-                                List<BuildingItemValueTb>? groupValueTB = await BuildingItemValueInfoRepository.GetAllValueList(key.Id);
+                                List<BuildingItemValueTb>? groupValueTB = await BuildingItemValueInfoRepository.GetAllValueList(key.Id).ConfigureAwait(false);
                                 if (groupValueTB is not null && groupValueTB.Any())
                                 {
                                     groupValueList = groupValueTB.Select(value => new GroupValueListDTO
@@ -245,15 +249,17 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId!.Value);
-                if(GroupTb is null)
+                DateTime ThisTime = DateTime.Now;
+
+                BuildingItemGroupTb? GroupTb = await BuildingGroupItemInfoRepository.GetGroupInfo(dto.GroupId!.Value).ConfigureAwait(false);
+                if (GroupTb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 GroupTb.Name = !String.IsNullOrWhiteSpace(dto.GroupName) ? dto.GroupName.Trim() : dto.GroupName!;
-                GroupTb.UpdateDt = DateTime.Now;
+                GroupTb.UpdateDt = ThisTime;
                 GroupTb.UpdateUser = creater;
 
-                bool? UpdateGroupResult = await BuildingGroupItemInfoRepository.UpdateGroupInfo(GroupTb);
+                bool? UpdateGroupResult = await BuildingGroupItemInfoRepository.UpdateGroupInfo(GroupTb).ConfigureAwait(false);
                 return UpdateGroupResult switch
                 {
                     true => new ResponseUnit<bool?>() { message = "수정이 완료되었습니다.", data = true, code = 200 },
@@ -286,7 +292,7 @@ namespace FamTec.Server.Services.Building.Group
                 if (String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                bool? DeleteResult = await BuildingGroupItemInfoRepository.DeleteGroupInfo(groupid, creater);
+                bool? DeleteResult = await BuildingGroupItemInfoRepository.DeleteGroupInfo(groupid, creater).ConfigureAwait(false);
 
                 return DeleteResult switch
                 {

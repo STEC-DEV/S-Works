@@ -28,9 +28,9 @@ namespace FamTec.Server.Repository.BlackList
         {
             try
             {
-                await context.BlacklistTbs.AddAsync(model);
-                
-                bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                await context.BlacklistTbs.AddAsync(model).ConfigureAwait(false);
+
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;
@@ -40,7 +40,7 @@ namespace FamTec.Server.Repository.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -55,9 +55,10 @@ namespace FamTec.Server.Repository.BlackList
                 List<BlacklistTb>? model = await context.BlacklistTbs
                     .Where(m => m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-                if(model is not null && model.Any())
+                if (model is not null && model.Any())
                     return model;
                 else
                     return null;
@@ -65,7 +66,7 @@ namespace FamTec.Server.Repository.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -85,7 +86,8 @@ namespace FamTec.Server.Repository.BlackList
                     .OrderBy(m => m.CreateDt)
                     .Skip((pagenumber - 1) * pagesize)
                     .Take(pagesize)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (model is not null && model.Any())
                     return model;
@@ -95,7 +97,7 @@ namespace FamTec.Server.Repository.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -109,14 +111,15 @@ namespace FamTec.Server.Repository.BlackList
             {
                 int count = await context.BlacklistTbs
                     .Where(m => m.DelYn != true)
-                    .CountAsync();
+                    .CountAsync()
+                    .ConfigureAwait(false);
 
                 return count;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -130,8 +133,9 @@ namespace FamTec.Server.Repository.BlackList
             try
             {
                 BlacklistTb? model = await context.BlacklistTbs
-                    .FirstOrDefaultAsync(m => m.Phone == PhoneNumber && m.DelYn != true);
-                
+                    .FirstOrDefaultAsync(m => m.Phone == PhoneNumber && m.DelYn != true)
+                    .ConfigureAwait(false);
+
                 if (model is not null)
                     return model;
                 else
@@ -140,7 +144,7 @@ namespace FamTec.Server.Repository.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -154,7 +158,8 @@ namespace FamTec.Server.Repository.BlackList
             try
             {
                 BlacklistTb? model = await context.BlacklistTbs
-                    .FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true);
+                    .FirstOrDefaultAsync(m => m.Id == id && m.DelYn != true)
+                    .ConfigureAwait(false);
 
                 if (model is not null)
                     return model;
@@ -165,7 +170,7 @@ namespace FamTec.Server.Repository.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
@@ -179,13 +184,15 @@ namespace FamTec.Server.Repository.BlackList
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            DateTime ThisDate = DateTime.Now;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
                 {
                     try
                     {
@@ -195,14 +202,15 @@ namespace FamTec.Server.Repository.BlackList
                         foreach (int BlackListID in delIdx)
                         {
                             BlacklistTb? BlackListTB = await context.BlacklistTbs
-                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID);
+                                .FirstOrDefaultAsync(m => m.DelYn != true && m.Id == BlackListID)
+                                .ConfigureAwait(false);
 
                             if (BlackListTB is not null)
                             {
                                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
                                 BlackListTB.Phone = $"{BlackListTB.Phone}_{BlackListTB.Id}";
                                 BlackListTB.DelYn = true;
-                                BlackListTB.DelDt = DateTime.Now;
+                                BlackListTB.DelDt = ThisDate;
                                 BlackListTB.DelUser = deleter;
 
                                 context.BlacklistTbs.Update(BlackListTB);
@@ -214,15 +222,15 @@ namespace FamTec.Server.Repository.BlackList
                             }
                         }
 
-                        bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        bool DeleteResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (DeleteResult)
                         {
-                            await transaction.CommitAsync();
+                            await transaction.CommitAsync().ConfigureAwait(false);
                             return true;
                         }
                         else
                         {
-                            await transaction.RollbackAsync();
+                            await transaction.RollbackAsync().ConfigureAwait(false);
                             return false;
                         }
 
@@ -230,7 +238,7 @@ namespace FamTec.Server.Repository.BlackList
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
@@ -246,12 +254,12 @@ namespace FamTec.Server.Repository.BlackList
             try
             {
                 context.BlacklistTbs.Update(model);
-                return await context.SaveChangesAsync() > 0 ? true : false;
+                return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
 
