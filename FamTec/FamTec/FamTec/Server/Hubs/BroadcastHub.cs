@@ -36,15 +36,18 @@ namespace FamTec.Server.Hubs
             await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Remove Success");
         }
 
-        // 이건 안쓸듯.
-        /*
-        public async Task SendMessageAsync(string message, string roomName)
-        {
-            await Clients.Group("35_BeautyRoom").SendAsync("ReceiveVoc", $"{message}");
-        }
-        */
 
-      
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            string connectionId = Context.ConnectionId;
+            string userId = Context.UserIdentifier ?? "UnknownUser";
+
+            // 필요한 경우 연결 끊김에 대한 추가 로직을 처리
+            // 예: 다른 클라이언트에게 알림 보내기, 데이터베이스 상태 업데이트 등
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
 
 
     }

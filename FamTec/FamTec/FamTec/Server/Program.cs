@@ -301,7 +301,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalAndSpecificIP", policy =>
     {
-        policy.WithOrigins("http://localhost", "http://123.2.156.148", "http://123.2.156.229")
+        policy.WithOrigins("http://localhost:5245", "http://123.2.156.148:5245", "http://123.2.156.229:5245")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // 필요시 Credentials 허용
