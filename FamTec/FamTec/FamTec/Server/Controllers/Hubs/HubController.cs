@@ -70,11 +70,11 @@ namespace FamTec.Server.Controllers.Hubs
                 {
                     foreach(IFormFile file in files)
                     {
-                        // VOC 이미지는 2MB 제한
-                        if(file.Length > Common.MEGABYTE_2)
-                        {
-                            return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        }
+                        //// VOC 이미지는 2MB 제한
+                        //if(file.Length > Common.MEGABYTE_2)
+                        //{
+                        //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                        //}
 
                         string? extension = Path.GetExtension(file.FileName);
                         if(String.IsNullOrWhiteSpace(extension))

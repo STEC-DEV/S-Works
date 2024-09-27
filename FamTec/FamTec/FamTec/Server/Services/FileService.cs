@@ -63,6 +63,7 @@ namespace FamTec.Server.Services
                     await files.CopyToAsync(memoryStream);
                     memoryStream.Position = 0;
 
+
                     using (var originalBitmap = SKBitmap.Decode(memoryStream))
                     {
                         using (var resizedBitmap = originalBitmap.Resize(new SKImageInfo(300,300), SKFilterQuality.High))

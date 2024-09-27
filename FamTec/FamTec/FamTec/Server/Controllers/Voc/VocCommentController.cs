@@ -56,10 +56,10 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach(IFormFile file in files)
                     {
-                        if (file.Length > Common.MEGABYTE_2)
-                        {
-                            return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        }
+                        //if (file.Length > Common.MEGABYTE_2)
+                        //{
+                        //    return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                        //}
 
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
@@ -196,10 +196,10 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach (IFormFile file in files)
                     {
-                        if (file.Length > Common.MEGABYTE_2)
-                        {
-                            return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        }
+                        //if (file.Length > Common.MEGABYTE_2)
+                        //{
+                        //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
+                        //}
 
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))

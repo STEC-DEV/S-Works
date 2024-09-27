@@ -71,10 +71,10 @@ namespace FamTec.Server.Controllers.Admin
 
                 if (files is not null)
                 {
-                    if(files.Length > Common.MEGABYTE_1)
-                    {
-                        return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    }
+                    //if(files.Length > Common.MEGABYTE_1)
+                    //{
+                    //    return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    //}
 
                     string? extension = FileService.GetExtension(files);
                     if(String.IsNullOrWhiteSpace(extension))
@@ -234,10 +234,10 @@ namespace FamTec.Server.Controllers.Admin
 
                 if (files is not null)
                 {
-                    if (files.Length > Common.MEGABYTE_1)
-                    {
-                        return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    }
+                    //if (files.Length > Common.MEGABYTE_1)
+                    //{
+                    //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
+                    //}
 
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
