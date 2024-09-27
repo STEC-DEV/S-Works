@@ -32,7 +32,7 @@ namespace FamTec.Server.Controllers.Hubs
         /// <param name="files"></param>
         /// <returns></returns>
         //[HttpGet]
-        [HttpPut]
+        [HttpPost]
         [Route("AddVoc")]
         //public async Task<IActionResult> AddVoc()
         public async Task<IActionResult> AddVoc([FromForm] AddVocDTO dto, [FromForm] List<IFormFile>? files)

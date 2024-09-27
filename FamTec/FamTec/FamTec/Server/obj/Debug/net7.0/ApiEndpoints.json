@@ -2848,7 +2848,7 @@
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "AddVoc",
     "RelativePath": "api/Hub/AddVoc",
-    "HttpMethod": "PUT",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
