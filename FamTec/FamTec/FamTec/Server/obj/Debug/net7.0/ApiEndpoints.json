@@ -464,14 +464,14 @@
     "ContainingType": "FamTec.Server.Controllers.Alarm.AlarmController",
     "Method": "AlarmDelete",
     "RelativePath": "api/Alarm/sign/AlarmDelete",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "delId",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

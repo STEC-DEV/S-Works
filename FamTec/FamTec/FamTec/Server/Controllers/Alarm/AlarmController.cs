@@ -124,9 +124,9 @@ namespace FamTec.Server.Controllers.Alarm
         /// <param name="delId"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPut]
         [Route("sign/AlarmDelete")]
-        public async ValueTask<IActionResult> AlarmDelete([FromQuery]int delId)
+        public async ValueTask<IActionResult> AlarmDelete([FromBody]int delId)
         {
             try
             {
