@@ -14,7 +14,7 @@
     height:100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
-    box-shadow : var(--default-bs);
+    box-shadow : var(--shadow-1);
 }
 
 

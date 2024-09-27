@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Middleware
 @using FamTec.Client.Shared.Components
 @using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Alarm
+@using FamTec.Shared.Server.DTO
 @using Microsoft.AspNetCore.SignalR.Client
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject SessionService SessionService
@@ -20,22 +22,23 @@
             <!-- 알림 -->
             @if(!LoginMode)
             {
-                <li class="nav-tab-item alarm scale" @onclick="OnActiveTimeLine">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 448 512">
+                <li class="nav-tab-item alarm " @onclick="OnActiveTimeLine">
+                    <svg class="scale" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 448 512">
                         <path fill="white"
-                              d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
+                        d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
                     </svg>
+                    @if (AlarmData.Count != 0)
+                    {
+                        <div class="count">
+                            @alarmCount
+                        </div>
+                    }
+                    @if (_timelineActive)
+                    {
+                        <TimeLine AlarmData="@AlarmData" OnLoad="@OnLoadAlarmData" />
+                    }
                 </li>
                 
-                    <div class="count">
-                        @alarmCount
-                    </div>
-                
-                
-                @if (_timelineActive)
-                {
-                    <TimeLine/>
-                }
             }
             @if (UserType != null)
             {
@@ -71,6 +74,10 @@
 @code {
     [Parameter] public string? UserName { get; set; }
     [Parameter] public string? UserType  { get; set; }
+
+
+    List<AlarmDTO> AlarmData = new List<AlarmDTO>();
+
     private int MessageCount { get; set; }
     // private string? _userType;
     // private string? _userName;
@@ -81,7 +88,7 @@
     private string PalceName = "";
 
 
-    private int alarmCount = 0;
+    private string alarmCount = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,18 +97,26 @@
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
 
-        // HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
-        //   {
-        //       Console.WriteLine(message);
-        //       alarmCount = alarmCount + 1;
-        //       Console.WriteLine("알람수" + alarmCount);
-        //       StateHasChanged();
-        //   });
-
-
-        // await Socket();
+        await OnLoadAlarmData();
+        await OnConnectionSocket();
+        await Socket();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Socket(); // 첫 렌더링 후에도 Socket 메서드 호출
+        }
+    }
+
+    // public void Dispose()
+    // {
+    //     if (HubObject.hubConnection != null)
+    //     {
+    //         _ = HubObject.hubConnection.DisposeAsync();
+    //     }
+    // }
 
     private async Task OnLoginMode()
     {
@@ -109,30 +124,7 @@
         StateHasChanged();
     }
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         #region SIGNAL R 메시지 받는곳
-    //         HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
-    //         {
-    //             Console.WriteLine(message);
-    //             alarmCount = alarmCount + 1;
-    //             Console.WriteLine("알람수" + alarmCount);
-    //             StateHasChanged();
-    //         });
 
-            
-    //     }
-    //     #endregion
-
-    //     // 다시재연결 필요하면 이거 쓰면될듯
-
-    //     // HubObject.hubConnection!.Closed += async (exception) =>
-    //     // {
-    //     //     await HubObject.hubConnection.StartAsync(); // 다시재연결
-    //     // };
-    // }
 
 
     private async Task OnLogOut()
@@ -170,35 +162,73 @@
     /// <summary>
     /// SignalR 연결여부
     /// </summary>
-    // public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+    // 
 
-    public void Dispose()
+    // public void Dispose()
+    // {
+    //     _ = hubConnection.DisposeAsync();
+    // }
+
+    private async Task Socket()
     {
-        _ = hubConnection.DisposeAsync();
+        bool IsConnected = HubObject.hubConnection.State == HubConnectionState.Connected;
+
+        // HubConnection이 null이 아닌지 확인
+        if (IsConnected)
+        {
+            Console.WriteLine("정상 연결 상태");
+            // 메시지 수신 처리
+            HubObject.hubConnection.On<string>("ReceiveVoc", async (message) =>
+            {
+                Console.WriteLine(message);
+                await OnLoadAlarmData();
+                StateHasChanged(); // 상태 변경 알림
+            });
+            HubObject.hubConnection.On<string>("ReceiveMessage", async (message) =>
+            {
+                Console.WriteLine(message);
+                await OnLoadAlarmData();
+                StateHasChanged(); // 상태 변경 알림
+            });
+        }
+
+
     }
 
-    // private async Task Socket()
-    // {
-    //     // //소켓 연결
-    //     // await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{PLACEIDX}_BEAUTYRoom");
+    //알람 조회
+    private async Task OnLoadAlarmData()
+    {
+        try
+        {
+            ResponseList<AlarmDTO> resGet = await apiManager.GetListAsync<AlarmDTO>("Alarm/sign/GetAlarmList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if(resGet.data == null)
+            {
+                AlarmData = new List<AlarmDTO>();
+                alarmCount = AlarmData.Count.ToString();
+            }
+            else
+            {
+                AlarmData = resGet.data;
+                if (AlarmData.Count > 99)
+                {
+                    alarmCount = "99+";
+                    return;
+                }
+                alarmCount = AlarmData.Count.ToString() ;
+            }
+            
 
-
-    //     // //리시버
-    //     // // hubConnection = new HubConnectionBuilder()
-    //     // //     .WithUrl(Navigation.ToAbsoluteUri("/VoctHub"))
-    //     // //     .Build();
-
-
-
-    //     HubObject.hubConnection!.On<string>("ReceiveVoc", (message) =>
-    //       {
-    //           Console.WriteLine(message);
-    //           alarmCount = alarmCount + 1;
-    //           Console.WriteLine("알람수" + alarmCount);
-    //           StateHasChanged();
-    //       });
-
-    // }
+            StateHasChanged();
+        }catch(Exception ex)
+        {
+            JS.InvokeVoidAsync("alert", "알람 조회 에러");
+        }
+    }
 
     private void OnSelectPlace()
     {
@@ -208,5 +238,59 @@
     private void OnActiveTimeLine()
     {
         _timelineActive = !_timelineActive;
+    }
+
+
+    //소켓 연결
+    private async Task OnConnectionSocket()
+    {
+        //알람 권한
+        bool isAlarm = await (_authStateProvider as CustomAuthProvider).GetAlarmYN();
+        if (!isAlarm)
+        {
+            Console.WriteLine("알람 권한없음");
+            return;
+        }
+
+
+        //사용자 voc권한
+        int vocPerm = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Voc");
+
+        if (vocPerm < 1)
+        {
+            Console.WriteLine("voc권한 없음");
+            return;
+        }
+
+        int placeIdx = await (_authStateProvider as CustomAuthProvider).GetPlaceIdx();
+
+
+        //소켓 방 명칭
+        List<string> RoomName = new List<string>()
+        {
+            "_MCRoom","_ELECRoom","_LFTRoom","_FRRoom","_CSTRoom","_NTRoom","_BEAUTYRoom","_SECURoom","_ETCRoom"
+        };
+
+
+        List<bool> VocPerms = new List<bool>();
+        VocPerms = await (_authStateProvider as CustomAuthProvider).GetAllUserPerm();
+
+        // VocPerms가 null인 경우 처리
+        if (VocPerms == null || VocPerms.Count == 0)
+        {
+            Console.WriteLine("사용자 권한 정보가 없습니다.");
+            return; // 더 이상 진행하지 않음
+        }
+
+        foreach (var perm in VocPerms.Select((value, idx) => (value, idx)))
+        {
+            if (perm.value)
+            {
+                Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
+                await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{placeIdx}{RoomName[perm.idx]}");
+
+            }
+        }
+
     }
 }

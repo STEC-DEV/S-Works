@@ -1,6 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Voc
-<div class="vochistory-container">
+<div class="vochistory-container yappear">
     <div class="vochistory-wrap">
         <div class="vochistory-title">
             <span class="title">
@@ -16,11 +16,12 @@
             }
             
             <div class="option-page">
-                <Viewer OnChanged="OnChangeViewNum" />
+                
                 @if(totalPage > 1)
                 {
                     <Pagenation TotalPage="@totalPage" CurrentPage="@currentPage" OnChanged="OnMovePage" />
                 }
+                <Viewer OnChanged="OnChangeViewNum" />
             </div>
             
         </div>

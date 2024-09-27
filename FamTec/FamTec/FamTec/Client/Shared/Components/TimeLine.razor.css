@@ -1,26 +1,27 @@
 ﻿
-.timeline{
-    position : absolute;
-    top : 110%;
-    right : 1%;
-    display : flex;
-    flex-direction:column;
+.timeline {
+    position: absolute;
+    top: 200%;
+    right: -280px;
+    display: flex;
+    flex-direction: column;
     /*gap:var(--default-pd);*/
 
-    border : var(--comp-bd);
-    border-radius : var(--default-rd);
-
-    padding : var(--default-pd) 0;
-
-    background-color : var(--default-color);
-    width : 15%;
-    height : 300px;
-    box-shadow : var(--shadow-1);
-    overflow : hidden;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    padding: var(--default-pd) 0;
+    background-color: var(--default-color);
+    width: 300px; /* Changed from 2000% to a more reasonable fixed width */
+    max-height: 400px;
+    height: 300px;
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+    z-index : 90;
 }
 
 .header {
     padding: 0 var(--default-pd);
+    border-bottom: 1px solid var(--mainr-color);
 }
 
 .content {
@@ -31,6 +32,7 @@
     padding: var(--half-pd) var(--default-pd);
     margin: var(--default-pd) 0;
     overflow: auto;
+    height : 100%;
 }
 
 .btn{

@@ -4,7 +4,7 @@
     @if (CurrentPage != 1)
     {
         <label class="move" @onclick="()=>OnMove(-1)">
-            이전
+            &lt
         </label>
     }
     <ul class="page-wrap">
@@ -19,7 +19,7 @@
     @if (CurrentPage !=TotalPage )
     {
         <label class="move" @onclick="()=>OnMove(-2)">
-            다음
+            &gt
         </label>
     }
     

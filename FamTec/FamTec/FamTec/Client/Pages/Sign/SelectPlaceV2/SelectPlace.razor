@@ -109,7 +109,6 @@
         }
         await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
         await (_authStateProvider as CustomAuthProvider).NotifyAuthState();
-        await OnConnectionSocket();
 
         SelectPlaceId = 0;
         Navigation.NavigateTo("/basic/buildings");
@@ -135,55 +134,5 @@
         }
     }
 
-    private async Task OnConnectionSocket()
-    {
-        //알람 권한
-        bool isAlarm = await (_authStateProvider as CustomAuthProvider).GetAlarmYN();
-        if (!isAlarm)
-        {
-            Console.WriteLine("알람 권한없음");
-            return;
-        }
-
-
-        //사용자 voc권한
-        int vocPerm = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Voc");
-
-        if (vocPerm < 1)
-        {
-            Console.WriteLine("voc권한 없음");
-            return;
-        }
-
-        int placeIdx = await (_authStateProvider as CustomAuthProvider).GetPlaceIdx();
-
-
-        //소켓 방 명칭
-        List<string> RoomName = new List<string>()
-        {
-            "_MachineRoom","_ElectricityRoom","_LiftRoom","_FireRoom","_ConstructRoom","_NetworkRoom","_BeautyRoom","_SecurityRoom","_DefaultRoom"
-        };
-
-
-        List<bool> VocPerms = new List<bool>();
-        VocPerms = await (_authStateProvider as CustomAuthProvider).GetAllUserPerm();
-
-        // VocPerms가 null인 경우 처리
-        if (VocPerms == null || VocPerms.Count == 0)
-        {
-            Console.WriteLine("사용자 권한 정보가 없습니다.");
-            return; // 더 이상 진행하지 않음
-        }
-
-        foreach (var perm in VocPerms.Select((value, idx) => (value, idx)))
-        {
-            if (perm.value)
-            {
-                Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
-                await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{placeIdx}{RoomName[perm.idx]}");
-                
-            }
-        }
-
-    }
+    
 }

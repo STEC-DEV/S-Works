@@ -20,14 +20,16 @@
 
 .label{
     font-size : var(--normal-size);
-    color : #000000E0;
-    font-weight:500;
+    font-weight : var(--bold-wt);
+    /*color : #000000E0;*/
+    color : var(--main-color);
+    
 }
 
 .context{
-    font-size : var(--normal-size);
-    color : #000000E0;
-    font-weight:400;
+    font-size : 0.7rem;
+    color : #2b2828;
+    font-weight:bold;
 }
 
 .read{

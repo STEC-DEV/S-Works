@@ -113,10 +113,12 @@
             if(response.code == 201)
             {
                 // Navigation.NavigateTo($"/select/{token}");
-                Navigation.NavigateTo($"/select");
+                
                 await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
                 await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
-                // await (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+                
+                Navigation.NavigateTo($"/select");
+                await (_authStateProvider as CustomAuthProvider).NotifyAuthState();
                 return;
             }
 
