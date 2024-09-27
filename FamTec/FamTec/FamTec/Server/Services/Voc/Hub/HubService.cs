@@ -1,9 +1,11 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using FamTec.Server.Hubs;
+using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
+using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -22,6 +24,8 @@ namespace FamTec.Server.Services.Voc.Hub
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
+        private readonly IUserInfoRepository UserInfoRepository;
+        private readonly IAlarmInfoRepository AlarmInfoRepository;
 
         IHubContext<BroadcastHub> HubContext;
         private readonly IKakaoService KakaoService;
@@ -38,8 +42,10 @@ namespace FamTec.Server.Services.Voc.Hub
             IPlaceInfoRepository _placeinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IBlackListInfoRepository _blacklistinforepository,
+            IUserInfoRepository _userinforepository,
             IHubContext<BroadcastHub> _hubcontext,
             IKakaoLogInfoRepository _kakaologinforepository,
+            IAlarmInfoRepository _alarminforepository,
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice)
@@ -49,6 +55,8 @@ namespace FamTec.Server.Services.Voc.Hub
             this.PlaceInfoRepository = _placeinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.BlackListInfoRepository = _blacklistinforepository;
+            this.UserInfoRepository = _userinforepository;
+            this.AlarmInfoRepository = _alarminforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.KakaoService = _kakaoservice;
             this.HubContext = _hubcontext;
@@ -220,7 +228,13 @@ namespace FamTec.Server.Services.Voc.Hub
                             await KakaoLogInfoRepository.AddAsync(LogTB);
                         }
                     }
-                    
+
+                    List<UsersTb>? UserList = await UserInfoRepository.GetVocDefaultList(dto.Placeid!.Value);
+                    if(UserList is [_, ..])
+                    {
+                        await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id);
+                    }
+                   
                     // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                     await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다");

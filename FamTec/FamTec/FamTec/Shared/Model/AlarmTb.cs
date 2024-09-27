@@ -19,6 +19,12 @@ public partial class AlarmTb
     [Column("ID", TypeName = "int(11)")]
     public int Id { get; set; }
 
+    /// <summary>
+    /// 0: 접수 / 1: 변경 / ....
+    /// </summary>
+    [Column("TYPE", TypeName = "int(11)")]
+    public int Type { get; set; }
+
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime CreateDt { get; set; }
 

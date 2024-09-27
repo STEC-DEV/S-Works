@@ -13,6 +13,16 @@ namespace FamTec.Server.Repository.Alarm
         ValueTask<AlarmTb?> AddAsync(AlarmTb model);
 
         /// <summary>
+        /// 알람 추가 리스트
+        /// </summary>
+        /// <param name="userlist"></param>
+        /// <param name="Creater"></param>
+        /// <param name="AlarmType"></param>
+        /// <param name="VocTBId"></param>
+        /// <returns></returns>
+        ValueTask<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId);
+
+        /// <summary>
         /// 사용자의 안읽은 알람 전체조회
         /// </summary>
         /// <param name="userid"></param>

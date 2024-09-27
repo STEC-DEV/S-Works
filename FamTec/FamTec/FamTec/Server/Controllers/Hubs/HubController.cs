@@ -31,12 +31,25 @@ namespace FamTec.Server.Controllers.Hubs
         /// <param name="obj"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        [HttpPost]
+        //[HttpGet]
+        [HttpPut]
         [Route("AddVoc")]
+        //public async Task<IActionResult> AddVoc()
         public async Task<IActionResult> AddVoc([FromForm] AddVocDTO dto, [FromForm] List<IFormFile>? files)
         {
             try 
             {
+                //List<IFormFile>? files = null;
+                //AddVocDTO dto = new AddVocDTO()
+                //{
+                //    Buildingid = 1,
+                //    Title = "민원등록제목",
+                //    Contents = "민원등록내용",
+                //    Name = "테스트사용자",
+                //    Placeid = 3,
+                //    PhoneNumber = "01091189308"
+                //};
+
                 if (String.IsNullOrWhiteSpace(dto.Title)) // 민원 제목 NULL CHECK
                     return NoContent();
 

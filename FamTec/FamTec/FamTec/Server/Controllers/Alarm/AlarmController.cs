@@ -4,8 +4,6 @@ using FamTec.Server.Services.Alarm;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Alarm;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Alarm
@@ -64,10 +62,12 @@ namespace FamTec.Server.Controllers.Alarm
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAlarmDateList")]
-        public async ValueTask<IActionResult> GetAlarmDateList(DateTime StartDate)
+        public async ValueTask<IActionResult> GetAlarmDateList()
         {
             try
             {
+                DateTime StartDate = DateTime.Now;
+
                 if (HttpContext is null)
                     return BadRequest();
 

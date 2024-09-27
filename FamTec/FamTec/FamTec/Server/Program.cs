@@ -295,30 +295,43 @@ builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 
 
 #if DEBUG
+
 // 개발용
-builder.Services.AddCors(opts =>
+builder.Services.AddCors(options =>
 {
-    opts.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowLocalAndSpecificIP", policy =>
     {
-        //policy.AllowAnyOrigin()
-        policy.WithOrigins(
-            "http://localhost:5245",
-            "https://localhost:5246",
-            "http://127.0.0.1:5245",
-            "https://127.0.0.1:5246",
-            "http://123.2.156.28:5247",
-            "https://123.2.156.28:5248",
-            "http://123.2.156.148:5245", 
-            "https://123.2.156.148:5246",
-            "http://123.2.156.229:5245",
-            "http://125.131.105.172:5245",
-            "https://125.131.105.172:5246",
-            "https://123.2.156.229:5246")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials(); // With Origins만 사용가능
+        policy.WithOrigins("http://localhost", "http://123.2.156.148", "http://123.2.156.229")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // 필요시 Credentials 허용
     });
 });
+
+
+//builder.Services.AddCors(opts =>
+//{
+//    opts.AddDefaultPolicy(policy =>
+//    {
+//        policy.WithOrigins(
+//            "http://localhost:5245",
+//            "https://localhost:5246",
+//            "http://127.0.0.1:5245",
+//            "https://127.0.0.1:5246",
+//            "http://123.2.156.28:5247",
+//            "https://123.2.156.28:5248",
+//            "http://123.2.156.148:5245", 
+//            "https://123.2.156.148:5246",
+//            "http://123.2.156.229:5245",
+//            "http://125.131.105.172:5245",
+//            "https://125.131.105.172:5246",
+//            "https://123.2.156.229:5246")
+//        .AllowAnyMethod()
+//        .AllowAnyHeader()
+//        .AllowCredentials(); // With Origins만 사용가능
+//    });
+//});
+
 #else
 // 배포용
 var MyAllowSpectificOrigins = "MyPolicy";
@@ -431,15 +444,20 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 
-app.UseRouting();
-
 #region CORS 사용
+/*
 #if DEBUG
 app.UseCors();
 #else
 app.UseCors(MyAllowSpectificOrigins);
 #endif
+*/
+app.UseCors("AllowLocalAndSpecificIP");
 #endregion
+
+app.UseRouting();
+
+
 
 #region MiddleWare
 

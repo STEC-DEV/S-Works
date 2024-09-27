@@ -30,20 +30,84 @@ namespace FamTec.Server.Repository.Alarm
             try
             {
                 await context.AlarmTbs.AddAsync(model);
-                
+
                 bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                
+
                 if (AddResult)
                     return model;
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }
+
+        /// <summary>
+        /// 알람추가 리스트
+        /// </summary>
+        /// <param name="userlist"></param>
+        /// <param name="Creater"></param>
+        /// <param name="AlarmType"></param>
+        /// <param name="VocTBId"></param>
+        /// <returns></returns>
+        public async ValueTask<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅 포인트 잡음.
+                Debugger.Break();
+#endif
+                using (var transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        foreach (UsersTb UserTB in userlist)
+                        {
+                            AlarmTb AlarmTB = new AlarmTb
+                            {
+                                Type = AlarmType,
+                                UsersTbId = UserTB.Id,
+                                VocTbId = VocTBId,
+                                CreateDt = DateTime.Now,
+                                CreateUser = Creater,
+                                UpdateDt = DateTime.Now,
+                                UpdateUser = Creater
+                            };
+
+                            await context.AlarmTbs.AddAsync(AlarmTB);
+                        }
+
+                        bool Result = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (Result)
+                        {
+                            await transaction.CommitAsync();
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync();
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        LogService.LogMessage(ex.ToString());
+                        return false;
+                    }
+                }
+            });
+
+        }
+
 
         /// <summary>
         /// 사용자의 안읽은 알람 전체조회
@@ -63,20 +127,23 @@ namespace FamTec.Server.Repository.Alarm
                     return null;
 
                 List<AlarmDTO?> dto = (from Alarm in AlarmTB
-                                        join VocTB in context.VocTbs.Where(m => m.DelYn != true)
-                                        on Alarm.VocTbId equals VocTB.Id
-                                        select new AlarmDTO
-                                        {
-                                            AlarmID = Alarm.Id,
-                                            VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
-                                        }).ToList();
+                                       join VocTB in context.VocTbs.Where(m => m.DelYn != true)
+                                       on Alarm.VocTbId equals VocTB.Id
+                                       select new AlarmDTO
+                                       {
+                                           AlarmID = Alarm.Id,
+                                           Type = Alarm.Type,
+                                           VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title,
+                                           UserID = Alarm.UsersTbId,
+                                           VocID = Alarm.VocTbId
+                                       }).ToList();
 
                 if (dto is [_, ..])
                     return dto;
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
@@ -94,8 +161,8 @@ namespace FamTec.Server.Repository.Alarm
             try
             {
                 List<AlarmTb>? AlarmTB = await context.AlarmTbs
-                   .Where(m => m.DelYn != true && 
-                               m.UsersTbId == userid && 
+                   .Where(m => m.DelYn != true &&
+                               m.UsersTbId == userid &&
                                m.CreateDt >= StartDate.AddDays(-14))
                    .OrderBy(m => m.CreateDt)
                    .ToListAsync();
@@ -104,20 +171,23 @@ namespace FamTec.Server.Repository.Alarm
                     return null;
 
                 List<AlarmDTO> dto = (from Alarm in AlarmTB
-                                       join VocTB in context.VocTbs.Where(m => m.DelYn != true)
-                                       on Alarm.VocTbId equals VocTB.Id
-                                       select new AlarmDTO
-                                       {
-                                           AlarmID = Alarm.Id,
-                                           VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title
-                                       }).ToList();
+                                      join VocTB in context.VocTbs.Where(m => m.DelYn != true)
+                                      on Alarm.VocTbId equals VocTB.Id
+                                      select new AlarmDTO
+                                      {
+                                          AlarmID = Alarm.Id,
+                                          Type = Alarm.Type,
+                                          VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title,
+                                          UserID = Alarm.UsersTbId,
+                                          VocID = Alarm.VocTbId
+                                      }).ToList();
 
                 if (dto is [_, ..])
                     return dto;
                 else
                     return null;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
@@ -198,7 +268,7 @@ namespace FamTec.Server.Repository.Alarm
             {
                 AlarmTb? AlarmTB = await context.AlarmTbs
                     .FirstOrDefaultAsync(m => m.Id == alarmId && m.DelYn != true);
-                
+
                 if (AlarmTB is null)
                     return null;
 
@@ -207,21 +277,22 @@ namespace FamTec.Server.Repository.Alarm
                 AlarmTB.DelUser = deleter;
 
                 context.AlarmTbs.Update(AlarmTB);
-                
+
                 bool DeleteResult = await context.SaveChangesAsync() > 0 ? true : false;
-                
+
                 if (DeleteResult)
                     return true;
                 else
                     return false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
                 throw new ArgumentNullException();
             }
         }
+    
 
-        
+   
     }
 }
