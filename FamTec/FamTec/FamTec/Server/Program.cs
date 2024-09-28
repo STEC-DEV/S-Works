@@ -77,6 +77,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.StaticFiles;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -117,6 +118,7 @@ builder.WebHost.UseKestrel((context, options) =>
 //builder.Services.AddHttpClient();
 
 // Add services to the container. - Repository
+
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
 builder.Services.AddTransient<IBuildingGroupItemInfoRepository, BuildingGroupItemInfoRepository>();
@@ -190,6 +192,8 @@ builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 
 
+builder.Services.AddMemoryCache(); // 메모리캐쉬
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -203,7 +207,7 @@ builder.Services.AddRateLimiter(options =>
         config.PermitLimit = 300; // 30초 동안 최대 300개의 요청 허용
         config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
         config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        config.QueueLimit = 5; // 제한시 10개의 요청만 대기열에 추가
+        config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
     });
     // 전역 기본 정책 설정
     options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
@@ -385,7 +389,7 @@ var app = builder.Build();
 
 
 #region 속도제한 사용
-app.UseRateLimiter();
+//app.UseRateLimiter();
 #endregion
 
 
@@ -455,7 +459,6 @@ app.UseCors(MyAllowSpectificOrigins);
 app.UseCors("AllowLocalAndSpecificIP");
 #endregion
 
-app.UseRouting();
 
 
 
@@ -508,6 +511,7 @@ foreach (var path in adminPaths)
 {
     app.UseWhen(context => context.Request.Path.StartsWithSegments(path), appBuilder =>
     {
+        appBuilder.UseMiddleware<DuplicateRequestMiddleware>();
         appBuilder.UseMiddleware<AdminMiddleware>();
     });
 }
@@ -516,11 +520,17 @@ foreach (var path in userPaths)
 {
     app.UseWhen(context => context.Request.Path.StartsWithSegments(path), appBuilder =>
     {
+        appBuilder.UseMiddleware<DuplicateRequestMiddleware>();
         appBuilder.UseMiddleware<UserMiddleware>();
     });
+
+  
 }
 
 #endregion
+
+app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

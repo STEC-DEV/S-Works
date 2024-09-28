@@ -3,6 +3,70 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\middleware\\duplicaterequestmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\middleware\\duplicaterequestmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\voc\\hub\\hubservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\hub\\hubservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\customcomparer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\customcomparer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\blacklist\\blacklistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\blacklist\\blacklistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\alarm\\alarmservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\alarm\\alarmservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\admin\\department\\departmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\admin\\department\\departmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\voc\\vocinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\voc\\vocinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\user\\userinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\user\\userinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\place\\placeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\place\\placeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\adminplaces\\adminplaceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminplaces\\adminplaceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\departmnet\\departmentinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\departmnet\\departmentinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\usemaintenence\\usemaintenencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\usemaintenence\\usemaintenencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\facility\\group\\facilitygroupkeycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\facility\\group\\facilitygroupkeycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\building\\subitem\\itemvalue\\ibuildingitemvalueinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\building\\subitem\\itemvalue\\ibuildingitemvalueinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -31,14 +95,6 @@
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\alarm\\ialarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\departmnet\\departmentinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\departmnet\\departmentinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\adminuser\\iadminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminuser\\iadminuserinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -51,20 +107,8 @@
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminplaces\\iadminplacesinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\admin\\adminplaces\\adminplaceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\admin\\adminplaces\\adminplaceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\voc\\vocinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\voc\\vocinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\voc\\voccommentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\voc\\voccommentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\user\\userinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\user\\userinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\usemaintenence\\usemaintenenceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -81,10 +125,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\room\\roominforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\room\\roominforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\place\\placeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\place\\placeinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\meter\\contract\\contractinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -167,45 +207,251 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Program.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
+              "RelativeToolTip": "FamTec\\Server\\Program.cs",
+              "ViewState": "AgIAAMwAAAAAAAAAAAD4vwoCAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T07:15:22.379Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "VocService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\VocService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Voc\\VocService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\VocService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\VocService.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:05:25.022Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HubService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:05:12.443Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DuplicateRequestMiddleware.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Middleware\\DuplicateRequestMiddleware.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Middleware\\DuplicateRequestMiddleware.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Middleware\\DuplicateRequestMiddleware.cs",
+              "RelativeToolTip": "FamTec\\Server\\Middleware\\DuplicateRequestMiddleware.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAuwBAAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T07:25:51.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CustomComparer.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\CustomComparer.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\CustomComparer.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\CustomComparer.cs",
+              "RelativeToolTip": "FamTec\\Server\\CustomComparer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:05:08.877Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BlackListService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\BlackList\\BlackListService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\BlackList\\BlackListService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\BlackList\\BlackListService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\BlackList\\BlackListService.cs",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T03:53:02.47Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AlarmService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T03:52:50.741Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DepartmentService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T03:52:40.121Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UseMaintenenceController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "ViewState": "AgIAAGUAAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T03:49:31.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FacilityGroupKeyController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Facility\\Group\\FacilityGroupKeyController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Facility\\Group\\FacilityGroupKeyController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Facility\\Group\\FacilityGroupKeyController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\Facility\\Group\\FacilityGroupKeyController.cs",
+              "ViewState": "AgIAALEAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T03:49:23.611Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "DepartmentInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD4AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:19:32.865Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AlarmInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
+              "ViewState": "AgIAAAoBAAAAAAAAAAAcwHMBAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:19:57.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AdminPlaceInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
+              "ViewState": "AgIAAIgCAAAAAAAAAAAvwLoCAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:15:52.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PlaceInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:27:04.789Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UserInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJgDAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:28:47.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "VocInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
+              "ViewState": "AgIAAEoBAAAAJHrPJDoewCABAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T15:29:18.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "IBuildingItemValueInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\IBuildingItemValueInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\IBuildingItemValueInfoRepository.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\IBuildingItemValueInfoRepository.cs",
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\IBuildingItemValueInfoRepository.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-27T16:08:55.621Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IDepartmentInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
-              "ViewState": "AgIAAE0AAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:50.981Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PlaceController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
+              "DocumentIndex": 22,
+              "Title": "IAlarmInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:47.068Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:00:50.766Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 21,
+              "Title": "StackChart.razor",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\StackChart.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\StackChart.razor",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\StackChart.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\StackChart.razor",
+              "ViewState": "AgIAAJYAAAAAAAAAAADgv6wAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-27T16:07:59.136Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "DepartmentController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\Department\\DepartmentController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Admin\\Department\\DepartmentController.cs",
@@ -218,33 +464,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "StackChart.razor",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\StackChart.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\StackChart.razor",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\StackChart.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\StackChart.razor",
-              "ViewState": "AgIAAJYAAAAAAAAAAADgv6wAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-09-27T16:07:59.136Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IAlarmInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
+              "DocumentIndex": 19,
+              "Title": "PlaceController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:00:50.766Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:08:47.068Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 18,
+              "Title": "IDepartmentInfoRepository.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
+              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-27T16:08:50.981Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
               "Title": "IAdminPlacesInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\IAdminPlacesInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\IAdminPlacesInfoRepository.cs",
@@ -256,7 +500,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 27,
               "Title": "UseMaintenenceInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
@@ -264,11 +508,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "ViewState": "AgIAAO0CAAAAAAAAAAAUwOkCAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:28:12.697Z"
+              "WhenOpened": "2024-09-27T15:28:12.697Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 17,
               "Title": "BuildingItemValueInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\BuildingItemValueInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\BuildingItemValueInfoRepository.cs",
@@ -276,12 +521,11 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\BuildingItemValueInfoRepository.cs",
               "ViewState": "AgIAAMUAAAAAAAAAAAAIwNkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:44.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:21:44.319Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 23,
               "Title": "IAdminUserInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\IAdminUserInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminUser\\IAdminUserInfoRepository.cs",
@@ -293,19 +537,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "UserInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
-              "ViewState": "AgIAAGIDAAAAAAAAAADgv5gDAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:28:47.532Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 24,
               "Title": "AdminUserInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
@@ -313,23 +545,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
               "ViewState": "AgIAABAAAAAAAAAAAADgvyEAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:18:51.547Z"
+              "WhenOpened": "2024-09-27T15:18:51.547Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AlarmInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
-              "ViewState": "AgIAAGABAAAAAAAAAAAgwHMBAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:19:57.693Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 28,
               "Title": "UnitInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Unit\\UnitInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Unit\\UnitInfoRepository.cs",
@@ -341,19 +562,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "DepartmentInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
-              "ViewState": "AgIAAJkBAAAAAAAAAAAUwJcBAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:19:32.865Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 29,
               "Title": "StoreInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
@@ -365,7 +574,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 30,
               "Title": "RoomInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Room\\RoomInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Room\\RoomInfoRepository.cs",
@@ -373,11 +582,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Room\\RoomInfoRepository.cs",
               "ViewState": "AgIAAKIBAAAAAAAAAAAIwKEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:25.268Z"
+              "WhenOpened": "2024-09-27T15:27:25.268Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 26,
               "Title": "VocCommentRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\VocCommentRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Voc\\VocCommentRepository.cs",
@@ -389,43 +599,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "AdminPlaceInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
-              "ViewState": "AgIAAKYCAAAAAAAAAADgv7oCAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:15:52.1Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "PlaceInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
-              "ViewState": "AgIAAFoBAAAAAAAAAAAYwGIBAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:04.789Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "VocInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
-              "ViewState": "AgIAAAcBAAAAAAAAAAAAwCABAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:29:18.133Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 31,
               "Title": "ContractInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Meter\\Contract\\ContractInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Meter\\Contract\\ContractInfoRepository.cs",
@@ -437,7 +611,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 32,
               "Title": "MaterialInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
@@ -449,7 +623,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 33,
               "Title": "MaintanceRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
@@ -457,11 +631,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
               "ViewState": "AgIAAK4HAAAAAAAAAAAIwKUHAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:25:10.286Z"
+              "WhenOpened": "2024-09-27T15:25:10.286Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 34,
               "Title": "KakaoLogInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
@@ -473,7 +648,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 35,
               "Title": "InventoryInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
@@ -481,11 +656,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
               "ViewState": "AgIAAGIEAAAAAAAAAAAowGUEAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:24:05.383Z"
+              "WhenOpened": "2024-09-27T15:24:05.383Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 36,
               "Title": "IInventoryInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
@@ -497,7 +673,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 37,
               "Title": "FloorInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Floor\\FloorInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Floor\\FloorInfoRepository.cs",
@@ -505,11 +681,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Floor\\FloorInfoRepository.cs",
               "ViewState": "AgIAAE0BAAAAAAAAAAAQwFEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:23:36.068Z"
+              "WhenOpened": "2024-09-27T15:23:36.068Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 38,
               "Title": "FacilityInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Facility\\FacilityInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Facility\\FacilityInfoRepository.cs",
@@ -517,11 +694,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Facility\\FacilityInfoRepository.cs",
               "ViewState": "AgIAAOgCAAAAAAAAAAAUwOQCAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:23:04.738Z"
+              "WhenOpened": "2024-09-27T15:23:04.738Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 39,
               "Title": "FacilityItemValueInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Facility\\ItemValue\\FacilityItemValueInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Facility\\ItemValue\\FacilityItemValueInfoRepository.cs",
@@ -533,7 +711,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 40,
               "Title": "FacilityItemKeyInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Facility\\ItemKey\\FacilityItemKeyInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Facility\\ItemKey\\FacilityItemKeyInfoRepository.cs",
@@ -545,7 +723,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 41,
               "Title": "FacilityGroupItemInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Facility\\Group\\FacilityGroupItemInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Facility\\Group\\FacilityGroupItemInfoRepository.cs",
@@ -557,7 +735,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 42,
               "Title": "BuildingInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
@@ -565,11 +743,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
               "ViewState": "AgIAAC0CAAAAAAAAAAAgwDMCAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:49.59Z"
+              "WhenOpened": "2024-09-27T15:21:49.59Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 43,
               "Title": "BuildingItemKeyInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\SubItem\\ItemKey\\BuildingItemKeyInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemKey\\BuildingItemKeyInfoRepository.cs",
@@ -577,11 +756,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemKey\\BuildingItemKeyInfoRepository.cs",
               "ViewState": "AgIAAPsBAAAAAAAAAAAIwPcBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:15.911Z"
+              "WhenOpened": "2024-09-27T15:21:15.911Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 44,
               "Title": "BuildingGroupItemInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\SubItem\\Group\\BuildingGroupItemInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\SubItem\\Group\\BuildingGroupItemInfoRepository.cs",
@@ -593,7 +773,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 45,
               "Title": "BlackListInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\BlackList\\BlackListInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\BlackList\\BlackListInfoRepository.cs",
@@ -605,7 +785,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 46,
               "Title": "EnergyInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Meter\\Energy\\EnergyInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Meter\\Energy\\EnergyInfoRepository.cs",
@@ -613,11 +793,12 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Meter\\Energy\\EnergyInfoRepository.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAjwCwAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:33:21.827Z"
+              "WhenOpened": "2024-09-27T15:33:21.827Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 47,
               "Title": "IVocInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Voc\\IVocInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Voc\\IVocInfoRepository.cs",
