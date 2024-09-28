@@ -199,43 +199,43 @@ builder.Services.AddRazorPages();
 
 #region 속도제한 LIMIT 
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
-    {
-        config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
-        config.PermitLimit = 300; // 30초 동안 최대 300개의 요청 허용
-        config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
-        config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
-    });
-    // 전역 기본 정책 설정
-    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
-});
+//builder.Services.AddRateLimiter(options =>
+//{
+//    options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
+//    {
+//        config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
+//        config.PermitLimit = 300; // 30초 동안 최대 300개의 요청 허용
+//        config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
+//        config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+//        config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
+//    });
+//    // 전역 기본 정책 설정
+//    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
+//});
 
-builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
-{
-    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
+//builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
+//{
+//    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
 
-    return PartitionedRateLimiter.Create<HttpContext, string>(context =>
-    {
-        // HttpContext에서 partition key로 사용할 값 설정
-        var partitionKey = context.Request.Path.ToString();
-        // Sliding Window Rate Limiter 생성 및 반환
-        return RateLimitPartition.GetSlidingWindowLimiter(
-            partitionKey,
-            _ => new SlidingWindowRateLimiterOptions
-            {
-                Window = TimeSpan.FromSeconds(30), // 윈도우 크기
-                PermitLimit = 300,                  // 허용되는 요청 수
-                SegmentsPerWindow = 6,            // 세그먼트 수
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                QueueLimit = 10                  // 대기열 제한
-            });
-    });
-});
+//    return PartitionedRateLimiter.Create<HttpContext, string>(context =>
+//    {
+//        // HttpContext에서 partition key로 사용할 값 설정
+//        var partitionKey = context.Request.Path.ToString();
+//        // Sliding Window Rate Limiter 생성 및 반환
+//        return RateLimitPartition.GetSlidingWindowLimiter(
+//            partitionKey,
+//            _ => new SlidingWindowRateLimiterOptions
+//            {
+//                Window = TimeSpan.FromSeconds(30), // 윈도우 크기
+//                PermitLimit = 300,                  // 허용되는 요청 수
+//                SegmentsPerWindow = 6,            // 세그먼트 수
+//                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+//                QueueLimit = 10                  // 대기열 제한
+//            });
+//    });
+//});
 
-builder.Services.AddScoped<SlidingWindowPolicyFilter>();
+//builder.Services.AddScoped<SlidingWindowPolicyFilter>();
 
 
 #endregion

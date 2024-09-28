@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class UseMaintenenceController : ControllerBase
     {
         private IUseMaintenenceService UseMaintenenceService;

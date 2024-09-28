@@ -12,7 +12,7 @@ namespace FamTec.Server.Controllers.Maintenance
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MaintenanceController : ControllerBase
     {
         private IMaintanceService MaintanceService;

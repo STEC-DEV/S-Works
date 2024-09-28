@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Admin.Department
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class DepartmentController : ControllerBase
     {
         private IDepartmentService DepartmentService;

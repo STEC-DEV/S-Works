@@ -13,7 +13,7 @@ namespace FamTec.Server.Controllers.Login
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class LoginController : ControllerBase
     {
         private IAdminAccountService AdminAccountService;

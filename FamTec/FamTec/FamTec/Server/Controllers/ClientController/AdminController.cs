@@ -12,7 +12,7 @@ namespace FamTec.Server.Controllers.ClientController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminController : ControllerBase
     {
         private readonly WorksContext _workContext;

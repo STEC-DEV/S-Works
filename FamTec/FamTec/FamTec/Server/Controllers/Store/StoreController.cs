@@ -13,7 +13,7 @@ namespace FamTec.Server.Controllers.Store
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class StoreController : ControllerBase
     {
         private IInVentoryService InStoreService;

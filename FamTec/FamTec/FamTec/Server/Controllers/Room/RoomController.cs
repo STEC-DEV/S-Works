@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Room
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class RoomController : ControllerBase
     {
         private IRoomService RoomService;

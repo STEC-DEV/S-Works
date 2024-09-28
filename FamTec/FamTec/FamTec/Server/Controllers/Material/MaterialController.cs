@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Material
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MaterialController : ControllerBase
     {
         private IMaterialService MaterialService;

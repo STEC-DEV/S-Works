@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Alarm
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AlarmController : ControllerBase
     {
         private readonly IAlarmService AlarmService;

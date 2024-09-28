@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Unit
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class UnitController : ControllerBase
     {
         private IUnitService UnitService;

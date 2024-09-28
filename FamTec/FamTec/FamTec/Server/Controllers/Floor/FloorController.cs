@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Floor
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class FloorController : ControllerBase
     {
         private IFloorService FloorService;

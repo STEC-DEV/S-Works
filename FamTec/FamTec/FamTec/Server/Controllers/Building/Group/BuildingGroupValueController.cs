@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.Building.Group
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class BuildingGroupValueController : ControllerBase
     {
         private IBuildingValueService BuildingValueService;

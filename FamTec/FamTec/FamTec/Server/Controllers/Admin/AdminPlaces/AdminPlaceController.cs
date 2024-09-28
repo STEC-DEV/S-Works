@@ -13,7 +13,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminPlaceController : ControllerBase
     {
         private IAdminPlaceService AdminPlaceService;

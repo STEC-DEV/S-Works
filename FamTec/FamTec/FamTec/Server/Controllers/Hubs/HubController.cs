@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.Hubs
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class HubController : ControllerBase
     {
         private IHubService HubService;

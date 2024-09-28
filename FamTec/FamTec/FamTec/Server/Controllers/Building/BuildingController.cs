@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Building
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class BuildingController : ControllerBase
     {
         private IBuildingService BuildingService;

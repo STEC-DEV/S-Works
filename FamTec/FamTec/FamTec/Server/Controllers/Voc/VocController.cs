@@ -13,7 +13,7 @@ namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocController : ControllerBase
     {
         private readonly IVocService VocService;

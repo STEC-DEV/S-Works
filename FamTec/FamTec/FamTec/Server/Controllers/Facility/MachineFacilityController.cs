@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MachineFacilityController : ControllerBase
     {
         private IMachineFacilityService MachineFacilityService;

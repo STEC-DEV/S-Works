@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.KakaoLog
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class KakaoLogController : ControllerBase
     {
         private IKakaoLogService KakaoLogService;

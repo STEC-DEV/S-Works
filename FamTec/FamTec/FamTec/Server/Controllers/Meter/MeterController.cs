@@ -11,7 +11,7 @@ namespace FamTec.Server.Controllers.Meter
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MeterController : ControllerBase
     {
         private IMeterService MeterService;

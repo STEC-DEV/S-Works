@@ -12,7 +12,7 @@ namespace FamTec.Server.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminUserController : ControllerBase
     {
         private IAdminAccountService AdminAccountService;

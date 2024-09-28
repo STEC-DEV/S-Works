@@ -12,7 +12,7 @@ namespace FamTec.Server.Controllers.User
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class UserController : ControllerBase
     {
         private IUserService UserService;

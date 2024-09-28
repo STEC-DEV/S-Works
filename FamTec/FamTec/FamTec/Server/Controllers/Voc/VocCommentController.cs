@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocCommentController : ControllerBase
     {
         private IVocCommentService VocCommentService;
@@ -132,7 +132,7 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+        //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
         [Route("sign/VocCommentDetail")]
         public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {

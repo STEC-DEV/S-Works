@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.Facility.Group
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class FacilityGroupValueController : ControllerBase
     {
         private IFacilityValueService FacilityValueService;

@@ -10,7 +10,7 @@ namespace FamTec.Server.Controllers.BlackList
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class BlackListController : ControllerBase
     {
         private IBlackListService BlackListService;

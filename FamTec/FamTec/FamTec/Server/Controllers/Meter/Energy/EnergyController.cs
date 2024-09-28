@@ -12,7 +12,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
+    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class EnergyController : ControllerBase
     {
         private IEnergyService EnergyService;
