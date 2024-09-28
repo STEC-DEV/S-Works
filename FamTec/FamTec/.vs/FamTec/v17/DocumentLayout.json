@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\clientcontroller\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\clientcontroller\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -29,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\building\\buildingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\building\\buildingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\middleware\\duplicaterequestmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -226,11 +226,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "AdminController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\ClientController\\AdminController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\ClientController\\AdminController.cs",
@@ -243,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "BuildingController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Building\\BuildingController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Building\\BuildingController.cs",
@@ -251,12 +251,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Building\\BuildingController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T17:32:36.893Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T17:32:36.893Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "BlackListController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\BlackList\\BlackListController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\BlackList\\BlackListController.cs",
@@ -264,12 +263,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\BlackList\\BlackListController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T17:32:30.42Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T17:32:30.42Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "AlarmController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
@@ -277,12 +275,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T17:32:27.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T17:32:27.045Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "AdminUserController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
@@ -290,12 +287,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Admin\\AdminUserController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T17:32:17.951Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T17:32:17.951Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AdminPlaceController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\AdminPlaces\\AdminPlaceController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Admin\\AdminPlaces\\AdminPlaceController.cs",
@@ -303,18 +299,17 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Admin\\AdminPlaces\\AdminPlaceController.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T17:32:08.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T17:32:08.744Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Program.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
               "RelativeToolTip": "FamTec\\Server\\Program.cs",
-              "ViewState": "AgIAANsAAAAAAAAAAAAAAAgBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAANQBAAAAAAAAAAD4v1EAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-28T07:15:22.379Z",
               "EditorCaption": ""
@@ -329,12 +324,11 @@
               "RelativeToolTip": "FamTec\\Server\\CustomComparer.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T08:05:08.877Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T08:05:08.877Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "DepartmentController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Admin\\Department\\DepartmentController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Admin\\Department\\DepartmentController.cs",
@@ -342,8 +336,7 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Admin\\Department\\DepartmentController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:43.224Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:08:43.224Z"
             },
             {
               "$type": "Document",
@@ -355,8 +348,7 @@
               "RelativeToolTip": "FamTec\\Server\\Middleware\\DuplicateRequestMiddleware.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAA+wBAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T07:25:51.664Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T07:25:51.664Z"
             },
             {
               "$type": "Document",
@@ -368,8 +360,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T08:05:12.443Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T08:05:12.443Z"
             },
             {
               "$type": "Document",
@@ -381,8 +372,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\BlackList\\BlackListService.cs",
               "ViewState": "AgIAAMgAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T03:53:02.47Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T03:53:02.47Z"
             },
             {
               "$type": "Document",
@@ -394,8 +384,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T03:52:50.741Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T03:52:50.741Z"
             },
             {
               "$type": "Document",
@@ -407,8 +396,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\VocService.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T08:05:25.022Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T08:05:25.022Z"
             },
             {
               "$type": "Document",
@@ -420,8 +408,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Admin\\Department\\DepartmentService.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T03:52:40.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T03:52:40.121Z"
             },
             {
               "$type": "Document",
@@ -433,8 +420,7 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAABYwA0AAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T03:49:31.615Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T03:49:31.615Z"
             },
             {
               "$type": "Document",
@@ -446,8 +432,7 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Facility\\Group\\FacilityGroupKeyController.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAABYwA4AAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-28T03:49:23.611Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-28T03:49:23.611Z"
             },
             {
               "$type": "Document",
@@ -459,8 +444,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\DepartmentInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD4AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:19:32.865Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:19:32.865Z"
             },
             {
               "$type": "Document",
@@ -472,8 +456,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
               "ViewState": "AgIAAAoBAAAAAAAAAAAcwHMBAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:19:57.693Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:19:57.693Z"
             },
             {
               "$type": "Document",
@@ -485,8 +468,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
               "ViewState": "AgIAAIgCAAAAAAAAAAAvwLoCAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:15:52.1Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:15:52.1Z"
             },
             {
               "$type": "Document",
@@ -498,8 +480,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Place\\PlaceInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAGIBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:04.789Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:27:04.789Z"
             },
             {
               "$type": "Document",
@@ -511,8 +492,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAJgDAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:28:47.532Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:28:47.532Z"
             },
             {
               "$type": "Document",
@@ -524,8 +504,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Voc\\VocInfoRepository.cs",
               "ViewState": "AgIAAEoBAAAAJHrPJDoewCABAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:29:18.133Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:29:18.133Z"
             },
             {
               "$type": "Document",
@@ -537,8 +516,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\IBuildingItemValueInfoRepository.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:55.621Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:08:55.621Z"
             },
             {
               "$type": "Document",
@@ -550,8 +528,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:00:50.766Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:00:50.766Z"
             },
             {
               "$type": "Document",
@@ -563,8 +540,7 @@
               "RelativeToolTip": "FamTec\\Client\\Pages\\StackChart.razor",
               "ViewState": "AgIAAJYAAAAAAAAAAADgv6wAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-09-27T16:07:59.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:07:59.136Z"
             },
             {
               "$type": "Document",
@@ -576,8 +552,7 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\ClientController\\PlaceController.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAABYwA4AAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:47.068Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:08:47.068Z"
             },
             {
               "$type": "Document",
@@ -589,8 +564,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\Departmnet\\IDepartmentInfoRepository.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAAA6wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T16:08:50.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T16:08:50.981Z"
             },
             {
               "$type": "Document",
@@ -602,8 +576,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\IAdminPlacesInfoRepository.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAYwDIAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:57:21.231Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:57:21.231Z"
             },
             {
               "$type": "Document",
@@ -615,8 +588,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "ViewState": "AgIAAO0CAAAAAAAAAAAUwOkCAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:28:12.697Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:28:12.697Z"
             },
             {
               "$type": "Document",
@@ -628,8 +600,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemValue\\BuildingItemValueInfoRepository.cs",
               "ViewState": "AgIAAMUAAAAAAAAAAAAIwNkAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:44.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:21:44.319Z"
             },
             {
               "$type": "Document",
@@ -641,8 +612,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\IAdminUserInfoRepository.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAYwEIAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:59:40.617Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:59:40.617Z"
             },
             {
               "$type": "Document",
@@ -654,8 +624,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
               "ViewState": "AgIAABAAAAAAAAAAAADgvyEAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:18:51.547Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:18:51.547Z"
             },
             {
               "$type": "Document",
@@ -667,8 +636,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Unit\\UnitInfoRepository.cs",
               "ViewState": "AgIAAPUAAAAAAAAAAAAUwPsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:52.739Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:27:52.739Z"
             },
             {
               "$type": "Document",
@@ -680,8 +648,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
               "ViewState": "AgIAAKQAAAAAAAAAAAAUwLcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:48.493Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:27:48.493Z"
             },
             {
               "$type": "Document",
@@ -693,8 +660,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Room\\RoomInfoRepository.cs",
               "ViewState": "AgIAAKIBAAAAAAAAAAAIwKEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:27:25.268Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:27:25.268Z"
             },
             {
               "$type": "Document",
@@ -706,8 +672,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Voc\\VocCommentRepository.cs",
               "ViewState": "AgIAAF8AAAAAAAAAAAAUwH8AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:29:29.926Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:29:29.926Z"
             },
             {
               "$type": "Document",
@@ -719,8 +684,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Meter\\Contract\\ContractInfoRepository.cs",
               "ViewState": "AgIAAHcAAAAAAAAAAAAAwJUAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:51:41.046Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:51:41.046Z"
             },
             {
               "$type": "Document",
@@ -732,8 +696,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
               "ViewState": "AgIAANYBAAAAAAAAAAAIwNUBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:26:19.448Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:26:19.448Z"
             },
             {
               "$type": "Document",
@@ -745,8 +708,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
               "ViewState": "AgIAAK4HAAAAAAAAAAAIwKUHAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:25:10.286Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:25:10.286Z"
             },
             {
               "$type": "Document",
@@ -758,8 +720,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAawKgAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:25:05.822Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:25:05.822Z"
             },
             {
               "$type": "Document",
@@ -771,8 +732,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
               "ViewState": "AgIAAGIEAAAAAAAAAAAowGUEAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:24:05.383Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:24:05.383Z"
             },
             {
               "$type": "Document",
@@ -784,8 +744,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\IInventoryInfoRepository.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:23:57.134Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:23:57.134Z"
             },
             {
               "$type": "Document",
@@ -797,8 +756,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Floor\\FloorInfoRepository.cs",
               "ViewState": "AgIAAE0BAAAAAAAAAAAQwFEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:23:36.068Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:23:36.068Z"
             },
             {
               "$type": "Document",
@@ -810,8 +768,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Facility\\FacilityInfoRepository.cs",
               "ViewState": "AgIAAOgCAAAAAAAAAAAUwOQCAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:23:04.738Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:23:04.738Z"
             },
             {
               "$type": "Document",
@@ -823,8 +780,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Facility\\ItemValue\\FacilityItemValueInfoRepository.cs",
               "ViewState": "AgIAAI8AAAAAAAAAAAAIwKYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:22:59.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:22:59.842Z"
             },
             {
               "$type": "Document",
@@ -836,8 +792,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Facility\\ItemKey\\FacilityItemKeyInfoRepository.cs",
               "ViewState": "AgIAALQBAAAAAAAAAAAQwLABAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:22:36.46Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:22:36.46Z"
             },
             {
               "$type": "Document",
@@ -849,8 +804,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Facility\\Group\\FacilityGroupItemInfoRepository.cs",
               "ViewState": "AgIAABgBAAAAAAAAAAAYwBEBAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:22:17.765Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:22:17.765Z"
             },
             {
               "$type": "Document",
@@ -862,8 +816,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
               "ViewState": "AgIAAC0CAAAAAAAAAAAgwDMCAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:49.59Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:21:49.59Z"
             },
             {
               "$type": "Document",
@@ -875,8 +828,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\ItemKey\\BuildingItemKeyInfoRepository.cs",
               "ViewState": "AgIAAPsBAAAAAAAAAAAIwPcBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:21:15.911Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:21:15.911Z"
             },
             {
               "$type": "Document",
@@ -888,8 +840,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\SubItem\\Group\\BuildingGroupItemInfoRepository.cs",
               "ViewState": "AgIAAFUBAAAAAAAAAAAIwFEBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:20:55.943Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:20:55.943Z"
             },
             {
               "$type": "Document",
@@ -901,8 +852,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\BlackList\\BlackListInfoRepository.cs",
               "ViewState": "AgIAADQBAAAAAAAAAAAgwDkBAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:20:23.787Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:20:23.787Z"
             },
             {
               "$type": "Document",
@@ -914,8 +864,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Meter\\Energy\\EnergyInfoRepository.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAjwCwAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:33:21.827Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:33:21.827Z"
             },
             {
               "$type": "Document",
@@ -927,8 +876,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Voc\\IVocInfoRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T15:29:17.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T15:29:17.355Z"
             }
           ]
         }
