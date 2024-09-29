@@ -1,8 +1,6 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Building.Building;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +9,6 @@ namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MachineFacilityController : ControllerBase
     {
         private IMachineFacilityService MachineFacilityService;
@@ -56,11 +53,6 @@ namespace FamTec.Server.Controllers.Facility
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<FacilityDTO?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -177,11 +169,6 @@ namespace FamTec.Server.Controllers.Facility
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Maintenence;
+﻿using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
 using FamTec.Shared.Server.DTO;
@@ -12,7 +11,6 @@ namespace FamTec.Server.Controllers.Maintenance
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MaintenanceController : ControllerBase
     {
         private IMaintanceService MaintanceService;
@@ -113,7 +111,6 @@ namespace FamTec.Server.Controllers.Maintenance
         //[HttpGet]
         [HttpPut]
         [Route("sign/UpdateMaintenance")]
-        //public async Task<IActionResult> UpdateMaintenance([FromForm] IFormFile? files)
         public async Task<IActionResult> UpdateMaintenance([FromForm]UpdateMaintenanceDTO dto, [FromForm]IFormFile? files)
         {
             try
@@ -128,11 +125,6 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -179,11 +171,6 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Options;
 using System.Threading.RateLimiting;
 
 namespace FamTec.Server.Middleware

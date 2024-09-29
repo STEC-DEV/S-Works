@@ -4,14 +4,11 @@ using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
-using DocumentFormat.OpenXml.Wordprocessing;
-using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.Facility
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class ElectronicFacilityController : ControllerBase
     {
         private IElectronicFacilityService ElectronicFacilityService;
@@ -48,11 +45,6 @@ namespace FamTec.Server.Controllers.Facility
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<FacilityDTO?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -163,11 +155,6 @@ namespace FamTec.Server.Controllers.Facility
 
                 if (files is not null)
                 {
-                    //if (files.Length > Common.MEGABYTE_1)
-                    //{
-                    //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 1MB 이하만 가능합니다.", data = null, code = 200 });
-                    //}
-
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

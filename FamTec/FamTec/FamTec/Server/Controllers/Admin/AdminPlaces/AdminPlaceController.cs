@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
@@ -7,13 +6,11 @@ using FamTec.Shared.Server.DTO.Admin.Place;
 using FamTec.Shared.Server.DTO.Place;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 
 namespace FamTec.Server.Controllers.Admin.AdminPlaces
 {
     [Route("api/[controller]")]
     [ApiController]
-    ////[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class AdminPlaceController : ControllerBase
     {
         private IAdminPlaceService AdminPlaceService;
@@ -27,7 +24,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             this.LogService = _logservice;
         }
 
-
+        /*
         [HttpPost]
         [Route("temp")]
         public async Task<IActionResult> Temp(IFormFile files)
@@ -38,7 +35,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             var stream = new MemoryStream(byteArray);
 
             string fileName = "파일명.png";
-            
+
             // IFormFile로 변환
             // IFormFile 생성
             IFormFile formFile = new FormFile(stream, 0, byteArray.Length, "files", fileName)
@@ -48,7 +45,6 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 ContentDisposition = $"form-data; name=\"files\"; filename=\"{fileName}\"; filename*=UTF-8''{Uri.EscapeDataString(fileName)}"
             };
 
-            /*
             string filePath = Path.Combine("C:\\Users\\kyw\\Documents\\카카오톡 받은 파일", fileName);
 
             using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
@@ -57,9 +53,9 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             }
 
             Console.WriteLine("asdgasg");
-            */
             return Ok(formFile);
         }
+        */
 
         /// <summary>
         /// 전체 사업장 리스트 조회 [OK]

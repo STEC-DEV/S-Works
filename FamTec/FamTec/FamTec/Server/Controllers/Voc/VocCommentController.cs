@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
@@ -10,7 +9,6 @@ namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocCommentController : ControllerBase
     {
         private IVocCommentService VocCommentService;
@@ -56,11 +54,6 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach(IFormFile file in files)
                     {
-                        //if (file.Length > Common.MEGABYTE_2)
-                        //{
-                        //    return Ok(new ResponseUnit<int?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        //}
-
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
                         {
@@ -132,7 +125,6 @@ namespace FamTec.Server.Controllers.Voc
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
-        //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
         [Route("sign/VocCommentDetail")]
         public async Task<IActionResult> GetVocCommentDetail([FromQuery] int commentid)
         {
@@ -167,7 +159,6 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/VocCommentUpdate")]
-        //public async Task<IActionResult> UpdateVocComment([FromForm] List<IFormFile>? files)
         public async Task<IActionResult> UpdateVocComment([FromForm] VocCommentDetailDTO dto, [FromForm] List<IFormFile>? files)
         {
             try
@@ -196,11 +187,6 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach (IFormFile file in files)
                     {
-                        //if (file.Length > Common.MEGABYTE_2)
-                        //{
-                        //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        //}
-
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
                         {

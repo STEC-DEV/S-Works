@@ -248,22 +248,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
-    "Method": "Temp",
-    "RelativePath": "api/AdminPlace/temp",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "files",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "AddManager",
     "RelativePath": "api/AdminUser/sign/AddManager",

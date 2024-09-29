@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Voc;
+﻿using FamTec.Server.Repository.Voc;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -13,7 +11,6 @@ namespace FamTec.Server.Controllers.Voc
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class VocController : ControllerBase
     {
         private readonly IVocService VocService;
@@ -103,7 +100,6 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
-        //public async Task<IActionResult> GetVocFilterList()
         public async Task<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try

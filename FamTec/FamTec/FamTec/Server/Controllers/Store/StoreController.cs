@@ -1,19 +1,14 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Inventory;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
-using System;
 
 namespace FamTec.Server.Controllers.Store
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class StoreController : ControllerBase
     {
         private IInVentoryService InStoreService;
@@ -290,7 +285,6 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPlaceInventoryStatus")]
-        //public async Task<IActionResult> GetPlaceInventoryStatus()
         public async Task<IActionResult> GetPlaceInventoryStatus([FromQuery]List<int> materialid, [FromQuery]bool type)
         {
             try
@@ -405,7 +399,6 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/AddOutStoreList")]
-        //public async Task<IActionResult> AddOutStoreList()
         public async Task<IActionResult> AddOutStoreList([FromQuery]int roomid, [FromQuery]int materialid, [FromQuery]int outcount)
         {
             try

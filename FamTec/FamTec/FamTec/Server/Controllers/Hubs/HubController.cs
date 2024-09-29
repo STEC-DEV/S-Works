@@ -1,17 +1,13 @@
-﻿using FamTec.Server.Hubs;
-using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Controllers.Hubs
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class HubController : ControllerBase
     {
         private IHubService HubService;
@@ -70,12 +66,6 @@ namespace FamTec.Server.Controllers.Hubs
                 {
                     foreach(IFormFile file in files)
                     {
-                        //// VOC 이미지는 2MB 제한
-                        //if(file.Length > Common.MEGABYTE_2)
-                        //{
-                        //    return Ok(new ResponseUnit<bool?>() { message = "이미지 업로드는 2MB 이하만 가능합니다.", data = null, code = 200 });
-                        //}
-
                         string? extension = Path.GetExtension(file.FileName);
                         if(String.IsNullOrWhiteSpace(extension))
                         {

@@ -1,8 +1,6 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Building.Key;
 using FamTec.Shared.Server.DTO;
-using FamTec.Shared.Server.DTO.Building;
 using FamTec.Shared.Server.DTO.Building.Group;
 using FamTec.Shared.Server.DTO.Building.Group.Key;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +10,6 @@ namespace FamTec.Server.Controllers.Building.Group
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class BuildingGroupKeyController : ControllerBase
     {
         private IBuildingKeyService BuildingKeyService;

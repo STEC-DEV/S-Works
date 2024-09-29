@@ -1,5 +1,4 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Value;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
@@ -10,7 +9,6 @@ namespace FamTec.Server.Controllers.Facility.Group
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class FacilityGroupValueController : ControllerBase
     {
         private IFacilityValueService FacilityValueService;
