@@ -34,20 +34,6 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                //AddKeyDTO dto = new AddKeyDTO();
-                //dto.GroupID = 10;
-                //dto.Name = "추가키";
-                //dto.Unit = "단위1";
-                //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
-                //{
-                //    Values = "값1",
-                    
-                //});
-                //dto.ItemValues.Add(new Shared.Server.DTO.Building.Group.AddGroupItemValueDTO()
-                //{
-                //    Values = "값2"
-                //});
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -96,21 +82,6 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                //UpdateKeyDTO dto = new UpdateKeyDTO();
-                //dto.ID = 14;
-                //dto.Itemkey = "추가_수정1";
-                //dto.Unit = "수정";
-                //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
-                //{
-                //    ID = 38,
-                //    ItemValue = "수정값11",
-                //});
-                //dto.ValueList.Add(new Shared.Server.DTO.Building.GroupValueListDTO()
-                //{
-                //    ItemValue = "추가값1",
-                //});
-                
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -179,7 +150,6 @@ namespace FamTec.Server.Controllers.Building.Group
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/DeleteKey")]
         public async Task<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {

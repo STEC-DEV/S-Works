@@ -28,15 +28,6 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                //AddKeyDTO dto = new AddKeyDTO();
-                //dto.GroupID = 1;
-                //dto.Name = "부하축베어링";
-                //dto.Unit = "단위1";
-                //dto.ItemValues.Add(new AddGroupItemValueDTO()
-                //{
-                //    Values = "6309ZZ"
-                //});
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -82,11 +73,6 @@ namespace FamTec.Server.Controllers.Facility.Group
         {
             try
             {
-                //UpdateKeyDTO dto = new UpdateKeyDTO();
-                //dto.ID = 8;
-                //dto.Itemkey = "수정_부하축베어링";
-                //dto.Unit = "수정단위1";
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -150,7 +136,7 @@ namespace FamTec.Server.Controllers.Facility.Group
         }
 
         [AllowAnonymous]
-        [HttpPut]
+        [HttpPost]
         [Route("sign/DeleteKey")]
         public async Task<IActionResult> DeleteGroupKey([FromBody]int keyid)
         {

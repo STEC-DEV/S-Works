@@ -14,7 +14,8 @@ namespace FamTec.Server.Repository.Facility
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public FacilityInfoRepository(WorksContext _context, ILogService _logservice)
+        public FacilityInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

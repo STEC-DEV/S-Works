@@ -17,16 +17,18 @@ namespace FamTec.Server.Controllers.Admin
         private IAdminPlaceService AdminPlaceService;
         private IFileService FileService;
         private ILogService LogService;
+        private ICommService CommService;
 
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
             IFileService _fileservice,
+            ICommService _commservice,
             ILogService _logservice)
         {
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
             this.FileService = _fileservice;
-
+            this.CommService = _commservice;
             this.LogService = _logservice;
         }
 
@@ -38,9 +40,7 @@ namespace FamTec.Server.Controllers.Admin
         /// <returns></returns>
         [Authorize(Roles = "SystemManager,Master")]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/AddManager")]
-        //public async Task<IActionResult> AddManager( [FromForm] IFormFile? files)
         public async Task<IActionResult> AddManager([FromForm] AddManagerDTO dto, [FromForm]IFormFile? files)
         {
             try
@@ -83,6 +83,9 @@ namespace FamTec.Server.Controllers.Admin
                         }
                     }
                 }
+                
+                dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
+                dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
 
                 ResponseUnit<int?> model = await AdminAccountService.AdminRegisterService(HttpContext, dto, files).ConfigureAwait(false);
 
@@ -265,7 +268,6 @@ namespace FamTec.Server.Controllers.Admin
         /// <returns></returns>
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
-        //[HttpGet]
         [Route("sign/UpdateManager")]
         //public async Task<IActionResult> UpdateManager()
 
@@ -273,7 +275,6 @@ namespace FamTec.Server.Controllers.Admin
         {
             try
             {
-                
                 //UpdateManagerDTO dto = new UpdateManagerDTO();
                 //dto.AdminIndex = 10;
                 //dto.Name = "용";
@@ -308,6 +309,9 @@ namespace FamTec.Server.Controllers.Admin
                 if (String.IsNullOrWhiteSpace(dto.Password))
                     return NoContent();
 
+                dto.UserId = CommService.getRemoveWhiteSpace(dto.UserId);
+                dto.Password = CommService.getRemoveWhiteSpace(dto.Password);
+
                 ResponseUnit<bool?> model = await AdminAccountService.UpdateAdminService(HttpContext, dto).ConfigureAwait(false);
                 
                 if (model is null)
@@ -331,17 +335,20 @@ namespace FamTec.Server.Controllers.Admin
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        [Authorize(Roles = "SystemManager, Master, Manager")]
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpGet]
         [Route("sign/UserIdCheck")]
-        public async Task<IActionResult> UserIdCheck([FromBody] string userid)
+        public async Task<IActionResult> UserIdCheck([FromQuery] string userid)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(userid).ConfigureAwait(false);
+                if(String.IsNullOrWhiteSpace(userid))
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

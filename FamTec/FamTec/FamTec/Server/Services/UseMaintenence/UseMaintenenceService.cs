@@ -67,7 +67,8 @@ namespace FamTec.Server.Services.UseMaintenence
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 현재 유지보수건에 대해서 해당창고의 해당품목에 해당하는게 몇개가 출고됐는지 조회 - 입고 / 출고 구분로직
-                int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID).ConfigureAwait(false);
+                int ThisUseNum = 0;
+                //int? ThisUseNum = await UseMaintenenceInfoRepository.UseThisMaterialNum(Convert.ToInt32(placeid), dto.MaintanceID, dto.RoomID, dto.MaterialID).ConfigureAwait(false);
 
 
 
@@ -75,7 +76,8 @@ namespace FamTec.Server.Services.UseMaintenence
                 {
                     // 출고
                     // 출고 일떄는 가용 수량을 봐야함.
-                    int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID).ConfigureAwait(false);
+                    //int? UseAvailableNum = await UseMaintenenceInfoRepository.UseAvailableMaterialNum(Convert.ToInt32(placeid), dto.RoomID, dto.MaterialID).ConfigureAwait(false);
+                    int? UseAvailableNum = 0;
 
                     if (UseAvailableNum is null)
                         return new ResponseUnit<bool?>() { message = "품목의 개수가 부족합니다.", data = false, code = 204 };

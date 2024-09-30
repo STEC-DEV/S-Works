@@ -56,40 +56,12 @@ namespace FamTec.Server.Controllers.Facility.Group
         }
         
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/AddFacilityGroup")]
-        //public async Task<IActionResult> AddFacilityGroup()
         public async Task<IActionResult> AddFacilityGroup([FromBody] AddGroupDTO dto)
         {
             try
             {
-                //AddGroupDTO dto = new AddGroupDTO();
-                //dto.FacilityIdx = 5;
-                //dto.Name = "테스트그룹3";
-
-                //dto.AddGroupKey.Add(new AddGroupItemKeyDTO()
-                //{
-                //    Name = "테스트키3",
-                //    Unit = "테스트단위3",
-                //    ItemValues = new List<AddGroupItemValueDTO>()
-                //    {
-                //        new AddGroupItemValueDTO()
-                //        {
-                //            Values = "테스트값3_1"
-                //        },
-                //        new AddGroupItemValueDTO()
-                //        {
-                //            Values = "테스트값3_2"
-                //        },
-                //        new AddGroupItemValueDTO()
-                //        {
-                //            Values = "테스트값3_3"
-                //        }
-                //    }
-                //});
-                
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -187,9 +159,9 @@ namespace FamTec.Server.Controllers.Facility.Group
         /// <param name="groupid"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         [Route("sign/DeleteGroup")]
-        public async Task<IActionResult> DeleteFacilityGroup([FromQuery]int groupid)
+        public async Task<IActionResult> DeleteFacilityGroup([FromBody]int groupid)
         {
             try
             {

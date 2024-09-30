@@ -216,7 +216,6 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/DeleteGroup")]
         public async Task<IActionResult> DeleteBuildingGroup([FromBody]int groupid)

@@ -72,8 +72,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             });
         }
 
-      
-
         /// <summary>
         /// 관리자에 해당하는 사업장리스트 반환
         /// </summary>
@@ -182,7 +180,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 if (departmenttb is null)
                     return null;
 
-                
                 UsersTb? usertb = await context.UsersTbs
                     .FirstOrDefaultAsync(m => m.Id == admintb.UserTbId && m.DelYn != true)
                     .ConfigureAwait(false);

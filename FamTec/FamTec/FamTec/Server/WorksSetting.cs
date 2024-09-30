@@ -59,6 +59,8 @@ namespace FamTec.Server
             department.UpdateDt = DateTime.Now;
             department.UpdateUser = "시스템관리자";
             department.DelYn = false;
+            department.ManagementYn = true;
+
 
             DepartmentsTb? selectDepartment = await context.DepartmentsTbs
                 .FirstOrDefaultAsync(m =>

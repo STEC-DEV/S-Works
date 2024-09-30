@@ -9,8 +9,8 @@ namespace FamTec.Server.Middleware
         private readonly RequestDelegate _next;
         private readonly IMemoryCache _cache;
 
-        private const int RequestLimit = 3; // 5초 내에 허용할 최대 요청 횟수
-        private const int CacheExpirationInSeconds = 10; // 캐시 유지 시간 (초)
+        private const int RequestLimit = 10; // 5초 내에 허용할 최대 요청 횟수
+        private const int CacheExpirationInSeconds = 5; // 캐시 유지 시간 (초)
 
         public DuplicateRequestMiddleware(RequestDelegate next, IMemoryCache cache)
         {
@@ -27,6 +27,7 @@ namespace FamTec.Server.Middleware
                 "/api/Alarm/sign/GetAlarmDateList",
                 "/api/Alarm/sign/AllAlarmDelete",
                 "/api/Alarm/sign/AlarmDelete",
+                "/api/AdminUser/sign/UserIdCheck"
             };
 
             // 현재 요청 경로 확인

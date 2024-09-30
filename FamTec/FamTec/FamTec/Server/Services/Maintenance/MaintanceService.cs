@@ -89,7 +89,7 @@ namespace FamTec.Server.Services.Maintenance
                         _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
                     };
                 }
-                else // 외주작업
+                else if (dto.Type is 1) // 외주작업
                 {
                     if (dto.TotalPrice is 0)
                         return new ResponseUnit<FailResult?> { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -102,6 +102,10 @@ namespace FamTec.Server.Services.Maintenance
                         -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
                         _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
                     };
+                }
+                else
+                {
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
             }
             catch (Exception ex)

@@ -12,6 +12,7 @@ namespace FamTec.Shared.Model;
 [Table("admin_place_tb")]
 [Index("AdminTbId", Name = "fk_admin_place_tb_admin_tb1_idx")]
 [Index("PlaceTbId", Name = "fk_admin_place_tb_place_tb1_idx")]
+[Index("AdminTbId", "PlaceTbId", Name = "uk_admin", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class AdminPlaceTb
 {

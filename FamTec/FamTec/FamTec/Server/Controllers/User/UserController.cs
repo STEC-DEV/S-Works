@@ -15,13 +15,16 @@ namespace FamTec.Server.Controllers.User
         private IUserService UserService;
         private IFileService FileService;
         private ILogService LogService;
+        private ICommService CommService;
 
         public UserController(IUserService _userservice,
             IFileService _fileservice,
+            ICommService _commservice,
             ILogService _logservice)
         {
             this.UserService = _userservice;
             this.FileService = _fileservice;
+            this.CommService = _commservice;
             this.LogService = _logservice;
         }
 
@@ -69,37 +72,8 @@ namespace FamTec.Server.Controllers.User
         {
             try
             {
-                //UsersDTO dto = new UsersDTO();
-                //dto.USERID = "TESTUSER0008";
-                //dto.PASSWORD = "123";
-                //dto.NAME = "테스트사용자";
-                //dto.PERM_BASIC = 2; // 기본정보메뉴 권한
-                //dto.PERM_MACHINE = 2; // 기계메뉴 권한
-                //dto.PERM_ELEC = 2; // 전기메뉴 권한
-                //dto.PERM_LIFT = 2; // 승강메뉴 권한
-                //dto.PERM_FIRE = 2; // 소방메뉴 권한
-                //dto.PERM_CONSTRUCT = 2; // 건축메뉴 권한
-                //dto.PERM_NETWORK = 2;
-                //dto.PERM_BEAUTY = 2;
-                //dto.PERM_SECURITY = 2;
-                //dto.PERM_MATERIAL = 2;
-                //dto.PERM_ENERGY = 2;
-                //dto.PERM_USER = 2;
-                //dto.PERM_VOC = 2;
-                //dto.ALRAM_YN = true;
-                //dto.STATUS = 2;
-                //dto.VOC_MACHINE = true;
-                //dto.VOC_ELEC = false;
-                //dto.VOC_FIRE = true;
-                //dto.VOC_CONSTRUCT = true;
-                //dto.VOC_NETWORK = true;
-                //dto.VOC_BEAUTY = true;
-                //dto.VOC_SECURITY = true;
-                //dto.VOC_ETC = true;
-           
                 if (HttpContext is null)
                     return BadRequest();
-
 
                 if (String.IsNullOrWhiteSpace(dto.USERID)) return NoContent(); // 사용자ID
                 if(String.IsNullOrWhiteSpace(dto.PASSWORD)) return NoContent(); // 사용자 비밀번호
@@ -144,6 +118,9 @@ namespace FamTec.Server.Controllers.User
                         }
                     }
                 }
+
+                dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
+                dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
 
                 ResponseUnit<UsersDTO> model = await UserService.AddUserService(HttpContext, dto, files).ConfigureAwait(false);
 
@@ -308,6 +285,9 @@ namespace FamTec.Server.Controllers.User
                     }
                 }
 
+                dto.USERID = CommService.getRemoveWhiteSpace(dto.USERID);
+                dto.PASSWORD = CommService.getRemoveWhiteSpace(dto.PASSWORD);
+
                 ResponseUnit<UsersDTO>? model = await UserService.UpdateUserService(HttpContext, dto, files).ConfigureAwait(false);
 
                 if (model is null)
@@ -379,6 +359,8 @@ namespace FamTec.Server.Controllers.User
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+
 
     }
 }

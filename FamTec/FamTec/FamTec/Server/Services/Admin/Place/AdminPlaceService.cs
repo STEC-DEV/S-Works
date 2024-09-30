@@ -246,6 +246,7 @@ namespace FamTec.Server.Services.Admin.Place
                     ContractDt = Convert.ToDateTime(dto.ContractDT),
                     PermMachine = dto.PermMachine!.Value,
                     PermLift = dto.PermLift!.Value,
+                    PermElec = dto.PermElec!.Value,
                     PermFire = dto.PermFire!.Value,
                     PermConstruct = dto.PermConstruct!.Value,
                     PermNetwork = dto.PermNetwork!.Value,

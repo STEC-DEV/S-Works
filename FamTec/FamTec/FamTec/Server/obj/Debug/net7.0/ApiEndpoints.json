@@ -432,14 +432,14 @@
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminUserController",
     "Method": "UserIdCheck",
     "RelativePath": "api/AdminUser/sign/UserIdCheck",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "userid",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -549,7 +549,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -687,7 +687,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -1710,7 +1710,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -1848,7 +1848,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -2038,7 +2038,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -2176,7 +2176,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -2374,14 +2374,14 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
     "Method": "DeleteFacilityGroup",
     "RelativePath": "api/FacilityGroup/sign/DeleteGroup",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "groupid",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -2438,7 +2438,7 @@
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupKeyController",
     "Method": "DeleteGroupKey",
     "RelativePath": "api/FacilityGroupKey/sign/DeleteKey",
-    "HttpMethod": "PUT",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -2589,7 +2589,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -2727,7 +2727,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -3022,7 +3022,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -3160,7 +3160,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -3330,7 +3330,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -3468,7 +3468,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -4128,7 +4128,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -4266,7 +4266,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -4462,7 +4462,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
@@ -4600,7 +4600,7 @@
         "IsRequired": false
       },
       {
-        "Name": "RoomTbId",
+        "Name": "RoomId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },

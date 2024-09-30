@@ -165,21 +165,21 @@ namespace FamTec.Server.Services.Admin.Department
                 // 해당 부서 인덱스와 AdminTb의 DepartmentID 외래키로 검색해서 있는지 검사 - 삭제조건 [1]
                 List<AdminTb>? admintb = await DepartmentInfoRepository.SelectDepartmentAdminList(departmentidx).ConfigureAwait(false);
                 if (admintb is not null && admintb.Any())
-                    return new ResponseUnit<bool?>() { message = "해당 부서에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                    return new ResponseUnit<bool?>() { message = "해당 부서에 할당되어있는 관리자가 있어 삭제가 불가능합니다.", data = false, code = 400 };
 
                 // 부서존재하는지 + 시스템 부서가 있는지 검사
                 foreach(int DepartmentID in departmentidx)
                 {
                     bool? DelCheck = await DepartmentInfoRepository.DelDepartmentCheck(DepartmentID).ConfigureAwait(false);
                     if (DelCheck == true)
-                        return new ResponseUnit<bool?>() { message = "참조하는 하위 정보가 있어 삭제가 불가능합니다.", data = false, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "참조하는 하위 정보가 있어 삭제가 불가능합니다.", data = false, code = 400 };
 
                     DepartmentsTb? CheckTB = await DepartmentInfoRepository.GetDeleteDepartmentInfo(DepartmentID).ConfigureAwait(false);
                     if(CheckTB is null)
-                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                     
                     if (CheckTB.Name.Trim().Equals("에스텍시스템"))
-                        return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 200 };
+                        return new ResponseUnit<bool?>() { message = "시스템 부서는 삭제 불가능합니다.", data = false, code = 400 };
                 }
 
                 // 부서삭제

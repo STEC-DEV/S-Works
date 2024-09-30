@@ -33,10 +33,6 @@ namespace FamTec.Server.Controllers.Admin.Department
         {
             try
             {
-                //AddDepartmentDTO dto = new AddDepartmentDTO();
-                //dto.Name = "확인부서";
-                //dto.ManagerYN = true;
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -143,6 +139,8 @@ namespace FamTec.Server.Controllers.Admin.Department
                     return BadRequest(model);
 
                 if (model.code == 200)
+                    return Ok(model);
+                else if(model.code == 400)
                     return Ok(model);
                 else
                     return BadRequest(model);

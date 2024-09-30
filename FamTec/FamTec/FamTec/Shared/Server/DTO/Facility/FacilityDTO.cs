@@ -58,6 +58,6 @@
         /// <summary>
         /// 공간 인덱스
         /// </summary>
-        public int? RoomTbId { get; set; }
+        public int? RoomId { get; set; }
     }
 }

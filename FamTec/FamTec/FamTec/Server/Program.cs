@@ -189,7 +189,7 @@ builder.Services.AddTransient<IMeterService, MeterService>();
 builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
-
+builder.Services.AddTransient<ICommService, CommService>();
 
 builder.Services.AddMemoryCache(); // 메모리캐쉬
 

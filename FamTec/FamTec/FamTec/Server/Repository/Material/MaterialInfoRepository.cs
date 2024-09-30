@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Material;
@@ -439,11 +438,11 @@ namespace FamTec.Server.Repository.Material
             {
                 List<MaterialTb>? MaterialList = await context.MaterialTbs
                     .Where(m => m.DelYn != true &&
-                               (m.Code == searchData ||
-                                m.ManufacturingComp == searchData ||
-                                m.Name == searchData ||
-                                m.Standard == searchData) &&
-                               m.PlaceTbId == placeid)
+                               (m.Code.Contains(searchData) ||
+                                m.ManufacturingComp.Contains(searchData) ||
+                                m.Name.Contains(searchData) ||
+                                m.Standard.Contains(searchData) &&
+                               m.PlaceTbId == placeid))
                     .GroupBy(m => m.Id) // ID 기준으로 그룹화
                     .Select(g => g.First()) // 각 그룹에서 첫 번째 항목 선택
                     .ToListAsync()

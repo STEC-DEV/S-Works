@@ -80,12 +80,12 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 if (HttpContext is null)
                     return BadRequest();
 
-                if (dto.MaintanceID is 0)
-                    return NoContent();
-                if (dto.UseMaintanceID is 0)
-                    return NoContent();
-                if (dto.MaterialID is 0)
-                    return NoContent();
+                //if (dto.MaintanceID is 0)
+                //    return NoContent();
+                //if (dto.UseMaintanceID is 0)
+                //    return NoContent();
+                //if (dto.MaterialID is 0)
+                //    return NoContent();
 
                 ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto).ConfigureAwait(false);
 

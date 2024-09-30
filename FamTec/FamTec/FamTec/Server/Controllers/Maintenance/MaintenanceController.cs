@@ -266,10 +266,14 @@ namespace FamTec.Server.Controllers.Maintenance
                 if(dto.FacilityID == 0)
                     return NoContent();
 
-                if (dto.Inventory is null || !dto.Inventory.Any())
-                    return NoContent();
+                if (dto.Type == 0)
+                {
+                    if (dto.Inventory is null || !dto.Inventory.Any())
+                        return NoContent();
+                }
 
                 ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto).ConfigureAwait(false);
+                
                 if (model is null)
                     return BadRequest();
 

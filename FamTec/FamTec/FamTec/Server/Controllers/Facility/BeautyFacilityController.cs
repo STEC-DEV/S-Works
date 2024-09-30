@@ -46,7 +46,7 @@ namespace FamTec.Server.Controllers.Facility
                 if(String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if(dto.RoomTbId is null)
+                if(dto.RoomId is null)
                     return NoContent();
 
                 if (files is not null)
@@ -173,7 +173,7 @@ namespace FamTec.Server.Controllers.Facility
                 if(String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if (dto.RoomTbId is null)
+                if (dto.RoomId is null)
                     return NoContent();
 
                 if (files is not null) // 파일이 있으면 1MB 제한

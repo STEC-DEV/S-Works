@@ -42,6 +42,11 @@
         public bool? PermMachine { get; set; } = false;
 
         /// <summary>
+        /// 전기메뉴 권한
+        /// </summary>
+        public bool? PermElec { get; set; } = false;
+
+        /// <summary>
         /// 승강메뉴 권한
         /// </summary>
         public bool? PermLift { get; set; } = false;

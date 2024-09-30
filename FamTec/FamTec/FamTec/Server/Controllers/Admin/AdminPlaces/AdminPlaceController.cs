@@ -239,6 +239,9 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (dto.PermFire == null)
                     return NoContent();
 
+                if (dto.PermElec == null)
+                    return NoContent();
+
                 if (dto.PermConstruct == null)
                     return NoContent();
 

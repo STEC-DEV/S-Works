@@ -791,7 +791,7 @@ namespace FamTec.Server.Services.User
                 string? UserIdx = Convert.ToString(context.Items["UserIdx"]);
 
                 DateTime ThisDate = DateTime.Now;
-
+                
                 if (String.IsNullOrWhiteSpace(Creater) || String.IsNullOrWhiteSpace(PlaceIdx) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 

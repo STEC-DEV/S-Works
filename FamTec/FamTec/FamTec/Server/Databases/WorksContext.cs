@@ -78,6 +78,7 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
 
@@ -92,6 +93,7 @@ public partial class WorksContext : DbContext
         {
             entity.HasNoDiscriminator();
         });
+
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -870,7 +872,7 @@ public partial class WorksContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-    
+
     /// <summary>
     /// 쿼리스트링 사용
     /// </summary>

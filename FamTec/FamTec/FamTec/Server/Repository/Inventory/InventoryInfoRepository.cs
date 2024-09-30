@@ -883,7 +883,6 @@ namespace FamTec.Server.Repository.Inventory
                         ReturnResult.ReturnResult = -2;
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
-                        //throw new ArgumentNullException();
                         return ReturnResult;
                     }
                 }
@@ -1099,12 +1098,11 @@ namespace FamTec.Server.Repository.Inventory
                                                     MaterialID = grouped.Key.MaterialTbId,
                                                     AddStore = new AddStoreDTO
                                                     {
-                                                        //InOutDate = DateTime.Now,
                                                         Note = String.Empty,
-                                                        Num = grouped.Sum(x => x.InventoryTB.Num), // Sum Num for each group
-                                                        RoomID = grouped.Key.Id, // RoomID from the grouped key
-                                                        RoomName = grouped.First().RoomTB.Name, // RoomName from the first item in the group
-                                                        UnitPrice = grouped.First().InventoryTB.UnitPrice, // UnitPrice from the first item in the group
+                                                        Num = grouped.Sum(x => x.InventoryTB.Num),
+                                                        RoomID = grouped.Key.Id,
+                                                        RoomName = grouped.First().RoomTB.Name,
+                                                        UnitPrice = grouped.First().InventoryTB.UnitPrice,
                                                         TotalPrice = (grouped.Sum(x => x.InventoryTB.Num))*(grouped.First().InventoryTB.UnitPrice)                                                                                                 // TotalPrice can be calculated here if needed
                                                     }
                                                 }).ToList();

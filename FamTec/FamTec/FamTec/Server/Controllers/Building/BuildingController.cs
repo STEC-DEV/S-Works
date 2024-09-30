@@ -267,8 +267,6 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                //List<int> buildingidx = new List<int>() { 7, 9 };
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -298,15 +296,10 @@ namespace FamTec.Server.Controllers.Building
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/UpdateBuilding")]
-        //public async Task<IActionResult> UpdateBuilding([FromForm] IFormFile? files)
         public async Task<IActionResult> UpdateBuilding([FromForm] DetailBuildingDTO dto, [FromForm] IFormFile? files)
         {
             try
             {
-                //DetailBuildingDTO dto = new DetailBuildingDTO();
-                //dto.ID = 12;
-                //dto.Name = "C건물";
-
                 if (HttpContext is null)
                     return BadRequest();
 

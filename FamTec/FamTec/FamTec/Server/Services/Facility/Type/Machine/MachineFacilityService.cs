@@ -46,7 +46,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 if (string.IsNullOrWhiteSpace(placeidx))
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
-                RoomTb? RoomInfo = await RoomInfoRepository.GetRoomInfo(dto.RoomTbId!.Value).ConfigureAwait(false);
+                RoomTb? RoomInfo = await RoomInfoRepository.GetRoomInfo(dto.RoomId!.Value).ConfigureAwait(false);
                 if (RoomInfo is null)
                     return new ResponseUnit<FacilityDTO>() { message = "잘못된 요청입니다.", data = new FacilityDTO(), code = 404 };
 
@@ -84,7 +84,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     CreateUser = creator,
                     UpdateDt = DateTime.Now,
                     UpdateUser = creator,
-                    RoomTbId = dto.RoomTbId.Value, // 공간 ID
+                    RoomTbId = dto.RoomId.Value, // 공간 ID
                     Image = NewFileName
                 };
 
@@ -240,7 +240,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 model.ChangeDt = dto.ChangeDT;
                 model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
-                model.RoomTbId = dto.RoomTbId!.Value;
+                model.RoomTbId = dto.RoomId!.Value;
 
 
                 if(files is not null) // 파일이 공백이 아닌 경우
