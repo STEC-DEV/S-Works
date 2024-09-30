@@ -1595,6 +1595,9 @@ namespace FamTec.Server.Repository.Maintenence
                             return ReturnResult;
                         }
 
+                        
+
+
                         /* 수량체크 */
                         foreach (MaterialDTO MaterialInfo in model.MaterialList)
                         {
@@ -1677,252 +1680,264 @@ namespace FamTec.Server.Repository.Maintenence
                         /* 출고 로직시작 */
                         foreach (MaterialDTO MaterialInfo in model.MaterialList)
                         {
-                            List<InventoryTb> OutModel = new List<InventoryTb>();
+                            UseMaintenenceMaterialTb? UseMaintenceMaterialTB = await context.UseMaintenenceMaterialTbs
+                            .FirstOrDefaultAsync(m => m.MaterialTbId == MaterialInfo.MaterialID && m.RoomTbId == MaterialInfo.RoomID && m.MaintenanceTbId == model.MaintanceID && m.PlaceTbId == placeid);
 
-                            int? result = 0;
-
-                            // 출고시킬 List를 만든다
-                            List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, MaterialInfo.RoomID, MaterialInfo.MaterialID, MaterialInfo.Num).ConfigureAwait(false);
-                            if (InventoryList is not [_, ..])
+                            if (UseMaintenceMaterialTB is not null) // 내용이 있으면 업데이트 - 출고 ++
                             {
-                                /* 출고 개수가 부족함. */
-                                ReturnResult.ReturnResult = 0;
-                                return ReturnResult;
+
+
                             }
-
-                            foreach (InventoryTb? inventory in InventoryList)
+                            else // 아니면 추가 Row 쌓는다.
                             {
-                                if (result <= MaterialInfo.Num)
+                                List<InventoryTb> OutModel = new List<InventoryTb>();
+
+                                int? result = 0;
+
+                                // 출고시킬 List를 만든다
+                                List<InventoryTb>? InventoryList = await GetMaterialCount(placeid, MaterialInfo.RoomID, MaterialInfo.MaterialID, MaterialInfo.Num).ConfigureAwait(false);
+                                if (InventoryList is not [_, ..])
                                 {
-                                    OutModel.Add(inventory);
-                                    result += inventory.Num;
-                                    if (result == MaterialInfo.Num)
-                                    {
-                                        break; /* 반복문 종료 */
-                                    }
-                                }
-                                else
-                                    break; /* 반복문 종료 */
-                            }
-
-                            List<int> StoreID = new List<int>(); // 외래키 박기위해서 리스트에 담음
-                            float TotalPrice = 0; // 총액
-
-                            if (OutModel is [_, ..])
-                            {
-                                /* 출고개수가 충분할때만 동작. */
-                                if (result >= MaterialInfo.Num)
-                                {
-                                    /* 넘어온 수량이랑 실제로 빠지는 수량이랑 같은지 검사하는 CheckSum */
-                                    int checksum = 0;
-
-                                    /* 개수만큼 - 빼주면 됨 */
-                                    int outresult = 0;
-
-                                    foreach (InventoryTb OutInventoryTb in OutModel)
-                                    {
-                                        outresult += OutInventoryTb.Num;
-                                        if (MaterialInfo.Num > outresult)
-                                        {
-                                            int OutStoreEA = OutInventoryTb.Num;
-                                            checksum += OutInventoryTb.Num;
-
-                                            OutInventoryTb.Num -= OutInventoryTb.Num;
-                                            OutInventoryTb.UpdateDt = ThisDate;
-                                            OutInventoryTb.UpdateUser = creater;
-
-
-                                            if (OutInventoryTb.Num == 0)
-                                            {
-                                                OutInventoryTb.DelYn = true;
-                                                OutInventoryTb.DelDt = ThisDate;
-                                                OutInventoryTb.DelUser = creater;
-                                            }
-                                            context.Update(OutInventoryTb);
-                                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                            if (!UpdateResult)
-                                            {
-                                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                                ReturnResult.ReturnResult = -1;
-                                                return ReturnResult;
-                                            }
-
-                                            /* Inventory 테이블에서 해당 품목의 개수 Sum */
-                                            int thisCurrentNum = context.InventoryTbs
-                                            .Where(m => m.DelYn != true &&
-                                                        m.MaterialTbId == MaterialInfo.MaterialID &&
-                                                        m.RoomTbId == MaterialInfo.RoomID &&
-                                                        m.PlaceTbId == placeid)
-                                            .Sum(m => m.Num);
-
-                                            StoreTb StoreTB = new StoreTb();
-                                            StoreTB.Inout = 0; // 출고
-                                            StoreTB.Num = OutStoreEA; // 해당건 출고 수
-                                            StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
-                                            StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총 금액
-                                            StoreTB.InoutDate = ThisDate; // 현재 시간으로 출고
-                                            StoreTB.CreateDt = ThisDate;
-                                            StoreTB.CreateUser = creater;
-                                            StoreTB.UpdateDt = ThisDate;
-                                            StoreTB.UpdateUser = creater;
-                                            StoreTB.RoomTbId = MaterialInfo.RoomID;
-                                            StoreTB.MaterialTbId = MaterialInfo.MaterialID;
-                                            StoreTB.CurrentNum = thisCurrentNum;
-                                            StoreTB.Note = MaterialInfo.Note;
-                                            StoreTB.PlaceTbId = placeid;
-                                            StoreTB.MaintenenceHistoryTbId = MainteneceTB.Id;
-
-                                            await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
-                                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                            if (!UpdateResult)
-                                            {
-                                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                                ReturnResult.ReturnResult = -1;
-                                                return ReturnResult;
-                                            }
-                                            StoreID.Add(StoreTB.Id); // ID를 추가함 --> 해당컬럼 검색후 UseMaintenenceMaterialTB 외래키 박아야 하기 때문.
-
-                                            TotalPrice += OutStoreEA * OutInventoryTb.UnitPrice; // 해당건 총 금액
-
-                                        }
-                                        else
-                                        {
-                                            int OutStoreEA = MaterialInfo.Num - (outresult - OutInventoryTb.Num);
-                                            checksum += MaterialInfo.Num - (outresult - OutInventoryTb.Num);
-                                            outresult -= MaterialInfo.Num;
-
-
-                                            OutInventoryTb.Num = outresult;
-                                            OutInventoryTb.UpdateDt = ThisDate;
-                                            OutInventoryTb.UpdateUser = creater;
-
-                                            if (OutInventoryTb.Num == 0)
-                                            {
-                                                OutInventoryTb.DelYn = true;
-                                                OutInventoryTb.DelDt = ThisDate;
-                                                OutInventoryTb.DelUser = creater;
-                                            }
-
-                                            context.Update(OutInventoryTb);
-                                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                            if (!UpdateResult)
-                                            {
-                                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                                ReturnResult.ReturnResult = -1;
-                                                return ReturnResult;
-                                            }
-
-                                            // Inventory 테이블에서 해당 품목의 개수 Sum
-                                            int thisCurrentNum = context.InventoryTbs
-                                            .Where(m => m.DelYn != true &&
-                                                        m.MaterialTbId == MaterialInfo.MaterialID &&
-                                                        m.RoomTbId == MaterialInfo.RoomID &&
-                                                        m.PlaceTbId == placeid)
-                                            .Sum(m => m.Num);
-
-                                            StoreTb StoreTB = new StoreTb();
-                                            StoreTB.Inout = 0; // 출고
-                                            StoreTB.Num = OutStoreEA; // 해당건 출고 수
-                                            StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
-                                            StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 단가
-                                            StoreTB.InoutDate = ThisDate; // 현재시간으로
-                                            StoreTB.CreateDt = ThisDate; // 현재시간
-                                            StoreTB.CreateUser = creater;
-                                            StoreTB.UpdateDt = ThisDate;
-                                            StoreTB.UpdateUser = creater;
-                                            StoreTB.RoomTbId = MaterialInfo.RoomID;
-                                            StoreTB.MaterialTbId = MaterialInfo.MaterialID;
-                                            StoreTB.CurrentNum = thisCurrentNum;
-                                            StoreTB.Note = MaterialInfo.Note;
-                                            StoreTB.PlaceTbId = placeid;
-                                            StoreTB.MaintenenceHistoryTbId = MainteneceTB.Id;
-
-                                            await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
-                                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                            if (!UpdateResult)
-                                            {
-                                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                                ReturnResult.ReturnResult = -1;
-                                                return ReturnResult;
-                                            }
-                                            StoreID.Add(StoreTB.Id);
-
-                                            TotalPrice += OutStoreEA * OutInventoryTb.UnitPrice; // 해당건 총 금액
-                                        }
-                                    }
-
-
-                                    if (checksum != MaterialInfo.Num)
-                                    {
-                                        /* 출고하고자 하는 개수와 실제 개수가 다름. (동시성에서 누가 먼저 뺏을경우 발생함.) */
-                                        Console.WriteLine("결과가 다름 RollBack!");
-                                        await transaction.RollbackAsync().ConfigureAwait(false);
-                                        ReturnResult.ReturnResult = -1;
-                                        return ReturnResult;
-                                    }
-
-                                    await context.SaveChangesAsync().ConfigureAwait(false);
-                                }
-                            }
-
-
-                            UseMaintenenceMaterialTb MaintenenceMaterialTB = new UseMaintenenceMaterialTb();
-
-                            MaintenenceMaterialTB.Num = MaterialInfo.Num; // 수량
-                            MaintenenceMaterialTB.Totalprice = TotalPrice; // 총  금액
-                            MaintenenceMaterialTB.MaterialTbId = MaterialInfo.MaterialID;
-                            MaintenenceMaterialTB.RoomTbId = MaterialInfo.RoomID;
-                            MaintenenceMaterialTB.MaintenanceTbId = MainteneceTB.Id;
-                            MaintenenceMaterialTB.Note = MaterialInfo.Note;
-                            MaintenenceMaterialTB.CreateDt = ThisDate;
-                            MaintenenceMaterialTB.CreateUser = creater;
-                            MaintenenceMaterialTB.UpdateDt = ThisDate;
-                            MaintenenceMaterialTB.UpdateUser = creater;
-                            MaintenenceMaterialTB.PlaceTbId = placeid;
-
-                            await context.UseMaintenenceMaterialTbs.AddAsync(MaintenenceMaterialTB).ConfigureAwait(false);
-                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                            if (!UpdateResult)
-                            {
-                                /* 저장 실패 - (트랜잭션) */
-                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                ReturnResult.ReturnResult = -1;
-                                return ReturnResult;
-                            }
-
-                            foreach (int ID in StoreID)
-                            {
-                                StoreTb? UpdateStoreInfo = await context.StoreTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == ID).ConfigureAwait(false);
-                                if (UpdateStoreInfo is null)
-                                {
-                                    await transaction.RollbackAsync().ConfigureAwait(false);
-                                    ReturnResult.ReturnResult = -2;
+                                    /* 출고 개수가 부족함. */
+                                    ReturnResult.ReturnResult = 0;
                                     return ReturnResult;
                                 }
 
-                                UpdateStoreInfo.MaintenenceMaterialTbId = MaintenenceMaterialTB.Id;
-                                context.Update(UpdateStoreInfo);
-                            }
+                                foreach (InventoryTb? inventory in InventoryList)
+                                {
+                                    if (result <= MaterialInfo.Num)
+                                    {
+                                        OutModel.Add(inventory);
+                                        result += inventory.Num;
+                                        if (result == MaterialInfo.Num)
+                                        {
+                                            break; /* 반복문 종료 */
+                                        }
+                                    }
+                                    else
+                                        break; /* 반복문 종료 */
+                                }
 
-                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                            if (!UpdateResult)
-                            {
-                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                ReturnResult.ReturnResult = -1;
-                                return ReturnResult;
-                            }
+                                List<int> StoreID = new List<int>(); // 외래키 박기위해서 리스트에 담음
+                                float TotalPrice = 0; // 총액
+
+                                if (OutModel is [_, ..])
+                                {
+                                    /* 출고개수가 충분할때만 동작. */
+                                    if (result >= MaterialInfo.Num)
+                                    {
+                                        /* 넘어온 수량이랑 실제로 빠지는 수량이랑 같은지 검사하는 CheckSum */
+                                        int checksum = 0;
+
+                                        /* 개수만큼 - 빼주면 됨 */
+                                        int outresult = 0;
+
+                                        foreach (InventoryTb OutInventoryTb in OutModel)
+                                        {
+                                            outresult += OutInventoryTb.Num;
+                                            if (MaterialInfo.Num > outresult)
+                                            {
+                                                int OutStoreEA = OutInventoryTb.Num;
+                                                checksum += OutInventoryTb.Num;
+
+                                                OutInventoryTb.Num -= OutInventoryTb.Num;
+                                                OutInventoryTb.UpdateDt = ThisDate;
+                                                OutInventoryTb.UpdateUser = creater;
 
 
-                            MainteneceTB.TotalPrice += TotalPrice;
-                            MainteneceTB.UpdateDt = ThisDate;
-                            MainteneceTB.UpdateUser = creater;
-                            context.MaintenenceHistoryTbs.Update(MainteneceTB);
-                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                            if (!UpdateResult)
-                            {
-                                await transaction.RollbackAsync().ConfigureAwait(false);
-                                ReturnResult.ReturnResult = -1;
-                                return ReturnResult;
+                                                if (OutInventoryTb.Num == 0)
+                                                {
+                                                    OutInventoryTb.DelYn = true;
+                                                    OutInventoryTb.DelDt = ThisDate;
+                                                    OutInventoryTb.DelUser = creater;
+                                                }
+                                                context.Update(OutInventoryTb);
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if (!UpdateResult)
+                                                {
+                                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                                    ReturnResult.ReturnResult = -1;
+                                                    return ReturnResult;
+                                                }
+
+                                                /* Inventory 테이블에서 해당 품목의 개수 Sum */
+                                                int thisCurrentNum = context.InventoryTbs
+                                                .Where(m => m.DelYn != true &&
+                                                            m.MaterialTbId == MaterialInfo.MaterialID &&
+                                                            m.RoomTbId == MaterialInfo.RoomID &&
+                                                            m.PlaceTbId == placeid)
+                                                .Sum(m => m.Num);
+
+                                                StoreTb StoreTB = new StoreTb();
+                                                StoreTB.Inout = 0; // 출고
+                                                StoreTB.Num = OutStoreEA; // 해당건 출고 수
+                                                StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
+                                                StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총 금액
+                                                StoreTB.InoutDate = ThisDate; // 현재 시간으로 출고
+                                                StoreTB.CreateDt = ThisDate;
+                                                StoreTB.CreateUser = creater;
+                                                StoreTB.UpdateDt = ThisDate;
+                                                StoreTB.UpdateUser = creater;
+                                                StoreTB.RoomTbId = MaterialInfo.RoomID;
+                                                StoreTB.MaterialTbId = MaterialInfo.MaterialID;
+                                                StoreTB.CurrentNum = thisCurrentNum;
+                                                StoreTB.Note = MaterialInfo.Note;
+                                                StoreTB.PlaceTbId = placeid;
+                                                StoreTB.MaintenenceHistoryTbId = MainteneceTB.Id;
+
+                                                await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if (!UpdateResult)
+                                                {
+                                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                                    ReturnResult.ReturnResult = -1;
+                                                    return ReturnResult;
+                                                }
+                                                StoreID.Add(StoreTB.Id); // ID를 추가함 --> 해당컬럼 검색후 UseMaintenenceMaterialTB 외래키 박아야 하기 때문.
+
+                                                TotalPrice += OutStoreEA * OutInventoryTb.UnitPrice; // 해당건 총 금액
+
+                                            }
+                                            else
+                                            {
+                                                int OutStoreEA = MaterialInfo.Num - (outresult - OutInventoryTb.Num);
+                                                checksum += MaterialInfo.Num - (outresult - OutInventoryTb.Num);
+                                                outresult -= MaterialInfo.Num;
+
+
+                                                OutInventoryTb.Num = outresult;
+                                                OutInventoryTb.UpdateDt = ThisDate;
+                                                OutInventoryTb.UpdateUser = creater;
+
+                                                if (OutInventoryTb.Num == 0)
+                                                {
+                                                    OutInventoryTb.DelYn = true;
+                                                    OutInventoryTb.DelDt = ThisDate;
+                                                    OutInventoryTb.DelUser = creater;
+                                                }
+
+                                                context.Update(OutInventoryTb);
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if (!UpdateResult)
+                                                {
+                                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                                    ReturnResult.ReturnResult = -1;
+                                                    return ReturnResult;
+                                                }
+
+                                                // Inventory 테이블에서 해당 품목의 개수 Sum
+                                                int thisCurrentNum = context.InventoryTbs
+                                                .Where(m => m.DelYn != true &&
+                                                            m.MaterialTbId == MaterialInfo.MaterialID &&
+                                                            m.RoomTbId == MaterialInfo.RoomID &&
+                                                            m.PlaceTbId == placeid)
+                                                .Sum(m => m.Num);
+
+                                                StoreTb StoreTB = new StoreTb();
+                                                StoreTB.Inout = 0; // 출고
+                                                StoreTB.Num = OutStoreEA; // 해당건 출고 수
+                                                StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
+                                                StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 단가
+                                                StoreTB.InoutDate = ThisDate; // 현재시간으로
+                                                StoreTB.CreateDt = ThisDate; // 현재시간
+                                                StoreTB.CreateUser = creater;
+                                                StoreTB.UpdateDt = ThisDate;
+                                                StoreTB.UpdateUser = creater;
+                                                StoreTB.RoomTbId = MaterialInfo.RoomID;
+                                                StoreTB.MaterialTbId = MaterialInfo.MaterialID;
+                                                StoreTB.CurrentNum = thisCurrentNum;
+                                                StoreTB.Note = MaterialInfo.Note;
+                                                StoreTB.PlaceTbId = placeid;
+                                                StoreTB.MaintenenceHistoryTbId = MainteneceTB.Id;
+
+                                                await context.StoreTbs.AddAsync(StoreTB).ConfigureAwait(false);
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if (!UpdateResult)
+                                                {
+                                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                                    ReturnResult.ReturnResult = -1;
+                                                    return ReturnResult;
+                                                }
+                                                StoreID.Add(StoreTB.Id);
+
+                                                TotalPrice += OutStoreEA * OutInventoryTb.UnitPrice; // 해당건 총 금액
+                                            }
+                                        }
+
+
+                                        if (checksum != MaterialInfo.Num)
+                                        {
+                                            /* 출고하고자 하는 개수와 실제 개수가 다름. (동시성에서 누가 먼저 뺏을경우 발생함.) */
+                                            Console.WriteLine("결과가 다름 RollBack!");
+                                            await transaction.RollbackAsync().ConfigureAwait(false);
+                                            ReturnResult.ReturnResult = -1;
+                                            return ReturnResult;
+                                        }
+
+                                        await context.SaveChangesAsync().ConfigureAwait(false);
+                                    }
+                                }
+
+
+                                UseMaintenenceMaterialTb MaintenenceMaterialTB = new UseMaintenenceMaterialTb();
+
+                                MaintenenceMaterialTB.Num = MaterialInfo.Num; // 수량
+                                MaintenenceMaterialTB.Totalprice = TotalPrice; // 총  금액
+                                MaintenenceMaterialTB.MaterialTbId = MaterialInfo.MaterialID;
+                                MaintenenceMaterialTB.RoomTbId = MaterialInfo.RoomID;
+                                MaintenenceMaterialTB.MaintenanceTbId = MainteneceTB.Id;
+                                MaintenenceMaterialTB.Note = MaterialInfo.Note;
+                                MaintenenceMaterialTB.CreateDt = ThisDate;
+                                MaintenenceMaterialTB.CreateUser = creater;
+                                MaintenenceMaterialTB.UpdateDt = ThisDate;
+                                MaintenenceMaterialTB.UpdateUser = creater;
+                                MaintenenceMaterialTB.PlaceTbId = placeid;
+
+                                await context.UseMaintenenceMaterialTbs.AddAsync(MaintenenceMaterialTB).ConfigureAwait(false);
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
+                                {
+                                    /* 저장 실패 - (트랜잭션) */
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    ReturnResult.ReturnResult = -1;
+                                    return ReturnResult;
+                                }
+
+                                foreach (int ID in StoreID)
+                                {
+                                    StoreTb? UpdateStoreInfo = await context.StoreTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == ID).ConfigureAwait(false);
+                                    if (UpdateStoreInfo is null)
+                                    {
+                                        await transaction.RollbackAsync().ConfigureAwait(false);
+                                        ReturnResult.ReturnResult = -2;
+                                        return ReturnResult;
+                                    }
+
+                                    UpdateStoreInfo.MaintenenceMaterialTbId = MaintenenceMaterialTB.Id;
+                                    context.Update(UpdateStoreInfo);
+                                }
+
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    ReturnResult.ReturnResult = -1;
+                                    return ReturnResult;
+                                }
+
+
+                                MainteneceTB.TotalPrice += TotalPrice;
+                                MainteneceTB.UpdateDt = ThisDate;
+                                MainteneceTB.UpdateUser = creater;
+                                context.MaintenenceHistoryTbs.Update(MainteneceTB);
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    ReturnResult.ReturnResult = -1;
+                                    return ReturnResult;
+                                }
+
                             }
                         }
 

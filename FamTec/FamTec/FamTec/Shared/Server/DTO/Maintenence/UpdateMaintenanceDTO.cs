@@ -17,16 +17,6 @@
         /// 작업자
         /// </summary>
         public string? Worker { get; set; }
-
-        /// <summary>
-        /// 작업일
-        /// </summary>
-        //public DateTime WorkDT { get; set; }
-
-        /// <summary>
-        /// 총 금액
-        /// </summary>
-        //public float TotalPrice { get; set; }
     }
 }
  

@@ -4882,6 +4882,22 @@
     "ContainingType": "FamTec.Server.Controllers.UseMaintenence.UseMaintenenceController",
     "Method": "UpdateUseMaterial",
     "RelativePath": "api/UseMaintenence/sign/UpdateUseMaterial",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.UpdateMaintenanceMaterialDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.UseMaintenence.UseMaintenenceController",
+    "Method": "UpdateUseMaterial",
+    "RelativePath": "api/UseMaintenence/sign/UpdateUseMaterial",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

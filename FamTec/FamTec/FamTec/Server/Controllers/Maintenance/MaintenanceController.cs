@@ -36,28 +36,27 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/AddSupMaintenance")]
-        public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
+        public async Task<IActionResult> AddSupMaintenance()
+        //public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
         {
             try
             {
                 // 같은품목 + 같은공간 에는 한번만
-                //AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
-                //dto.MaintanceID = 105;
-                //dto.MaterialList = new List<MaterialDTO>();
-                //dto.MaterialList.Add(new MaterialDTO
-                //{
-                //    MaterialID = 10,
-                //    Num = 5,
-                //    RoomID = 2,
-                //});
-                //dto.MaterialList.Add(new MaterialDTO
-                //{
-                //    MaterialID = 11,
-                //    Num = 10,
-                //    RoomID = 3,
-                //});
+                AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
+                dto.MaintanceID = 142;
+                dto.MaterialList = new List<MaterialDTO>();
+                dto.MaterialList.Add(new MaterialDTO
+                {
+                    MaterialID = 22,
+                    Num = 5,
+                    RoomID = 24,
+                });
+                //dto.MaintanceID = 142;// 유지보수 인덱스
+                //dto.UseMaintanceID = 80; // 사용자재 테이블 인덱스
+                //dto.Num = 10;
 
                 if (HttpContext is null)
                     return BadRequest();

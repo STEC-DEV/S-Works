@@ -61,31 +61,28 @@ namespace FamTec.Server.Controllers.UseMaintenence
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
+        [HttpGet]
         [HttpPost]
         [Route("sign/UpdateUseMaterial")]
+        //public async Task<IActionResult> UpdateUseMaterial()
         public async Task<IActionResult> UpdateUseMaterial([FromBody] UpdateMaintenanceMaterialDTO dto)
         {
             try
             {
                 //UpdateMaintenanceMaterialDTO dto = new UpdateMaintenanceMaterialDTO();
-                //dto.MaintanceID = 102;// 유지보수 인덱스
-                //dto.UseMaintanceID = 30; // 사용자재 테이블 인덱스
-                //dto.MaterialID = 10; // 자재 인덱스
-                //dto.RoomID = 2; // 공간 인덱스
-                //dto.Num = 60;
-                //dto.UnitPrice = 2000;
-                //dto.TotalPrice = dto.Num * dto.UnitPrice; //  총금액 -- 입고면 금액을 받아야함.
+                //dto.MaintanceID = 142;// 유지보수 인덱스
+                //dto.UseMaintanceID = 80; // 사용자재 테이블 인덱스
+                //dto.Num = 10;
+                
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                //if (dto.MaintanceID is 0)
-                //    return NoContent();
-                //if (dto.UseMaintanceID is 0)
-                //    return NoContent();
-                //if (dto.MaterialID is 0)
-                //    return NoContent();
+                if (dto.MaintanceID is 0)
+                    return NoContent();
+                if (dto.UseMaintanceID is 0)
+                    return NoContent();
+                
 
                 ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto).ConfigureAwait(false);
 

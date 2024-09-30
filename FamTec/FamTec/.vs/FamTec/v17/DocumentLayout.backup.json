@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\maintenance\\maintenancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\maintenance\\maintenancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\usemaintenence\\usemaintenencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\usemaintenence\\usemaintenencecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,34 +17,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\usemaintenence\\usemaintenenceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\usemaintenence\\usemaintenenceinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\maintenence\\maintancerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\maintenence\\maintancerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\maintenance\\maintenancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\maintenance\\maintenancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\maintenance\\maintanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\maintenance\\maintanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\facility\\electronicfacilitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\facility\\electronicfacilitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\material\\materialinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\material\\materialinforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\material\\materialservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\material\\materialservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\material\\materialcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\material\\materialcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,157 +26,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UseMaintenenceController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAAwGgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T10:00:19.272Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MaintanceRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
-              "ViewState": "AgIAALAAAAAAAAAAAAD4v8gAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T10:50:37.037Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "UseMaintenenceService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\UseMaintenence\\UseMaintenenceService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\UseMaintenence\\UseMaintenenceService.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\UseMaintenence\\UseMaintenenceService.cs",
               "RelativeToolTip": "FamTec\\Server\\Services\\UseMaintenence\\UseMaintenenceService.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAA5wE8AAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAD4vzoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T09:59:23.895Z",
+              "WhenOpened": "2024-09-30T13:25:10.831Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MaintanceService.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Maintenance\\MaintanceService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Maintenance\\MaintanceService.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Maintenance\\MaintanceService.cs",
-              "RelativeToolTip": "FamTec\\Server\\Services\\Maintenance\\MaintanceService.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAjwFEAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:53:51.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "MaintenanceController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Maintenance\\MaintenanceController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Maintenance\\MaintenanceController.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Maintenance\\MaintenanceController.cs",
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Maintenance\\MaintenanceController.cs",
-              "ViewState": "AgIAAJUAAAAAAAAAAAD4v6IAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAACgAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:51:35.136Z",
+              "WhenOpened": "2024-09-30T13:22:42.447Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "MaterialController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Material\\MaterialController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Material\\MaterialController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Material\\MaterialController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\Material\\MaterialController.cs",
-              "ViewState": "AgIAAJ0BAAAAAAAAAAAlwLIBAAAmAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "UseMaintenenceController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\UseMaintenence\\UseMaintenenceController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:42:12.939Z",
+              "WhenOpened": "2024-09-30T13:16:32.041Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ElectronicFacilityController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Facility\\ElectronicFacilityController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Facility\\ElectronicFacilityController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Facility\\ElectronicFacilityController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\Facility\\ElectronicFacilityController.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAAwB4AAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:35:14.467Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MaterialService.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Material\\MaterialService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Material\\MaterialService.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Material\\MaterialService.cs",
-              "RelativeToolTip": "FamTec\\Server\\Services\\Material\\MaterialService.cs",
-              "ViewState": "AgIAALQCAAAAAAAAAAAjwMICAABRAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:42:18.364Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MaterialInfoRepository.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
-              "RelativeToolTip": "FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
-              "ViewState": "AgIAAKYBAAAAAAAAAAAlwLIBAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T08:42:26.312Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Orientation": 0,
-      "VerticalTabListWidth": 256,
-      "FloatingWindowState": {
-        "Id": "f7b783d4-0508-485b-9624-a60113cbe1d1",
-        "Display": 1,
-        "X": 374,
-        "Y": 99,
-        "Width": 1551,
-        "Height": 755,
-        "WindowState": 2
-      },
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "UseMaintenenceInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
               "RelativeToolTip": "FamTec\\Server\\Repository\\UseMaintenence\\UseMaintenenceInfoRepository.cs",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAgwPUAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAACkCAAAAAAAAAAAEwDcCAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-30T09:52:16.243Z",
+              "WhenOpened": "2024-09-30T13:15:48.154Z",
               "EditorCaption": ""
             }
           ]

@@ -7,6 +7,14 @@ namespace FamTec.Server.Repository.UseMaintenence
     public interface IUseMaintenenceInfoRepository
     {
         /// <summary>
+        /// 사용자재 이력 TABLE 조회
+        /// </summary>
+        /// <param name="useid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<UseMaintenenceMaterialTb?> GetUseMaintanceInfo(int useid, int placeid);
+
+        /// <summary>
         /// 사용자재 세부 이력 리스트
         /// </summary>
         /// <param name="useid"></param>

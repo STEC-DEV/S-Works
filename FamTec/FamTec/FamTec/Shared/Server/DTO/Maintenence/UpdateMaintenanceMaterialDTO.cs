@@ -6,6 +6,10 @@
     public class UpdateMaintenanceMaterialDTO
     {
         /// <summary>
+        /// 유지보수 ID
+        /// </summary>
+        public int MaintanceID { get; set; }
+        /// <summary>
         /// 사용내역 ID
         /// </summary>
         public int UseMaintanceID { get; set; }

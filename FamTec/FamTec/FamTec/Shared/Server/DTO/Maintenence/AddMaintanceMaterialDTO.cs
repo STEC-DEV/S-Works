@@ -30,16 +30,7 @@
         /// </summary>
         public int Num { get; set; }
 
-        /// <summary>
-        /// 단가
-        /// </summary>
-        public float UnitPrice { get; set; }
-
-        /// <summary>
-        /// 총 긍맥
-        /// </summary>
-        public float TotalPrice { get; set; }
-
+   
         /// <summary>
         /// 비고
         /// </summary>
