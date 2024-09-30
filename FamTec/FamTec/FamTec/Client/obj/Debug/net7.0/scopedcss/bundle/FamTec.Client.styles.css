@@ -3176,6 +3176,25 @@
     font-weight : var(--bold-wt);
     color : var(--main-color);
 }
+/* /Pages/CommonComponents/EmptyAlarm.razor.rz.scp.css */
+
+
+.empty[b-ixdqwbnud2]
+{
+    display : flex;
+    flex-direction : column;
+    justify-content : center;
+    gap:var(--default-pd);
+    align-items : center;
+    opacity : 0.7;
+    height:100%;
+}
+
+.label[b-ixdqwbnud2]{
+    font-size : 1.3rem;
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
 /* /Pages/CommonComponents/ImageSlider.razor.rz.scp.css */
 .slider[b-kv6760d2ya] {
     display: flex;
@@ -4133,6 +4152,7 @@
     display: flex;
     flex-direction: row;
     margin: 2px;
+    transition: all .3s;
 }
 
 .text[b-ju3qontch3]{
@@ -4141,8 +4161,8 @@
     transition : all .3s;
 }
 .true[b-ju3qontch3]{
-    color:var(--main-color);
-    /*color: #56d522;*/
+    /*color:var(--main-color);*/
+    color: #56d522;
     font-weight:bold;
 }
 /* /Pages/Normal/Building/BuildingDetail/BuildingDetail.razor.rz.scp.css */
@@ -4997,7 +5017,7 @@
     display : flex;
     flex-direction:column;
     justify-content : space-between;
-    
+    gap : var(--half-pd);
     width:400px;
     max-width : 100%;
 }
@@ -5006,7 +5026,7 @@
 .buildinginfo .infosection-1[b-cmazd8ob0t]{
     flex:1;
     display : grid;
-    grid-template-columns : repeat(2,1fr);
+    grid-template-columns : repeat(4,1fr);
     grid-column-gap  : var(--default-pd);
     grid-row-gap  : var(--default-pd);
 
@@ -5968,19 +5988,21 @@
 /* /Pages/Normal/Facility/Machine/MachineMain/MachineMain.razor.rz.scp.css */
 .fac-container[b-74h6h1kpt4] {
     padding : var(--default-pd);
+    height:100%;
 }
 
-.fac-wrap[b-74h6h1kpt4]{
-    display : flex;
-    flex-direction : column;
-    gap : var(--default-pd);
+.fac-wrap[b-74h6h1kpt4] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
     padding: var(--default-pd);
     width: 100%;
-    min-height : 100%;
-    border : var(--comp-bd);
-    border-radius : var(--default-rd);
-    background-color : var(--default-color);
-    box-shadow : var(--shadow-1);
+    min-height: 100%;
+    /*height: 100%;*/
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    box-shadow: var(--shadow-1);
 }
 .fac-container .fac-header[b-74h6h1kpt4]{
     display : flex;
@@ -6003,6 +6025,9 @@
     color: var(--main-color);
 }
 
+.height[b-74h6h1kpt4]{
+    height:100%;
+}
 /* /Pages/Normal/Facility/Maintenance/AddMaintence/AddMaintenace.razor.rz.scp.css */
 
 
@@ -9008,7 +9033,7 @@ modal-table[b-0o0wpwo3cd]{
     gap : var(--default-pd);
     
     width : 100%;
-    /*height : 100%;*/
+    height : 100%;
     padding : var(--default-pd) var(--wide-pd);
 
     border : var(--comp-bd);
@@ -9072,6 +9097,10 @@ modal-table[b-0o0wpwo3cd]{
     display : flex;
     align-items :center;
     gap : var(--half-pd);
+}
+
+.height[b-my0nq2lfue]{
+    height:100%;
 }
 /* /Pages/Normal/Material/Inventory/Components/MaterialTable.razor.rz.scp.css */
 .table[b-sfcufcjpv9] {
@@ -9351,6 +9380,8 @@ modal-table[b-0o0wpwo3cd]{
     gap : var(--default-pd);
 
     padding : var(--default-pd);
+
+    height : 100%;
 }
 /* /Pages/Normal/Material/Inventory/Modal/SearchModal.razor.rz.scp.css */
 .modal[b-all74yxmu0] {
@@ -10632,10 +10663,10 @@ modal-table[b-all74yxmu0]{
 }
 
 .status-1[b-nvn02wxs3k]{
-    background-color: green;
-}
-.status-2[b-nvn02wxs3k]{
     background-color: darkgray;
+}
+.status-2[b-nvn02wxs3k] {
+    background-color: green;
 }
 /* /Pages/Normal/User/UserMain/Components/TestTable.razor.rz.scp.css */
 .table[b-cc6byb44dc] {

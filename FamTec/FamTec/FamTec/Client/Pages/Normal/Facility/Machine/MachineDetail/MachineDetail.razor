@@ -9,7 +9,11 @@
 @using FamTec.Shared.Server.DTO
 
 <div class="detail-container">
-    <FacInfo Facility=@(OriginalFacility) />
+    <FacInfo 
+        Facility=@(OriginalFacility) 
+        FacType=@FacType
+        OnLoad="OnLoadFacility"
+        />
     @if (USEREDIT)
     {
         <label class="sub-btn yappear" @onclick=@OnModal>

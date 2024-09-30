@@ -92,11 +92,6 @@
     //추가
     private async Task OnAdd()
     {
-
-        Console.WriteLine("추가" );
-        Console.WriteLine("위치명" + AddLocation.Name);
-        Console.WriteLine("건물" + AddLocation.BuildingId);
-        Console.WriteLine("층" + AddLocation.FloorId);
         try
         {
             ResponseUnit<AddLoactionDTO> resAdd = await apiManager.PostAsync<AddLoactionDTO>("Room/sign/AddRoom", AddLocation);
@@ -104,6 +99,7 @@
             {
                 await JS.InvokeVoidAsync("alert", "위치 추가 실패");
             }
+            AddLocation = new AddLoactionDTO();
             await OnLoadLaction();
         }
         catch (Exception ex)
@@ -127,6 +123,7 @@
             {
                 await JS.InvokeVoidAsync("alert", resDel.message);
             }
+            DelList.Clear();
             await OnLoadLaction();
 
         }catch(Exception ex)

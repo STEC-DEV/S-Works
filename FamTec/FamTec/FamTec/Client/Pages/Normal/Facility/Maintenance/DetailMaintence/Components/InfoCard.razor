@@ -58,7 +58,7 @@
                               @bind-Value=@UpdateMaintenance.WorkName />
                     <TextField2 Label="작업구분"
                                 Row=true
-                                Value="@(UpdateMaintenance.Type == 1? "자체 작업" : "외주 작업")" />
+                                Value="@(UpdateMaintenance.Type == 0? "자체 작업" : "외주 작업")" />
                     <InputCol Label="작업자"
                               Placeholder="작업자"
                               Row="true"
@@ -78,7 +78,7 @@
                                 Value="@Maintenance.WorkName" />
                     <TextField2 Label="작업구분"
                                 Row=true
-                                Value="@(Maintenance.Type == 1? "자체 작업" : "외주 작업")" />
+                                Value="@(Maintenance.Type == 0? "자체 작업" : "외주 작업")" />
                     <TextField2 Label="작업자"
                                 Row=true
                                 Value="@Maintenance.Worker" />
@@ -108,7 +108,7 @@
     //건물 선택 시 할당받을 위치 변수
     List<BuildingFloor> Room = new List<BuildingFloor>();
 
-    int SelectedWorkType = 1;
+    int SelectedWorkType = 0;
 
     private List<string> ImageUrl = new List<string>();//이미지 프리뷰
     bool EditMode = false;
@@ -117,12 +117,12 @@
     {
         new
         {
-            Id = 1,
+            Id = 0,
             Name = "자체 작업"
         },
         new
         {
-            Id = 2,
+            Id = 1,
             Name = "외주 작업"
         },
     };

@@ -77,8 +77,17 @@
                 await JS.InvokeVoidAsync("alert", "[Material][Info] 자재 조회 실패");
                 return;
             }
-            Material = resGet.data;
+            if (resGet.data == null)
+            {
+                Material = new List<MaterialListDTO>();
+            }
+            else
+            {
+                Material = resGet.data;
+            }
+
             FilterData = Material;
+            StateHasChanged();
 
         }catch(Exception ex)
         {

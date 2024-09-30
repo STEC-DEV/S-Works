@@ -49,6 +49,5 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// </summary>
         public List<InOutInventoryDTO> Inventory { get; set; } = new List<InOutInventoryDTO>();
 
-        public List<object> Test { get; set; } = new List<object>();
     }
 }

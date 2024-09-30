@@ -56,8 +56,7 @@
     {
         try
         {
-            Console.WriteLine("삭제 요소 아이디 : " + keyid);
-            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("BuildingGroupValue/sign/DeleteValue", keyid);
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("BuildingGroupKey/sign/DeleteKey", keyid);
             if(resDel.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resDel.message);

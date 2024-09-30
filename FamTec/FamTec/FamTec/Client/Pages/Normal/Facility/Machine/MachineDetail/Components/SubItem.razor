@@ -2,14 +2,15 @@
 
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
 @using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
 
 <div class="item-container">
     <div class="item-wrap" >
-        @if (EditMode)
+        @* @if (EditMode)
         {
             <input type="checkbox" />
-        }
+        } *@
         <label class="item-label" @onclick=@OnItemEdit>
             @item.ItemKey
         </label>
@@ -21,6 +22,10 @@
                 </span>
             }
         </div>
+        @if (EditMode)
+        {
+            <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelItem(item.Id)" />
+        }
     </div>
     @if (USEREDIT&& ItemEdit &&EditMode)
     {
@@ -43,6 +48,25 @@
         if (EditMode)
         {
             ItemEdit = !ItemEdit;
+        }
+    }
+
+    private async Task OnDelItem(int keyid)
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("FacilityGroupKey/sign/DeleteKey", keyid);
+            if (resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoad.InvokeAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "항목 삭제 에러");
         }
     }
 }

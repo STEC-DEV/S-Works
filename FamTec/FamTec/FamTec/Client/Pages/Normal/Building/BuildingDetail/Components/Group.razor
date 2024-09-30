@@ -19,7 +19,7 @@
                 {
                     <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
                     <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelGroup(GroupData.id)" />
-                    <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+                    <Button Name="닫기" Width=true Type="1" OnClick="OnEditMode" />
                 }
                 else
                 {
@@ -64,7 +64,7 @@
     {
         try
         {
-            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("BuilidngGroup/sign/DeleteGroup",groupid);
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("BuildingGroup/sign/DeleteGroup",groupid);
             if(resDel.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resDel.message);

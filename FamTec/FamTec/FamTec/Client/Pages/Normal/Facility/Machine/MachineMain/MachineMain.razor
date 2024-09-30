@@ -6,7 +6,7 @@
 @inherits PermissionComponentBase
 
 <div class="fac-container yappear">
-    <div class="fac-wrap">
+    <div class="fac-wrap @(ListFacility.Count == 0 || ListFacility == null ? "height" : "")">
         <div class="fac-header">
             <span class="title">
                 @title 설비

@@ -30,7 +30,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -194,6 +194,7 @@ namespace FamTec.Client.Middleware
         {
             string contentType = "application/json";
             string jsonResponse = await PostSendReqeustAsync(endpoint, user, contentType);
+
             return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
         }
 
@@ -202,7 +203,12 @@ namespace FamTec.Client.Middleware
         {
             string contentsType = "application/json";
             string jsonResponse = await PostSendReqeustAsync(endpoint, user, contentsType);
-            return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                // 필요한 경우 추가 옵션 설정
+            };
+            return JsonSerializer.Deserialize<ResponseUnit<T>>(jsonResponse, options);
         }
 
         //Post Image

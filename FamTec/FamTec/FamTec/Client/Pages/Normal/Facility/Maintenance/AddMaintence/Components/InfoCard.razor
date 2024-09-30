@@ -39,7 +39,7 @@
                       Placeholder="작업자"
                       Row="true"
                       @bind-Value=@Maintenance.Worker />
-            @if(Maintenance.Type == 1)
+            @if(Maintenance.Type == 0)
             {
                 <TextField2
                     Label="쇼요비용"
@@ -96,12 +96,12 @@
     {
         new
         {
-            Id = 1,
+            Id = 0,
             Name = "자체 작업"
         },
         new
         {
-            Id = 2,
+            Id = 1,
             Name = "외주 작업"
         },
     };
@@ -115,16 +115,6 @@
     //작업 구분 선택
     private async Task OnWorkTypeChange(int worktype)
     {
-
-        if (worktype == 0)
-        {
-            SelectedWorkType = 0;
-            Maintenance.Num = 0;
-            Maintenance.UnitPrice = 0;
-
-            StateHasChanged();
-            return;
-        }
         SelectedWorkType = worktype;
         Maintenance.Type = SelectedWorkType;
         await MaintenanceChanged.InvokeAsync(Maintenance);

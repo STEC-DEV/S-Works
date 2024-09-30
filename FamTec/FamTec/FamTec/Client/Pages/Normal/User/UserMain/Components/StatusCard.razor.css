@@ -14,8 +14,8 @@
 }
 
 .status-1{
-    background-color: green;
-}
-.status-2{
     background-color: darkgray;
+}
+.status-2 {
+    background-color: green;
 }

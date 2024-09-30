@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Pages.Admin.Place.PlaceDetailv2.Modal
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server.DTO
 
 
 <div class="manager yappear">
@@ -40,11 +42,11 @@
     [Parameter] public bool EditMode{ get; set; }
     [Parameter] public EventCallback<List<ManagerDTO>> OnSelect{ get; set; }
     [Parameter] public int Id { get; set; }
-
+    [Parameter] public EventCallback OnLoadManager{ get; set; }
 
     private bool _isModal = false;
     private List<ManagerDTO> _selectDelList = new List<ManagerDTO>();
-
+    private DeletePlaceManagerDTO deleteManager = new DeletePlaceManagerDTO();
 
     private void OnSelected(List<ManagerDTO> data)
     {
@@ -69,16 +71,25 @@
 
     private async void OnDelManager()
     {
+        Console.WriteLine("id"+Id);
         if(_selectDelList.Count == 0)
         {
             await JS.InvokeVoidAsync("alert", "삭제할 매니저를 선택해주세요.");
             return;
         }
 
-        foreach(var i in _selectDelList)
+        deleteManager.PlaceId = Id;
+        deleteManager.PlaceManager = _selectDelList;
+
+        ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("AdminPlace/sign/DeletePlaceManager", deleteManager);
+        if(resDel.code != 200)
         {
-            SelectList?.Remove(i);
+            await JS.InvokeVoidAsync("alert", resDel.message);
+            return;
         }
+
+        await JS.InvokeVoidAsync("alert", "매니저 수정 완료");
+        await OnLoadManager.InvokeAsync();
         StateHasChanged();
     }
 

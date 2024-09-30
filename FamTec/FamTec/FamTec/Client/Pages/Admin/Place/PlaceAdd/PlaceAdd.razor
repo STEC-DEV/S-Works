@@ -34,47 +34,38 @@
     {
         try
         {
-            Console.WriteLine("[사업장 추가 시작]");
-            Console.WriteLine("사업장 코드 : " + Place.PlaceCd);
-            Console.WriteLine("사업장 계약일자 : " + Place.ContractDt);
-            Console.WriteLine("사업장 기계권한 : " + Place.PermMachine);
-            Console.WriteLine("사업장 민원권한 : " + Place.PermVoc);
-
-            foreach (var i in ManagerList)
+            if(String.IsNullOrEmpty(Place.PlaceCd) || String.IsNullOrEmpty(Place.Name))
             {
-                Console.WriteLine("매니저 : "+i.Name);
+                await JS.InvokeVoidAsync("alert", "사업장 코드 또는 사업장명 공백입니다.");
+                return;
             }
-            Console.WriteLine("[사업장 추가 끝]");
-
-
             ResponseUnit<int?> resPlace = await apiManager.PostAsync<int?>("AdminPlace/sign/AddWorks", Place);
-            if (resPlace.code != 200 || resPlace.data == null)
+            if (resPlace.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "사업장 등록 실패");
-                /*
-                * 롤백 요청 코드 추가 예정
-                */
+                await JS.InvokeVoidAsync("alert", resPlace.message);
                 return;
             }
-            if (resPlace.data == null)
-            {
-                return;
-            }
+
             PlaceManager.PlaceId = resPlace.data;
             PlaceManager.PlaceManager = ManagerList;
-            ResponseUnit<bool> resManager = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", PlaceManager);
-            if (resManager.code != 200)
+
+            if(ManagerList.Count != 0)
             {
-                await JS.InvokeVoidAsync("alert", "매니저 등록실패");
-                return;
+                ResponseUnit<bool> resManager = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", PlaceManager);
+                if (resManager.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", resManager.message);
+                    return;
+                }
             }
-            await JS.InvokeVoidAsync("alert", "매니저 등록 성공");
+
+            await JS.InvokeVoidAsync("alert", "사업장 등록 성공");
             Navigation.NavigateTo("/admin/place");
 
             return;
         }catch(Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", "사업장 등록 에러");
         }
     }
 }

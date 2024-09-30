@@ -6,14 +6,14 @@
     <div><TextField Label="처리 상태" Value=@_status /></div>
     <div><TextField Label="접수자" Value=@Data.CreateUser /></div>
     <div><TextField Label="접수 일자" Value=@Data.CreateDT /></div>
-    <div><TextField Label="담당 부서" Value=@SelectDepartmentName /></div>
+    <div><TextField Label="담당 부서" Value=@Data.Type /></div>
     <div><TextField Label="건물명" Value=@Data.BuildingName /></div>
     <div class="full-width"><TextField Label="제목" Value=@Data.Title /></div>
     <div class="full-width"><TextField Label="내용" Value=@Data.Contents /></div>
 </div>
 
 @code {
-    [Parameter] public DetailVocDTO  Data {get;set;}
+    [Parameter] public DetailVocUserDTO Data { get; set; }
 
     private string _status;
     string SelectDepartmentName;
@@ -26,24 +26,24 @@
             1 => "처리중",
             2 => "처리 완료"
         };
-        OnConvertType();
+        // OnConvertType();
     }
 
-    private async Task OnConvertType()
-    {
-        SelectDepartmentName = Data.Type switch
-        {
-            0 => "미분류",
-            1 => "기계",
-            2 => "전기",
-            3 => "승강",
-            4 => "소방",
-            5 => "건축",
-            6 => "통신",
-            7 => "미화",
-            8 => "보안",
-            _ => "Unknown"
-        };
-    }
+    // private async Task OnConvertType()
+    // {
+    //     SelectDepartmentName = Data.Type switch
+    //     {
+    //         0 => "미분류",
+    //         1 => "기계",
+    //         2 => "전기",
+    //         3 => "승강",
+    //         4 => "소방",
+    //         5 => "건축",
+    //         6 => "통신",
+    //         7 => "미화",
+    //         8 => "보안",
+    //         _ => "Unknown"
+    //     };
+    // }
 
 }

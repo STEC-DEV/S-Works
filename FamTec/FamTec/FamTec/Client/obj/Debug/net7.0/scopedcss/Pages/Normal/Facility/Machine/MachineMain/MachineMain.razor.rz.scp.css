@@ -1,18 +1,20 @@
 .fac-container[b-74h6h1kpt4] {
     padding : var(--default-pd);
+    height:100%;
 }
 
-.fac-wrap[b-74h6h1kpt4]{
-    display : flex;
-    flex-direction : column;
-    gap : var(--default-pd);
+.fac-wrap[b-74h6h1kpt4] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
     padding: var(--default-pd);
     width: 100%;
-    min-height : 100%;
-    border : var(--comp-bd);
-    border-radius : var(--default-rd);
-    background-color : var(--default-color);
-    box-shadow : var(--shadow-1);
+    min-height: 100%;
+    /*height: 100%;*/
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    box-shadow: var(--shadow-1);
 }
 .fac-container .fac-header[b-74h6h1kpt4]{
     display : flex;
@@ -35,3 +37,6 @@
     color: var(--main-color);
 }
 
+.height[b-74h6h1kpt4]{
+    height:100%;
+}

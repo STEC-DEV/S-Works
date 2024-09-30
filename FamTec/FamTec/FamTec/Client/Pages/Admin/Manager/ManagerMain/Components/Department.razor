@@ -87,10 +87,15 @@
     {
         try
         {
+            if(DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 부서를 선택해주세요.");
+                return;
+            }
             ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Department/sign/DeleteDepartment",DelList);
             if(resDel.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "부서 삭제 실패");
+                await JS.InvokeVoidAsync("alert", resDel.message);
                 return;
             }
             await LoadDepartments();

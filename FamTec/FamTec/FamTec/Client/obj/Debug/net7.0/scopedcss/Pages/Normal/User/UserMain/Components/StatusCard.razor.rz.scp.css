@@ -14,8 +14,8 @@
 }
 
 .status-1[b-nvn02wxs3k]{
-    background-color: green;
-}
-.status-2[b-nvn02wxs3k]{
     background-color: darkgray;
+}
+.status-2[b-nvn02wxs3k] {
+    background-color: green;
 }

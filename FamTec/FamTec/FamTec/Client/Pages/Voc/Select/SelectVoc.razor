@@ -1,5 +1,5 @@
 ﻿@layout MainLayout2
-@page "/voc/select/{voccode}"
+@page "/m/voc/select/{voccode}"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
@@ -41,12 +41,12 @@
             </div>
         </div>
     </div>
-    <Button Name="확인" Type="0" OnClick="OnReturn"/>
+    @* <Button Name="확인" Type="0" OnClick="OnReturn"/> *@
 </div>
 
 @code {
     [Parameter] public string voccode { get; set; }
-    DetailVocDTO Voc = new DetailVocDTO();
+    DetailVocUserDTO Voc = new DetailVocUserDTO();
     List<VocCommentListDTO> VocCommentData = new List<VocCommentListDTO>();
 
 
@@ -59,7 +59,7 @@
     private async Task OnLoadVoc()
     {
         try{
-            ResponseUnit<DetailVocDTO> resVoc = await apiManager.GetUnitAsync<DetailVocDTO>($"Hub/VocInfo?voccode={voccode}");
+            ResponseUnit<DetailVocUserDTO> resVoc = await apiManager.GetUnitAsync<DetailVocUserDTO>($"Hub/VocInfo?voccode={voccode}");
             if(resVoc.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "민원 조회 실패");

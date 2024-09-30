@@ -12,7 +12,7 @@
     @* <InfoCard @bind-Maintenance=Maintenance OriginalMaintenance="@OriginalMaintenance" /> *@
     <InfoCard Maintenance="@Maintenance" OnLoadMaintenance="OnLoadMaintenance" />
 
-    @if (Maintenance.Type == 1)
+    @if (Maintenance.Type == 0)
     {
         @if (_useMaterialEditMode)
         {

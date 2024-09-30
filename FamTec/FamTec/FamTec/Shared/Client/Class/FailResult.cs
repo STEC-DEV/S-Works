@@ -8,14 +8,7 @@ namespace FamTec.Shared.Client.Class
 {
     public class FailResult
     {
-        /// <summary>
-        /// 반환 값
-        /// </summary>
-        public int? ReturnResult { get; set; }
-
-        /// <summary>
-        /// 실패 List
-        /// </summary>
+        public int ReturnResult { get; set; }
         public List<FailInventory> FailList { get; set; } = new List<FailInventory>();
     }
 

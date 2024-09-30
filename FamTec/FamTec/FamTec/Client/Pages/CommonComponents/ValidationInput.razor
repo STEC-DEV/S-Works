@@ -1,4 +1,5 @@
 ﻿@using System.Text.RegularExpressions
+@using FamTec.Shared.Server.DTO
 
 <div class="valid-input @(Row==true?"row":"")">
     @if (!String.IsNullOrEmpty(Label))
@@ -15,11 +16,24 @@
                @oninput=@(e =>OnInputChange(e)) />
         @if(Type == "USERID")
         {
-            <Button Name="중복검사" Width=true Type="0" />
+            <Button Name="중복검사" Width=true Type="0" OnClick="OnDuplicateCheck" />
         }
 
     </div>
-    
+    @if (Type =="USERID")
+    {
+        <div class="guide">
+            <span class="text @(idValide ? "true":"")">
+                4자 이상 30자 이하(영어/숫자, 공백 제외)
+            </span>
+        </div>
+        <div class="guide">
+            <span class="text @(idDuplication ? "true":"")">
+                중복 검사
+            </span>
+        </div>
+    }
+
     @if(Type == "PW")
     {
         <div class="guide">
@@ -63,6 +77,8 @@
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback<bool> ValidChanged { get; set; }
 
+    bool idValide = false;
+    bool idDuplication = false;
     bool pw1 = false;
     bool pw2 = false;
     bool pw_check = false;
@@ -77,10 +93,11 @@
 
     private async Task OnInputChange(ChangeEventArgs e)
     {
+        idDuplication = false;
         Value = e.Value?.ToString();
         ValidateInput(Value);
         await ValueChanged.InvokeAsync(Value);
-
+        
         //rjawmd
         bool isValid = DetermineValidity();
         await ValidChanged.InvokeAsync(isValid);
@@ -92,6 +109,9 @@
     {
         switch (Type)
         {
+            case "USERID":
+                idValide = Regex.IsMatch(value ?? "", @"^[A-Za-z0-9]{4,30}$");
+                break;
             case "PW":
                 pw1 = !string.IsNullOrWhiteSpace(value) && value.Length >= 8;
                 pw2 = Regex.IsMatch(value ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
@@ -111,6 +131,8 @@
     {
         switch (Type)
         {
+            case "USERID":
+                return idValide;
             case "PW":
                 return pw1 && pw2;
             case "PWCHECK":
@@ -119,6 +141,29 @@
                 return emailValid;
             default:
                 return !string.IsNullOrWhiteSpace(Value);
+        }
+    }
+
+    private async Task OnDuplicateCheck()
+    {
+        try
+        {
+            if (String.IsNullOrEmpty(Value))
+            {
+                await JS.InvokeVoidAsync("alert", "아이디가 공백입니다.");
+                return;
+            }
+
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"AdminUser/sign/UserIdCheck?userid={Value}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            idDuplication = resGet.data;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "아이디 중복검사 에러");
         }
     }
 }

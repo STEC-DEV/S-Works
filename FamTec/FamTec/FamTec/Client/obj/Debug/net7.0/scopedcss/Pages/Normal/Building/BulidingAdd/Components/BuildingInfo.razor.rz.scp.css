@@ -37,7 +37,7 @@
     display : flex;
     flex-direction:column;
     justify-content : space-between;
-    
+    gap : var(--half-pd);
     width:400px;
     max-width : 100%;
 }
@@ -46,7 +46,7 @@
 .buildinginfo .infosection-1[b-cmazd8ob0t]{
     flex:1;
     display : grid;
-    grid-template-columns : repeat(2,1fr);
+    grid-template-columns : repeat(4,1fr);
     grid-column-gap  : var(--default-pd);
     grid-row-gap  : var(--default-pd);
 

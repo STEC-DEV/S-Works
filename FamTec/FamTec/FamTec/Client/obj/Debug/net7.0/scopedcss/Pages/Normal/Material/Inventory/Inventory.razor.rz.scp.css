@@ -6,4 +6,6 @@
     gap : var(--default-pd);
 
     padding : var(--default-pd);
+
+    height : 100%;
 }

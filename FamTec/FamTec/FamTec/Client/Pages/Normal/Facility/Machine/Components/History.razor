@@ -120,6 +120,7 @@
             }
             await OnLoadMaintenance();
             OnDelMode();
+            DelMaintenance.MaintanceID.Clear();
             StateHasChanged();
 
         }catch(Exception ex)

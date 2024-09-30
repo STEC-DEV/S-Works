@@ -71,7 +71,7 @@
 
     private async Task UpdateSelectName()
     {
-        if (Value != 0 && SelectData != null && SelectData.Any())
+        if (SelectData != null && SelectData.Any())
         {
             // var selectedItem = SelectData.FirstOrDefault(item => (int)item.GetType().GetProperty("Id").GetValue(item) == Value);
             // 선택된 항목을 가져옴
@@ -115,18 +115,23 @@
 
     public async Task OnSelectRow(object row)
     {
-        if (row == null)
-        {
-            Value = 0;
-            SelectName = "Select";
-        }
-        else
-        {
-            int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-            Value = id;
-            SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-            OnReturnName(SelectName);
-        }
+        // if (row == null)
+        // {
+        //     Value = 0;
+        //     SelectName = "Select";
+        // }
+        // else
+        // {
+        //     // int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+        //     // Value = id;
+        //     // SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+        //     // OnReturnName(SelectName);
+        // }
+        int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+        Value = id;
+        SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+        OnReturnName(SelectName);
+
         OnActive();
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);

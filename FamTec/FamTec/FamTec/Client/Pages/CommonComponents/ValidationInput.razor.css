@@ -44,6 +44,7 @@
     display: flex;
     flex-direction: row;
     margin: 2px;
+    transition: all .3s;
 }
 
 .text{
@@ -52,7 +53,7 @@
     transition : all .3s;
 }
 .true{
-    color:var(--main-color);
-    /*color: #56d522;*/
+    /*color:var(--main-color);*/
+    color: #56d522;
     font-weight:bold;
 }

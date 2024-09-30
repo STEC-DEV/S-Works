@@ -54,18 +54,18 @@
                               Placeholder="형식"
                               Row="true"
                               @bind-Value=@UpdateFacility.Type />
-                    <SelectField T="BuildingFloorListDTO"
+                    <SelectField T="PlaceRoomListDTO"
                                  Key="building"
-                                 SelectData="Building"
+                                 SelectData="PlaceLocation"
                                  @bind-Value="SelectedBuildingId"
                                  OnChange="OnBuildingChange"
                                  Label="건물"
                                  Row="true"
                                  EditMode="true" />
-                    @if (Room != null && Room.Any() && SelectedBuildingId != 0)
+                    @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
                     {
                         <SelectField Key="floor"
-                                     SelectData="Room"
+                                     SelectData="PlaceRoom"
                                      @bind-Value="SelectedRoomId"
                                      Label="위치"
                                      Row="true"
@@ -133,6 +133,7 @@
 @code {
     // [Parameter]public FacilityDetailDTO Facility { get; set; }
     private FacilityDetailDTO _facility;
+    [Parameter] public string FacType { get; set; }
 
     [Parameter]
     public FacilityDetailDTO Facility
@@ -148,17 +149,17 @@
         }
     }
     [Parameter] public EventCallback<FacilityDetailDTO> FacilityChanged { get; set; }
+    [Parameter] public EventCallback OnLoad{ get; set; }
 
     //원본 데이터
     FacilityDetailDTO OriginalFacility;
     //수정본 데이터
     FacilityDetailDTO UpdateFacility;
 
-    //건물, 위치정보 조회 변수
-    List<BuildingFloorListDTO> Building = new List<BuildingFloorListDTO>();
-    BuildingFloorListDTO SelectBuilding = new BuildingFloorListDTO();
-    //건물 선택 시 할당받을 위치 변수
-    List<BuildingFloor> Room = new List<BuildingFloor>();
+    //건물 위치
+    List<PlaceRoomListDTO> PlaceLocation = new List<PlaceRoomListDTO>();
+    PlaceRoomListDTO PlaceLocationSelect = new PlaceRoomListDTO();
+    List<PlaceRoom> PlaceRoom = new List<PlaceRoom>();
 
     int SelectedBuildingId;
     int SelectedRoomId;
@@ -169,7 +170,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await OnLoadBuilding();
+        await OnLoadBuilginRoom();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -182,56 +183,69 @@
     {
         try
         {
-            Console.WriteLine("장비제원 수정 시작");
-            Console.WriteLine("설치년월 : " + UpdateFacility.EquipDT);
-            Console.WriteLine("위치 : " + UpdateFacility.RoomId);
-            Console.WriteLine("원본 위치 : " + OriginalFacility.RoomId);
-            Console.WriteLine("이름 : " + UpdateFacility.RoomName);
-            Console.WriteLine("장비제원 수정 끝");
+            ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>($"{FacType}Facility/sign/Update{FacType}Facility", UpdateFacility);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+
+            await OnLoad.InvokeAsync();
+            OnEdit();
+            StateHasChanged();
         }
         catch (Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", "장비 수정 에러");
         }
     }
 
-    private async Task OnLoadBuilding()
+    //건물 + 위치 + 공간 조회
+    private async Task OnLoadBuilginRoom()
     {
         try
         {
-            ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
+            ResponseList<PlaceRoomListDTO> resGet = await apiManager.GetListAsync<PlaceRoomListDTO>("Room/sign/GetPlaceRoomGroup");
             if (resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
-            Building = resGet.data;
+            PlaceLocation = resGet.data;
 
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-            Console.WriteLine("[자재][입고등록] 건물 조회 에러!" + ex);
-        }
 
+        }
     }
+
 
     //건물선택
     private async Task OnBuildingChange(int buildingId)
     {
-
+        PlaceRoom.Clear();
         if (buildingId == 0)
         {
-            Room = null;
+     
             SelectedRoomId = 0;
             StateHasChanged();
             return;
         }
+        
         SelectedBuildingId = buildingId;
 
-        SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
-
-        Room = SelectBuilding.FloorList;
+        // SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        //해당건물에 층전체 반복하여 위치 리스트 추가
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+        // Room = SelectBuilding.FloorList;
 
         SelectedRoomId = 0; // Reset floor selection when building changes
         StateHasChanged();
