@@ -84,7 +84,6 @@ namespace FamTec.Server.Controllers.Maintenance
                     return BadRequest();
                 }
 
-
                 ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();

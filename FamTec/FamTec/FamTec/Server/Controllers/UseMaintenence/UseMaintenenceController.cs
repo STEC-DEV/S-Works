@@ -22,7 +22,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
         }
 
         /// <summary>
-        /// 사용자재 상세보기
+        /// 사용자재 상세보기 - 재고수량 있음.
         /// </summary>
         /// <param name="useid"></param>
         /// <returns></returns>
