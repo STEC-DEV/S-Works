@@ -36,31 +36,27 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddSupMaintenance")]
-        public async Task<IActionResult> AddSupMaintenance()
-        //public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
+        //public async Task<IActionResult> AddSupMaintenance()
+        public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
         {
             try
             {
                 // 같은품목 + 같은공간 에는 한번만
-                AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
-                dto.MaintanceID = 142;
-                dto.MaterialList = new List<MaterialDTO>();
-                dto.MaterialList.Add(new MaterialDTO
-                {
-                    MaterialID = 22,
-                    Num = 5,
-                    RoomID = 24,
-                });
-                //dto.MaintanceID = 142;// 유지보수 인덱스
-                //dto.UseMaintanceID = 80; // 사용자재 테이블 인덱스
-                //dto.Num = 10;
-
+                //AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
+                //dto.MaintanceID = 142;
+                //dto.MaterialList = new List<MaterialDTO>();
+                //dto.MaterialList.Add(new MaterialDTO
+                //{
+                //    MaterialID = 22,
+                //    RoomID = 24,
+                //    Num = 5,
+                //});
+                
                 if (HttpContext is null)
                     return BadRequest();
-
 
                 if (dto.MaintanceID is 0)
                     return NoContent();
@@ -78,11 +74,21 @@ namespace FamTec.Server.Controllers.Maintenance
                         return NoContent();
                 }
 
+                bool hasDuplicates = dto.MaterialList
+                .GroupBy(m => new { m.MaterialID, m.RoomID })
+                .Any(g => g.Count() > 1);
+
+                if (hasDuplicates)
+                {
+                    // MaterialID와 RoomID가 2개이상 있는지 검사
+                    return BadRequest();
+                }
+
+
                 ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
             
-                  
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 422)
@@ -236,11 +242,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 //        Note = "출고등록"
                 //    }
                 //});
-
                 //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
                 //{
                 //    InOut = 0,
-                //    MaterialID = 11,
+                //    MaterialID = 10,
                 //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
                 //    {
                 //        InOutDate = DateTime.Now,
@@ -249,6 +254,7 @@ namespace FamTec.Server.Controllers.Maintenance
                 //        Note = "출고등록"
                 //    }
                 //});
+
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -265,10 +271,21 @@ namespace FamTec.Server.Controllers.Maintenance
                 if(dto.FacilityID == 0)
                     return NoContent();
 
-                if (dto.Type == 0)
+                // 자체 작업
+                if (dto.Type == 0) 
                 {
                     if (dto.Inventory is null || !dto.Inventory.Any())
                         return NoContent();
+
+                    bool hasDuplicates = dto.Inventory
+                    .GroupBy(i => new { i.MaterialID, RoomID = i.AddStore?.RoomID })
+                    .Any(g => g.Count() > 1);
+                
+                    if (hasDuplicates)
+                    {
+                        // MaterialID와 RoomID가 2개이상 있는지 검사
+                        return BadRequest();
+                    }
                 }
 
                 ResponseUnit<FailResult?> model = await MaintanceService.AddMaintanceService(HttpContext, dto).ConfigureAwait(false);

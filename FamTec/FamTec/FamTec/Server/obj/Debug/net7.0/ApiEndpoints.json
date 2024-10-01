@@ -3509,16 +3509,10 @@
     "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
     "Method": "AddMaintenence",
     "RelativePath": "api/Maintenance/sign/AddMaintenance",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Maintenence.AddMaintenanceDTO",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
