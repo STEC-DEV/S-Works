@@ -2,20 +2,31 @@
 {
     public class DayEnergyDTO
     {
-        public int MaterItemId { get; set; }
+        /// <summary>
+        /// 검침기 ID
+        /// </summary>
+        public int MeterID { get; set; }
         
+        /// <summary>
+        /// 계약종별
+        /// </summary>
         public string? ContractName { get; set; }
 
         public string? Name { get; set; }
 
         public float? MeterUseAmountSum { get; set; }
 
+        /// <summary>
+        /// 총합계
+        /// </summary>
+        public float? TotalPrice { get; set; }
+
         public List<DayTotalEnergyDTO> TotalList { get; set; } = new List<DayTotalEnergyDTO>();
     }
 
     public class DayTotalEnergyDTO
     {
-        public int MaterItemId { get; set; }
+        public int MeterID { get; set; }
         public string? ContractName { get; set; }
 
         public string? Name { get; set; }

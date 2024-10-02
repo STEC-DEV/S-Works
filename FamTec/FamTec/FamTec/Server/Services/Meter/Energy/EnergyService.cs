@@ -37,6 +37,11 @@ namespace FamTec.Server.Services.Meter.Energy
                 if (String.IsNullOrWhiteSpace(placeidx) || String.IsNullOrWhiteSpace(creater))
                     return new ResponseUnit<AddEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+
+                EnergyDayUsageTb? AlreadyCheck = await EnergyInfoRepository.GetUsageDaysInfo(dto.MeterID, dto.MeterDate.Year, dto.MeterDate.Month, dto.MeterDate.Day);
+                if (AlreadyCheck is not null)
+                    return new ResponseUnit<AddEnergyDTO>() { message = "이미 값이 있습니다.", data = null, code = 200 };
+
                 EnergyDayUsageTb EnergyUserTB = new EnergyDayUsageTb()
                 {
                     MeterDt = dto.MeterDate,
@@ -44,6 +49,9 @@ namespace FamTec.Server.Services.Meter.Energy
                     Amount2 = dto.Amount2,
                     Amount3 = dto.Amount3,
                     TotalAmount = dto.TotalAmount,
+                    Year = dto.MeterDate.Year,
+                    Month = dto.MeterDate.Month,
+                    Days = dto.MeterDate.Day,
                     MeterItemId = dto.MeterID,
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
@@ -53,7 +61,7 @@ namespace FamTec.Server.Services.Meter.Energy
 
                 EnergyDayUsageTb? model = await EnergyInfoRepository.AddAsync(EnergyUserTB);
                 if (model is not null)
-                    return new ResponseUnit<AddEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+                    return new ResponseUnit<AddEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 else
                     return new ResponseUnit<AddEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
             }
@@ -66,195 +74,7 @@ namespace FamTec.Server.Services.Meter.Energy
 
    
 
-        /// <summary>
-        /// 선택된 년도의 달의 일별 합산 조회
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="SearchDate"></param>
-        /// <returns></returns>
-        public async Task<ResponseList<DayEnergyDTO>> GetMonthListService(HttpContext context, DateTime SearchDate)
-        {
-            if (context is null)
-                return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-            string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-            if (String.IsNullOrWhiteSpace(placeidx))
-                return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-            List<DayEnergyDTO>? model = await EnergyInfoRepository.GetMonthList(SearchDate, Int32.Parse(placeidx));
-
-            if (model is not null)
-                return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-            else
-                return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-        }
-
-        /// <summary>
-        /// 선택된 년도의 선택된 검침기의 달의 일별 합산 조회
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="SearchDate"></param>
-        /// <param name="MeterId"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseList<DayEnergyDTO>> GetMonthSelectListService(HttpContext context, DateTime SearchDate, List<int> MeterId)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<DayEnergyDTO>? model = await EnergyInfoRepository.GetMeterMonthList(SearchDate, MeterId, Int32.Parse(placeidx));
-
-                if (model is not null)
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-                else
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseList<DayEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
-
-        /// <summary>
-        /// 선택된 년도의 월별 통계
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        public async Task<ResponseList<YearsTotalEnergyDTO>> GetYearListService(HttpContext context, int year)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<YearsTotalEnergyDTO>? model = await EnergyInfoRepository.GetYearsList(year, Int32.Parse(placeidx));
-                
-                if (model is not null && model.Any())
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-                else
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<YearsTotalEnergyDTO>(), code = 200 };
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseList<YearsTotalEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
-
-        /// <summary>
-        /// 선택된 년도의 선택된 검침기의 월별 통계
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="MeterId"></param>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        public async Task<ResponseList<YearsTotalEnergyDTO>> GetYearSelectListService(HttpContext context, List<int> MeterId, int year)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<YearsTotalEnergyDTO>? model = await EnergyInfoRepository.GetMeterYearsList(year, MeterId, Int32.Parse(placeidx));
-
-                if (model is not null && model.Any())
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-                else
-                    return new ResponseList<YearsTotalEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<YearsTotalEnergyDTO>(), code = 200 };
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseList<YearsTotalEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
-
-        /// <summary>
-        /// 선택된 일자 사이의 데이터 리스트 전체출력
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
-        /// <returns></returns>
-        public async Task<ResponseList<DayEnergyDTO>> GetDaysListService(HttpContext context, DateTime StartDate, DateTime EndDate)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<DayEnergyDTO>? model = await EnergyInfoRepository.GetDaysList(StartDate, EndDate, Int32.Parse(placeidx));
-
-                if (model is not null)
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-                else
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseList<DayEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
-
-        /// <summary>
-        /// 선택된 검침기의 선택된 일자 사이의 데이터 리스트 출력 - 선택
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="MeterId"></param>
-        /// <param name="StartDate"></param>
-        /// <param name="EndDate"></param>
-        /// <returns></returns>
-        public async Task<ResponseList<DayEnergyDTO>> GetDaysSelectListService(HttpContext context, List<int> MeterId, DateTime StartDate, DateTime EndDate)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                if (String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<DayEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<DayEnergyDTO>? model = await EnergyInfoRepository.GetMeterDaysList(StartDate, EndDate, MeterId, Int32.Parse(placeidx));
-
-                if (model is not null)
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
-                else
-                    return new ResponseList<DayEnergyDTO>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                return new ResponseList<DayEnergyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
+     
 
     }
 }

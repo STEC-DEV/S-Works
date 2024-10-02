@@ -1,10 +1,8 @@
-﻿using FamTec.Server.Middleware;
-using FamTec.Server.Services;
+﻿using FamTec.Server.Services;
 using FamTec.Server.Services.Meter;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Meter
@@ -29,12 +27,18 @@ namespace FamTec.Server.Controllers.Meter
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        //[HttpPost]
+        [HttpGet]
         [Route("sign/AddMeter")]
-        public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
+        public async Task<IActionResult> AddMeter()
+        //public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
         {
             try
             {
+                AddMeterDTO dto = new AddMeterDTO();
+                dto.Name = "BCD123";
+                dto.Category = "보일러";
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -44,8 +48,13 @@ namespace FamTec.Server.Controllers.Meter
                 if(String.IsNullOrWhiteSpace(dto.Category))
                     return NoContent();
 
-                if(dto.Category.Equals("전기") && dto.ContractTbId == 0 || dto.ContractTbId is null)
-                    return NoContent();
+                if(dto.Category.Equals("전기"))
+                {
+                    if(dto.ContractTbId == 0 || dto.ContractTbId is null)
+                    {
+                        return NoContent();
+                    }
+                }
 
                 ResponseUnit<AddMeterDTO> model = await MeterService.AddMeterService(HttpContext, dto);
                 if (model is null)

@@ -78,6 +78,7 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
 
@@ -92,7 +93,6 @@ public partial class WorksContext : DbContext
         {
             entity.HasNoDiscriminator();
         });
-
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -379,6 +379,7 @@ public partial class WorksContext : DbContext
             entity.ToTable("energy_day_usage_tb", tb => tb.HasComment("에너지 검침 기록 - 일별"));
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.Days).HasComment("일");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.MeterDt).HasComment("검침일자");
             entity.Property(e => e.Month).HasComment("월");
@@ -403,8 +404,12 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.TotalPrice)
                 .HasDefaultValueSql("'0'")
                 .HasComment("청구금액");
-            entity.Property(e => e.TotalUsage).HasDefaultValueSql("'0'");
-            entity.Property(e => e.UnitPrice).HasComment("단가금액");
+            entity.Property(e => e.TotalUsage)
+                .HasDefaultValueSql("'0'")
+                .HasComment("월 총사용량");
+            entity.Property(e => e.UnitPrice)
+                .HasDefaultValueSql("'0'")
+                .HasComment("단가금액");
             entity.Property(e => e.Year).HasComment("년도");
 
             entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs)
@@ -877,6 +882,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

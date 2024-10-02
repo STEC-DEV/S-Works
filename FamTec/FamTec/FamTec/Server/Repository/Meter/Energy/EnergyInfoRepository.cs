@@ -4,6 +4,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Meter.Energy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Meter.Energy
@@ -20,6 +21,38 @@ namespace FamTec.Server.Repository.Meter.Energy
         }
 
         /// <summary>
+        /// 해당 년-월-일 값 뽑아오기
+        ///     - 어떻게 쓰일진 모르겠지만 아직까진 해당날짜에 데이터가 있는지 여부
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        public async Task<EnergyDayUsageTb?> GetUsageDaysInfo(int meterid, int year, int month, int day)
+        {
+            try
+            {
+                EnergyDayUsageTb? EnergyUseTB = await context.EnergyDayUsageTbs
+                    .FirstOrDefaultAsync(m => m.MeterItemId == meterid && 
+                                              m.Year == year && 
+                                              m.Month == month && 
+                                              m.Days == day && 
+                                              m.DelYn != true)
+                    .ConfigureAwait(false);
+
+                if (EnergyUseTB is not null)
+                    return EnergyUseTB;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
+
+        /// <summary>
         /// 일일 검침값 입력 
         /// - 해당년도 월별 합산으로 들어감.
         /// </summary>
@@ -30,6 +63,8 @@ namespace FamTec.Server.Repository.Meter.Energy
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            bool SaveResult = false;
+
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
             return await strategy.ExecuteAsync(async () =>
             {
@@ -37,15 +72,14 @@ namespace FamTec.Server.Repository.Meter.Energy
                 // 강제로 디버깅포인트 잡음.
                 Debugger.Break();
 #endif
-
                 using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
                 {
                     try
                     {
+                        // 일별 데이터 저장
                         await context.EnergyDayUsageTbs.AddAsync(model);
-
-                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!AddResult)
+                        SaveResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if (!SaveResult)
                         {
                             await transaction.RollbackAsync();
                             return null;
@@ -55,14 +89,17 @@ namespace FamTec.Server.Repository.Meter.Energy
                         EnergyMonthUsageTb? MonthTBInfo = await context.EnergyMonthUsageTbs
                             .FirstOrDefaultAsync(m => m.DelYn != true &&
                             m.MeterItemId == model.MeterItemId &&
-                            m.Year == model.MeterDt.Year);
+                            m.Year == model.MeterDt.Year &&
+                            m.Month == model.MeterDt.Month)
+                            .ConfigureAwait(false);
 
-                        // 월별
+                        // 일별데이터 저장 후 월별데이터를 저장해줘야함.
+                        // 월별 데이터가 없다 -- 처음
                         if (MonthTBInfo is null)
                         {
                             MonthTBInfo = new EnergyMonthUsageTb
                             {
-                                TotalUsage = 0,
+                                TotalUsage = model.TotalAmount,
                                 Year = model.MeterDt.Year,
                                 Month = model.MeterDt.Month,
                                 CreateDt = DateTime.Now,
@@ -72,55 +109,59 @@ namespace FamTec.Server.Repository.Meter.Energy
                                 MeterItemId = model.MeterItemId
                             };
 
-                            await context.EnergyMonthUsageTbs.AddAsync(MonthTBInfo);
-                            AddResult = await context.SaveChangesAsync() > 0 ? true : false;
-                            if (!AddResult)
+                            await context.EnergyMonthUsageTbs.AddAsync(MonthTBInfo).ConfigureAwait(false);
+                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                            if (SaveResult)
                             {
-                                await transaction.RollbackAsync();
+                                await transaction.CommitAsync().ConfigureAwait(false);
+                                return model;
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync().ConfigureAwait(false);
                                 return null;
                             }
                         }
-
-                        float amount_result = await context.EnergyDayUsageTbs
+                        else // 월별 데이터가 있다 --> 월별 합산 해줘야함.
+                        {
+                            float amount_result = await context.EnergyDayUsageTbs
                             .Where(m => m.DelYn != true &&
                                         m.MeterItemId == model.MeterItemId &&
                                         m.MeterDt.Year == model.MeterDt.Year &&
                                         m.MeterDt.Month == model.MeterDt.Month)
-                            .SumAsync(m => m.TotalAmount);
+                            .SumAsync(m => m.TotalAmount)
+                            .ConfigureAwait(false);
 
-                        EnergyMonthUsageTb? MonthUsageTB = await context.EnergyMonthUsageTbs
-                            .FirstOrDefaultAsync(m => m.DelYn != true && m.Year == model.MeterDt.Year && m.Month == model.MeterDt.Month && m.MeterItemId == model.MeterItemId);
-
-                        if (MonthUsageTB is null)
-                        {
-                            await transaction.RollbackAsync();
-                            return null;
+                            MonthTBInfo.TotalUsage = amount_result;
+                            context.EnergyMonthUsageTbs.Update(MonthTBInfo);
+                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                            if(SaveResult)
+                            {
+                                await transaction.CommitAsync().ConfigureAwait(false);
+                                return model;
+                            }
+                            else
+                            {
+                                await transaction.RollbackAsync().ConfigureAwait(false);
+                                return null;
+                            }
                         }
 
-                        MonthUsageTB.TotalUsage = amount_result;
-                        context.EnergyMonthUsageTbs.Update(MonthTBInfo);
-
-                        bool UpdateResult = await context.SaveChangesAsync() > 0 ? true : false;
-                        if (!UpdateResult)
-                        {
-                            await transaction.RollbackAsync();
-                            return null;
-                        }
-
-                        await transaction.CommitAsync();
-                        return model;
                     }
                     catch (Exception ex)
                     {
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+                        throw;
                     }
                 }
             });
+            
         }
 
         /// <summary>
-        /// 해당년-월 데이터 리스트 출력 - 월간 전체
+        /// 해당년-월 데이터 리스트 출력 
+        /// - 검침기 크로스조인
+        /// - 해당월의 일별데이터 전체반환
         /// </summary>
         /// <param name="SearchDate"></param>
         /// <returns></returns>
@@ -143,73 +184,25 @@ namespace FamTec.Server.Repository.Meter.Energy
                                 m.ContractTbId != null)
                     .ToListAsync();
 
+
+
+                //.Where(m => MeterId.Contains(m.MeterItemId) &&
+                //                         m.PlaceTbId == placeid && 
+                //                         m.DelYn != true)
+
                 if (allMeterItems is null || !allMeterItems.Any())
                     return null;
 
+                List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
+                    .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId)).ToListAsync();
+
+
+
+
                 // 그룹 만들 데이터 크로스 조인
-                List<DayTotalEnergyDTO>? crossJoinResult = (from AllDateList in allDates
-                                                            from AllMeterList in allMeterItems
-                                                            join a in
-                                                                (from EnergyList in context.EnergyDayUsageTbs
-                                                                join MeterItemList in context.MeterItemTbs
-                                                                on EnergyList.MeterItemId equals MeterItemList.MeterItemId
-                                                                where context.MeterItemTbs.Any(mt => mt.PlaceTbId == placeid &&
-                                                                                                     mt.MeterItemId == MeterItemList.MeterItemId)
-                                                                group EnergyList by new
-                                                                {
-                                                                    EnergyList.MeterItemId,
-                                                                    EnergyList.MeterDt.Date 
-                                                                }into g
-                                                                select new
-                                                                {
-                                                                    g.Key.MeterItemId,
-                                                                    DT = g.Key.Date,
-                                                                    TotalUseAmount = g.Sum(x => x.TotalAmount)
-                                                                })
-                                                            on new 
-                                                            {
-                                                                AllMeterList.MeterItemId,
-                                                                DT = AllDateList 
-                                                            }
-                                                            equals new 
-                                                            {
-                                                                a.MeterItemId, 
-                                                                a.DT 
-                                                            } into gj
-                                                            from sub in gj.DefaultIfEmpty()
-                                                            join ContractTypeTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid)
-                                                            on AllMeterList.ContractTbId equals ContractTypeTB.Id
-                                                            select new DayTotalEnergyDTO
-                                                            {
-                                                                MaterItemId = AllMeterList.MeterItemId,
-                                                                ContractName = ContractTypeTB.Name,
-                                                                Name = AllMeterList.Name,
-                                                                Date = AllDateList,
-                                                                TotalUseAmount = sub?.TotalUseAmount ?? 0
-                                                            })
-                                                            .ToList();
 
-                if (crossJoinResult is null || !crossJoinResult.Any())
-                    return null;
 
-                // 그룹화
-                List<DayEnergyDTO>? groupedResult = crossJoinResult
-                    .GroupBy(x => new { x.MaterItemId, x.Name, x.ContractName })
-                    .Select(g => new DayEnergyDTO
-                    {
-                        MaterItemId = g.Key.MaterItemId,
-                        ContractName = g.Key.ContractName,
-                        Name = g.Key.Name,
-                        TotalList = g.OrderBy(x => x.Date).ToList(),
-                        MeterUseAmountSum = g.Sum(x => x.TotalUseAmount)
-                    })
-                    .OrderBy(x => x.MaterItemId)
-                    .ToList();
-
-                if (groupedResult is not null && groupedResult.Any())
-                    return groupedResult;
-                else
-                    return null;
+                return null;
             }
             catch (Exception ex)
             {
@@ -728,5 +721,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                 throw new ArgumentNullException();
             }
         }
+
+     
     }
 }
