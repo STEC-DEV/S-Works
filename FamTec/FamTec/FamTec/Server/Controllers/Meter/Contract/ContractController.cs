@@ -10,7 +10,6 @@ namespace FamTec.Server.Controllers.Meter.Contract
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class ContractController : ControllerBase
     {
         private IContractService ContractService;

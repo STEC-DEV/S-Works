@@ -117,13 +117,13 @@ namespace FamTec.Server.Controllers.Store
                 //dto.Add(new InOutInventoryDTO()
                 //{
                 //InOut = 0,
-                //MaterialID = 10,
+                //MaterialID = 22,
                 //AddStore = new AddStoreDTO()
                 //{
                 //InOutDate = DateTime.Now,
                 //Note = "출고데이터_1",
-                //Num = 44,
-                //RoomID = 2,
+                //Num = 15,
+                //RoomID = 24,
                 //}
                 //});
 
@@ -131,13 +131,13 @@ namespace FamTec.Server.Controllers.Store
                 //dto.Add(new InOutInventoryDTO()
                 //{
                 //InOut = 0,
-                //MaterialID = 11,
+                //MaterialID = 22,
                 //AddStore = new AddStoreDTO()
                 //{
                 //InOutDate = DateTime.Now,
                 //Note = "출고데이터_1",
-                //Num = 2,
-                //RoomID = 3,
+                //Num = 15,
+                //RoomID = 24,
                 //}
                 //});
 

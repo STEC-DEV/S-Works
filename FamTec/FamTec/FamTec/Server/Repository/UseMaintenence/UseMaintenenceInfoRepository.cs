@@ -1,15 +1,12 @@
-﻿using DocumentFormat.OpenXml.Drawing.Spreadsheet;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
 using System.Diagnostics;
-using System.Transactions;
 
 namespace FamTec.Server.Repository.UseMaintenence
 {
@@ -141,8 +138,6 @@ namespace FamTec.Server.Repository.UseMaintenence
                 throw;
             }
         }
-
-        
 
         /// <summary>
         /// 해당건 사용자재테이블에서 사용된 품목의 출고개수 반환 
@@ -364,7 +359,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         StoreTB.Num = OutStoreEA; // 해당건 출고 수
                                         StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                         StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총금액
-                                                                                                    //StoreTB.InoutDate = model.AddStore.InOutDate; -- 출고일 어떻게할것인지 ?
+                                        StoreTB.InoutDate = ThisDate;
                                         StoreTB.CreateDt = ThisDate;
                                         StoreTB.CreateUser = updater;
                                         StoreTB.UpdateDt = ThisDate;
@@ -427,7 +422,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         StoreTB.Num = OutStoreEA; // 해당건 출고 수
                                         StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                         StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총금액
-                                                                                                    //StoreTB.InoutDate = model.AddStore.InOutDate; -- 출고일 어떻게할것인지 ?
+                                        StoreTB.InoutDate = ThisDate;
                                         StoreTB.CreateDt = ThisDate;
                                         StoreTB.CreateUser = updater;
                                         StoreTB.UpdateDt = ThisDate;

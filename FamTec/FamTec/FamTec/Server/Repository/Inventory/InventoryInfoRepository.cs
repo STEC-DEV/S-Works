@@ -889,37 +889,6 @@ namespace FamTec.Server.Repository.Inventory
             });
         }
 
-        // IN - OUT시 이용가능한지 CHECK
-        public async Task<bool?> AvailableCheck(int placeid, int roomid, int materialid)
-        {
-            try
-            {
-                List<InventoryTb>? Occupant = await context.InventoryTbs
-                      .Where(m => m.PlaceTbId == placeid &&
-                      m.RoomTbId == roomid &&
-                      m.MaterialTbId == materialid &&
-                      m.DelYn != true)
-                      .ToListAsync()
-                      .ConfigureAwait(false);
-
-                List<InventoryTb>? check = Occupant.Where(m => !String.IsNullOrWhiteSpace(m.RowVersion!.ToString())).ToList();
-
-                if (check is [_, ..])
-                    return false;
-                else
-                    return true;
-            }
-            catch (MySqlException mysqlEx)
-            {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw;
-            }
-        }
 
         /// <summary>
         /// 사업장 - 품목ID에 해당하는 재고리스트 반환

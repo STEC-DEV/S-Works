@@ -1019,7 +1019,7 @@ namespace FamTec.Server.Repository.Maintenence
                                     NewStoreTB.CurrentNum = StoreTB.Num + thisCurrentNum;
                                     NewStoreTB.PlaceTbId = placeid;
                                     NewStoreTB.RoomTbId = StoreTB.RoomTbId;
-                                    NewStoreTB.MaterialTbId = StoreTB.RoomTbId;
+                                    NewStoreTB.MaterialTbId = StoreTB.MaterialTbId;
 
                                     context.StoreTbs.Add(NewStoreTB);
                                     UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
@@ -1095,7 +1095,6 @@ namespace FamTec.Server.Repository.Maintenence
 
             });
         }
-
 
         /// <summary>
         /// 유지보수 자체를 삭제 - 금액변경 반영할 필요 X
@@ -1196,7 +1195,8 @@ namespace FamTec.Server.Repository.Maintenence
                                                 m.MaterialTbId == StoreTB.MaterialTbId &&
                                                 m.RoomTbId == StoreTB.RoomTbId &&
                                                 m.PlaceTbId == StoreTB.PlaceTbId)
-                                            .SumAsync(m => m.Num).ConfigureAwait(false);
+                                            .SumAsync(m => m.Num)
+                                            .ConfigureAwait(false);
 
                                             StoreTb NewStoreTB = new StoreTb();
                                             NewStoreTB.Inout = 1; // 해당건 재 입고처리 로그
@@ -1299,7 +1299,8 @@ namespace FamTec.Server.Repository.Maintenence
                                 m.PlaceTbId == placeid &&
                                 m.DelYn != true)
                     .OrderBy(m => m.CreateDt)
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 // 개수가 뭐라도 있으면
                 if (model is [_, ..])
@@ -1346,7 +1347,8 @@ namespace FamTec.Server.Repository.Maintenence
             {
                 List<BuildingTb>? BuildingTB = await context.BuildingTbs
                     .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (BuildingTB is not [_, ..])
                     return null;
@@ -1354,7 +1356,8 @@ namespace FamTec.Server.Repository.Maintenence
                 List<FloorTb>? FloorTB = await context.FloorTbs
                     .Where(m => BuildingTB.Select(m => m.Id).Contains(m.BuildingTbId) 
                             && m.DelYn != true)
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (FloorTB is not [_, ..])
                     return null;
@@ -1362,7 +1365,8 @@ namespace FamTec.Server.Repository.Maintenence
                 List<RoomTb>? RoomTB = await context.RoomTbs
                     .Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) 
                         && m.DelYn != true)
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (RoomTB is not [_, ..])
                     return null;
@@ -1372,7 +1376,8 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && 
                     m.DelYn != true &&
                     Category.Contains(m.Category))
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 // 작업구분 - 전체 or 일부
                 List<MaintenenceHistoryTb>? HistoryList = await context.MaintenenceHistoryTbs
@@ -1380,7 +1385,9 @@ namespace FamTec.Server.Repository.Maintenence
                     m.CreateDt >= StartDate &&
                     m.CreateDt <= EndDate.AddDays(1) &&
                     type.Contains(m.Type) && 
-                    m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                    m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (HistoryList is [_, ..])
                 {
@@ -1401,10 +1408,11 @@ namespace FamTec.Server.Repository.Maintenence
                         HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
                         HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
 
-
                         List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
                             .Where(m => m.MaintenanceTbId == HistoryTB.Id &&
-                            m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                                        m.DelYn != true)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         if (UseList is [_, ..])
                         {
@@ -1447,7 +1455,8 @@ namespace FamTec.Server.Repository.Maintenence
             {
                 List<BuildingTb>? BuildingTB = await context.BuildingTbs
                         .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
-                        .ToListAsync().ConfigureAwait(false);
+                        .ToListAsync()
+                        .ConfigureAwait(false);
 
                 if (BuildingTB is not [_, ..])
                     return null;
@@ -1465,13 +1474,16 @@ namespace FamTec.Server.Repository.Maintenence
                     .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && 
                                 m.DelYn != true &&
                                 Category.Contains(m.Category))
-                    .ToListAsync().ConfigureAwait(false);
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 // 작업구분
                 List<MaintenenceHistoryTb>? HistoryList = await context.MaintenenceHistoryTbs
                     .Where(m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
                     m.DelYn != true &&
-                    type.Contains(m.Type)).ToListAsync().ConfigureAwait(false);
+                    type.Contains(m.Type))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 if (HistoryList is [_, ..])
                 {
@@ -1497,7 +1509,9 @@ namespace FamTec.Server.Repository.Maintenence
                             MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
 
                             FacilityTb? FacilityModel = await context.FacilityTbs
-                                .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true).ConfigureAwait(false);
+                                .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && 
+                                                          m.DelYn != true)
+                                .ConfigureAwait(false);
 
                             HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
                             HistoryModel.WorkDT = HistoryTB.Workdt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
@@ -1507,7 +1521,9 @@ namespace FamTec.Server.Repository.Maintenence
 
                             List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
                                 .Where(m => m.MaintenanceTbId == HistoryTB.Id &&
-                                m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                                            m.DelYn != true)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
 
                             if (UseList is [_, ..])
                             {
@@ -1586,7 +1602,11 @@ namespace FamTec.Server.Repository.Maintenence
                     try
                     {
                         // 유지보수 이력 Check
-                        MaintenenceHistoryTb? MainteneceTB = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == model.MaintanceID && m.DelYn != true).ConfigureAwait(false);
+                        MaintenenceHistoryTb? MainteneceTB = await context.MaintenenceHistoryTbs
+                        .FirstOrDefaultAsync(m => m.Id == model.MaintanceID && 
+                                                  m.DelYn != true)
+                        .ConfigureAwait(false);
+
                         if (MainteneceTB is null)
                         {
                             // 내용이 아예 없음.
@@ -1594,9 +1614,6 @@ namespace FamTec.Server.Repository.Maintenence
                             ReturnResult.ReturnResult = -2;
                             return ReturnResult;
                         }
-
-                        
-
 
                         /* 수량체크 */
                         foreach (MaterialDTO MaterialInfo in model.MaterialList)
@@ -1624,7 +1641,8 @@ namespace FamTec.Server.Repository.Maintenence
                                 .Where(m => m.PlaceTbId == placeid &&
                                             m.MaterialTbId == MaterialInfo.MaterialID &&
                                             m.RoomTbId == MaterialInfo.RoomID)
-                                .SumAsync(m => m.Num).ConfigureAwait(false);
+                                .SumAsync(m => m.Num)
+                                .ConfigureAwait(false);
 
                                 FailInventory FailInventoryInfo = new FailInventory();
                                 FailInventoryInfo.MaterialID = MaterialTB.Id;
@@ -1636,14 +1654,20 @@ namespace FamTec.Server.Repository.Maintenence
                                 ReturnResult.FailList.Add(FailInventoryInfo);
                             }
 
-
                             if (InventoryList is [_, ..])
                             {
                                 if (InventoryList.Sum(i => i.Num) < MaterialInfo.Num)
                                 {
                                     // 수량이 부족함.
-                                    MaterialTb? MaterialTB = await context.MaterialTbs.FirstOrDefaultAsync(m => m.Id == MaterialInfo.MaterialID && m.DelYn != true).ConfigureAwait(false);
-                                    RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.Id == MaterialInfo.RoomID && m.DelYn != true).ConfigureAwait(false);
+                                    MaterialTb? MaterialTB = await context.MaterialTbs
+                                    .FirstOrDefaultAsync(m => m.Id == MaterialInfo.MaterialID && 
+                                                              m.DelYn != true)
+                                    .ConfigureAwait(false);
+
+                                    RoomTb? RoomTB = await context.RoomTbs
+                                    .FirstOrDefaultAsync(m => m.Id == MaterialInfo.RoomID && 
+                                                              m.DelYn != true)
+                                    .ConfigureAwait(false);
 
                                     if (MaterialTB is null || RoomTB is null)
                                     {
@@ -1656,7 +1680,6 @@ namespace FamTec.Server.Repository.Maintenence
                                                 m.MaterialTbId == MaterialInfo.MaterialID &&
                                                 m.RoomTbId == MaterialInfo.RoomID)
                                     .SumAsync(m => m.Num).ConfigureAwait(false);
-
 
                                     FailInventory FailInventoryInfo = new FailInventory();
                                     FailInventoryInfo.MaterialID = MaterialTB.Id;
@@ -1681,7 +1704,12 @@ namespace FamTec.Server.Repository.Maintenence
                         foreach (MaterialDTO MaterialInfo in model.MaterialList)
                         {
                             UseMaintenenceMaterialTb? UseMaintenceMaterialTB = await context.UseMaintenenceMaterialTbs
-                            .FirstOrDefaultAsync(m => m.MaterialTbId == MaterialInfo.MaterialID && m.RoomTbId == MaterialInfo.RoomID && m.MaintenanceTbId == model.MaintanceID && m.PlaceTbId == placeid);
+                                        .FirstOrDefaultAsync(m => m.MaterialTbId == MaterialInfo.MaterialID &&
+                                                                  m.RoomTbId == MaterialInfo.RoomID &&
+                                                                  m.MaintenanceTbId == model.MaintanceID &&
+                                                                  m.PlaceTbId == placeid &&
+                                                                  m.DelYn != true)
+                                        .ConfigureAwait(false);
 
                             if (UseMaintenceMaterialTB is not null) // 내용이 있으면 업데이트 - 출고 ++
                             {
@@ -1751,12 +1779,13 @@ namespace FamTec.Server.Repository.Maintenence
                                                 }
 
                                                 /* Inventory 테이블에서 해당 품목의 개수 Sum */
-                                                int thisCurrentNum = context.InventoryTbs
+                                                int thisCurrentNum = await context.InventoryTbs
                                                 .Where(m => m.DelYn != true &&
-                                                m.MaterialTbId == MaterialInfo.MaterialID &&
-                                                m.RoomTbId == MaterialInfo.RoomID &&
-                                                m.PlaceTbId == placeid)
-                                                .Sum(m => m.Num);
+                                                            m.MaterialTbId == MaterialInfo.MaterialID &&
+                                                            m.RoomTbId == MaterialInfo.RoomID &&
+                                                            m.PlaceTbId == placeid)
+                                                .SumAsync(m => m.Num)
+                                                .ConfigureAwait(false);
 
                                                 StoreTb StoreTB = new StoreTb();
                                                 StoreTB.Inout = 0; // 출고
@@ -1814,12 +1843,13 @@ namespace FamTec.Server.Repository.Maintenence
                                                     return ReturnResult;
                                                 }
 
-                                                int thisCurrentNum = context.InventoryTbs
+                                                int thisCurrentNum = await context.InventoryTbs
                                                 .Where(m => m.DelYn != true &&
                                                             m.MaterialTbId == MaterialInfo.MaterialID &&
                                                             m.RoomTbId == MaterialInfo.RoomID &&
                                                             m.PlaceTbId == placeid)
-                                                .Sum(m => m.Num);
+                                                .SumAsync(m => m.Num)
+                                                .ConfigureAwait(false);
 
                                                 StoreTb StoreTB = new StoreTb();
                                                 StoreTB.Inout = 0; // 출고
@@ -1987,12 +2017,13 @@ namespace FamTec.Server.Repository.Maintenence
                                                 }
 
                                                 /* Inventory 테이블에서 해당 품목의 개수 Sum */
-                                                int thisCurrentNum = context.InventoryTbs
+                                                int thisCurrentNum = await context.InventoryTbs
                                                 .Where(m => m.DelYn != true &&
                                                             m.MaterialTbId == MaterialInfo.MaterialID &&
                                                             m.RoomTbId == MaterialInfo.RoomID &&
                                                             m.PlaceTbId == placeid)
-                                                .Sum(m => m.Num);
+                                                .SumAsync(m => m.Num)
+                                                .ConfigureAwait(false);
 
                                                 StoreTb StoreTB = new StoreTb();
                                                 StoreTB.Inout = 0; // 출고
@@ -2022,14 +2053,12 @@ namespace FamTec.Server.Repository.Maintenence
                                                 StoreID.Add(StoreTB.Id); // ID를 추가함 --> 해당컬럼 검색후 UseMaintenenceMaterialTB 외래키 박아야 하기 때문.
 
                                                 TotalPrice += OutStoreEA * OutInventoryTb.UnitPrice; // 해당건 총 금액
-
                                             }
                                             else
                                             {
                                                 int OutStoreEA = MaterialInfo.Num - (outresult - OutInventoryTb.Num);
                                                 checksum += MaterialInfo.Num - (outresult - OutInventoryTb.Num);
                                                 outresult -= MaterialInfo.Num;
-
 
                                                 OutInventoryTb.Num = outresult;
                                                 OutInventoryTb.UpdateDt = ThisDate;
@@ -2052,12 +2081,13 @@ namespace FamTec.Server.Repository.Maintenence
                                                 }
 
                                                 // Inventory 테이블에서 해당 품목의 개수 Sum
-                                                int thisCurrentNum = context.InventoryTbs
+                                                int thisCurrentNum = await context.InventoryTbs
                                                 .Where(m => m.DelYn != true &&
                                                             m.MaterialTbId == MaterialInfo.MaterialID &&
                                                             m.RoomTbId == MaterialInfo.RoomID &&
                                                             m.PlaceTbId == placeid)
-                                                .Sum(m => m.Num);
+                                                .SumAsync(m => m.Num)
+                                                .ConfigureAwait(false);
 
                                                 StoreTb StoreTB = new StoreTb();
                                                 StoreTB.Inout = 0; // 출고
@@ -2090,7 +2120,6 @@ namespace FamTec.Server.Repository.Maintenence
                                             }
                                         }
 
-
                                         if (checksum != MaterialInfo.Num)
                                         {
                                             /* 출고하고자 하는 개수와 실제 개수가 다름. (동시성에서 누가 먼저 뺏을경우 발생함.) */
@@ -2099,11 +2128,9 @@ namespace FamTec.Server.Repository.Maintenence
                                             ReturnResult.ReturnResult = -1;
                                             return ReturnResult;
                                         }
-
                                         await context.SaveChangesAsync().ConfigureAwait(false);
                                     }
                                 }
-
 
                                 UseMaintenenceMaterialTb MaintenenceMaterialTB = new UseMaintenenceMaterialTb();
 
@@ -2163,7 +2190,6 @@ namespace FamTec.Server.Repository.Maintenence
                                     ReturnResult.ReturnResult = -1;
                                     return ReturnResult;
                                 }
-
                             }
                         }
 
