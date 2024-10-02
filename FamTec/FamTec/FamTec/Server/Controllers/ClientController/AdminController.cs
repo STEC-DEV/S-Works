@@ -63,61 +63,62 @@ namespace FamTec.Server.Controllers.ClientController
         [Route("addmanager")]
         public async Task<IActionResult> AddManager([FromBody] AddManagerDTO manager)
         {
-            using var transaction = await _workContext.Database.BeginTransactionAsync();
-            try
-            {
-                //사용자 테이블 생성
-                //생성 id를 포함한 데이터로 관리자db 생성
-                Console.WriteLine("매니저 추가");
-                UsersTb userTb = new()
-                {
-                    UserId = manager.UserId,
-                    Name = manager.Name,
-                    Password = manager.Password,
-                    Email = manager.Email,
-                    Phone = manager.Phone,
-                    PermBasic = 2,
-                    PermMachine = 2,
-                    PermLift = 2,
-                    PermFire = 2,
-                    PermConstruct = 2,
-                    PermNetwork = 2,
-                    PermBeauty = 2,
-                    PermSecurity = 2,
-                    PermMaterial = 2,
-                    PermEnergy = 2,
-                    PermUser = 2,
-                    PermVoc = 2,
-                    AdminYn = true,
-                    Status = 2,
-                };
-                UsersTb resUsertb = _workContext.UsersTbs.Add(userTb).Entity;
-                await _workContext.SaveChangesAsync();
+            //using var transaction = await _workContext.Database.BeginTransactionAsync();
+            //try
+            //{
+            //    //사용자 테이블 생성
+            //    //생성 id를 포함한 데이터로 관리자db 생성
+            //    Console.WriteLine("매니저 추가");
+            //    UsersTb userTb = new()
+            //    {
+            //        UserId = manager.UserId,
+            //        Name = manager.Name,
+            //        Password = manager.Password,
+            //        Email = manager.Email,
+            //        Phone = manager.Phone,
+            //        PermBasic = 2,
+            //        PermMachine = 2,
+            //        PermLift = 2,
+            //        PermFire = 2,
+            //        PermConstruct = 2,
+            //        PermNetwork = 2,
+            //        PermBeauty = 2,
+            //        PermSecurity = 2,
+            //        PermMaterial = 2,
+            //        PermEnergy = 2,
+            //        PermUser = 2,
+            //        PermVoc = 2,
+            //        AdminYn = true,
+            //        Status = 2,
+            //    };
+            //    UsersTb resUsertb = _workContext.UsersTbs.Add(userTb).Entity;
+            //    await _workContext.SaveChangesAsync();
 
-                if (resUsertb == null)
-                {
-                    return BadRequest("회원가입 되지않음");
-                }
+            //    if (resUsertb == null)
+            //    {
+            //        return BadRequest("회원가입 되지않음");
+            //    }
 
-                AdminTb adminTb = new()
-                {
-                    Type = manager.Type,
-                    UserTbId = resUsertb.Id,
-                    DepartmentTbId = manager.DepartmentId
-                };
-                _workContext.AdminTbs.Add(adminTb);
+            //    AdminTb adminTb = new()
+            //    {
+            //        Type = manager.Type,
+            //        UserTbId = resUsertb.Id,
+            //        DepartmentTbId = manager.DepartmentId
+            //    };
+            //    _workContext.AdminTbs.Add(adminTb);
 
-                await _workContext.SaveChangesAsync();
-                await transaction.CommitAsync();
+            //    await _workContext.SaveChangesAsync();
+            //    await transaction.CommitAsync();
 
 
-                return Ok(new ResponseObj<AddManagerDTO> { message = "매니저 등록 완료", code = 200 });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[Admin][Controller] 매니저 추가 에러!!\n " + ex);
-                return Problem("[Admin][Controller] 매니저 추가 에러!!\n" + ex);
-            }
+            //    return Ok(new ResponseObj<AddManagerDTO> { message = "매니저 등록 완료", code = 200 });
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("[Admin][Controller] 매니저 추가 에러!!\n " + ex);
+            //    return Problem("[Admin][Controller] 매니저 추가 에러!!\n" + ex);
+            //}
+            return Ok();
         }
         [HttpPut]
         [Route("deletemanager")]

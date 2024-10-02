@@ -43,7 +43,6 @@ namespace FamTec.Shared.Client.DTO.Place
         [Display(Name = "민원 권한")]
         public bool PermVoc { get; set; }
 
-        // 기본 생성자
         public PlacePerm()
         {
         }
@@ -73,7 +72,6 @@ namespace FamTec.Shared.Client.DTO.Place
         {
             return new PlacePerm(this);
         }
-
     }
 }
 

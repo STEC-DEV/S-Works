@@ -63,7 +63,6 @@ namespace FamTec.Shared.Server.DTO.Place
         [Display(Name = "비고")]
         public string? Note { get; set; }
 
-<<<<<<< HEAD
         /// <summary>
         /// 관리부서 인덱스
         /// </summary>
@@ -73,21 +72,8 @@ namespace FamTec.Shared.Server.DTO.Place
         /// 관리부서 명칭
         /// </summary>
         public string? DepartmentName { get; set; }
-=======
 
-        //public PlaceInfo()
-        //{
-        //    PlaceInfo newPlaceInfo = new PlaceInfo();
-        //    newPlaceInfo.Id = this.Id;
-        //    newPlaceInfo.PlaceCd = this.PlaceCd;
-        //    newPlaceInfo.Name = this.Name;
-        //    newPlaceInfo.Tel = this.Tel;
-        //    newPlaceInfo.ContractNum = this.ContractNum;
-        //    newPlaceInfo.ContractDt = this.ContractDt;
-        //    newPlaceInfo.CancelDt = this.CancelDt;
-        //    newPlaceInfo.Note = this.Note;
-        //    newPlaceInfo.Status = this.Status;
-        //}
+
 
         public PlaceInfo()
         {
@@ -116,7 +102,6 @@ namespace FamTec.Shared.Server.DTO.Place
             return new PlaceInfo(this);
         }
 
->>>>>>> origin/Front
     }
 
 }

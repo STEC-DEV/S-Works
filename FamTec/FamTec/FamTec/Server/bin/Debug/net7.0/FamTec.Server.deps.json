@@ -60,6 +60,17 @@
           }
         }
       },
+      "Blazored.LocalStorage/4.5.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.Web": "7.0.20"
+        },
+        "runtime": {
+          "lib/net7.0/Blazored.LocalStorage.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Blazored.SessionStorage/2.4.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Components.Web": "7.0.20"
@@ -891,6 +902,14 @@
           "lib/net7.0/Pomelo.EntityFrameworkCore.MySql.dll": {
             "assemblyVersion": "7.0.0.0",
             "fileVersion": "7.0.0.0"
+          }
+        }
+      },
+      "QRCoder/1.6.0": {
+        "runtime": {
+          "lib/net6.0/QRCoder.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
           }
         }
       },
@@ -1782,9 +1801,11 @@
       },
       "FamTec.Client/1.0.0": {
         "dependencies": {
+          "Blazored.LocalStorage": "4.5.0",
           "Blazored.SessionStorage": "2.4.0",
           "ClosedXML": "0.102.2",
           "FamTec.Shared": "1.0.0",
+          "Microsoft.AspNetCore.Components.Authorization": "7.0.20",
           "Microsoft.AspNetCore.Components.WebAssembly": "7.0.18",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "7.0.20",
           "Microsoft.AspNetCore.SignalR.Client": "7.0.18",
@@ -1792,6 +1813,7 @@
           "Microsoft.Extensions.Logging.Console": "7.0.0",
           "Newtonsoft.Json": "13.0.3",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0",
+          "QRCoder": "1.6.0",
           "Tewr.Blazor.FileReader": "3.3.2.23201"
         },
         "runtime": {
@@ -1836,6 +1858,13 @@
       "sha512": "sha512-l1Xm2MWOF2Mzcwuarlw8kWQXLZk3UeB55aQXVyjj23aBfDwOZ3gu5GP2kJ6KlmZeZv2TCzw7x4L3V36iNr3gww==",
       "path": "azure.identity/1.10.3",
       "hashPath": "azure.identity.1.10.3.nupkg.sha512"
+    },
+    "Blazored.LocalStorage/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6nZuJwA7zNIKx83IsObiHXZb09ponJOpCClU3en+hI8ZFvrOKXeOw+H7TegQZQrvdR1n9fkrVkEBQZg8vx6ZTw==",
+      "path": "blazored.localstorage/4.5.0",
+      "hashPath": "blazored.localstorage.4.5.0.nupkg.sha512"
     },
     "Blazored.SessionStorage/2.4.0": {
       "type": "package",
@@ -2417,6 +2446,13 @@
       "sha512": "sha512-Qk5WB/skSZet5Yrz6AN2ywjZaB1pxfAmvQ+5I4khTkLwwIamI4QJoH2NphCWLFQL+2ar8HvsNCTmwYk0qhqL0w==",
       "path": "pomelo.entityframeworkcore.mysql/7.0.0",
       "hashPath": "pomelo.entityframeworkcore.mysql.7.0.0.nupkg.sha512"
+    },
+    "QRCoder/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XmPA81eo+oRxBuyVdswsSkTGTE1d3thfF11Z1PdD7oB56A6HU4G4AAOdySmGRMb/cljwlFTMWUtosGEnwpS6GA==",
+      "path": "qrcoder/1.6.0",
+      "hashPath": "qrcoder.1.6.0.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
       "type": "package",

@@ -1,4 +1,12 @@
-<<<<<<< HEAD
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.AssemblyReference.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfoInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfo.cs
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.CoreCompileInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cs
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Client.staticwebassets.runtime.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\appsettings.Development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\appsettings.json
@@ -18,6 +26,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Azure.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Azure.Identity.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Blazored.LocalStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Blazored.SessionStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\ClosedXML.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
@@ -70,6 +79,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Mono
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\MySqlConnector.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\QRCoder.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\SixLabors.Fonts.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\SkiaSharp.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
@@ -111,16 +121,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Shared.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net7.0\FamTec.Shared.pdb
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.AssemblyReference.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfoInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfo.cs
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.CoreCompileInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cs
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\staticwebassets\msbuild.FamTec.Server.Microsoft.AspNetCore.StaticWebAssets.props
@@ -135,14 +135,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\refi
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\ref\FamTec.Server.dll
-=======
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.AssemblyReference.cache
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfoInputs.cache
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.AssemblyInfo.cs
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.csproj.CoreCompileInputs.cache
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cache
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.RazorAssemblyInfo.cs
-C:\Users\stec\Desktop\duke\Dev\2024\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net7.0\FamTec.Server.sourcelink.json
->>>>>>> origin/Front
