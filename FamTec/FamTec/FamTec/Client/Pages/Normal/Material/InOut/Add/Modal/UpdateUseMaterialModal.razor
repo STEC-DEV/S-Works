@@ -1,0 +1,81 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal yappear">
+    <div class="header">
+        <span class="title">
+            사용자재(@UseMaterial.MaterialName) 수정
+        </span>
+    </div>
+    <div class="content">
+        <div class="wrap">
+            <TextField2 Label="자재명" Color=true Value="@UseMaterial.MaterialName"/>
+            <TextField2 Label="위치" Color=true Value="@UseMaterial.AddStore.RoomName"/>
+            <TextField2 Label="단가" Color=true Value="@UseMaterial.AddStore.UnitPrice.ToString()"/>
+        </div>
+        <div class="form">
+            <InputCol Label="수량"
+                      Placeholder="수량"
+                      Min="1"
+                      ValueType="number"
+                      @bind-Value="@_changeNum" />
+
+        </div>
+    </div>
+    <div class="btns">
+        <Button Name="수정" Type="0" OnClick="OnUpdate" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public InOutInventoryDTO UseMaterial { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+
+    int _changeNum = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _changeNum = UseMaterial.AddStore.Num;
+    }
+
+    private async void OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            if (_changeNum == UseMaterial.AddStore.Num)
+            {
+                await JS.InvokeVoidAsync("alert", "수량이 변경되지 않았습니다.");
+                return;
+            }
+            if(_changeNum < 1)
+            {
+                await JS.InvokeVoidAsync("alert", "1이상의 값만 입력 가능합니다.");
+                _changeNum = 1;
+                StateHasChanged();
+                return;
+            }
+
+            UseMaterial.AddStore.Num = _changeNum;
+
+            OnCanceled();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[유지보수][사용자재] 수정 에러"+ ex);
+            await JS.InvokeVoidAsync("alert","[유지보수][사용자재] 수정 에러");
+        }
+    }
+
+
+}

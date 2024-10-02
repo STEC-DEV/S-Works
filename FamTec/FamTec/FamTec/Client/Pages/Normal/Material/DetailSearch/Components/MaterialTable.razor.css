@@ -7,8 +7,8 @@
 
 .table .thead{
     background-color : var(--main-color);
-    position:sticky;
-    top:0;
+    /*position:sticky;
+    top:0;*/
     box-shadow: 0 8px 12px -2px #a1a1a1;
 }
 

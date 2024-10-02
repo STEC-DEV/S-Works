@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Modal
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
 
@@ -71,31 +72,31 @@
             @foreach (InOutInventoryDTO row in ListData)
             {
                 <tr class="tr">
-                    <td class="td">
-                        @row.AddStore.InOutDate
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.InOutDate?.ToString("yyyy-MM-dd")
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.RoomName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.Unit
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.Num
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.UnitPrice
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.TotalPrice
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.Note
                     </td>
                     <td class="td">
@@ -108,14 +109,43 @@
 
     </tbody>
 </table>
+@if (showUpdateModal && InOutType == 1)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateUseMaterialModal
+                OnCancel="OnCloseModal"
+                UseMaterial="updateMaterial"
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
+
 
 @code {
     [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
     [Parameter] public EventCallback<(bool, InOutInventoryDTO)> OnCheck{get;set;}
+    [Parameter] public int InOutType { get; set; }
 
+    private bool showUpdateModal = false;
+    private InOutInventoryDTO updateMaterial = new InOutInventoryDTO();
 
     private async void OnChecked(ChangeEventArgs e, InOutInventoryDTO row)
     {
         await OnCheck.InvokeAsync(((bool)e.Value, row));
+    }
+
+    private void OnUpdateDataSet(InOutInventoryDTO material)
+    {
+        if(InOutType == 1)
+        {
+            updateMaterial = material;
+            showUpdateModal = true;
+        }        
+    }
+
+    private void OnCloseModal()
+    {
+        showUpdateModal = false;
     }
 }

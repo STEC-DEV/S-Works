@@ -13,11 +13,7 @@
         </span>
     </div>
     <div class="content">
-        <DateInput 
-            Label="날짜" 
-            Row="true"
-            @bind-Date=@AddItem.AddStore.InOutDate
-            Placeholder="YYYYMMDD"/>
+            <TextField2 Label="날짜" Row=true Value=@date?.ToString("yyyy-MM-dd") Color=true/>
         <SelectField 
             T="BuildingFloorListDTO" 
             Key="building" 
@@ -101,7 +97,7 @@
     int SelectedRoomId;
 
     string moc = "";
-    DateTime? date;
+    DateTime? date = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -174,10 +170,10 @@
     //건물선택
     private async Task OnBuildingChange(int buildingId)
     {
-
+        PlaceRoom.Clear();
         if (buildingId == 0)
         {
-            Room = null;
+            PlaceRoom.Clear();
             SelectedRoomId = 0;
             AddItem.AddStore.UnitPrice = 0;
             AddItem.AddStore.Num = 0;

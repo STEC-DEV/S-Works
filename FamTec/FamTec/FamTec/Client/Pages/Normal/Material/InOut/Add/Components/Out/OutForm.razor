@@ -13,11 +13,7 @@
         </span>
     </div>
     <div class="content">
-        <DateInput 
-            Label="날짜" 
-            Row="true"
-            @bind-Date=@AddItem.Date
-            Placeholder="YYYYMMDD"/>
+        <TextField2 Label="날짜" Row=true Value=@date?.ToString("yyyy-MM-dd") Color=true />
         <SelectField 
             T="BuildingNameDTO" 
             Key="building" 
@@ -40,10 +36,15 @@
         }
         @if (SelectedRoomId != 0)
         {
+            <TextField2 Label="재고 수량"
+                        Value="@_usageMaterialNum.ToString()"
+                        Row=true />
             <InputCol 
             Label="수량" 
             Placeholder="수량" 
             Row="true" 
+            Max="_usageMaterialNum"
+            Min="1"
             ValueType="number"
             @bind-Value="@AddItem.Num" />
 
@@ -70,9 +71,10 @@
 
     int SelectedBuildingId;
     int SelectedRoomId;
+    private int? _usageMaterialNum=0;
 
     string moc = "";
-    DateTime? date;
+    DateTime? date = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,7 +125,7 @@
             AddItem.RoomId = 0;
             AddItem.Num = 0;
             AddItem.Note = null;
-            
+
             StateHasChanged();
             return;
         }
@@ -159,7 +161,9 @@
         AddItem.RoomId = 0;
 
         AddItem.RoomId = locationId;
+        _usageMaterialNum = LocationMaterial.FirstOrDefault(r => r.RoomId == locationId)?.Num;
 
+        StateHasChanged();
     }
 
 

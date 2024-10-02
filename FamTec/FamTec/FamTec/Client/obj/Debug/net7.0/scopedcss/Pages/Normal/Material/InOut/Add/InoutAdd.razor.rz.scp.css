@@ -10,8 +10,15 @@
     gap : var(--wide-pd);
 }
 
-.btn[b-hja4jq25c8]{
+.btn[b-hja4jq25c8] {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.btns[b-hja4jq25c8]{
     width:100%;
     display: flex;
-    justify-content:center;
+    justify-content:flex-end;
 }

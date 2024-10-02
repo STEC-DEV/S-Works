@@ -36,11 +36,6 @@
                     안전재고
                 </span>
             </th>
-            <th class="th">
-                <span>
-                    이미지
-                </span>
-            </th>
             @if (USEREDIT)
             {
                 <th class="th">
@@ -90,9 +85,6 @@
                     </td>
                     <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.SafeNum
-                    </td>
-                    <td class="td">
-                        @row.Image
                     </td>
                     @if (USEREDIT)
                     {

@@ -3,16 +3,17 @@
     width :fit-content;
     display : flex;
     
-    border-radius : var(--default-rd);
+    border-radius :var(--default-rd);
     overflow:hidden;
 
     transition : all .3s;
     background-color : var(--default-color);
+    box-shadow : var(--shadow-1);
 }
 
 .tab {
     transition: all .3s ease-in;
-    padding: var(--default-pd);
+    padding: var(--half-pd) var(--default-pd);
     /*border-bottom: var(--comp-bd);*/
     font-size: 1rem;
     font-weight: var(--bold-wt);

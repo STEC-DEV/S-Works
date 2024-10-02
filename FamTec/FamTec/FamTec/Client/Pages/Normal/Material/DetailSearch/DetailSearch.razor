@@ -5,18 +5,28 @@
 
 <div class="detailsearch yappear">
     <SearchFilter ValueChange="@ValueChange" />
-    <MaterialHistory ListData="MaterialList" />
+    @if (MaterialList != null)
+    {
+        <MaterialHistory ListData="MaterialList" />
+    }
+
 </div>
 
 @code {
-    public List<DetailMaterialListDTO> MaterialList = new List<DetailMaterialListDTO>();
+    // public List<DetailMaterialListDTO> MaterialList = new List<DetailMaterialListDTO>();
+    public List<DetailMaterialListDTO> MaterialList;
 
 
     private void ValueChange(List<DetailMaterialListDTO> data)
     {
-        Console.WriteLine("동작");
-        MaterialList = data;
-        Console.WriteLine("부모 : " + data.Count);
+        if (data == null)
+        {
+            MaterialList = new List<DetailMaterialListDTO>();
+        }
+        else
+        {
+            MaterialList = data;
+        }
 
         StateHasChanged();
     }

@@ -7,24 +7,34 @@
         <span class="title">
             @Title
         </span>
-        <Button Name="삭제" Width=true Type="1" OnClick="OnDelItem" />
+        @if(CheckData.Count != 0)
+        {
+            <Button Name="삭제" Width=true Type="1" OnClick="OnDelItem" />
+        }
+
     </div>
     <div class="content">
-        <InOutTable ListData="@ListData" OnCheck="OnChecked" />
+        <InOutTable 
+            ListData="@ListData" 
+            OnCheck="OnChecked" 
+            InOutType=@InOutType
+            />
     </div>
 </div>
 
 @code {
     [Parameter] public string Title{ get; set; }
     [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
+    [Parameter] public EventCallback<List<InOutInventoryDTO>> ListDataChanged { get; set; }
+    [Parameter] public int InOutType { get; set; }
 
     List<InOutInventoryDTO> CheckData = new List<InOutInventoryDTO>();
 
-    private void OnDelItem()
+    private async Task OnDelItem()
     {
         ListData = ListData.Where(item => !CheckData.Contains(item)).ToList();
         CheckData.Clear();
-        StateHasChanged();
+        await ListDataChanged.InvokeAsync(ListData);
     }
 
     private void OnChecked((bool isChecked, InOutInventoryDTO data)checkItem )

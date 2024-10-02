@@ -48,7 +48,7 @@
         <div class="form">
             <div class="row">
                 <TextField2 Label="자재 위치" Value="@UseMaterial.RoomName" Color=true />
-                <TextField2 Label="재고 수량" Value="@UseMaterial.Num.ToString()" Color=true />
+                <TextField2 Label="재고 수량" Value="@UseMaterial.TotalAvailableInventory.ToString()" Color=true />
             </div>
             <InputCol Label="수량"
                       Placeholder="수량"
@@ -81,7 +81,7 @@
     {
         await OnLoadDetailUseMaterial();
         ChangeNum = CurMaterialNum;
-        MaxNum = UseMaterial.Num + CurMaterialNum;
+        MaxNum = UseMaterial.TotalAvailableInventory + CurMaterialNum;
     }
 
     private async void OnCanceled()
@@ -111,9 +111,15 @@
     {
         try
         {
+            Console.WriteLine(ChangeNum);
             if(ChangeNum == CurMaterialNum)
             {
                 await JS.InvokeVoidAsync("alert", "수량이 변경되지 않았습니다.");
+                return;
+            }
+            if(ChangeNum > MaxNum)
+            {
+                await JS.InvokeVoidAsync("alert", "변경 수량이 재고 수량보다 많습니다.");
                 return;
             }
 

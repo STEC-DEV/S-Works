@@ -68,7 +68,7 @@
 
                 <tr class="tbody-tr">
                     <td class="td userinfo" @onclick="()=>OnDetail(id)">
-                        <img class="table-img" alt=""/>
+                        @* <img class="table-img" alt=""/> *@
                         <div class="title-wrap">
                             <a class="maintitle">
                                 @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()

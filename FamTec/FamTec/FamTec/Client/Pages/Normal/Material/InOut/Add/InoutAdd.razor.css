@@ -10,8 +10,15 @@
     gap : var(--wide-pd);
 }
 
-.btn{
+.btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+.btns{
     width:100%;
     display: flex;
-    justify-content:center;
+    justify-content:flex-end;
 }
