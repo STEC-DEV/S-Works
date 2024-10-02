@@ -1,4 +1,5 @@
 ﻿@page "/users"
+@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.Normal.User.UserMain.Components
@@ -11,23 +12,40 @@
             <span class="title">
                 사용자 목록
             </span>
+            
             <div class="user-options">
-                <Input Placeholder="search" Type="text"/>
-                <Button Name="추가" Width=true OnClick=AddUser Type=1 />
-                <Button Name="삭제" Width=true Type=1 />
+                <Input 
+                    Placeholder="search" 
+                    Type="text" 
+                    Value="@_searchText"
+                    ValueChanged="OnSearchTextChanged" />
+                @if (USEREDIT)
+                {
+                    <Button Name="추가" Width=true OnClick=AddUser Type=0 />
+                    <Button Name="삭제" Width=true Type=1 />
+                }
             </div>
+            
+            
         </div>
         <div class="user-content">
-            <UserTable Data=@usersData/>
+            <UserTable Data=@FilterData Checkitem="@CheckItems" Select="@OnSelected" />
         </div>
     </div>
 </div>
 
 @code {
-    List<ListUser> usersData = new List<ListUser>();
+    private string SearchText = string.Empty;
+    private string _searchText = "";
+
+
+    List<ListUser> usersData;
+    List<ListUser> FilterData;
+    HashSet<int> CheckItems = new HashSet<int>();
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadTsetData();
     }
 
@@ -50,10 +68,59 @@
             return;
         }
         usersData = resUsers.data;
+        FilterData = usersData;
 
-        // ResponseList<ListUser> resUsers = await HttpClient.GetFromJsonAsync<ResponseList<ListUser>>("http://123.2.156.148:5245/api/User/GetPlaceUsers?placeid=123");
-
-      
     }
+
+    // private void OnSearchData(string searchText)
+    // {
+    //     SearchText = searchText;
+    //     FilterData = string.IsNullOrEmpty(SearchText)
+    //         ? usersData
+    //         : usersData.Where( p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+    //                                 p.UserId.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+    //                                 p.Type.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+    //                             ).ToList();
+    // }
+
+    /*
+    * 검색 데이터 필터링 --
+       */
+    private async void OnSearchTextChanged(string text)
+    {
+        _searchText = text;
+
+        FilterData = usersData
+        .Where(p => String.IsNullOrEmpty(_searchText) ||
+                    (p.UserId?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.Type?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        .ToList();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+    /*
+    * 사업장 체크
+    */
+    public void OnSelected((bool isCheck, int id) selection)
+    {
+        if (!selection.isCheck)
+        {
+            CheckItems.Remove(selection.id);
+        }
+        else
+        {
+            CheckItems.Add(selection.id);
+        }
+        foreach (var i in CheckItems)
+        {
+            Console.WriteLine("check" + i);
+        }
+
+    }
+
 
 }

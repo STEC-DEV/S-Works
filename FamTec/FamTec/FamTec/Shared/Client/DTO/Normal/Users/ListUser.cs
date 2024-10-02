@@ -24,6 +24,11 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
         //public DateTime? Created { get; set; }
         public string Created { get; set; }
         [Display(Name = "재직 상태")]
+<<<<<<< HEAD
         public int? Status { get; set; }
+=======
+        public sbyte? Status { get; set; }
+        
+>>>>>>> origin/Front
     }
 }

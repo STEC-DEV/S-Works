@@ -1,41 +1,137 @@
 ﻿@page "/voc/{Id:int}"
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
 @using FamTec.Shared.Client.DTO.Normal.Voc
+@using System.IdentityModel.Tokens.Jwt
+@using FamTec.Shared.Server.DTO
+@using System.Text.Json
+@inject AuthenticationStateProvider _authStateProvider
 
 <div class="vocdetail-container">
     <div class="vocdetail-wrap">
         <div class="vocdetail-info">
-            <VocInfo Data=@VocData />
+            <VocInfo Data="VocData" EditPerm=IsEditPerm OnLoad="OnLoadVocDetail" />
         </div>
         <div class="vocdetail-comment">
-            <VocComment />
+            <VocComment 
+                Id="Id" 
+                ListData="@VocCommentData" 
+                EditMode=@IsEditCommnet
+                OnLoadComment="OnLoadVocComment"
+                OnLoadInfo="OnLoadVocDetail"
+                />
         </div>
     </div>
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
-    ListVoc VocData = new ListVoc();
+    DetailVocDTO VocData = new DetailVocDTO();
+    List<VocCommentListDTO> VocCommentData = new List<VocCommentListDTO>();
+    bool IsEditPerm = false;
+    bool IsEditCommnet = false;
 
     protected async override Task OnInitializedAsync()
     {
-        OnLoadVocDetail();
+        await OnLoadVocDetail();
+        await OnLoadVocComment();
+        await OnPermCheck();
     }
 
-    private async void OnLoadVocDetail()
+
+    private async Task OnLoadVocDetail()
     {
-        // 서버 요청
-        VocData = new ListVoc
+        ResponseUnit<DetailVocDTO> resGet = await apiManager.GetUnitAsync<DetailVocDTO>($"Voc/sign/VocInfo?VocId={Id}");
+        if(resGet.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "민원 상세조회 실패");
+            return;
+        }
+        VocData = resGet.data;
+    }
+
+
+    private async Task OnLoadVocComment()
+    {
+        try
+        {
+            ResponseList<VocCommentListDTO> resGet = await apiManager.GetListAsync<VocCommentListDTO>($"VocComment/sign/GetVocCommentList?VOCID={Id}");
+            if(resGet.code != 200)
             {
-                Id = 1,
-                Location = "A건물",
-                Type = 1,
-                Writer = "김권후",
-                Tel = "010-1111-1111",
-                Title = "3층 화장실 타일",
-                Context = "지금 A건물 3층 화장실을 사용했는데 바닥에 타일이 깨져있더라구요 순간적으로 발을 삐끗해서 이거 사람들이 다칠수 있을것같아요 빠른조치 부탁드립니다.",
-                Status = 0,
-                Occur_DT = new DateTime(2024, 5, 11),
-            };
+                await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+            }
+            VocCommentData = resGet.data;
+
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+        }
+    }
+
+
+
+    //사용자 권한 체크
+    private async Task OnPermCheck()
+    {
+        var auth = await _authStateProvider.GetAuthenticationStateAsync();
+        var user = auth.User;
+        var userType = user.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
+        var userPerm = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
+        var userVocPerm = user.Claims.FirstOrDefault(c => c.Type == "VocPerms")?.Value;
+        
+        string checkVocType = VocData.Type switch
+        {
+            0 => "",
+            1 => "VocMacine",
+            2 => "VocElec",
+            3 => "VocLift",
+            4 => "VocFire",
+            5 => "VocConstruct",
+            6 => "VocNetwork",
+            7 => "VocBeauty",
+            8 => "VocSecurity",
+            _ => "",
+        };
+        //관리자면 전체 권한 분류 미
+        if(userType == "ADMIN")
+        {
+            IsEditPerm = true;
+            IsEditCommnet = true;
+        }
+
+        //사용자 기본권한 Voc 읽기 및 쓰기 권한 확인 => 쓰기 true시 분류 가능
+        if (!string.IsNullOrEmpty(userPerm))
+        {
+            try
+            {
+                var jsonPerm = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerm);
+                if (jsonPerm.TryGetValue("UserPerm_Voc", out string vocPermValue))
+                {
+                    IsEditPerm = vocPermValue == "2";
+                };
+            }catch(Exception ex)
+            {
+                JS.InvokeVoidAsync("alert", "json parse 에러");
+            }
+        }
+
+        //Voc에서 부서별 권환을 통해서 코멘트 작성 가능
+        if (!string.IsNullOrEmpty(userVocPerm))
+        {
+            try
+            {
+                var jsonPerm = JsonSerializer.Deserialize<Dictionary<string, string>>(userVocPerm);
+                Console.WriteLine(jsonPerm);
+                if (!string.IsNullOrEmpty(checkVocType) && jsonPerm.TryGetValue(checkVocType, out string permValue))
+                {
+                    IsEditCommnet = permValue.Equals("True", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch (Exception ex)
+            {
+                JS.InvokeVoidAsync("alert", "voc json parse 에러");
+            }
+        }
+
     }
 }

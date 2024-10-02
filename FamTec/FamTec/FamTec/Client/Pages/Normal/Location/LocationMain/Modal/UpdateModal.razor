@@ -1,0 +1,62 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Location
+<div class="modal">
+    <div class="headaer">
+        <span class="title">
+            위치 수정
+        </span>
+    </div>
+    <div class="content">
+        <div class="input">
+            <label>이름</label>
+            <input type="text" placeholder="항목명" />
+        </div>
+        <SelectField 
+            SelectData=@BuildingFloor 
+            OnChange="@OnSetBuilding" 
+            EditMode=true
+                        />
+    </div>
+    <div class="btns">
+        <Button Name="수정" Type="0"/>
+        <Button Name="닫기" Type="1" OnClick="OnClose"/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddLoactionDTO Data { get; set; }
+    [Parameter] public List<BuildingFloorListDTO> BuildingFloor { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+
+
+    private void OnSetBuilding(int id)
+    {
+
+        // if (id == 0)
+        // {
+        //     Floor = null;
+        //     AddObject.BuildingId = 0;
+        //     AddObject.FloorId = 0;
+        //     return;
+        // }
+
+        // var selectBuliding = BuildingFloor.FirstOrDefault(f => f.Id == id);
+        // if (selectBuliding == null)
+        // {
+        //     return;
+        // }
+        // AddObject.BuildingId = id;
+        // AddObject.FloorId = 0;
+        // Floor = selectBuliding.FloorList;
+        // floorSelectField?.Reset();
+
+
+    }
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

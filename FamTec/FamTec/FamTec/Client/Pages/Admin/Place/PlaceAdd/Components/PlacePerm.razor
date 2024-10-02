@@ -1,0 +1,70 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+
+
+<div class="perm">
+    <div class="header">
+        <span class="title">
+            사업장 권한
+        </span>
+    </div>
+    <div class="content">
+        <Toggle 
+            Title="기계설비 권한" 
+            @bind-Value=@Place.PermMachine
+            IsChecked="@Place.PermMachine"
+            EditMode=@_editMode
+            />
+        <Toggle 
+            Title="전기설비 권한" 
+            @bind-Value=@Place.PermElec
+            IsChecked="@Place.PermElec"
+            EditMode=@_editMode
+            />
+        <Toggle Title="승강설비 권한"
+                @bind-Value=@Place.PermLift
+                IsChecked="@Place.PermLift"
+                EditMode=@_editMode />
+        <Toggle Title="소방설비 권한"
+                @bind-Value=@Place.PermFire
+                IsChecked="@Place.PermFire"
+                EditMode=@_editMode />
+        <Toggle Title="건축설비 권한"
+                @bind-Value=@Place.PermConstruct
+                IsChecked="@Place.PermConstruct"
+                EditMode=@_editMode />
+        <Toggle Title="통신설비 권한"
+                @bind-Value=@Place.PermNetwork
+                IsChecked="@Place.PermNetwork"
+                EditMode=@_editMode />
+        <Toggle Title="미화설비 권한"
+                @bind-Value=@Place.PermBeauty
+                IsChecked="@Place.PermBeauty"
+                EditMode=@_editMode />
+        <Toggle Title="보안설비 권한"
+                @bind-Value=@Place.PermSecurity
+                IsChecked="@Place.PermSecurity"
+                EditMode=@_editMode />
+        <Toggle Title="자재 권한"
+                @bind-Value=@Place.PermMaterial
+                IsChecked="@Place.PermMaterial"
+                EditMode=@_editMode />
+        <Toggle Title="에너지 권한"
+                @bind-Value=@Place.PermEnergy
+                IsChecked="@Place.PermEnergy"
+                EditMode=@_editMode />
+        <Toggle Title="민원관리 권한"
+                @bind-Value=@Place.PermVoc
+                IsChecked="@Place.PermVoc"
+                EditMode=@_editMode />
+
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddPlaceDTO Place { get; set; }
+
+    private bool _editMode = true;
+}
+    

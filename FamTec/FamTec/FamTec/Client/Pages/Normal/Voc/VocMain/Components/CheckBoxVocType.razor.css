@@ -1,0 +1,32 @@
+﻿
+
+.filter-item{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+
+.title{
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.items{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.item{
+    display:flex;
+    align-items : center;
+    gap: var(--one-q-pd);
+}
+
+.label{
+    color : var(--main-color);
+}
+
+
+
+

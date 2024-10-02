@@ -1,0 +1,153 @@
+﻿@using FamTec.Client.Pages.Admin.Manager.ManagerSignupV2.Components
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Server.DTO
+
+<div class="placemodal-container yappear">
+    <div class="placemodal-wrap">
+        <div class="placemodal-title">
+            <span class="title">
+                사업장 조회
+            </span>
+        </div>
+        <Input 
+            Placeholder="search" 
+            Value="@_searchText"
+            ValueChanged="@OnSearchTextChanged" 
+            Padding=true
+            />
+        <div class="placemodal-content">
+            <PlaceTable 
+                ListData="@FilterPlaceList" 
+                OnCheck="OnChecked"
+                />
+        </div>
+        <div class="placemodal-count">
+            <span class="count">
+                선택 : @SelectCount
+            </span>
+        </div>
+        <div class="placemodal-btns">
+            <Button Name="추가" Type=0 OnClick=OnAddList />
+            <Button Name="닫기" Type=1 OnClick=OnClosed />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public List<PlaceTableDTO>? SelectPlace { get; set; }
+    [Parameter] public EventCallback<List<PlaceTableDTO>> OnAdd { get; set; }
+
+    List<PlaceTableDTO> SelectItems = new List<PlaceTableDTO>(); // 모달 내에서 선택한 리스트
+    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>(); // DB 전체 사업장 리스트 변수
+    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>(); // 검색 리스트
+    HashSet<int> SelectedIds = new HashSet<int>(); //선택 아이템 리스트
+    int SelectCount = 0;
+    string _searchText = string.Empty; // 검색어 변수
+
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        await OnLoadPlace();
+    }
+
+
+    private async Task OnLoadPlace()
+    {
+
+        try
+        {
+            Console.WriteLine("[관리자 모드][사업장 조회]");
+            ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("AdminPlace/sign/GetAllWorksList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+                return;
+            }
+            PlaceList = res.data;
+            FilterPlaceList = PlaceList.Where(p => !SelectPlace.Any(s => s.Id == p.Id)).ToList();
+        }
+        catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[관리자 모드][사업장 조회] 실패\n" + ex);
+            Console.WriteLine("[Manager][Add][PlaceModal] 사업장 조회 애러"+ ex);
+            throw ex;
+        }
+    }
+
+
+    /*
+    * 검색 데이터 필터링
+    */
+    private async void OnSearchTextChanged(string text)
+    {
+        // searchText = e.Value.ToString();
+        _searchText = text;
+
+        FilterPlaceList = PlaceList
+        .Where(p => !SelectPlace.Any(s => s.Id == p.Id))
+        .Where(p => String.IsNullOrEmpty(_searchText) ||
+                    (p.PlaceCd?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.ContractNum?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        .ToList();  
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+    private void OnChecked((bool isCheck, PlaceTableDTO place)data)
+    {
+        if (data.isCheck)
+        {
+            SelectItems.Add(data.place);
+            SelectCount += 1;
+        }
+        else
+        {
+            SelectItems.Remove(data.place);
+            SelectCount -= 1;
+        }
+    }
+
+    //리스트에추가
+    private async void OnAddList()
+    {
+        if (SelectItems.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
+            return;
+        }
+
+        // 선택된 매니저들을 기존 SelectManagerList에 추가
+        foreach (var place in SelectItems)
+        {
+            if (!SelectPlace.Any(m => m.Id == place.Id))
+            {
+                SelectPlace.Add(place);
+            }
+        }
+
+        // 업데이트된 SelectManagerList를 부모 컴포넌트에 전달
+        await OnAdd.InvokeAsync(SelectPlace);
+
+        // 모달 닫기
+        OnClosed();
+        StateHasChanged();
+    }
+
+    private async void OnCount(int count)
+    {
+        SelectCount += count;
+        StateHasChanged();
+    }
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+        
+    }
+}

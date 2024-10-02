@@ -1,0 +1,99 @@
+﻿@layout MainLayout2
+@page "/m/voc/select/{voccode}"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+@using FamTec.Client.Pages.Voc.Select.Components
+
+
+<div class="select yappear">
+    <div class="header">
+        <span class="title">
+            민원 조회
+        </span>
+    </div>
+    <StateBar Status="@Voc.Status.Value"/>
+    <div class="content">
+        <div class="item">
+            <span class="item-title">
+                접수내용
+            </span>
+            <Content Data=@Voc />
+        </div>
+        <div class="item">
+            <span class="item-title">
+                처리내용
+            </span>
+            <div class="comment-wrap">
+                @if(VocCommentData.Count == 0)
+                {
+                    <TextField2 Value="현재 처리 내용이 존재하지 않습니다."/>
+                }
+                else
+                {
+                    @foreach (VocCommentListDTO comment in VocCommentData)
+                    {
+                        <CommentCard Data="@comment" />
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+    @* <Button Name="확인" Type="0" OnClick="OnReturn"/> *@
+</div>
+
+@code {
+    [Parameter] public string voccode { get; set; }
+    DetailVocUserDTO Voc = new DetailVocUserDTO();
+    List<VocCommentListDTO> VocCommentData = new List<VocCommentListDTO>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadVoc();
+        await OnLoadVocComment();
+
+    }
+    private async Task OnLoadVoc()
+    {
+        try{
+            ResponseUnit<DetailVocUserDTO> resVoc = await apiManager.GetUnitAsync<DetailVocUserDTO>($"Hub/VocInfo?voccode={voccode}");
+            if(resVoc.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원 조회 실패");
+                return;
+            }
+            Voc = resVoc.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Voc][Detail][User] 민원 조회 에러" +ex);
+            await JS.InvokeVoidAsync("alert", "민원 조회 에러");
+        }
+    }
+
+    private async Task OnLoadVocComment()
+    {
+        try
+        {
+            ResponseList<VocCommentListDTO> resGet = await apiManager.GetListAsync<VocCommentListDTO>($"Hub/GetVocCommentList?voccode={voccode}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+            }
+            VocCommentData = resGet.data;
+
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+        }
+    }
+
+    private void OnReturn()
+    {
+        Navigation.NavigateTo("/m/voc/banner");
+    }
+}

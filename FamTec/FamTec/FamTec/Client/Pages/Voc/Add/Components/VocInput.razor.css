@@ -1,0 +1,79 @@
+﻿.inputfield{
+    display :flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+    transition : all .3s;
+}
+
+.label{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.input{
+    outline : none;
+    border :none;
+    border-radius: var(--default-rd) var(--default-rd) 0 0;
+    
+    border-bottom : var(--comp-bd);
+    overflow :hidden;
+
+    padding :var(--default-pd);
+    background-color :var(--default-color);
+    
+
+    transition : all .3s;
+
+    font-size : var(--normal-size);
+    font-weight : bold;
+}
+.height{
+    flex : 1;
+    display : flex;
+    flex-direction:column;
+}
+
+.textarea {
+    flex: 1; /* 추가 */
+    min-height: 50%; /* 변경 */
+    max-height: 100%; /* 추가 */
+    border :none;
+    outline :none;
+
+    border: var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    padding :var(--default-pd);
+    background-color :var(--default-color);
+    
+    font-size : var(--normal-size);
+    /*font-weight : bold;*/
+
+    transition : all .3s;
+
+    resize: none;
+    overflow-y : auto;
+}
+
+.textarea:focus{
+    border : var(--default-bd);
+    background-color :var(--default-color);
+}
+
+.input:focus {
+    border-radius: var(--default-rd) var(--default-rd) 0 0;
+    border-bottom: var(--default-bd);
+    background-color: var(--default-color);
+}
+
+.textarea::placeholder{
+    font-weight:400;
+    color:gray;
+}
+
+.inputfield:focus-within .label {
+    font-weight: bold;
+    color: var(--main-color);
+}
+

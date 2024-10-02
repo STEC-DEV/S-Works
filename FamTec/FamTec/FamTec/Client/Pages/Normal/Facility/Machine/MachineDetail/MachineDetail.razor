@@ -1,0 +1,107 @@
+﻿@page "/facility/{FacType}/{Id:int}"
+@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Machine.Components
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Components
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Server.DTO
+
+<div class="detail-container">
+    <FacInfo 
+        Facility=@(OriginalFacility) 
+        FacType=@FacType
+        OnLoad="OnLoadFacility"
+        />
+    @if (USEREDIT)
+    {
+        <label class="sub-btn yappear" @onclick=@OnModal>
+            항목 추가
+        </label>
+    }
+    <div class="group yappear">
+        @foreach (var group in Group)
+        {
+            <Group GroupData="@group" LoadGroup="OnLoadGroup" />
+
+        }
+    </div>
+    <div class="history yappear">
+        <History Id="@Id" FacType="@FacType"/>
+    </div>
+    
+    @if (IsModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SubGroupModal Id="@Id" CloseModal="OnModal" LoadGroup="OnLoadGroup" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int Id { get; set; }
+
+    FacilityDetailDTO facilityDetailDTO;
+    FacilityDetailDTO OriginalFacility;
+    FacilityDetailDTO UpdateFacility;
+
+
+    List<GroupDTO> Group = new List<GroupDTO>();
+    bool IsModal = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        facilityDetailDTO = new FacilityDetailDTO();
+        await OnLoadFacility();
+        await OnLoadGroup();
+
+
+    }
+
+    private async Task OnLoadFacility()
+    {
+        ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={Id}");
+        if(resFacInfo.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");
+            return;
+        }
+        facilityDetailDTO = new FacilityDetailDTO(resFacInfo.data);
+        OriginalFacility = facilityDetailDTO.DeepCopy();
+        UpdateFacility = facilityDetailDTO.DeepCopy();
+    }
+
+    //그룹조회
+    private async Task OnLoadGroup()
+    {
+        try
+        {
+            ResponseList<GroupDTO> resGroup = await apiManager.GetListAsync<GroupDTO>($"FacilityGroup/sign/GetFacilityGroup?facilityid={Id}");
+            if (resGroup.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "그룹 조회 실패");
+                return;
+            }
+            Group = resGroup.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Facility][Detail] 그룹 조회 실패" + ex);
+        }
+    }
+
+    private void OnModal()
+    {
+        IsModal = !IsModal;
+    }
+
+    
+    
+}

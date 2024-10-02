@@ -1,0 +1,58 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
+
+
+<div class="comment">
+    <div class="header">
+        <span>
+            @Data.CreateUser
+        </span>
+        <StatusCard Status="@Data.Status.ToString()"/>
+    </div>
+    <div class="content">
+        <TextField2 Label="처리 일시" Value="@Data.CreateDT" Color=true />
+        <TextField2 Label="처리 내용" Value="@Data.Comment" Color=true />
+        @if(images.Count == 0)
+        {
+            Console.WriteLine("이미지 " + images.Count);
+            @* <ImageSlider Label="이미지" Images="@images" /> *@
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public VocCommentListDTO Data { get;set; }
+
+    List<byte[]> images = new List<byte[]>();
+    List<int> nullIndex = new List<int>();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Console.WriteLine("durl");
+        await OnIMGConvert();
+        
+
+    }
+
+    private async Task OnIMGConvert()
+    {
+        images = new List<byte[]>();
+        foreach(var data in Data.Images.Select((value ,idx)=>(value, idx)))
+        {
+            if(data.value == null)
+            {
+                nullIndex.Add(data.idx);
+                return;
+            }
+            images.Add(data.value);
+        }
+
+        Console.WriteLine("이미지수 " +images);
+        StateHasChanged();
+    }
+}
+
+

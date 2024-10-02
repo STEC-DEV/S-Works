@@ -1,0 +1,94 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+
+<div class="floor yappear">
+    <div class="floor-wrap">
+        <div class="floor-title">
+            <span class="title">
+                층 목록
+            </span>
+        </div>
+        <div class="floor-contents">
+            <FloorList Buildings=@ListData EditMode=@_editMode OnLoadFloor=OnLoadFloor OnCheck=OnChecked />
+        </div>
+        @if (USEREDIT)
+        {
+            <div class="floor-btns">
+                @if (_editMode)
+                {
+                    <Button Name="닫기" Type="0" OnClick="OnEdit"/>
+                    <Button Name="삭제" Type="1" OnClick="OnDelete" />
+                }
+                else
+                {
+                    <Button Name="편집"
+                            Type="0"
+                            OnClick=OnEdit />
+                }
+                
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<BuildingFloorListDTO> ListData { get; set; }
+    [Parameter] public EventCallback OnLoadFloor { get; set; }
+
+    private bool _editMode = false;
+    private List<int> CheckList = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private void OnChecked((bool isCheck, int floorId) data)
+    {
+        if (data.isCheck)
+        {
+            CheckList.Add(data.floorId);
+        }
+        else
+        {
+            CheckList.Remove(data.floorId);
+        }
+    }
+
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
+        CheckList = new List<int>();
+    }
+
+    //OnDelete
+    private async Task OnDelete()
+    {
+        try
+        {
+            if(CheckList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 층이 존재하지 않습니다.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("Floor/sign/DeleteFloor", CheckList);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoadFloor.InvokeAsync();
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "[위치][층] 삭제 에러!");
+        }
+    }
+
+
+}

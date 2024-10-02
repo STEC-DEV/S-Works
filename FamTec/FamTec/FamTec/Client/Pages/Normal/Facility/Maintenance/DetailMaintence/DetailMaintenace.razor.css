@@ -1,0 +1,18 @@
+﻿
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+}
+
+.option{
+    display : flex;
+    gap : var(--half-pd);
+}
+
+.btn{
+    display:flex;
+    justify-content:center;
+}

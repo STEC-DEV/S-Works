@@ -1,6 +1,6 @@
 ﻿.table-container{
     width:100%;
-    table-layout : fixed;
+    /*table-layout : fixed;*/
     padding : var(--three-q-pd);
 }
 

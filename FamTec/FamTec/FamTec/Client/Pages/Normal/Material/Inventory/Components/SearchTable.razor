@@ -1,0 +1,86 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    자재코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    제조사
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    규격
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData == null || ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="7" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td">
+                        @row.Code
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                        @row.Mfr
+                    </td>
+                    <td class="td">
+                        @row.Standard
+                    </td>
+                    <td class="td">
+                        <input type="checkbox"
+                               checked=@(CheckedItem.Contains<int>(row.Id))
+                               @onchange="(e)=>OnChecked(e, row)" />
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<MaterialSearchListDTO>? ListData { get; set; }
+    [Parameter] public EventCallback<(MaterialSearchListDTO,bool)> OnCheck { get; set; }
+    [Parameter] public List<int> CheckedItem { get; set; }
+
+   
+
+    private async void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+    {
+
+        await OnCheck.InvokeAsync((data, (bool)e.Value));
+        
+
+    }
+}

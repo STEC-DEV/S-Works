@@ -1,0 +1,153 @@
+﻿@typeparam T
+
+<div class="selectfield @(Row==true ? "row":"")">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
+
+    <ul class="selectbox @(EditMode ? "" : "none")">
+        <label class="display @(IsActive ? "active" : "")"
+               @onclick=OnActive>
+            @if (SelectName == null)
+            {
+                <span class="display-title">Select</span>
+            }
+            else
+            {
+                <span class="display-title">
+                    @SelectName
+                </span>
+            }
+        </label>
+        <ul class="options @(IsActive && SelectData != null? "active" : "")">
+            @* <li class="option-item" @onclick="() => OnSelectRow(null)">
+                Select
+            </li> *@
+            @if (SelectData != null && SelectData.Any())
+            {
+                @foreach (var selectRow in SelectData)
+                {
+                    try
+                    {
+
+                        <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
+                            @selectRow.GetType().GetProperty("Name").GetValue(selectRow)
+                        </li>
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing row: {ex.Message}");
+                    }
+                }
+            }
+        </ul>
+    </ul>
+
+</div>
+
+@code {
+    [Parameter] public string Key { get; set; }
+    [Parameter] public List<T> SelectData { get; set; }
+    [Parameter] public int Value{ get; set; }
+    [Parameter] public EventCallback<int> OnChange { get; set; } //선택 값 반환 이벤트
+    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> ReturnName { get; set; }
+    [Parameter] public bool EditMode {get;set;}
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool? Row { get; set; }
+
+    public string SelectName = "Select";
+    public bool IsActive { get; set; } = false;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateSelectName();
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task UpdateSelectName()
+    {
+        if (SelectData != null && SelectData.Any())
+        {
+            // var selectedItem = SelectData.FirstOrDefault(item => (int)item.GetType().GetProperty("Id").GetValue(item) == Value);
+            // 선택된 항목을 가져옴
+            var selectedItem = SelectData.FirstOrDefault(item =>
+                item != null &&
+                item.GetType().GetProperty("Id") != null &&
+                (int)item.GetType().GetProperty("Id").GetValue(item) == Value
+            );
+            if (selectedItem != null)
+            {
+                var nameProperty = selectedItem.GetType().GetProperty("Name");
+                if(nameProperty != null)
+                {
+                    SelectName = selectedItem.GetType().GetProperty("Name").GetValue(selectedItem).ToString();
+                }
+                else
+                {
+                    SelectName = "Select";
+                }
+
+                
+            }
+            else
+            {
+                SelectName = "Select";
+            }
+        }
+        else
+        {
+            SelectName = "Select";
+        }
+    }
+
+    public async Task Reset()
+    {
+        Value = 0;
+        SelectName = "Select";
+        await ValueChanged.InvokeAsync(Value);
+        StateHasChanged();
+    }
+
+    public async Task OnSelectRow(object row)
+    {
+        // if (row == null)
+        // {
+        //     Value = 0;
+        //     SelectName = "Select";
+        // }
+        // else
+        // {
+        //     // int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+        //     // Value = id;
+        //     // SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+        //     // OnReturnName(SelectName);
+        // }
+        int id = (int)row.GetType().GetProperty("Id").GetValue(row);
+        Value = id;
+        SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
+        OnReturnName(SelectName);
+
+        OnActive();
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync(Value);
+
+        StateHasChanged();
+    }
+
+    public void OnActive()
+    {
+        IsActive = !IsActive;
+    }
+
+
+    private async void OnReturnName(string name)
+    {
+        await ReturnName.InvokeAsync(name);
+    }
+
+}

@@ -1,0 +1,155 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Admin.Manager.ManagerSignupV2.Modal
+@using FamTec.Shared.Client.DTO
+﻿
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+
+@inject HttpClient HttpClient
+
+<div class="placetable-container">
+    <div class="placetable-title">
+        <span class="title">
+            사업장 목록
+        </span>
+        <div class="place-table-option">
+            <Input 
+                Placeholder="search" 
+                Value="@_searchText"
+                ValueChanged="OnSearchTextChanged" />
+            <Button Name="추가" Width=true OnClick="OnModal" Type=0 />
+            @if (PlaceList.Count != 0)
+            {
+                <Button Name="삭제" Width=true Type=1 OnClick="OnDelete" />
+            }
+            
+        </div>
+    </div>
+    <div class="placetable-table">
+        <SignUpPlaceTable ListData="FilterPlaceList" OnCheck="OnSelected"/>
+    </div>
+    <div class="placetable-count">
+        <span>
+            사업장 수 : @SelectCount
+        </span>
+    </div>
+    @if (isOpen)
+        {
+            <ModalBackground >
+                <ChildComponent>
+                <PlaceModal 
+                    OnClose="OnModal"
+                    SelectPlace="@PlaceList" 
+                    OnAdd="@OnAdd" />
+                </ChildComponent>
+            </ModalBackground>
+        }
+</div>
+
+@code {
+    [Parameter] public AddManagerPlaceDTO NewManagerPlace { get; set; }
+
+    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>(); //선택한 사업장 목록(보여주는거)
+    List<PlaceTableDTO> DelPlace = new List<PlaceTableDTO>();
+    int SelectCount = 0;
+    bool isOpen = false;
+
+    //검색 변수
+    List<PlaceTableDTO> FilterPlaceList = new List<PlaceTableDTO>();
+    //원본 리스트
+    List<PlaceTableDTO> OriginalPlaceList = new List<PlaceTableDTO>();
+
+
+    string _searchText = string.Empty;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+    }
+
+
+    /*
+    * 선택
+    */
+    public void OnSelected((bool isCheck, PlaceTableDTO place) selection)
+    {
+        if (selection.isCheck)
+        {
+            DelPlace.Add(selection.place);
+        }
+        else
+        {
+            DelPlace.Remove(selection.place);
+        }
+    }
+
+      /*
+     * 검색 데이터 필터링
+    */
+    private async void OnSearchTextChanged(string text)
+    {
+        _searchText = text;
+
+        FilterPlaceList = PlaceList
+        .Where(p => String.IsNullOrEmpty(_searchText) ||
+                    (p.PlaceCd?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (p.ContractNum?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+        .ToList();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    /*
+    * add 이벤트
+    */
+    private async void OnAdd(List<PlaceTableDTO> selectList)
+    {
+
+        FilterPlaceList = PlaceList;
+
+        foreach(var i in selectList)
+        {
+            NewManagerPlace.PlaceList.Add(i.Id);
+        }
+
+        SelectCount = PlaceList.Count;
+    }
+
+    /*
+    * DELETE List Item
+    */
+    private async void OnDelete()
+    {
+        if (DelPlace == null || DelPlace.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "선택된 사업장이 없습니다.");
+            return;
+        }
+
+
+        foreach (var i in DelPlace) // ToList()를 사용하여 반복 중 컬렉션 수정을 피함
+        {
+            PlaceList.Remove(i);
+            FilterPlaceList.Remove(i);
+            NewManagerPlace.PlaceList.Remove(i.Id);
+        }
+        DelPlace.Clear();
+        SelectCount = PlaceList.Count; // 선택된 아이템 수 업데이트
+        // FilterPlaceList = new List<PlaceTableDTO>(PlaceList); // 새로운 List 인스턴스를 생성하여 할당
+        StateHasChanged();
+        await InvokeAsync(StateHasChanged); // UI 업데이트
+    }
+
+
+    /*
+    * 사업장 추가 모달
+    */
+    private void OnModal()
+    {
+        isOpen = !isOpen;
+    }
+
+
+}

@@ -1,0 +1,39 @@
+.notify
+{
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+
+    padding : var(--half-pd);
+    
+    border : 1px solid #91caff;
+    border-radius : var(--default-rd);
+    background-color : #e6f4ff;
+
+    transition : all .3s;
+}
+
+.notify:hover{
+    transform : scale(1.05);
+    cursor : pointer;
+}
+
+.label{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    /*color : #000000E0;*/
+    color : var(--main-color);
+    
+}
+
+.context{
+    font-size : 0.7rem;
+    color : #2b2828;
+    font-weight:bold;
+}
+
+.read{
+    border : 1px solid #d3d3d3;
+    background-color : #f1f1f1;
+}
+

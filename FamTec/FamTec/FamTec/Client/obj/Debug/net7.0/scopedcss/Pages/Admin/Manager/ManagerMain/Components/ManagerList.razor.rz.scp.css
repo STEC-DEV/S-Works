@@ -1,12 +1,11 @@
 
-.managerlist-container[b-8px6k8yis6]{
+.managerlist-container[b-8px6k8yis6] {
     background-color: var(--back-default-color);
     border: var(--comp-bd);
-    border-radius:var(--default-rd);
-    height:100%;
-
-    overflow : hidden;
-    box-shadow: var(--default-bs);
+    border-radius: var(--default-rd);
+    height: 100%;
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
 }
 
 

@@ -1,0 +1,23 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<div class="list yappear">
+    <div class="header">
+        <span class="title">
+            사용 자재 목록
+        </span>
+        <Button Name="삭제" Width=true />
+    </div>
+    <div class="content">
+        <InOutTable ListData="@ListData" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title{ get; set; }
+    [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
+
+
+
+}

@@ -1,0 +1,24 @@
+﻿@page "/material/inventory"
+@using FamTec.Client.Pages.Normal.Material.Inventory.Components
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+
+
+<div class="inventory yappear">
+    <SearchFilter MaterialHistory=@MaterialHistory OnMaterialHistoryUpdated="@UpdateMaterialHistory" />
+    @if(MaterialHistory.Count != 0 && MaterialHistory != null)
+    {
+        <MaterialHistory ListData="@MaterialHistory" />
+    }
+</div>
+
+@code {
+     List<MaterialHistoryDTO> MaterialHistory = new List<MaterialHistoryDTO>();
+    //List<MaterialHistoryDTO> MaterialHistory;
+
+
+    private void UpdateMaterialHistory(List<MaterialHistoryDTO> updatedHistory)
+    {
+        MaterialHistory = updatedHistory;
+        StateHasChanged();
+    }
+}

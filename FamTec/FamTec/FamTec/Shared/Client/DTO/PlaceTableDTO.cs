@@ -24,6 +24,6 @@ namespace FamTec.Shared.Client.DTO
         [Display(Name = "계약일자")]
         public DateTime? ContractDt { get; set; }
         [Display(Name = "계약상태")]
-        public sbyte? Status { get; set; }
+        public bool? Status { get; set; }
     }
 }

@@ -1,5 +1,7 @@
-﻿@using System.ComponentModel.DataAnnotations
+﻿@inherits PermissionComponentBase
+@using System.ComponentModel.DataAnnotations
 @using System.Reflection
+@using FamTec.Client.Pages.CommonComponents
 @typeparam T
 
 <table class="table">
@@ -7,48 +9,66 @@
         <tr class="tr">
             <th class="th">
                 <span>
-                    User
+                    사용자
                 </span>
             </th>
             <th class="th text-center">
                 <span>
-                    Type
+                    부서
                 </span>
             </th>
             <th class="th">
                 <span>
-                    Email
+                    이메일
                 </span>
             </th>
             <th class="th">
                 <span>
-                    Created
+                    생성 일자
                 </span>
             </th>
             <th class="th text-center">
                 <span>
-                    Status
+                    상태
                 </span>
             </th>
-
-            @if (EditMode)
+            @if (USEREDIT)
             {
                 <th class="th table-select"></th>
             }
+            
+
         </tr>
     </thead>
     <tbody class="tbody">
+       
             @if(Data == null)
             {
-                <p>...Loading</p>
+            <tr>
+                <td colspan="100" style="text-align:center; height:100%;">
+                    <Loading />
+                </td>
+
+            </tr>
+            }
+            else if (Data.Count == 0)
+            {
+            <tr>
+                <td colspan="100" style="text-align:center; height:100%;">
+                    <Empty />
+                </td>
+
+            </tr>
             }
             else
             {
                 @foreach (var row in Data)
                 {
+                string id = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+
                 <tr class="tbody-tr">
-                    <td class="td userinfo">
-                        <img class="table-img" alt=""/>
+                    <td class="td userinfo" @onclick="()=>OnDetail(id)">
+                        @* <img class="table-img" alt=""/> *@
                         <div class="title-wrap">
                             <a class="maintitle">
                                 @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()
@@ -59,37 +79,39 @@
                         </div>
                         
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Email")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             @typeof(T).GetProperty("Created")?.GetValue(row)?.ToString()
                         </span>
                     </td>
-                    <td class="td text-center">
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
                         <span class="subtitle">
                             <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
                            
                             
                         </span>
                     </td>
-                    @if (EditMode)
+                    @if (USEREDIT)
                     {
-                        <td class="td">
-                            <input type="checkbox" />
+                        <td class="td text-center">
+                            <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))" />
                         </td>
                     }
+                    
+
                  </tr>
                 }
-            }
+        }
         
     </tbody>
 </table>
@@ -97,5 +119,27 @@
 @code {
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public List<T>? Data { get; set; }
+    [Parameter] public HashSet<int> Checkitem { get; set; }
+    [Parameter] public EventCallback<(bool, int)> Select { get; set; }
+    private HashSet<int> CheckItems = new HashSet<int>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private void OnDetail(string id)
+    {
+        Navigation.NavigateTo($"/users/{id}");
+    }
+
+    private async Task OnSelect(ChangeEventArgs e, int id)
+    {
+        bool isChecked = (bool)(e.Value ?? false);
+        if (isChecked)
+        {
+            CheckItems.Add(id);
+        }
+        await Select.InvokeAsync((isChecked, id));
+    }
 }

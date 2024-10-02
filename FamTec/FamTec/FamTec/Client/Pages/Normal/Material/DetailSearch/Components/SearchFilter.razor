@@ -1,0 +1,160 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.DetailSearch.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.Detail
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+<div class="searchfilter">
+    <div class="header">
+        <span class="title">
+            검색 조건
+        </span>
+        <Button Name="조회" Width=true Type="0" OnClick="OnSelect" />
+    </div>
+    <div class="content">
+        <div class="inputmonth">
+            <InputMonth Label="조회 기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
+        </div>
+        <div class="filter-item">
+            <TextField2 Label="조회 품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true />
+            <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
+        </div>
+    </div>
+    @if (_isSearch)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SearchModal OnClose="OnSearch" ListData="MaterialList" @bind-SelectData="SelectedMaterialList" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public List<DetailMaterialListDTO> DetailMaterialList { get; set; }
+    [Parameter] public EventCallback<List<DetailMaterialListDTO>> ValueChange { get; set; }
+    static DateTime curdate = DateTime.Now;
+    private DateTime startDt { get; set; } = new DateTime(curdate.Year, curdate.Month, 1);
+    private DateTime endDt { get; set; } = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
+
+
+    //전체 자재
+    List<MaterialSearchListDTO> MaterialList;
+
+
+    private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
+    List<MaterialSearchListDTO> SelectedMaterialList
+    {
+        get => _selectedMaterialList;
+        set
+        {
+            _selectedMaterialList = value;
+            UpdateTitles(); // titles 업데이트
+        }
+    }
+
+    private List<int> _selectMaterial = new List<int>();
+
+    private string titles = "";
+    private bool _isSearch = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadMaterial();
+    }
+
+    //전제 자제 조회
+    private async Task OnLoadMaterial()
+    {
+        try
+        {
+            ResponseList<MaterialSearchListDTO> resGet = await apiManager.GetListAsync<MaterialSearchListDTO>("Material/sign/GetAllSearchMaterialList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            MaterialList = new List<MaterialSearchListDTO>();
+            MaterialList = resGet.data;
+        }catch(Exception ex)
+        {
+
+        }
+    }
+
+    //조회
+    private async Task OnSelect()
+    {
+        try
+        {
+            //조회 조건
+            if (startDt == null || endDt == null || SelectedMaterialList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "검색 조건을 모두 입력해주세요.");
+                return;
+            }
+            foreach (var i in SelectedMaterialList)
+            {
+                _selectMaterial.Add(i.Id);
+            }
+            string materialIdQueryString = string.Join("&materialid=", _selectMaterial);
+
+            List<DetailMaterialListDTO> material;
+
+            ResponseList<DetailMaterialListDTO> resGet = await apiManager.GetListAsync<DetailMaterialListDTO>($"Store/sign/GetPeriodicRecord?materialid={materialIdQueryString}&StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if(resGet.data == null)
+            {
+                material = new List<DetailMaterialListDTO>();
+            }
+            else
+            {
+                material = resGet.data;
+            }
+            //검색 데이터 초기화
+            SelectedMaterialList.Clear();
+            titles = "";
+            startDt = new DateTime(curdate.Year, curdate.Month, 1);
+            endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
+            await ValueChange.InvokeAsync(material);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[조회 현황]조회 에러"+ex);
+            await JS.InvokeVoidAsync("[조회 현황]조회 에러");
+        }
+    }
+
+
+    private async Task OnSearch()
+    {
+        _isSearch = !_isSearch;
+
+    }
+
+    private void UpdateTitles()
+    {
+        List<string> temp = new List<string>();
+        temp.Clear();
+        foreach (var material in _selectedMaterialList)
+        {
+            temp.Add(material.Name); // MaterialSearchListDTO의 Name 필드를 사용 (필드 이름이 다른 경우 수정 필요)
+        }
+        titles = string.Join(", ", temp);
+        StateHasChanged();
+    }
+
+    private void OnValueChanged((DateTime start, DateTime end)data)
+    {
+        startDt = data.start;
+        endDt = data.end;
+        Console.WriteLine("시작"+data.start);
+        Console.WriteLine("끝"+data.end);
+    }
+
+}

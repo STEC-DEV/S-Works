@@ -1,0 +1,17 @@
+﻿
+<span class="status @StatusClass">
+    @StatusText
+</span>
+
+
+
+@code {
+    [Parameter] public bool? Status { get; set; }
+    public string StatusClass => $"status-{Status}";
+    public string StatusText => Status switch
+    {
+        false => "해약",
+        true => "계약",
+        null => "Unknown"
+    };
+}

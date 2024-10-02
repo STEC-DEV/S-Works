@@ -1,0 +1,80 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="duration">
+    <div class="wrap @(Row == true ? "row":"")">
+        @if (!String.IsNullOrEmpty(Label))
+        {
+            <label>
+                @Label
+            </label>
+        }
+        <input 
+        class="dt"
+        type="date" 
+        max="@EndDT.ToString("yyyy-MM-dd")" 
+        value="@StartDT.ToString("yyyy-MM-dd")"
+        @onchange="@(e => OnStartDateChanged(e))"
+        />
+        <span class="text"> ~ </span>
+        <input 
+            class="dt"
+            type="date" 
+            min="@StartDT.ToString("yyyy-MM-dd")" 
+            value="@StartDT.ToString("yyyy-MM-dd")"
+            @onchange="@(e => OnEndDateChanged(e))"/>
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public string? Label{ get; set; }
+    [Parameter] public bool? Row { get; set; }
+    [Parameter] public DateTime StartDT { get; set; }
+    [Parameter] public DateTime EndDT{ get; set; }
+    [Parameter] public EventCallback<DateTime> StartDTChanged { get; set; }
+    [Parameter] public EventCallback<DateTime> EndDTChanged { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        
+        return base.OnInitializedAsync();
+    }
+
+
+    private void UpdateDates()
+    {
+        Console.WriteLine("변경");
+        Console.WriteLine("시작 : "+StartDT);
+        Console.WriteLine("끝 : "+EndDT);
+        if (StartDT > EndDT)
+        {
+            EndDT = StartDT;
+        }
+    }
+
+    private async Task OnStartDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime newDate))
+        {
+            if (newDate > EndDT)
+            {
+                EndDT = newDate;
+                await EndDTChanged.InvokeAsync(EndDT);
+            }
+            await StartDTChanged.InvokeAsync(newDate);
+        }
+    }
+
+    private async Task OnEndDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value.ToString(), out DateTime newDate))
+        {
+            if (newDate < StartDT)
+            {
+                StartDT = newDate;
+                await StartDTChanged.InvokeAsync(StartDT);
+            }
+            await EndDTChanged.InvokeAsync(newDate);
+        }
+    }
+}

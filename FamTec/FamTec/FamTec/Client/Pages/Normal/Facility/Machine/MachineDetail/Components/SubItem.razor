@@ -1,0 +1,72 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
+
+<div class="item-container">
+    <div class="item-wrap" >
+        @* @if (EditMode)
+        {
+            <input type="checkbox" />
+        } *@
+        <label class="item-label" @onclick=@OnItemEdit>
+            @item.ItemKey
+        </label>
+        <div class="item-values" @onclick=@OnItemEdit>
+            @foreach (var i in item.valueList)
+            {
+                <span class="value">
+                    @i.itemValue
+                </span>
+            }
+        </div>
+        @if (EditMode)
+        {
+            <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelItem(item.Id)" />
+        }
+    </div>
+    @if (USEREDIT&& ItemEdit &&EditMode)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <UpdateSubItemModal OnClose="OnItemEdit" Data="item" LoadGroup="OnLoad" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public ItemDTO item { get; set; }
+    [Parameter] public bool EditMode { get; set; } = false;
+    [Parameter] public EventCallback OnLoad { get; set; }
+    private bool ItemEdit = false;
+
+    private void OnItemEdit()
+    {
+        if (EditMode)
+        {
+            ItemEdit = !ItemEdit;
+        }
+    }
+
+    private async Task OnDelItem(int keyid)
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("FacilityGroupKey/sign/DeleteKey", keyid);
+            if (resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoad.InvokeAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "항목 삭제 에러");
+        }
+    }
+}

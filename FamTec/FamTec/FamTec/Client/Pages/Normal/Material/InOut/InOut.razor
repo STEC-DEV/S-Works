@@ -1,0 +1,79 @@
+﻿@page "/material/inout"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+<div class="inout yappear">
+    <div class="inout-wrap">
+        <div class="inout-header">
+            <span class="title">
+                입출고 목록
+            </span>
+            <div class="option">
+                <Input Placeholder="search" ValueChanged="OnSearch" />
+                <Button 
+                    Name="등록" 
+                    Width=true 
+                    Type="0"
+                    OnClick="OnAddMove"
+                    />
+            </div>
+        </div>
+        <div class="contents">
+            <InOutTable ListData="@FilterList" />
+        </div>
+    </div>
+</div>
+
+@code {
+    List<InOutListDTO> InOuts = new List<InOutListDTO>();
+    List<InOutListDTO> FilterList = new List<InOutListDTO>();
+    private string _searchText = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadInOut();
+    }
+
+
+    private async Task OnLoadInOut()
+    {
+        try
+        {
+            ResponseList<InOutListDTO> resGet = await apiManager.GetListAsync<InOutListDTO>("Store/sign/GetHistory");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "입출고 내역조회 실패");
+                return;
+            }
+
+            InOuts = resGet.data;
+            FilterList = InOuts;
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        FilterList = String.IsNullOrEmpty(_searchText)
+                                ? InOuts
+                                : InOuts.Where(m => (m.MaterialCode?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.MaterialName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (m.RoomName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                                        ).ToList();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private void OnAddMove()
+    {
+        Navigation.NavigateTo("/material/inout/add");
+    }
+}

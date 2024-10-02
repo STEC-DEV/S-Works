@@ -1,51 +1,53 @@
-﻿<label class="toggle-container">
-   
+﻿<label class="toggle-container @(Col ? "col" : "")">
+    <span class="toggle-title">@Title</span>
     <input 
         class="toggle-input" 
-        @bind-value="currentValue" 
         type="checkbox" 
+        checked="@IsChecked"
         role="switch" 
-        checked="@IsCheckedBool" 
+        @onchange="OnValueChanged"
         disabled="@(!EditMode)" 
         />
-    <span class="toggle-title">@Title</span>
+    @* <span class="toggle-title">@Title</span> *@
 </label>
 
 
 
 @code {
     [Parameter] public string Title { get; set; }
+    [Parameter] public bool Col { get; set; }
     [Parameter] public bool EditMode { get; set; } = false; //비활성화 여부
-    [Parameter] public sbyte? Value { get; set; }
-    [Parameter] public sbyte? IsChecked { get; set; }
-    [Parameter] public bool? IsCheckedBool { get; set; } = false;
-    [Parameter] public EventCallback<sbyte?> ValueChanged { get; set; }
+    [Parameter] public bool IsChecked { get; set; }
+    [Parameter] public bool Value { get; set; }
+    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
 
-    private bool currentValue
+    // private bool _value
+    // {
+
+    //     get => Value;
+    //     set
+    //     {
+    //         Console.WriteLine(Value);
+    //         if(Value != value)
+    //         {
+    //             ValueChanged.InvokeAsync(value);
+    //         }
+    //     }
+
+    // }
+
+    private async Task OnValueChanged(ChangeEventArgs e)
     {
-        get => Value.GetValueOrDefault() == 1;
-        set
+        Console.WriteLine( Title+ e.Value);
+        if (bool.TryParse(e.Value?.ToString(), out bool newValue))
         {
-            var newValue = value ? (sbyte?)1 : (sbyte?)0;
-            if (Value != newValue)
-            {
-                Value = newValue;
-                ValueChanged.InvokeAsync(newValue);
-            }
+            await ValueChanged.InvokeAsync(newValue);
         }
     }
 
     protected override Task OnInitializedAsync()
     {
-        initiaToggle();
         return base.OnInitializedAsync();
     }
 
-    /*
-     * 토글 초기화
-     */
-    private void initiaToggle()
-    {
-        IsCheckedBool = IsChecked == 1 ? true : false;
-    }
 }

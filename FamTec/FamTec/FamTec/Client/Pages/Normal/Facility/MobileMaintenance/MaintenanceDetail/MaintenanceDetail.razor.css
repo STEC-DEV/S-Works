@@ -1,0 +1,7 @@
+﻿
+
+.maintenance {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+}

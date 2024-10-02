@@ -1,0 +1,22 @@
+﻿
+<button class="btn @Color">
+
+</button>
+
+@code {
+    [Parameter] public string color { get; set; } = "0";
+    public string Color => $"color-{selectColor}";
+    public int selectColor => color switch
+    {
+        "0" => 0,
+        "1" => 1,
+        "2" => 2,
+        _ => 999
+    };
+    private void OnClick()
+    {
+        
+    }
+
+
+}

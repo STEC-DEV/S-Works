@@ -1,0 +1,77 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+<div class="m-search yappear">
+    <div class="header">
+        <span class="title">
+            @(Tab==1 ? "입고 자재" : "출고 자재")
+        </span>
+        <Button Name="검색" Width=true Type="0" OnClick="OnSearch"/>
+    </div>
+    <div class="content">
+        <TextField 
+            Label="자재 코드" 
+            Context="@Data?.Code"
+            Row=true />
+        <TextField 
+            Label="자재명" 
+            Context="@Data?.Name"
+            Row=true />
+        <TextField 
+            Label="자재 제조사" 
+            Context="@Data?.Mfr"
+            Row=true />
+        <TextField 
+            Label="규격" 
+            Context="@Data?.Standard"
+            Row=true />
+    </div>
+    @if (_isSearch)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SearchModal OnClose="OnSearch" @bind-SelectData=Data />
+            </ChildComponent >
+        </ModalBackground>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int Tab { get; set; }
+    [Parameter] public MaterialSearchListDTO Data { get; set; }
+    [Parameter] public EventCallback<MaterialSearchListDTO> DataChanged { get; set; }
+    MaterialSearchListDTO? SelectData;
+
+    private int _stateTab;
+    private bool _isSearch = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stateTab = Tab;
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_stateTab != Tab)
+        {
+            Data = new MaterialSearchListDTO();
+            _stateTab = Tab;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task OnSearch()
+    {
+        _isSearch = !_isSearch;
+         if (Data != null)
+        {
+            await DataChanged.InvokeAsync(Data);
+        }
+    }
+
+}

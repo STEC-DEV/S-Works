@@ -1,0 +1,22 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Shared.Server.DTO.Place
+
+<div class="placetoggle-container">
+    <div class="placetoggle-title">
+        <span>
+            사용자 권한
+        </span>
+    </div>
+    <div class="placetoggle-toggle">
+        <UserPermTable UserPerm=@UserPerm OnVocActive=@OnVocActive />
+    </div>
+</div>
+
+@code {
+    [Parameter] public UserPermDTO UserPerm{ get; set; }
+    [Parameter] public EventCallback<UserPermDTO> OnVocActive { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+
+
+}

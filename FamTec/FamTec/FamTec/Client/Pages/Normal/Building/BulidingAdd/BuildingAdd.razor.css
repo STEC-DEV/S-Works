@@ -1,0 +1,22 @@
+﻿.buildingadd-container{
+    width :100%;
+    
+    padding : var(--default-pd);
+
+    display : flex;
+    flex-direction : column;
+    gap : var(--wide-pd);
+    
+}
+
+
+.buildingadd-btns{
+    display : flex;
+    gap : var(--half-pd);
+    justify-content : flex-end;
+}
+
+
+.buildingadd-container .buildingadd-info {
+    height: 100%;
+}

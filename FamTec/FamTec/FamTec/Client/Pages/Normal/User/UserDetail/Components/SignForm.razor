@@ -1,0 +1,180 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Client.Pages.CommonComponents
+
+
+<div class="form-container yappear">
+    <div class="form-title">
+        <span class="title">사용자 정보</span>
+    </div>
+    <div class="form-area">
+        <div class="img-wrap">
+            <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" />
+            @if (USEREDIT && EditMode)
+            {
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            }
+            
+        </div>
+        <div class="form-input">
+            @if (EditMode)
+            {
+                <ValidationInput ValueType="text"
+                                 Placeholder="아이디"
+                                 @bind-Value="@UserInfo.UserId"
+                                 Label="아이디"/>
+                <ValidationInput ValueType="password"
+                                 Type="PW"
+                                 Placeholder="비밀번호"
+                                 @bind-Value="@UserInfo.Password"
+                                 Label="비밀번호" />
+                <ValidationInput ValueType="password"
+                                 Type="PWCHECK"
+                                 Placeholder="비밀번호 확인"
+                                 PasswordCheck="@UserInfo.Password"
+                                 Label="비밀번호 확인" />
+                <ValidationInput ValueType="text"
+                                 Placeholder="이름"
+                                 @bind-Value="@UserInfo.Name"
+                                 Label="이름" />
+                <ValidationInput ValueType="text"
+                                 Placeholder="전화번호"
+                                 @bind-Value="@UserInfo.Phone"
+                                 Label="전화번호" />
+                <ValidationInput ValueType="text"
+                                 Placeholder="이메일"
+                                 Type="EMAIL"
+                                 @bind-Value="@UserInfo.Email"
+                                 Label="이메일" />
+                <ValidationInput ValueType="text"
+                                 Placeholder="직책"
+                                 @bind-Value="@UserInfo.Job"
+                                 Label="직책" />
+                <SelectField Label="상태"
+                             SelectData="@_userState"
+                             @bind-Value="@UserInfo.Status"
+                             EditMode=true />
+
+                <Toggle Title="알람 수신"
+                        @bind-Value="@UserInfo.AlarmYN"
+                        IsChecked="@UserInfo.AlarmYN"
+                        EditMode=EditMode />
+            }
+            else
+            {
+                <TextField2 Label="아이디"
+                            Value="@UserInfo.UserId"
+                            Color=true />
+                <TextField2 Label="이름"
+                            Value="@UserInfo.Name"
+                            Color=true />
+                <TextField2 Label="전화번호"
+                            Value="@UserInfo.Phone"
+                            Color=true />
+                <TextField2 Label="이메일"
+                            Value="@UserInfo.Email"
+                            Color=true />
+                <TextField2 Label="직책"
+                            Value="@UserInfo.Job"
+                            Color=true />
+                <TextField2 Label="상태"
+                            Value="@(UserInfo.Status == 1? "재직" :"휴직" )"
+                            Color=true />
+                <Toggle Title="알람 수신"
+                        @bind-Value="@UserInfo.AlarmYN"
+                        IsChecked="@UserInfo.AlarmYN"
+                        EditMode=EditMode />
+            }
+        </div>
+        
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public UserInfoDTO UserInfo { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+
+    private byte[] imageData;
+    private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
+    private List<string> updateImageUrl = new List<string>(); //이미지 프리뷰
+
+
+    List<object> _userState = new List<object>
+    {
+        new
+        {
+            Id = 1,
+            Name = "휴직"
+        },
+        new
+        {
+            Id = 2,
+            Name = "재직"
+        },
+    };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        // if (!EditMode)
+        // {
+
+        //     ConverImage();
+        // }
+        ConverImage();
+
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!EditMode)
+        {
+            updateImageUrl.Clear();
+        }
+        ConverImage();
+    }
+
+    private void ConverImage()
+    {
+        ImageUrl.Clear();
+        if (UserInfo.Image != null && UserInfo.Image.Length > 0)
+        {
+            ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
+        }
+        // Console.WriteLine("이미지"+ UserInfo.Image);
+        // ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
+    }
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        updateImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            if (UserInfo.Image == null || UserInfo.Image.Length == 0)
+            {
+                // 기존 이미지가 없는 경우: 새 이미지 추가
+                UserInfo.Image = image.Image ;
+                UserInfo.ImageName =image.Name;
+            }
+            else
+            {
+                UserInfo.Image = image.Image;
+                UserInfo.ImageName = image.Name;
+            }
+            // UserInfo.Image = image.Image;
+            // UserInfo.ImageName = image.Name;
+            updateImageUrl.Add(image.ImageUrl);
+            break;
+        }
+        StateHasChanged();
+    }
+}

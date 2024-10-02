@@ -1,0 +1,121 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Material.Detail
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    거래일
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재 이름
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    입고 금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    출고 금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    재고 수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach (var row in ListData)
+        {
+            <tr class="tr">
+                <td class="td">
+                    @row.InoutDate
+                </td>
+                <td class="td">
+                    @row.MaterialCode
+                </td>
+                <td class="td">
+                    @row.MaterialName
+                </td>
+                <td class="td">
+                    @row.Unit
+                </td>
+                <td class="td">
+                    @row.InNum
+                </td>
+                <td class="td">
+                    @row.InUnitPrice
+                </td>
+                <td class="td">
+                    @row.InTotalPrice
+                </td>
+                <td class="td">
+                    @row.OutNum
+                </td>
+                <td class="td">
+                    @row.OutUnitPrice
+                </td>
+                <td class="td">
+                    @row.OutTotalUnitPrice
+                </td>
+                <td class="td">
+                    @row.InventroyNum
+                </td>
+                <td class="td">
+                    @row.Note
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<InoutDetailListDTO> ListData { get; set; }
+
+
+
+
+}

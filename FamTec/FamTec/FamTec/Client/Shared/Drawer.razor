@@ -1,34 +1,45 @@
 ﻿@using System;
-
+@using FamTec.Client.Shared.Provider
+@inject AuthenticationStateProvider _authStateProvider;
 
 <div class="drawer-container">
     <ul class="drawer-wrap">
         @foreach (var category in CategoryList)
         {
             <li class="drawer-item">
-                <NavLink class="drawer-link"
-                            href="@(category.SubCategory == null ? category.Url : null)"
-                            @onclick="() => ToggleDropdown(category)">
-                    <span class="category-title">@category.Name</span>
+                @if(category.Url == null)
+                {
+                    <NavLink class="drawer-link none">
+                        <span class="category-title">@category.Name</span>
+                    </NavLink>
+                }
+                else
+                {
+                    <NavLink class="drawer-link"
+                             href="@(category.SubCategory == null ? category.Url : null)"
+                             @onclick="() => ToggleDropdown(category)">
+                        <span class="category-title">@category.Name</span>
+                        @* @if (category.SubCategory != null)
+                        {
+                            <span class="arrow">∨</span>
+                        } *@
+                    </NavLink>
+
                     @if (category.SubCategory != null)
                     {
-                        <span class="arrow">∨</span>
+                        <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
+                            @foreach (var subcategory in category.SubCategory)
+                            {
+                                <li class="drawer-sub-item">
+                                    <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
+                                        <span class="category-title">@subcategory.Name</span>
+                                    </NavLink>
+                                </li>
+                            }
+                        </ul>
                     }
-                </NavLink>
-
-                @if (category.SubCategory != null)
-                {
-                    <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
-                        @foreach (var subcategory in category.SubCategory)
-                        {
-                            <li class="drawer-sub-item">
-                                <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
-                                    <span class="category-title">@subcategory.Name</span>
-                                </NavLink>
-                            </li>
-                        }
-                    </ul>
                 }
+                
             </li>
         }
     </ul>
@@ -36,7 +47,9 @@
 
 
 @code {
-    [Parameter] public int IsUser { get; set; }
+
+    // [Parameter] public bool IsUser { get; set; }
+    bool LoginMode;
     List<Category>? CategoryList;
     public class Category
     {
@@ -47,22 +60,29 @@
         public string? SvgImgUrl { get; set; }
     }
 
+
     protected async override Task OnInitializedAsync()
     {
+        await OnLoginMode();
         await LoadCategory();
+    }
+
+    private async Task OnLoginMode()
+    {
+        LoginMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
     }
 
     private Task LoadCategory()
     {
         return Task.Run(() =>
         {
-            CategoryList = IsUser == 1 ? GetAdminCategories() : GetUserCategories();
+            CategoryList = LoginMode ? GetAdminCategories() : GetUserCategories();
         });
     }
 
     /*
-     * 관리자 모드 카테고리
-     */
+    * 관리자 모드 카테고리
+    */
     private List<Category> GetAdminCategories()
     {
         return new List<Category>
@@ -81,8 +101,8 @@
     }
 
     /*
-     * 일반 모드 카테고리
-     */
+    * 일반 모드 카테고리
+    */
     private List<Category> GetUserCategories()
     {
         return new List<Category>
@@ -93,15 +113,50 @@
                 Url = "/basic",
                 SubCategory = new List<Category>
                 {
-                    new Category { Name = "건물 정보", Url = "/basic/buildings" },
-                    new Category { Name = "위치 관리", Url = "/basic/locations" },
-                    new Category { Name = "단위 관리", Url = "/basic/units" }
+                    new Category { Name = "건물 정보", Url = "/buildings" },
+                    new Category { Name = "위치 관리", Url = "/locations" },
+                    new Category { Name = "단위 관리", Url = "/units"  },
+
                 }
             },
             new Category
             {
+                Name = "설비 유지 관리",
+                Url = "/facility",
+                SubCategory = new List<Category>
+                {
+                    new Category { Name = "기계 설비", Url = "/machine" },
+                    new Category { Name = "전기 설비", Url = "/electronic" },
+                    new Category { Name = "승강 설비", Url = "/lift" },
+                    new Category { Name = "소방 설비", Url = "/fire" },
+                    new Category { Name = "건물 설비", Url = "/construct" },
+                    new Category { Name = "통신 설비", Url = "/network" },
+                    new Category { Name = "미화 설비", Url = "/beauty" },
+                    new Category { Name = "보안 설비", Url = "/security" },
+
+                }
+            },
+            new Category
+            {
+                Name = "자재 관리",
+                Url = "/material",
+                SubCategory = new List<Category>
+                {
+                    new Category { Name = "자재 관리", Url = "/info" },
+                    new Category { Name = "입출고 관리", Url = "/inout" },
+                    new Category { Name = "재고 조회", Url = "/inventory"  },
+                    new Category { Name = "입출고 조회", Url = "/detail"  },
+
+                }
+            },
+            new Category
+            {
+                Name = "에너지 관리",
+            },
+            new Category
+            {
                 Name = "사용자 관리",
-                Url = "/users"
+                Url = "/users",
             },
             new Category
             {

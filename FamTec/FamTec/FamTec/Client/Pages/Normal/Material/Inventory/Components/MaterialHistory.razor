@@ -1,0 +1,22 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+
+
+<div class="history yappear">
+    <div class="header">
+        <span class="title">
+            품목별 재고현황
+        </span>
+    </div>
+    <div class="content @(ListData.Count == 0 || ListData == null ? "height" : "")">
+        <MaterialTable ListData="@ListData"/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<MaterialHistoryDTO> ListData { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        
+    }
+}

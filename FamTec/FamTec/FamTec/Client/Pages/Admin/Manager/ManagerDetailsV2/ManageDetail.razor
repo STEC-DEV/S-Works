@@ -1,0 +1,209 @@
+﻿@page "/admin/manager/{Id:int}"
+
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Admin.Manager.ManagerDetailsV2.Components
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Manager
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.DTO
+@using FamTec.Shared.Server
+@using FamTec.Shared.Server.DTO
+@using System.IdentityModel.Tokens.Jwt
+@using System.Text
+
+@inject HttpClient HttpClient
+@inject NavigationManager Navigation
+
+<div class="admin-signup-container yappear">
+    <div class="admin-signup-wrap">
+        <div class="form">
+            <SignForm 
+                Manager="@(EditMode ? UpdateManager : OriginalManager)"
+                DepartmentList="departmetnList" 
+                EditMode=EditMode
+                @bind-Valid="@validationCheck"
+                />
+        </div>
+        <div class="place">
+            <PlaceSelectTable 
+                Id="@Id"
+                PlaceList="@UpdatedManager.PlaceList"
+                EditMode=EditMode
+                />
+        </div>
+
+    </div>
+    <div class="btns">
+        @if (EditMode)
+        {
+            <Button Name="저장" Width="true" Type=0 OnClick="OnUpdate" />
+            <Button Name="취소" Width="true" Type=1 OnClick="OnEdit" />
+        }
+        else
+        {
+            <Button Name="편집" Width=true Type=0 OnClick="OnEdit" />
+            <Button Name="뒤로" Width=true Type=1 />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    List<DepartmentDTO> departmetnList = new List<DepartmentDTO>();
+
+
+    bool validationCheck = false;
+
+    //=========================
+    //상세
+    DManagerDTO OriginalManager = new DManagerDTO();
+    DManagerDTO UpdateManager = new DManagerDTO();
+
+    List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>();
+    UpdateManagerDTO UpdatedManager = new UpdateManagerDTO();
+    bool EditMode = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await OnLoadDepartments();
+        await OnLoadDetailManager();
+    }
+
+
+
+
+    private void HandleFormValidityChanged(bool isValid)
+    {
+        // Do something with the form validity state
+        Console.WriteLine($"Form is valid: {isValid}");
+    }
+
+    /*
+    * 매니저 상세 정보 조회
+    */
+    private async Task OnLoadDetailManager()
+    {
+        try
+        {
+            ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/DetailManagerInfo?adminId={Id}");
+            if (object.ReferenceEquals(null, resDetailManager) || resDetailManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 상세 정보 조회 실패");
+                return;
+            }
+            OriginalManager = resDetailManager.data;
+            OnDeepCopyData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패\n" + ex);
+            await JS.InvokeVoidAsync("alert", "[Amdin][ManagerDetail] 매니저 상세 정보 조회 실패");
+        }
+    }
+
+    private void OnDeepCopyData()
+    {
+        UpdateManager = OriginalManager.DeepCopy();
+    }
+
+    /*
+    * 부서 조회
+    */
+    private async Task OnLoadDepartments()
+    {
+        try
+        {
+            ResponseList<DepartmentDTO> resDepartment = await apiManager.GetListAsync<DepartmentDTO>("Department/sign/GetDepartmentList");
+            if(resDepartment.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "부서 조회 실패");
+                return;
+            }
+            // ResponseList<DepartmentDTO> resDepartment = await HttpClient.GetFromJsonAsync<ResponseList<DepartmentDTO>>("http://123.2.156.148:5245/api/DePartment/GetDepartmentList");
+            departmetnList = resDepartment.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Admin][ManagerSignUp] 부서 조회 에러" + ex);
+        }
+
+    }
+
+
+
+
+
+    /*
+    * (POST)매니저 등록
+    */
+    private async Task OnUpdate()
+    {
+        try
+        {
+            Console.WriteLine("매니저 등록 시작");
+            Console.WriteLine("아이디" +UpdateManager.UserId);
+            Console.WriteLine("비밀번호" +UpdateManager.Password);
+            Console.WriteLine("부서" + UpdateManager.DepartmentId);
+            foreach (var i in UpdatedManager.PlaceList)
+            {
+                Console.WriteLine("사업장"+i.Name);
+            }
+            Console.WriteLine("매니저 등록 끝");
+
+            await Convert();
+
+            ResponseUnit<bool> resManager = await apiManager.PutAsync<bool>("AdminUser/sign/UpdateManager", UpdatedManager);
+            if(resManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "관리자 정보 등록 실패");
+                //롤백 코드 추가 예정
+                return;
+            }
+            AdminImg adminImg = new AdminImg();
+            adminImg.adminId = Id;
+            adminImg.Image = UpdateManager.Image;
+            adminImg.ImageName = UpdateManager.ImageName;
+
+            ResponseUnit<bool> resManagerImg = await apiManager.PutAsync<bool>("AdminUser/sign/UpdateManagerImage", adminImg,true);
+            if (resManagerImg.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "이미지 등록 실패");
+                return;
+            }
+
+
+            await OnLoadDetailManager();
+            OnEdit();
+            StateHasChanged();
+
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"[Admin][Manager] 매니저 등록 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "[Admin][Manager] 매니저 등록 에러");
+        }
+
+
+    }
+
+    private async Task Convert()
+    {
+        UpdatedManager.AdminIndex = Id;
+        UpdatedManager.Name = UpdateManager.Name;
+        UpdatedManager.DepartmentId= UpdateManager.DepartmentId;
+        UpdatedManager.Phone = UpdateManager.Phone;
+        UpdatedManager.Password = UpdateManager.Password;
+        UpdatedManager.UserId = UpdateManager.UserId;
+        UpdatedManager.Email = UpdateManager.Email;
+        
+        
+    }
+
+    private void OnEdit()
+    {
+        EditMode = !EditMode;
+        OnDeepCopyData();
+    }
+
+}

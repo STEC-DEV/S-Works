@@ -1,11 +1,18 @@
 ﻿.vocinfo-container {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
     height: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--back-default-color);
     padding: var(--default-pd);
+    box-shadow: var(--shadow-1);
+}
+
+.vocinfo-wrap {
+    display: flex;
+    flex-direction: column;
+    /*height: 100%;*/
 }
 
 .vocinfo-container .vocinfo-title{
@@ -19,6 +26,12 @@
     padding:var(--default-pd);
 
     border-bottom : var(--default-bd);
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: var(--default-pd);
 }
 
 .vocinfo-container .title{
@@ -35,4 +48,11 @@
     gap: var(--default-pd);
     height: 100%;
     padding: var(--default-pd);
+}
+
+
+.vocinfo-container .content-grid{
+    display : grid;
+    grid-template-columns : repeat(2, 1fr);
+    gap : var(--default-pd);
 }

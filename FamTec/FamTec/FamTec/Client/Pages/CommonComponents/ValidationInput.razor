@@ -1,0 +1,177 @@
+﻿@using System.Text.RegularExpressions
+@using FamTec.Shared.Server.DTO
+
+<div class="valid-input @(Row==true?"row":"")">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
+    <div class="inputs">
+        <input class="input"
+               type="@ValueType"
+               placeholder="@Placeholder"
+               value="@Value"
+               @oninput=@(e =>OnInputChange(e)) />
+        @if(Type == "USERID")
+        {
+            <Button Name="중복검사" Width=true Type="0" OnClick="OnDuplicateCheck" />
+        }
+
+    </div>
+    @if (Type =="USERID")
+    {
+        <div class="guide">
+            <span class="text @(idValide ? "true":"")">
+                4자 이상 30자 이하(영어/숫자, 공백 제외)
+            </span>
+        </div>
+        <div class="guide">
+            <span class="text @(idDuplication ? "true":"")">
+                중복 검사
+            </span>
+        </div>
+    }
+
+    @if(Type == "PW")
+    {
+        <div class="guide">
+            <span class="text @(pw1 ? "true":"")">
+                8자 이상 입력(공백 제외)
+            </span>
+        </div>
+        <div class="guide">
+            <span class="text @(pw2 ? "true":"")">
+                영문/숫자/특수문자 모두 포함
+            </span>
+        </div>
+    }
+    @if(Type == "PWCHECK")
+    {
+        <div class="guide">
+            <span class="text @(pw_check ? "true":"")">
+                비밀번호 일치
+            </span>
+        </div>
+    }
+    @if (Type == "EMAIL")
+    {
+        <div class="guide">
+            <span class="text @(emailValid ? "true":"")">
+                유효한 이메일 형식
+            </span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? PasswordCheck { get; set; } //비밀번호값
+    [Parameter] public string? Type { get; set; }
+
+    [Parameter] public string? Value {get;set;}
+    [Parameter] public bool? Row{ get; set; }
+    [Parameter] public string? ValueType { get; set; } //아이디 비번 이메일 구분
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<bool> ValidChanged { get; set; }
+
+    bool idValide = false;
+    bool idDuplication = false;
+    bool pw1 = false;
+    bool pw2 = false;
+    bool pw_check = false;
+    bool emailValid = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ValidateInput(Value);
+        bool isValid = DetermineValidity();
+        await ValidChanged.InvokeAsync(isValid);
+    }
+
+    private async Task OnInputChange(ChangeEventArgs e)
+    {
+        idDuplication = false;
+        Value = e.Value?.ToString();
+        ValidateInput(Value);
+        await ValueChanged.InvokeAsync(Value);
+        
+        //rjawmd
+        bool isValid = DetermineValidity();
+        await ValidChanged.InvokeAsync(isValid);
+
+    }
+
+
+    private void ValidateInput(string? value)
+    {
+        switch (Type)
+        {
+            case "USERID":
+                idValide = Regex.IsMatch(value ?? "", @"^[A-Za-z0-9]{4,30}$");
+                break;
+            case "PW":
+                pw1 = !string.IsNullOrWhiteSpace(value) && value.Length >= 8;
+                pw2 = Regex.IsMatch(value ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
+                break;
+            case "PWCHECK":
+                pw1 = !string.IsNullOrWhiteSpace(PasswordCheck) && PasswordCheck.Length >= 8;
+                pw2 = Regex.IsMatch(PasswordCheck ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
+                pw_check = pw1 && pw2 && !String.IsNullOrEmpty(value) && value == PasswordCheck;
+                break;
+            case "EMAIL":
+                emailValid = Regex.IsMatch(value ?? "", @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                break;
+        }
+    }
+
+    private bool DetermineValidity()
+    {
+        switch (Type)
+        {
+            case "USERID":
+                return idValide;
+            case "PW":
+                return pw1 && pw2;
+            case "PWCHECK":
+                return pw_check;
+            case "EMAIL":
+                return emailValid;
+            default:
+                return !string.IsNullOrWhiteSpace(Value);
+        }
+    }
+
+    private async Task OnDuplicateCheck()
+    {
+        try
+        {
+            if (String.IsNullOrEmpty(Value))
+            {
+                await JS.InvokeVoidAsync("alert", "아이디가 공백입니다.");
+                return;
+            }
+
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"AdminUser/sign/UserIdCheck?userid={Value}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            idDuplication = resGet.data;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "아이디 중복검사 에러");
+        }
+    }
+}
+
+@*
+    [type]
+    UserId => 중복검사
+    Password => 영문자, 숫자, 특수 문자, 8자리 이상
+    email => @ / .com 정도
+
+*@

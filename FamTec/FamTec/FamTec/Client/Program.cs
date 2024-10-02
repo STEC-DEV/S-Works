@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Tewr.Blazor.FileReader;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
+using FamTec.Client.Shared.Provider;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -24,6 +26,7 @@ builder.Services.AddFileReaderService(options =>
 });
 
 builder.Services.AddScoped<SessionService>();
+<<<<<<< HEAD
 builder.Services.AddScoped<ApiManager>();
 builder.Services.AddBlazoredSessionStorage(); // 세션 스토리지 서비스
 builder.Services.AddAuthorizationCore(); // 권한부여 서비스
@@ -33,6 +36,24 @@ builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // 사용자 정의 
 
 // SIGNAL R 허브연결
 string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
+=======
+
+
+builder.Services.AddScoped<ApiManager>();
+builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+builder.Services.AddScoped<PermissionService>();
+builder.Services.AddAuthorizationCore();
+
+
+// 연결 -- 아래 코드 (게시용)
+//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
+string HubUrl = "http://123.2.156.28:5245/VocHub";
+>>>>>>> origin/Front
 HubObject.hubConnection = new HubConnectionBuilder()
       .WithUrl(HubUrl, options =>
       {
@@ -62,3 +83,19 @@ catch(Exception ex)
 }
 await builder.Build().RunAsync();
 
+//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
+//HubObject.hubConnection = new HubConnectionBuilder()
+//      .WithUrl(HubUrl, options =>
+//      {
+//          options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
+//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
+//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+//      })
+//    .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결
+//    .ConfigureLogging(logging =>
+//    {
+//        //logging.AddConsole();
+//        // This will set ALL logging to Debug level
+//        logging.SetMinimumLevel(LogLevel.Debug);
+//    })
+//   .Build();

@@ -1,0 +1,87 @@
+﻿
+
+<div class="slider">
+    @if(Label is not null){
+        <label class="label">
+            @Label
+        </label>
+    }
+    <div class="content">
+        @if(ImageDataUrl.Count > 1)
+        {
+            <div class="left-btn" @onclick="ShowPreviousImage">
+                &lt;
+            </div>
+        }
+
+        <div class="img-wrap">
+            <div class="img">
+                @if(ImageDataUrl.Count != 0)
+                {
+                    <img src="@ImageDataUrl[CurrentImageIndex]" alt="이미지" />
+                }
+
+            </div>
+        </div>
+        @if (ImageDataUrl.Count > 1)
+        {
+            <div class="right-btn" @onclick="ShowNextImage">
+                &gt;
+            </div>
+        }
+
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public List<byte[]> Images { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+
+    private List<string> ImageDataUrl = new List<string>();
+
+
+    private int CurrentImageIndex = 0;
+
+    protected override Task OnParametersSetAsync()
+    {
+
+        if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
+        {
+            ImageDataUrl.Clear();
+            foreach (var image in Images)
+            {
+                if (image== null)
+                {
+                    Console.WriteLine($"Image at index {image} is null");
+                    continue; // null인 이미지는 건너뜁니다.
+                }
+                var base64String = Convert.ToBase64String(image);
+                ImageDataUrl.Add($"data:image/png;base64,{base64String}");
+            }
+            CurrentImageIndex = 0;
+        }
+        return Task.CompletedTask;
+    }
+
+    private async void ShowPreviousImage()
+    {
+        Console.WriteLine("이전 : " + CurrentImageIndex);
+        if (CurrentImageIndex > 0)
+        {
+            CurrentImageIndex--;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void ShowNextImage()
+    {
+        Console.WriteLine("다음 : " + CurrentImageIndex);
+        if (CurrentImageIndex < ImageDataUrl.Count - 1)
+        {
+            CurrentImageIndex++;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+}

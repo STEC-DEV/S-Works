@@ -23,9 +23,11 @@
     --main-light: #c6d1fd;
     --del-hover: #d31a1a;
     --default-color: #FFFFFF;
+    --color-1: #e5e5e5;
     --status-0: gray;
     --status-1: #1dab2f;
     --status-2: #1b40d5;
+    --status-del: #d31a1a;
     /*
         background-color
     */
@@ -55,4 +57,5 @@
         box-shadow
     */
     --default-bs: 0 10px 15px rgba(0, 0, 0, 0.16), 0 10px 15px rgba(0, 0, 0, 0.23);
+    --shadow-1: 0 2px 12px lightgray;
 }

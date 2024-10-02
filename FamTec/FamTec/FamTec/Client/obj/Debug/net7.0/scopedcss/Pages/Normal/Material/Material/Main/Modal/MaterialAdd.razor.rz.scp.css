@@ -1,0 +1,82 @@
+.modal[b-8frb8647wj] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    height: 80%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.modal .header>.title[b-8frb8647wj]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.content[b-8frb8647wj] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.group[b-8frb8647wj]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-8frb8647wj]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+/*
+.col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+}
+
+.height {
+    height: 100%;
+}
+
+.col label {
+    color: var(--main-color);
+}
+
+.col span {
+    font-size: calc(var(--normal-size) + 0.1rem);
+}
+
+
+.col ::deep textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    outline: none;
+    border: var(--input-bd);
+    border-radius: var(--default-rd);
+    padding: var(--default-pd);
+    transition: all .3s
+}
+
+
+    .col ::deep textarea:focus {
+        border: var(--default-bd);
+    }*/

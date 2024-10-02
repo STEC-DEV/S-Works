@@ -1,0 +1,267 @@
+﻿@page "/material/inout/add"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components.In
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Components.Out
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+<div class="addinout">
+    <div class="header">
+        <Tab Tabs="Category" OnClick="OnTab" />
+    </div>
+    <SearchMaterial Tab="_tab" @bind-Data="@SelectMaterial" />
+    
+    @if (SelectMaterial.Id != 0)
+    {
+        @if (_tab == 0)
+        {
+            <OutForm MaterialId="@SelectMaterial.Id" AddItem=AddItem />
+        }
+        else
+        {
+            <InForm AddItem="@AddInItem"/>
+        }
+
+        <div class="btn">
+            <Button Name="추가" Width=true Type="0" OnClick=@(_tab == 0 ? OnAddList : OnInDataAdd) />
+        </div>
+    }
+    <InOutList
+        Title="@(_tab==1 ? "입고 목록" : "출고 목록")" 
+        @bind-ListData="@AddInventoryListData" 
+        InOutType=@_tab
+        />
+    <div class="btns">
+        <Button Name="@(_tab==1 ? "입고 등록" : "출고 등록")" Width=true OnClick="HandleClick" />
+    </div>
+    
+</div>
+
+@code {
+
+    MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
+    List<string> Category = new List<string> { "출고", "입고" };
+
+    //출고 내용 데이터
+    OutContentDTO AddItem = new OutContentDTO();
+    //입고 내용 데이터
+    InOutInventoryDTO AddInItem = new InOutInventoryDTO();
+
+    List<InOutInventoryDTO> AddInventoryListData = new List<InOutInventoryDTO>();
+    private int _tab = 1;
+
+    FailResult outResult = new FailResult();
+
+
+    //입고 출고 변경
+    private async void OnTab(int idx)
+    {
+        if (_tab != idx)
+        {
+            Console.WriteLine("실행됨");
+            AddInventoryListData.Clear();
+            SelectMaterial = new MaterialSearchListDTO();
+            AddInItem = new InOutInventoryDTO();
+            AddItem = new OutContentDTO();
+            StateHasChanged();
+        }
+        _tab = idx;
+
+    }
+
+    //출고 목록데이터 받아오는 함수
+    //출고 데이터 목록에 추가
+    private async Task OnAddList()
+    {
+        try
+        {
+            InOutInventoryDTO outData = new InOutInventoryDTO();
+            if (
+                AddItem.RoomId == 0 || 
+                AddItem.Num == 0 || 
+                SelectMaterial.Id == 0
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+
+            if (AddInventoryListData.Any(
+               m => m.MaterialID == SelectMaterial.Id &&
+               m.AddStore.RoomID == AddItem.RoomId))
+            {
+                await JS.InvokeVoidAsync("alert", "동일한 입고 정보가 이미 등록되어있습니다.");
+                SelectMaterial = new MaterialSearchListDTO();
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+
+            ResponseUnit<InOutInventoryDTO> resGet = await apiManager.GetUnitAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={AddItem.RoomId}&materialid={SelectMaterial.Id}&outcount={AddItem.Num}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert",resGet.message);
+                AddItem = new OutContentDTO();
+                StateHasChanged();
+                return;
+            }
+            //여기서 서버에서 자재코드 자재명 단위가 와야함
+            outData = resGet.data;
+            outData.MaterialCode = SelectMaterial.Code;
+            outData.MaterialName= SelectMaterial.Name;
+            outData.Unit = SelectMaterial.Unit;
+            outData.AddStore.InOutDate = DateTime.Now;
+            AddInventoryListData.Add(outData);
+            AddItem = new OutContentDTO();
+            SelectMaterial = new MaterialSearchListDTO();
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+    //입고 데이터 목록에 추가
+    private async Task OnInDataAdd()
+    {
+        try
+        {
+            OnSumData();
+            if (String.IsNullOrEmpty(AddInItem.MaterialName) ||
+            // AddInItem.AddStore.InOutDate == null ||
+            AddInItem.AddStore.Num == 0 || 
+            AddInItem.AddStore.RoomID == 0|| 
+            AddInItem.AddStore.TotalPrice == 0 ||
+            SelectMaterial.Id == 0
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "자재, 수량, 위치를 확인해 주세요.");
+
+                StateHasChanged();
+                return;
+            }
+
+            if (AddInventoryListData.Any(
+                m => m.MaterialID == AddInItem.MaterialID &&
+                m.AddStore.RoomID == AddInItem.AddStore.RoomID &&
+                m.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice))
+            {
+                await JS.InvokeVoidAsync("alert", "동일한 입고 정보가 이미 등록되어있습니다.");
+                SelectMaterial = new MaterialSearchListDTO();
+                AddInItem = new InOutInventoryDTO();
+                StateHasChanged();
+                return;
+            }
+
+            OnInDataDoubleCheck();
+            AddInItem = new InOutInventoryDTO();
+            SelectMaterial = new MaterialSearchListDTO();
+            StateHasChanged();
+
+        }catch(Exception ex)
+        {
+
+        }
+    }
+
+    //입고 등록
+    private async Task OnInAdd()
+    {
+        try
+        {
+            if(AddInventoryListData.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "입고 목록이 존재하지 않습니다.");
+                return;
+            }
+
+            ResponseUnit<int> resAdd = await apiManager.PostAsync<int>("Store/sign/AddInStore", AddInventoryListData);
+            if(resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                return;
+            }
+            Navigation.NavigateTo("/material/inout");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("입고등록 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "입고등록 에러");
+        }
+    }
+
+    //출고 등록
+    private async Task OnOutAdd()
+    {
+        try
+        {
+            if (AddInventoryListData.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "출고 목록이 존재하지 않습니다.");
+                return;
+            }
+            ResponseUnit<FailResult> resAdd = await apiManager.PostAsync<FailResult>("Store/sign/OutInventory", AddInventoryListData);
+            if (resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                return;
+            }
+            Navigation.NavigateTo("/material/inout");
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+
+    private void OnSumData()
+    {
+        AddInItem.AddStore.InOutDate = DateTime.Now;
+        AddInItem.InOut = _tab;
+        AddInItem.MaterialID = SelectMaterial.Id;
+        AddInItem.MaterialName = SelectMaterial.Name;
+        AddInItem.MaterialCode = SelectMaterial.Code;
+        AddInItem.Unit = SelectMaterial.Unit;
+    }
+
+    //입고 데이터 중복 체크 
+    private void OnInDataDoubleCheck()
+    {
+        var existingItem = AddInventoryListData.FirstOrDefault(item =>
+                item.MaterialID == AddInItem.MaterialID &&
+                item.AddStore.InOutDate == AddInItem.AddStore.InOutDate &&
+                item.AddStore.RoomID == AddInItem.AddStore.RoomID &&
+                item.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice
+            );
+        if (existingItem != null)
+        {
+            existingItem.AddStore.Num += AddInItem.AddStore.Num;
+            existingItem.AddStore.TotalPrice = existingItem.AddStore.Num * existingItem.AddStore.UnitPrice; // Update total price
+        }
+        else
+        {
+            AddInventoryListData.Add(AddInItem);
+        }
+
+    }
+
+
+    private void HandleClick()
+    {
+        if (_tab == 1)
+        {
+            OnInAdd();
+        }
+        else
+        {
+            //다른 작업 수행
+            OnOutAdd();
+        }
+    }
+}

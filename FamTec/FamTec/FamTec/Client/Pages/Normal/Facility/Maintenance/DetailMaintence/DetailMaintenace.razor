@@ -1,0 +1,157 @@
+﻿@page "/facility/{FacType}/{FacId:int}/maintenance/{MaintenanceId:int}"
+@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Components
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="container">
+    @* <InfoCard @bind-Maintenance=Maintenance OriginalMaintenance="@OriginalMaintenance" /> *@
+    <InfoCard Maintenance="@Maintenance" OnLoadMaintenance="OnLoadMaintenance" />
+
+    @if (Maintenance.Type == 0)
+    {
+        @if (_useMaterialEditMode)
+        {
+            <SearchMaterial @bind-Data=@SelectMaterial EditMode=_useMaterialEditMode/>
+            @if (SelectMaterial.Id != 0)
+            {
+                <OutForm MaterialId="SelectMaterial.Id" @bind-AddItem="@addMaterial" />
+                <div class="btn">
+                    <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
+                </div>
+            }
+        }
+        <InOutList 
+            ListData="@Maintenance.UseMaterialList" 
+            EditMode=_useMaterialEditMode 
+            OnEdit="OnEdit"
+            OnLoadMaintenance="OnLoadMaintenance"
+            MaintenanceId=MaintenanceId
+            />
+    }
+
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+    [Parameter] public int MaintenanceId {get;set;}
+
+    MaterialSearchListDTO SelectMaterial = new MaterialSearchListDTO();
+
+
+    DetailMaintenanceDTO Maintenance;
+    //원본 유지보수 데이터
+    DetailMaintenanceDTO OriginalMaintenance;
+
+    List<InOutInventoryDTO> UseMaterial = new List<InOutInventoryDTO>(); //사용자재
+
+
+    //=====사용자재추가=======
+    AddMaintetanceMaterialDTO AddMaintenance = new AddMaintetanceMaterialDTO();
+    MaterialDTO addMaterial = new MaterialDTO();
+
+
+    //사용자재 목록 편집 상태 변수
+    bool _useMaterialEditMode = false; 
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnLoadMaintenance();
+    }
+
+    /// <summary>
+    /// 유지보수 정보 조회
+    /// </summary>
+    /// <returns></returns>
+    private async Task OnLoadMaintenance()
+    {
+        try
+        {
+            ResponseUnit<DetailMaintenanceDTO> resGet = await apiManager.GetUnitAsync<DetailMaintenanceDTO>($"Maintenance/sign/GetDetailMaintance?Maintanceid={MaintenanceId}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+
+            Maintenance = new DetailMaintenanceDTO(resGet.data);
+            Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
+
+            // await OnConverDTO();
+        }catch(Exception ex)
+        {
+
+        }
+    }
+
+    //추가항목 추가
+    private async Task OnAddMaterial()
+    {
+        try
+        {
+            if (addMaterial.Num == 0 ||
+                SelectMaterial.Id == 0 ||
+                addMaterial.RoomID == 0
+            )
+            {
+                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                addMaterial = new MaterialDTO();
+                StateHasChanged();
+                return;
+            }
+            if (Maintenance.UseMaterialList.Any(m => m.MaterialID == SelectMaterial.Id && m.RoomID == addMaterial.RoomID))
+            {
+                await JS.InvokeVoidAsync("alert", "이미 추가된 자재입니다.");
+                return;
+            }
+            await OnSum();
+
+            ResponseUnit<FailResult> resPost = await apiManager.PostAsync<FailResult>("Maintenance/sign/AddSupMaintenance", AddMaintenance);
+            if(resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            if(resPost.data.ReturnResult == 422)
+            {
+                await JS.InvokeVoidAsync("alert", "현재 수량이 부족합니다.");
+                return;
+            }
+            AddMaintenance.MaterialList.Clear();
+            await OnLoadMaintenance();
+            StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[유지보수][사용자재] 추가 에러");
+            await JS.InvokeVoidAsync("alert", "[유지보수][사용자재] 추가 에러");
+        }
+    }
+
+    //추가 사용자재 단일이지만 리스트로 구현되어 일단 리스트로 사용하기로함
+    private async Task OnSum()
+    {
+        AddMaintenance.MaintanceID = MaintenanceId;
+        MaterialDTO tempMaterial = new MaterialDTO();
+        tempMaterial.MaterialID = SelectMaterial.Id;
+        tempMaterial.RoomID = addMaterial.RoomID;
+        tempMaterial.Num = addMaterial.Num;
+        tempMaterial.Note = addMaterial.Note;
+        AddMaintenance.MaterialList.Add(tempMaterial);
+    }
+
+ 
+
+    private void OnEdit()
+    {
+        _useMaterialEditMode = !_useMaterialEditMode;
+    }
+}

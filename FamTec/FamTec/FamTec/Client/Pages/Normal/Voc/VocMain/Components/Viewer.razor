@@ -1,0 +1,66 @@
+﻿
+<div class="viewer" @onclick=OnActive>
+    <label class="label @(IsShow ? "focus" : "")">
+        @CurrentViewNum
+    </label>
+    <ul class="ul @(IsShow ? "show" : "")">
+        @foreach(var i in viewer)
+        {
+            <li class="li" @onclick="()=>OnChangedValue(i)">
+                @i.Name
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter] public EventCallback<int> OnChanged{ get; set; }
+
+    string CurrentViewNum = "25개";
+    bool IsShow = false;
+
+    class ViewItem
+    {
+        public int Value { get; set; }
+        public string Name { get; set; }
+    };
+
+    List<ViewItem> viewer = new List<ViewItem>
+    {
+        new ViewItem
+        {
+            Value = 25,
+            Name = "25개"
+        },
+        new ViewItem
+        {
+            Value = 50,
+            Name = "50개"
+        },
+        new ViewItem
+        {
+            Value = 75,
+            Name = "75개"
+        },
+        new ViewItem
+        {
+            Value = 100,
+            Name = "100개"
+        },
+
+
+    };
+
+
+    private async Task OnChangedValue(ViewItem value)
+    {
+        Console.WriteLine("뷰어 선택 개수 : "+ value);
+        CurrentViewNum = value.Name;
+        await OnChanged.InvokeAsync(value.Value);
+    }
+
+    private void OnActive()
+    {
+        IsShow = !IsShow;
+    }
+}

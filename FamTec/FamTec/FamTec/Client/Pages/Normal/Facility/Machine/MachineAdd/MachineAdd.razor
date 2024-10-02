@@ -1,0 +1,71 @@
+﻿@page "/facility/{FacType}/add"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Machine.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+<div class="add-container">
+    <InfoCard @bind-Facility=@Facility />
+    <div class="btns">
+        <Button Width=true Type=0 Name="등록" OnClick="@OnAdd" />
+        <Button Width=true Type=1 Name="나가기"/>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public string FacType { get; set; }
+
+    FacilityDetailDTO Facility = new FacilityDetailDTO();
+    string _facType = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ConvertType();
+
+    }
+
+    private void ConvertType()
+    {
+        _facType = FacType switch
+        {
+            "machine" => "기계",
+            "electronic" => "전기",
+            "lift" => "승강",
+            "fire" => "소방",
+            "construct" => "건물",
+            "network" => "통신",
+            "beauty" => "미화",
+            "security" => "보안",
+            _ => "기계"
+        };
+    }
+
+
+    //등록
+    private async Task OnAdd()
+    {
+        try
+        {
+            if (Facility.RoomId == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "내용을 확인해주세요");
+                return;
+            }
+            Facility.Category = _facType;
+            Facility.Unit = "개";
+            ResponseUnit<FacilityDetailDTO> resPost = await apiManager.PostWithFilesAsync<FacilityDetailDTO>($"{FacType}Facility/sign/Add{FacType}Facility", Facility);
+            if (resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            Navigation.NavigateTo($"/facility/{FacType}");
+        }catch(Exception ex)
+        {
+            
+        }
+
+    }
+}

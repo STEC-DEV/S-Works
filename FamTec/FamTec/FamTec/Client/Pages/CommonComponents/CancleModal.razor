@@ -1,0 +1,35 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="cancle-modal">
+    <div class="cancle-content">
+        <span class="content">
+            현재까지의 수정 작업을 취소하겠습니까?
+        </span>
+    </div>
+    <div class="cancle-btns">
+        <Button Name="확인" OnClick="Cancle" Type=0/>
+        <Button Name="취소" OnClick="OnIsOpen" Type=1 />
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback Cancle { get; set; }
+    [Parameter] public EventCallback IsOpen { get; set; }
+    [Parameter] public string PreUrl { get; set; }
+
+    private void OnCancle()
+    {
+        Cancle.InvokeAsync();
+    }
+
+    private void OnIsOpen()
+    {
+        IsOpen.InvokeAsync();
+    }
+
+    private void OnPrePage()
+    {
+        Navigation.NavigateTo(PreUrl);
+    }
+
+}

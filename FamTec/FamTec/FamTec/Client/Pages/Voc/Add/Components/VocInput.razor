@@ -1,0 +1,45 @@
+﻿
+
+<div class="inputfield @(Height ==true ? "height" : "" )">
+    <label class="label @(Label == null ? "hidden" : "")">
+        @Label
+    </label>
+    @if (TextArea == true)
+    {
+        <textarea 
+            class="textarea" 
+            placeholder="@Placeholder" 
+            @bind=@Value 
+            @oninput="OnValueChanged"
+            />
+    }
+    else
+    {
+        <input 
+            class="input" 
+            type="text" 
+            placeholder="@Placeholder" 
+            @bind=@Value
+            @oninput="OnValueChanged"
+            />
+    }
+
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public bool? Height { get; set; }
+    [Parameter] public bool? TextArea { get; set; } = false;
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+
+        await ValueChanged.InvokeAsync(e?.Value?.ToString());
+
+    }
+
+}

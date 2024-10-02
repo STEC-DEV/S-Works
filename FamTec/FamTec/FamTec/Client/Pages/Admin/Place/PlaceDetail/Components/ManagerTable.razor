@@ -1,0 +1,88 @@
+﻿@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    아이디
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                   이름
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    부서
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                </span>
+            </th>
+
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var row in ListData)
+        {
+            <tr class="tbody-tr">
+                <td class="td">
+                    <span>
+                        @row.UserId
+                    </span>
+                </td>
+                <td class="td">
+                    <span>
+                        @row.Name
+                    </span>
+                </td>
+                <td class="td">
+                    <span>
+                        @row.Department
+                    </span>
+                </td>
+                <td class="td">
+                    <input type="checkbox" @onchange="(e) => OnCheckboxChanged(row, e.Value)" />
+                </td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter] public List<ManagerDTO> ListData { get; set; }
+    [Parameter] public EventCallback<AddPlaceManagerDTO<ManagerDTO>> OnSelectionChanged { get; set; }
+
+    private AddPlaceManagerDTO<ManagerDTO> selectedManagers = new AddPlaceManagerDTO<ManagerDTO>();
+
+    protected override void OnInitialized()
+    {
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("Parameters Set");
+
+    }
+
+    private async Task OnCheckboxChanged(ManagerDTO manager, object isChecked)
+    {
+        if ((bool)isChecked)
+        {
+            selectedManagers.PlaceManager.Add(manager);
+        }
+        else
+        {
+            selectedManagers.PlaceManager.Remove(manager);
+        }
+
+        await OnSelectionChanged.InvokeAsync(selectedManagers);
+    }
+}

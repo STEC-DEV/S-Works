@@ -1,0 +1,114 @@
+﻿@page "/basic/buildings"
+@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Building.BuildingMain.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Server.DTO
+
+
+<div class="building-container yappear">
+    <div class="building-wrap">
+        <div class="building-header">
+            <span class="title">
+                건물 목록
+            </span>
+            @if (USEREDIT)
+            {
+                <div class="btns">
+                    <Button Name="추가" Width=true Type=0 OnClick="@OnMoveAdd" />
+                    <Button Name="삭제" Width=true Type=1 OnClick="OnDeleteBuilding" />
+                </div>
+            }
+            
+        </div>
+        <div class="building-contents">
+            <BuildingTable 
+                @ref="@buildingTable"
+                ListData="@BuildingList" 
+                OnCheck="OnCheckBuilding"
+                />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    List<BuildingListDTO> BuildingList;
+    List<int> DelList = new List<int>();
+    private BuildingTable buildingTable;
+    // private bool USEREDIT = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnLoadBuilding();
+
+    }
+
+    private async Task OnLoadBuilding()
+    {
+        ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
+        if(resGet.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            return;
+        }
+
+        if(resGet.data == null)
+        {
+            BuildingList = new List<BuildingListDTO>();
+        }
+        else
+        {
+            BuildingList = resGet.data;
+        }
+
+        DelList.Clear();
+        buildingTable.ResetChecks();
+    }
+
+
+    private void OnMoveAdd()
+    {
+        Navigation.NavigateTo("/basic/buildings/add");
+    }
+
+
+    private async Task OnDeleteBuilding()
+    {
+        try
+        {
+            if(DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제 항목이 없습니다.");
+                return;
+            }
+            //Put으로 변경해야함
+            ResponseUnit<bool> resDelete = await apiManager.PutAsync<bool>("Building/sign/DeleteBuilding", DelList);
+            if(resDelete.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDelete.message);
+                return;
+            }
+            await OnLoadBuilding();
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert","삭제실패");
+        }
+    }
+
+
+    //리스트 체크 반환
+    private void OnCheckBuilding((bool isCheck, int buildingId)data)
+    {
+        if (data.isCheck)
+        {
+            DelList.Add(data.buildingId);
+        }
+        else
+        {
+            DelList.Remove(data.buildingId);
+        }
+    }
+}

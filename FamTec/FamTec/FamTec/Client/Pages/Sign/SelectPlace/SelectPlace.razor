@@ -1,8 +1,9 @@
-﻿@page "/select"
+﻿@* @page "/select" *@
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Sign.SelectPlace.Components
+@inject ILocalStorageService _localStorageService
 
 <div class="selectplace-container">
     <div class="selectplace-wrap">
@@ -29,7 +30,9 @@
 
 
 @code {
-    List<PlaceTableDTO> placeData = new List<PlaceTableDTO>();
+    [Parameter] public string token { get; set; }
+    // [Parameter] public bool Admin { get; set; }
+    List<PlaceTableDTO> placeData;
     int SelectPlaceId;
 
     protected override async Task OnInitializedAsync()
@@ -39,8 +42,25 @@
 
     private async Task OnLoadPlaceList()
     {
-        ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("Login/sign/AdminPlaceList");
-        if (res.code == 200) placeData = res.data;
+        try
+        {
+            ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>($"Login/sign/AdminPlaceList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+            }
+            if(res.data == null)
+            {
+                placeData = new List<PlaceTableDTO>();
+            }
+
+            placeData = res.data;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+        }
+
     }
 
     private void HandlePlaceSelected(int selectedId)
@@ -51,16 +71,21 @@
 
     private async void EnterPlace()
     {
-        Console.WriteLine(SelectPlaceId);
-        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
-
-        if(res.code == 200)
+        if(SelectPlaceId == 0)
         {
-            customStateProvider.UpdateTokenAsync(res.data);
-            Navigation.NavigateTo("/");
+            await JS.InvokeVoidAsync("alert", "사업장을 선택해주세요.");
             return;
         }
+        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
 
-        Console.WriteLine(res.data);
+        if(res.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", res.message);
+            return;
+        }
+        await _localStorageService.SetItemAsync<string>("sworks-jwt-token", res.data);
+        SelectPlaceId = 0;
+        Navigation.NavigateTo("/user");
+        
     }
 }

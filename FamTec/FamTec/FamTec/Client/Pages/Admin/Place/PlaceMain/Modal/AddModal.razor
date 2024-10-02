@@ -47,12 +47,22 @@
                                             @bind-Value="@placeInfo.ContractNum" 
                                             EditMode=EditMode
                                             />
-                                <InputField Label="계약일자"
+                                @* <InputField 
+                                            Label="계약일자"
                                             InputType="date"
                                             Placeholder="계약일자"
                                             @bind-Value="@placeInfo.ContractDt" 
                                             EditMode=EditMode
-                                            />
+                                            /> *@
+                                            @*20240906 여기 수정 *@
+                                @* <InputFieldDate 
+                                            Label="계약일자"
+                                            InputType="date"
+                                            Placeholder="계약일자"
+                                            @bind-Value="@placeInfo.ContractDt" 
+                                            EditMode=EditMode
+                                    /> *@
+
                             </div>
                             <div class="placemodal-toggle">
                                 <Toggle Title="기계설비 권한" @bind-Value="@placeInfo.PermMachine" EditMode=EditMode />
@@ -100,7 +110,7 @@
 
                 </div>
                 <div class="placemodal-btns">
-                    <Button Name="등록"  OnClick="OnAdd"/>
+                    <Button Name="등록" OnClick="OnAdd" />
                     <Button Name="닫기" Type=2 OnClick="ModalClose" />
                 </div>
             </EditForm>
@@ -156,6 +166,13 @@
     {
         return OnClose.InvokeAsync(false);
     }
+
+
+    private void OnToggleCheck()
+    {
+        Console.WriteLine(placeInfo.ContractDt);
+    }
+
 
     /*
     * 등록 버튼 눌렀을 시

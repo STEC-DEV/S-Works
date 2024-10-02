@@ -1,0 +1,178 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Material
+@using FamTec.Shared.Server.DTO
+<div class="modal yappear">
+    <div class="header">
+        <span class="title">
+            자재 수정
+        </span>
+    </div>
+    <div class="content">
+        <TextField2 
+            Label="자재코드" 
+            Value="@Material.Code" 
+            Color=true
+            />
+        <div class="group">
+            <InputCol 
+                Label="자재명" 
+                Placeholder="자재명" 
+                ValueType="text" 
+                @bind-Value="@EditMaterial.Name" 
+                />
+            <TextField2
+                Label="제조사" 
+                Value="@Material.ManufacturingComp" 
+                Color="true"
+                />
+        </div>
+        <TextField2 
+            Label="규격" 
+            Value="@Material.Standard" 
+            Color=true
+            />
+        <div class="group">
+            <InputCol Label="안전재고"
+                        Placeholder="안전재고"
+                        ValueType="number"
+                        Min="0"
+                        @bind-Value="@EditMaterial.SafeNum" />
+            <InputCol Label="단위"
+                        Placeholder="단위"
+                        ValueType="text"
+                      @bind-Value="@EditMaterial.Unit" />
+        </div>
+        <TextField2 Label="위치" Value="@Material.RoomName" Color=true/>
+        <div class="img-wrap">
+            @if (Material.Image != null)
+            {
+                <ImageSlider Images="@MaterialImages" Label="자재 이미지" @key="MaterialImages" />
+            }
+            <div class="img-options">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <Button Name="삭제" Width=true Type="1" OnClick="@OnDelImg" />
+            </div>
+            
+        </div>
+    </div>
+    <div class="btns">
+        <Button Name="수정" Type="0" OnClick="OnUpdateMaterial" />
+        <Button Name="닫기" Type="1" OnClick="OnClosed" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int MaterialId { get;set; }
+    [Parameter] public EventCallback OnClose {get;set;}
+    [Parameter] public EventCallback OnLoadMaterial {get;set;}
+
+    UpdateMaterialDTO EditMaterial = new UpdateMaterialDTO();
+    DetailMaterialDTO Material = new DetailMaterialDTO();
+
+    List<byte[]> MaterialImages = new List<byte[]>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditMaterial.Id = MaterialId;
+        await OnLoadDetailMaterial();
+        await OnImageConvert();
+    }
+
+
+    private async Task OnImageConvert()
+    {
+        if(Material.Image == null)
+        {
+            return;
+        }
+        MaterialImages = new List<byte[]>();
+        MaterialImages.Add(Material.Image);
+    }
+
+    private async Task OnLoadDetailMaterial()
+    {
+        try
+        {
+            ResponseUnit<DetailMaterialDTO> resGet = await apiManager.GetUnitAsync<DetailMaterialDTO>($"Material/sign/DetailMaterial?materialid={MaterialId}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            Material = resGet.data;
+            EditMaterial.Name = Material.Name;
+            EditMaterial.SafeNum = Material.SafeNum.Value;
+            EditMaterial.Unit = Material.Unit;
+            EditMaterial.Image = Material.Image;
+
+            StateHasChanged();
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "자재 상세 조회 실패");
+        }
+    }
+
+    //자재수정
+    private async Task OnUpdateMaterial()
+    {
+        try
+        {
+            ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Material/sign/UpdateMaterial", EditMaterial);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            await OnLoadMaterial.InvokeAsync();
+            OnClosed();
+
+            MaterialImages = new List<byte[]> { EditMaterial.Image };
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "[자재] 자재 수정 에러");
+        }
+    }
+
+    private void OnDelImg()
+    {
+        EditMaterial.Image = null;
+        EditMaterial.ImageName = null;
+        MaterialImages = new List<byte[]>();
+        StateHasChanged();
+    }
+
+    //단일
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+        foreach (var image in images)
+        {
+            temp.Add(image.Image);
+            names.Add(image.Name);
+
+        }
+        EditMaterial.Image = temp[0];
+        EditMaterial.ImageName = names[0];
+
+
+        if(MaterialImages.Count == 1)
+        {
+            MaterialImages[0] = EditMaterial.Image;
+        }
+        else
+        {
+            MaterialImages.Add(EditMaterial.Image);
+        }
+    }
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

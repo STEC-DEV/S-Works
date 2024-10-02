@@ -1,0 +1,96 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceDetail.Modals
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
+@using FamTec.Shared.Server.DTO
+@typeparam T
+
+<div class="placetable-container">
+    <div class="placetable-title">
+        <span>
+            사업장 매니저
+        </span>
+        <div class="placetable-btns">
+            @if (EditMode)
+            {
+                <Button Name="추가" Width="true" Type=0 OnClick="OnOpen" />
+                <Button Name="삭제" Width="true" Type=1 OnClick="OnDelete" />
+            }
+            
+        </div>
+    </div>
+    <div class="placetable-table">
+        <Table DataList="DataList" SelectItem="OnCheckData" ReturnType="object"/>
+    </div>
+    @if (isOpen)
+    {
+        <ModalBackground >
+            <ChildComponent>
+                <ManagerModal OnClose="OnOpen" Id="@Id" LoadManager="@OnLoadManager" />
+            </ChildComponent>
+        </ModalBackground>
+
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public List<T> DataList { get; set; }
+    [Parameter] public bool EditMode{ get; set; }
+    [Parameter] public EventCallback OnLoadManager {get; set;}
+    AddPlaceManagerDTO<ManagerDTO> DelManager = new AddPlaceManagerDTO<ManagerDTO>();
+    
+    bool isOpen = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine("하위컴포넌트");
+        return base.OnInitializedAsync();
+    }
+
+    private void OnOpen()
+    {
+        isOpen = !isOpen;
+    }
+
+    private void OnCheckData((bool isChecked, object item)selection)
+    {
+        ManagerDTO selectManager = new ManagerDTO();
+        selectManager = (ManagerDTO)selection.item;
+        DelManager.PlaceId = Id;
+
+
+        if(selection.isChecked)
+        {
+            if (!DelManager.PlaceManager.Any(m => m.Id == selectManager.Id))
+            {
+                DelManager.PlaceManager.Add(selectManager);
+                foreach (var i in DelManager.PlaceManager){
+                    Console.WriteLine(i.Name);
+                }
+            }
+
+
+        }else
+        {
+            // 체크 해제된 경우: 리스트에 있으면 제거
+            DelManager.PlaceManager.RemoveAll(m => m.Id == selectManager.Id);
+        }
+    }
+
+    private async void OnDelete()
+    {
+        try
+        {
+            ResponseUnit<int> resDelManager = await apiManager.PutAsync<int>("AdminPlace/sign/DeletePlaceManager", DelManager);
+            if(resDelManager.code == 200)
+            {
+                await OnLoadManager.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+}

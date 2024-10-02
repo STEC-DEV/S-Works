@@ -1,4 +1,4 @@
-﻿@page "/user"
+﻿@* @page "/user"
 
 <h3>Usermain</h3>
 <p>@_userName</p>
@@ -24,4 +24,4 @@
         _userJob = await SessionService.GetClaimValue(sessionData, "Job");
         _userName = await SessionService.GetClaimValue(sessionData, "Name");
     }
-}
+} *@

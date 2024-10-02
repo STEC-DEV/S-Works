@@ -32,5 +32,31 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         [Display(Name = "부서")]
         public string? Department { get; set; }
+
+
+
+        // 기본 생성자
+        public ManagerListDTO()
+        {
+        }
+
+        // 복사 생성자
+        public ManagerListDTO(ManagerListDTO source)
+        {
+            if (source != null)
+            {
+                Id = source.Id;
+                IsSelect = source.IsSelect;
+                UserId = source.UserId;
+                Name = source.Name;
+                Department = source.Department;
+            }
+        }
+
+        // 깊은 복사 메서드
+        public ManagerListDTO DeepCopy()
+        {
+            return new ManagerListDTO(this);
+        }
     }
 }

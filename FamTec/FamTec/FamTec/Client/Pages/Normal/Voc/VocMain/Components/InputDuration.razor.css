@@ -1,0 +1,33 @@
+﻿
+.duration{
+    display : flex;
+    align-items : center;
+    gap : var(--default-pd);
+}
+.wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    align-items : center;
+}
+
+.row{
+    flex-direction: row;
+    gap: var(--default-pd);
+}
+
+.text{
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.dt{
+    padding : var(--half-pd);
+    outline : none;
+    border : none;
+    border : var(--default-bd);
+    border-radius : var(--default-rd);
+    color : var(--main-color);
+    font-weight:var(--bold-bd);
+}
+

@@ -1,0 +1,18 @@
+
+
+.container[b-x5c4jtjh92] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+}
+
+.btn[b-x5c4jtjh92] {
+    display: flex;
+    justify-content: center;
+}
+
+.btns[b-x5c4jtjh92] {
+    display: flex;
+    justify-content: right;
+}

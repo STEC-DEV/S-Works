@@ -1,0 +1,10 @@
+﻿.voc-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: var(--half-pd);
+    grid-row-gap: var(--default-pd);
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}

@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FamTec.Shared.Client.DTO.Normal.Material.InOut
+{
+    public class InOutListDTO
+    {
+        /// <summary>
+        /// 입출고 테이블ID
+        /// </summary>
+        public int? ID { get; set; }
+
+        /// <summary>
+        /// 입출고 구분
+        /// </summary>
+        public int? INOUT { get; set; }
+
+        /// <summary>
+        /// 입출고날짜
+        /// </summary>
+        public string? InOutDate { get; set; }
+
+        /// <summary>
+        /// 공간 인덱스
+        /// </summary>
+        public int? RoomID { get; set; }
+
+        /// <summary>
+        /// 공간명칭
+        /// </summary>
+        public string? RoomName { get; set; }
+
+        /// <summary>
+        /// 품목 인덱스
+        /// </summary>
+        public int? MaterialID { get; set; }
+        /// <summary>
+        /// 품목 코드
+        /// </summary>
+        public string? MaterialCode { get; set; }
+
+        /// <summary>
+        /// 품목명
+        /// </summary>
+        public string? MaterialName { get; set; }
+
+        /// <summary>
+        /// 품목단위
+        /// </summary>
+        public string? MaterialUnit { get; set; }
+
+        /// <summary>
+        /// 수량
+        /// </summary>
+        public int? Num { get; set; }
+
+        /// <summary>
+        /// 단가
+        /// </summary>
+        public float? UnitPrice { get; set; }
+
+        /// <summary>
+        /// 금액
+        /// </summary>
+        public float? ToTalPrice { get; set; }
+
+        /// <summary>
+        /// 비고
+        /// </summary>
+        public string? Note { get; set; }
+
+    }
+}

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FamTec.Shared.Client.DTO
 {
-    public class PlaceDetail2DTO
+    public class PlaceDetailDTO
     {
         public PlaceInfo PlaceInfo { get; set; } = new PlaceInfo();
         public PlacePerm PlacePerm { get; set; } = new PlacePerm();

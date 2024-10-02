@@ -1,0 +1,46 @@
+﻿@using FamTec.Shared.Server.DTO
+
+
+<div class="notify" @onclick=@OnMove>
+    <label class="label">
+        @Title
+    </label>
+    <p class="context">
+        @Context
+    </p>
+</div>
+
+@code {
+    [Parameter] public int AlarmId { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Context { get; set; }
+    [Parameter] public string Url { get; set; }
+    [Parameter] public EventCallback OnLoad  {get;set;}
+
+
+
+    //링크 이동
+    private async void OnMove()
+    {
+        await OnReadAlarm();
+        Navigation.NavigateTo(Url);
+
+    }
+
+    private async Task OnReadAlarm()
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>($"Alarm/sign/AlarmDelete", AlarmId);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoad.InvokeAsync();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "알람 단일 삭제 에러");
+        }
+    }
+}

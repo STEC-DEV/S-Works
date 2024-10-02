@@ -1,0 +1,285 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+
+<div class="infocard-container yappear">
+    <div class="infocard-header">
+        <span>
+            장비 제원
+        </span>
+        @if (USEREDIT)
+        {
+            <div class="option">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                }
+            </div>
+        }
+        
+    </div>
+    <div class="infocard-content">
+        @if (Facility == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <div class="infocard-img-area">
+                <PreviewBox ImageUrls="@ImageUrl" />
+                @if (EditMode)
+                {
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                }
+
+            </div>
+            <div class="infocard-inputs">
+                @if (EditMode)
+                {
+                    <InputCol Label="장비명"
+                              Placeholder="장비명"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Name />
+                    <InputCol Label="형식"
+                              Placeholder="형식"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Type />
+                    <SelectField T="PlaceRoomListDTO"
+                                 Key="building"
+                                 SelectData="PlaceLocation"
+                                 @bind-Value="SelectedBuildingId"
+                                 OnChange="OnBuildingChange"
+                                 Label="건물"
+                                 Row="true"
+                                 EditMode="true" />
+                    @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
+                    {
+                        <SelectField Key="floor"
+                                     SelectData="PlaceRoom"
+                                     @bind-Value="SelectedRoomId"
+                                     Label="위치"
+                                     Row="true"
+                                     OnChange="OnLocationChange"
+                                     EditMode="true" />
+                    }
+
+                    <InputCol Label="규격 용량"
+                              Placeholder="규격 용량"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.Standard_capacity />
+                    <InputCol Label="수량"
+                              Placeholder="수량"
+                              Row="true"
+                              ValueType="number"
+                              @bind-Value=@UpdateFacility.Num />
+                    <InputCol Label="내용년수"
+                              Placeholder="내용 년수"
+                              Row="true"
+                              @bind-Value=@UpdateFacility.LifeSpan />
+                    <DateInput Label="설치년월"
+                               Row="true"
+                               @bind-Date=@UpdateFacility.EquipDT
+                               Placeholder="YYYYMMDD" />
+                    <DateInput Label="교체년월"
+                               Row="true"
+                               @bind-Date=@UpdateFacility.ChangeDT
+                               Placeholder="YYYYMMDD" />
+                }
+                else
+                {
+                    <TextField2 Label="장비명"
+                                Value=@Facility.Name
+                                Row=true />
+                    <TextField2 Label="형식"
+                                Value=@Facility.Type
+                                Row=true />
+                    <TextField2 Label="위치"
+                                Value=@Facility.RoomName
+                                Row=true />
+                    <TextField2 Label="규격 용량"
+                                Value=@Facility.Standard_capacity
+                                Row=true />
+                    <TextField2 Label="수량"
+                                Value=@Facility.Num.ToString()
+                                Row=true />
+                    <TextField2 Label="내용년수"
+                                Value=@Facility.LifeSpan
+                                Row=true />
+                    <TextField2 Label="설치년월"
+                                Value=@Facility.EquipDT?.ToString("yyyy-MM-dd")
+                                Row=true />
+                    <TextField2 Label="교체년월"
+                                Value=@Facility.ChangeDT?.ToString("yyyy-MM-dd")
+                                Row=true />
+
+                }
+
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+    // [Parameter]public FacilityDetailDTO Facility { get; set; }
+    private FacilityDetailDTO _facility;
+    [Parameter] public string FacType { get; set; }
+
+    [Parameter]
+    public FacilityDetailDTO Facility
+    {
+        get => _facility;
+        set
+        {
+            if (_facility != value)
+            {
+                _facility = value;
+                FacilityChanged.InvokeAsync(value);
+            }
+        }
+    }
+    [Parameter] public EventCallback<FacilityDetailDTO> FacilityChanged { get; set; }
+    [Parameter] public EventCallback OnLoad{ get; set; }
+
+    //원본 데이터
+    FacilityDetailDTO OriginalFacility;
+    //수정본 데이터
+    FacilityDetailDTO UpdateFacility;
+
+    //건물 위치
+    List<PlaceRoomListDTO> PlaceLocation = new List<PlaceRoomListDTO>();
+    PlaceRoomListDTO PlaceLocationSelect = new PlaceRoomListDTO();
+    List<PlaceRoom> PlaceRoom = new List<PlaceRoom>();
+
+    int SelectedBuildingId;
+    int SelectedRoomId;
+
+    private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    bool EditMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnLoadBuilginRoom();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        OriginalFacility = Facility.DeepCopy();
+        UpdateFacility = Facility.DeepCopy();
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>($"{FacType}Facility/sign/Update{FacType}Facility", UpdateFacility);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+
+            await OnLoad.InvokeAsync();
+            OnEdit();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "장비 수정 에러");
+        }
+    }
+
+    //건물 + 위치 + 공간 조회
+    private async Task OnLoadBuilginRoom()
+    {
+        try
+        {
+            ResponseList<PlaceRoomListDTO> resGet = await apiManager.GetListAsync<PlaceRoomListDTO>("Room/sign/GetPlaceRoomGroup");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            PlaceLocation = resGet.data;
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+
+    //건물선택
+    private async Task OnBuildingChange(int buildingId)
+    {
+        PlaceRoom.Clear();
+        if (buildingId == 0)
+        {
+     
+            SelectedRoomId = 0;
+            StateHasChanged();
+            return;
+        }
+        
+        SelectedBuildingId = buildingId;
+
+        // SelectBuilding = Building?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        //해당건물에 층전체 반복하여 위치 리스트 추가
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+        // Room = SelectBuilding.FloorList;
+
+        SelectedRoomId = 0; // Reset floor selection when building changes
+        StateHasChanged();
+    }
+
+    //위치 선택
+    private void OnLocationChange(int locationId)
+    {
+        UpdateFacility.RoomId = locationId;
+
+    }
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        ImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            UpdateFacility.Image = image.Image;
+            UpdateFacility.ImageName = image.Name;
+            ImageUrl.Add(image.ImageUrl);
+        }
+        StateHasChanged();
+        await FacilityChanged.InvokeAsync(Facility);
+    }
+
+
+    private void OnEdit()
+    {
+        UpdateFacility = OriginalFacility.DeepCopy();
+        Console.WriteLine(OriginalFacility.RoomId);
+        EditMode = !EditMode;
+    }
+
+}

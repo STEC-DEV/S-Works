@@ -1,0 +1,14 @@
+﻿
+.add-container{
+    display : flex;
+    flex-direction :column;
+    gap :var(--default-pd);
+    padding : var(--default-pd);
+}
+
+
+.btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--half-pd);
+}

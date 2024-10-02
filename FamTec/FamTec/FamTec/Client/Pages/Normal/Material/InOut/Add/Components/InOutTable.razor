@@ -1,0 +1,151 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Material.InOut.Add.Modal
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    거래일
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    위치
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    자재명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단위
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    수량
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    단가
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    금액
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
+            <th class="th">
+                <span>
+
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData?.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (InOutInventoryDTO row in ListData)
+            {
+                <tr class="tr">
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.InOutDate?.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.RoomName
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.MaterialCode
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.MaterialName
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.Unit
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.Num
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.UnitPrice
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.TotalPrice
+                    </td>
+                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.Note
+                    </td>
+                    <td class="td">
+                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                    </td>
+                </tr>
+            }
+        }
+        
+
+    </tbody>
+</table>
+@if (showUpdateModal && InOutType == 1)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateUseMaterialModal
+                OnCancel="OnCloseModal"
+                UseMaterial="updateMaterial"
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
+
+
+@code {
+    [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
+    [Parameter] public EventCallback<(bool, InOutInventoryDTO)> OnCheck{get;set;}
+    [Parameter] public int InOutType { get; set; }
+
+    private bool showUpdateModal = false;
+    private InOutInventoryDTO updateMaterial = new InOutInventoryDTO();
+
+    private async void OnChecked(ChangeEventArgs e, InOutInventoryDTO row)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, row));
+    }
+
+    private void OnUpdateDataSet(InOutInventoryDTO material)
+    {
+        if(InOutType == 1)
+        {
+            updateMaterial = material;
+            showUpdateModal = true;
+        }        
+    }
+
+    private void OnCloseModal()
+    {
+        showUpdateModal = false;
+    }
+}

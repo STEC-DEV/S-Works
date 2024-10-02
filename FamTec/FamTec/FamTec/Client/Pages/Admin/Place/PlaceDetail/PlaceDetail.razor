@@ -1,81 +1,144 @@
-﻿@page "/admin/place/{Id:int}"
+﻿@* @page "/admin/place/{Id:int}" *@
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Place.PlaceDetail.Components
-@using FamTec.Shared.Server
+@using FamTec.Shared.Client
+@using FamTec.Shared.Client.DTO
+@using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server.DTO
-@using FamTec.Shared.Server.DTO.Admin.Place
-@using FamTec.Shared.Server.DTO.Place
+@*@using FamTec.Shared.Server.DTO
+@using FamTec.Shared.Server.DTO.Admin.Place *@
+@* @using FamTec.Shared.Server.DTO.Place *@
 @inject HttpClient HttpClient
 
 <div class="placedetail-container yappear">
     <div class="placedetail-wrap">
         <div class="placedetail-info">
-            <PlaceForm placeInfo="PlaceInfo" EditMode=PlaceEdit />
+            <PlaceForm placeInfo="@(PlaceEdit ? _editedPlaceInfo :  PlaceInfo)" EditMode=PlaceEdit />
         </div>
         <div class="placedetail-option">
             <div class="placedetail-toggle">
-                <PlaceToggle placePerm=PlacePerm EditMode=PlaceEdit />
+                <PlaceToggle placePerm=@(PlaceEdit ? _editedPlacePerm : PlacePerm) EditMode=PlaceEdit />
             </div>
             <div class="placedetail-manager">
-                <PlaceTable DataList="ManagerList" EditMode=PlaceEdit />
+                <ManagerList DataList="ManagerList" EditMode=PlaceEdit Id=@Id OnLoadManager="@LoadPlaceDetailInfo" />
             </div>
         </div>
     </div>
     <div class="placedetail-btns">
         @if(PlaceEdit){
-            <Button Name="저장" Width="true" Type=0 />
+            <Button Name="저장" Width="true" Type=0 OnClick="@UpdatePlaceDetailDTO" />
             <Button Name="취소" Width="true" Type=1 OnClick ="DetailMode" />
         }else{
             <Button Name="편집" Width="true" Type=0 OnClick ="EditMode" />
-            <Button Name="나가기" Width="true" Type=1/>
+            <Button Name="나가기" Width="true" Type=1 OnClick="OnIsCancleModal" />
         }
-        
     </div>
-    
+    @if (isCancleModal)
+    {
+        <ModalBackground >
+            <ChildComponent>
+                <CancleModal IsOpen="OnIsCancleModal" />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
 
 
-    List<ManagerListDTO> ManagerList;
-    PlaceInfo PlaceInfo = new PlaceInfo();
-    PlacePerm PlacePerm = new PlacePerm();
+    List<ManagerDTO> ManagerList;
+    PlaceInfo PlaceInfo;
+    PlacePerm PlacePerm;
     PlaceDetailDTO resPlaceDetail;
+    UpdatePlaceDTO UpdatePlace;
+
+    private PlaceInfo _editedPlaceInfo;
+    private PlacePerm _editedPlacePerm;
+    private List<ManagerDTO> _editedManagerList;
+
+
 
     bool PlaceEdit = false;
-
+    bool isCancleModal = false;
 
     protected override async Task OnInitializedAsync()
     {
-        //ResponseObj<PlaceDetail2DTO> res = await HttpClient.GetFromJsonAsync<ResponseObj<PlaceDetail2DTO>>($"http://127.0.0.1:5245/api/place/detail/?Id={Id}");
         await LoadPlaceDetailInfo();
 
-        // Console.WriteLine(res);
     }
 
     private async Task LoadPlaceDetailInfo()
     {
-        // ResponseUnit<PlaceDetailDTO> res = await HttpClient.GetFromJsonAsync<ResponseUnit<PlaceDetailDTO>>($"http://123.2.156.148:5245/api/AdminPlace/DetailWorks/?placeid={Id}");
+        Console.WriteLine("샐행됨");
         ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
 
 
         ManagerList = res.data.ManagerList;
         PlaceInfo = res.data.PlaceInfo;
         PlacePerm = res.data.PlacePerm;
+        StateHasChanged();
     }
 
 
     private void EditMode()
     {
         PlaceEdit = true;
+        _editedManagerList = ManagerList.Select(m => m.DeepCopy()).ToList();
+        _editedPlaceInfo = PlaceInfo.DeepCopy();
+        _editedPlacePerm = PlacePerm.DeepCopy();
+
+
+
         StateHasChanged();
+
+
     }
 
     private void DetailMode()
     {
         PlaceEdit = false;
         StateHasChanged();
+    }
+
+    private void OnIsCancleModal()
+    {
+        isCancleModal = !isCancleModal;
+    }
+
+    private async void OnCheck()
+    {
+        UpdatePlaceDetailDTO();
+
+        Console.WriteLine(_editedPlaceInfo.PlaceCd);
+        Console.WriteLine(PlaceInfo.PlaceCd);
+        Console.WriteLine(_editedPlacePerm.PermFire);
+        Console.WriteLine(PlacePerm.PermFire);
+        //서버로 전송
+
+    }
+
+    private async void UpdatePlaceDetailDTO()
+    {
+        UpdatePlace = new UpdatePlaceDTO();
+        UpdatePlace.PlaceInfo = _editedPlaceInfo;
+        UpdatePlace.PlacePerm = _editedPlacePerm;
+
+        Console.WriteLine(_editedPlaceInfo.ContractDt);
+        Console.WriteLine(_editedPlaceInfo.CancelDt);
+
+        ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
+        Console.WriteLine(resUpdate.code);
+        if(resUpdate.code == 200)
+        {
+            await LoadPlaceDetailInfo();
+            DetailMode();
+        }
+        StateHasChanged();
+
+        // resPlaceDetail.PlaceInfo = _editedPlaceInfo;
+        // resPlaceDetail.PlacePerm = _editedPlacePerm;
+        // resPlaceDetail.ManagerList = _editedManagerList;
     }
 }
     

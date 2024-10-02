@@ -1,0 +1,182 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+@using System.Web
+
+
+<div class="filter">
+    <div class="filter-wrap">
+        <div class="header">
+            <span class="title">
+                필터
+            </span>
+            <Button Name="조회" Width=true Type="0" OnClick="OnSearch" />
+        </div>
+        <div class="content">
+            <div class="filter-date">
+                <span class="filter-date-title">
+                    조회기간
+                </span>
+                <div class="filter-date-content">
+                    <div class="filter-date-item">
+                        <input type="radio" name="date" value=0 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==0)">
+                        <span class="label">월간</span>
+                    </div>
+                    <div class="filter-date-item">
+                        <input type="radio" name="date" value=1 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==1)">
+                        <span class="label">기간 설정</span>
+                        <div class="@(selectDefaultOption != 1 ? "none" : "") ">
+                            <InputDuration 
+                                Row="true"
+                                StartDT="@startDt" 
+                                EndDT="@endDt" 
+                                StartDTChanged="@(newDate => startDt = newDate)"
+                                EndDTChanged="@(newDate => endDt = newDate)"
+                                />
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <CheckBoxVocType Name="민원 유형" Items="@type" />
+            <CheckBoxVocType Name="민원 상태" Items="@state" />
+            <CheckBoxVocType Name="민원 위치" Items="@locations" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int DefaultOption { get; set; }
+    [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
+    [Parameter] public List<ListVocDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(List<MonthVocListDTO>,int)> OnMonthDataChanged { get; set; }
+    [Parameter] public EventCallback<(List<ListVocDTO>,int)> OnDataChanged { get; set; }
+    [Parameter] public EventCallback OnSearchClicked { get; set; } // 검색 버튼 이벤트
+    [Parameter] public List<int>? SelectTypes { get; set; }
+    [Parameter] public List<int>? SelectStatus { get; set; }
+    [Parameter] public List<int>? SelectLocation { get; set; }
+
+
+    private int selectDefaultOption = 0;
+    private DateTime startDt = DateTime.Now;
+    private DateTime endDt = DateTime.Now;
+
+    List<int> types = new List<int>();
+    List<int> status = new List<int>();
+    List<int> location = new List<int>();
+    List<FilterItem> locations = new List<FilterItem>();
+
+
+    string SearchParams = "";
+
+    //민원 유형 객체
+    List<FilterItem> type = new List<FilterItem>
+    {
+        new FilterItem { Id = 0, Name = "미분류", IsChecked = false },
+        new FilterItem { Id = 1, Name = "기계", IsChecked = false },
+        new FilterItem { Id = 2, Name = "전기", IsChecked = false },
+        new FilterItem { Id = 3, Name = "승강", IsChecked = false },
+        new FilterItem { Id = 4, Name = "소방", IsChecked = false },
+        new FilterItem { Id = 5, Name = "건축", IsChecked = false },
+        new FilterItem { Id = 6, Name = "통신", IsChecked = false },
+        new FilterItem { Id = 7, Name = "미화", IsChecked = false },
+        new FilterItem { Id = 8, Name = "보안", IsChecked = false },
+    };
+
+    //민원 상태 객체
+    List<FilterItem> state = new List<FilterItem>
+    {
+        new FilterItem { Id = 0, Name = "미처리", IsChecked = false },
+        new FilterItem { Id = 1, Name = "처리중", IsChecked = false },
+        new FilterItem { Id = 2, Name = "처리완료", IsChecked = false }
+    };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuilding();
+    }
+
+    //건물조회 형태는 id, Name,
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<FilterItem> resGet = await apiManager.GetListAsync<FilterItem>("Building/sign/GetPlaceBuilding");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회실패");
+                return;
+            }
+            locations = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+        }
+    }
+
+
+    //조회 기간
+    private void OnDateOptionChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            selectDefaultOption = value;
+            
+        }
+    }
+
+
+
+    //체크된 요소 id 리스트 반환
+    private List<int> CheckDate(List<FilterItem> items)
+    {
+        List<int> data = items.Where(i => i.IsChecked == true).Select(i => i.Id).ToList();
+
+        return data;
+    }
+
+ 
+    private async Task OnSearch()
+    {
+        try
+        {
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+
+            types = CheckDate(type);
+            status = CheckDate(state);
+            location = CheckDate(locations);
+
+            // //조건 선택안한 경우
+            if( types.Count == 0 || status.Count == 0 || location.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "조건을 선택해 주세요");
+                return;
+            }
+
+            if (selectDefaultOption == 1)
+            {
+                Console.WriteLine("여기탐");
+                parameters["startDate"] = startDt.ToString("yyyy-MM-dd");
+                parameters["endDate"] = endDt.ToString("yyyy-MM-dd");
+            }
+            parameters["types"] = string.Join(",", types);
+            parameters["status"] = string.Join(",", status);
+            parameters["locations"] = string.Join(",", location);
+            
+
+            Navigation.NavigateTo($"/voc/{parameters}",false);
+
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+}
+      

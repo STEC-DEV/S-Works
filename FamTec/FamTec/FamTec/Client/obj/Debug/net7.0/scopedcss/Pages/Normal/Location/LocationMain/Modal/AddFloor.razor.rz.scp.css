@@ -1,0 +1,43 @@
+.modal[b-i1yp5zvixl] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.modal .header>.title[b-i1yp5zvixl]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.content[b-i1yp5zvixl] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.group[b-i1yp5zvixl]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-i1yp5zvixl]{
+    display : flex;
+    gap : var(--default-pd);
+}

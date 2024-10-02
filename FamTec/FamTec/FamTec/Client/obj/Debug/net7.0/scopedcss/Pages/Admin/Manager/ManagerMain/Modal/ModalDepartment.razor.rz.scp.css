@@ -26,11 +26,21 @@
 
 }
 
+.modaldepart-container .modaldepart-title[b-id4obh3910]{
+    display : flex;
+    justify-content : space-between;
+}
+
+
 .modaldepart-container .modaldepart-title>span[b-id4obh3910]{
+    display : flex;
+    align-items:center;
     font-size: var(--title-size);
     font-weight: var(--bold-wt);
     color: var(--main-color);
 }
+
+
 
 .modaldepart-container .modaldepart-body[b-id4obh3910]{
     display : flex;

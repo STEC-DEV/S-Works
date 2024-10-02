@@ -1,12 +1,11 @@
 ﻿
-.managerlist-container{
+.managerlist-container {
     background-color: var(--back-default-color);
     border: var(--comp-bd);
-    border-radius:var(--default-rd);
-    height:100%;
-
-    overflow : hidden;
-    box-shadow: var(--default-bs);
+    border-radius: var(--default-rd);
+    height: 100%;
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
 }
 
 

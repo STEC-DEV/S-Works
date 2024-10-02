@@ -1,0 +1,98 @@
+﻿@layout MainLayout2
+@page "/m/facility/{PlaceId:int}/{FacType}/{FacId:int}/maintenance/{MaintenanceId:int}"
+@using FamTec.Client.Pages.Normal.Facility.MobileMaintenance.MaintenanceDetail.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
+@inject ILocalStorageService _localStorageService
+
+<div class="maintenance">
+    <Info MaintenanceId="@MaintenanceId" Maintenance=Maintenance />
+
+     @if (Maintenance.Type == 1)
+    {
+        <Material
+            ListData="@Maintenance.UseMaterialList" 
+            />
+    }
+</div>
+
+@code {
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+    [Parameter] public int MaintenanceId { get; set; }
+    [Parameter] public int PlaceId{ get; set; }
+
+    //유지보수 정보
+    DetailMaintenanceDTO Maintenance;
+    string TokenFacType = "";
+    bool ReadPerm = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (!ISLOGIN)
+        {
+            Navigation.NavigateTo($"/m/sign/{PlaceId}/{FacType}/{FacId}");
+            return;
+        }
+        ReadPerm = await (_authStateProvider as CustomAuthProvider).HasFacilityReadPerm(TokenFacType);
+        Console.WriteLine($"{TokenFacType} 권한" + ReadPerm);
+        if (!ReadPerm)
+        {
+            await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");
+            await OnExit();
+            Navigation.NavigateTo($"/m/sign/{PlaceId}/{FacType}/{FacId}");
+            return;
+        }
+        await OnLoadMaintenance();
+    }
+
+    /// <summary>
+    /// 유지보수 정보 조회
+    /// </summary>
+    /// <returns></returns>
+    private async Task OnLoadMaintenance()
+    {
+        try
+        {
+            ResponseUnit<DetailMaintenanceDTO> resGet = await apiManager.GetUnitAsync<DetailMaintenanceDTO>($"Maintenance/sign/GetDetailMaintance?Maintanceid={MaintenanceId}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if (resGet.data == null)
+            {
+                Maintenance = new DetailMaintenanceDTO();
+            }
+            Maintenance = new DetailMaintenanceDTO(resGet.data);
+            Maintenance.UseMaterialList = new List<UseMaterialDTO>(resGet.data.UseMaterialList);
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    private async Task OnExit()
+    {
+        try
+        {
+            await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+            // 로그인 모드 정보 제거
+            await _localStorageService.RemoveItemAsync("loginMode");
+
+            // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+            (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "로그아웃 에러");
+        }
+    }
+
+}

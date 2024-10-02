@@ -1,15 +1,63 @@
-﻿@using FamTec.Client.Pages.Normal.Voc.Components
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
-<div class="processcard">
-    <div class="status">
-        <StatusCard  Status="1"/>
+<div class="processcard ">
+    <div class="header">
+        <div class="writer-wrap">
+            <span class="writer">
+                @Data.CreateUser
+            </span>
+            <span class="date">
+                @Data.CreateDT
+            </span>
+        </div>
+            
+        <StatusCard Status="@Data.Status.ToString()" />
     </div>
     <div class="content">
-        <TextField Label="처리 일시" Context="@DateTime.Now.ToString()"/>
-        <TextField Label="처리 내용" Context="해당 타일 교체 완료"/>
+        <div class="content-text">
+            <TextField Label="처리 일시" Context="@Data.CreateDT" />
+            <TextField Label="처리 내용" Context="해당 타일 교체 완료" Type="textarea"/>
+        </div>
+        @if(images.Count != 0)
+        {
+            <ImageSlider Images="@images" Label="작업 이미지" />
+        }
     </div>
 </div>
 
 @code {
+    [Parameter] public VocCommentListDTO Data{ get; set; }
+    [Parameter] public string Status { get; set; }
+    [Parameter] public string Writer { get; set; } = "홍길동";
 
+
+    List<byte[]> images = new List<byte[]>();
+    List<int> nullIndex = new List<int>();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnIMGConvert();
+
+
+    }
+
+    private async Task OnIMGConvert()
+    {
+        images = new List<byte[]>();
+        foreach (var data in Data.Images.Select((value, idx) => (value, idx)))
+        {
+            if (data.value == null)
+            {
+                nullIndex.Add(data.idx);
+                return;
+            }
+            images.Add(data.value);
+        }
+
+        Console.WriteLine("이미지수 " + images);
+        StateHasChanged();
+    }
 }

@@ -6,7 +6,7 @@
     border-radius:var(--default-rd);
     background-color : var(--back-default-color);
     height: 100%;
-    box-shadow: var(--default-bs);
+    box-shadow: var(--shadow-1);
     
 }
 
@@ -36,6 +36,11 @@
 .depart-container .depart-content{
     overflow:auto;
     height:100%;
+}
+
+.depart-btns{
+    display : flex;
+    gap : var(--default-pd);
 }
 
 /*.depart-container .depart-item{

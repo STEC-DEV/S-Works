@@ -1,0 +1,30 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Shared.Server.DTO.Place
+
+<div class="placetoggle-container yappear">
+    <div class="placetoggle-title">
+        <span>
+            민원 권한
+        </span>
+    </div>
+    <div class="placetoggle-toggle">
+        <Toggle Title="기계" @bind-Value=@UserVocPerm.MachineVoc EditMode=EditMode />
+        <Toggle Title="전기" @bind-Value=@UserVocPerm.ElecVoc EditMode=EditMode />
+        <Toggle Title="승강" @bind-Value=@UserVocPerm.LiftVoc EditMode=EditMode />
+        <Toggle Title="소방" @bind-Value=@UserVocPerm.FireVoc EditMode=EditMode />
+        <Toggle Title="건축" @bind-Value=@UserVocPerm.ConstructVoc EditMode=EditMode />
+        <Toggle Title="통신" @bind-Value=@UserVocPerm.NetworkVoc EditMode=EditMode />
+        <Toggle Title="미화" @bind-Value=@UserVocPerm.BeautyVoc EditMode=EditMode />
+        <Toggle Title="보안" @bind-Value=@UserVocPerm.SecurityVoc EditMode=EditMode />
+        <Toggle Title="기타" @bind-Value=@UserVocPerm.ETCVoc EditMode=EditMode />
+    </div>
+</div>
+
+@code {
+    [Parameter] public UserVocPermDTO UserVocPerm{ get; set; }
+
+    [Parameter] public bool EditMode { get; set; }
+
+
+}

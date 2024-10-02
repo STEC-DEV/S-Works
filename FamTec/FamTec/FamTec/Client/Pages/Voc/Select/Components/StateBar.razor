@@ -1,0 +1,23 @@
+﻿<div class="statebar">
+    <div class="state-icon @(Status >= 0 ? "active" : "")">
+        <div class="step-text">
+            접수
+        </div>
+    </div>
+    <div class="state-line @(Status >= 0 ? "active" : "") @(Status == 0 ? "ani" : "")"></div>
+    <div class="state-icon @(Status > 0 ? "active" : "")">
+        <div class="step-text">
+            처리
+        </div>
+    </div>
+    <div class="state-line @(Status > 0 ? "active" : "") @(Status == 1 ? "ani" : "")"></div>
+    <div class="state-icon @(Status > 1 ? "active" : "")">
+        <div class="step-text">
+            완료
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Status { get; set; } = 1;
+}

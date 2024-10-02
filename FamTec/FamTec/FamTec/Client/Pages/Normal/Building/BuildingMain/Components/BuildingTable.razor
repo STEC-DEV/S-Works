@@ -1,0 +1,161 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@inherits PermissionComponentBase
+
+<table class="building-table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    건물
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    건물 주소
+                </span>
+                
+            </th>
+            <th class="th text-center">
+                <span>전화번호</span>
+            </th>
+            <th class="th text-center">
+                <span>
+                    건물층
+                </span>
+                
+            </th>
+            
+            <th class="th">
+                <span>준공년월</span>
+                
+            </th>
+            <th class="th">
+                <span>등록일자</span>
+                
+            </th>
+            <th class="th">
+                <span>민원 QR</span>
+                
+            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading/>
+                </td>
+            </tr>
+        }
+        else if (ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                int id = row.Id;
+                <tr class="tbody-tr">
+                    <td class="td" @onclick="()=>OnDetail(id)">
+                        <div class="td-wrap">
+                            <span class="name">@row.Name</span>
+                            <span class="code">@row.BuildingCd</span>
+                        </div>
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(id)">
+                        @row.Address
+                    </td>
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
+                        @row.Tel
+                    </td>
+                    <td class="td text-center" @onclick="()=>OnDetail(id)">
+                        @row.TotalFloor
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(id)">
+                        @row.CompleteDt.ToString()
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(id)">
+                        @row.CreateDt
+                    </td>
+                    <td class="td">
+                        <QR
+                            BaseUrl="voc/add"
+                            BtnName="QR"
+                            Type="building"
+                            PlaceId="PLACEIDX.Value"
+                            Id="@row.Id"
+                            />
+                    </td>
+                    @if (USEREDIT)
+                    {
+                        <td class="td">
+                            <input type="checkbox"
+                                   checked="@checkedItems.Contains(id)"
+                                   @onchange="(e)=>OnChecked(e,id)" />
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<BuildingListDTO>  ListData { get; set; }
+    [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
+
+
+    private DateTime currentDateTime = DateTime.Now;
+    private HashSet<int> checkedItems = new HashSet<int>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //권한
+        await base.OnInitializedAsync();
+        Console.WriteLine(PLACEIDX);
+    }
+
+    private void OnDetail(int id)
+    {
+        Navigation.NavigateTo($"/basic/buildings/{id}");
+    }
+
+    private async Task OnChecked(ChangeEventArgs e, int id)
+    {
+
+        bool isChecked = (bool)e.Value;
+        if (isChecked)
+        {
+            checkedItems.Add(id);
+        }
+        else
+        {
+            checkedItems.Remove(id);
+        }
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
+    }
+
+    public void ResetChecks()
+    {
+        checkedItems.Clear();
+        StateHasChanged();
+    }
+
+}

@@ -32,3 +32,12 @@
     height: 100%;
     padding: var(--default-pd);
 }
+
+.form-container .img{
+    object-fit :fill;
+}
+
+.form-container .img-wrap{
+    width : 200px;
+    height : 200px;
+}

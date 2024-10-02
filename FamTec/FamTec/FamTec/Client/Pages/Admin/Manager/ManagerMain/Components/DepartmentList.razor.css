@@ -4,9 +4,11 @@
     gap: var(--half-pd);
 }
 
+
+
 .depart-list .depart-item {
     display: flex;
-    /*justify-content:space-between;*/ /* 선택버튼*/
+    justify-content:space-between; /* 선택버튼*/
     gap : var(--default-pd);
     width:100%;
     padding: var(--default-pd)  var(--half-pd);
@@ -15,10 +17,62 @@
     font-weight: var(--bold-wt);
 }
 
+
 .depart-list .depart-item:hover {
     transition: all ease-in-out 0.2s;
     background-color: var(--main-color);
 }
+
+.depart-list .depart-add {
+    display: flex;
+    justify-content:center; /* 선택버튼*/
+    gap : var(--default-pd);
+    width:100%;
+    padding: var(--half-pd);
+    border-radius: var(--default-rd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    box-shadow : 0 0 10px 0px darkgray;
+    background-color: var(--main-color);
+    
+}
+
+.depart-list .cancle{
+    display: flex;
+    justify-content:center; /* 선택버튼*/
+    gap : var(--default-pd);
+    width:100%;
+    padding: var(--half-pd);
+    border-radius: var(--default-rd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    box-shadow : 0 0 10px 0px darkgray;
+    background-color: var(--del-color);
+}
+
+.depart-list .depart-add:hover {
+    transition: all ease-in-out 0.2s;
+    background-color: var(--main-hover);
+}
+
+.depart-list .cancle:hover {
+    transition: all ease-in-out 0.2s;
+    background-color: var(--del-hover);
+}
+
+.depart-list .add-title{
+    color : var(--default-color);
+}
+
+.depart-list .depart-add:hover .add-title{
+     transition: all ease-in-out 0.2s;
+    color: var(--default-color);
+}
+
+.depart-list .edit{
+    background-color : var(--main-light);
+}
+
 
 .depart-list .depart-item:hover ::deep .item-title {
     transition: all ease-in-out 0.2s;
@@ -27,4 +81,64 @@
 
 .depart-list .depart-item ::deep .item-title{
     color : var(--main-color);
+}
+
+.depart-list .item-title:disabled{
+    background-color : transparent;
+    border : none;
+    color : var(--main-color);
+    font-weight : var(--bold-wt);
+}
+
+.depart-list .depart-item:hover .item-title:disabled {
+    background-color : transparent;
+}
+
+.depart-list .depart-item:hover .item-input{
+    background-color : transparent;
+}
+
+.item-title:hover{
+    cursor:pointer;
+}
+
+
+.depart-list .item-option {
+    display: flex;
+    align-items: center;
+    gap: var(--half-pd);
+}
+
+.depart-list .edit-btn {
+    border-radius : 50%;
+    width: 12px;
+    height: 12px;
+    border : none;
+    background-color: #e33c3c;
+}
+
+.depart-list .item-input{
+    background-color : transparent;
+    border : none;
+    color : var(--main-color);
+    font-weight : var(--bold-wt);
+    outline :none;
+}
+
+
+.depart-list .btn-submit{
+    
+    background-color : #1ac71a;
+}
+
+.depart-list .depart-add-form{
+    display:flex;
+    flex-direction:column;
+    
+    gap: var(--half-pd);
+}
+
+.add-form{
+    display:flex;
+    gap: var(--half-pd);
 }

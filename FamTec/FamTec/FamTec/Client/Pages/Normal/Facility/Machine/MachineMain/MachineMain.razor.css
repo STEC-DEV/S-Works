@@ -1,0 +1,42 @@
+﻿.fac-container {
+    padding : var(--default-pd);
+    height:100%;
+}
+
+.fac-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    width: 100%;
+    min-height: 100%;
+    /*height: 100%;*/
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--default-color);
+    box-shadow: var(--shadow-1);
+}
+.fac-container .fac-header{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:var(--default-pd);
+    border-bottom : var(--default-bd);
+}
+
+.fac-container .header-options{
+    display :flex;
+    gap : var(--half-pd);
+}
+
+.fac-container .title{
+     white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.height{
+    height:100%;
+}

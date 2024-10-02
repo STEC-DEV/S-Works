@@ -20,11 +20,9 @@
                     <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
                 </div>
             }
-            
-            
         </div>
         <div class="managerlist-list">
-            <Table DataList="@managerList" Select="OnSelected" Detail="true" />
+            <Table ListData="@managerList" OnCheck="OnSelected" Detail="true" />
         </div>
     </div>
 </div>
@@ -34,6 +32,8 @@
 
     List<ManagerDTO>? managerList;
     List<int>? deleteManagerList = new List<int>();
+
+    private bool _editMode = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -51,7 +51,15 @@
                 await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
                 return;
             }
-            managerList = resManager.data;
+            if(resManager.data == null)
+            {
+                managerList = new List<ManagerDTO>();
+            }
+            else
+            {
+                managerList = resManager.data;
+            }
+
             return;
         }
         catch (Exception ex)
@@ -70,20 +78,17 @@
 
 
     /*
-    * 부서 선택
+    * 
     */
-    public void OnSelected((bool isCheck, int id) selection)
-    {
-
-        Console.WriteLine("부서 체크 여부" + selection.isCheck);
-        if (!selection.isCheck)
+    public void OnSelected((bool isCheck, ManagerDTO item) selection)
+    {        
+        if (selection.isCheck)
         {
-            deleteManagerList.Remove(selection.id);
+            deleteManagerList.Add(selection.item.Id);
         }
         else
         {
-            Console.WriteLine("추가함");
-            deleteManagerList.Add(selection.id);
+            deleteManagerList.Remove(selection.item.Id);
         }
 
     }
@@ -93,26 +98,20 @@
     {
         try
         {
-            if(deleteManagerList == null)
+            if(deleteManagerList.Count == 0)
             {
                 Console.WriteLine("선택 매니저 없음");
             }
             else
             {
-                var resDeleteManager = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/AdminUser/DeleteManager", deleteManagerList);
-                if (resDeleteManager.IsSuccessStatusCode)
+                ResponseUnit<bool> resDeleteManager = await apiManager.PutAsync<bool>("AdminUser/sign/DeleteManager", deleteManagerList);
+                if (resDeleteManager.code != 200)
                 {
-                    ResponseUnit<int> resDeleteManagerData = await resDeleteManager.Content.ReadFromJsonAsync<ResponseUnit<int>>();
-                    deleteManagerList.Clear();
-                    Console.WriteLine("매니저 삭제 성공");
-                    await OnLoadManagers();
+                    await JS.InvokeVoidAsync("alert", resDeleteManager.message);
+                    return;
                 }
-                else
-                {
-                    deleteManagerList.Clear();
-                    Console.WriteLine("매니저 삭제 실패");
-                    await OnLoadManagers();
-                }
+                deleteManagerList.Clear();
+                await OnLoadManagers();
             }
 
         }
@@ -122,9 +121,12 @@
         }
     }
 
-    
 
-    
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
+    }
+
 
     private void OnSignUp()
     {

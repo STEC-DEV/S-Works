@@ -1,0 +1,113 @@
+﻿@layout MainLayout2
+@page "/m/facility/{PlaceIdx:int}/{FacType}/{FacId:int}"
+
+
+@using FamTec.Client.Pages.Normal.Facility.Machine.Components
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Components
+@using FamTec.Client.Pages.Normal.Facility.MobileMachine.MahineDetail.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+@inject ILocalStorageService _localStorageService
+@inherits PermissionComponentBase
+@inject AuthenticationStateProvider _authStateProvider;
+
+<div class="machine">
+    <Info FacType="@FacType" FacId="@FacId" />
+
+    @foreach (var group in Group)
+    {
+        <MGroup GroupData="@group"/>
+    }
+    <Maintenance FacType="@FacType" Id="@FacId"/>
+</div>
+
+@code {
+    [Parameter] public int PlaceIdx { get; set; }
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public int FacId { get; set; }
+    string TokenFacType = "";
+    bool ReadPerm = false;
+
+    //그룹 정보
+    List<GroupDTO> Group = new List<GroupDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        convertFactype();
+        await base.OnInitializedAsync();
+        
+        if (!ISLOGIN)
+        {
+            Navigation.NavigateTo($"/m/sign/{PlaceIdx}/{FacType}/{FacId}");
+            return;
+        }
+        ReadPerm = await (_authStateProvider as CustomAuthProvider).HasFacilityReadPerm(TokenFacType);
+        Console.WriteLine($"{TokenFacType} 권한" +ReadPerm);
+        if (!ReadPerm)
+        {
+            await JS.InvokeVoidAsync("alert","접근 권한이 없습니다.");
+            await OnExit();
+            Navigation.NavigateTo($"/m/sign/{PlaceIdx}/{FacType}/{FacId}");
+            return;
+        }
+
+        await OnLoadGroup();
+    }
+
+    private void convertFactype()
+    {
+        TokenFacType = FacType switch
+        {
+            "machine" => "UserPerm_Machine",
+            "electronic" => "UserPerm_Elec",
+            "lift" => "UserPerm_Lift",
+            "fire" => "UserPerm_Fire",
+            "construct" => "UserPerm_Construct",
+            "network" => "UserPerm_Network",
+            "beauty" => "UserPerm_Beauty",
+            "security" => "UserPerm_Security",
+            "material" => "UserPerm_Material",
+            "energy" => "UserPerm_Energy",
+
+        };
+    }
+
+
+    //그룹 조회
+    private async Task OnLoadGroup()
+    {
+        try
+        {
+            ResponseList<GroupDTO> resGroup = await apiManager.GetListAsync<GroupDTO>($"FacilityGroup/sign/GetFacilityGroup?facilityid={FacId}");
+            if (resGroup.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "그룹 조회 실패");
+                return;
+            }
+            Group = resGroup.data;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Facility][Detail] 그룹 조회 실패" + ex);
+        }
+    }
+
+    private async Task OnExit()
+    {
+        try
+        {
+            await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+            // 로그인 모드 정보 제거
+            await _localStorageService.RemoveItemAsync("loginMode");
+
+            // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+            (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "로그아웃 에러");
+        }
+    }
+}

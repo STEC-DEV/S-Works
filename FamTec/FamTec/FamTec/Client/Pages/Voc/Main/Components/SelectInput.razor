@@ -1,0 +1,48 @@
+﻿
+
+<div class="inputfield">
+    <label class="label">
+        @Label
+    </label>
+    <span class="form">
+        <input class="input"
+               type="text"
+               placeholder="@Placeholder"
+               @bind=@Number
+               @oninput="OnValueChanged" />
+
+        <button class="btn" @onclick=Find>
+            검색
+        </button>
+    </span>
+    
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    private string Number;
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+
+        await ValueChanged.InvokeAsync(e?.Value?.ToString());
+
+    }
+
+
+    private void Find()
+    {
+        if (Number == null)
+        {
+            JS.InvokeVoidAsync("alert", "접수번호를 입력해주세요.");
+            return;
+        }
+
+        Navigation.NavigateTo($"/voc/select/{Number}");
+    }
+
+}

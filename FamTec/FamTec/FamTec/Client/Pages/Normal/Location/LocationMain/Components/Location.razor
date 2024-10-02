@@ -1,0 +1,170 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+<div class="location-container yappear">
+    <div class="location-wrap">
+        <div class="location-header">
+            <span class="title">
+                위치 목록
+            </span>
+            @if (USEREDIT)
+            {
+                <div class="location-options">
+                    <Button Name="@(isAddingRow ?"취소" :  "추가")"
+                            Width=true
+                            OnClick="@OnAddMode"
+                            Type="0" />
+                    <Button Name="삭제"
+                            Width=true
+                            Type="1"
+                            OnClick="OnDelete" />
+                </div>
+            }
+            
+        </div>
+        <div class="location-contents">
+            <LocationTable 
+                ListData="@RoomList" 
+                AddObject="@AddLocation"
+                isAddingRow=@isAddingRow 
+                AddMode="@OnAddMode" 
+                BuildingFloor=@BuildingFloor
+                OnAdd=OnAdd
+                OnCheck="OnCheckRoom"
+                />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public List<BuildingFloorListDTO> BuildingFloor{ get; set; }
+    private bool isAddingRow = false;
+    List<RoomListDTO> RoomList = new List<RoomListDTO>();
+    List<BuildingFloorListDTO> BuildingList;
+    private List<LocationDTO> Locations = new List<LocationDTO>
+    {
+        new LocationDTO{ Id = 1, Name = "전기실", BuildingName ="강남우체국", Floor = "지하 1층"},
+        new LocationDTO{ Id = 2, Name = "개발실", BuildingName ="강남우체국", Floor = "2"},
+        new LocationDTO{ Id = 3, Name = "창고A", BuildingName ="강남우체국", Floor = "5"},
+        new LocationDTO{ Id = 4, Name = "창고B", BuildingName ="강남우체국", Floor = "1"},
+    };
+    private RoomListDTO newRoom;
+    AddLoactionDTO AddLocation;
+
+    List<int> DelList = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //권한
+        await base.OnInitializedAsync();
+        AddLocation = new AddLoactionDTO();
+        // await OnLoadBuilding();
+        await OnLoadLaction();
+
+    }
+
+    //조회
+    private async Task OnLoadLaction()
+    {
+        try
+        {
+            ResponseList<RoomListDTO> resGet = await apiManager.GetListAsync<RoomListDTO>("Room/sign/GetAllRoomList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "위치 조회 실패");
+                return;
+            }
+            RoomList = resGet.data;
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "위치 조회 실패");
+            Console.WriteLine("[Basic][Location] 위치 조회 에러!" + ex);
+        }
+    }
+
+
+
+
+    //추가
+    private async Task OnAdd()
+    {
+        try
+        {
+            ResponseUnit<AddLoactionDTO> resAdd = await apiManager.PostAsync<AddLoactionDTO>("Room/sign/AddRoom", AddLocation);
+            if(resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "위치 추가 실패");
+            }
+            AddLocation = new AddLoactionDTO();
+            await OnLoadLaction();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Location][Add] 위치 추가 에러!" +ex);
+        }
+    }
+
+    //삭제
+    private async Task OnDelete()
+    {
+        try
+        {
+            if(DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "선택된 공간이 없습니다.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Room/sign/DeleteRoom",DelList);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+            }
+            DelList.Clear();
+            await OnLoadLaction();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[Normal][Location] 삭제 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "공간 삭제 에러");
+        }
+    }
+
+    private void OnCheckRoom((bool isCheck, int buildingId) data)
+    {
+        
+        if (data.isCheck)
+        {
+            DelList.Add(data.buildingId);
+        }
+        else
+        {
+            DelList.Remove(data.buildingId);
+        }
+    
+    }
+
+
+    private void OnAddMode()
+    {
+        isAddingRow = !isAddingRow;
+        if (isAddingRow)
+        {
+            newRoom = new RoomListDTO();
+        }
+        StateHasChanged();
+    }
+
+    private void CancelAddRow()
+    {
+        isAddingRow = false;
+    }
+
+    private void RemoveRow(LocationDTO data)
+    {
+        Locations.Remove(data);
+    }
+}

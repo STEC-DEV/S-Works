@@ -9,5 +9,6 @@ namespace FamTec.Shared.Client.DTO
     public class AddDepartmentDTO
     {
         public string Name { get; set; }
+        public bool ManagerYN { get; set; } = false;
     }
 }

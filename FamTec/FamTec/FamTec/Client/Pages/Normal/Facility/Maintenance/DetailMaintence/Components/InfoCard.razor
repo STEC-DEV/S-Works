@@ -1,0 +1,197 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+
+<div class="infocard-container yappear">
+    <div class="infocard-header">
+        <span>
+            유지보수 정보
+        </span>
+        @if (USEREDIT)
+        {
+            <div class="option">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                }
+            </div>
+        }
+    </div>
+    <div class="infocard-content">
+        @if(Maintenance == null)
+        {
+            <div>
+                <Loading/>
+            </div>
+
+        }
+        else
+        {
+            <div class="infocard-img-area">
+                <PreviewBox ImageUrls="@ImageUrl" />
+                @if (EditMode)
+                {
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                }
+                
+            </div>
+            <div class="infocard-inputs">
+                @if (EditMode)
+                {
+                    <TextField2 Label="작업일자"
+                                Row=true
+                                Value="@UpdateMaintenance.WorkDT" />
+                    <InputCol Label="작업명"
+                              Placeholder="작업명"
+                              Row="true"
+                              @bind-Value=@UpdateMaintenance.WorkName />
+                    <TextField2 Label="작업구분"
+                                Row=true
+                                Value="@(UpdateMaintenance.Type == 0? "자체 작업" : "외주 작업")" />
+                    <InputCol Label="작업자"
+                              Placeholder="작업자"
+                              Row="true"
+                              @bind-Value=@UpdateMaintenance.Worker />
+                    <TextField2 Label="소요 비용"
+                                Row=true
+                                Value="@UpdateMaintenance.TotalPrice.ToString()" />
+
+                }
+                else
+                {
+                    <TextField2 Label="작업일자"
+                                Row=true
+                                Value="@Maintenance.WorkDT" />
+                    <TextField2 Label="작업명"
+                                Row=true
+                                Value="@Maintenance.WorkName" />
+                    <TextField2 Label="작업구분"
+                                Row=true
+                                Value="@(Maintenance.Type == 0? "자체 작업" : "외주 작업")" />
+                    <TextField2 Label="작업자"
+                                Row=true
+                                Value="@Maintenance.Worker" />
+                    <TextField2 Label="소요 비용"
+                                Row=true
+                                Value="@Maintenance.TotalPrice.ToString()" />
+                }
+
+            </div>
+        }
+        
+    </div>
+</div>
+
+@code {
+    [Parameter] public float TotalPrice { get; set; }
+    [Parameter] public DetailMaintenanceDTO Maintenance { get; set; }
+    [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+    // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
+
+    DetailMaintenanceDTO UpdateMaintenance;
+    UpdateMaintenanceInfo updateMaintenance = new UpdateMaintenanceInfo();
+
+    //건물, 위치정보 조회 변수
+    List<BuildingFloorListDTO> Building = new List<BuildingFloorListDTO>();
+    BuildingFloorListDTO SelectBuilding = new BuildingFloorListDTO();
+    //건물 선택 시 할당받을 위치 변수
+    List<BuildingFloor> Room = new List<BuildingFloor>();
+
+    int SelectedWorkType = 0;
+
+    private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    bool EditMode = false;
+
+    List<object> WorkType = new List<object>()
+    {
+        new
+        {
+            Id = 0,
+            Name = "자체 작업"
+        },
+        new
+        {
+            Id = 1,
+            Name = "외주 작업"
+        },
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UpdateMaintenance = Maintenance.DeepCopy();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UpdateMaintenance = Maintenance.DeepCopy();
+    }
+
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        ImageUrl.Clear();
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            UpdateMaintenance.Image = image.Image;
+            UpdateMaintenance.ImageName = image.Name;
+            ImageUrl.Add(image.ImageUrl);
+        }
+        StateHasChanged();
+        // await MaintenanceChanged.InvokeAsync(Maintenance);
+    }
+
+    private async Task OnUpdate()
+    {
+        try
+        {
+            updateMaintenance.Id = UpdateMaintenance.MaintanceID;
+            updateMaintenance.Name = UpdateMaintenance.WorkName;
+            updateMaintenance.Worker = UpdateMaintenance.Worker;
+            updateMaintenance.Image = UpdateMaintenance.Image;
+            updateMaintenance.ImageName = UpdateMaintenance.ImageName;
+
+            Console.WriteLine(updateMaintenance.Id);
+            Console.WriteLine(updateMaintenance.Name);
+            Console.WriteLine(updateMaintenance.Worker);
+
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", updateMaintenance, true);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            OnEdit();
+            await OnLoadMaintenance.InvokeAsync();
+            
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+
+    private void OnEdit()
+    {
+        EditMode = !EditMode;
+        UpdateMaintenance = Maintenance.DeepCopy();
+    }
+
+
+    
+
+}

@@ -1,0 +1,15 @@
+﻿<div class="@(ImageUrls?.Any() != true ? "none" : "") previewbox">
+    @if (ImageUrls != null)
+    {
+        @foreach (var image in ImageUrls)
+        {
+            <img class="img" src="@image" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public List<string>? ImageUrls { get; set; }
+
+
+}

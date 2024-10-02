@@ -1,0 +1,53 @@
+﻿.manager-modal{
+    display:flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+    padding :var(--default-pd);
+
+    border-radius :var(--default-rd) ;
+    border : var(--comp-bd);
+
+
+    width : 30%;
+    height : 80%;
+
+    background-color:var(--default-color);
+    box-shadow : var(--default-bs);
+}
+
+.manager-modal .manager-title{
+    font-size : var(--title-size);
+    font-weight : var(--bold-bd);
+}
+.manager-modal .manager-title > .title{
+    color : var(--main-color);
+}
+
+.manager-modal .manager-content{
+    height : 100%;
+    border-radius : var(--default-rd);
+    overflow : auto;
+}
+
+
+.manager-modal .manager-count{
+    border-radius : var(--default-rd);
+    padding : var(--three-q-pd);
+    
+    
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+
+    background-color : var(--main-color);
+}
+
+.manager-modal .manager-count> .count {
+    color:var(--default-color);
+}
+
+.manager-modal .manager-btns{
+    display:flex;
+    gap:var(--default-pd);
+    width : 100%;
+    border-radius : var(--default-rd);
+}

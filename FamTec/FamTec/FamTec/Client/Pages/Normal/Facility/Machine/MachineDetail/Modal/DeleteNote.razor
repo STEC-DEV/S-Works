@@ -1,0 +1,35 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            삭제 사유
+        </span>
+    </div>
+    <div class="content">
+        <InputCol
+            Placeholder="삭제 사유"
+            @bind-Value=@Message
+            />
+    </div>
+    <div class="btns">
+        <Button Name="삭제" Type="1" OnClick="OnDelete" />
+        <Button Name="취소" Type="0" OnClick="OnCancle" />
+    </div>
+</div>
+
+@code {
+        [Parameter] public EventCallback OnDel { get; set; }
+        [Parameter] public EventCallback OnClick { get; set; }
+        [Parameter] public string Message { get; set; }
+
+        private async Task OnDelete()
+        {
+            await OnDel.InvokeAsync();
+        }
+
+        private async Task OnCancle()
+        {
+            await OnClick.InvokeAsync();
+        }
+}

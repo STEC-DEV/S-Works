@@ -1,0 +1,96 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Users
+@using System.ComponentModel.DataAnnotations
+<table class="table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th">
+                <span>
+                    Items
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Read
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    Write
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @foreach(var property in typeof(UserPermDTO).GetProperties())
+        {
+            var displayAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(property, typeof(DisplayAttribute));
+            var value = (int)property.GetValue(UserPerm);
+
+            <tr class="tr">
+                <td class="td">
+                    @displayAttribute.Name
+                </td>
+                <td class="td">
+                    <input type="checkbox" @onchange="(e) => OnFirstCheckBox(e, property.Name)" />
+                </td>
+                <td class="td">
+                    <input type="checkbox" disabled="@IsFirstCheckboxChecked(value)" @onchange="(e) => OnSecondCheckbox(e, property.Name)" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public UserPermDTO UserPerm { get; set; }
+    [Parameter] public EventCallback<UserPermDTO> OnVocActive { get; set; }
+
+
+
+
+
+    private bool IsFirstCheckboxChecked(int value)
+    {
+        return !(value > 0);
+    }
+
+
+    private void OnFirstCheckBox(ChangeEventArgs e, string propertyName)
+    {
+        //첫번째 input에 따라 0 or 1
+        int permValue = (bool)e.Value ? 1 : 0;
+        typeof(UserPermDTO).GetProperty(propertyName).SetValue(UserPerm, permValue);
+
+        if(propertyName == "VocPerm")
+        {
+            Console.WriteLine("voc");
+            OnVocActive.InvokeAsync(UserPerm);
+        }
+        // Console.WriteLine(typeof(UserPermDTO).GetProperty(propertyName).GetValue(UserPerm));
+
+    }
+
+    private void OnSecondCheckbox(ChangeEventArgs e, string propertyName)
+    {
+        var propertyInfo = typeof(UserPermDTO).GetProperty(propertyName);
+        int currentValue = (int)propertyInfo.GetValue(UserPerm);
+
+        if ((bool)e.Value)
+        {
+            propertyInfo.SetValue(UserPerm, 2);
+        }
+        else
+        {
+            propertyInfo.SetValue(UserPerm, 1);
+        }
+
+        
+        // Console.WriteLine(currentValue);
+        // Console.WriteLine(propertyInfo.GetValue(UserPerm));
+
+
+
+    }
+
+
+}

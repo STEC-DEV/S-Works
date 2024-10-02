@@ -1,0 +1,41 @@
+﻿@typeparam T
+
+
+
+<ul class="ul">
+    @if(ListData == null)
+    {
+        <p>...Loading</p>
+    }
+    @foreach(var list in ListData)
+    {
+        <li class="li">
+            @typeof(T).GetProperty("Name")?.GetValue(list)?.ToString()
+            <input 
+                type="radio" 
+                name="radioGroup" 
+                value=@typeof(T).GetProperty("Id")?.GetValue(list)?.ToString() 
+                @onchange="OnSelect" 
+                />
+        </li>
+    }
+</ul>
+
+
+
+@code {
+    [Parameter] public List<T> ListData { get; set; }
+    [Parameter] public EventCallback<int> OnSelected { get; set; }
+    private string selectedValue;
+
+    private async void OnSelect(ChangeEventArgs e)
+    {
+        selectedValue = e.Value?.ToString();
+        Console.WriteLine($"Selected value: {selectedValue}");
+
+        if (int.TryParse(selectedValue, out int selectedId))
+        {
+            await OnSelected.InvokeAsync(selectedId);
+        }
+    }
+}

@@ -1,0 +1,137 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@inject NavigationManager NavigationManager
+@inherits PermissionComponentBase
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    사업장 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    사업장명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약번호
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약일자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약상태
+                </span>
+            </th>
+            @if (ADMINEDIT)
+            {
+                <th class="th">
+                    <span>
+
+                    </span>
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+
+                <tr class="tbody-tr">
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.PlaceCd
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.Name
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.Note
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.ContractNum
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.ContractDt
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        <StatusCard Status="@(row.Status)" />
+                    </td>
+                    @if (ADMINEDIT)
+                    {
+                        <td class="td">
+                            <input 
+                                type="checkbox" 
+                                checked="@CheckItems.Contains(row.Id)" 
+                                @onchange="e=> OnSelect(e, row.Id)" />
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<PlaceTableDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool, int)> Select { get; set; }
+    [Parameter] public HashSet<int>? CheckedItems { get; set; }
+    private HashSet<int> CheckItems = new HashSet<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private void OnDeatail(int Id)
+    {
+        NavigationManager.NavigateTo($"/admin/place/{Id}");
+    }
+
+    private async Task OnSelect(ChangeEventArgs e, int id)
+    {
+        
+        bool isChecked = (bool)(e.Value ?? false);
+        if (isChecked)
+        {
+            CheckItems.Add(id);
+        }
+        else
+        {
+            CheckItems.Remove(id);
+        }
+        await Select.InvokeAsync((isChecked, id));
+    }
+}

@@ -1,0 +1,25 @@
+﻿.inputimages{
+    display :flex;
+    align-items : center;
+    gap : var(--half-pd);
+}
+
+.label{
+    padding : var(--half-pd) var(--default-pd);
+    border-radius : var(--default-rd);
+    border : var(--default-bd);
+    color : var(--default-color);
+    background-color : var(--main-color);
+
+    font-size : var(--normal-size);
+    transition : all .3s;
+}
+
+.label:hover{
+    background-color : #263e9b;
+    cursor :pointer;
+}
+
+::deep #inputimage {
+    display: none;
+}

@@ -1,0 +1,120 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using System.Reflection
+@using FamTec.Shared.Server.DTO
+<div class="buildinginfo yappear">
+    <div class="buildinginfo-header">
+        <span class="title">
+            건물 정보
+        </span>
+        @if (USEREDIT)
+        {
+            <div class="header-btns">
+                @if (EditMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+
+                }
+                else
+                {
+                    <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+                }
+
+            </div>
+        }
+
+
+    </div>
+    <Form 
+        Building=@(EditMode ? _editBuilding : Building )
+        Image=@(EditMode ? EditImage : OriginalImage)
+        EditMode=EditMode />
+
+</div>
+
+@code {
+    // [CascadingParameter] public BuildingDTO? Building { get; set; }
+    [Parameter] public BuildingDTO? Building { get; set; }
+    [Parameter] public EventCallback OnLoad { get; set; }
+
+    private BuildingDTO _editBuilding;
+
+    private List<string> OriginalImage = new List<string>();
+    private List<string> EditImage = new List<string>();
+    bool EditMode= false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //권한 조회
+        await base.OnInitializedAsync();
+        ConvertToImageUrl();
+    }
+
+    // protected override Task OnParametersSetAsync()
+    // {
+
+    //     return base.OnParametersSetAsync();
+    // }
+
+
+    //최초 건물객체가 가지고 있는 이미지 로드
+    private void ConvertToImageUrl()
+    {
+        Console.WriteLine("여기 탐");
+        if (Building.Image == null)
+        {
+            OriginalImage.Clear();
+            return;
+        }
+
+
+        OriginalImage.Add($"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}");
+
+
+        // OriginalImage[0] = $"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}";
+        EditImage = new List<string>(OriginalImage);
+        Console.WriteLine(Building.Image);
+    }
+
+    //편집모드 전환
+    private void OnEditMode()
+    {
+        EditMode = !EditMode;
+        _editBuilding = Building.DeepCopy();
+
+        if (!EditMode)
+        {
+            EditImage = new List<string>(OriginalImage);
+        }
+        StateHasChanged();
+    }
+
+
+    //수정 
+    private async Task OnUpdate()
+    {
+        try
+        {
+            Console.WriteLine("데이타 : " + _editBuilding.Name);
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Building/sign/UpdateBuilding",_editBuilding, true);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+            }
+
+            await OnLoad.InvokeAsync();
+            OnEditMode();
+            OriginalImage = new List<string>(EditImage);
+
+            
+            StateHasChanged();
+        }catch(Exception ex)
+        {
+            Console.WriteLine("[건물][수정] 기본정보 수정"+ ex);
+            await JS.InvokeVoidAsync("alert", "[건물][수정] 기본정보 수정 실패!");
+        }
+    }
+}

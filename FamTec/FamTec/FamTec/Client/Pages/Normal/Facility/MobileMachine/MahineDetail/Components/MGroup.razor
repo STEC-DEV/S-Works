@@ -1,0 +1,20 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+
+
+<div class="mgroup">
+    <div class="header">
+        <span class="title">
+            @GroupData.Name
+        </span>
+    </div>
+    <div class="content">
+        @foreach(var item in GroupData.keyListDTO)
+        {
+            <MSubItem item="item" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public GroupDTO? GroupData { get; set; }
+}

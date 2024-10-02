@@ -1,0 +1,29 @@
+﻿@using System.Globalization
+
+
+<div class="date @(Row ==true? "row":"")">
+    <label class="label">
+        @Label
+    </label>
+    <InputDate 
+        Value="@DateValue"
+        ValueChanged="@((DateTime? newValue )=> OnDateChanged(newValue))"
+        ValueExpression="@(() => DateValue)"
+        disabled="@Disabled"
+        />
+</div>
+
+@code {
+    [Parameter] public string Label {get; set;}
+    [Parameter] public DateTime? DateValue { get; set; }
+    [Parameter] public EventCallback<DateTime?> DateValueChanged { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool? Row { get; set; }
+
+    private async Task OnDateChanged(DateTime? newDate)
+    {
+        DateValue = newDate;
+        await DateValueChanged.InvokeAsync(newDate);
+    }
+
+}

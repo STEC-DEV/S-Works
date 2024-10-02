@@ -1,0 +1,206 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
+@using FamTec.Shared.Client.DTO.Normal.Location
+
+
+<table class="location-table">
+    <thead class="thead">
+        <tr class="th-tr">
+            <th class="th text-left">
+                <span>
+                    No.
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    위치명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    건물명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    층
+                </span>
+            </th>
+            @if (USEREDIT)
+            {
+                <th class="th">
+                    <span>
+
+                    </span>
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (isAddingRow && USEREDIT)
+        {
+            <tr class="tbody-tr">
+                <td class="td text-left">
+                    @(ListData.Count + 1)
+                </td>
+                <td class="td">
+                    <input 
+                        class="input" 
+                        type="text"
+                        placeholder="위치명" 
+                        @bind-value="@AddObject.Name" />
+                </td> 
+                <td class="td">
+                    <SelectField 
+                        SelectData=@BuildingFloor 
+                        OnChange="@OnSetBuilding" 
+                        EditMode=true
+                        />
+                </td> 
+                <td class="td">
+                    <SelectField 
+                         @ref="floorSelectField"
+                        SelectData=@Floor 
+                        OnChange="@OnSetFloor" 
+                        EditMode="@(Floor != null ? true : false)" 
+                        
+                        />
+                </td>
+                <td class="td text-right">
+                    <Button Name="등록" Width=true OnClick="@SaveRow" />
+                </td>
+            </tr>
+        }
+        @foreach (var location in ListData.Select((value, idx) => (value, idx)))
+        {
+            var currentLocation = location.value;
+            bool _isEditing = false;
+            <tr @key="@currentLocation.RoomID" class="tbody-tr">
+                <td class="td text-left" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@(location.idx + 1)</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td>
+                @if (USEREDIT)
+                {
+                    <td class="td text-right">
+                        <input type="checkbox"
+                               checked="@checkedItems.Contains(location.value.RoomID)"
+                               @onchange="(e)=>OnChecked(e,location.value.RoomID)" />
+                    </td>
+                }
+                
+            </tr>
+            @if (_isEditing && USEREDIT)
+            {
+                <ModalBackground>
+                    <ChildComponent>
+                        <UpdateModal OnClose="OnEditLocation" />
+                    </ChildComponent>
+                </ModalBackground>
+            }
+        }
+    </tbody>
+
+</table>
+
+@code {
+    [Parameter] public List<LocationDTO> Locations {get; set;}
+    [Parameter] public List<RoomListDTO> ListData { get; set; }
+    [Parameter] public List<BuildingFloorListDTO> BuildingFloor { get; set; }
+    [Parameter] public AddLoactionDTO AddObject { get; set; }
+    [Parameter] public bool isAddingRow { get; set; }
+    [Parameter] public EventCallback AddMode { get; set; }
+    [Parameter] public EventCallback OnAdd { get; set; }
+    [Parameter] public EventCallback<(bool, int)> OnCheck{get;set;}
+
+
+    List<BuildingFloor> Floor;
+    private SelectField<BuildingFloor> floorSelectField;
+    private HashSet<int> checkedItems = new HashSet<int>();
+    private bool _itemEdit = false;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine(Floor == null);
+        return base.OnInitializedAsync();
+    }
+
+
+    private async void OnAddRow()
+    {
+        isAddingRow = true;
+    }
+
+
+    private void OnSetBuilding(int id)
+    {
+
+        if (id == 0)
+        {
+            Floor = null;
+            AddObject.BuildingId = 0;
+            AddObject.FloorId = 0;
+            return;
+        }
+
+        var selectBuliding = BuildingFloor.FirstOrDefault(f => f.Id == id);
+        if (selectBuliding == null)
+        {
+            return;
+        }
+        AddObject.BuildingId = id;
+        AddObject.FloorId = 0;
+        Floor = selectBuliding.FloorList;
+        floorSelectField?.Reset();
+
+
+    }
+
+    private void OnSetFloor(int id)
+    {
+        Console.WriteLine();
+        AddObject.FloorId = id;   
+    }
+
+    private async Task OnChecked(ChangeEventArgs e, int id)
+    {
+
+        bool isChecked = (bool)e.Value;
+        if (isChecked)
+        {
+            checkedItems.Add(id);
+        }
+        else
+        {
+            checkedItems.Remove(id);
+        }
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
+    }
+
+
+
+    private async void SaveRow()
+    {
+        if (string.IsNullOrWhiteSpace(AddObject.Name) ||
+            AddObject.BuildingId <= 0 ||
+            AddObject.FloorId <= 0 )
+        {
+            JS.InvokeVoidAsync("alert","값이 비어있습니다.");
+            return;
+        }
+        await AddMode.InvokeAsync();
+        await OnAdd.InvokeAsync();
+    }
+
+    // private bool OnEditLocation(bool edit)
+    // {
+    //     return !edit;
+    // }
+    private void OnEditLocation()
+    {
+        _itemEdit = !_itemEdit;
+    }
+}

@@ -7,6 +7,7 @@ namespace FamTec.Client.Middleware
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ISessionStorageService _sessionStorage;
+        private bool _isTemporarilyUnauthorized = false; //임시 인증 상태
         public CustomAuthenticationStateProvider(ISessionStorageService sessionStorage)
         {
             _sessionStorage = sessionStorage;
@@ -21,6 +22,7 @@ namespace FamTec.Client.Middleware
 
             var user = new ClaimsPrincipal(identity);
             return await Task.FromResult(new AuthenticationState(user));
+            //return new AuthenticationState(user);
         }
 
         public async Task<string> GetTokenAsync()
@@ -34,12 +36,21 @@ namespace FamTec.Client.Middleware
             NotifyUserAuthentication(newToken);
         }
 
+        public void SetTemporarilyUnauthorized(bool value)
+        {
+            _isTemporarilyUnauthorized = value;
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
+
+
         public void NotifyUserAuthentication(string token)
         {
+            _isTemporarilyUnauthorized = false; // 임시 비인증 상태 해제
             var identity = new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
             var user = new ClaimsPrincipal(identity);
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }
+
 
         public void NotifyUserLogout()
         {

@@ -1,0 +1,118 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using System.IdentityModel.Tokens.Jwt
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+
+
+<div class="addmodal">
+    <div class="header">
+        <span class="title">
+             처리 내용
+        </span>
+    </div>
+    <div class="content"> 
+        <div class="col">
+            <label>작업자</label>
+            <span>
+                @WriterName
+            </span>
+        </div>
+        <div class="col">
+            <InputSelectField 
+                Label="처리 상태" 
+                SelectData="@status" 
+                FlexColumn=true 
+                SelectedValue="@Comment.Status"
+                SelectedValueChanged="HandleSelectedValueChange"
+                />
+        </div>
+        <div class="col height">
+            <label>처리 내용</label>
+            <InputTextArea @bind-Value=@Comment.Content />
+        </div>
+        <div class="col">
+            <label>첨부 이미지</label>
+            @* <input type="file" multiple @bind-value=@Comment.ImageList /> *@
+            @* <InputFile OnChange="OnFileChange" multiple /> *@
+            <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+        </div>
+    </div>
+    <div class="btns">
+        <Button Name="등록" Type="0" OnClick="@OnAdd" />
+        <Button Name="닫기" Type="1" OnClick="@OnCloseModal" />
+    </div>
+    
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+    [Parameter] public EventCallback OnChanged { get; set; }
+    
+    AddCommentDTO Comment;
+    private List<IBrowserFile> browserFiles = new List<IBrowserFile>();
+
+    string text;
+    string WriterName;
+    List<object> status = new List<object>
+    {
+        new { Name = "미처리", Id = 0},
+        new { Name = "처리중", Id = 1},
+        new { Name = "처리완료", Id= 2},
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Comment = new AddCommentDTO();
+    }
+
+
+    private void OnCloseModal()
+    {
+        CloseModal.InvokeAsync();
+    }
+
+
+    private async void OnAdd()
+    {
+        try
+        {
+            Comment.VocTbId = Id;
+            ResponseUnit<AddCommentDTO> resAdd = await apiManager.PostWithFilesAsync<AddCommentDTO>("VocComment/sign/AddVocComment", Comment);
+            if(resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "민원 코멘트 등록 실패");
+            }
+            await OnChanged.InvokeAsync();
+            OnCloseModal();
+            
+        }catch(Exception ex)
+        {
+            Console.WriteLine("민원 답변 등록 실패"+ex);
+            await JS.InvokeVoidAsync("alert", "민원 답변 등록 실패");
+        }
+    }
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+        foreach (var image in images)
+        {
+            temp.Add(image.Image);
+            names.Add(image.Name);
+
+        }
+        Comment.Image = temp;
+        Comment.ImageName = names;
+    }
+
+
+    private void HandleSelectedValueChange(int value)
+    {
+        Comment.Status = value;
+
+    }
+    
+}

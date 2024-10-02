@@ -1,0 +1,61 @@
+﻿@using QRCoder
+
+
+<button class="qr-btn" @onclick="GenerateQR" >@BtnName</button>
+
+
+@code {
+    [Parameter] public string BaseUrl { get; set; }
+    [Parameter] public int PlaceId { get; set; } // 사업장 아이디
+    [Parameter] public int Id { get; set; } //설비 아이디 또는 건물 아이디
+    [Parameter] public string Type { get; set; }
+    [Parameter] public string DetailType { get; set; }
+    [Parameter] public string BtnName { get; set; }
+
+    private string QrImageUrl { get; set; }
+    private bool showQrCode = false;
+
+    private async Task GenerateQR()
+    {
+        string Url = "";
+        if(Type == "facility")
+        {
+            Url = $"http://123.2.156.229:5245/m/{BaseUrl}/{PlaceId}/{DetailType}/{Id}";
+        }
+        else
+        {
+            Url = $"http://123.2.156.229:5245/m/{BaseUrl}/{PlaceId}/{Id}";
+        }
+
+        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        QRCodeData qrCodeData = qrGenerator.CreateQrCode(Url, QRCodeGenerator.ECCLevel.Q);
+        PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
+        byte[] qrCodeImage = qrCode.GetGraphic(20);
+
+        QrImageUrl = $"data:image/png;base64,{Convert.ToBase64String(qrCodeImage)}";
+        showQrCode = true;
+
+        string base64Image = Convert.ToBase64String(qrCodeImage);
+
+        await JS.InvokeVoidAsync("downloadQrCode", base64Image, $"{Type}{Id}qr");
+        await JS.InvokeVoidAsync("eval", $"console.log('QR Code generated for URL: {Url}')");
+        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("eval", @"
+                window.downloadQrCode = function(base64Image, fileName) {
+                    var link = document.createElement('a');
+                    link.href = 'data:image/png;base64,' + base64Image;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            ");
+        }
+    }
+}

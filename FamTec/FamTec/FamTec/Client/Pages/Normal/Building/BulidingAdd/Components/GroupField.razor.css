@@ -1,0 +1,28 @@
+﻿.groupfield{
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap : 20px;
+    border : var(--comp-bd);
+    padding : var(--default-pd);
+    background-color : var(--content-back-color);
+    /*place-items: center;*/
+}
+
+.groupfield .groupfield-title{
+    padding-bottom :var(--half-pd);
+    border-bottom : var(--default-bd);
+}
+
+.groupfield .title{
+ 
+    font-size : 1rem;
+    font-weight : var(--bold-wt);
+    color :var(--main-color)
+    
+}
+
+.groupfield .groupfield-item{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}

@@ -1,0 +1,33 @@
+﻿@page "/material/detail"
+@using FamTec.Client.Pages.Normal.Material.DetailSearch.Components
+@using FamTec.Shared.Client.DTO.Normal.Material.Detail
+
+
+<div class="detailsearch yappear">
+    <SearchFilter ValueChange="@ValueChange" />
+    @if (MaterialList != null)
+    {
+        <MaterialHistory ListData="MaterialList" />
+    }
+
+</div>
+
+@code {
+    // public List<DetailMaterialListDTO> MaterialList = new List<DetailMaterialListDTO>();
+    public List<DetailMaterialListDTO> MaterialList;
+
+
+    private void ValueChange(List<DetailMaterialListDTO> data)
+    {
+        if (data == null)
+        {
+            MaterialList = new List<DetailMaterialListDTO>();
+        }
+        else
+        {
+            MaterialList = data;
+        }
+
+        StateHasChanged();
+    }
+}

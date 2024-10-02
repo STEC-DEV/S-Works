@@ -1,5 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
-
+@using System.IdentityModel.Tokens.Jwt
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Modal
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
 <div class="voccomment-container">
     <div class="voccomment-title">
@@ -7,32 +9,72 @@
             처리 내역
         </span>
         <div class="option">
-            @*    @if (EditMode)
+            @if (EditMode)
             {
-                <Button Name="저장" Width=true />
-                <Button Name="취소" Width=true Type=true OnClick="@OnChangeEditMode" />
+                <Button Name="추가" Width=true Type=0 OnClick="@OnAddMode" />
             }
-            else
-            {
-                <Button Name="추가" Width=true OnClick="@OnChangeEditMode" />
-            } *@
+            
         </div>
     </div>
     <div class="voccomment-content">
         <div class="voccomment-overflow">
-            <ProcessCard />
-            <ProcessCard />
-            <ProcessCard />
-            <ProcessCard />
+            @foreach(var comment in ListData)
+            {
+                <ProcessCard Status="0" Data="@comment" />
+            }
+
+            
         </div>
     </div>
+    @if (AddMode)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <AddModal CloseModal="@OnAddMode" Id="@Id" OnChanged="OnUpdate" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
 </div>
 
 @code {
-    [Parameter] public bool EditMode { get; set; } = false;
+    [Parameter] public int Id {get;set;}
+    [Parameter] public List<VocCommentListDTO> ListData { get; set; } 
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback OnLoadComment{ get; set; }
+    [Parameter] public EventCallback OnLoadInfo { get; set; }
+
+    bool AddMode = false;
+    bool AddComment = false;
+    string WriterName;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
+
+    private async void OnUpdate()
+    {
+        await OnLoadComment.InvokeAsync();
+        await OnLoadInfo.InvokeAsync();
+    }
 
     private void OnChangeEditMode()
     {
         EditMode = !EditMode;
+    }
+
+    private void OnAddComment()
+    {
+        AddComment = !AddComment;
+    }
+
+
+    private void OnAddMode()
+    {
+        AddMode = !AddMode;
     }
 }

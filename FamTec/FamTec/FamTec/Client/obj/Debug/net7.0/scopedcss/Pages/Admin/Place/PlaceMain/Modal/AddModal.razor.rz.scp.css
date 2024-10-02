@@ -12,7 +12,7 @@
 .placemodal-backgroud .placemodal-container[b-2iazqe303y] {
     display: flex;
     justify-content: center;
-    max-width : 70%;
+    width : 60%;
     height:80%;
     
     border-radius:var(--default-rd);
@@ -24,8 +24,7 @@
     flex-direction: column;
     justify-content: center;
     gap: var(--default-pd);
-    width: auto;
-    max-width:50%;
+    width: 60%;
     height: 100%;
     max-height : 100%;
     padding: var(--default-pd);

@@ -1,0 +1,35 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+
+
+<div class="form">
+    <div class="header">
+        <span class="title">
+            사업장 정보
+        </span>
+    </div>
+    <div class="content">
+        <InputCol Label="사업장 코드"
+                  Placeholder="사업장 코드"
+                  @bind-Value="Place.PlaceCd" />
+        <InputCol Label="사업장명"
+                  Placeholder="사업장명"
+                  @bind-Value="Place.Name" />
+        <InputCol Label="사업장 주소"
+                  Placeholder="사업장 주소"
+                  @bind-Value="Place.Address" />
+        <InputCol Label="전화번호"
+                  Placeholder="전화번호"
+                  @bind-Value="Place.Tel" />
+        <InputCol Label="계약번호"
+                  Placeholder="계약번호"
+                  @bind-Value="Place.ContractNum" />
+        <DateInput Label="계약일자"
+                   Placeholder="YYYYMMDD" 
+                   @bind-Date=@Place.ContractDt />
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddPlaceDTO Place { get; set; }
+}

@@ -1,0 +1,170 @@
+﻿@using FamTec.Client.Pages.Admin.Place.PlaceMain.Components
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO
+@using FamTec.Client.Pages.CommonComponents
+@inherits PermissionComponentBase
+
+<div class="form-container">
+    <div class="form-title">
+        <span class="title">매니저 정보</span>
+    </div>
+    <div class="content">
+        <div class="img-area">
+            <PreviewBox ImageUrls="@ImageUrl" />
+            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+        </div>
+        <div class="form-input">
+            <ValidationInput
+                Label="아이디"
+                Placeholder="아이디"
+                ValueType="text"
+                @bind-Value=@NewManager.UserId
+                Type="USERID"
+                />
+            <ValidationInput Label="비밀번호"
+                             Placeholder="비밀번호"
+                             ValueType="password"
+                             @bind-Value=@NewManager.Password
+                             ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
+                             Type="PW" />
+
+            <ValidationInput Label="비밀번호 확인"
+                             Placeholder="비밀번호 확인"
+                             ValueType="password"
+                             PasswordCheck="@NewManager.Password"
+                             ValidChanged="@(isValid => UpdateValidState("PasswordCheck", isValid))"
+                             Type="PWCHECK" />
+
+            <ValidationInput Label="이름"
+                             Placeholder="이름"
+                             ValueType="text"
+                             @bind-Value=@NewManager.Name
+                             />
+
+            <ValidationInput Label="전화번호"
+                             Placeholder="전화번호"
+                             ValueType="text"
+                             @bind-Value=@NewManager.Phone
+                             Type="Phone" />
+
+            <ValidationInput Label="이메일"
+                             Placeholder="이메일"
+                             ValueType="text"
+                             @bind-Value=@NewManager.Email
+                             ValidChanged="@(isValid => UpdateValidState("Email", isValid))"
+                             Type="EMAIL" />
+
+            <SelectField
+                Label="부서"
+                SelectData="DepartmentList"
+                @bind-Value=@NewManager.DepartmentId
+                EditMode=true
+                />
+                <TextField2
+                    Label="직급"
+                    Value="@job"
+                    Color=true
+                    />
+
+        </div>
+    </div>
+   
+    
+</div>
+
+@code {
+    [Parameter] public AddManagerDTO NewManager { get; set; }
+    [Parameter] public List<DepartmentDTO> DepartmentList { get; set; }
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public string? ManagerType { get; set; }
+    [Parameter] public bool? Valid { get; set; }
+    [Parameter] public EventCallback<bool> ValidChanged { get; set; }
+    //아이디 패스워드 이메일 유효형식 파라미터
+
+
+    private byte[] imageData;
+    private string job;
+
+    private List<string> ImageUrl = new List<string>();
+    private Dictionary<string, bool> validationStates = new Dictionary<string, bool>();
+
+
+    private void HandleSelectedValueChange(int value)
+    {
+        NewManager.DepartmentId = value;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Console.WriteLine(ADMINJOB);
+        job = ADMINJOB switch
+        {
+            "SystemMaster" => "마스터",
+            "Master" => "매니저",
+            _ => "없음"
+    };
+        
+        StateHasChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+  
+        StateHasChanged();
+    }
+
+
+    private async Task LoadImage(InputFileChangeEventArgs e)
+    {
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+
+        // 파일 확장자 추출
+        var extension = Path.GetExtension(e.File.Name).ToLowerInvariant();
+
+        // 확장자 검사
+        if (!allowedExtensions.Contains(extension))
+        {
+            await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
+            return;
+        }
+
+
+        var buffer = new byte[e.File.Size];
+        await using var stream = e.File.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
+        await stream.ReadAsync(buffer);
+        imageData = buffer;
+        NewManager.Image = buffer;
+        NewManager.ImageName = e.File.Name;
+    }
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        foreach (var image in images)
+        {
+            NewManager.Image = image.Image;
+            NewManager.ImageName = image.Name;
+            ImageUrl.Add(image.ImageUrl);
+        }
+        StateHasChanged();
+    }
+
+    private async Task UpdateValidState(string field, bool isValid)
+    {
+        validationStates[field] = isValid;
+        bool overallValid = validationStates.All(v => v.Value);
+        if (Valid != overallValid)
+        {
+            Valid = overallValid;
+            await ValidChanged.InvokeAsync(overallValid);
+        }
+    }
+
+
+    
+}

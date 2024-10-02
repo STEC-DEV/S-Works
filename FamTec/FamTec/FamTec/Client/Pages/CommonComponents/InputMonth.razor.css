@@ -1,0 +1,39 @@
+﻿
+
+.inputmonth {
+    display : flex ;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.row{
+    flex-direction:row;
+    gap : var(--default-pd);
+}
+
+.label{
+    display : flex;
+    align-items:center;
+    min-width: 50px;
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    /* white-space: nowrap; */
+    white-space: normal;
+}
+
+.input {
+    border : none;
+    padding : var(--default-pd);
+    border-radius : var(--default-rd);
+    border:var(--comp-bd);
+    transition : all .3s;
+}
+
+.start:focus, .start:target {
+    border: var(--default-bd);
+}
+
+.end:focus {
+    border: var(--default-bd);
+}

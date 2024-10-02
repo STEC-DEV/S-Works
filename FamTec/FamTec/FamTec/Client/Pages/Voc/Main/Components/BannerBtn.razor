@@ -1,0 +1,19 @@
+﻿
+
+<div class="banner" @onclick=Navgate>
+    <span class="title" >
+        @Label
+    </span>
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Url  { get; set; }
+    
+
+
+    private void Navgate()
+    {
+        Navigation.NavigateTo(Url);
+    }
+}

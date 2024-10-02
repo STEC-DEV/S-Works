@@ -13,8 +13,9 @@ namespace FamTec.Shared.Client.DTO
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Type { get; set; }
         public int DepartmentId {  get; set; }
+        public byte[] Image { get; set; }
+        public string ImageName { get; set; }
         public List<int> PlaceList { get; set; } = new List<int>();
     }
 }

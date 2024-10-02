@@ -1,0 +1,48 @@
+﻿@page "/basic/units"
+@inherits PermissionComponentBase
+@using FamTec.Client.Pages.Normal.Unit.UnitMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Unit
+@using FamTec.Shared.Server.DTO
+
+
+<div class="unit-container">
+    <Unit ListData="@UnitList" OnLoadUnit="OnLoadUnit" />
+    @if (USEREDIT)
+    {
+        <UnitForm OnLoadUnit="OnLoadUnit" />
+    }
+
+</div>
+
+@code {
+
+    List<UnitDTO> UnitList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await OnLoadUnit();
+    }
+
+    private async Task OnLoadUnit()
+    {
+        try
+        {
+            Console.WriteLine("다시탐");
+            ResponseList<UnitDTO> resGet = await apiManager.GetListAsync<UnitDTO>("Unit/sign/SelectUnitList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "단위 조회 실패");
+                return;
+            }
+            UnitList = new List<UnitDTO>();
+            UnitList = resGet.data;
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Normal][Unit] 단위 조회 에러");
+            await JS.InvokeVoidAsync("alert", "단위 조회 에러");
+        }
+    }
+}

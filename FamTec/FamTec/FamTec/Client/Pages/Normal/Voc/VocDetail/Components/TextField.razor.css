@@ -1,8 +1,15 @@
 ﻿.textfield{
+    width : 100%;
     display : flex;
     gap : var(--half-pd);
     flex-direction : column;
+    
     background-color : var(--default-color);
+}
+
+.row{
+    flex-direction :row;
+    align-items:center;
 }
 
 .label{
@@ -14,6 +21,9 @@
 }
 
 .content{
+    width : 100%;
+    min-height :35px;
+    height : 100%;
     border : var(--comp-bd);
     border-radius : var(--default-rd);
 
@@ -21,9 +31,25 @@
     padding : var(--half-pd);
 }
 
+
 .text{
+    width : 100%;
     font-size : var(--normal-size);
     font-weight : var(--normal-wt);
     color : #333;
 
+}
+
+.height{
+    height : 100%;
+    min-height : 3rem;
+    max-height: calc(var(--wide-pd) * 6);
+}
+
+ ::deep textarea {
+    outline : none;
+    border : none;
+    resize : none;
+    width : 100%;
+    background-color :transparent;
 }

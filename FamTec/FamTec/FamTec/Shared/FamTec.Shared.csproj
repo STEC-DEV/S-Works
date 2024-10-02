@@ -30,4 +30,13 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+<<<<<<< HEAD
+=======
+
+  <ItemGroup>
+    <Folder Include="Client\DTO\NewFolder\" />
+    <Folder Include="Client\DTO\Normal\Facility\NewFolder\" />
+    <Folder Include="Model\NewFolder\" />
+  </ItemGroup>
+>>>>>>> origin/Front
 </Project>

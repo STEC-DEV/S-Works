@@ -1,0 +1,178 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Client.DTO.Normal.Material.InOut
+@using FamTec.Shared.Server.DTO
+
+
+<div class="inform yappear">
+    <div class="header">
+        <span class="title">
+            출고 내용
+        </span>
+    </div>
+    <div class="content">
+
+        <SelectField 
+            T="BuildingNameDTO" 
+            Key="building" 
+            SelectData="Building" 
+            @bind-Value="SelectedBuildingId" 
+            OnChange="OnBuildingChange" 
+            Label="건물"
+            Row="true"
+            EditMode="true" />
+        @if (LocationMaterial != null && LocationMaterial.Any() && SelectedBuildingId != 0)
+        {
+            <InOutSelectField  
+                Key="floor" 
+                SelectData="LocationMaterial" 
+                @bind-Value="SelectedRoomId" 
+                Label="위치"
+                Row="true"
+                OnChange="OnLocationChange" 
+                EditMode="true" />
+        }
+        @if (SelectedRoomId != 0)
+        {
+            <TextField2
+                Label="재고 수량"
+                Value="@_usageMaterialNum.ToString()"
+                Row=true
+                />
+            <InputCol 
+            Label="수량" 
+            Placeholder="수량"
+            Max="_usageMaterialNum"
+            Row="true" 
+            ValueType="number"
+            @bind-Value="@AddItem.Num" />
+        }
+        <InputCol 
+            Label="비고" 
+            Placeholder="비고" 
+            Row="true" 
+            @bind-Value="@AddItem.Note"  /> 
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddStoreDTO AddItem { get; set; } = new AddStoreDTO();
+    [Parameter] public int MaterialId{ get; set; }
+    [Parameter] public EventCallback<OutContentDTO> ValueChaged { get; set; }
+
+    List<BuildingNameDTO> Building = new List<BuildingNameDTO>();
+    BuildingFloorListDTO SelectedBuilding;
+    OutContentDTO OutData = new OutContentDTO();
+
+    List<LocationMaterialListDTO> LocationMaterial;
+
+    int SelectedBuildingId;
+    int SelectedRoomId;
+    private int? _usageMaterialNum=0;
+
+    string moc = "";
+    DateTime? date;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadBuilding();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        SelectedBuildingId = 0;
+        SelectedRoomId = 0;
+        StateHasChanged(); // UI 업데이트 강제
+    }
+
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<BuildingNameDTO> resGet = await apiManager.GetListAsync<BuildingNameDTO>("Building/sign/GetPlaceBuilding");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 정보 조회 실패");
+                return;
+            }
+            Building = resGet.data;
+
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    //건물선택
+    private async Task OnBuildingChange(int buildingId)
+    {
+        if (MaterialId == 0)
+        {
+            SelectedBuildingId = 0;
+            await JS.InvokeVoidAsync("alert", "자재를 선택해주세요");
+            return;
+        }
+        if (buildingId == 0)
+        {
+            Console.WriteLine("건물 0");
+            LocationMaterial = null;
+            SelectedRoomId = 0;
+            AddItem.RoomID = 0;
+            AddItem.Num = 0;
+            AddItem.Note = null;
+
+            StateHasChanged();
+            return;
+        }
+        SelectedBuildingId = buildingId;
+        //건물에 해당 자재가 있는 공간조회
+        ResponseList<LocationMaterialListDTO> resGet = await apiManager.GetListAsync<LocationMaterialListDTO>($"Store/sign/GetLocationMaterial?materialid={MaterialId}&buildingid={buildingId}");
+        if (resGet.code == 200 && resGet.data != null && resGet.data.Any())
+        {
+            LocationMaterial = resGet.data;
+        }
+        else
+        {
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "공간 정보 조회에 실패했습니다.");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "선택한 건물에 해당 자재가 없습니다.");
+            }
+            LocationMaterial = null;
+        }
+
+        SelectedRoomId = 0; // Reset floor selection when building changes
+        StateHasChanged();
+    }
+
+    //위치 선택
+    private void OnLocationChange(int locationId)
+    {
+        AddItem.Num = 0;
+        AddItem.Note = null;
+        AddItem.RoomID = 0;
+        AddItem.RoomID = locationId;
+        _usageMaterialNum = LocationMaterial.FirstOrDefault(r => r.RoomId == locationId)?.Num;
+    }
+
+
+    private async void OnValueChange()
+    {
+        
+    }
+
+    //내용 초기화
+    public void ResetForm()
+    {
+        AddItem = new AddStoreDTO();
+        StateHasChanged();
+    }
+}

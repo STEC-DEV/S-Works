@@ -1,0 +1,113 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO
+@inherits PermissionComponentBase
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-tr">
+            <th class="th">
+                <span>
+                    사업장 코드
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    사업장명
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    계약번호
+                </span>
+            </th>
+            @if (ADMINEDIT)
+            {
+                <th class="th">
+
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if (ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else if (ListData is null)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center;">
+                    <Loading />
+                </td>
+            </tr>
+        }
+        else
+        {
+             @foreach(var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td">
+                        @row.PlaceCd
+                    </td>
+                    <td class="td">
+                        @row.Name
+                    </td>
+                    <td class="td">
+                       @row.ContractNum
+                    </td>
+                    @if (ADMINEDIT)
+                    {
+                        <td class="td">
+                            <input type="checkbox" 
+                                checked=@(_checkItem.Contains(row.Id)) 
+                                @onchange=" e => onCheckItem(e, row)" />
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Parameter] public List<PlaceTableDTO> ListData { get; set; }
+    [Parameter] public EventCallback<(bool,PlaceTableDTO)> OnCheck { get; set; }
+
+    List<PlaceTableDTO> CheckedData = new List<PlaceTableDTO>();
+
+    //체크
+    private HashSet<int> _checkItem = new HashSet<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+    }
+
+
+
+    private async void onCheckItem(ChangeEventArgs e,PlaceTableDTO place)
+    {
+        //현재 컴포넌트내에서 검색과 체크 동기화
+        if((bool)e.Value)
+        {
+            _checkItem.Add(place.Id);
+        }
+        else
+        {
+            _checkItem.Remove(place.Id);
+        }
+
+
+        //체크여부 부모로 넘김
+        await OnCheck.InvokeAsync(((bool)e.Value, place));
+    }
+
+
+}

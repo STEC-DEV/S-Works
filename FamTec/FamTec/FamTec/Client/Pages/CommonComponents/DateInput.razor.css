@@ -1,0 +1,37 @@
+﻿
+
+.dateinput {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    width: 100%;
+}
+
+
+.row {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--default-pd);
+}
+
+.label {
+    min-width: 50px;
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    white-space: normal;
+}
+
+.input {
+    width: 100%;
+    padding: var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    /*background-color: var(--content-back-color);*/
+    background-color: var(--default-color);
+    transition: all .3s;
+}
+
+.input:focus{
+    border: var(--default-bd);
+}

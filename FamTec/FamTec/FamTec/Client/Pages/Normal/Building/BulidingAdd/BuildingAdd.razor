@@ -1,0 +1,46 @@
+﻿@page "/basic/buildings/add"
+@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Building.BulidingAdd.Components
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using System.Reflection
+@using FamTec.Shared.Server.DTO
+
+<div class="buildingadd-container yappear">
+    <div class="buildingadd-info">
+        <CascadingValue Value="@Building">
+            @* <BuildingInfo Building=Building /> *@
+            <ChildContent>
+                <BuildingInfo  />
+            </ChildContent>
+        </CascadingValue>
+        
+    </div>
+    <div class="buildingadd-btns">
+        <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
+        <Button Name="취소" Width=true Type=1  />
+    </div>
+</div>
+
+@code {
+    AddBuildingDTO Building;
+    List<string> BuildingProperties;
+
+    protected override Task OnInitializedAsync()
+    {
+        Building = new AddBuildingDTO();
+        return base.OnInitializedAsync();
+    }
+
+    private async void OnAdd()
+    {
+
+        ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
+        if(ResAdd.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 생성 실패");
+        }
+        Navigation.NavigateTo("/basic/buildings");
+
+    }
+
+}

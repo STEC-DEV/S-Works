@@ -11,7 +11,7 @@
     background-color:var(--main-color);
     font-weight: bold;
     /*box-shadow: 3px 3px 8px 0px rgb(201, 201, 201);*/
-    position: sticky;
+    /*position: sticky;*/
 }
 
 /* nav logo */
@@ -98,7 +98,55 @@
     color: var(--daflut-color);
 }
 
+
 .nav-container[b-wg5fiaa4ah]  .nav-tab-link {
     cursor : pointer;
     color: var(--default-color);
+    font-size :var(--normal-size);
+}
+
+.nav-tab-item[b-wg5fiaa4ah],
+.nav-usertype[b-wg5fiaa4ah],
+.nav-username[b-wg5fiaa4ah]
+{
+    display:flex;
+    gap : var(--one-q-pd);
+    align-items : center;
+}
+
+.scale[b-wg5fiaa4ah]{
+    transition : all .3s;
+}
+
+.alarm:hover[b-wg5fiaa4ah]{
+    cursor:pointer;
+}
+
+.scale:hover[b-wg5fiaa4ah] {
+    transform: scale(1.2);
+    /*cursor : pointer;*/
+}
+
+.alarm[b-wg5fiaa4ah]{
+    display :inline-block;
+    position: relative;
+}
+
+.count[b-wg5fiaa4ah] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0.5rem;
+    right: -1.2rem;
+    width: 1.5rem;
+    /*height: 1.2rem;*/
+    background-color: #e60f0f;
+    color: white;
+    font-size: 0.6rem;
+    font-weight : bold;
+    line-height: 1;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    border-radius: 40%;
 }

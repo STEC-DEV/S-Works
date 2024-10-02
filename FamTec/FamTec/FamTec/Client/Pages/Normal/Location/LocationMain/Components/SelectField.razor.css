@@ -1,0 +1,85 @@
+﻿.selectfield{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+    width :100%;
+    min-width :200px;
+}
+
+.row{
+    flex-direction:row;
+    align-items:center;
+    gap : var(--default-pd);
+}
+
+.label{
+    min-width :50px;
+    font-weight :var(--bold-wt);
+    font-size : var(--normal-size);
+    color : var(--main-color);
+    /*white-space : nowrap;*/
+    white-space : normal;
+}
+
+.row>.selectbox>.display {
+    /*background-color : var(--content-back-color);*/
+}
+
+.selectbox{
+    position : relative;
+    width : 100%;
+    
+}
+
+.none{
+    pointer-events : none;
+}
+
+.display {
+    position : relative;
+    display:block;
+    width:100%;
+    padding: var(--default-pd);
+    border :var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color :var(--default-color);
+    cursor : pointer;
+    transition : all .3s;
+    font-size : var(--normal-size);
+}
+
+
+.display:hover,
+.active {
+    border: var(--default-bd);
+}
+
+.options {
+    overflow : auto;
+    display: none;
+    position: absolute;
+    margin-top: var(--half-pd);
+    padding : var(--default-pd);
+    width: 100%;
+    max-height : calc(100%*5);
+    border-radius: var(--default-rd);
+    z-index :3;
+    background-color :var(--default-color);
+}
+.active {
+    display: block
+}
+
+.option-item {
+    padding: var(--half-pd);
+    border-radius: var(--default-rd);
+    font-size: var(--normal-size);
+    white-space : nowrap;
+}
+
+.option-item:hover{
+   
+    background-color : var(--main-color);
+    color :var(--default-color);
+}
+

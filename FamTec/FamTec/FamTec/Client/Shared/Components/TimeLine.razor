@@ -1,0 +1,139 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Alarm
+@using FamTec.Shared.Server.DTO
+
+
+<div class="timeline">
+    <div class="header">
+        <span class="title">
+            최근 알림
+        </span>
+    </div>
+    <div class="content">
+        @if (AlarmData.Count == 0)
+        {
+            <EmptyAlarm/>
+        }
+        else if(AlarmData == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            @foreach (AlarmDTO alarm in AlarmData)
+            {
+                <Notify 
+                    AlarmId ="@alarm.AlarmID.Value"
+                    Title="@(alarm.Type == 0? "민원 발생" : "민원 변경" )"
+                    Context="@ConvertContext(alarm.Type.Value, alarm.BuildingName, alarm.CODE)"
+                    Url="@ConvertUrl(alarm.VocID.Value)" 
+                    OnLoad=OnLoad
+                    />
+            }
+        }
+
+    </div>
+    <button class="btn" @onclick=OnAllRead>모두 읽음</button>
+</div>
+
+@code {
+    [Parameter] public List<AlarmDTO> AlarmData { get; set; }
+    [Parameter] public EventCallback OnLoad { get; set; }
+
+
+    //알림 내용 변환
+    private string ConvertContext(int type, string name, string code)
+    {
+        string context = type switch
+        {
+            0 => $"{name} 민원이 접수되었습니다.\n코드 : {code}",
+            1 => $"{code} 민원 담당 부서가 변경되었습니다.",
+            _ => "None"
+        };
+
+        return context;
+    }
+
+    //알림 내용 변환
+    private string ConvertUrl(int vocid)
+    {
+        string url = $"voc/{vocid}";
+
+        return url;
+    }
+
+
+    public class alert
+    {
+        public string title { get; set; }
+        public string context { get; set; }
+        public string url { get; set; }
+        public bool isread { get; set; }
+    }
+
+    List<alert> mockup = new List<alert>
+    {
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = true,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+        new alert
+        {
+            title = "민원 발생",
+            context = "a건물 민원이 발생하였습니다.",
+            url = "/voc",
+            isread = false,
+
+        },
+
+    };
+
+    private async Task OnAllRead()
+    {
+        try
+        {
+            if(AlarmData.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "알림이 존재하지 않습니다.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.GetUnitAsync<bool>("Alarm/sign/AllAlarmDelete");
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoad.InvokeAsync();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "알림 모두 읽음 처리 에러");
+        }
+    }
+}

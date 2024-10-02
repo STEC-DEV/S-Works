@@ -1,0 +1,135 @@
+﻿@typeparam T
+<div class="inputcol @(Row==true ? "row":"")">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
+
+    <input 
+        class="input"
+        type="@ValueType"
+        step="@(ValueType=="number" ? 0.001:"")"
+        placeholder="@Placeholder"
+        min="@Min"
+        max="@Max"
+        value="@Value"
+        @oninput="OnValueChanged"
+        readonly="@ReadOnly"
+        />
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? ValueType { get; set; }
+    [Parameter] public T? Value { get; set; }
+    [Parameter] public int? Min { get; set; } = 0;
+    [Parameter] public int? Max { get; set; }
+    [Parameter] public bool? Row { get; set; }
+    [Parameter] public EventCallback<T> ValueChanged { get; set; }
+    [Parameter] public bool ReadOnly { get; set; } = false;
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        // Check if the value is null or empty
+        var newValue = e.Value?.ToString();
+
+        // Handle empty input for number types
+        if (ValueType == "number" && string.IsNullOrEmpty(newValue))
+        {
+            newValue = "0"; // Set default value for empty input
+        }
+
+        // Update Value based on input change
+        if (typeof(T) == typeof(float))
+        {
+            if (float.TryParse(newValue, out float floatValue))
+            {
+                // 새로 추가된 부분: Max 값 검사
+                if (Max.HasValue && floatValue > Max.Value)
+                {
+                    floatValue = Max.Value;
+                }
+                // 새로 추가된 부분: Min 값 검사
+                if (Min.HasValue && floatValue < Min.Value)
+                {
+                    floatValue = Min.Value;
+                }
+                await ValueChanged.InvokeAsync((T)(object)floatValue);
+            }
+            else
+            {
+                // If parsing fails, set default value to 0
+                await ValueChanged.InvokeAsync((T)(object)0f);
+            }
+        }
+        else if (typeof(T) == typeof(int))
+        {
+            if (int.TryParse(newValue, out int intValue))
+            {
+                // 새로 추가된 부분: Max 값 검사
+                if (Max.HasValue && intValue > Max.Value)
+                {
+                    intValue = Max.Value;
+                }
+                // 새로 추가된 부분: Min 값 검사
+                if (Min.HasValue && intValue < Min.Value)
+                {
+                    intValue = Min.Value;
+                }
+                await ValueChanged.InvokeAsync((T)(object)intValue);
+            }
+            else
+            {
+                // If parsing fails, set default value to 0
+                await ValueChanged.InvokeAsync((T)(object)0);
+            }
+        }
+        else if (typeof(T) == typeof(string))
+        {
+            // For strings, simply pass the value or an empty string
+            await ValueChanged.InvokeAsync((T)(object)(newValue ?? string.Empty));
+        }
+    }
+
+}
+
+
+    @* // private async Task OnValueChanged(ChangeEventArgs e)
+    // {
+    //     // Check if the value is null or empty
+    //     var newValue = e.Value?.ToString();
+
+    //     // Handle empty input for number types
+    //     if (ValueType == "number" && string.IsNullOrEmpty(newValue))
+    //     {
+    //         newValue = "0"; // Set default value for empty input
+    //     }
+        
+    //     // Update Value based on input change
+    //     if (typeof(T) == typeof(float) && float.TryParse(e.Value?.ToString(), out float floatValue))
+    //     {
+    //         if (e.Value.ToString() == "-")
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능 합니다.");
+    //             return;
+    //         }
+    //         await ValueChanged.InvokeAsync((T)(object)floatValue);
+    //     }
+    //     else if (typeof(T) == typeof(int) && int.TryParse(e.Value?.ToString(), out int intValue))
+    //     {
+    //         if (intValue < 0)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능합니다.");
+    //             return;
+    //         }
+    //         await ValueChanged.InvokeAsync((T)(object)intValue);
+    //     }
+    //     else if (typeof(T) == typeof(string))
+    //     {
+    //         await ValueChanged.InvokeAsync((T)(object)(e.Value?.ToString() ?? string.Empty));
+    //     }
+    // }
+ *@
