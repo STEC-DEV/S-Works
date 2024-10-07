@@ -11,30 +11,28 @@
     </div>
     <div class="buildinginfo-contents">
         <div class="building-img">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+            <ImageSlider Images="@ImageUrl" Label="대표 이미지"/>
+            <div class="img-btn">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                @if(Building.Image != null)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                }
+
+            </div>
+            
         </div>
         <div class="infosection-1">
-            @* <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@Building.Code"/>
-            <InputFieldSmall InputType="text" Label="건물이름" EditMode=EditMode @bind-Value="@Building.Name"/>
-            <InputFieldSmall InputType="text" Label="건물주소" EditMode=EditMode @bind-Value="@Building.Address" />
-            <InputFieldSmall InputType="text" Label="대표전화" EditMode=EditMode @bind-Value="@Building.Tel" />
-            <InputFieldSmall InputType="text" Label="건물구조" EditMode=EditMode @bind-Value="@Building.BuildingStructure" />
-            <InputFieldSmall InputType="text" Label="건물용도" EditMode=EditMode @bind-Value="@Building.Usage" />
-            <InputFieldSmall InputType="text" Label="시공업체" EditMode=EditMode @bind-Value="@Building.ConstCompany" />
-            <InputFieldSmall InputType="text" Label="준공년월" EditMode=EditMode @bind-Value="@Building.CompleteDT" />
-            <InputFieldSmall InputType="text" Label="지붕구조" EditMode=EditMode @bind-Value="@Building.RoofStructure" />
-            <InputFieldSmall InputType="text" Label="소방등급" EditMode=EditMode @bind-Value="@Building.FireRating" />
-            <InputFieldSmall InputType="text" Label="정화조용량" EditMode=EditMode @bind-Value="@Building.SepticTankCapacity" /> *@
             <InputCol Label="건물코드" Placeholder="건물코드" ValueType="text" @bind-Value=@Building.Code/>
             <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name/>
             <InputCol Label="건물주소" Placeholder="건물주소" ValueType="text" @bind-Value=@Building.Address/>
             <InputCol Label="대표전화" Placeholder="대표전화" ValueType="text" @bind-Value=@Building.Tel />
-            <InputCol Label="준공년월" Placeholder="준공년월" ValueType="text" @bind-Value=@Building.CompleteDT />
-            <InputCol Label="건물구조" Placeholder="건물구조" ValueType="text" @bind-Value=@Building.BuildingStructure />
+            <InputCol Label="준공년월" Placeholder="준공년월" ValueType="text" @bind-Value=@Building.CompletionDT />
+            <InputCol Label="건물구조" Placeholder="건물구조" ValueType="text" @bind-Value=@Building.BuildingStruct />
             <InputCol Label="건물용도" Placeholder="건물용도" ValueType="text" @bind-Value=@Building.Usage />
             <InputCol Label="시공업체" Placeholder="시공업체" ValueType="text" @bind-Value=@Building.ConstCompany />
-            <InputCol Label="지붕구조" Placeholder="지붕구조" ValueType="text" @bind-Value=@Building.RoofStructure />
+            <InputCol Label="지붕구조" Placeholder="지붕구조" ValueType="text" @bind-Value=@Building.RoofStruct/>
             <InputCol Label="소방등급" Placeholder="소방등급" ValueType="text" @bind-Value=@Building.FireRating />
             <InputCol Label="정화조용량" Placeholder="정화조용량" ValueType="text" @bind-Value=@Building.SepticTankCapacity />
         </div>
@@ -96,7 +94,8 @@
 
 @code {
     [CascadingParameter] public AddBuildingDTO Building { get; set; }
-    private List<string> ImageUrl = new List<string>();
+    // private List<string> ImageUrl = new List<string>();
+    private List<byte[]> ImageUrl = new List<byte[]>();
 
     bool EditMode= true;
     protected override void OnInitialized()
@@ -115,15 +114,40 @@
 
     private async void OnUploadImage(List<ImageFile> images)
     {
+        ImageUrl.Clear(); //단일 이미지라 초기화
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
-        
-        foreach (var image in images)
+
+        // foreach (var image in images)
+        // {
+        //     Building.Image = image.Image;
+        //     Building.ImageName = image.Name;
+        //     ImageUrl.Add(image.ImageUrl);
+        // }
+        foreach(var image in images)
         {
-            Building.Image = image.Image;
-            Building.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+
+        Building.Image = temp[0];
+        Building.ImageName = names[0];
+
+        ImageUrl.Add(temp[0]);
+
         StateHasChanged();
     }
+
+    private async Task OnDelImg()
+    {
+        if (Building.Image == null || string.IsNullOrEmpty(Building.ImageName) || ImageUrl.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "삭제할 이미지가 존재하지 않습니다.");
+            return;
+        }
+        Building.Image = null;
+        Building.ImageName = null;
+        ImageUrl.Clear();
+    }
+
 }

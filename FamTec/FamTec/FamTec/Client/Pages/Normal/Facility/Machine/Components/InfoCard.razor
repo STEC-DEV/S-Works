@@ -14,8 +14,13 @@
     </div>
     <div class="infocard-content">
         <div class="infocard-img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+            <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+            <div class="img-btn">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+            </div>
+            
         </div>
         <div class="infocard-inputs">
             <InputCol
@@ -111,7 +116,8 @@
     int SelectedBuildingId;
     int SelectedRoomId;
 
-    private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    // private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    private List<byte[]> ImageUrl = new List<byte[]>();//이미지 프리뷰
     bool EditMode = true;
 
     protected override async Task OnInitializedAsync()
@@ -189,13 +195,29 @@
 
         foreach (var image in images)
         {
-            Facility.Image = image.Image;
-            Facility.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+
+        Facility.Image = temp[0];
+        Facility.ImageName = names[0];
+
+        ImageUrl.Add(temp[0]);
+
         StateHasChanged();
         await FacilityChanged.InvokeAsync(Facility);
     }
 
+    private async Task OnDelImg()
+    {
+        if (Facility.Image == null || string.IsNullOrEmpty(Facility.ImageName) || ImageUrl.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "삭제할 이미지가 존재하지 않습니다.");
+            return;
+        }
+        Facility.Image = null;
+        Facility.ImageName = null;
+        ImageUrl.Clear();
+    }
 
 }

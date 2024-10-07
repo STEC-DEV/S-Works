@@ -8,7 +8,6 @@
 <div class="buildingadd-container yappear">
     <div class="buildingadd-info">
         <CascadingValue Value="@Building">
-            @* <BuildingInfo Building=Building /> *@
             <ChildContent>
                 <BuildingInfo  />
             </ChildContent>
@@ -33,7 +32,6 @@
 
     private async void OnAdd()
     {
-
         ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
         if(ResAdd.code != 200)
         {

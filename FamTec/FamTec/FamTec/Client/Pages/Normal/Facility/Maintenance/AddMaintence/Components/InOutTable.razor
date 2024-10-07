@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Facility.Maintenance.AddMaintence.Modal
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
 
@@ -71,35 +72,35 @@
             @foreach (InOutInventoryDTO row in ListData)
             {
                 <tr class="tr">
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.InOutDate
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.RoomName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.Num
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.UnitPrice
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.TotalPrice
                     </td>
-                    <td class="td">
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.Note
                     </td>
                     <td class="td">
-                        <input type="checkbox" />
+                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
                     </td>
                 </tr>
             }
@@ -108,8 +109,47 @@
 
     </tbody>
 </table>
-
+@if (showUpdateModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateUseMaterialModal 
+                UseMaterialId="@selectUseMaterialId" 
+                OnCancel="CloseModal" 
+                CurMaterialNum="@selectUseMaterialCurNum"
+                UseMaterial="@selectedMaterial"
+                />
+        </ChildComponent>
+    </ModalBackground>
+}
 @code {
     [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
+    [Parameter] public EventCallback<(bool, InOutInventoryDTO)> OnCheck { get; set; }
 
+    private bool showUpdateModal = false;
+
+    private InOutInventoryDTO selectedMaterial;
+    private int selectUseMaterialId;
+    private int selectUseMaterialCurNum;
+
+
+    private async void OnChecked(ChangeEventArgs e, InOutInventoryDTO material)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, material));
+    }
+
+    private void OnRowClick(InOutInventoryDTO material)
+    {
+        showUpdateModal = true;
+        selectedMaterial = material;
+        selectUseMaterialId = material.MaterialID.Value;
+        selectUseMaterialCurNum = material.AddStore.Num;
+        
+    }
+
+    private void CloseModal()
+    {
+        showUpdateModal = false;
+        selectedMaterial = null;
+    }
 }

@@ -45,13 +45,17 @@
         </div>
         <TextField2 Label="위치" Value="@Material.RoomName" Color=true/>
         <div class="img-wrap">
-            @if (Material.Image != null)
+            @if (EditMaterial.Image != null)
             {
                 <ImageSlider Images="@MaterialImages" Label="자재 이미지" @key="MaterialImages" />
             }
             <div class="img-options">
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                <Button Name="삭제" Width=true Type="1" OnClick="@OnDelImg" />
+                @if (EditMaterial.Image != null)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="@OnDelImg" />
+                }
+
             </div>
             
         </div>
@@ -76,9 +80,13 @@
     {
         EditMaterial.Id = MaterialId;
         await OnLoadDetailMaterial();
-        await OnImageConvert();
+
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnImageConvert();
+    }
 
     private async Task OnImageConvert()
     {
@@ -149,6 +157,8 @@
     //단일
     private async void OnUploadImage(List<ImageFile> images)
     {
+        Console.WriteLine("이미지");
+        MaterialImages.Clear();
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
         foreach (var image in images)
@@ -157,18 +167,21 @@
             names.Add(image.Name);
 
         }
-        EditMaterial.Image = temp[0];
-        EditMaterial.ImageName = names[0];
-
 
         if(MaterialImages.Count == 1)
         {
-            MaterialImages[0] = EditMaterial.Image;
+            Console.WriteLine("1");
+            MaterialImages[0] = temp[0];
         }
         else
         {
-            MaterialImages.Add(EditMaterial.Image);
+            Console.WriteLine("0");
+            MaterialImages.Add(temp[0]);
         }
+        EditMaterial.Image = temp[0];
+        EditMaterial.ImageName = names[0];
+
+        StateHasChanged();
     }
 
     private async void OnClosed()

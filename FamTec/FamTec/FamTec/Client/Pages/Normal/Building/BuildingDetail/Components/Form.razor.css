@@ -19,6 +19,10 @@
     width: 400px;
     max-width: 100%;
 }
+.img-btn{
+    display:flex;
+    gap:var(--half-pd);
+}
 
 .infosection-1 {
     flex: 1;

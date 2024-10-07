@@ -6,11 +6,18 @@
 <div class="form">
     <div class="buildinginfo-contents">
         <div class="building-img">
-            <PreviewBox ImageUrls=@Image  />
+            @* <PreviewBox ImageUrls=@Image  /> *@
+            <ImageSlider Label="대표 이미지" Images="@img" />
             @if (EditMode)
             {
-                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                <Button Name="삭제" Width=true Type="1" OnClick="@OnDelImg" />
+                <div class="img-btn">
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                    @if (Building.Image != null)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                    }
+                </div>
+                
             }
         </div>
         <div class="infosection-1">
@@ -94,35 +101,51 @@
 @code {
     [Parameter] public BuildingDTO? Building { get; set; }
     [Parameter] public bool EditMode{ get; set; }
-    [Parameter] public List<string> Image {get;set;}
+    // [Parameter] public List<string> Image {get;set;}
+
+    List<byte[]> img = new List<byte[]>();
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-
+        await ImgConvert();
     }
 
-
+    private async Task ImgConvert()
+    {
+        img.Clear();
+        if (Building.Image != null && 
+            !string.IsNullOrEmpty(Building.ImageName) 
+            && !img.Any(i => i.SequenceEqual(Building.Image))
+        )
+        {
+            img.Add(Building.Image);
+        }
+    }
 
     private async void OnUploadImage(List<ImageFile> images)
     {
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
 
-        foreach (var image in images)
+        foreach(var image in images)
         {
-            Console.WriteLine("하위 LIST개수" +Image.Count);
-            Building.Image = image.Image;
-            Building.ImageName = image.Name;
-            string base64String = Convert.ToBase64String(image.Image);
-            if(Image.Count != 0)
-            {
-                Image[0] = ($"data:image/jpeg;base64,{base64String}");
-            }else{
-                Image.Add($"data:image/jpeg;base64,{base64String}");
-            }
-
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+        if(img.Count == 0)
+        {
+            Console.WriteLine("신규");
+            img.Add(temp[0]);
+        }
+        else
+        { 
+            Console.WriteLine("추가");
+            img[0] = temp[0];
+        }
+
+        Building.Image = temp[0];
+        Building.ImageName = names[0];
 
 
         StateHasChanged();
@@ -132,7 +155,10 @@
     {
         Building.Image = null;
         Building.ImageName = null;
+        img.Clear();
+        StateHasChanged();
     }
+
 
 
     // private void OnEditMode()

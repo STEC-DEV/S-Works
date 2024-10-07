@@ -10,8 +10,16 @@
     </div>
     <div class="form-area">
         <div class="img-wrap">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1"OnChange="OnUploadImage"/>
+            @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+            <ImageSlider Label="프로필 사진" Images="ImageUrl" />
+            <div class="img-btn">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                @if(UserInfo.Image != null)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                }
+            </div>
+            
         </div>
         <div class="form-input">
             <ValidationInput ValueType="text"
@@ -65,7 +73,8 @@
     [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
     private byte[] imageData;
-    private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
+    // private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
+    private List<byte[]> ImageUrl = new List<byte[]>(); //이미지 프리뷰
 
     private async Task LoadImage(InputFileChangeEventArgs e)
     {
@@ -99,10 +108,21 @@
 
         foreach (var image in images)
         {
-            UserInfo.Image = image.Image;
-            UserInfo.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
+
         }
+        UserInfo.Image = temp[0];
+        UserInfo.ImageName = names[0];
+        ImageUrl.Add(temp[0]);
+        StateHasChanged();
+    }
+
+    private void OnDelImg()
+    {
+        UserInfo.Image = null;
+        UserInfo.ImageName = null;
+        ImageUrl.Clear();
         StateHasChanged();
     }
 }

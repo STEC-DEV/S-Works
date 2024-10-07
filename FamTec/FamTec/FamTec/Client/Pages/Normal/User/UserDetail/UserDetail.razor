@@ -81,7 +81,6 @@
         try
         {
             OnUserUpdateConvert();
-            Console.WriteLine("수정" + userTb.ImageName);
             ResponseUnit<UserTbDTO> resUpdate = await apiManager.PutAsync<UserTbDTO>("User/sign/UpdateUser", userTb,true);
             if (resUpdate.code != 200)
             {
@@ -89,7 +88,7 @@
                 OnEditMode();
                 return;
             }
-            Console.WriteLine("성공");
+            
             OnEditMode();
             await OnLoadDetail();
             StateHasChanged();
@@ -136,7 +135,7 @@
         User.UserInfo.Status = userTb.STATUS;
         User.UserInfo.AlarmYN = userTb.ALRAM_YN;
         User.UserInfo.Image = userTb.Image;
-        User.UserInfo.ImageName = userTb.ImageUrl;
+        User.UserInfo.ImageName = userTb.ImageName;
 
         User.UserPerm.BasicPerm = userTb.PERM_BASIC;
         User.UserPerm.MachinPerm = userTb.PERM_MACHINE;

@@ -30,7 +30,6 @@
     </div>
     <Form 
         Building=@(EditMode ? _editBuilding : Building )
-        Image=@(EditMode ? EditImage : OriginalImage)
         EditMode=EditMode />
 
 </div>
@@ -42,42 +41,16 @@
 
     private BuildingDTO _editBuilding;
 
-    private List<string> OriginalImage = new List<string>();
-    private List<string> EditImage = new List<string>();
     bool EditMode= false;
 
     protected override async Task OnInitializedAsync()
     {
         //권한 조회
         await base.OnInitializedAsync();
-        ConvertToImageUrl();
+
     }
 
-    // protected override Task OnParametersSetAsync()
-    // {
 
-    //     return base.OnParametersSetAsync();
-    // }
-
-
-    //최초 건물객체가 가지고 있는 이미지 로드
-    private void ConvertToImageUrl()
-    {
-        Console.WriteLine("여기 탐");
-        if (Building.Image == null)
-        {
-            OriginalImage.Clear();
-            return;
-        }
-
-
-        OriginalImage.Add($"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}");
-
-
-        // OriginalImage[0] = $"data:image/jpeg;base64,{Convert.ToBase64String(Building.Image)}";
-        EditImage = new List<string>(OriginalImage);
-        Console.WriteLine(Building.Image);
-    }
 
     //편집모드 전환
     private void OnEditMode()
@@ -85,10 +58,6 @@
         EditMode = !EditMode;
         _editBuilding = Building.DeepCopy();
 
-        if (!EditMode)
-        {
-            EditImage = new List<string>(OriginalImage);
-        }
         StateHasChanged();
     }
 
@@ -107,7 +76,6 @@
 
             await OnLoad.InvokeAsync();
             OnEditMode();
-            OriginalImage = new List<string>(EditImage);
 
             
             StateHasChanged();

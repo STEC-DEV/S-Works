@@ -33,7 +33,10 @@
 
 
 
-
+.img-btn[b-xat69l3b24] {
+    display: flex;
+    gap: var(--half-pd);
+}
 
 .infocard-container .infocard-content[b-xat69l3b24]{
     display : flex;

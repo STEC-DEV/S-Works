@@ -63,7 +63,11 @@
                 StateHasChanged();
                 return;
             }
-
+            if (Maintenance.Inventory.Any(m => m.MaterialID == SelectMaterial.Id && m.AddStore.RoomID == MaintenanceStore.RoomID))
+            {
+                await JS.InvokeVoidAsync("alert", "이미 추가된 자재입니다.");
+                return;
+            }
             ResponseUnit<InOutInventoryDTO> resGet = await apiManager.GetUnitAsync<InOutInventoryDTO>($"Store/sign/AddOutStoreList?roomid={MaintenanceStore.RoomID}&materialid={SelectMaterial.Id}&outcount={MaintenanceStore.Num}");
             if (resGet.code != 200)
             {

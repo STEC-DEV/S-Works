@@ -71,7 +71,19 @@
                     EditMode="true" />
             }
         </div>
-        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+        @if(AddMaterial.Image != null)
+        {
+            <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+        }
+        <div class="img-btn">
+            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            @if(AddMaterial.Image != null)
+            {
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+            }
+            
+        </div>
+        
     </div>
     <div class="btns">
         <Button Name="등록" Type="0" OnClick="OnAdd"/>
@@ -101,6 +113,8 @@
 
     int SelectedRoomId;
 
+
+    List<byte[]> ImageUrl = new List<byte[]>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -206,12 +220,13 @@
         }
         catch (Exception ex)
         {
-            
+
         }
     }
 
     private async void OnUploadImage(List<ImageFile> images)
     {
+        ImageUrl.Clear();
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
         foreach (var image in images)
@@ -222,6 +237,7 @@
         }
         AddMaterial.Image = temp;
         AddMaterial.ImageName = names;
+        ImageUrl.Add(temp[0]);
     }
 
 
@@ -233,6 +249,14 @@
     //     SelectedFloorId = 0; // Reset floor selection when building changes
     //     StateHasChanged();
     // }
+
+    private void OnDelImg()
+    {
+        AddMaterial.Image = null;
+        AddMaterial.ImageName = null;
+        ImageUrl.Clear();
+        StateHasChanged();
+    }
 
     private void OnFloorChange(int floorId)
     {

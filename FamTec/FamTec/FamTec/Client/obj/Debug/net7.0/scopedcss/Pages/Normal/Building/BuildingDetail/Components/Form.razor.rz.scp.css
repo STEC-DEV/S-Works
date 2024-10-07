@@ -19,6 +19,10 @@
     width: 400px;
     max-width: 100%;
 }
+.img-btn[b-y1t13l8wvx]{
+    display:flex;
+    gap:var(--half-pd);
+}
 
 .infosection-1[b-y1t13l8wvx] {
     flex: 1;
