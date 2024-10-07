@@ -93,18 +93,12 @@
 
             Console.WriteLine(response.data);
             Console.WriteLine("");
-            if (response.code == 404)
+            if (response.code != 200 && response.code != 201)
             {
-                await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 일치하지 않습니다.");
+                await IJSRuntime.InvokeVoidAsync("alert", response.message);
                 user = new LoginDTO();
                 return;
-            }
-            if(response.code == 500)
-            {
-                await IJSRuntime.InvokeVoidAsync("alert", "로그인 에러");
-                user = new LoginDTO();
-                return;
-            }
+            }            
             string? token = response.data;
 
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -126,15 +120,7 @@
 
             await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
             await _localStorageService.SetItemAsync<bool>("loginMode", LoginMode);
-            // await (_authStateProvider as CustomAuthProvider).NotifyAuthState();
 
-
-
-
-            // JObject? UserPerm_Voc = new JObject(JObject.Parse(jobj["UserPerms"]!.ToString()));
-            // string UserVoc = UserPerm_Voc["UserPerm_Voc"].ToString();
-
-            // if (Int32.Parse(UserVoc) > 0 && jobj["PlacePerms"] is not null)
 
             if (response.code == 200)
             {

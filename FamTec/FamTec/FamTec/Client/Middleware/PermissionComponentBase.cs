@@ -38,6 +38,12 @@ namespace FamTec.Client.Middleware
             USEREDIT = await PermissionService.HasEditPermission(RequiredPermission);
         }
 
+        //UserPerm 전체 권한 조회
+        protected virtual async Task LoadAllUserPerms()
+        {
+
+        }
+
         //관리자 권한
         protected virtual async Task LoadAdminModePermissions()
         {

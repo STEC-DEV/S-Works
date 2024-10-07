@@ -99,7 +99,7 @@
                         @row.StandardCapacity
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.EquipDT.ToString()
+                        @row.EquipDT?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.Id)">
                         @row.LifeSpan

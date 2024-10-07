@@ -1,5 +1,7 @@
 ﻿@using System;
 @using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Drawer
+@using FamTec.Shared.Server.DTO
 @inject AuthenticationStateProvider _authStateProvider;
 
 <div class="drawer-container">
@@ -19,10 +21,6 @@
                              href="@(category.SubCategory == null ? category.Url : null)"
                              @onclick="() => ToggleDropdown(category)">
                         <span class="category-title">@category.Name</span>
-                        @* @if (category.SubCategory != null)
-                        {
-                            <span class="arrow">∨</span>
-                        } *@
                     </NavLink>
 
                     @if (category.SubCategory != null)
@@ -30,11 +28,14 @@
                         <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
                             @foreach (var subcategory in category.SubCategory)
                             {
-                                <li class="drawer-sub-item">
-                                    <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
-                                        <span class="category-title">@subcategory.Name</span>
-                                    </NavLink>
-                                </li>
+                                @if (subcategory != null)
+                                {
+                                    <li class="drawer-sub-item">
+                                        <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
+                                            <span class="category-title">@subcategory.Name</span>
+                                        </NavLink>
+                                    </li>
+                                }
                             }
                         </ul>
                     }
@@ -50,7 +51,29 @@
 
     // [Parameter] public bool IsUser { get; set; }
     bool LoginMode;
-    List<Category>? CategoryList;
+    List<Category>? CategoryList = new List<Category>();
+
+    PlacePermDTO _placePerm = new PlacePermDTO();
+
+
+    //사용자 권한
+    private bool basic = false;
+    private bool machine = false;
+    private bool elec = false;
+    private bool lift = false;
+    private bool fire = false;
+    private bool construct = false;
+    private bool network = false;
+    private bool beauty = false;
+    private bool security = false;
+    private bool material = false;
+    private bool energy = false;
+    private bool user = false;
+    private bool voc = false;
+
+
+
+
     public class Category
     {
         public string? Name { get; set; }
@@ -64,6 +87,11 @@
     protected async override Task OnInitializedAsync()
     {
         await OnLoginMode();
+        if (!LoginMode)
+        {
+            await OnLoadPlacePerm();
+        }
+        await OnCheckUserPerm();
         await LoadCategory();
     }
 
@@ -105,7 +133,7 @@
     */
     private List<Category> GetUserCategories()
     {
-        return new List<Category>
+        List<Category> test = new List<Category>
         {
             new Category
             {
@@ -119,63 +147,191 @@
 
                 }
             },
-            new Category
-            {
-                Name = "설비 유지 관리",
-                Url = "/facility",
-                SubCategory = new List<Category>
-                {
-                    new Category { Name = "기계 설비", Url = "/machine" },
-                    new Category { Name = "전기 설비", Url = "/electronic" },
-                    new Category { Name = "승강 설비", Url = "/lift" },
-                    new Category { Name = "소방 설비", Url = "/fire" },
-                    new Category { Name = "건물 설비", Url = "/construct" },
-                    new Category { Name = "통신 설비", Url = "/network" },
-                    new Category { Name = "미화 설비", Url = "/beauty" },
-                    new Category { Name = "보안 설비", Url = "/security" },
-
-                }
-            },
-            new Category
-            {
-                Name = "자재 관리",
-                Url = "/material",
-                SubCategory = new List<Category>
-                {
-                    new Category { Name = "자재 관리", Url = "/info" },
-                    new Category { Name = "입출고 관리", Url = "/inout" },
-                    new Category { Name = "재고 조회", Url = "/inventory"  },
-                    new Category { Name = "입출고 조회", Url = "/detail"  },
-
-                }
-            },
-            new Category
-            {
-                Name = "에너지 관리",
-            },
-            new Category
-            {
-                Name = "사용자 관리",
-                Url = "/users",
-            },
-            new Category
-            {
-                Name = "민원 관리",
-                Url = "/voc"
-            }
         };
+
+        /*
+       * 설비
+        */
+        if (
+            _placePerm.PermMachine.Value || _placePerm.PermElec.Value ||
+            _placePerm.PermLift.Value || _placePerm.PermFire.Value ||
+            _placePerm.PermConstruct.Value || _placePerm.PermNetwork.Value ||
+            _placePerm.PermBeauty.Value || _placePerm.PermSecurity.Value ||
+            machine || elec || lift || fire || construct || network || beauty || security
+        )
+        {
+            test.Add(
+                new Category
+                    {
+                        Name = "설비 유지 관리",
+                        Url = "/facility",
+                        SubCategory = new List<Category>
+                            {
+                        _placePerm.PermMachine.Value && machine ? new Category { Name = "기계 설비", Url = "/machine" } : null,
+                        _placePerm.PermElec.Value && elec? new Category { Name = "전기 설비", Url = "/electronic" } : null,
+                        _placePerm.PermLift.Value && lift? new Category { Name = "승강 설비", Url = "/lift" } : null,
+                        _placePerm.PermFire.Value && fire? new Category { Name = "소방 설비", Url = "/fire" } : null,
+                        _placePerm.PermConstruct.Value && construct? new Category { Name = "건물 설비", Url = "/construct" } : null,
+                        _placePerm.PermNetwork.Value && network? new Category { Name = "통신 설비", Url = "/network" } : null,
+                        _placePerm.PermBeauty.Value && beauty? new Category { Name = "미화 설비", Url = "/beauty" } : null,
+                        _placePerm.PermSecurity.Value && security? new Category { Name = "보안 설비", Url = "/security" } : null,
+
+                            },
+
+                    }
+            );
+
+        }
+       /*
+        * 자재
+        */
+        if (_placePerm.PermMaterial.Value && material)
+        {
+            test.Add(
+                new Category
+                    {
+                        Name = "자재 관리",
+                        Url = "/material",
+                        SubCategory = new List<Category>
+                            {
+                        new Category { Name = "자재 관리", Url = "/info" },
+                        new Category { Name = "입출고 관리", Url = "/inout" },
+                        new Category { Name = "재고 조회", Url = "/inventory"  },
+                        new Category { Name = "입출고 조회", Url = "/detail"  },
+
+                            }
+                    }
+            );
+        }
+         /*
+         * 에너지
+        */
+        if (_placePerm.PermEnergy.Value && energy)
+        {
+            test.Add(
+                new Category
+                    {
+                        Name = "에너지 관리",
+                    }
+            );
+        }
+        /*
+        * 사용자관리
+        */
+        test.Add(
+            new Category
+                {
+                    Name = "사용자 관리",
+                    Url = "/users",
+                }
+        );
+       /*
+        * 민원
+        */
+        if (_placePerm.PermVoc.Value && voc)
+        {
+            test.Add(
+                new Category
+                    {
+                        Name = "민원 관리",
+                        Url = "/voc"
+                    }
+            );
+        }
+
+        return test;
     }
 
 
 
     /*
-     * 드롭다운 기능
+    * 드롭다운 기능
      */
 
     void ToggleDropdown(Category category)
     {
-        Console.WriteLine("동작");
+
         category.IsDropDown = !category.IsDropDown;
     }
 
+
+    private async Task OnLoadPlacePerm()
+    {
+        try
+        {
+            ResponseUnit<PlacePermDTO> resGet = await apiManager.GetUnitAsync<PlacePermDTO>("Place/sign/GetPlacePerm");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+
+            _placePerm = resGet.data;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "사업장 권한 조회 에러" + ex);
+        }
+
+    }
+
+
+    /*
+    * 사용자 권한 확인
+    */
+    private async Task OnCheckUserPerm()
+    {
+        List<string> permName = new List<string>() { "UserPerm_Basic", "UserPerm_Machine", "UserPerm_Elec", "UserPerm_Lift", "UserPerm_Fire", "UserPerm_Construct", "UserPerm_Network", "UserPerm_Beauty", "UserPerm_Security", "UserPerm_Material", "UserPerm_Energy", "UserPerm_User", "UserPerm_Voc" };
+
+        foreach(string perm in permName)
+        {
+            int permValue = await(_authStateProvider as CustomAuthProvider).GetUserPermission(perm);
+            if(permValue > 0)
+            {
+                switch (perm)
+                {
+                    case "UserPerm_Basic":
+                        basic = true;
+                        break;
+                    case "UserPerm_Machine":
+                        machine = true;
+                        break;
+                    case "UserPerm_Elec":
+                        elec = true;
+                        break;
+                    case "UserPerm_Lift":
+                        lift = true;
+                        break;
+                    case "UserPerm_Fire":
+                        fire = true;
+                        break;
+                    case "UserPerm_Construct":
+                        construct = true;
+                        break;
+                    case "UserPerm_Network":
+                        network = true;
+                        break;
+                    case "UserPerm_Beauty":
+                        beauty = true;
+                        break;
+                    case "UserPerm_Security":
+                        security = true;
+                        break;
+                    case "UserPerm_Material":
+                        material = true;
+                        break;
+                    case "UserPerm_Energy":
+                        energy = true;
+                        break;
+                    case "UserPerm_User":
+                        user = true;
+                        break;
+                    case "UserPerm_Voc":
+                        voc = true;
+                        break;
+                }
+            }
+        }
+
+        
+    }
 }

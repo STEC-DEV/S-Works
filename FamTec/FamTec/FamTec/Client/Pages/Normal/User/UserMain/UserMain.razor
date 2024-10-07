@@ -46,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        await OnLoadTsetData();
+        await OnLoadUsers();
     }
 
 
@@ -59,7 +59,7 @@
     }
 
 
-    private async Task OnLoadTsetData()
+    private async Task OnLoadUsers()
     {
         ResponseList<ListUser> resUsers = await apiManager.GetListAsync<ListUser>("user/sign/GetPlaceUsers");
         if(object.ReferenceEquals(null,resUsers) || resUsers.code != 200)
@@ -125,10 +125,10 @@
                 return;
             }
 
-            await OnLoadTsetData();
+            await OnLoadUsers();
         }catch(Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", "[사용자 관리] [메인] 사용자 삭제 에러");
         }
     }
 
