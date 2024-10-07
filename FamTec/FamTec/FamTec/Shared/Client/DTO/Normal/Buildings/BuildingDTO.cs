@@ -303,7 +303,61 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         }
         public BuildingDTO DeepCopy()
         {
-            return new BuildingDTO(this);
+            BuildingDTO copy = new BuildingDTO
+            {
+                ID = this.ID,
+                Code = this.Code,
+                Name = this.Name,
+                Tel = this.Tel,
+                Address = this.Address,
+                Usage = this.Usage,
+                ConstCompany = this.ConstCompany,
+                BuildingStruct = this.BuildingStruct,
+                RoofStruct = this.RoofStruct,
+                CompletionDT = this.CompletionDT,
+                GrossFloorArea = this.GrossFloorArea,
+                LandArea = this.LandArea,
+                BuildingArea = this.BuildingArea,
+                FloorNum = this.FloorNum,
+                GroundFloorNum = this.GroundFloorNum,
+                BasementFloorNum = this.BasementFloorNum,
+                BuildingHeight = this.BuildingHeight,
+                GroundHeight = this.GroundHeight,
+                BasementHeight = this.BasementHeight,
+                ParkingNum = this.ParkingNum,
+                InnerParkingNum = this.InnerParkingNum,
+                OuterParkingNum = this.OuterParkingNum,
+                ElecCapacity = this.ElecCapacity,
+                FaucetCapacity = this.FaucetCapacity,
+                GenerationCapacity = this.GenerationCapacity,
+                WaterCapacity = this.WaterCapacity,
+                ElevWaterCapacity = this.ElevWaterCapacity,
+                WaterTank = this.WaterTank,
+                GasCapacity = this.GasCapacity,
+                Boiler = this.Boiler,
+                WaterDispenser = this.WaterDispenser,
+                LiftNum = this.LiftNum,
+                PeopleLiftNum = this.PeopleLiftNum,
+                CargoLiftNum = this.CargoLiftNum,
+                CoolHeatCapacity = this.CoolHeatCapacity,
+                HeatCapacity = this.HeatCapacity,
+                CoolCapacity = this.CoolCapacity,
+                LandScapeArea = this.LandScapeArea,
+                GroundArea = this.GroundArea,
+                RooftopArea = this.RooftopArea,
+                ToiletNum = this.ToiletNum,
+                MenToiletNum = this.MenToiletNum,
+                WomenToiletNum = this.WomenToiletNum,
+                FireRating = this.FireRating,
+                SeptictankCapacity = this.SeptictankCapacity,
+
+                // 배열 타입은 복사된 새로운 배열을 만들어 복사합니다.
+                Image = this.Image != null ? (byte[])this.Image.Clone() : null,
+
+                ImageName = this.ImageName,
+            };
+
+            return copy;
         }
     }
 }

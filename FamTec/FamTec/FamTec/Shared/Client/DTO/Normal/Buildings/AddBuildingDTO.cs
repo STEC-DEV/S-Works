@@ -16,9 +16,9 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string Address { get; set; }
         public string Usage { get; set; }
         public string ConstCompany { get; set; }
-        public string BuildingStructure { get; set; }
-        public string RoofStructure {  get; set; }
-        public string CompleteDT {  get; set; }
+        public string BuildingStruct { get; set; }
+        public string RoofStruct {  get; set; }
+        public string CompletionDT {  get; set; }
 
         public string GrossFloorArea { get; set; }
         public string LandArea {  get; set; }

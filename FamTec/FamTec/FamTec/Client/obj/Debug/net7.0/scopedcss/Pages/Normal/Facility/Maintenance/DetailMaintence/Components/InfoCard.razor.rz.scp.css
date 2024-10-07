@@ -31,7 +31,10 @@
     color: var(--main-color);
 }
 
-
+.img-btn[b-f9mpss541t] {
+    display: flex;
+    gap: var(--half-pd);
+}
 
 
 

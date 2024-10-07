@@ -3202,7 +3202,7 @@
     gap : var(--half-pd);
     width: 100%;
     height: 100%; /* 자동 높이 조정 */
-    overflow: hidden;
+    /*overflow: hidden;*/
     position: relative;
     flex:1;
 }
@@ -4290,6 +4290,10 @@
     width: 400px;
     max-width: 100%;
 }
+.img-btn[b-y1t13l8wvx]{
+    display:flex;
+    gap:var(--half-pd);
+}
 
 .infosection-1[b-y1t13l8wvx] {
     flex: 1;
@@ -5022,6 +5026,11 @@
     max-width : 100%;
 }
 
+.buildinginfo .img-btn[b-cmazd8ob0t]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 
 .buildinginfo .infosection-1[b-cmazd8ob0t]{
     flex:1;
@@ -5319,7 +5328,10 @@
 }
 
 
-
+.img-btn[b-2akvokpspo]{
+    display : flex;
+    gap:var(--half-pd);
+}
 
 
 .infocard-container .infocard-content[b-2akvokpspo]{
@@ -5405,7 +5417,10 @@
     color: var(--main-color);
 }
 
-
+.img-btn[b-8axar4r2so] {
+    display: flex;
+    gap: var(--half-pd);
+}
 
 
 
@@ -6047,6 +6062,7 @@
     display: flex;
     justify-content: right;
 }
+
 /* /Pages/Normal/Facility/Maintenance/AddMaintence/Components/InfoCard.razor.rz.scp.css */
 
 
@@ -6083,7 +6099,10 @@
 
 
 
-
+.img-btn[b-xat69l3b24] {
+    display: flex;
+    gap: var(--half-pd);
+}
 
 .infocard-container .infocard-content[b-xat69l3b24]{
     display : flex;
@@ -6514,6 +6533,132 @@
     display: flex;
     gap: var(--default-pd);
 }
+/* /Pages/Normal/Facility/Maintenance/AddMaintence/Modal/UpdateUseMaterialModal.razor.rz.scp.css */
+.modal[b-ekmcy9npkx] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+    
+}
+
+
+.modal .header>.title[b-ekmcy9npkx]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.content[b-ekmcy9npkx] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.list[b-ekmcy9npkx]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+    width:100%;
+
+    overflow:hidden;
+}
+
+.label[b-ekmcy9npkx]{
+    font-size:1.01rem;
+    font-weight : bold;
+    color : var(--main-color);
+}
+
+
+.list-wrap[b-ekmcy9npkx]{
+    display:flex;
+    flex-direction:column;
+    /*gap:var(--half-pd);*/
+    padding : var(--default-pd);
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    width:100%;
+    max-height : 300px;
+    /*overflow:auto;*/
+    position:relative;
+    scroll-behavior: smooth;
+}
+
+.ul-head[b-ekmcy9npkx]{
+    position:sticky;
+    top : 0;
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+
+    padding : var(--half-pd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--main-color);
+}
+
+.ul-head>span[b-ekmcy9npkx]{
+    color:var(--default-color);
+    font-size: var(--normal-size);
+}
+.ul[b-ekmcy9npkx]{
+    overflow:auto;
+}
+
+.li[b-ekmcy9npkx]{
+    display :flex;
+    width:100%;
+    justify-content:space-around;
+
+    border-bottom: var(--comp-bd);
+    padding :var(--default-pd) var(--half-pd);
+
+}
+
+.text[b-ekmcy9npkx]{
+    font-size: var(--normal-size);
+    font-weight : bold;
+    color:var(--main-color);
+    flex: 1; /* 균등한 너비 분배 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.form[b-ekmcy9npkx]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--default-pd);
+}
+
+.row[b-ekmcy9npkx]{
+    display:flex;
+    gap:var(--default-pd);
+}
+
+.group[b-ekmcy9npkx]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-ekmcy9npkx]{
+    display : flex;
+    gap : var(--default-pd);
+}
 /* /Pages/Normal/Facility/Maintenance/DetailMaintence/Components/InfoCard.razor.rz.scp.css */
 
 
@@ -6548,7 +6693,10 @@
     color: var(--main-color);
 }
 
-
+.img-btn[b-f9mpss541t] {
+    display: flex;
+    gap: var(--half-pd);
+}
 
 
 
@@ -9707,6 +9855,10 @@ modal-table[b-all74yxmu0]{
     color : var(--main-color);
 }
 
+.img-btn[b-8frb8647wj]{
+    display :flex;
+    gap : var(--half-pd);
+}
 
 
 .content[b-8frb8647wj] {
@@ -9778,6 +9930,7 @@ modal-table[b-all74yxmu0]{
     border-radius: var(--default-rd);
     border: var(--default-bd);
     width: 30%;
+    height : 80%;
     background-color: var(--default-color);
     box-shadow: var(--default-bs);
 }
@@ -10259,10 +10412,15 @@ modal-table[b-all74yxmu0]{
     color:var(--main-color);
 }
 
-.form-container .form-area[b-n4hh76lg6q]{
+.img-btn[b-n4hh76lg6q]{
     display:flex;
-    padding :var(--default-pd);
-    gap:var(--default-pd);
+    gap : var(--half-pd);
+}
+
+.form-container .form-area[b-n4hh76lg6q] {
+    display: flex;
+    padding: var(--default-pd);
+    gap: var(--default-pd);
 }
 
 .form-container .form-input[b-n4hh76lg6q]{
@@ -10285,7 +10443,7 @@ modal-table[b-all74yxmu0]{
     justify-content:center;
     gap : var(--half-pd);
     width : 350px;
-    
+    padding : var(--default-pd) 0;
 }
 
 .img[b-n4hh76lg6q]{
@@ -10523,6 +10681,12 @@ modal-table[b-all74yxmu0]{
     width : 350px;
     /*height : 250px;*/
     justify-content:center;
+    padding : var(--default-pd) 0;
+}
+
+.img-btn[b-bmba3bkisf]{
+    display:flex;
+    gap:var(--half-pd);
 }
 
 .img[b-bmba3bkisf]{

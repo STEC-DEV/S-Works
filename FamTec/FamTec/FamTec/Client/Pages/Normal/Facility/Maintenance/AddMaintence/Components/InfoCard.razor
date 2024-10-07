@@ -15,8 +15,14 @@
     </div>
     <div class="infocard-content">
         <div class="infocard-img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+            <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+            <div class="img-btn">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+            </div>
+
+            
         </div>
         <div class="infocard-inputs">
             <DateInput Label="작업일자"
@@ -89,7 +95,8 @@
 
     int SelectedWorkType;
 
-    private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    // private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    private List<byte[]> ImageUrl = new List<byte[]>();//이미지 프리뷰
     bool EditMode = true;
 
     List<object> WorkType = new List<object>()
@@ -131,13 +138,28 @@
 
         foreach (var image in images)
         {
-            Maintenance.Image = image.Image;
-            Maintenance.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+
+        Maintenance.Image = temp[0];
+        Maintenance.ImageName = names[0];
+        ImageUrl.Add(temp[0]);
+
         StateHasChanged();
         await MaintenanceChanged.InvokeAsync(Maintenance);
     }
 
 
+    private async Task OnDelImg()
+    {
+        if (Maintenance.Image == null || string.IsNullOrEmpty(Maintenance.ImageName) || ImageUrl.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "삭제할 이미지가 존재하지 않습니다.");
+            return;
+        }
+        Maintenance.Image = null;
+        Maintenance.ImageName = null;
+        ImageUrl.Clear();
+    }
 }

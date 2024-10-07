@@ -12,10 +12,17 @@
     </div>
     <div class="form-area">
         <div class="img-wrap">
-            <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" />
+            @* <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" /> *@
+            <ImageSlider Label="프로필 사진" Images="@ImageUrl"/>
             @if (USEREDIT && EditMode)
             {
-                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <div class="img-btn">
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                    @if (UserInfo.Image != null)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                    }
+                </div>
             }
             
         </div>
@@ -99,9 +106,11 @@
     [Parameter] public bool EditMode { get; set; }
 
     private byte[] imageData;
-    private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
+    // private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
     private List<string> updateImageUrl = new List<string>(); //이미지 프리뷰
 
+
+    List<byte[]> ImageUrl = new List<byte[]>();
 
     List<object> _userState = new List<object>
     {
@@ -121,34 +130,28 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        // if (!EditMode)
-        // {
-
-        //     ConverImage();
-        // }
-        ConverImage();
-
-
     }
 
-    protected override void OnParametersSet()
+    protected override async void OnParametersSet()
     {
-        if (!EditMode)
-        {
-            updateImageUrl.Clear();
-        }
-        ConverImage();
+        await ImgConvert();
     }
 
-    private void ConverImage()
+    /*
+    * 이미지 변환
+    */
+    private async Task ImgConvert()
     {
+        Console.WriteLine("지금이야");
         ImageUrl.Clear();
-        if (UserInfo.Image != null && UserInfo.Image.Length > 0)
+        if (UserInfo.Image != null &&
+            !string.IsNullOrEmpty(UserInfo.ImageName) &&
+            !ImageUrl.Any(i => i.SequenceEqual(UserInfo.Image))
+        )
         {
-            ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
+            
+            ImageUrl.Add(UserInfo.Image);
         }
-        // Console.WriteLine("이미지"+ UserInfo.Image);
-        // ImageUrl.Add($"data:image/jpeg;base64,{Convert.ToBase64String(UserInfo.Image)}");
     }
 
     private async void OnUploadImage(List<ImageFile> images)
@@ -159,22 +162,30 @@
 
         foreach (var image in images)
         {
-            if (UserInfo.Image == null || UserInfo.Image.Length == 0)
-            {
-                // 기존 이미지가 없는 경우: 새 이미지 추가
-                UserInfo.Image = image.Image ;
-                UserInfo.ImageName =image.Name;
-            }
-            else
-            {
-                UserInfo.Image = image.Image;
-                UserInfo.ImageName = image.Name;
-            }
-            // UserInfo.Image = image.Image;
-            // UserInfo.ImageName = image.Name;
-            updateImageUrl.Add(image.ImageUrl);
-            break;
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+        if (ImageUrl.Count == 0)
+        {
+
+            ImageUrl.Add(temp[0]);
+        }
+        else
+        {
+
+            ImageUrl[0] = temp[0];
+        }
+        UserInfo.Image = temp[0];
+        UserInfo.ImageName = names[0];
         StateHasChanged();
     }
+
+    private void OnDelImg()
+    {
+        UserInfo.Image = null;
+        UserInfo.ImageName = null;
+        ImageUrl.Clear();
+        StateHasChanged();
+    }
+
 }

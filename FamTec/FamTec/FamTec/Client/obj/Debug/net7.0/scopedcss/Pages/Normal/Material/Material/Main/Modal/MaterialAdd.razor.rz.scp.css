@@ -18,6 +18,10 @@
     color : var(--main-color);
 }
 
+.img-btn[b-8frb8647wj]{
+    display :flex;
+    gap : var(--half-pd);
+}
 
 
 .content[b-8frb8647wj] {

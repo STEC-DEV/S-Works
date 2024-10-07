@@ -39,10 +39,14 @@
         else
         {
             <div class="infocard-img-area">
-                <PreviewBox ImageUrls="@ImageUrl" />
+                @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+                <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
                 @if (EditMode)
                 {
-                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                    <div class="img-btn">
+                        <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                    </div>
                 }
                 
             </div>
@@ -110,7 +114,8 @@
 
     int SelectedWorkType = 0;
 
-    private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    // private List<string> ImageUrl = new List<string>();//이미지 프리뷰
+    private List<byte[]> ImageUrl = new List<byte[]>();//이미지 프리뷰
     bool EditMode = false;
 
     List<object> WorkType = new List<object>()
@@ -136,6 +141,7 @@
     protected override async Task OnParametersSetAsync()
     {
         UpdateMaintenance = Maintenance.DeepCopy();
+        await ImgConvert();
     }
 
 
@@ -147,13 +153,25 @@
 
         foreach (var image in images)
         {
-            UpdateMaintenance.Image = image.Image;
-            UpdateMaintenance.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+        if (ImageUrl.Count == 0)
+        {
+
+            ImageUrl.Add(temp[0]);
+        }
+        else
+        {
+
+            ImageUrl[0] = temp[0];
+        }
+        UpdateMaintenance.Image = temp[0];
+        UpdateMaintenance.ImageName = names[0];
         StateHasChanged();
         // await MaintenanceChanged.InvokeAsync(Maintenance);
     }
+
 
     private async Task OnUpdate()
     {
@@ -177,21 +195,43 @@
             }
             OnEdit();
             await OnLoadMaintenance.InvokeAsync();
-            
+
         }
         catch (Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", "유지보수 정보 수정 에러");
         }
     }
 
-    private void OnEdit()
+    /*
+    * 이미지 변환
+    */
+    private async Task ImgConvert()
+    {
+        ImageUrl.Clear();
+        if (Maintenance.Image != null &&
+            !string.IsNullOrEmpty(Maintenance.ImageName)
+            && !ImageUrl.Any(i => i.SequenceEqual(Maintenance.Image))
+        )
+        {
+            ImageUrl.Add(Maintenance.Image);
+        }
+    }
+
+    private async void OnEdit()
     {
         EditMode = !EditMode;
+        await ImgConvert();
         UpdateMaintenance = Maintenance.DeepCopy();
     }
 
-
+    private void OnDelImg()
+    {
+        UpdateMaintenance.Image = null;
+        UpdateMaintenance.ImageName = null;
+        ImageUrl.Clear();
+        StateHasChanged();
+    }
     
 
 }

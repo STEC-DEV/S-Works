@@ -48,9 +48,9 @@
     {
         try
         {
-            if (Facility.RoomId == 0)
+            if (Facility.RoomId == 0 || Facility.RoomId == null)
             {
-                await JS.InvokeVoidAsync("alert", "내용을 확인해주세요");
+                await JS.InvokeVoidAsync("alert", "위치를 선택해주세요");
                 return;
             }
             Facility.Category = _facType;

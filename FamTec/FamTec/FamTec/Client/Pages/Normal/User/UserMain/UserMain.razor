@@ -22,7 +22,7 @@
                 @if (USEREDIT)
                 {
                     <Button Name="추가" Width=true OnClick=AddUser Type=0 />
-                    <Button Name="삭제" Width=true Type=1 />
+                    <Button Name="삭제" Width=true Type=1 OnClick="OnDelUser" />
                 }
             </div>
             
@@ -72,20 +72,9 @@
 
     }
 
-    // private void OnSearchData(string searchText)
-    // {
-    //     SearchText = searchText;
-    //     FilterData = string.IsNullOrEmpty(SearchText)
-    //         ? usersData
-    //         : usersData.Where( p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-    //                                 p.UserId.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-    //                                 p.Type.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-    //                             ).ToList();
-    // }
-
     /*
     * 검색 데이터 필터링 --
-       */
+    */
     private async void OnSearchTextChanged(string text)
     {
         _searchText = text;
@@ -103,7 +92,7 @@
 
 
     /*
-    * 사업장 체크
+    * 사용자 체크
     */
     public void OnSelected((bool isCheck, int id) selection)
     {
@@ -120,6 +109,27 @@
             Console.WriteLine("check" + i);
         }
 
+    }
+
+    /*
+     * 사용자 삭제
+     */
+    private async Task OnDelUser()
+    {
+        try
+        {
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("User/sign/DeleteUser",CheckItems);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+
+            await OnLoadTsetData();
+        }catch(Exception ex)
+        {
+            
+        }
     }
 
 
