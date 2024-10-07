@@ -1,6 +1,7 @@
 ﻿using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
+using FamTec.Shared.Server.DTO.Place;
 using FamTec.Shared.Server.DTO.User;
 
 namespace FamTec.Server.Services.User
@@ -76,5 +77,12 @@ namespace FamTec.Server.Services.User
         /// <param name="file"></param>
         /// <returns></returns>
         public Task<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file);
+
+        /// <summary>
+        /// 사업장 메뉴권한 리턴
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService(HttpContext context);
     }
 }

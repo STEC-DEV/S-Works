@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 
@@ -533,7 +534,7 @@ namespace FamTec.Server.Services.User
             {
                 UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 if (usertb is null)
-                    return new ResponseUnit<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 200 };
+                    return new ResponseUnit<string?>() { message = "사용자 정보가 일치하지 않습니다.", data = null, code = 400 };
 
                 bool? AdminYN = usertb.AdminYn;
                 if(AdminYN == false) // 일반유저
@@ -1353,6 +1354,50 @@ namespace FamTec.Server.Services.User
             }
         }
 
-  
+        /// <summary>
+        /// 사업장 메뉴권한 리턴
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<PlacePermissionDTO?>> GetMenuPermService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(Convert.ToInt32(placeid));
+                if(PlaceTB is not null)
+                {
+                    PlacePermissionDTO model = new PlacePermissionDTO
+                    {
+                        Id = PlaceTB.Id,
+                        PermMachine = PlaceTB.PermMachine,
+                        PermElec = PlaceTB.PermElec,
+                        PermLift = PlaceTB.PermLift,
+                        PermFire = PlaceTB.PermFire,
+                        PermConstruct = PlaceTB.PermConstruct,
+                        PermNetwork = PlaceTB.PermNetwork,
+                        PermBeauty = PlaceTB.PermBeauty,
+                        PermSecurity = PlaceTB.PermSecurity,
+                        PermMaterial = PlaceTB.PermMaterial,
+                        PermEnergy = PlaceTB.PermEnergy,
+                        PermVoc = PlaceTB.PermVoc
+                    };
+                    return new ResponseUnit<PlacePermissionDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                    return new ResponseUnit<PlacePermissionDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<PlacePermissionDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

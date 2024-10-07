@@ -123,6 +123,8 @@ namespace FamTec.Server.Controllers.Login
                     return Ok(model); // 유저
                 else if (model.code == 201)
                     return Ok(model);
+                else if (model.code == 400) // 아이디-비밀번호가 틀렸을경우
+                    return Ok(model);
                 else
                     return Ok(model); // 유저
             }

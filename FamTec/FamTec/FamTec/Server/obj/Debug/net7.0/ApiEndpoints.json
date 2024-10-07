@@ -4135,6 +4135,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Place.PlaceController",
+    "Method": "GetPlacePerm",
+    "RelativePath": "api/Place/sign/GetPlacePerm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Room.RoomController",
     "Method": "AddRoom",
     "RelativePath": "api/Room/sign/AddRoom",
@@ -4968,7 +4978,7 @@
       {
         "Name": "delIdx",
         "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

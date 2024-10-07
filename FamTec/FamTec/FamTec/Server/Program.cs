@@ -453,7 +453,8 @@ string[]? userPaths = new string[]
     "/api/Meter/sign",
     "/api/Contract/sign",
     "/api/Energy/sign",
-    "/api/UseMaintenence/sign"
+    "/api/UseMaintenence/sign",
+    "/api/Place/sign"
 };
 
 foreach (var path in adminPaths)

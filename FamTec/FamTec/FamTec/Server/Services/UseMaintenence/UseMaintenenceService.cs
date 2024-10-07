@@ -11,7 +11,8 @@ namespace FamTec.Server.Services.UseMaintenence
         private readonly IUseMaintenenceInfoRepository UseMaintenenceInfoRepository;
         private ILogService LogService;
 
-        public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository, ILogService _logservice)
+        public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
+            ILogService _logservice)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
             this.LogService = _logservice;

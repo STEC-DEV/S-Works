@@ -172,7 +172,7 @@ namespace FamTec.Server.Controllers.User
         [AllowAnonymous]
         [HttpPut]
         [Route("sign/DeleteUser")]
-        public async Task<IActionResult> DeleteUser([FromQuery] List<int> delIdx)
+        public async Task<IActionResult> DeleteUser([FromBody] List<int> delIdx)
         {
             try
             {
