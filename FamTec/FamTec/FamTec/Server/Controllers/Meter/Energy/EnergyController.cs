@@ -112,7 +112,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
                 DateTime ThisDate = DateTime.Now;
                 int placeid = 13;
 
-                var temp = await EnergyInfoRepository.GetContractTypeMonthList(ThisDate, placeid);
+                var temp = await EnergyInfoRepository.GetContractTypeMonthList(ThisDate,  placeid);
                 return Ok(temp);
             }
             catch(Exception ex)
@@ -122,6 +122,27 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMeterMonthRecord")]
+        public async Task<IActionResult> GetMeterMonthRecord()
+        {
+            try
+            {
+                DateTime ThisDate = DateTime.Now;
+                int placeid = 13;
+                List<int> MeterId = new List<int>() { 5, 6, 7 };
+
+                var temp = await EnergyInfoRepository.GetMeterMonthList(ThisDate, MeterId, placeid);
+                return Ok(temp);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
        
 
     }

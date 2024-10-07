@@ -569,19 +569,19 @@ namespace FamTec.Server.Services.User
                     /* 메뉴 접근권한 */
                     var userPermissions = new JObject
                     {
-                        { "UserPerm_Basic", usertb.PermBasic},
-                        { "UserPerm_Machine", usertb.PermMachine},
-                        { "UserPerm_Elec", usertb.PermElec},
-                        { "UserPerm_Lift",usertb.PermLift},
-                        { "UserPerm_Fire",usertb.PermFire},
-                        { "UserPerm_Construct",usertb.PermConstruct},
-                        { "UserPerm_Network",usertb.PermNetwork },
-                        { "UserPerm_Beauty",usertb.PermBeauty},
-                        { "UserPerm_Security", usertb.PermSecurity},
-                        { "UserPerm_Material", usertb.PermMaterial},
-                        { "UserPerm_Energy", usertb.PermEnergy},
-                        { "UserPerm_User", usertb.PermUser},
-                        { "UserPerm_Voc", usertb.PermVoc}
+                        { "UserPerm_Basic", usertb.PermBasic.ToString()},
+                        { "UserPerm_Machine", usertb.PermMachine.ToString()},
+                        { "UserPerm_Elec", usertb.PermElec.ToString()},
+                        { "UserPerm_Lift",usertb.PermLift.ToString()},
+                        { "UserPerm_Fire",usertb.PermFire.ToString()},
+                        { "UserPerm_Construct",usertb.PermConstruct.ToString()},
+                        { "UserPerm_Network",usertb.PermNetwork.ToString()},
+                        { "UserPerm_Beauty",usertb.PermBeauty.ToString()},
+                        { "UserPerm_Security", usertb.PermSecurity.ToString()},
+                        { "UserPerm_Material", usertb.PermMaterial.ToString()},
+                        { "UserPerm_Energy", usertb.PermEnergy.ToString()},
+                        { "UserPerm_User", usertb.PermUser.ToString()},
+                        { "UserPerm_Voc", usertb.PermVoc.ToString()}
                     };
 
                     authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(userPermissions)));
@@ -589,15 +589,15 @@ namespace FamTec.Server.Services.User
                     /* VOC 권한 */
                     var vocPermission = new JObject
                     {
-                        { "VocMachine", usertb.VocMachine}, // 기계민원 처리권한
-                        { "VocElec", usertb.VocElec}, // 전기민원 처리권한
-                        { "VocLift",usertb.VocLift}, // 승강민원 처리권한
-                        { "VocFire", usertb.VocFire}, // 소방민원 처리권한
-                        { "VocConstruct", usertb.VocConstruct}, // 건축민원 처리권한
-                        { "VocNetwork", usertb.VocNetwork}, // 통신민원 처리권한
-                        { "VocBeauty", usertb.VocBeauty}, // 미화민원 처리권한
-                        { "VocSecurity", usertb.VocSecurity}, // 보안민원 처리권한
-                        { "VocDefault", usertb.VocEtc}, // 기타 처리권한
+                        { "VocMachine", usertb.VocMachine.ToString()}, // 기계민원 처리권한
+                        { "VocElec", usertb.VocElec.ToString()}, // 전기민원 처리권한
+                        { "VocLift",usertb.VocLift.ToString()}, // 승강민원 처리권한
+                        { "VocFire", usertb.VocFire.ToString()}, // 소방민원 처리권한
+                        { "VocConstruct", usertb.VocConstruct.ToString()}, // 건축민원 처리권한
+                        { "VocNetwork", usertb.VocNetwork.ToString()}, // 통신민원 처리권한
+                        { "VocBeauty", usertb.VocBeauty.ToString()}, // 미화민원 처리권한
+                        { "VocSecurity", usertb.VocSecurity.ToString()}, // 보안민원 처리권한
+                        { "VocDefault", usertb.VocEtc.ToString()}, // 기타 처리권한
                     };
                     authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(vocPermission)));
 
@@ -605,17 +605,17 @@ namespace FamTec.Server.Services.User
                     /* 사업장 권한 */
                     var PlacePermission = new JObject
                     {
-                        { "PlacePerm_Machine", placetb.PermMachine}, // 사업장 기계메뉴 권한
-                        { "PlacePerm_Elec",placetb.PermElec}, // 사업장 전기메뉴 권한
-                        { "PlacePerm_Lift", placetb.PermLift}, // 사업장 승강메뉴 권한
-                        { "PlacePerm_Fire", placetb.PermFire}, // 사업장 소방메뉴 권한
-                        {"PlacePerm_Construct", placetb.PermConstruct}, // 사업장 건축메뉴 권한
-                        { "PlacePerm_Network", placetb.PermNetwork}, // 사업장 통신메뉴 권한
-                        { "PlacePerm_Beauty", placetb.PermBeauty}, // 사업장 미화메뉴 권한
-                        { "PlacePerm_Security", placetb.PermSecurity}, // 사업장 보안메뉴 권한
-                        { "PlacePerm_Material", placetb.PermMaterial}, // 사업장 자재메뉴 권한
-                        { "PlacePerm_Energy", placetb.PermEnergy}, // 사업장 에너지메뉴 권한
-                        { "PlacePerm_Voc", placetb.PermVoc} // 사업장 VOC 권한
+                        { "PlacePerm_Machine", placetb.PermMachine.ToString()}, // 사업장 기계메뉴 권한
+                        { "PlacePerm_Elec",placetb.PermElec.ToString()}, // 사업장 전기메뉴 권한
+                        { "PlacePerm_Lift", placetb.PermLift.ToString()}, // 사업장 승강메뉴 권한
+                        { "PlacePerm_Fire", placetb.PermFire.ToString()}, // 사업장 소방메뉴 권한
+                        {"PlacePerm_Construct", placetb.PermConstruct.ToString()}, // 사업장 건축메뉴 권한
+                        { "PlacePerm_Network", placetb.PermNetwork.ToString()}, // 사업장 통신메뉴 권한
+                        { "PlacePerm_Beauty", placetb.PermBeauty.ToString()}, // 사업장 미화메뉴 권한
+                        { "PlacePerm_Security", placetb.PermSecurity.ToString()}, // 사업장 보안메뉴 권한
+                        { "PlacePerm_Material", placetb.PermMaterial.ToString()}, // 사업장 자재메뉴 권한
+                        { "PlacePerm_Energy", placetb.PermEnergy.ToString()}, // 사업장 에너지메뉴 권한
+                        { "PlacePerm_Voc", placetb.PermVoc.ToString()} // 사업장 VOC 권한
                     };
 
                     authClaims.Add(new Claim("PlacePerms", JsonConvert.SerializeObject(PlacePermission)));
@@ -667,19 +667,19 @@ namespace FamTec.Server.Services.User
                     // 메뉴 접근권한
                     var UserPermissions = new JObject
                     {
-                        { "UserPerm_Basic", usertb.PermBasic},
-                        { "UserPerm_Machine", usertb.PermMachine},
-                        { "UserPerm_Elec", usertb.PermElec},
-                        { "UserPerm_Lift", usertb.PermLift},
-                        { "UserPerm_Fire", usertb.PermFire},
-                        { "UserPerm_Construct", usertb.PermConstruct},
-                        { "UserPerm_Network", usertb.PermNetwork},
-                        {"UserPerm_Beauty" ,usertb.PermBeauty},
-                        { "UserPerm_Security", usertb.PermSecurity},
-                        { "UserPerm_Material", usertb.PermMaterial},
-                        { "UserPerm_Energy", usertb.PermEnergy},
-                        { "UserPerm_User", usertb.PermUser},
-                        { "UserPerm_Voc", usertb.PermVoc}
+                        { "UserPerm_Basic", usertb.PermBasic.ToString()},
+                        { "UserPerm_Machine", usertb.PermMachine.ToString()},
+                        { "UserPerm_Elec", usertb.PermElec.ToString()},
+                        { "UserPerm_Lift", usertb.PermLift.ToString()},
+                        { "UserPerm_Fire", usertb.PermFire.ToString()},
+                        { "UserPerm_Construct", usertb.PermConstruct.ToString()},
+                        { "UserPerm_Network", usertb.PermNetwork.ToString()},
+                        {"UserPerm_Beauty" ,usertb.PermBeauty.ToString()},
+                        { "UserPerm_Security", usertb.PermSecurity.ToString()},
+                        { "UserPerm_Material", usertb.PermMaterial.ToString()},
+                        { "UserPerm_Energy", usertb.PermEnergy.ToString()},
+                        { "UserPerm_User", usertb.PermUser.ToString()},
+                        { "UserPerm_Voc", usertb.PermVoc.ToString()}
                     };
 
                         
@@ -688,15 +688,15 @@ namespace FamTec.Server.Services.User
                     // VOC 권한
                     var VocPermissions = new JObject
                     {
-                        { "VocMachine", usertb.VocMachine}, // 기계민원 처리권한
-                        { "VocElec", usertb.VocElec}, // 전기민원 처리권한
-                        { "VocLift", usertb.VocLift}, // 승강민원 처리권한
-                        { "VocFire", usertb.VocFire}, // 소방민원 처리권한
-                        { "VocConstruct", usertb.VocConstruct}, // 건축민원 처리권한
-                        { "VocNetwork", usertb.VocNetwork}, // 통신민원 처리권한
-                        { "VocBeauty", usertb.VocBeauty}, // 미화민원 처리권한
-                        { "VocSecurity", usertb.VocSecurity}, // 보안민원 처리권한
-                        { "VocDefault", usertb.VocEtc} // 기타 처리권한
+                        { "VocMachine", usertb.VocMachine.ToString()}, // 기계민원 처리권한
+                        { "VocElec", usertb.VocElec.ToString()}, // 전기민원 처리권한
+                        { "VocLift", usertb.VocLift.ToString()}, // 승강민원 처리권한
+                        { "VocFire", usertb.VocFire.ToString()}, // 소방민원 처리권한
+                        { "VocConstruct", usertb.VocConstruct.ToString()}, // 건축민원 처리권한
+                        { "VocNetwork", usertb.VocNetwork.ToString()}, // 통신민원 처리권한
+                        { "VocBeauty", usertb.VocBeauty.ToString()}, // 미화민원 처리권한
+                        { "VocSecurity", usertb.VocSecurity.ToString()}, // 보안민원 처리권한
+                        { "VocDefault", usertb.VocEtc.ToString()} // 기타 처리권한
                     };
 
                     authClaims.Add(new Claim("VocPerms", JsonConvert.SerializeObject(VocPermissions)));

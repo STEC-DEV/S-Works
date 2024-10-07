@@ -2160,6 +2160,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetMeterMonthRecord",
+    "RelativePath": "api/Energy/sign/GetMeterMonthRecord",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
     "Method": "AddFacilityGroup",
     "RelativePath": "api/FacilityGroup/sign/AddFacilityGroup",

@@ -30,8 +30,8 @@ namespace FamTec.Server.Repository.Meter.Energy
         public Task<DayEnergyDTO?> GetMonthList(DateTime SearchDate, int placeid);
 
         public Task<List<DaysTotalContractTypeEnergyDTO>> GetContractTypeMonthList(DateTime SearchDate, int placeid);
-        
 
+        public Task<List<DayTotalMeterEnergyDTO>> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid);
 
 
 

@@ -266,8 +266,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                     .Where(m => m.DelYn != true &&
                                 m.PlaceTbId == placeid &&
                                 m.ContractTbId != null)
-                    .ToListAsync();
-
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
 
                 if (allMeterItems is null || !allMeterItems.Any())
@@ -287,14 +287,13 @@ namespace FamTec.Server.Repository.Meter.Energy
                     .ToListAsync()
                     .ConfigureAwait(false);
 
-                Console.WriteLine("asdasd");
-
                 // 해당 사업장에 속한 검침기들의 해당년도-월의 조건에 맞는 TotalPrice 합산
-                float? MonthTotalPrice = await context.EnergyMonthUsageTbs
-                    .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
-                                m.Year == Years &&
-                                m.Month == Month)
-                    .SumAsync(m => m.TotalPrice);
+                //float? MonthTotalPrice = await context.EnergyMonthUsageTbs
+                //    .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
+                //                m.Year == Years &&
+                //                m.Month == Month)
+                //    .SumAsync(m => m.TotalPrice)
+                //    .ConfigureAwait(false);
 
 
                 // 그룹 만들 데이터 크로스 조인
@@ -339,7 +338,80 @@ namespace FamTec.Server.Repository.Meter.Energy
             }
         }
 
+        public async Task<List<DayTotalMeterEnergyDTO>> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid)
+        {
+            try
+            {
+                int Years = SearchDate.Year;
+                int Month = SearchDate.Month;
 
-   
+                List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
+                    .Where(m => m.DelYn != true &&
+                                m.PlaceTbId == placeid)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (allMeterItems is null || !allMeterItems.Any())
+                    return null;
+
+                // 해당년도-월의 1일과 마지막일을 구함.
+                int numberOfDays = DateTime.DaysInMonth(Years, Month);
+                List<DateTime> allDates = Enumerable.Range(1, numberOfDays)
+                    .Select(day => new DateTime(Years, Month, day))
+                    .ToList();
+
+                List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
+                  .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
+                              m.Year == Years &&
+                              m.Month == Month)
+                  .ToListAsync()
+                  .ConfigureAwait(false);
+
+                List<DayTotalMeterEnergyDTO> result = (from MeterTB in allMeterItems
+                              from date in allDates
+                              join usage in UseDaysList
+                              on new { MeterTB.MeterItemId, Day = date.Day } equals new { usage.MeterItemId, Day = usage.Days } into usageGroup
+                              from usageData in usageGroup.DefaultIfEmpty() // Left Join 처리
+                              join contractTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                              on MeterTB.ContractTbId equals contractTB.Id
+                              select new
+                              {
+                                  ContractTypeId = MeterTB.ContractTbId!.Value,
+                                  ContractTypeName = contractTB.Name,
+                                  MeterId = MeterTB.MeterItemId,
+                                  MeterName = MeterTB.Name,
+                                  Date = date,
+                                  DaysUseAmount = usageData?.TotalAmount ?? 0 // 해당 날짜에 데이터가 없으면 0으로 설정
+                              })
+              .GroupBy(x => new { x.ContractTypeId, x.ContractTypeName, x.MeterId, x.MeterName })
+              .Select(g => new DayTotalMeterEnergyDTO
+              {
+                  ContractTypeId = g.Key.ContractTypeId,
+                  ContractTypeName = g.Key.ContractTypeName,
+                  MeterId = g.Key.MeterId,
+                  MeterName = g.Key.MeterName,
+                  TotalUse = g.Sum(x => x.DaysUseAmount), // 월합계 사용량 합산
+                  DayTotalUseList = g.Select(d => new DayTotalUse
+                  {
+                      Date = d.Date,
+                      DaysUseAmount = d.DaysUseAmount
+                  })
+                  .OrderBy(day => day.Date) // 날짜 기준 정렬
+                  .ToList()
+              })
+              .OrderBy(dto => dto.MeterId) // MeterId 기준 정렬
+              .ThenBy(dto => dto.DayTotalUseList.First().Date) // 첫 번째 날짜 기준 정렬
+              .ToList();
+
+
+                return result;
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
     }
 }
