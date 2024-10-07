@@ -1,89 +1,5 @@
 [
   {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "AddDepartment",
-    "RelativePath": "api/Admin/adddepartment",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "department",
-        "Type": "FamTec.Shared.Client.DTO.AddDepartmentDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "AddManager",
-    "RelativePath": "api/Admin/addmanager",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "manager",
-        "Type": "FamTec.Shared.Client.DTO.AddManagerDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "FindAllDepartment",
-    "RelativePath": "api/Admin/alldepartment",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "FindAllManager",
-    "RelativePath": "api/Admin/allmanager",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "DeleteDepartment",
-    "RelativePath": "api/Admin/deletedepartment",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "delData",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.AdminController",
-    "Method": "DeleteManager",
-    "RelativePath": "api/Admin/deletemanager",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "adminIds",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
     "Method": "AddPlaceManager",
     "RelativePath": "api/AdminPlace/sign/AddPlaceManager",
@@ -1455,22 +1371,6 @@
         "Name": "FileName",
         "Type": "System.String",
         "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.ClientController.Building.BuildingController",
-    "Method": "UpdateBuilding",
-    "RelativePath": "api/Building/updatebuilding",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "adminIds",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -4627,6 +4527,27 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetLocationMaterialNum",
+    "RelativePath": "api/Store/sign/GetLocationMaterialNum",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "roomid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetInoutPageNationHistory",
     "RelativePath": "api/Store/sign/GetPageNationHistory",
     "HttpMethod": "GET",
@@ -5030,7 +4951,7 @@
     "ContainingType": "FamTec.Server.Controllers.User.UserController",
     "Method": "DeleteUser",
     "RelativePath": "api/User/sign/DeleteUser",
-    "HttpMethod": "GET",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [

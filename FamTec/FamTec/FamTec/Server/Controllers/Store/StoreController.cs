@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Store
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class StoreController : ControllerBase
@@ -388,6 +390,46 @@ namespace FamTec.Server.Controllers.Store
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// 공간의 재고수량 Return
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetLocationMaterialNum")]
+        public async Task<IActionResult> GetLocationMaterialNum([FromQuery]int materialid, [FromQuery]int roomid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (materialid is 0)
+                    return NoContent();
+
+                if (roomid is 0)
+                    return NoContent();
+
+                ResponseUnit<InOutLocationDTO> model = await InStoreService.GetMaterialRoomInventoryNumService(HttpContext, materialid, roomid).ConfigureAwait(false);
+                
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+        
 
         /// <summary>
         /// 출고 리스트에 담음 - FRONT 용

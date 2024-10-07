@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Meter.Contract
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class ContractController : ControllerBase

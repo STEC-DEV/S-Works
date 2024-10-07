@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.KakaoLog;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.KakaoLog
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class KakaoLogController : ControllerBase

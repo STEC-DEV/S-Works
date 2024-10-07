@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.BlackList;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.BlackList;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.BlackList
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class BlackListController : ControllerBase

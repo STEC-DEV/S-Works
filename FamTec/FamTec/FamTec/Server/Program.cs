@@ -73,11 +73,10 @@ using FamTec.Server.Repository.Meter.Energy;
 using FamTec.Server.Services.Meter.Energy;
 using FamTec.Server.Repository.UseMaintenence;
 using FamTec.Server.Services.UseMaintenence;
-using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.StaticFiles;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -198,43 +197,43 @@ builder.Services.AddRazorPages();
 
 #region 속도제한 LIMIT 
 
-//builder.Services.AddRateLimiter(options =>
-//{
-//    options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
-//    {
-//        config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
-//        config.PermitLimit = 300; // 30초 동안 최대 300개의 요청 허용
-//        config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
-//        config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-//        config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
-//    });
-//    // 전역 기본 정책 설정
-//    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
-//});
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
+    {
+        config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
+        config.PermitLimit = 3000; // 30초 동안 최대 3000개의 요청 허용
+        config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
+        config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
+    });
+    // 전역 기본 정책 설정
+    options.RejectionStatusCode = 429; // 정책 위반 시 반환할 상태 코드 설정
+});
 
-//builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
-//{
-//    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
+builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<RateLimiterOptions>>().Value;
 
-//    return PartitionedRateLimiter.Create<HttpContext, string>(context =>
-//    {
-//        // HttpContext에서 partition key로 사용할 값 설정
-//        var partitionKey = context.Request.Path.ToString();
-//        // Sliding Window Rate Limiter 생성 및 반환
-//        return RateLimitPartition.GetSlidingWindowLimiter(
-//            partitionKey,
-//            _ => new SlidingWindowRateLimiterOptions
-//            {
-//                Window = TimeSpan.FromSeconds(30), // 윈도우 크기
-//                PermitLimit = 300,                  // 허용되는 요청 수
-//                SegmentsPerWindow = 6,            // 세그먼트 수
-//                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-//                QueueLimit = 10                  // 대기열 제한
-//            });
-//    });
-//});
+    return PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        // HttpContext에서 partition key로 사용할 값 설정
+        var partitionKey = context.Request.Path.ToString();
+        // Sliding Window Rate Limiter 생성 및 반환
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromSeconds(30), // 윈도우 크기
+                PermitLimit = 3000,                 // 30초 동안 최대 3000개의 요청 허용
+                SegmentsPerWindow = 6,            // 세그먼트 수
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 10                  // 대기열 제한
+            });
+    });
+});
 
-//builder.Services.AddScoped<SlidingWindowPolicyFilter>();
+builder.Services.AddScoped<SlidingWindowPolicyFilter>();
 
 
 #endregion
@@ -256,8 +255,6 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = "https://sws.s-tec.co.kr/",
         ValidIssuer = "https://sws.s-tec.co.kr/",
-        //ValidAudience = "https://localhost:5245/",
-        //ValidIssuer = "https://localhost:5245/",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:authSigningKey"]!))
     };
 });
@@ -267,11 +264,8 @@ builder.Services.AddAuthentication(options =>
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
-    //builder.Services.AddDbContext<WorksContext>(options =>
-    //    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-    
     builder.Services.AddDbContext<WorksContext>(options =>
-      options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+      options.UseMySql(connectionString, ServerVersion.Parse("10.11.7-mariadb"),
       mySqlOptions =>
       {
           mySqlOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
@@ -299,37 +293,27 @@ builder.Services.AddSignalR().AddHubOptions<BroadcastHub>(options =>
 
 
 var MyAllowSpectificOrigins = "AllowLocalAndSpecificIP";
-#if DEBUG
+string[]? CorsArr = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 
-// 개발용
-builder.Services.AddCors(options =>
+if (CorsArr is [_, ..])
 {
-    options.AddPolicy(name: MyAllowSpectificOrigins,
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5245", "http://123.2.156.148:5245", "http://123.2.156.229:5245")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials(); // 필요시 Credentials 허용
-        });
-});
-#else
-// 배포용
-
-builder.Services.AddCors(options =>
+    // 개발용
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: MyAllowSpectificOrigins,
+            policy =>
+            {
+                policy.WithOrigins(CorsArr)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // 필요시 Credentials 허용
+            });
+    });
+}
+else
 {
-    options.AddPolicy(name: MyAllowSpectificOrigins,
-                      policy =>
-                      {
-                          //policy.WithOrigins("http://125.131.105.172:5245")
-                            policy.WithOrigins("http://123.2.156.148:5245")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                      });
-
-});
-#endif
+    throw new InvalidOperationException("'Cors' is null or empty.");
+}
 
 // 응답압축 설정
 builder.Services.AddResponseCompression(opts =>
@@ -375,10 +359,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
-
 #endregion
-
-
 
 #region SIGNALR HUB 사용
 app.UseResponseCompression();
@@ -491,8 +472,6 @@ foreach (var path in userPaths)
         appBuilder.UseMiddleware<DuplicateRequestMiddleware>();
         appBuilder.UseMiddleware<UserMiddleware>();
     });
-
-  
 }
 
 #endregion

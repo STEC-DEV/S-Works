@@ -4,9 +4,11 @@ using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
+using FamTec.Server.Middleware;
 
 namespace FamTec.Server.Controllers.Facility
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class FireFacilityController : ControllerBase

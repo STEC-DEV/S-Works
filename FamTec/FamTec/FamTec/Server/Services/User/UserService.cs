@@ -924,6 +924,7 @@ namespace FamTec.Server.Services.User
                     dto.PERM_ELEC = model.PermElec;
                     dto.PERM_FIRE = model.PermFire;
                     dto.PERM_CONSTRUCT = model.PermConstruct;
+                    dto.PERM_LIFT = model.PermLift;
                     dto.PERM_NETWORK = model.PermNetwork;
                     dto.PERM_BEAUTY = model.PermBeauty;
                     dto.PERM_SECURITY = model.PermSecurity;

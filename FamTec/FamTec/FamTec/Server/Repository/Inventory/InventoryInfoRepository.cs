@@ -927,6 +927,47 @@ namespace FamTec.Server.Repository.Inventory
         }
 
         /// <summary>
+        /// 사업장 - 품목ID - 공간ID에 해당하는 품목의 재고수량 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        public async Task<InOutLocationDTO?> GetLocationMaterialInventoryInfo(int placeid, int materialid, int roomid)
+        {
+            try
+            {
+                RoomTb? RoomTB = await context.RoomTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == roomid).ConfigureAwait(false);
+
+                if (RoomTB is null)
+                    return null;
+
+                List<InventoryTb>? model = await context.InventoryTbs
+                    .Where(m => m.PlaceTbId == placeid && m.MaterialTbId == materialid && m.RoomTbId == roomid && m.DelYn != true).ToListAsync().ConfigureAwait(false);
+
+                if(model is [_, ..])
+                {
+                    InOutLocationDTO dto = new InOutLocationDTO();
+                    dto.MaterialID = materialid;
+                    dto.Num = model.Sum(m => m.Num);
+                    dto.RoomID = RoomTB.Id;
+                    dto.RoomName = RoomTB.Name;
+                    return dto;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
+        
+
+        /// <summary>
         /// 사업장 - 품목ID에 해당하는 위치 재고수량 반환
         /// </summary>
         /// <param name="placeid"></param>

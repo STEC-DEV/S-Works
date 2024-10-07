@@ -19,6 +19,16 @@ namespace FamTec.Shared.Server.DTO.Building.Building
         public string? BuildingCD { get; set; }
 
         /// <summary>
+        /// 건물 전화번호
+        /// </summary>
+        public string? Tel { get; set; }
+
+        /// <summary>
+        /// 건물층
+        /// </summary>
+        public string? TotalFloor { get; set; }
+
+        /// <summary>
         /// 건물명
         /// </summary>
         public string? Name { get; set; }

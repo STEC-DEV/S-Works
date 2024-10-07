@@ -1,10 +1,12 @@
-﻿using FamTec.Server.Services;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Place
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class PlaceController : ControllerBase

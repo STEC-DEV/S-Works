@@ -62,6 +62,16 @@ namespace FamTec.Server.Repository.Inventory
         /// <returns></returns>
         Task<List<InOutLocationDTO>> GetLocationMaterialInventoryList(int placeid, int materialid, int buildingid);
 
+
+        /// <summary>
+        /// 사업장 - 품목ID - 공간ID헤 대항하는 재고수량 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="roomid"></param>
+        /// <returns></returns>
+        Task<InOutLocationDTO?> GetLocationMaterialInventoryInfo(int placeid, int materialid, int roomid);
+
         /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용
         /// </summary>

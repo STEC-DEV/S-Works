@@ -264,6 +264,37 @@ namespace FamTec.Server.Services.Store
         /// </summary>
         /// <param name="context"></param>
         /// <param name="MaterialId"></param>
+        /// <param name="RoomId"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<InOutLocationDTO>> GetMaterialRoomInventoryNumService(HttpContext context, int MaterialId, int RoomId)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<InOutLocationDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                InOutLocationDTO? model = await InventoryInfoRepository.GetLocationMaterialInventoryInfo(Convert.ToInt32(placeid), MaterialId, RoomId);
+                if (model is not null)
+                    return new ResponseUnit<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseUnit<InOutLocationDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<InOutLocationDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 해당 품목의 재고수량 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="MaterialId"></param>
         /// <returns></returns>
         public async Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid)
         {

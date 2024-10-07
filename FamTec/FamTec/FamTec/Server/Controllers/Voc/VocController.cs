@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.Voc;
+﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Voc;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc;
 using FamTec.Shared.Server.DTO;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Voc
 {
+    [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
     public class VocController : ControllerBase

@@ -52,10 +52,8 @@ namespace FamTec.Server.Hubs
                     }
                 }
 
-                Console.WriteLine(roomName);
-                Console.WriteLine(Context.ConnectionId);
-                Console.WriteLine("그룹추가 :" + _connectionGroups.Count + "/" + Context.ConnectionId);
-                await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Join Success");
+                Console.WriteLine("그룹추가 :" + _connectionGroups.Count + "/" + Context.ConnectionId + "/" + roomName + "Join");
+                //await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Join Success");
             }
             catch(Exception ex)
             {
@@ -73,10 +71,11 @@ namespace FamTec.Server.Hubs
         {
             try
             {
-                Console.WriteLine(Context.ConnectionId);
 
                 // 그룹에서 사용자 제거
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+
+                Console.WriteLine($"그룹삭제 : {_connectionGroups.Count} / {Context.ConnectionId} / {roomName} Remove");
 
                 // 해당 connectionId의 그룹 목록 업데이트
                 if (_connectionGroups.TryGetValue(Context.ConnectionId, out var groupList))
@@ -90,10 +89,10 @@ namespace FamTec.Server.Hubs
                         }
                     }
                 }
-                
-                await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Remove Success");
+
+                //await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Remove Success");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
             }

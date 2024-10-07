@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace FamTec.Server.Databases;
 
 public partial class WorksContext : DbContext
 {
+
     public WorksContext()
     {
+        
     }
 
-    public WorksContext(DbContextOptions<WorksContext> options)
-        : base(options)
+    public WorksContext(DbContextOptions<WorksContext> options) : base(options)
     {
+  
     }
 
     public virtual DbSet<AdminPlaceTb> AdminPlaceTbs { get; set; }
@@ -80,7 +83,36 @@ public partial class WorksContext : DbContext
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
+    {
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+        string? ConnStr = configuration.GetConnectionString("DefaultConnection");
+        if (!String.IsNullOrWhiteSpace(ConnStr))
+        {
+            optionsBuilder.UseMySql(ConnStr, ServerVersion.Parse("10.11.7-mariadb"),
+                mySqlOption =>
+                {
+                    mySqlOption.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
+                    mySqlOption.CommandTimeout(60);
+                    mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
+                });
+        }
+        else
+        {
+            throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty.");
+        }
+
+        //optionsBuilder.UseMySql("server=123.2.156.122,3306;database=Works;user id=root;password=stecdev1234!", ServerVersion.Parse("10.11.7-mariadb"),
+        //    mySqlOption =>
+        //    {
+        //        mySqlOption.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
+        //        mySqlOption.CommandTimeout(60);
+        //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
+        //    });
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

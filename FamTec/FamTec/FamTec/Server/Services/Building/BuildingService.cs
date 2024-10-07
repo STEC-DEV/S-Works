@@ -245,6 +245,8 @@ namespace FamTec.Server.Services.Building
                         ID = e.Id,
                         BuildingCD = e.BuildingCd,
                         Name = e.Name,
+                        Tel = e.Tel,
+                        TotalFloor = e.FloorNum,
                         Address = e.Address,
                         CompletionDT = e.CompletionDt,
                         CreateDT = e.CreateDt

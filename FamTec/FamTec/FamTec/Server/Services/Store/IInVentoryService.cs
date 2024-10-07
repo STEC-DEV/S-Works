@@ -73,6 +73,15 @@ namespace FamTec.Server.Services.Store
         public Task<ResponseList<InOutLocationDTO>> GetMaterialRoomNumService(HttpContext context, int MaterialId, int buildingid);
 
         /// <summary>
+        /// 해당 품목의 재고수량 반환
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="MaterialId"></param>
+        /// <param name="RoomId"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<InOutLocationDTO>> GetMaterialRoomInventoryNumService(HttpContext context, int MaterialId, int RoomId);
+
+        /// <summary>
         /// 출고할 품목 LIST 반환 - FRONT용
         /// </summary>
         /// <param name="context"></param>
