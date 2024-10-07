@@ -98,6 +98,29 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+        /// <summary>
+        /// 계약종별에 따른 월별 데이터
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetAllContractTypeMonthRecord")]
+        public async Task<IActionResult> GetAllContractTypeMonthRecord()
+        {
+            try
+            {
+                DateTime ThisDate = DateTime.Now;
+                int placeid = 13;
+
+                var temp = await EnergyInfoRepository.GetContractTypeMonthList(ThisDate, placeid);
+                return Ok(temp);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
        
 

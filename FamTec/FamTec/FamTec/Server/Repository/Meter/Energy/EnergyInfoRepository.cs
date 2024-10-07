@@ -247,9 +247,55 @@ namespace FamTec.Server.Repository.Meter.Energy
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+                throw;
             }
         }
+
+        public async Task<DaysTotalContractTypeEnergyDTO> GetContractTypeMonthList(DateTime SearchDate, int placeid)
+        {
+            try
+            {
+                int Years = SearchDate.Year;
+                int Month = SearchDate.Month;
+
+                // 해당년도-월의 1일과 마지막일을 구함.
+                int numberOfDays = DateTime.DaysInMonth(Years, Month);
+                List<DateTime> allDates = Enumerable.Range(1, numberOfDays)
+                                        .Select(day => new DateTime(Years, Month, day))
+                                        .ToList();
+
+
+                var MeterItemList = await context.MeterItemTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.ContractTbId != null)
+                    .GroupBy(m => m.ContractTbId)
+                    .ToListAsync();
+
+
+                List<DaysTotalContractTypeEnergyDTO> DTO = new List<DaysTotalContractTypeEnergyDTO>();
+
+
+                for (int i = 0; i < MeterItemList.Count(); i++)
+                {
+                    // 다른 KEY로 변경
+                    for (int j = 0; j < MeterItemList[i].Count(); j++)
+                    {
+                        // 같은 KEY 내에서 반복
+                    }
+                }
+
+
+
+                Console.WriteLine("asdfasdf");
+
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 해당년-월 데이터 선택된 검침기 리스트 출력
@@ -762,6 +808,6 @@ namespace FamTec.Server.Repository.Meter.Energy
             }
         }
 
-     
+   
     }
 }

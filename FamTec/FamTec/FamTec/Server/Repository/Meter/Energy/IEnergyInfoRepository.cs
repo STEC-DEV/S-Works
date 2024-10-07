@@ -29,6 +29,22 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <returns></returns>
         public Task<DayEnergyDTO?> GetMonthList(DateTime SearchDate, int placeid);
 
+        public Task<DaysTotalContractTypeEnergyDTO> GetContractTypeMonthList(DateTime SearchDate, int placeid);
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// 해당년-월 데이터 선택된 검침기 리스트 출력
         /// </summary>
