@@ -50,8 +50,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BuildingService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Building\\BuildingService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Building\\BuildingService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Building\\BuildingService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Building\\BuildingService.cs",
+              "ViewState": "AgIAAJsBAAAAAAAAAAAkwLsBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-08T04:49:20.683Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -62,8 +75,7 @@
               "RelativeToolTip": "FamTec\\Shared\\Model\\InventoryTb.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:54:58.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:54:58.729Z"
             },
             {
               "$type": "Document",
@@ -75,8 +87,7 @@
               "RelativeToolTip": "FamTec\\Server\\Databases\\WorksContext.cs",
               "ViewState": "AgIAAC0CAAAAAAAAAAAewD4CAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:53:44.851Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:53:44.851Z"
             },
             {
               "$type": "Document",
@@ -88,8 +99,7 @@
               "RelativeToolTip": "FamTec\\Shared\\MariaTable.txt",
               "ViewState": "AgIAAPYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-10-08T04:52:48.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:52:48.149Z"
             },
             {
               "$type": "Document",
@@ -101,8 +111,7 @@
               "RelativeToolTip": "FamTec\\Server\\Program.cs",
               "ViewState": "AgIAAMoBAAAAAAAAAAAuwOwBAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:52:35.003Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:52:35.003Z"
             },
             {
               "$type": "Document",
@@ -114,21 +123,7 @@
               "RelativeToolTip": "FamTec\\Shared\\TableINFO.txt",
               "ViewState": "AgIAAPgBAAAAAAAAAAArwBgCAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2024-10-08T04:52:20.546Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "BuildingService.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Building\\BuildingService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Building\\BuildingService.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Building\\BuildingService.cs",
-              "RelativeToolTip": "FamTec\\Server\\Services\\Building\\BuildingService.cs",
-              "ViewState": "AgIAAKoBAAAAAAAAAAAewLsBAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:49:20.683Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:52:20.546Z"
             },
             {
               "$type": "Document",
@@ -140,8 +135,7 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Building\\BuildingController.cs",
               "ViewState": "AgIAAFgAAAAAAAAAAAArwGsAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:40:07.277Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:40:07.277Z"
             },
             {
               "$type": "Document",
@@ -153,8 +147,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
               "ViewState": "AgIAAKcAAAAAAAAAAAD4v7cAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-08T04:34:03.652Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-08T04:34:03.652Z"
             },
             {
               "$type": "Document",
