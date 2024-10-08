@@ -1,0 +1,36 @@
+
+.material[b-fp076vg4en] {
+    display: flex;
+    flex-direction: column;
+
+    gap:var(--default-pd);
+
+    height:350px;
+    max-height : 350px;
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color : var(--default-color);
+}
+
+.header[b-fp076vg4en]{
+
+}
+
+.content[b-fp076vg4en]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.img[b-fp076vg4en]{
+    
+}
+
+.title[b-fp076vg4en] {
+    font-size: 1rem;
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}

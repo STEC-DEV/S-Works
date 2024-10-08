@@ -247,7 +247,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.SaveToken = true; // 토큰을 저장하도록 설정
-    options.RequireHttpsMetadata = true; // HTTPS 요구
+    options.RequireHttpsMetadata = false; // HTTPS 요구 원래값 True 였음.
     // 토큰검증 매개변수
     options.TokenValidationParameters = new TokenValidationParameters() 
     {
