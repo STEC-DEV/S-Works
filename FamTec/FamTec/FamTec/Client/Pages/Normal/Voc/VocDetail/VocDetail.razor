@@ -1,21 +1,26 @@
 ﻿@page "/voc/{Id:int}"
 @using FamTec.Client.Pages.Normal.Voc.VocDetail.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using System.IdentityModel.Tokens.Jwt
 @using FamTec.Shared.Server.DTO
 @using System.Text.Json
 @inject AuthenticationStateProvider _authStateProvider
+@inherits PermissionComponentBase
 
 <div class="vocdetail-container">
     <div class="vocdetail-wrap">
         <div class="vocdetail-info">
-            <VocInfo Data="VocData" EditPerm=IsEditPerm OnLoad="OnLoadVocDetail" />
+            <VocInfo 
+                Data="VocData" 
+                EditPerm=VOCEDIT 
+                OnLoad="OnLoadVocDetail" />
         </div>
         <div class="vocdetail-comment">
             <VocComment 
                 Id="Id" 
                 ListData="@VocCommentData" 
-                EditMode=@IsEditCommnet
+                EditMode=@VOCEDIT
                 OnLoadComment="OnLoadVocComment"
                 OnLoadInfo="OnLoadVocDetail"
                 />
@@ -27,14 +32,23 @@
     [Parameter] public int Id { get; set; }
     DetailVocDTO VocData = new DetailVocDTO();
     List<VocCommentListDTO> VocCommentData = new List<VocCommentListDTO>();
-    bool IsEditPerm = false;
-    bool IsEditCommnet = false;
+
+
+    bool VOCEDIT = false;
 
     protected async override Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadVocDetail();
         await OnLoadVocComment();
-        await OnPermCheck();
+        // await OnPermCheck();
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnUserPermCheck();
+        Console.WriteLine("민원 권한 : "+ VOCEDIT);
     }
 
 
@@ -47,6 +61,7 @@
             return;
         }
         VocData = resGet.data;
+        await OnUserPermCheck();
     }
 
 
@@ -60,7 +75,7 @@
                 await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
             }
             VocCommentData = resGet.data;
-
+            await OnUserPermCheck();
 
         }catch(Exception ex)
         {
@@ -69,20 +84,25 @@
     }
 
 
-
-    //사용자 권한 체크
-    private async Task OnPermCheck()
+    private async Task OnUserPermCheck()
     {
-        var auth = await _authStateProvider.GetAuthenticationStateAsync();
-        var user = auth.User;
-        var userType = user.Claims.FirstOrDefault(c => c.Type == "UserType")?.Value;
-        var userPerm = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
-        var userVocPerm = user.Claims.FirstOrDefault(c => c.Type == "VocPerms")?.Value;
-        
+        //수정권한 없는경우 리턴
+        if (!VOC)
+        {
+            VOCEDIT = false;
+            return;
+        }
+
+        if (VocData.Type == 0)
+        {
+            VOCEDIT = true;
+            return;
+        }
+
         string checkVocType = VocData.Type switch
         {
             0 => "",
-            1 => "VocMacine",
+            1 => "VocMachine",
             2 => "VocElec",
             3 => "VocLift",
             4 => "VocFire",
@@ -92,46 +112,9 @@
             8 => "VocSecurity",
             _ => "",
         };
-        //관리자면 전체 권한 분류 미
-        if(userType == "ADMIN")
-        {
-            IsEditPerm = true;
-            IsEditCommnet = true;
-        }
 
-        //사용자 기본권한 Voc 읽기 및 쓰기 권한 확인 => 쓰기 true시 분류 가능
-        if (!string.IsNullOrEmpty(userPerm))
-        {
-            try
-            {
-                var jsonPerm = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerm);
-                if (jsonPerm.TryGetValue("UserPerm_Voc", out string vocPermValue))
-                {
-                    IsEditPerm = vocPermValue == "2";
-                };
-            }catch(Exception ex)
-            {
-                JS.InvokeVoidAsync("alert", "json parse 에러");
-            }
-        }
-
-        //Voc에서 부서별 권환을 통해서 코멘트 작성 가능
-        if (!string.IsNullOrEmpty(userVocPerm))
-        {
-            try
-            {
-                var jsonPerm = JsonSerializer.Deserialize<Dictionary<string, string>>(userVocPerm);
-                Console.WriteLine(jsonPerm);
-                if (!string.IsNullOrEmpty(checkVocType) && jsonPerm.TryGetValue(checkVocType, out string permValue))
-                {
-                    IsEditCommnet = permValue.Equals("True", StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            catch (Exception ex)
-            {
-                JS.InvokeVoidAsync("alert", "voc json parse 에러");
-            }
-        }
+        bool vocPerm = await (_authStateProvider as CustomAuthProvider).GetUserVocPermission(checkVocType);
+        VOCEDIT = vocPerm;
 
     }
 }

@@ -19,7 +19,7 @@
                     단위
                 </span>
             </th>
-            @if (USEREDIT)
+            @if (BASIC)
             {
                 <th class="th">
                     <span>
@@ -35,7 +35,7 @@
         {
             <tr class="tbody-tr">
                 <td class="td text-left">
-                    @unit.idx
+                    @(unit.idx+1)
                 </td>
                 <td class="td">
                     @(unit.value.SystemCreate ? "시스템" : "사용자 정의")
@@ -43,7 +43,7 @@
                 <td class="td">
                     @unit.value.Unit
                 </td>
-                @if (USEREDIT)
+                @if (BASIC)
                 {
                     <td class="td text-right">
                         @if (!unit.value.SystemCreate)

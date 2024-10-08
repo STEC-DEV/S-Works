@@ -13,14 +13,14 @@
         <div class="detail-perm">
             <UserPermComponent UserPerm="@(EditMode ? User.UserPerm : OriginalUser.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
         </div>
-        @if (User.UserPerm.VocPerm >= 1)
+        @if (User.UserPerm.VocPerm > 1)
         {
             <div class="useradd-sub yappear">
                 <UserVocPermComponent UserVocPerm="@(EditMode ? User.UserVocPerm : OriginalUser.UserVocPerm)" EditMode=@EditMode />
             </div>
         }
     </div>
-    @if (USEREDIT)
+    @if (USER)
     {
         <div class="btns">
             @if (!EditMode)

@@ -11,7 +11,7 @@
             <span class="title">
                 @title 설비
             </span>
-            @if (USEREDIT)
+            @if (HasEditPermission())
             {
                 <div class="header-options">
                     <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
@@ -97,6 +97,20 @@
         Navigation.NavigateTo($"/facility/{FacType}/add");
     }
 
-
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
 
 }

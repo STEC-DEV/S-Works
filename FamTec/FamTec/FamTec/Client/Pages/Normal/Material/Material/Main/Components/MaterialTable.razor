@@ -36,7 +36,7 @@
                     안전재고
                 </span>
             </th>
-            @if (USEREDIT)
+            @if (MATERIAL)
             {
                 <th class="th">
                     <span>
@@ -86,7 +86,7 @@
                     <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.SafeNum
                     </td>
-                    @if (USEREDIT)
+                    @if (MATERIAL)
                     {
                         <td class="td">
                             <input type="checkbox"
@@ -101,7 +101,7 @@
 
     </tbody>
 </table>
-@if(USEREDIT && _updateModal && materialId != 0)
+@if(MATERIAL && _updateModal && materialId != 0)
 {
     <ModalBackground>
         <ChildComponent>

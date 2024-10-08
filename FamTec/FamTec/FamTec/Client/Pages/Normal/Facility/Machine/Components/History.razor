@@ -10,7 +10,7 @@
         <span class="title">
             유지보수 이력
         </span>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="options">
                 @if (_editMode)
@@ -43,7 +43,7 @@
         OnCheck="OnCheck"
         EditMode=_editMode
         />
-    @if (_isDel)
+    @if (_isDel && HasEditPermission())
     {
         <ModalBackground>
             <ChildComponent>
@@ -157,5 +157,21 @@
     private void OnAdd()
     {
         Navigation.NavigateTo($"/facility/{FacType}/{Id}/maintenance/add");
+    }
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
     }
 }

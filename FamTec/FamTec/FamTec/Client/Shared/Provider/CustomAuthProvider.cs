@@ -17,20 +17,7 @@ namespace FamTec.Client.Shared.Provider
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            //var jwtToken = await _localStorageService.GetItemAsync<string>("sworks-jwt-token");
-
-            //if (string.IsNullOrEmpty(jwtToken))
-            //{
-            //    return new AuthenticationState(
-            //        new ClaimsPrincipal(new ClaimsIdentity()));
-            //}
-
-            //var claims = ParseClaimsFromJwt(jwtToken);
-            //var identity = new ClaimsIdentity(claims, "JwtAuth");
-
-
-            //return new AuthenticationState(new ClaimsPrincipal(
-            //    new ClaimsIdentity(ParseClaimsFromJwt(jwtToken),"JwtAuth")));
+            
             var jwtToken = await _localStorageService.GetItemAsync<string>("sworks-jwt-token");
             //Console.WriteLine($"JWT Token: {(string.IsNullOrEmpty(jwtToken) ? "Not found" : "Found")}");
 
@@ -129,43 +116,62 @@ namespace FamTec.Client.Shared.Provider
         }
 
 
-        ////권한 확인
-        //public async Task<bool> GetVocPerm()
-        //{
-        //    var authState = await GetAuthenticationStateAsync();
-        //    var user = authState.User;
-
-
-        //    return false;
-        //}
-
-
+        //token UserPerms 내부 권한 확인
         public async Task<int> GetUserPermission(string permName)
         {
+            //Console.WriteLine(permName);
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
             var userPerms = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
-            Console.WriteLine("userPerms: " + userPerms);
             if (string.IsNullOrEmpty(userPerms)) return 0;
 
             try
             {
                 var perms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerms);
+
                 if (perms != null && perms.TryGetValue(permName, out string permValueString))
                 {
                     if (int.TryParse(permValueString, out int permValue))
                     {
-                        Console.WriteLine($"리턴 permValue: {permValue}");
                         return permValue;
                     }
                 }
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"Error parsing UserPerms00: {ex.Message}");
+                Console.WriteLine($"Error parsing UserPerms: {ex.Message}");
             }
 
             return 0; // 권한이 없거나 파싱할 수 없는 경우 0 반환
+        }
+
+        //token VocPemrs 내부 권한 단일 확인 
+        public async Task<bool> GetUserVocPermission(string permName)
+        {
+            //Console.WriteLine(permName);
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userPerms = user.Claims.FirstOrDefault(c => c.Type == "VocPerms")?.Value;
+            if (string.IsNullOrEmpty(userPerms)) return false;
+
+            try
+            {
+                var perms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerms);
+
+                if (perms != null && perms.TryGetValue(permName, out string permValueString))
+                {
+                    if (bool.TryParse(permValueString, out bool permValue))
+                    {
+                        return permValue;
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing UserVocPerms: {ex.Message}");
+            }
+
+            return false; // 권한이 없거나 파싱할 수 없는 경우 0 반환
         }
 
         //사업장 이름 조회
