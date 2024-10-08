@@ -66,9 +66,8 @@ public partial class BuildingTb
     /// <summary>
     /// 준공년월
     /// </summary>
-    [Column("COMPLETION_DT")]
-    [StringLength(255)]
-    public string? CompletionDt { get; set; }
+    [Column("COMPLETION_DT", TypeName = "datetime")]
+    public DateTime? CompletionDt { get; set; }
 
     /// <summary>
     /// 건물구조

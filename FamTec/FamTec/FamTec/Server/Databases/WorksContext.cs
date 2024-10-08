@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace FamTec.Server.Databases;
 
 public partial class WorksContext : DbContext
 {
-
     public WorksContext()
     {
-        
     }
 
-    public WorksContext(DbContextOptions<WorksContext> options) : base(options)
+    public WorksContext(DbContextOptions<WorksContext> options)
+        : base(options)
     {
-  
     }
 
     public virtual DbSet<AdminPlaceTb> AdminPlaceTbs { get; set; }
@@ -85,9 +82,9 @@ public partial class WorksContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+              .SetBasePath(Directory.GetCurrentDirectory())
+              .AddJsonFile("appsettings.json")
+              .Build();
 
         string? ConnStr = configuration.GetConnectionString("DefaultConnection");
         if (!String.IsNullOrWhiteSpace(ConnStr))
@@ -119,12 +116,6 @@ public partial class WorksContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
-
-        // 쿼리스트링 사용
-        modelBuilder.Entity<MaterialInventory>(entity =>
-        {
-            entity.HasNoDiscriminator();
-        });
 
         modelBuilder.Entity<AdminPlaceTb>(entity =>
         {
@@ -914,7 +905,6 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
-
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

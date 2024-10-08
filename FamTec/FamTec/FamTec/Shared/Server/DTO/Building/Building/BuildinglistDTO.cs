@@ -41,7 +41,7 @@ namespace FamTec.Shared.Server.DTO.Building.Building
         /// <summary>
         /// 준공년월
         /// </summary>
-        public string? CompletionDT { get; set; }
+        public DateTime? CompletionDT { get; set; }
 
         /// <summary>
         /// 등록일자
