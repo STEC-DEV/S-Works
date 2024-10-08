@@ -103,15 +103,18 @@
             if (resManagerPlace.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
-                //이전페이지로 되돌릴지 말지 선택
                 return;
             }
-            if(resManagerPlace.data.Count == 0)
+            if(resManagerPlace.data == null)
             {
                 OriginalPlace = new List<AdminPlaceDTO>();
             }
-            PlaceList = resManagerPlace.data;
-            OriginalPlace = resManagerPlace.data;
+            else
+            {
+                PlaceList = resManagerPlace.data;
+                OriginalPlace = resManagerPlace.data;
+            }
+            
             FilterPlace = OriginalPlace;
             SelectCount = OriginalPlace.Count;
         }
