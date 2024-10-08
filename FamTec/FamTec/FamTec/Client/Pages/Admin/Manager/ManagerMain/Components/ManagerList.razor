@@ -13,22 +13,31 @@
             <span class="title">
                 매니저 목록
             </span>
-            @if (UserType != "매니저")
+            @if (UserType)
             {
                 <div class="managerlist-btns">
                     <Button Name="등록" Type=0 OnClick="@OnSignUp" />
-                    <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
+                    @if(deleteManagerList.Count > 0)
+                    {
+                        <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
+                    }
+
                 </div>
             }
         </div>
         <div class="managerlist-list">
-            <Table ListData="@managerList" OnCheck="OnSelected" Detail="true" />
+            <Table 
+                ListData="@managerList" 
+                OnCheck="OnSelected" 
+                Detail="true" 
+                CheckItems="@deleteManagerList"
+                />
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string? UserType { get; set; }
+    [Parameter] public bool UserType { get; set; }
 
     List<ManagerDTO>? managerList;
     List<int>? deleteManagerList = new List<int>();

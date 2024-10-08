@@ -14,13 +14,22 @@
             @if (EditMode)
             {
                 <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-                <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+                @if(_selectDelList.Count > 0)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+                }
+                
             }
             
         </div>
     </div>
     <div class="content">
-        <ManagerTable ListData="@SelectList" OnChecked="OnChecked" EditMode=EditMode />
+        <ManagerTable 
+            ListData="@SelectList" 
+            OnChecked="OnChecked" 
+            EditMode=EditMode 
+            CheckedItem="@_selectDelList"
+            />
     </div>
     @if (_isModal)
     {
@@ -89,6 +98,7 @@
         }
 
         await JS.InvokeVoidAsync("alert", "매니저 수정 완료");
+        _selectDelList.Clear();
         await OnLoadManager.InvokeAsync();
         StateHasChanged();
     }

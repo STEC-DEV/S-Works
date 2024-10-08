@@ -82,7 +82,7 @@
                         @row.ContractNum
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
-                        @row.ContractDt
+                        @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
                         <StatusCard Status="@(row.Status)" />

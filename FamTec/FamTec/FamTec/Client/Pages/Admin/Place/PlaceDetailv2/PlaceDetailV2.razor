@@ -4,6 +4,7 @@
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
 
 <div class="container ">
     <div class="section">
@@ -14,20 +15,26 @@
         <PlaceManager 
             Id=Id
             SelectList="@(_editMode ? UpdateManagerList: OriginalManagerList)" 
-            EditMode=@_editMode />
+            EditMode=@_editMode 
+            OnLoadManager="LoadPlaceDetailInfo"
+            />
     </div>
-    <div class="btns yappear">
-        @if (_editMode)
-        {
-            <Button Name="저장" Width=true Type=0 OnClick="OnUpdate" />
-            <Button Name="취소" Width=true Type=1 OnClick="OnEditMode" />
-        }
-        else
-        {
-            <Button Name="편집" Width=true Type=0 OnClick="OnEditMode" />
-        }
+    @if (ADMINEDIT)
+    {
+        <div class="btns yappear">
+            @if (_editMode)
+            {
+                <Button Name="저장" Width=true Type=0 OnClick="OnUpdate" />
+                <Button Name="취소" Width=true Type=1 OnClick="OnEditMode" />
+            }
+            else
+            {
+                <Button Name="편집" Width=true Type=0 OnClick="OnEditMode" />
+            }
 
-    </div>
+        </div>
+    }
+
 </div>
 
 @code {
@@ -50,6 +57,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await LoadPlaceDetailInfo();
     }
 
@@ -86,10 +94,10 @@
         try
         {
 
-            Console.WriteLine("[사업장 추가 끝]");
+            
 
             ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
-            Console.WriteLine(resUpdate.code);
+            
             if (resUpdate.code == 200)
             {
                 await LoadPlaceDetailInfo();
