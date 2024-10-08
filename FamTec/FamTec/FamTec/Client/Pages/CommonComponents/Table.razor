@@ -3,91 +3,7 @@
 @using FamTec.Shared.Client.DTO
 @inject NavigationManager Navigation
 @inherits PermissionComponentBase
-@* <table class="table-container">
-    <thead class="table-head">
-        <tr class="thead-tr">
-            @foreach (var property in typeof(T).GetProperties())
-            {
-                var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
-                if (displayAttribute?.Name == null)
-                {
-                    
-                }
-                else
-                {
-                    <th class="table-th">@displayAttribute?.Name</th>
-                }
-                
-            }
-        </tr>
-    </thead>
-    <tbody class="table-body">
-        @if (DataList.Count == 0)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Empty />
-                </td>
-            </tr>
-        }
-        else if (DataList is null)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Loading />
-                </td>
-            </tr>
-        }
-        else
-        {
-            @foreach (var item in DataList)
-            {
-                <tr class="tbody-tr">
-                    @foreach (var property in typeof(T).GetProperties())
-                    {
-                        if (property.Name != "IsSelect" && property.Name != "Id")
-                        {
-                            if(property.Name == "Name" && Detail)
-                            {
-                                var idValue = item.GetType().GetProperty("Id").GetValue(item);
-                                var link = $"{Navigation.Uri}/{idValue}";
-                                <td class="table-td">
-                                    <NavLink class="table-td-link" href=@link>
-                                        @property.GetValue(item)
-                                    </NavLink>
-                                </td>
-                            }
-                            else
-                            {
-                                <td class="table-td">@property.GetValue(item)</td>
-                            }
-                        }
-                        else if (property.Name == "Id")
-                        {
 
-                        }
-                        else
-                        {
-                            var idValue = (int)item.GetType().GetProperty("Id").GetValue(item);
-                            bool isChecked = CheckedItems.Contains(idValue);
-
-                            <td class="table-td">
-                                <input type="checkbox"
-                                       value="@idValue"
-                                       checked="@isChecked"
-                                       @onchange="e=> InVokeCheckboxSelect(e,idValue, item)" />
-                            </td>
-                        }
-
-                    }
-                </tr>
-            }
-        }
-        
-        
-        
-    </tbody>
-</table> *@
 <table class="table-container">
     <thead class="table-head">
         <tr class="thead-tr">
@@ -129,48 +45,6 @@
         }
         else
         {
-            @* @foreach (var item in DataList)
-            {
-                <tr class="tbody-tr">
-                    @foreach (var property in typeof(T).GetProperties())
-                    {
-                        if (property.Name != "IsSelect" && property.Name != "Id")
-                        {
-                            if (property.Name == "Name" && Detail)
-                            {
-                                var idValue = item.GetType().GetProperty("Id").GetValue(item);
-                                var link = $"{Navigation.Uri}/{idValue}";
-                                <td class="table-td">
-                                    <NavLink class="table-td-link" href=@link>
-                                        @property.GetValue(item)
-                                    </NavLink>
-                                </td>
-                            }
-                            else
-                            {
-                                <td class="table-td">@property.GetValue(item)</td>
-                            }
-                        }
-                        else if (property.Name == "Id")
-                        {
-
-                        }
-                        else
-                        {
-                            var idValue = (int)item.GetType().GetProperty("Id").GetValue(item);
-                            bool isChecked = CheckedItems.Contains(idValue);
-
-                            <td class="table-td">
-                                <input type="checkbox"
-                                       value="@idValue"
-                                       checked="@isChecked"
-                                       @onchange="e=> InVokeCheckboxSelect(e,idValue, item)" />
-                            </td>
-                        }
-
-                    }
-                </tr>
-            } *@
             @foreach(ManagerDTO row in ListData)
             {
                 <tr class="tbody-tr">
@@ -186,7 +60,11 @@
                     @if (ADMINEDIT)
                     {
                         <td class="table-td">
-                            <input type="checkbox" @onchange="e=> InVokeCheckboxSelect(e,row.Id, row)" />
+                            <input 
+                                type="checkbox" 
+                                @onchange="e=> InVokeCheckboxSelect(e,row.Id, row)" 
+                                checked=@(CheckItems.Contains(row.Id))
+                                />
                         </td>
                     }
                     
@@ -205,8 +83,8 @@
     [Parameter] public string Url { get; set; }
     [Parameter] public bool Detail { get; set; }
     [Parameter] public string ReturnType { get; set; }
+    [Parameter] public List<int> CheckItems { get; set; }
 
-    private HashSet<int> CheckedItems = new HashSet<int>();
 
     protected override async Task OnInitializedAsync()
     {

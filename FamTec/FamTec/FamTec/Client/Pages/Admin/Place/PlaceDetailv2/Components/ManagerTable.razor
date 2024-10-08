@@ -62,7 +62,11 @@
                     @if (EditMode)
                     {
                         <td class="td">
-                            <input type="checkbox" @onchange="(e) => OnCheck(e, row)" />
+                            <input 
+                                type="checkbox" 
+                                @onchange="(e) => OnCheck(e, row)" 
+                                checked=@(CheckedItem.Any(c => c.Id == row.Id))
+                                />
                         </td>
                     }
                     
@@ -75,8 +79,10 @@
 @code {
     [Parameter] public List<ManagerDTO> ListData { get; set; }
     [Parameter] public EventCallback<(bool,ManagerDTO)> OnChecked { get; set; }
-    [Parameter] public List<int> CheckedItem{ get; set; }
+    [Parameter] public List<ManagerDTO> CheckedItem { get; set; }
     [Parameter] public bool EditMode { get; set; }
+
+
 
     //체크 함수
     private async void OnCheck(ChangeEventArgs e, ManagerDTO manager)

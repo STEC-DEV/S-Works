@@ -1976,6 +1976,10 @@
     border-bottom: var(--default-bd);
 }
 
+.manager .options[b-j49e40mv1x] {
+    display :flex;
+    gap : var(--half-pd);
+}
 
 .manager .title[b-j49e40mv1x]{
     display: flex;

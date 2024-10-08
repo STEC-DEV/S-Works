@@ -14,17 +14,15 @@
         {
             <li class="depart-add-form">
                 
-                <Toggle
-                    Title="사업장 관리부서"
-                    @bind-Value=@newDepartment.ManagerYN
-                    IsChecked="@newDepartment.ManagerYN"
-                    EditMode=true
-                    />
+                
                 <div class="add-form">
                     <Input Type="text" Placeholder="부서명" @bind-Value=@newDepartment.Name />
                     <Button Name="추가" OnClick="@AddDepartment" />
                 </div>
-                
+                <Toggle Title="사업장 관리부서"
+                        @bind-Value=@newDepartment.ManagerYN
+                        IsChecked="@newDepartment.ManagerYN"
+                        EditMode=true />
             </li>
         }
 
@@ -41,7 +39,9 @@
                         <input class="depart-select"
                                type="checkbox"
                                value="@item.Id"
-                               @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" />
+                               @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" 
+                               checked=@(CheckItems.Contains(item.Id))
+                               />
                     </div>
                 }
             </li>
@@ -70,6 +70,7 @@
     [Parameter] public EventCallback OnLoadDepartments { get; set; }
     [Parameter] public EventCallback OnListSync { get; set; }
     [Parameter] public bool AddMode {get; set;}
+    [Parameter] public List<int> CheckItems { get; set; }
 
 
     private Dictionary<int, bool> editStates = new Dictionary<int, bool>();

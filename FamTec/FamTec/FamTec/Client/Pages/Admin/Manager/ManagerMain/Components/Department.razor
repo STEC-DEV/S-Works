@@ -19,15 +19,20 @@
                 DataList="departmentList" 
                 OnLoadDepartments="LoadDepartments"
                 Select="OnCheck"
+                CheckItems="@DelList"
                 Edit=EditMode/>
         </div>
         <div class="depart-btns">
-            @if(UserType != "매니저")
+            @if(UserType)
             {
                 if (EditMode)
                 {
                     <Button Name="닫기" Type="0" OnClick="OnEditMode" />
-                    <Button Name="삭제" Type="1" OnClick="OnDelDepartments" />
+                    @if(DelList.Count > 0)
+                    {
+                        <Button Name="삭제" Type="1" OnClick="OnDelDepartments" />
+                    }
+                    
                 }
                 else
                 {
@@ -41,7 +46,7 @@
 </div>
 
 @code {
-    [Parameter] public string? UserType{ get; set; }
+    [Parameter] public bool UserType{ get; set; }
 
     List<DepartmentDTO>? departmentList = new List<DepartmentDTO>();
     private bool is_openModal = false;
@@ -99,6 +104,7 @@
                 return;
             }
             await LoadDepartments();
+            DelList.Clear();
             StateHasChanged();
         }catch(Exception ex)
         {

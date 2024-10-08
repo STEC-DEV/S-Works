@@ -13,10 +13,10 @@
         
         <InputCol
             Label="부서명"
-            @bind-Value=@Data.Name
+            @bind-Value=@_editDep
             />
         <Toggle Title="사업장 관리부서"
-                @bind-Value=@Data.ManagerYN
+                @bind-Value=@_editCheck
                 IsChecked="@Data.ManagerYN"
                 EditMode=true />
     </div>
@@ -32,11 +32,13 @@
     [Parameter] public EventCallback OnLoadDepartment{ get; set; }
     [Parameter] public DepartmentDTO Data { get; set; }
 
-    string _originalDep = "";
+    string _editDep = "";
+    bool _editCheck;
 
     protected override async Task OnParametersSetAsync()
     {
-        _originalDep = Data.Name;
+        _editDep = Data.Name;
+        _editCheck = Data.ManagerYN;
     }
 
 
@@ -46,11 +48,13 @@
 
         try
         {
-            if (Data.Name.ToLower() == _originalDep.ToLower())
+            if (Data.Name.ToLower() == _editDep.ToLower())
             {
                 await JS.InvokeVoidAsync("alert", "변경된 내용이 없습니다.");
                 return;
             }
+            Data.Name = _editDep;
+            Data.ManagerYN = _editCheck;
             ResponseUnit<DepartmentDTO> resUpdate = await apiManager.PostAsync<DepartmentDTO>("Department/sign/UpdateDepartment", Data);
             if (resUpdate.code != 200)
             {

@@ -21,6 +21,10 @@
     border-bottom: var(--default-bd);
 }
 
+.manager .options {
+    display :flex;
+    gap : var(--half-pd);
+}
 
 .manager .title{
     display: flex;

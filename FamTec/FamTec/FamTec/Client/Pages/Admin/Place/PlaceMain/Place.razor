@@ -20,7 +20,7 @@
                 사업장 목록
             </span>
             <div class="table-header-option">
-                <Input Placeholder="search" Type="text" ValueChanged="OnSearchTextChanged" />
+                <Input Placeholder="search" Type="text" Value="@searchText" ValueChanged="OnSearchTextChanged" />
 
                 @if (ADMINEDIT)
                 {
@@ -28,10 +28,14 @@
                             Width="true"
                             Type=0
                             OnClick = "@OnAddPage" />
-                    <Button Name="삭제"
+                    @if (CheckedItems.Count > 0)
+                    {
+                        <Button Name="삭제"
                             Width="true"
                             Type=1
                             OnClick="@OnDeletePlace" />
+                    }
+
                 }
 
             </div>
@@ -97,7 +101,7 @@
             }
             PlaceList = res.data ?? new List<PlaceTableDTO>();
             FilterPlaceList = PlaceList;
-            
+
             // UI 갱신
             await InvokeAsync(StateHasChanged);
         }
@@ -124,7 +128,7 @@
                                                     (p.ContractNum?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                             ).ToList();
 
-                                                                    
+
 
         await InvokeAsync(StateHasChanged);
     }
@@ -179,6 +183,7 @@
                     CheckedItems.Clear();
                     await LoadPlace();
                 }
+                searchText = "";
 
             }
         }
