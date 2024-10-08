@@ -87,9 +87,9 @@
         try
         {
             ResponseUnit<DManagerDTO> resDetailManager = await apiManager.GetUnitAsync<DManagerDTO>($"AdminUser/sign/DetailManagerInfo?adminId={Id}");
-            if (object.ReferenceEquals(null, resDetailManager) || resDetailManager.code != 200)
+            if (resDetailManager.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "매니저 상세 정보 조회 실패");
+                await JS.InvokeVoidAsync("alert", resDetailManager.message);
                 return;
             }
             OriginalManager = resDetailManager.data;
