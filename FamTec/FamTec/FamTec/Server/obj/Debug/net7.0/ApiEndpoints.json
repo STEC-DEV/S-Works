@@ -2161,6 +2161,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "GetContractTypeUseCompare",
+    "RelativePath": "api/Energy/sign/GetContractTypeUseCompare",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
     "Method": "GetMeterMonthRecord",
     "RelativePath": "api/Energy/sign/GetMeterMonthRecord",
     "HttpMethod": "GET",

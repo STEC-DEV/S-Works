@@ -74,6 +74,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
         }
 
         /// <summary>
+        /// (1) - 일일검침
         /// 해당년도-월의 검침기별 일별 전체데이터 조회
         /// </summary>
         /// <returns></returns>
@@ -99,6 +100,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
         }
 
         /// <summary>
+        /// (2) 계약종별
         /// 계약종별에 따른 월별 데이터
         /// </summary>
         /// <returns></returns>
@@ -122,6 +124,33 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+        /// <summary>
+        /// (3) 사용량비교
+        /// 당월 / 전월 / 전년동월
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetContractTypeUseCompare")]
+        public async Task<IActionResult> GetContractTypeUseCompare()
+        {
+            try
+            {
+                DateTime ThisDate = DateTime.Now;
+                int placeid = 13;
+                var temp = await EnergyInfoRepository.GetContractTypeUseCompare(ThisDate, placeid);
+                return Ok(temp);
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+
+
 
         [AllowAnonymous]
         [HttpGet]
@@ -143,6 +172,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+       
        
 
     }
