@@ -19,7 +19,7 @@
                     Type="text" 
                     Value="@_searchText"
                     ValueChanged="OnSearchTextChanged" />
-                @if (USEREDIT)
+                @if (USER)
                 {
                     <Button Name="추가" Width=true OnClick=AddUser Type=0 />
                     <Button Name="삭제" Width=true Type=1 OnClick="OnDelUser" />

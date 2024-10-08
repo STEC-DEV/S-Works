@@ -4,30 +4,36 @@
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
 @using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
 
-<div class="buildingadd-container yappear">
-    <div class="buildingadd-info">
-        <CascadingValue Value="@Building">
-            <ChildContent>
-                <BuildingInfo  />
-            </ChildContent>
-        </CascadingValue>
-        
+@if (BASIC)
+{
+    <div class="buildingadd-container yappear">
+        <div class="buildingadd-info">
+            <CascadingValue Value="@Building">
+                <ChildContent>
+                    <BuildingInfo />
+                </ChildContent>
+            </CascadingValue>
+
+        </div>
+        <div class="buildingadd-btns">
+            <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
+            <Button Name="취소" Width=true Type=1 />
+        </div>
     </div>
-    <div class="buildingadd-btns">
-        <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
-        <Button Name="취소" Width=true Type=1  />
-    </div>
-</div>
+}
+
 
 @code {
     AddBuildingDTO Building;
     List<string> BuildingProperties;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         Building = new AddBuildingDTO();
-        return base.OnInitializedAsync();
+        await base.OnInitializedAsync();
+        await OnCheckPerm();
     }
 
     private async void OnAdd()
@@ -39,6 +45,16 @@
         }
         Navigation.NavigateTo("/basic/buildings");
 
+    }
+
+    private async Task OnCheckPerm()
+    {
+        if (!BASIC)
+        {
+            await JS.InvokeVoidAsync("history.back");
+            await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");
+            return;
+        }
     }
 
 }

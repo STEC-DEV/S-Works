@@ -18,12 +18,12 @@
         <Group GroupData="@group" LoadGroup="OnLoadGroup" />
 
     }
-    @if(USEREDIT){
+    @if(BASIC){
         <label class="sub-btn" @onclick=@OnModal>
             항목 추가
         </label>
     }
-    @if (IsModal)
+    @if (IsModal && BASIC)
     {
         <ModalBackground>
             <ChildComponent>

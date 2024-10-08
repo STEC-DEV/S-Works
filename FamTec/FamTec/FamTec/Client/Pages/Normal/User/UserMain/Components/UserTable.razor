@@ -32,7 +32,7 @@
                     상태
                 </span>
             </th>
-            @if (USEREDIT)
+            @if (USER)
             {
                 <th class="th table-select"></th>
             }
@@ -101,7 +101,7 @@
                             
                         </span>
                     </td>
-                    @if (USEREDIT)
+                    @if (USER)
                     {
                         <td class="td text-center">
                             <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))" />

@@ -19,7 +19,7 @@
                     단위
                 </span>
             </th>
-            @if (USEREDIT)
+            @if (BASIC)
             {
                 <th class="th">
                     <span>
@@ -43,7 +43,7 @@
                 <td class="td">
                     @unit.value.Unit
                 </td>
-                @if (USEREDIT)
+                @if (BASIC)
                 {
                     <td class="td text-right">
                         @if (!unit.value.SystemCreate)

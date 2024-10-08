@@ -149,24 +149,25 @@
             },
         };
 
-        /*
-       * 설비
+       /*
+        * 설비
         */
         if (
             _placePerm.PermMachine.Value || _placePerm.PermElec.Value ||
             _placePerm.PermLift.Value || _placePerm.PermFire.Value ||
             _placePerm.PermConstruct.Value || _placePerm.PermNetwork.Value ||
-            _placePerm.PermBeauty.Value || _placePerm.PermSecurity.Value ||
-            machine || elec || lift || fire || construct || network || beauty || security
+            _placePerm.PermBeauty.Value || _placePerm.PermSecurity.Value 
         )
         {
-            test.Add(
+            if (machine || elec || lift || fire || construct || network || beauty || security)
+            {
+                test.Add(
                 new Category
                     {
                         Name = "설비 유지 관리",
                         Url = "/facility",
                         SubCategory = new List<Category>
-                            {
+                                {
                         _placePerm.PermMachine.Value && machine ? new Category { Name = "기계 설비", Url = "/machine" } : null,
                         _placePerm.PermElec.Value && elec? new Category { Name = "전기 설비", Url = "/electronic" } : null,
                         _placePerm.PermLift.Value && lift? new Category { Name = "승강 설비", Url = "/lift" } : null,
@@ -176,10 +177,12 @@
                         _placePerm.PermBeauty.Value && beauty? new Category { Name = "미화 설비", Url = "/beauty" } : null,
                         _placePerm.PermSecurity.Value && security? new Category { Name = "보안 설비", Url = "/security" } : null,
 
-                            },
+                                },
 
                     }
             );
+            }
+            
 
         }
        /*

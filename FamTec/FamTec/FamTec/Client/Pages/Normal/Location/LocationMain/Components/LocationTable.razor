@@ -27,7 +27,7 @@
                     층
                 </span>
             </th>
-            @if (USEREDIT)
+            @if (BASIC)
             {
                 <th class="th">
                     <span>
@@ -39,7 +39,7 @@
         </tr>
     </thead>
     <tbody class="tbody">
-        @if (isAddingRow && USEREDIT)
+        @if (isAddingRow && BASIC)
         {
             <tr class="tbody-tr">
                 <td class="td text-left">
@@ -82,7 +82,7 @@
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td>
-                @if (USEREDIT)
+                @if (BASIC)
                 {
                     <td class="td text-right">
                         <input type="checkbox"
@@ -92,7 +92,7 @@
                 }
                 
             </tr>
-            @if (_isEditing && USEREDIT)
+            @if (_isEditing && BASIC)
             {
                 <ModalBackground>
                     <ChildComponent>

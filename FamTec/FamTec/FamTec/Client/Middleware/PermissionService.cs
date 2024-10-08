@@ -57,5 +57,10 @@ namespace FamTec.Client.Middleware
             return name;
         }
         
+
+        public async Task<int> GetUserPerm(string permName)
+        {
+            return await (_authStateProvider as CustomAuthProvider).GetUserPermission(permName);
+        }
     }
 }

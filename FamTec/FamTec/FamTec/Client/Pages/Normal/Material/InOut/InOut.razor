@@ -3,6 +3,7 @@
 @using FamTec.Client.Pages.Normal.Material.InOut.Components
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 @using FamTec.Shared.Server.DTO
+@inherits PermissionComponentBase
 
 <div class="inout yappear">
     <div class="inout-wrap">
@@ -12,12 +13,14 @@
             </span>
             <div class="option">
                 <Input Placeholder="search" ValueChanged="OnSearch" />
-                <Button 
-                    Name="등록" 
-                    Width=true 
-                    Type="0"
-                    OnClick="OnAddMove"
-                    />
+                @if (MATERIAL)
+                {
+                    <Button Name="등록"
+                            Width=true
+                            Type="0"
+                            OnClick="OnAddMove" />
+                }
+
             </div>
         </div>
         <div class="contents">
@@ -34,7 +37,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await OnLoadInOut();
+
     }
 
 

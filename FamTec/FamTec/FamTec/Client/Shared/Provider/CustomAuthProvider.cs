@@ -116,6 +116,7 @@ namespace FamTec.Client.Shared.Provider
         }
 
 
+        //token UserPerms 내부 권한 확인
         public async Task<int> GetUserPermission(string permName)
         {
             //Console.WriteLine(permName);
@@ -142,6 +143,35 @@ namespace FamTec.Client.Shared.Provider
             }
 
             return 0; // 권한이 없거나 파싱할 수 없는 경우 0 반환
+        }
+
+        //token VocPemrs 내부 권한 단일 확인 
+        public async Task<bool> GetUserVocPermission(string permName)
+        {
+            //Console.WriteLine(permName);
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userPerms = user.Claims.FirstOrDefault(c => c.Type == "VocPerms")?.Value;
+            if (string.IsNullOrEmpty(userPerms)) return false;
+
+            try
+            {
+                var perms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerms);
+
+                if (perms != null && perms.TryGetValue(permName, out string permValueString))
+                {
+                    if (bool.TryParse(permValueString, out bool permValue))
+                    {
+                        return permValue;
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing UserVocPerms: {ex.Message}");
+            }
+
+            return false; // 권한이 없거나 파싱할 수 없는 경우 0 반환
         }
 
         //사업장 이름 조회

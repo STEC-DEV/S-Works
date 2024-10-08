@@ -50,10 +50,14 @@
                     QR
                 </span>
             </th>
-            <th class="th">
-                <span>
-                </span>
-            </th>
+            @if (HasEditPermission())
+            {
+                <th class="th">
+                    <span>
+                    </span>
+                </th>
+            }
+            
         </tr>
     </thead>
     <tbody class="tbody">
@@ -117,7 +121,7 @@
                         Id="@row.Id"
                         />
                     </td>
-                    @if (USEREDIT)
+                    @if (HasEditPermission())
                     {
                         <td class="td">
                             <input type="checkbox" />
@@ -145,5 +149,22 @@
     {
         Navigation.NavigateTo($"/facility/{FacType}/{Id}");
 
+    }
+
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
     }
 }

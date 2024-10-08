@@ -17,18 +17,21 @@
                         Type="text" 
                         ValueChanged="OnSearch"
                         />
-                    @if (USEREDIT)
+                    @if (MATERIAL)
                     {
                         <Button Name="등록"
                                 Type="0"
                                 Width=true 
                                 OnClick="OnEdit"
                                 />
-                        <Button Name="삭제"
-                                Type="1"
-                                Width=true 
-                                OnClick="OnDelete"
-                                />
+                        @if(CheckList.Count > 0)
+                        {
+                            <Button Name="삭제"
+                                    Type="1"
+                                    Width=true
+                                    OnClick="OnDelete" />
+                        }
+                    
                     }
                 </div>
             
@@ -41,7 +44,7 @@
                 />
         </div>
     </div>
-    @if (EditMode)
+    @if (EditMode && MATERIAL)
     {
         <ModalBackground>
             <ChildComponent>

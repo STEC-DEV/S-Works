@@ -14,7 +14,7 @@
         FacType=@FacType
         OnLoad="OnLoadFacility"
         />
-    @if (USEREDIT)
+    @if (HasEditPermission())
     {
         <label class="sub-btn yappear" @onclick=@OnModal>
             항목 추가
@@ -31,7 +31,7 @@
         <History Id="@Id" FacType="@FacType"/>
     </div>
     
-    @if (IsModal)
+    @if (IsModal && HasEditPermission())
     {
         <ModalBackground>
             <ChildComponent>
@@ -102,6 +102,20 @@
         IsModal = !IsModal;
     }
 
-    
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
     
 }

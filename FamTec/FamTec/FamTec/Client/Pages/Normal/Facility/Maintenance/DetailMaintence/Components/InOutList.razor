@@ -2,27 +2,31 @@
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 @using FamTec.Shared.Server.DTO
-
+@inherits PermissionComponentBase
 
 <div class="list yappear">
     <div class="header">
         <span class="title">
             사용 자재 목록
         </span>
-        <div class="option">
-            @if (!EditMode)
-            {
-                <Button Name="편집" Width=true OnClick="OnEditMode" />
-            }
-            else
-            {
-                if (DelUseMaterial.UseMaintenenceIDs.Count != 0)
+        @if (HasEditPermission())
+        {
+            <div class="option">
+                @if (!EditMode)
                 {
-                    <Button Name="삭제" Width=true Type="1" OnClick="OnDel" />
+                    <Button Name="편집" Width=true OnClick="OnEditMode" />
                 }
-                <Button Name="취소" Width=true Type="2" OnClick="OnEditMode" />
-            }
-        </div>
+                else
+                {
+                    if (DelUseMaterial.UseMaintenenceIDs.Count != 0)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDel" />
+                    }
+                    <Button Name="취소" Width=true Type="2" OnClick="OnEditMode" />
+                }
+            </div>
+        }
+
         
 
     </div>
@@ -42,6 +46,7 @@
     [Parameter] public List<UseMaterialDTO> ListData { get; set; }
     [Parameter] public int MaintenanceId { get; set; }
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public string FacType { get; set; }
     [Parameter] public EventCallback OnEdit { get; set; }
     [Parameter] public EventCallback OnLoadMaintenance { get; set; }
 
@@ -49,6 +54,12 @@
     DeleteUseMaterialDTO DelUseMaterial = new DeleteUseMaterialDTO();
 
     List<int> CheckMaterial = new List<int>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
 
 
     private async Task OnDel()
@@ -95,5 +106,21 @@
     {
         DelUseMaterial.UseMaintenenceIDs.Clear();
         OnEdit.InvokeAsync();
+    }
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
     }
 }
