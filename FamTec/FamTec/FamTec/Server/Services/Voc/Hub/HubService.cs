@@ -189,7 +189,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         string base64 = Convert.ToBase64String(bytes);
 
                         /* 테스트 */
-                        string url = $"http://123.2.156.148/vocinfo/{base64}";
+                        string url = $"http://125.131.105.172:5245/vocinfo/{base64}";
                         //string url = $"https://sws.s-tec.co.kr/vocinfo?vocid={base64}";
 
                         // 카카오 API 전송

@@ -1,0 +1,56 @@
+.placedetail-container[b-u2r3mc6cc1]{
+    display: flex;
+    flex-direction : column;
+    width:100%;
+    height:100%;
+
+    gap:var(--default-pd);
+}
+/*
+    정보 영역
+*/
+.placedetail-container .placedetail-wrap[b-u2r3mc6cc1]{
+    display:flex;
+    height:100%;
+    gap : var(--wide-pd);
+    overflow:hidden;
+
+    padding:var(--default-pd);
+}
+
+.placedetail-container .placedetail-info[b-u2r3mc6cc1]{
+    flex:1;
+    height:100%;
+    width:100%;
+
+    box-shadow : var(--default-bs);
+}
+
+.placedetail-container .placedetail-option[b-u2r3mc6cc1]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--wide-pd);
+    flex:2;
+    height:100%;
+    width:100%;
+}
+
+.placedetail-container .placedetail-toggle[b-u2r3mc6cc1]{
+    box-shadow : var(--default-bs);
+}
+
+.placedetail-container .placedetail-manager[b-u2r3mc6cc1] {
+    height: 100%;
+    overflow: hidden;
+    box-shadow: var(--default-bs);
+}
+
+/*
+    버튼 영역
+*/
+.placedetail-container .placedetail-btns[b-u2r3mc6cc1]{
+    display:flex;
+    justify-content:flex-end;
+    gap:var(--half-pd);
+    padding:var(--default-pd);
+}

@@ -1,0 +1,121 @@
+.modal[b-h0xm92gdwh] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+    
+}
+
+
+.modal .header>.title[b-h0xm92gdwh]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.content[b-h0xm92gdwh] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.list[b-h0xm92gdwh]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+    width:100%;
+
+    overflow:hidden;
+}
+
+.label[b-h0xm92gdwh]{
+    font-size:1.01rem;
+    font-weight : bold;
+    color : var(--main-color);
+}
+
+
+.wrap[b-h0xm92gdwh]{
+    display:flex;
+    gap:var(--default-pd);
+    width:100%;
+    max-height : 300px;
+    /*overflow:auto;*/
+    position:relative;
+    scroll-behavior: smooth;
+}
+
+.ul-head[b-h0xm92gdwh]{
+    position:sticky;
+    top : 0;
+    width:100%;
+    display:flex;
+    justify-content:space-around;
+
+    padding : var(--half-pd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--main-color);
+}
+
+.ul-head>span[b-h0xm92gdwh]{
+    color:var(--default-color);
+    font-size: var(--normal-size);
+}
+.ul[b-h0xm92gdwh]{
+    overflow:auto;
+}
+
+.li[b-h0xm92gdwh]{
+    display :flex;
+    width:100%;
+    justify-content:space-around;
+
+    border-bottom: var(--comp-bd);
+    padding :var(--default-pd) var(--half-pd);
+
+}
+
+.text[b-h0xm92gdwh]{
+    font-size: var(--normal-size);
+    font-weight : bold;
+    color:var(--main-color);
+    flex: 1; /* 균등한 너비 분배 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.form[b-h0xm92gdwh]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--default-pd);
+}
+
+.row[b-h0xm92gdwh]{
+    display:flex;
+    gap:var(--default-pd);
+}
+
+.group[b-h0xm92gdwh]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-h0xm92gdwh]{
+    display : flex;
+    gap : var(--default-pd);
+}

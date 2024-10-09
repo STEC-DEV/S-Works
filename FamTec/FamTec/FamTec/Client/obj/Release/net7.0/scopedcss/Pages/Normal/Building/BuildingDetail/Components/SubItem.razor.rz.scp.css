@@ -1,0 +1,54 @@
+
+.item-container[b-g0m4qyatee] {
+    display: block;
+}
+
+.item-wrap[b-g0m4qyatee] {
+    display: flex;
+    flex-wrap : nowrap;
+    gap: var(--default-pd);
+    align-items : center;
+}
+
+.item-label[b-g0m4qyatee] {
+    flex :1;
+    /*padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);*/
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color : var(--main-color);
+    /*color: var(--default-color);
+    background-color: var(--main-color);*/
+}
+
+.item-values[b-g0m4qyatee] {
+    flex:6;
+    display: flex;
+    gap : var(--half-pd);
+    /*flex-direction: column;*/
+}
+
+.value[b-g0m4qyatee] {
+    padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+
+
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    background-color: var(--content-back-color);
+}
+
+.del-btn[b-g0m4qyatee] {
+    width: 15px;
+    height: 15px;
+    border : none;
+    border-radius: 50px;
+    background-color :var(--del-color);
+}
+
+.del-btn:hover[b-g0m4qyatee]{
+    background-color :var(--del-hover);
+}

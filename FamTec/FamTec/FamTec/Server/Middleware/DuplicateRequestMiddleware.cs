@@ -9,7 +9,7 @@ namespace FamTec.Server.Middleware
         private readonly RequestDelegate _next;
         private readonly IMemoryCache _cache;
 
-        private const int RequestLimit = 10; // 5초 내에 허용할 최대 요청 횟수
+        private const int RequestLimit = 300; // 5초 내에 허용할 최대 요청 횟수
         private const int CacheExpirationInSeconds = 5; // 캐시 유지 시간 (초)
 
         public DuplicateRequestMiddleware(RequestDelegate next, IMemoryCache cache)

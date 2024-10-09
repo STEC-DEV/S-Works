@@ -1,0 +1,7 @@
+
+
+.machine[b-5v2u98goqu]{
+    display : flex;
+    flex-direction : column;
+    gap:var(--default-pd);
+}

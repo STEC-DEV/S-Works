@@ -1,0 +1,11 @@
+
+
+.inventory[b-n3p8wv27mw]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--default-pd);
+
+    padding : var(--default-pd);
+
+    height : 100%;
+}
