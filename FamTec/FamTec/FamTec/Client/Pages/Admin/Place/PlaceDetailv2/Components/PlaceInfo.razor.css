@@ -28,7 +28,10 @@
     color: var(--main-color);
 }
 
-
+.options{
+    display:flex;
+    gap : var(--half-pd);
+}
 
 
 

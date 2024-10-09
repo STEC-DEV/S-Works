@@ -23,12 +23,21 @@
     @if (Type =="USERID")
     {
         <div class="guide">
-            <span class="text @(idValide ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(idValide ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            @* <span class="text @(idValide ? "true":"")"> *@
+            <span class="text">
                 4자 이상 30자 이하(영어/숫자, 공백 제외)
             </span>
         </div>
         <div class="guide">
-            <span class="text @(idDuplication ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(idDuplication ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            <span class="text">
                 중복 검사
             </span>
         </div>
@@ -37,12 +46,20 @@
     @if(Type == "PW")
     {
         <div class="guide">
-            <span class="text @(pw1 ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(pw1 ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            <span class="text">
                 8자 이상 입력(공백 제외)
             </span>
         </div>
         <div class="guide">
-            <span class="text @(pw2 ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(pw2 ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            <span class="text">
                 영문/숫자/특수문자 모두 포함
             </span>
         </div>
@@ -50,7 +67,11 @@
     @if(Type == "PWCHECK")
     {
         <div class="guide">
-            <span class="text @(pw_check ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(pw_check ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            <span class="text">
                 비밀번호 일치
             </span>
         </div>
@@ -58,7 +79,11 @@
     @if (Type == "EMAIL")
     {
         <div class="guide">
-            <span class="text @(emailValid ? "true":"")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill=@(emailValid ? "green" : "gray") class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
+            <span class="text">
                 유효한 이메일 형식
             </span>
         </div>

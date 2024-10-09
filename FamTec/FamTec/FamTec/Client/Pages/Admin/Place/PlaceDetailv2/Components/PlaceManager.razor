@@ -3,7 +3,7 @@
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server.DTO
-
+@inherits PermissionComponentBase
 
 <div class="manager yappear">
     <div class="header">
@@ -11,13 +11,22 @@
             사업장 매니저
         </span>
         <div class="options">
-            @if (EditMode)
+            @if (ADMINEDIT)
             {
-                <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-                @if(_selectDelList.Count > 0)
+                @if (_editmode)
                 {
-                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+                    <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+                    @if (_selectDelList.Count > 0)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+                    }
+                    <Button Name="닫기" Width=true Type="2" OnClick="OnEdit" />
                 }
+                else
+                {
+                    <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
+                }
+                
                 
             }
             
@@ -27,11 +36,11 @@
         <ManagerTable 
             ListData="@SelectList" 
             OnChecked="OnChecked" 
-            EditMode=EditMode 
+            EditMode=_editmode 
             CheckedItem="@_selectDelList"
             />
     </div>
-    @if (_isModal)
+    @if (_isModal && _editmode)
     {
         <ModalBackground>
             <ChildComponent>
@@ -53,9 +62,16 @@
     [Parameter] public int Id { get; set; }
     [Parameter] public EventCallback OnLoadManager{ get; set; }
 
+    private bool _editmode = false;
     private bool _isModal = false;
     private List<ManagerDTO> _selectDelList = new List<ManagerDTO>();
     private DeletePlaceManagerDTO deleteManager = new DeletePlaceManagerDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
 
     private void OnSelected(List<ManagerDTO> data)
     {
@@ -106,5 +122,11 @@
     private void OnModal()
     {
         _isModal = !_isModal;
+    }
+
+    private void OnEdit()
+    {
+        _editmode = !_editmode;
+        _selectDelList.Clear();
     }
 }
