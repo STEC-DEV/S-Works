@@ -1,13 +1,29 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.DTO.Place
-
+@inherits PermissionComponentBase
 
 <div class="form yappear">
     <div class="header">
         <span class="title">
             사업장 정보
         </span>
+        @if (ADMINEDIT)
+        {
+            <div class="options">
+            @if (EditMode)
+            {
+                <Button Name="저장" Width=true Type="0" OnClick="OnSaved" />
+                <Button Name="취소" Width=true Type="1" OnClick="OnEdited" />
+            }
+            else
+            {
+                <Button Name="수정" Width=true Type="0" OnClick="OnEdited" />
+            }
+            
+        </div>
+        }
+
     </div>
     <div class="content">
         @if (EditMode)
@@ -75,6 +91,8 @@
 
 @code {
     [Parameter] public UpdatePlaceDTO Data { get; set; }
+    [Parameter] public EventCallback OnEdit { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public bool EditMode { get; set;  }
 
     private int _state = 0;
@@ -95,6 +113,7 @@
 
     protected async override Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _state = (Data.PlaceInfo.Status == true ? 1 : 2);
     }
 
@@ -115,5 +134,15 @@
             Data.PlaceInfo.Status = false;
         }
 
+    }
+
+    private async Task OnSaved()
+    {
+        await OnSave.InvokeAsync();
+    }
+
+    private async void OnEdited()
+    {
+        await OnEdit.InvokeAsync();
     }
 }

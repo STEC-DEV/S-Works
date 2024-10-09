@@ -33,6 +33,7 @@
         </div>
 
     </div>
+
     <div class="btns">
         @if (EditMode)
         {
@@ -42,7 +43,6 @@
         else
         {
             <Button Name="편집" Width=true Type=0 OnClick="OnEdit" />
-            <Button Name="뒤로" Width=true Type=1 />
         }
     </div>
 </div>
@@ -135,7 +135,7 @@
 
 
     /*
-    * (POST)매니저 등록
+    * (POST)매니저 수정
     */
     private async Task OnUpdate()
     {
@@ -183,8 +183,6 @@
             Console.WriteLine($"[Admin][Manager] 매니저 등록 에러" + ex);
             await JS.InvokeVoidAsync("alert", "[Admin][Manager] 매니저 등록 에러");
         }
-
-
     }
 
     private async Task Convert()

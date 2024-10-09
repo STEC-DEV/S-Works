@@ -43,6 +43,7 @@
     align-items: center;
     display: flex;
     flex-direction: row;
+    gap:var(--one-q-pd);
     margin: 2px;
     transition: all .3s;
 }

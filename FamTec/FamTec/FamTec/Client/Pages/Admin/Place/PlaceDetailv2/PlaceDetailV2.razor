@@ -8,7 +8,7 @@
 
 <div class="container ">
     <div class="section">
-        <PlaceInfo Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
+        <PlaceInfo Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode OnEdit="OnEditMode" />
     </div>
     <div class="section-row">
         <PlacePerm Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
@@ -19,7 +19,7 @@
             OnLoadManager="LoadPlaceDetailInfo"
             />
     </div>
-    @if (ADMINEDIT)
+    @* @if (ADMINEDIT)
     {
         <div class="btns yappear">
             @if (_editMode)
@@ -34,7 +34,7 @@
 
         </div>
     }
-
+ *@
 </div>
 
 @code {

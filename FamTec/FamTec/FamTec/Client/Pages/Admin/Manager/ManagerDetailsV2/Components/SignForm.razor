@@ -9,11 +9,27 @@
 <div class="form-container">
     <div class="form-title">
         <span class="title">매니저 정보</span>
+       @*  @if(ADMINEDIT)
+            {
+            <div class="options">
+                @if (_editMode)
+                {
+                    <Button Name="저장" Width=true Type="0" OnClick="OnSaved" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                }
+                else
+                {
+                    <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
+                }
+                
+            
+            </div>
+        } *@
     </div>
     <div class="content">
         <div class="img-area">
             <PreviewBox ImageUrls="@ImageUrl" />
-            @if(EditMode)
+            @if (EditMode)
             {
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
             }
@@ -100,6 +116,7 @@
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public string? ManagerType { get; set; }
     [Parameter] public bool? Valid { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback<bool> ValidChanged { get; set; }
 
 
@@ -107,6 +124,7 @@
     [Parameter] public DManagerDTO Manager { get; set; }
 
 
+    private bool _editMode = false;
     private byte[] imageData;
     private string job;
 
@@ -129,14 +147,14 @@
             "SystemMaster" => "마스터",
             "Master" => "매니저",
             _ => "없음"
-    };
-        
+        };
+
         StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-  
+
         StateHasChanged();
     }
 
@@ -166,5 +184,16 @@
             Valid = overallValid;
             await ValidChanged.InvokeAsync(overallValid);
         }
+    }
+
+
+    private async Task OnSaved()
+    {
+        await OnSave.InvokeAsync();
+    }
+
+    private void OnEdit()
+    {
+        _editMode = !_editMode;
     }
 }
