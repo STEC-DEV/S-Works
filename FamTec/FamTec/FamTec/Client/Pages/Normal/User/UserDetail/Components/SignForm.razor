@@ -88,7 +88,7 @@
                             Value="@UserInfo.Job"
                             Color=true />
                 <TextField2 Label="상태"
-                            Value="@(UserInfo.Status == 1? "재직" :"휴직" )"
+                            Value="@(UserInfo.Status == 1? "휴직" :"재직" )"
                             Color=true />
                 <Toggle Title="알람 수신"
                         @bind-Value="@UserInfo.AlarmYN"

@@ -12,7 +12,7 @@
             <input type="checkbox" />
         } *@
         <label class="item-label" @onclick=@OnItemEdit>
-            @item.ItemKey
+            @item.ItemKey (@item.Unit)
         </label>
         <div class="item-values" @onclick=@OnItemEdit>
             @foreach (var i in item.valueList)

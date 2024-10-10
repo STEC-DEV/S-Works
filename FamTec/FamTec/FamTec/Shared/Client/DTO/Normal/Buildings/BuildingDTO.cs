@@ -46,7 +46,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         /// <summary>
         /// 준공년월
         /// </summary>
-        public string? CompletionDT { get; set; }
+        public DateTime? CompletionDT { get; set; }
 
         /// <summary>
         /// 건물구조

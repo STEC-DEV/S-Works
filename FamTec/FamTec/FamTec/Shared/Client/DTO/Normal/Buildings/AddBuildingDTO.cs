@@ -18,7 +18,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string ConstCompany { get; set; }
         public string BuildingStruct { get; set; }
         public string RoofStruct {  get; set; }
-        public string CompletionDT {  get; set; }
+        public DateTime? CompletionDT {  get; set; }
 
         public string GrossFloorArea { get; set; }
         public string LandArea {  get; set; }
@@ -31,7 +31,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string BasementHeight { get; set; }
         public string ParkingNum { get; set; }
         public string InnerParkingNum { get; set; }
-        public string OutterParkingNum { get; set; }
+        public string OuterParkingNum { get; set; }
         public string ElecCapacity { get; set; }
         public string FaucetCapacity { get; set; }
         public string GenerationCapacity { get; set; }
@@ -40,7 +40,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string WaterTank {  get; set; }
         public string GasCapacity { get; set; }
         public string Boiler {  get; set; }
-        public string Water_Dispenser { get; set; }
+        public string WaterDispenser { get; set; }
         public string LiftNum { get; set; }
         public string PeopleLiftNum { get; set; }
         public string CargoLiftNum { get; set; }

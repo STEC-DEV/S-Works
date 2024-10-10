@@ -11,6 +11,7 @@
 @using System.IdentityModel.Tokens.Jwt
 @using System.Text
 
+
 @inject HttpClient HttpClient
 @inject NavigationManager Navigation
 
@@ -25,11 +26,16 @@
                 />
         </div>
         <div class="place">
-            <PlaceSelectTable 
+            @* <PlaceSelectTable 
                 Id="@Id"
                 PlaceList="@UpdatedManager.PlaceList"
+                PlaceListChanged="@HandlePlaceListChanged"
                 EditMode=EditMode
-                />
+                /> *@
+            <PlaceSelectTable Id="@Id"
+                              PlaceList="@(EditMode ?  UpdatePlace : OriginalPlace)"
+                              PlaceListChanged="@HandlePlaceListChanged"
+                              EditMode=EditMode />
         </div>
 
     </div>
@@ -68,6 +74,7 @@
     {
         await OnLoadDepartments();
         await OnLoadDetailManager();
+        await OnLoadManagerPlace();
     }
 
 
@@ -141,10 +148,6 @@
     {
         try
         {
-            Console.WriteLine("매니저 등록 시작");
-            Console.WriteLine("아이디" +UpdateManager.UserId);
-            Console.WriteLine("비밀번호" +UpdateManager.Password);
-            Console.WriteLine("부서" + UpdateManager.DepartmentId);
             foreach (var i in UpdatedManager.PlaceList)
             {
                 Console.WriteLine("사업장"+i.Name);
@@ -174,6 +177,7 @@
 
 
             await OnLoadDetailManager();
+            await OnLoadManagerPlace();
             OnEdit();
             StateHasChanged();
 
@@ -194,14 +198,63 @@
         UpdatedManager.Password = UpdateManager.Password;
         UpdatedManager.UserId = UpdateManager.UserId;
         UpdatedManager.Email = UpdateManager.Email;
-        
-        
+        UpdatedManager.PlaceList = UpdatePlace;
+
     }
 
     private void OnEdit()
     {
         EditMode = !EditMode;
+        if (!EditMode)
+        {
+            UpdatePlace = OriginalPlace;
+        }
         OnDeepCopyData();
+    }
+
+
+
+    /*================매니저======================*/
+    private async Task HandlePlaceListChanged(List<AdminPlaceDTO> updatedPlaceList)
+    {
+        UpdatedManager.PlaceList = updatedPlaceList;
+        StateHasChanged();
+    }
+
+    List<AdminPlaceDTO> OriginalPlace;
+    List<AdminPlaceDTO> UpdatePlace;
+
+    /*
+    * 매니저 사업장 조회
+    */
+    private async Task OnLoadManagerPlace()
+    {
+        try
+        {
+            ResponseList<AdminPlaceDTO> resManagerPlace = await apiManager.GetListAsync<AdminPlaceDTO>($"AdminPlace/sign/MyWorks/?adminid={Id}");
+            if (resManagerPlace.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
+                return;
+            }
+            if (resManagerPlace.data == null)
+            {
+                OriginalPlace = new List<AdminPlaceDTO>();
+                UpdatePlace = new List<AdminPlaceDTO>();
+            }
+            else
+            {
+                OriginalPlace = resManagerPlace.data;
+                UpdatePlace = new List<AdminPlaceDTO>(resManagerPlace.data);
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
+            Console.WriteLine("[Admin][Manager] 매니저 사업장 조회 실패 \n" + ex);
+            return;
+        }
     }
 
 }

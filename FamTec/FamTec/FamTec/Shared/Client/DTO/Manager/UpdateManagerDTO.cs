@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO.Admin;
+﻿using FamTec.Shared.Client.DTO.Place;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

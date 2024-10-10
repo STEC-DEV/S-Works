@@ -51,7 +51,7 @@
 .buildinginfo .infosection-1{
     flex:1;
     display : grid;
-    grid-template-columns : repeat(2,1fr);
+    grid-template-columns : repeat(4,1fr);
     grid-column-gap  : var(--default-pd);
     grid-row-gap  : var(--default-pd);
 
@@ -59,6 +59,17 @@
 
     background-color : var(--default-color);
 }
+
+
+/*.buildinginfo .infosection-1 {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-column-gap: var(--default-pd);
+    grid-row-gap: var(--default-pd);
+    width: 100%;
+    background-color: var(--default-color);
+}*/
 
 .buildinginfo .infosection-2{
     display :grid;

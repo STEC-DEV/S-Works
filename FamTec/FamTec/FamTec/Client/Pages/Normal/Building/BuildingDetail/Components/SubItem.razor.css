@@ -11,6 +11,7 @@
 }
 
 .item-label {
+    white-space : nowrap;
     flex :1;
     /*padding: var(--half-pd) var(--default-pd);
     border: var(--comp-bd);

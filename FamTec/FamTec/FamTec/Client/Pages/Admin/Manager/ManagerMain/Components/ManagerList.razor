@@ -26,12 +26,18 @@
             }
         </div>
         <div class="managerlist-list">
-            <Table 
-                ListData="@managerList" 
-                OnCheck="OnSelected" 
-                Detail="true" 
-                CheckItems="@deleteManagerList"
-                />
+            @if(@managerList == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+                <Table ListData="@managerList"
+                       OnCheck="OnSelected"
+                       Detail="true"
+                       CheckItems="@deleteManagerList" />
+            }
+            
         </div>
     </div>
 </div>
@@ -68,7 +74,6 @@
             {
                 managerList = resManager.data;
             }
-
             return;
         }
         catch (Exception ex)

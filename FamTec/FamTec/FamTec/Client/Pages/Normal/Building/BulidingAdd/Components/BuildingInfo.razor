@@ -27,8 +27,8 @@
             <InputCol Label="건물코드" Placeholder="건물코드" ValueType="text" @bind-Value=@Building.Code/>
             <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name/>
             <InputCol Label="건물주소" Placeholder="건물주소" ValueType="text" @bind-Value=@Building.Address/>
-            <InputCol Label="대표전화" Placeholder="대표전화" ValueType="text" @bind-Value=@Building.Tel />
-            <InputCol Label="준공년월" Placeholder="준공년월" ValueType="text" @bind-Value=@Building.CompletionDT />
+            <InputCol Label="대표전화" Placeholder="대표전화 ( - 제외)" ValueType="number" @bind-Value=@Building.Tel />
+            <DateInput Label="준공년월" Placeholder="YYYYMMDD" @bind-Date=@Building.CompletionDT />
             <InputCol Label="건물구조" Placeholder="건물구조" ValueType="text" @bind-Value=@Building.BuildingStruct />
             <InputCol Label="건물용도" Placeholder="건물용도" ValueType="text" @bind-Value=@Building.Usage />
             <InputCol Label="시공업체" Placeholder="시공업체" ValueType="text" @bind-Value=@Building.ConstCompany />
@@ -59,7 +59,7 @@
         <GroupField Title="주차장" Sub1="대수" Sub2="옥내" Sub3="옥외"
                     @bind-Data1="@Building.ParkingNum"
                     @bind-Data2="@Building.InnerParkingNum"
-                    @bind-Data3="@Building.OutterParkingNum" />
+                    @bind-Data3="@Building.OuterParkingNum" />
         <GroupField Title="용량" Sub1="전기" Sub2="수전" Sub3="발전"
                     @bind-Data1="@Building.ElecCapacity"
                     @bind-Data2="@Building.FaucetCapacity"
@@ -72,7 +72,7 @@
         <GroupField Title="가스" Sub1="용량" Sub2="보일러" Sub3="냉온수기"
                     @bind-Data1="@Building.GasCapacity"
                     @bind-Data2="@Building.Boiler"
-                    @bind-Data3="@Building.Water_Dispenser" />
+                    @bind-Data3="@Building.WaterDispenser" />
         <GroupField Title="승강기" Sub1="대수" Sub2="인승용" Sub3="화물용"
                     @bind-Data1="@Building.LiftNum"
                     @bind-Data2="@Building.PeopleLiftNum"

@@ -21,17 +21,37 @@
             }
         </div>
         <div class="infosection-1">
-            <InputFieldSmall InputType="text" Label="건물코드" EditMode=EditMode @bind-Value="@(Building.Code)" />
-            <InputFieldSmall InputType="text" Label="건물이름" EditMode=EditMode @bind-Value="@Building.Name" />
-            <InputFieldSmall InputType="text" Label="건물주소" EditMode=EditMode @bind-Value="@Building.Address" />
-            <InputFieldSmall InputType="text" Label="대표전화" EditMode=EditMode @bind-Value="@Building.Tel" />
-            <InputFieldSmall InputType="text" Label="건물구조" EditMode=EditMode @bind-Value="@Building.BuildingStruct" />
-            <InputFieldSmall InputType="text" Label="건물용도" EditMode=EditMode @bind-Value="@Building.Usage" />
-            <InputFieldSmall InputType="text" Label="시공업체" EditMode=EditMode @bind-Value="@Building.ConstCompany" />
-            <InputFieldSmall InputType="text" Label="준공년월" EditMode=EditMode @bind-Value="@Building.CompletionDT" />
-            <InputFieldSmall InputType="text" Label="지붕구조" EditMode=EditMode @bind-Value="@Building.RoofStruct" />
-            <InputFieldSmall InputType="text" Label="소방등급" EditMode=EditMode @bind-Value="@Building.FireRating" />
-            <InputFieldSmall InputType="text" Label="정화조용량" EditMode=EditMode @bind-Value="@Building.SeptictankCapacity" />
+            @if (EditMode)
+            {
+                <InputCol Label="건물코드" Placeholder="건물코드" ValueType="text" @bind-Value=@Building.Code />
+                <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name />
+                <InputCol Label="건물주소" Placeholder="건물주소" ValueType="text" @bind-Value=@Building.Address />
+                <InputCol Label="대표전화" Placeholder="대표전화 ( - 제외)" ValueType="number" @bind-Value=@Building.Tel />
+                <DateInput Label="준공년월" Placeholder="YYYYMMDD" @bind-Date=@Building.CompletionDT />
+                <InputCol Label="건물구조" Placeholder="건물구조" ValueType="text" @bind-Value=@Building.BuildingStruct />
+                <InputCol Label="건물용도" Placeholder="건물용도" ValueType="text" @bind-Value=@Building.Usage />
+                <InputCol Label="시공업체" Placeholder="시공업체" ValueType="text" @bind-Value=@Building.ConstCompany />
+                <InputCol Label="지붕구조" Placeholder="지붕구조" ValueType="text" @bind-Value=@Building.RoofStruct />
+                <InputCol Label="소방등급" Placeholder="소방등급" ValueType="text" @bind-Value=@Building.FireRating />
+                <InputCol Label="정화조용량" Placeholder="정화조용량" ValueType="text" @bind-Value=@Building.SeptictankCapacity />
+            }
+            else
+            {
+                <TextField2 Label="건물코드" Color=true Value="@(Building.Code  ?? "없음")" />
+                <TextField2 Label="건물이름" Color=true Value="@(Building.Name  ?? "없음")" />
+                <TextField2 Label="건물주소" Color=true Value="@(Building.Address  ?? "없음")" />
+                <TextField2 Label="대표전화" Color=true Value="@(Building.Tel  ?? "없음")" />
+                <TextField2 Label="준공년월" Color=true Value="@(Building.CompletionDT?.ToString("yyyy-MM-dd")  ?? "없음")" />
+                <TextField2 Label="건물구조" Color=true Value="@(Building.BuildingStruct  ?? "없음")" />
+                <TextField2 Label="건물용도" Color=true Value="@(Building.Usage  ?? "없음")" />
+                <TextField2 Label="시공업체" Color=true Value="@(Building.ConstCompany  ?? "없음")" />
+                <TextField2 Label="지붕구조" Color=true Value="@(Building.RoofStruct  ?? "없음")" />
+                <TextField2 Label="소방등급" Color=true Value="@(Building.FireRating  ?? "없음")" />
+                <TextField2 Label="정화조용량" Color=true Value="@(Building.SeptictankCapacity  ?? "없음")" />
+                
+                
+            }
+            
         </div>
     </div>
     <div class="infosection-2">
