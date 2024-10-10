@@ -36,6 +36,11 @@
     max-width: 100%;
 }
 
+.img-btn {
+    display: flex;
+    gap: var(--half-pd);
+}
+
 .form-container .form-input{
     /*display: flex;
     flex-direction: column;

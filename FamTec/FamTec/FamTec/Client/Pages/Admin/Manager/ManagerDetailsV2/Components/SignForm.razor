@@ -9,29 +9,21 @@
 <div class="form-container">
     <div class="form-title">
         <span class="title">매니저 정보</span>
-       @*  @if(ADMINEDIT)
-            {
-            <div class="options">
-                @if (_editMode)
-                {
-                    <Button Name="저장" Width=true Type="0" OnClick="OnSaved" />
-                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
-                }
-                else
-                {
-                    <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
-                }
-                
-            
-            </div>
-        } *@
     </div>
     <div class="content">
         <div class="img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
+            <ImageSlider Label="프로필 이미지" Images="@ImageUrl"/>
             @if (EditMode)
             {
-                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                <div class="img-btn">
+                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                    @if(Manager.Image != null)
+                    {
+                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                    }
+                    
+                </div>
+                
             }
             
         </div>
@@ -63,8 +55,8 @@
                                  @bind-Value=Manager.Name />
 
                 <ValidationInput Label="전화번호"
-                                 Placeholder="전화번호"
-                                 ValueType="text"
+                                 Placeholder="전화번호 ( - 제외)"
+                                 ValueType="number"
                                  @bind-Value=@Manager.Phone
                                  Type="Phone" />
 
@@ -128,7 +120,8 @@
     private byte[] imageData;
     private string job;
 
-    private List<string> ImageUrl = new List<string>();
+    // private List<string> ImageUrl = new List<string>();
+    private List<byte[]> ImageUrl = new List<byte[]>();
     private Dictionary<string, bool> validationStates = new Dictionary<string, bool>();
 
 
@@ -154,10 +147,21 @@
 
     protected override async Task OnParametersSetAsync()
     {
-
+        await ImgConvert();
         StateHasChanged();
     }
 
+    private async Task ImgConvert()
+    {
+        ImageUrl.Clear();
+        if (Manager.Image != null &&
+            !string.IsNullOrEmpty(Manager.ImageName)
+            && !ImageUrl.Any(i => i.SequenceEqual(Manager.Image))
+        )
+        {
+            ImageUrl.Add(Manager.Image);
+        }
+    }
 
 
 
@@ -166,12 +170,33 @@
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
 
+        // foreach (var image in images)
+        // {
+        //     Manager.Image = image.Image;
+        //     Manager.ImageName = image.Name;
+        //     ImageUrl.Add(image.ImageUrl);
+        // }
+
         foreach (var image in images)
         {
-            Manager.Image = image.Image;
-            Manager.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+        if (ImageUrl.Count == 0)
+        {
+            Console.WriteLine("신규");
+            ImageUrl.Add(temp[0]);
+        }
+        else
+        {
+            Console.WriteLine("추가");
+            ImageUrl[0] = temp[0];
+        }
+
+        Manager.Image = temp[0];
+        Manager.ImageName = names[0];
+
+
         StateHasChanged();
     }
 
@@ -187,6 +212,8 @@
     }
 
 
+
+
     private async Task OnSaved()
     {
         await OnSave.InvokeAsync();
@@ -196,4 +223,13 @@
     {
         _editMode = !_editMode;
     }
+
+    private void OnDelImg()
+    {
+        Manager.Image = null;
+        Manager.ImageName = null;
+        ImageUrl.Clear();
+        StateHasChanged();
+    }
+
 }

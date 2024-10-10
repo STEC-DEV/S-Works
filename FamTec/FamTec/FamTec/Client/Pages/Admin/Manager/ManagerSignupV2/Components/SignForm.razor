@@ -11,8 +11,15 @@
     </div>
     <div class="content">
         <div class="img-area">
-            <PreviewBox ImageUrls="@ImageUrl" />
-            <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+            @* <PreviewBox ImageUrls="@ImageUrl" /> *@
+            <ImageSlider Label="프로필 이미지" Images="@ImageUrl" />
+            <div class="img-btn">
+                <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                @if (NewManager.Image != null)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                }
+            </div>
         </div>
         <div class="form-input">
             <ValidationInput
@@ -42,11 +49,17 @@
                              @bind-Value=@NewManager.Name
                              />
 
-            <ValidationInput Label="전화번호"
+            @* <ValidationInput Label="전화번호"
                              Placeholder="전화번호"
                              ValueType="text"
                              @bind-Value=@NewManager.Phone
+                             Type="Phone" /> *@
+            <ValidationInput Label="전화번호"
+                             Placeholder="전화번호 ( - 제외)"
+                             ValueType="number"
+                             @bind-Value=@NewManager.Phone
                              Type="Phone" />
+
 
             <ValidationInput Label="이메일"
                              Placeholder="이메일"
@@ -86,7 +99,8 @@
     private byte[] imageData;
     private string job;
 
-    private List<string> ImageUrl = new List<string>();
+    // private List<string> ImageUrl = new List<string>();
+    private List<byte[]> ImageUrl = new List<byte[]>();
     private Dictionary<string, bool> validationStates = new Dictionary<string, bool>();
 
 
@@ -105,52 +119,57 @@
             "SystemMaster" => "마스터",
             "Master" => "매니저",
             _ => "없음"
-    };
-        
+        };
+
         StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-  
+
         StateHasChanged();
     }
 
 
-    private async Task LoadImage(InputFileChangeEventArgs e)
-    {
-        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+    // private async Task LoadImage(InputFileChangeEventArgs e)
+    // {
+    //     var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
 
-        // 파일 확장자 추출
-        var extension = Path.GetExtension(e.File.Name).ToLowerInvariant();
+    //     // 파일 확장자 추출
+    //     var extension = Path.GetExtension(e.File.Name).ToLowerInvariant();
 
-        // 확장자 검사
-        if (!allowedExtensions.Contains(extension))
-        {
-            await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
-            return;
-        }
+    //     // 확장자 검사
+    //     if (!allowedExtensions.Contains(extension))
+    //     {
+    //         await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
+    //         return;
+    //     }
 
 
-        var buffer = new byte[e.File.Size];
-        await using var stream = e.File.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
-        await stream.ReadAsync(buffer);
-        imageData = buffer;
-        NewManager.Image = buffer;
-        NewManager.ImageName = e.File.Name;
-    }
+    //     var buffer = new byte[e.File.Size];
+    //     await using var stream = e.File.OpenReadStream(maxAllowedSize: 1024 * 1024 * 10);
+    //     await stream.ReadAsync(buffer);
+    //     imageData = buffer;
+    //     NewManager.Image = buffer;
+    //     NewManager.ImageName = e.File.Name;
+    // }
 
     private async void OnUploadImage(List<ImageFile> images)
     {
+        ImageUrl.Clear();
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
 
         foreach (var image in images)
         {
-            NewManager.Image = image.Image;
-            NewManager.ImageName = image.Name;
-            ImageUrl.Add(image.ImageUrl);
+            temp.Add(image.Image);
+            names.Add(image.Name);
         }
+
+        NewManager.Image = temp[0];
+        NewManager.ImageName = names[0];
+
+        ImageUrl.Add(temp[0]);
         StateHasChanged();
     }
 
@@ -165,6 +184,16 @@
         }
     }
 
-
+    private async Task OnDelImg()
+    {
+        if (NewManager.Image == null || string.IsNullOrEmpty(NewManager.ImageName) || ImageUrl.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "삭제할 이미지가 존재하지 않습니다.");
+            return;
+        }
+        NewManager.Image = null;
+        NewManager.ImageName = null;
+        ImageUrl.Clear();
+    }
     
 }

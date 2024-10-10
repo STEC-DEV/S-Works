@@ -37,6 +37,11 @@
     max-width: 100%;
 }
 
+.img-btn[b-spcj3x8xjq]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .form-container .form-input[b-spcj3x8xjq]{
     /*display: flex;
     flex-direction: column;
