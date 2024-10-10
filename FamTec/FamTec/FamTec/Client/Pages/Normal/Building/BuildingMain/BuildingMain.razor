@@ -27,11 +27,17 @@
             
         </div>
         <div class="building-contents">
-            <BuildingTable 
-                @ref="@buildingTable"
-                ListData="@BuildingList" 
-                OnCheck="OnCheckBuilding"
-                />
+            @if (BuildingList == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+                <BuildingTable 
+                               ListData="@BuildingList"
+                               OnCheck="OnCheckBuilding" />
+            }
+            @* @ref="@buildingTable" *@
         </div>
     </div>
 </div>
@@ -51,24 +57,34 @@
 
     private async Task OnLoadBuilding()
     {
-        ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
-        if(resGet.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-            return;
-        }
+            ResponseList<BuildingListDTO> resGet = await apiManager.GetListAsync<BuildingListDTO>("Building/sign/MyBuildings");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                return;
+            }
 
-        if(resGet.data == null)
+            if (resGet.data == null)
+            {
+                Console.WriteLine("1");
+                BuildingList = new List<BuildingListDTO>();
+            }
+            else
+            {
+                Console.WriteLine("2");
+                BuildingList = new List<BuildingListDTO>(resGet.data);
+            }
+            Console.WriteLine("3");
+            DelList.Clear();
+            Console.WriteLine("4");
+            // buildingTable.ResetChecks();
+        }catch(Exception ex)
         {
-            BuildingList = new List<BuildingListDTO>();
+            Console.WriteLine(ex);
         }
-        else
-        {
-            BuildingList = resGet.data;
-        }
-
-        DelList.Clear();
-        buildingTable.ResetChecks();
+        
     }
 
 
