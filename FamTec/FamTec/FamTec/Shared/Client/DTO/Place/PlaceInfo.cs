@@ -42,6 +42,7 @@ namespace FamTec.Shared.Client.DTO.Place
                 Id = source.Id;
                 PlaceCd = source.PlaceCd;
                 Name = source.Name;
+                Address = source.Address;
                 Tel = source.Tel;
                 ContractNum = source.ContractNum;
                 ContractDt = source.ContractDt;

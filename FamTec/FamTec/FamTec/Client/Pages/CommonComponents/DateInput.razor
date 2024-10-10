@@ -32,6 +32,15 @@
     }
     private string _inputValue;
 
+    protected override void OnParametersSet()
+    {
+        // 초기화 시 Date 값이 있으면 InputValue를 설정
+        if (Date.HasValue && string.IsNullOrEmpty(_inputValue))
+        {
+            _inputValue = Date.Value.ToString("yyyy-MM-dd");
+        }
+    }
+
     private void ParseDate()
     {
         if (string.IsNullOrWhiteSpace(InputValue))

@@ -179,6 +179,11 @@
     max-width: 100%;
 }
 
+.img-btn[b-spcj3x8xjq]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .form-container .form-input[b-spcj3x8xjq]{
     /*display: flex;
     flex-direction: column;
@@ -1276,6 +1281,11 @@
     justify-content: space-between;
     width: 400px;
     max-width: 100%;
+}
+
+.img-btn[b-hqmk3b7mpz] {
+    display: flex;
+    gap: var(--half-pd);
 }
 
 .form-container .form-input[b-hqmk3b7mpz]{

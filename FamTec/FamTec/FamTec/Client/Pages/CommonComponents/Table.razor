@@ -26,55 +26,56 @@
             
         </tr>
     </thead>
-    <tbody class="table-body">
-        @if (ListData.Count == 0)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Empty />
-                </td>
-            </tr>
-        }
-        else if (ListData is null)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Loading />
-                </td>
-            </tr>
-        }
-        else
-        {
-            @foreach(ManagerDTO row in ListData)
+    @if (ListData == null)
+    {
+        <tbody>
+            <Loading />
+        </tbody>
+    }
+    else
+    {
+        <tbody class="table-body">
+            @if (ListData.Count == 0)
             {
-                <tr class="tbody-tr">
-                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
-                        @row.UserId
+                <tr>
+                    <td colspan="100" style="text-align:center;">
+                        <Empty />
                     </td>
-                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
-                        @row.Name
-                    </td>
-                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
-                        @row.Department
-                    </td>
-                    @if (ADMINEDIT)
-                    {
-                        <td class="table-td">
-                            <input 
-                                type="checkbox" 
-                                @onchange="e=> InVokeCheckboxSelect(e,row.Id, row)" 
-                                checked=@(CheckItems.Contains(row.Id))
-                                />
-                        </td>
-                    }
-                    
                 </tr>
             }
-        }
+
+            else
+            {
+                @foreach (ManagerDTO row in ListData)
+                {
+                    <tr class="tbody-tr">
+                        <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                            @row.UserId
+                        </td>
+                        <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                            @row.Name
+                        </td>
+                        <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                            @row.Department
+                        </td>
+                        @if (ADMINEDIT)
+                        {
+                            <td class="table-td">
+                                <input type="checkbox"
+                                       @onchange="e=> InVokeCheckboxSelect(e,row.Id, row)"
+                                       checked=@(CheckItems.Contains(row.Id)) />
+                            </td>
+                        }
+
+                    </tr>
+                }
+            }
 
 
 
-    </tbody>
+        </tbody>
+    }
+    
 </table>
 
 @code {
