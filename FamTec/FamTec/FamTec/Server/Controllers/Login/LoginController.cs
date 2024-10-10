@@ -56,6 +56,10 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model.code == 200)
                     return Ok(model);
+                else if (model.code == 402)
+                    return Ok(model);
+                else if (model.code == 403)
+                    return Ok(model);
                 else
                     return Ok(model);
             }

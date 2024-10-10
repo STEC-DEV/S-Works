@@ -129,10 +129,10 @@ namespace FamTec.Server.Services.Admin.Account
                 UsersTb? usertb = await UserInfoRepository.GetUserInfo(dto.UserID!, dto.UserPassword!).ConfigureAwait(false);
                 
                 if(usertb is null)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 200 };
+                    return new ResponseUnit<string?>() { message = "로그인 실패 (로그인 정보가 올바르지 않습니다.)", data = null, code = 402 };
 
                 if(usertb.AdminYn != true)
-                    return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 200 };
+                    return new ResponseUnit<string?>() { message = "로그인 실패 (해당 사용자는 관리자가 아닙니다.)", data = null, code = 403 };
 
                 AdminTb? admintb = await AdminUserInfoRepository.GetAdminUserInfo(usertb.Id).ConfigureAwait(false);
                 if(admintb is null)
