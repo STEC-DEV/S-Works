@@ -15,12 +15,19 @@
             </span>
         </div>
         <div class="depart-content">
-            <DepartmentList 
-                DataList="departmentList" 
-                OnLoadDepartments="LoadDepartments"
-                Select="OnCheck"
-                CheckItems="@DelList"
-                Edit=EditMode/>
+            @if(departmentList == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+                <DepartmentList DataList="departmentList"
+                                OnLoadDepartments="LoadDepartments"
+                                Select="OnCheck"
+                                CheckItems="@DelList"
+                                Edit=EditMode />
+            }
+            
         </div>
         <div class="depart-btns">
             @if(UserType)
@@ -48,14 +55,13 @@
 @code {
     [Parameter] public bool UserType{ get; set; }
 
-    List<DepartmentDTO>? departmentList = new List<DepartmentDTO>();
+    List<DepartmentDTO>? departmentList;
     private bool is_openModal = false;
     private bool EditMode = false;
     List<int> DelList = new List<int>();
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("부서관리 컴포넌트 활성화");
         await LoadDepartments();
 
     }
@@ -70,8 +76,15 @@
                 await JS.InvokeVoidAsync("alert", "부서 조회 실패"); 
                 return;
             }
+            if(resDepartment.data == null)
+            {
+                departmentList = new List<DepartmentDTO>();
+            }
+            else
+            {
+                departmentList = resDepartment.data;
+            }
 
-            departmentList = resDepartment.data;
             StateHasChanged();
         }catch(Exception ex)
         {

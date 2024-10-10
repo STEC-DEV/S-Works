@@ -8,7 +8,12 @@
 
 <div class="container ">
     <div class="section">
-        <PlaceInfo Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode OnEdit="OnEditMode" />
+        <PlaceInfo 
+            Data="@(_editMode ? UpdatePlace: OriginalPlace)" 
+            EditMode=@_editMode 
+            OnEdit="OnEditMode" 
+            OnSave="OnUpdate"
+            />
     </div>
     <div class="section-row">
         <PlacePerm Data="@(_editMode ? UpdatePlace: OriginalPlace)" EditMode=@_editMode />
@@ -19,22 +24,6 @@
             OnLoadManager="LoadPlaceDetailInfo"
             />
     </div>
-    @* @if (ADMINEDIT)
-    {
-        <div class="btns yappear">
-            @if (_editMode)
-            {
-                <Button Name="저장" Width=true Type=0 OnClick="OnUpdate" />
-                <Button Name="취소" Width=true Type=1 OnClick="OnEditMode" />
-            }
-            else
-            {
-                <Button Name="편집" Width=true Type=0 OnClick="OnEditMode" />
-            }
-
-        </div>
-    }
- *@
 </div>
 
 @code {

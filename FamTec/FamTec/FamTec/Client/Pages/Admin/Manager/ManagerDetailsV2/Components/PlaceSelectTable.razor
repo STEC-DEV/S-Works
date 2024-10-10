@@ -5,8 +5,8 @@
 @using FamTec.Shared.Client.DTO.Place
 @using FamTec.Shared.Server
 @using FamTec.Shared.Server.DTO
-@using FamTec.Shared.Server.DTO.Admin
-
+@* @using FamTec.Shared.Server.DTO.Admin *@
+@using FamTec.Shared.Client.DTO.Place
 @inject HttpClient HttpClient
 
 <div class="placetable-container">
@@ -32,7 +32,15 @@
         </div>
     </div>
     <div class="placetable-table">
-        <SignUpPlaceTable ListData="FilterPlace" OnCheck="OnSelected" EditMode=EditMode />
+        @if(OriginalPlace == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <SignUpPlaceTable ListData="FilterPlace" OnCheck="OnSelected" EditMode=EditMode />
+        }
+
     </div>
     <div class="placetable-count">
         <span>
@@ -56,6 +64,7 @@
     [Parameter] public int Id { get; set; }
     [Parameter] public List<AdminPlaceDTO> PlaceList { get; set; }
     [Parameter] public bool EditMode {get;set;}
+    [Parameter] public EventCallback<List<AdminPlaceDTO>> PlaceListChanged { get; set; }
 
     List<AdminPlaceDTO> OriginalPlace;
     List<AdminPlaceDTO> FilterPlace = new List<AdminPlaceDTO>();
@@ -72,59 +81,67 @@
 
 
 
-    string _searchText = string.Empty;
+    string _searchText = "";
 
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await OnLoadManagerPlace();
+        
+        // await OnLoadManagerPlace();
+        
 
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        OriginalPlace = PlaceList;
+        await OnSearchTextChanged(_searchText);
+
+
         if (!EditMode)
         {
-            Console.WriteLine("여기탐");
             DelPlace.Clear();
-            await OnLoadManagerPlace();
-            StateHasChanged();
+            // await OnLoadManagerPlace();
         }
+        SelectCount = FilterPlace.Count();
+        StateHasChanged();
     }
 
-    /*
-    * 매니저 사업장 조회
-    */
-    private async Task OnLoadManagerPlace()
-    {
-        try
-        {
-            ResponseList<AdminPlaceDTO> resManagerPlace = await apiManager.GetListAsync<AdminPlaceDTO>($"AdminPlace/sign/MyWorks/?adminid={Id}");
-            if (resManagerPlace.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
-                return;
-            }
-            if(resManagerPlace.data == null)
-            {
-                OriginalPlace = new List<AdminPlaceDTO>();
-            }
-            else
-            {
-                PlaceList = resManagerPlace.data;
-                OriginalPlace = resManagerPlace.data;
-            }
-            
-            FilterPlace = OriginalPlace;
-            SelectCount = OriginalPlace.Count;
-        }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
-            Console.WriteLine("[Admin][Manager] 매니저 사업장 조회 실패 \n" + ex);
-            return;
-        }
-    }
+
+    // /*
+    // * 매니저 사업장 조회
+    // */
+    // private async Task OnLoadManagerPlace()
+    // {
+    //     try
+    //     {
+    //         ResponseList<AdminPlaceDTO> resManagerPlace = await apiManager.GetListAsync<AdminPlaceDTO>($"AdminPlace/sign/MyWorks/?adminid={Id}");
+    //         if (resManagerPlace.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
+    //             return;
+    //         }
+    //         if(resManagerPlace.data == null)
+    //         {
+    //             OriginalPlace = new List<AdminPlaceDTO>();
+    //         }
+    //         else
+    //         {
+    //             PlaceList = resManagerPlace.data;
+    //             OriginalPlace = resManagerPlace.data;
+    //         }
+
+    //         FilterPlace = OriginalPlace;
+    //         SelectCount = OriginalPlace.Count;
+    //         await PlaceListChanged.InvokeAsync(resManagerPlace.data);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         await JS.InvokeVoidAsync("alert", "매니저 사업장 조회 실패");
+    //         Console.WriteLine("[Admin][Manager] 매니저 사업장 조회 실패 \n" + ex);
+    //         return;
+    //     }
+    // }
 
     /*
     * 선택 --
@@ -144,42 +161,53 @@
       /*
      * 검색 데이터 필터링 --
     */
-    private async void OnSearchTextChanged(string text)
+    private async Task OnSearchTextChanged(string text)
     {
         _searchText = text;
 
-        FilterPlace = OriginalPlace
-        .Where(p => String.IsNullOrEmpty(_searchText) ||
-                    (p.PlaceCd?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (p.ContractNum?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
-        .ToList();
 
+        if(OriginalPlace != null)
+        {
+            FilterPlace = OriginalPlace
+            .Where(p => String.IsNullOrEmpty(_searchText) ||
+                        (p.PlaceCd?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (p.ContractNum?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
+            .ToList();
+        }
+
+        
         await InvokeAsync(StateHasChanged);
     }
-    
+
 
     /*
     * add 이벤트
     */
     private async void OnAdd(List<AdminPlaceDTO> selectList)
     {
-
-        Console.WriteLine(selectList.Count);
-
+        bool listChanged = false;
         foreach(var select in selectList)
         {
             if (!PlaceList.Any(m => m.Id == select.Id))
             {
+                Console.WriteLine("추가");
                 PlaceList.Add(select);
-                FilterPlace.Add(select);
+                // FilterPlace.Add(select);
+
+                listChanged = true;
             }
 
-            // FilterPlace.Add(i);
-            // PlaceList.Add(i);
+            if (listChanged)
+            {
+                OriginalPlace = new List<AdminPlaceDTO>(PlaceList);
+                FilterPlace = new List<AdminPlaceDTO>(PlaceList);
+                SelectCount = PlaceList.Count;
+                StateHasChanged();
+            }
         }
-
-        SelectCount += selectList.Count;
+        await PlaceListChanged.InvokeAsync(PlaceList); ;
+        // SelectCount += selectList.Count;
     }
 
     /*
@@ -205,6 +233,7 @@
          // 선택된 아이템 수 업데이트
         // FilterPlaceList = new List<PlaceTableDTO>(PlaceList); // 새로운 List 인스턴스를 생성하여 할당
         StateHasChanged();
+        await PlaceListChanged.InvokeAsync(PlaceList); ;
         await InvokeAsync(StateHasChanged); // UI 업데이트
     }
 

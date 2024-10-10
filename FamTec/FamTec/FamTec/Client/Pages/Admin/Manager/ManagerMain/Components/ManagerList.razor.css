@@ -44,5 +44,5 @@
 
 .managerlist-container .managerlist-list{
     overflow : auto;
-
+    height:100%;
 }
