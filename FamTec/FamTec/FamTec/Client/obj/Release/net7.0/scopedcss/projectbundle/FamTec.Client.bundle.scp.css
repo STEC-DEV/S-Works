@@ -1911,7 +1911,10 @@
     color: var(--main-color);
 }
 
-
+.options[b-44t9s2zuwx]{
+    display:flex;
+    gap : var(--half-pd);
+}
 
 
 
@@ -4157,6 +4160,7 @@
     align-items: center;
     display: flex;
     flex-direction: row;
+    gap:var(--one-q-pd);
     margin: 2px;
     transition: all .3s;
 }
