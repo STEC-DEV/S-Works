@@ -591,7 +591,7 @@ namespace FamTec.Server.Repository.Maintenence
                                             StoreTB.Num = OutStoreEA;// 해당건 출고 수
                                             StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                             StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총 금액
-                                            StoreTB.InoutDate = model.AddStore.InOutDate;
+                                            StoreTB.InoutDate = ThisDate;
                                             StoreTB.CreateDt = ThisDate;
                                             StoreTB.CreateUser = creater;
                                             StoreTB.UpdateDt = ThisDate;
@@ -658,7 +658,7 @@ namespace FamTec.Server.Repository.Maintenence
                                             StoreTB.Num = OutStoreEA; // 해당건 출고 수
                                             StoreTB.UnitPrice = OutInventoryTb.UnitPrice; // 단가
                                             StoreTB.TotalPrice = OutStoreEA * OutInventoryTb.UnitPrice; // 총금액
-                                            StoreTB.InoutDate = model.AddStore.InOutDate;
+                                            StoreTB.InoutDate = ThisDate;
                                             StoreTB.CreateDt = ThisDate;
                                             StoreTB.CreateUser = creater;
                                             StoreTB.UpdateDt = ThisDate;

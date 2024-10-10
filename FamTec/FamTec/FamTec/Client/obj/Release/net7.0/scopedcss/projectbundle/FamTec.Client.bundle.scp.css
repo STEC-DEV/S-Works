@@ -841,7 +841,7 @@
 
 .managerlist-container .managerlist-list[b-8px6k8yis6]{
     overflow : auto;
-
+    height:100%;
 }
 /* /Pages/Admin/Manager/ManagerMain/Components/NotUse/ManagerTable.razor.rz.scp.css */
 .table-container[b-mj93a9brp6] {
@@ -3926,6 +3926,7 @@
     width:100%;
     /*table-layout : fixed;*/
     padding : var(--three-q-pd);
+    
 }
 
 .table-container .table-head[b-huwn4yuky4]{
@@ -4270,7 +4271,7 @@
 .buildinginfo .infosection-1[b-h1ts9omwnh]{
     flex:1;
     display : grid;
-    grid-template-columns : repeat(2,1fr);
+    grid-template-columns : repeat(4,1fr);
     grid-column-gap  : var(--default-pd);
     grid-row-gap  : var(--default-pd);
 
@@ -4278,6 +4279,17 @@
 
     background-color : var(--default-color);
 }
+
+
+/*.buildinginfo .infosection-1 {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-column-gap: var(--default-pd);
+    grid-row-gap: var(--default-pd);
+    width: 100%;
+    background-color: var(--default-color);
+}*/
 
 .buildinginfo .infosection-2[b-h1ts9omwnh]{
     display :grid;
@@ -4318,7 +4330,7 @@
 .infosection-1[b-y1t13l8wvx] {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(4,1fr);
     grid-column-gap: var(--default-pd);
     grid-row-gap: var(--default-pd);
     width: 100%;
@@ -4523,6 +4535,7 @@
 }
 
 .item-label[b-g0m4qyatee] {
+    white-space : nowrap;
     flex :1;
     /*padding: var(--half-pd) var(--default-pd);
     border: var(--comp-bd);

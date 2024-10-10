@@ -27,7 +27,7 @@
 .infosection-1[b-y1t13l8wvx] {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(4,1fr);
     grid-column-gap: var(--default-pd);
     grid-row-gap: var(--default-pd);
     width: 100%;

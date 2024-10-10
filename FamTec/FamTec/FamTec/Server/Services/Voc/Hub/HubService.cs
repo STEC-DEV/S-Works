@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -189,7 +188,10 @@ namespace FamTec.Server.Services.Voc.Hub
                         string base64 = Convert.ToBase64String(bytes);
 
                         /* 테스트 */
-                        string url = $"http://125.131.105.172:5245/m/voc/select/{base64}";
+                        // 템플릿 http로 새로만들어야함.
+                        string url = $"https://125.131.105.172:5245/m/voc/select/{base64}";
+
+
                         //string url = $"https://sws.s-tec.co.kr/vocinfo?vocid={base64}";
 
                         // 카카오 API 전송
