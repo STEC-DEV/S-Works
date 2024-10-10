@@ -4,9 +4,9 @@
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
-
+@* @(ListFacility.Count == 0 || ListFacility == null ? "height" : "") *@
 <div class="fac-container yappear">
-    <div class="fac-wrap @(ListFacility.Count == 0 || ListFacility == null ? "height" : "")">
+    <div class="fac-wrap ">
         <div class="fac-header">
             <span class="title">
                 @title 설비
@@ -27,7 +27,15 @@
             }
             
         </div>
-        <FacilityTable ListData="FilterData" FacType="@FacType" OnCheck="OnChecked" Checkitems="@DelList" />
+        @if (FilterData == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <FacilityTable ListData="FilterData" FacType="@FacType" OnCheck="OnChecked" Checkitems="@DelList" />
+        }
+
     </div>
     
 </div>
@@ -61,7 +69,6 @@
 
     private void ConvertType()
     {
-        Console.WriteLine("설비타입" + FacType);
         title = FacType switch
         {
             "machine" => "기계",
@@ -72,7 +79,7 @@
             "network" => "통신",
             "beauty" => "미화",
             "security" => "보안",
-            _ => "기계"
+            _ => "Unknown"
         };
         StateHasChanged();
     }

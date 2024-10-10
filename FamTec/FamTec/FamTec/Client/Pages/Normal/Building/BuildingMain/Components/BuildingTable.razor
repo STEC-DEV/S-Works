@@ -78,17 +78,17 @@
                         @row.TotalFloor
                     </td>
                     <td class="td" @onclick="()=>OnDetail(id)">
-                        @row.CompletionDt.ToString("yyyy-MM-dd")
+                        @row.CompletionDt?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td" @onclick="()=>OnDetail(id)">
-                        @row.CreateDt.ToString("yyyy-MM-dd")
+                        @row.CreateDt.Value.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td">
                         <QR
                             BaseUrl="voc/add"
                             BtnName="QR"
                             Type="building"
-                            PlaceId="PLACEIDX.Value"
+                            PlaceId="@(PLACEIDX ?? 0)"
                             Id="@row.Id"
                             />
                     </td>
