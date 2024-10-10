@@ -17,6 +17,7 @@
         value="@Value"
         @oninput="OnValueChanged"
         readonly="@ReadOnly"
+        @onkeypress="(e)=>OnkeyPress(e)"
         />
 </div>
 
@@ -30,6 +31,8 @@
     [Parameter] public bool? Row { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
     [Parameter] public bool ReadOnly { get; set; } = false;
+    [Parameter] public EventCallback<KeyboardEventArgs> OnKeyPress { get; set; }
+
 
     private async Task OnValueChanged(ChangeEventArgs e)
     {
@@ -92,6 +95,12 @@
             // For strings, simply pass the value or an empty string
             await ValueChanged.InvokeAsync((T)(object)(newValue ?? string.Empty));
         }
+    }
+
+
+    private async void OnkeyPress(KeyboardEventArgs e)
+    {
+        await OnKeyPress.InvokeAsync(e);
     }
 
 }

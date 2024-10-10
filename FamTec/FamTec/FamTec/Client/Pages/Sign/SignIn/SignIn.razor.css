@@ -16,7 +16,7 @@
     border-radius : var(--default-rd);
     padding : var(--default-pd);
     background-color : var(--default-color);
-    box-shadow:var(--default-bs);
+    box-shadow:var(--shadow-1);
 }
 
 .signup-container .signup-title{

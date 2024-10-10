@@ -30,12 +30,14 @@
             <InputField Label="ID"
                         EditMode=true
                         Placeholder="ID"
-                        @bind-Value="@user.UserID" />
+                        @bind-Value="@user.UserID" 
+                        OnKeyPress="HandleKeyDown" />
             <InputField Label="PW"
                         InputType="Password"
                         EditMode=true
                         Placeholder="Password"
-                        @bind-Value="@user.UserPassword" />
+                        @bind-Value="@user.UserPassword" 
+                        OnKeyPress="HandleKeyDown" />
         </div>
         <Button Name="Login" OnClick="OnSignUp" Type=0/>
     </div>
@@ -68,6 +70,14 @@
             await _localStorageService.RemoveItemAsync("sworks-jwt-token");
             await _localStorageService.RemoveItemAsync("loginMode");
             (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+        {
+            await OnSignUp(); // 로그인 메서드 호출
         }
     }
 

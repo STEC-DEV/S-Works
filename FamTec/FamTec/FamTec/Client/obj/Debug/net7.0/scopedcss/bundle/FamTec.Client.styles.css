@@ -12359,7 +12359,7 @@ modal-table[b-all74yxmu0]{
     border-radius : var(--default-rd);
     padding : var(--default-pd);
     background-color : var(--default-color);
-    box-shadow:var(--default-bs);
+    box-shadow:var(--shadow-1);
 }
 
 .signup-container .signup-title[b-hbi4667qfr]{
@@ -12397,7 +12397,7 @@ modal-table[b-all74yxmu0]{
     display:flex;
     flex-direction :column;
     gap : var(--half-pd);
-    height : 20%;
+    height : 100%;
 }
 
 .header[b-0cxp5qukkw]{
@@ -12508,7 +12508,8 @@ modal-table[b-all74yxmu0]{
     flex-direction : column;
     justify-content :space-between;
     gap : var(--wide-pd);
-    height:100%;
+    min-height:100%;
+    height:auto;
 }
 
 .voc .header[b-ctwc34a2zh]{
@@ -12524,16 +12525,21 @@ modal-table[b-all74yxmu0]{
 
 .content[b-ctwc34a2zh]{
     flex : 1;
-    /*height:100%;*/
+    min-height:500px;
+    height:100%;
     display : flex;
     flex-direction :column;
     gap:var(--default-pd);
-    overflow : auto;
+    /*overflow : auto;*/
 }
 
-.btns[b-ctwc34a2zh]{
-    display : flex;
-    gap : var(--default-pd);
+.checkitem[b-ctwc34a2zh]{
+    height:250px;
+}
+
+.btns[b-ctwc34a2zh] {
+    display: flex;
+    gap: var(--default-pd);
 }
 
 .blockbtn[b-ctwc34a2zh]{
