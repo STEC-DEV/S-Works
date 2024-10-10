@@ -165,7 +165,8 @@ namespace FamTec.Server.Services.Voc
                         byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
                         string base64 = Convert.ToBase64String(bytes);
 
-                        string url = $"http://125.131.105.172:5245/vocinfo?vocid={base64}";
+                        //string url = $"http://125.131.105.172:5245/vocinfo?vocid={base64}";
+                        string url = $"http://125.131.105.172:5245/m/voc/select/{base64}";
 
                         string StatusResult = string.Empty;
                         if(model.Status == 1)

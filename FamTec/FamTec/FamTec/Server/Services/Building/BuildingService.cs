@@ -112,11 +112,14 @@ namespace FamTec.Server.Services.Building
                     GroundFloorNum = dto.GroundFloorNum, // 지상층수
                     BasementFloorNum = dto.BasementFloorNum, // 지하층수
                     BuildingHeight = dto.BuildingHeight, // 건물높이
+                    GroundHeight = dto.GroundHeight, // 지상높이
+                    BasementHeight = dto.BasementHeight, // 지하깊이
                     ParkingNum = dto.ParkingNum, // 지상높이
                     InnerParkingNum = dto.InnerParkingNum, // 옥내대수
                     OuterParkingNum = dto.OuterParkingNum, // 옥외대수
                     ElecCapacity = dto.ElecCapacity, // 전기용량
                     FaucetCapacity = dto.FaucetCapacity, // 수전용량
+                    GenerationCapacity = dto.GenerationCapacity, // 발전용량
                     WaterCapacity = dto.WaterCapacity, // 급수용량
                     ElevWaterCapacity = dto.ElevWaterCapacity, // 고가수조
                     WaterTank = dto.WaterTank, // 저수조
