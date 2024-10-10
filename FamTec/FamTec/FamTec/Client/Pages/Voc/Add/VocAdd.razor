@@ -6,6 +6,7 @@
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
 
+
 <div class="voc ">
     <div class="header yappear">
         <span class="title">
@@ -28,9 +29,18 @@
                   TextArea=true
                   Height=true />
         <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+        <CheckItem CheckPerm="OnCheckPerm" />
     </div>
+    
     <div class="btns yappear">
-        <Button Name="접수" Type="0" OnClick="@OnAdd"/>
+        @if(permCheck){
+            <Button Name="접수" Type="0" OnClick="@OnAdd" />
+        }
+        else
+        {
+            <button class="blockbtn">접수</button>
+        }
+        
     </div>
 </div>
 
@@ -43,6 +53,9 @@
 
     string PlaceName = "";
     string BuildingName = "";
+
+    //개인약관 체크
+    private bool permCheck = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -89,11 +102,16 @@
     {
         try
         {
-            Console.WriteLine(Voc.Name);
-            Console.WriteLine(Voc.PhoneNumber);
-            Console.WriteLine(Voc.Title);
-            Console.WriteLine(Voc.Contents);
-
+            if (String.IsNullOrEmpty(Voc.Name) || String.IsNullOrEmpty(Voc.PhoneNumber) || String.IsNullOrEmpty(Voc.Title) || String.IsNullOrEmpty(Voc.Contents))
+            {
+                await JS.InvokeVoidAsync("alert", "공백이 존재합니다.");
+                return;
+            }
+            if (!permCheck)
+            {
+                await JS.InvokeVoidAsync("alert", "개인정보 수집 및 이용 동의 약관을 확인해주세요.");
+                return;
+            }
             Voc.Placeid = PlaceId;
             Voc.Buildingid = BuildingId;
             ResponseUnit<AddVocReturnDTO> resAdd = await apiManager.PostWithFilesAsync<AddVocReturnDTO>("Hub/AddVoc", Voc);
@@ -127,5 +145,10 @@
     private void Return()
     {
         Navigation.NavigateTo("/voc/banner");
+    }
+
+    private async void OnCheckPerm(bool isChecked)
+    {
+        permCheck = isChecked;
     }
 }

@@ -1,0 +1,30 @@
+
+.check[b-0cxp5qukkw]{
+    display:flex;
+    flex-direction :column;
+    gap : var(--half-pd);
+    height : 20%;
+}
+
+.header[b-0cxp5qukkw]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.title[b-0cxp5qukkw]{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.content[b-0cxp5qukkw]{
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+
+    background-color : var(--default-color);
+    font-size : var(--normal-size);
+    overflow : auto;
+    
+}

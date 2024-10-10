@@ -18,10 +18,14 @@
                             Width=true
                             OnClick="@OnAddMode"
                             Type="0" />
-                    <Button Name="삭제"
-                            Width=true
-                            Type="1"
-                            OnClick="OnDelete" />
+                    @if(DelList.Count > 0)
+                    {
+                        <Button Name="삭제"
+                                Width=true
+                                Type="1"
+                                OnClick="OnDelete" />
+                    }
+
                 </div>
             }
             

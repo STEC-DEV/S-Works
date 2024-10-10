@@ -2,7 +2,8 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Reflection
 @using FamTec.Client.Pages.CommonComponents
-@typeparam T
+@using FamTec.Shared.Client.DTO.Normal.Users
+@* @typeparam T *@
 
 <table class="table">
     <thead class="thead">
@@ -62,13 +63,14 @@
             }
             else
             {
-                @foreach (var row in Data)
+            @foreach (ListUser row in Data)
                 {
-                string id = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
-
+                @* string id = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
+                var created = typeof(T).GetProperty("Created")?.GetValue(row); *@
+                @* DateTime? createdDate = created as DateTime?; *@
                 <tr class="tbody-tr">
-                    <td class="td userinfo" @onclick="()=>OnDetail(id)">
-                        @* <img class="table-img" alt=""/> *@
+                    @* <td class="td userinfo" @onclick="()=>OnDetail(id)">
+                         <img class="table-img" alt=""/>
                         <div class="title-wrap">
                             <a class="maintitle">
                                 @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()
@@ -78,33 +80,50 @@
                             </span>
                         </div>
                         
+                    </td> *@
+                    <td class="td userinfo" @onclick="()=>OnDetail(row.Id)">
+                        @* <img class="table-img" alt=""/> *@
+                        <div class="title-wrap">
+                            <a class="maintitle">
+                                @row.Name
+                            </a>
+                            <span class="subtitle italic">
+                                @row.UserId
+                            </span>
+                        </div>
+
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(id)">
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
-                            @typeof(T).GetProperty("Type")?.GetValue(row)?.ToString()
+                            @row.Type
                         </span>
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(id)">
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
-                            @typeof(T).GetProperty("Email")?.GetValue(row)?.ToString()
+                            @row.Email
                         </span>
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(id)">
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
-                            @typeof(T).GetProperty("Created")?.GetValue(row)?.ToString()
+                            @{
+                                DateTime createdDate;
+                                string formattedDate = DateTime.TryParse(row.Created?.ToString(), out createdDate)
+                                ? createdDate.ToString("yyyy-MM-dd")
+                                : row.Created?.ToString(); // 변환이 실패하면 원본 문자열을 그대로 출력
+                            }
+                            @formattedDate
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(id)">
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
-                            <StatusCard Status=@typeof(T).GetProperty("Status")?.GetValue(row)?.ToString() />
+                            <StatusCard Status=@row.Status.ToString()/>
                            
-                            
                         </span>
                     </td>
                     @if (USER)
                     {
                         <td class="td text-center">
-                            <input type="checkbox" checked="@CheckItems.Contains(int.Parse(id))" @onchange="e=> OnSelect(e, int.Parse(id))" />
+                            <input type="checkbox" checked="@CheckItems.Contains(row.Id)" @onchange="e=> OnSelect(e, row.Id)" />
                         </td>
                     }
                     
@@ -118,7 +137,8 @@
 
 @code {
     [Parameter] public bool EditMode { get; set; }
-    [Parameter] public List<T>? Data { get; set; }
+    // [Parameter] public List<T>? Data { get; set; }
+    [Parameter] public List<ListUser>? Data { get; set; }
     [Parameter] public HashSet<int> Checkitem { get; set; }
     [Parameter] public EventCallback<(bool, int)> Select { get; set; }
     private HashSet<int> CheckItems = new HashSet<int>();
@@ -128,7 +148,7 @@
         await base.OnInitializedAsync();
     }
 
-    private void OnDetail(string id)
+    private void OnDetail(int id)
     {
         Navigation.NavigateTo($"/users/{id}");
     }

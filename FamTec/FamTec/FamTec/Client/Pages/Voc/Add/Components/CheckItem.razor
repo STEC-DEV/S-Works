@@ -1,0 +1,57 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+<div class="check">
+    <div class="header">
+        <span class="title">
+            개인정보 수집 및 이용 동의 (필수)
+        </span>
+        <input type="checkbox" @onchange="(e)=>OnCheck(e)" />
+    </div>
+    
+    <div class="content">
+        <p>
+            
+            수집하는 개인정보의 항목<br /><br />
+
+            가.회사는 고객님의 질문에 대한 답변을 위해 아래와 같은 개인정보를 수집하고 있습니다.<br />
+            필수항목 : 상호명, 소재지, 휴대폰 번호, 이메일<br /><br />
+
+            나.서비스 이용과정에서 아래와 같은 정보들이 자동으로 생성되어 수집될 수 있습니다.<br />
+            IP Address, 쿠키, 방문 일시, 서비스 이용 기록<br /><br />
+
+            개인정보의 수집 및 이용 목적<br /><br />
+
+            가.질문에 대한 답변<br />
+            질문에 대한 답변, 본인확인, 개인식별, 기타 답변을 위한 기본자료 활용<br /><br />
+
+            개인정보의 보유 및 이용기간<br />
+
+            이용자의 개인정보는 원칙적으로 개인정보의 수집 및 이용목적이 달성되면 지체 없이 파기합니다.
+            단, 다음의 정보에 대해서는 아래의 이유로 명시한 기간 동안 보존합니다.<br /><br />
+            가.회사 내부 방침에 의한 정보보유 사유
+            부정이용기록<br />
+
+            보존 근거 : 부정 이용 방지<br /><br />
+
+            보존 기간 : 1년<br /><br />
+
+            본인확인에 관한 기록<br /><br />
+
+            보존 근거 : 정보통신 이용촉진 및 정보보호 등에 관한 법률<br /><br />
+
+            보존 기간 : 6개월<br />
+        </p>
+    </div>
+    
+</div>
+@code {
+    [Parameter] public EventCallback<bool> CheckPerm { get; set; }
+
+
+
+
+    private async void OnCheck(ChangeEventArgs e)
+    {
+        await CheckPerm.InvokeAsync((bool)e.Value);
+    }
+}
