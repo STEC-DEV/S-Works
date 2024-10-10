@@ -1,6 +1,6 @@
 ﻿@using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
-
+@inherits PermissionComponentBase
 
 <div class="maintenance yappear">
     <div class="header">
@@ -22,13 +22,20 @@
     [Parameter] public int Id { get; set; }
     [Parameter] public string FacType { get; set; }
     [Parameter] public int PlaceId{ get; set; }
+   
 
     List<MaintenanceListDTO> ListData;
 
 
     protected override async Task OnInitializedAsync()
     {
-        await OnLoadMaintenance();
+        await base.OnInitializedAsync();
+        if (ISLOGIN)
+        {
+            await OnLoadMaintenance();
+        }
+        
+
     }
 
     private async Task OnLoadMaintenance()

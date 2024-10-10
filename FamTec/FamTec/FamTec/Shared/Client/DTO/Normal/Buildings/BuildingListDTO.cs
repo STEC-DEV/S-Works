@@ -15,7 +15,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
         public string Tel {  get; set; }
         public string TotalFloor { get; set; }
 
-        public DateOnly CompleteDt {  get; set; }
+        public DateTime CompletionDt {  get; set; }
         public DateTime CreateDt { get; set; }
     }
 }

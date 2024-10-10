@@ -109,7 +109,7 @@
                         @row.LifeSpan
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.ChangeDT.ToString()
+                        @row.ChangeDT?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td">
                         <QR 
@@ -124,7 +124,10 @@
                     @if (HasEditPermission())
                     {
                         <td class="td">
-                            <input type="checkbox" />
+                            <input type="checkbox" 
+                                @onchange="(e)=>OnChecked(e,row.Id)"
+                                checked=@(Checkitems.Contains(row.Id))
+                                />
                         </td>
                     }
                     
@@ -138,6 +141,8 @@
 @code {
     [Parameter] public List<FacilityListDTO?> ListData { get; set; }
     [Parameter] public string FacType { get; set; }
+    [Parameter] public EventCallback<(bool,int)> OnCheck { get; set; }
+    [Parameter] public List<int> Checkitems { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,6 +154,11 @@
     {
         Navigation.NavigateTo($"/facility/{FacType}/{Id}");
 
+    }
+
+    private async void OnChecked(ChangeEventArgs e, int id)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
     }
 
 

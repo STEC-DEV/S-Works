@@ -22,14 +22,26 @@
                 @if (USER)
                 {
                     <Button Name="추가" Width=true OnClick=AddUser Type=0 />
-                    <Button Name="삭제" Width=true Type=1 OnClick="OnDelUser" />
+                    @if(CheckItems.Count > 0)
+                    {
+                        <Button Name="삭제" Width=true Type=1 OnClick="OnDelUser" />
+                    }
+
                 }
             </div>
             
             
         </div>
         <div class="user-content">
-            <UserTable Data=@FilterData Checkitem="@CheckItems" Select="@OnSelected" />
+            @if (FilterData == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+                <UserTable Data=@FilterData Checkitem="@CheckItems" Select="@OnSelected" />
+            }
+
         </div>
     </div>
 </div>
@@ -111,9 +123,9 @@
 
     }
 
-    /*
+     /*
      * 사용자 삭제
-     */
+    */
     private async Task OnDelUser()
     {
         try
@@ -124,7 +136,7 @@
                 await JS.InvokeVoidAsync("alert", resDel.message);
                 return;
             }
-
+            CheckItems.Clear();
             await OnLoadUsers();
         }catch(Exception ex)
         {

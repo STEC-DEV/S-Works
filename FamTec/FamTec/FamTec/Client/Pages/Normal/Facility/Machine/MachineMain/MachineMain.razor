@@ -14,13 +14,20 @@
             @if (HasEditPermission())
             {
                 <div class="header-options">
+                    <Input Placeholder="search"
+                           Type="text"
+                           ValueChanged="OnSearch" />
                     <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
-                    <Button Name="삭제" Width=true Type=1 />
+                    @if (DelList.Count > 0)
+                    {
+                        <Button Name="삭제" Width=true Type=1 OnClick="@OnDelFac" />
+                    }
+
                 </div>
             }
             
         </div>
-        <FacilityTable ListData="ListFacility" FacType="@FacType" />
+        <FacilityTable ListData="FilterData" FacType="@FacType" OnCheck="OnChecked" Checkitems="@DelList" />
     </div>
     
 </div>
@@ -29,7 +36,11 @@
     [Parameter] public string FacType { get; set; }
 
     List<FacilityListDTO> ListFacility;
+    List<FacilityListDTO> FilterData = new List<FacilityListDTO>();
     private string title = "";
+
+
+    List<int> DelList = new List<int>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,14 +94,57 @@
         if (resGetData.data == null)
         {
             ListFacility = new List<FacilityListDTO>();
+            FilterData = new List<FacilityListDTO>();
         }
         else
         {
             ListFacility = resGetData.data;
+            FilterData = ListFacility;
         }
 
 
     }
+
+    //설비 삭제
+    private async Task OnDelFac()
+    {
+        try
+        {
+            if(DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 항목을 선택해주세요.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>($"{FacType}Facility/sign/Delete{FacType}Facility",DelList);
+            if(resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            DelList.Clear();
+            await OnLoadMahine();
+        }catch(Exception ex)
+        {
+            Console.WriteLine("설비 삭제 에러" + ex);
+            await JS.InvokeVoidAsync("alert", "설비 삭제 에러");
+        }
+    }
+
+    /*
+     * 조회
+     */
+    private async void OnChecked((bool isChecked, int id) data)
+    {
+        if (data.isChecked)
+        {
+            DelList.Add(data.id);
+        }
+        else
+        {
+            DelList.Remove(data.id);
+        }
+    }
+
 
     private void onAdd()
     {
@@ -113,4 +167,14 @@
         };
     }
 
+    //검색
+    private string _searchText = "";
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        FilterData = String.IsNullOrEmpty(_searchText)
+                                ? ListFacility
+                                : ListFacility.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ).ToList();
+        await InvokeAsync(StateHasChanged);
+    }
 }

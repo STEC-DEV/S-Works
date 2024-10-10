@@ -86,10 +86,10 @@
                         @row.TotalFloor
                     </td>
                     <td class="td" @onclick="()=>OnDetail(id)">
-                        @row.CompleteDt.ToString()
+                        @row.CompletionDt.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td" @onclick="()=>OnDetail(id)">
-                        @row.CreateDt
+                        @row.CreateDt.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td">
                         <QR
