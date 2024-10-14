@@ -345,7 +345,8 @@ namespace FamTec.Server.Services.User
                     new Claim("UserType", context.Items["UserType"]!.ToString()!), // 직책
                     new Claim("AdminIdx", context.Items["AdminIdx"]!.ToString()!), // 관리자 인덱스
                     new Claim("PlaceIdx", placeInfo.Id!.ToString()), // 사업장 인덱스
-                    new Claim("PlaceName", placeInfo.Name!.ToString()) // 사업장 명
+                    new Claim("PlaceName", placeInfo.Name!.ToString()), // 사업장 명
+                    new Claim("PlaceCreateDT", placeInfo.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
                 };
 
                 /*
@@ -562,7 +563,8 @@ namespace FamTec.Server.Services.User
                         new Claim("Role", "User"),
                         new Claim(ClaimTypes.Role, "User"),
                         new Claim("PlaceIdx", placetb.Id!.ToString()), // 사업장 인덱스
-                        new Claim("PlaceName", placetb.Name!.ToString()) // 사업장 명칭
+                        new Claim("PlaceName", placetb.Name!.ToString()), // 사업장 명칭
+                        new Claim("PlaceCreateDT", placetb.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
                     };
 
 

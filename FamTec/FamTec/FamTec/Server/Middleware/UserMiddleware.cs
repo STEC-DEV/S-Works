@@ -107,6 +107,7 @@ namespace FamTec.Server.Middleware
                         // 사업장 까지 선택한 상태
                         context.Items.Add("PlaceIdx", jobj["PlaceIdx"]!.ToString()); // 사업장ID
                         context.Items.Add("PlaceName", jobj["PlaceName"]!.ToString()); // 사업장이름
+                        context.Items.Add("PlaceCreateDT", jobj["PlaceCreateDT"]!.ToString()); // 사업장 생성일
 
                         parse = new JObject(JObject.Parse(jobj["PlacePerms"].ToString()));
                         context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
@@ -131,6 +132,7 @@ namespace FamTec.Server.Middleware
                     context.Items.Add("UserType", jobj["UserType"].ToString());
                     context.Items.Add("jti", jobj["jti"].ToString());
                     context.Items.Add("Role", jobj["Role"].ToString());
+                    context.Items.Add("PlaceCreateDT", jobj["PlaceCreateDT"]!.ToString()); // 사업장 생성일
 
                     JObject parse = new JObject(JObject.Parse(jobj["UserPerms"].ToString()));
 
@@ -164,6 +166,7 @@ namespace FamTec.Server.Middleware
                     /* 사업장 권한 */
                     context.Items.Add("PlaceIdx", jobj["PlaceIdx"]!.ToString()); // 사업장ID
                     context.Items.Add("PlaceName", jobj["PlaceName"]!.ToString()); // 사업장이름
+                    context.Items.Add("PlaceCreateDT", jobj["PlaceCreateDT"]!.ToString()); // 사업장 생성일
 
                     parse = new JObject(JObject.Parse(jobj["PlacePerms"].ToString()));
                     context.Items.Add("PlacePerm_Machine", parse["PlacePerm_Machine"].ToString());
