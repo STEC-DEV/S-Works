@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
+using FamTec.Server.Repository.User;
 using FamTec.Server.Repository.Voc;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -19,6 +20,7 @@ namespace FamTec.Server.Services.Voc
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IUserInfoRepository UserInfoRepository;
 
         private readonly ILogService LogService;
         private readonly IFileService FileService;
@@ -34,6 +36,7 @@ namespace FamTec.Server.Services.Voc
             IPlaceInfoRepository _placeinforepository,
             IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
+            IUserInfoRepository _userinforepository,
             IKakaoService _kakaoservice,
             ILogService _logservice,
             IFileService _fileservice)
@@ -44,6 +47,7 @@ namespace FamTec.Server.Services.Voc
             this.PlaceInfoRepository = _placeinforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
+            this.UserInfoRepository = _userinforepository;
 
             this.KakaoService = _kakaoservice;
             this.LogService = _logservice;
@@ -271,6 +275,7 @@ namespace FamTec.Server.Services.Voc
                     dtoModel.status = model[i].Status; // 댓글상태
                     dtoModel.Comment = model[i].Content; // 내용
                     dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
+                    dtoModel.CreateUserId = model[i].UserTbId;
                     dtoModel.CreateUser = model[i].CreateUser;
                     dtoModel.VocTbId = model[i].VocTbId;
 

@@ -380,6 +380,7 @@ namespace FamTec.Server.Services.Voc.Hub
                     dtoModel.status = model[i].Status; // 댓글상태
                     dtoModel.Comment = model[i].Content; // 내용
                     dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
+                    dtoModel.CreateUserId = model[i].UserTbId; // 민원댓글 생성자 ID
                     dtoModel.CreateUser = model[i].CreateUser;
                     dtoModel.VocTbId = model[i].VocTbId;
 

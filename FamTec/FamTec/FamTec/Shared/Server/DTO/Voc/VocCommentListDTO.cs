@@ -23,6 +23,11 @@
         public string? CreateDT { get; set; }
 
         /// <summary>
+        /// 민원댓글 생성인덱스
+        /// </summary>
+        public int? CreateUserId { get; set; }
+
+        /// <summary>
         /// 민원 댓글 생성자
         /// </summary>
         public string? CreateUser { get; set; }
