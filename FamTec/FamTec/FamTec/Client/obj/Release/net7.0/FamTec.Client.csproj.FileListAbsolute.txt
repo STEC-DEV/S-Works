@@ -1335,3 +1335,4 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\Fa
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\ref\FamTec.Client.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\SmallButton.razor.rz.scp.css
