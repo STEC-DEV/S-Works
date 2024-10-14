@@ -1,0 +1,30 @@
+﻿
+
+<button class="btn @(Width ? null : "width") @type @(Valid ? "valid":"")"
+        @onclick="onClickBtn">
+    @Name
+</button>
+
+
+@code {
+    [Parameter] public string Name { get; set; }
+    // [Parameter] public bool Type { get; set; }
+    [Parameter] public int Type { get; set; }
+    [Parameter] public bool Width { get; set; }
+    [Parameter] public bool Valid { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    public string type => Type switch
+    {
+        0 => "type1",
+        1 => "type2",
+        2 => "type3",
+        _ => "Unknown",
+    };
+
+    private async Task onClickBtn()
+    {
+        await OnClick.InvokeAsync();
+    }
+
+}

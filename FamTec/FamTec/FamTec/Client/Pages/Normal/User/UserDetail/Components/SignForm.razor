@@ -29,10 +29,13 @@
         <div class="form-input">
             @if (EditMode)
             {
-                <ValidationInput ValueType="text"
+                @* <ValidationInput ValueType="text"
                                  Placeholder="아이디"
                                  @bind-Value="@UserInfo.UserId"
-                                 Label="아이디"/>
+                                 Label="아이디"/> *@
+                <TextField2 Label="아이디"
+                            Value="@UserInfo.UserId"
+                            Color=true />
                 <ValidationInput ValueType="password"
                                  Type="PW"
                                  Placeholder="비밀번호"

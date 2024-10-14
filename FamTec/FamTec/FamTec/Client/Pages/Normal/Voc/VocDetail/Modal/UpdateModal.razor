@@ -1,0 +1,55 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            처리 내용 수정
+        </span>
+    </div>
+    <div class="contents">
+        <InputCol Label="처리 내용" ValueType="textarea" @bind-Value=@comment.Content/>
+
+    </div>
+    <div class="btns">
+        
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    DetailVocCommentDTO comment = new DetailVocCommentDTO();
+    List<byte[]> img = new List<byte[]>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadDetailCommment();
+    }
+
+    //댓글 상세 조회
+    private async Task OnLoadDetailCommment()
+    {
+        try
+        {
+            ResponseUnit<DetailVocCommentDTO> resGet = await apiManager.GetUnitAsync<DetailVocCommentDTO>($"VocComment/sign/VocCommentDetail?commentid={Id}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            comment = new DetailVocCommentDTO(resGet.data);
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "처리내역 상세 조회 실패");
+        }
+    }
+
+    private async void ConvertImage()
+    {
+        
+    }
+}

@@ -26,7 +26,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// <summary>
         /// 사용자 id
         /// </summary>
-        public int? UserId { get; set; }
+        public int? CreateUserId { get; set; }
 
         /// <summary>
         /// 민원 댓글 생성자
