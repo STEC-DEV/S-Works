@@ -246,6 +246,22 @@ namespace FamTec.Client.Shared.Provider
         }
 
 
+        //사용자 id 조회 in 토큰
+        public async Task<int> GetUserId()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "UserIdx")?.Value;
+            if(String.IsNullOrEmpty(userId))
+            {
+                return 0;
+            }
+            else
+            {
+                return int.Parse(userId);
+            }
+        }
+
 
         public async Task<bool> GetLoginMode()
         {

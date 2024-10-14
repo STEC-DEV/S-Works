@@ -15,6 +15,12 @@
     justify-content : space-between;
 }
 
+.options[b-e9o93o5ovf]{
+    display :flex;
+    gap : var(--half-pd);
+    align-items : center;
+}
+
 .writer-wrap>span[b-e9o93o5ovf]{
     display : flex;
     align-items:flex-end;

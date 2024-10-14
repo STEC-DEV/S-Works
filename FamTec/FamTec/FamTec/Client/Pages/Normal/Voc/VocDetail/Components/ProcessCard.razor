@@ -1,5 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Voc
 
 <div class="processcard ">
@@ -12,8 +13,14 @@
                 @Data.CreateDT
             </span>
         </div>
-            
-        <StatusCard Status="@Data.Status.ToString()" />
+         <div class="options">
+            <StatusCard Status="@Data.Status.ToString()" />
+            @if (userIdx == Data.CreateUserId)
+            {
+                <SmallButton Name="수정" Width=true Type="0" />
+            }
+         </div>
+        
     </div>
     <div class="content">
         <div class="content-text">
@@ -35,11 +42,18 @@
 
     List<byte[]> images = new List<byte[]>();
     List<int> nullIndex = new List<int>();
+    int userIdx;
 
+    protected async override Task OnInitializedAsync()
+    {
+       
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        userIdx = await (_authStateProvider as CustomAuthProvider).GetUserId();
         await OnIMGConvert();
+        
 
 
     }
