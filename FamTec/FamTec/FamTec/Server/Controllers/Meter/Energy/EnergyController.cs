@@ -35,21 +35,22 @@ namespace FamTec.Server.Controllers.Meter.Energy
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddEnergy")]
-        public async Task<IActionResult> AddEnergy()
-        //public async Task<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
+        //public async Task<IActionResult> AddEnergy()
+        public async Task<IActionResult> AddEnergy([FromBody]AddEnergyDTO dto)
         {
             try
             {
-                AddEnergyDTO dto = new AddEnergyDTO();
-                dto.MeterID = 1;
-                dto.MeterDate = DateTime.Now.AddDays(-3); // 검침일자
-                dto.Amount1 = 500; // 소계
-                dto.Amount2 = 700; // 중간부하
-                dto.Amount3 = 1600; // 최대부하
-                dto.TotalAmount = dto.Amount1 + dto.Amount2 + dto.Amount3;
+                //{
+                //    "MeterID":1,
+                //    "MeterDate":"2024-09-13",
+                //    "Amount1":400,
+                //    "Amount2":600,
+                //    "Amount3":1500,
+                //    "TotalAmount":2100
+                //}
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -86,7 +87,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
             try
             {
                 DateTime ThisDate = DateTime.Now;
-                int placeid = 13;
+                int placeid = 1;
 
                 var temp = await EnergyInfoRepository.GetMonthList(ThisDate, placeid);
                 return Ok(temp);
@@ -112,7 +113,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
             try
             {
                 DateTime ThisDate = DateTime.Now;
-                int placeid = 13;
+                int placeid = 1;
 
                 var temp = await EnergyInfoRepository.GetContractTypeMonthList(ThisDate,  placeid);
                 return Ok(temp);
@@ -137,7 +138,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
             try
             {
                 DateTime ThisDate = DateTime.Now;
-                int placeid = 13;
+                int placeid = 1;
                 var temp = await EnergyInfoRepository.GetContractTypeUseCompare(ThisDate, placeid);
                 return Ok(temp);
 
@@ -160,7 +161,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
             try
             {
                 DateTime ThisDate = DateTime.Now;
-                int placeid = 13;
+                int placeid = 1;
                 List<int> MeterId = new List<int>() { 5, 6, 7 };
 
                 var temp = await EnergyInfoRepository.GetMeterMonthList(ThisDate, MeterId, placeid);

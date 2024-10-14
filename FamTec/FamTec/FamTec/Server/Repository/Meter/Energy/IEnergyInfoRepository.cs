@@ -38,7 +38,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         public Task<List<ContractTypeEnergyCompareUseDTO>> GetContractTypeUseCompare(DateTime SearchDate, int placeid);
 
 
-
+        public Task<List<ContractTypeEnergyComparePriceDTO>> GetContractTypePriceCompare(DateTime SearchDate, int placeid);
 
 
 

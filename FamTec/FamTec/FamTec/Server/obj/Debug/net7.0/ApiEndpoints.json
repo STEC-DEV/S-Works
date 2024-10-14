@@ -2133,10 +2133,16 @@
     "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
     "Method": "AddEnergy",
     "RelativePath": "api/Energy/sign/AddEnergy",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Meter.Energy.AddEnergyDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

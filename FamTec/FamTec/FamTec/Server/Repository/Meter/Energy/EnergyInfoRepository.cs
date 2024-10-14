@@ -281,8 +281,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                 if (allMeterItems is null || !allMeterItems.Any())
                     return null;
 
-                // 해당년도-월 의 1일과 마지막일을 구함.
-                int numberOfDays = DateTime.DaysInMonth(Years, Month);
+                // 해당년도-월 의 1일과 마지막일자 전날 을 구함.
+                int numberOfDays = DateTime.DaysInMonth(Years, Month) - 1;
                 List<DateTime> allDates = Enumerable.Range(1, numberOfDays)
                                                     .Select(day => new DateTime(Years, Month, day))
                                                     .ToList();
@@ -423,100 +423,6 @@ namespace FamTec.Server.Repository.Meter.Energy
                     model.Add(dto);
                 }
                 return model;
-                
-
-                //int Years = SearchDate.Year;
-                //int Month = SearchDate.Month;
-
-                //// MeterItemTable의 Where 조건에 맞는 모든 List 반환
-                //List<MeterItemTb>? allMeterItems = await context.MeterItemTbs
-                //    .Where(m => m.DelYn != true && 
-                //                m.PlaceTbId == placeid && 
-                //                m.ContractTbId != null)
-                //    .ToListAsync()
-                //    .ConfigureAwait(false);
-
-                //if (allMeterItems is null || !allMeterItems.Any())
-                //    return null;
-
-                //// 현재 월, 지난달, 그리고 작년 동월의 날짜를 모두 포함한 allDates 생성
-                //int previousMonth = Month - 1;
-                //int previousMonthYear = Years;
-
-                //// 만약 현재 월이 1월이라면, 지난달은 작년의 12월입니다.
-                //if (Month == 1)
-                //{
-                //    previousMonth = 12;
-                //    previousMonthYear = Years - 1;
-                //}
-
-                //int numberOfDaysThisMonth = DateTime.DaysInMonth(Years, Month);
-                //int numberOfDaysLastMonth = DateTime.DaysInMonth(previousMonthYear, previousMonth);
-                //int numberOfDaysSameMonthLastYear = DateTime.DaysInMonth(Years - 1, Month);
-
-                //List<DateTime> allDates = Enumerable.Range(1, numberOfDaysThisMonth)
-                //    .Select(day => new DateTime(Years, Month, day))
-                //    .Concat(Enumerable.Range(1, numberOfDaysLastMonth)
-                //        .Select(day => new DateTime(previousMonthYear, previousMonth, day)))
-                //    .Concat(Enumerable.Range(1, numberOfDaysSameMonthLastYear)
-                //        .Select(day => new DateTime(Years - 1, Month, day)))
-                //    .ToList();
-
-                //// 현재 월, 지난달, 그리고 작년 동월의 데이터를 모두 포함한 UseDaysList 생성
-                //List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
-                //    .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
-                //                ((m.Year == Years && m.Month == Month) ||
-                //                 (m.Year == previousMonthYear && m.Month == previousMonth) ||
-                //                 (m.Year == Years - 1 && m.Month == Month)))
-                //    .ToListAsync()
-                //    .ConfigureAwait(false);
-
-                //// LINQ 쿼리 수정
-                //List<ContractTypeEnergyCompareUseDTO> DTOModel = (from MeterTB in allMeterItems
-                //                                                  from date in allDates
-                //                                                  join EnergyDayTB in UseDaysList
-                //                                                  on new
-                //                                                  {
-                //                                                      MeterTB.MeterItemId,
-                //                                                      Year = date.Year,
-                //                                                      Month = date.Month,
-                //                                                      Day = date.Day
-                //                                                  } equals new
-                //                                                  {
-                //                                                      EnergyDayTB.MeterItemId,
-                //                                                      Year = EnergyDayTB.Year,
-                //                                                      Month = EnergyDayTB.Month,
-                //                                                      Day = EnergyDayTB.Days
-                //                                                  } into usageGroup
-                //                                                  from usage in usageGroup.DefaultIfEmpty() // Left Join 처리
-                //                                                  join contractTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true) // MeterTB와 조인
-                //                                                  on MeterTB.ContractTbId equals contractTB.Id
-                //                                                  select new
-                //                                                  {
-                //                                                      ContractTypeId = MeterTB.ContractTbId!.Value,
-                //                                                      ContractTypeName = contractTB.Name,
-                //                                                      Year = date.Year,
-                //                                                      Month = date.Month,
-                //                                                      DaysUseAmount = usage?.TotalAmount ?? 0 // 사용량이 없을 경우 0으로 설정
-                //                                                  })
-                //    .GroupBy(x => new { x.ContractTypeId, x.ContractTypeName })
-                //    .Select(g => new ContractTypeEnergyCompareUseDTO
-                //    {
-                //        ContractTypeId = g.Key.ContractTypeId,
-                //        ContractTypeName = g.Key.ContractTypeName,
-                //        ThisMonthTotalUse = g.Where(x => x.Year == Years && x.Month == Month).Sum(x => x.DaysUseAmount), // 이번 달 총 사용량 합산
-                //        BeforeMonthTotalUse = g.Where(x => x.Year == previousMonthYear && x.Month == previousMonth).Sum(x => x.DaysUseAmount), // 지난달 총 사용량 합산
-                //        LastYearSameMonthTotalUse = g.Where(x => x.Year == Years - 1 && x.Month == Month).Sum(x => x.DaysUseAmount) // 작년 동월 총 사용량 합산
-                //    })
-                //    .OrderBy(dto => dto.ContractTypeId) // 계약종별ID 기준 정렬
-                //    .ToList();
-
-              
-
-                Console.WriteLine("asdfasdf");
-
-                return null;
-
             }
             catch(Exception ex)
             {
@@ -525,6 +431,73 @@ namespace FamTec.Server.Repository.Meter.Energy
             }
         }
 
+        public async Task<List<ContractTypeEnergyComparePriceDTO>> GetContractTypePriceCompare(DateTime SearchDate, int placeid)
+        {
+            try
+            {
+                int CurrentYears = SearchDate.Year;
+                int CurrentMonth = SearchDate.Month;
+
+                // 계약종별 리스트 구함.
+                List<ContractTypeTb> ContractList = await context.ContractTypeTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                    .ToListAsync().ConfigureAwait(false);
+
+                // MeterItemTable의 Where 조건에 맞는 모든 List반환
+                List<IGrouping<int?, MeterItemTb>> allMeterItems = await context.MeterItemTbs
+                                    .Where(m => ContractList.Select(c => c.Id).ToList().Contains(m.ContractTbId!.Value))
+                                    .GroupBy(m => m.ContractTbId)
+                                    .ToListAsync()
+                                    .ConfigureAwait(false);
+
+                if (allMeterItems is null || !allMeterItems.Any())
+                    return null;
+
+                // 지난달
+                int previousMonth = CurrentMonth - 1;
+
+                // 작년
+                int LastYear = CurrentYears - 1;
+
+                // 만약 현재 월이 1월이라면, 지난달은 작년 12월이다.
+                if(CurrentMonth == 1)
+                {
+                    previousMonth = 12;
+                }
+
+                List<ContractTypeEnergyComparePriceDTO> model = new List<ContractTypeEnergyComparePriceDTO>();
+
+                foreach(var key in allMeterItems)
+                {
+                    ContractTypeEnergyComparePriceDTO dto = new ContractTypeEnergyComparePriceDTO();
+                    dto.ContractTypeId = key.Key!.Value; // 계약종별 ID
+                    dto.ContractTypeName = ContractList.FirstOrDefault(c => c.Id == Convert.ToInt32(key.Key!.Value))!.Name;
+
+                    List<int> meterItemIds = key.Select(m => m.MeterItemId).ToList();
+
+                    // 현재 년-월 단가
+                    float CurrentTotal = await context.EnergyMonthUsageTbs
+                            .Where(m => meterItemIds.Contains(m.MeterItemId)
+                                        && m.DelYn != true
+                                        && m.Year == CurrentYears
+                                        && m.Month == CurrentMonth
+                                        && m.PlaceTbId == placeid)
+                            .SumAsync(m => (float?)m.TotalUsage) // nullable float로 변환
+                            .ConfigureAwait(false) ?? 0;
+
+                    //float CurrentCharge = await 
+
+                }
+
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
 
         public async Task<List<DayTotalMeterEnergyDTO>> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid)
         {
@@ -602,5 +575,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                 throw;
             }
         }
+
+     
     }
 }
