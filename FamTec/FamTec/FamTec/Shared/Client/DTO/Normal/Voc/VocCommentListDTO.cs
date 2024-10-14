@@ -24,6 +24,11 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         public string? CreateDT { get; set; }
 
         /// <summary>
+        /// 사용자 id
+        /// </summary>
+        public int? UserId { get; set; }
+
+        /// <summary>
         /// 민원 댓글 생성자
         /// </summary>
         public string? CreateUser { get; set; }
