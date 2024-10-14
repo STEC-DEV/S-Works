@@ -124,7 +124,7 @@ namespace FamTec.Server.Services
                 if (String.IsNullOrWhiteSpace(token))
                     return null;
 
-                string message = $" ■{receiptnum}의 진행사항이 변경되었습니다.\n■ 진행상태: {status}\n■ 문의전화: {placetel}";
+                string message = $"■접수번호: {receiptnum}의 진행사항이 변경되었습니다.\n■진행상태: {status}\n■문의전화: {placetel}";
 
                 JObject buttonValue = new JObject();
                 buttonValue.Add("name", "열람하기");

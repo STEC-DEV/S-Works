@@ -38,7 +38,7 @@ namespace FamTec.Server.Services.Meter.Energy
                     return new ResponseUnit<AddEnergyDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
 
-                EnergyDayUsageTb? AlreadyCheck = await EnergyInfoRepository.GetUsageDaysInfo(dto.MeterID, dto.MeterDate.Year, dto.MeterDate.Month, dto.MeterDate.Day);
+                EnergyDayUsageTb? AlreadyCheck = await EnergyInfoRepository.GetUsageDaysInfo(dto.MeterID, dto.MeterDate.Year, dto.MeterDate.Month, dto.MeterDate.Day, Convert.ToInt32(placeidx));
                 if (AlreadyCheck is not null)
                     return new ResponseUnit<AddEnergyDTO>() { message = "이미 값이 있습니다.", data = null, code = 200 };
 
@@ -52,11 +52,12 @@ namespace FamTec.Server.Services.Meter.Energy
                     Year = dto.MeterDate.Year,
                     Month = dto.MeterDate.Month,
                     Days = dto.MeterDate.Day,
-                    MeterItemId = dto.MeterID,
                     CreateDt = DateTime.Now,
                     CreateUser = creater,
                     UpdateDt = DateTime.Now,
-                    UpdateUser = creater
+                    UpdateUser = creater,
+                    MeterItemId = dto.MeterID,
+                    PlaceTbId = Convert.ToInt32(placeidx)
                 };
 
                 EnergyDayUsageTb? model = await EnergyInfoRepository.AddAsync(EnergyUserTB);

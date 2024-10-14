@@ -10,8 +10,9 @@ namespace FamTec.Shared.Model;
 /// 에너지 월별 사용량
 /// </summary>
 [Table("energy_month_usage_tb")]
-[Index("MeterItemId", "Year", "Month", Name = "UK_METER_ITEM_ID_YEAR_MONTH", IsUnique = true)]
+[Index("MeterItemId", "Year", "Month", "PlaceTbId", Name = "UK_METER_ITEM_ID_YEAR_MONTH", IsUnique = true)]
 [Index("MeterItemId", Name = "fk_energy_month_usage_tb_meter_item_tb1_idx")]
+[Index("PlaceTbId", Name = "fk_place_tb_id")]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class EnergyMonthUsageTb
 {
@@ -78,6 +79,9 @@ public partial class EnergyMonthUsageTb
     /// </summary>
     [Column("METER_ITEM_ID", TypeName = "int(11)")]
     public int MeterItemId { get; set; }
+
+    [Column("PLACE_TB_ID", TypeName = "int(11)")]
+    public int PlaceTbId { get; set; }
 
     [ForeignKey("MeterItemId")]
     [InverseProperty("EnergyMonthUsageTbs")]

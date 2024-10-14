@@ -11,7 +11,7 @@ namespace FamTec.Shared.Model;
 /// </summary>
 [Table("building_tb")]
 [Index("PlaceTbId", Name = "fk_building_tb_place_tb1_idx")]
-[Index("BuildingCd", Name = "uk_buildingcode", IsUnique = true)]
+[Index("BuildingCd", "PlaceTbId", Name = "uk_buildingcode", IsUnique = true)]
 [MySqlCollation("utf8mb4_unicode_ci")]
 public partial class BuildingTb
 {

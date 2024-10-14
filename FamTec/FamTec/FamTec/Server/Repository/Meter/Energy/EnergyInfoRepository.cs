@@ -30,15 +30,16 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="month"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        public async Task<EnergyDayUsageTb?> GetUsageDaysInfo(int meterid, int year, int month, int day)
+        public async Task<EnergyDayUsageTb?> GetUsageDaysInfo(int meterid, int year, int month, int day, int placeid)
         {
             try
             {
                 EnergyDayUsageTb? EnergyUseTB = await context.EnergyDayUsageTbs
-                    .FirstOrDefaultAsync(m => m.MeterItemId == meterid && 
-                                              m.Year == year && 
-                                              m.Month == month && 
-                                              m.Days == day && 
+                    .FirstOrDefaultAsync(m => m.MeterItemId == meterid &&
+                                              m.Year == year &&
+                                              m.Month == month &&
+                                              m.Days == day &&
+                                              m.PlaceTbId == placeid &&
                                               m.DelYn != true)
                     .ConfigureAwait(false);
 
@@ -92,7 +93,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                             .FirstOrDefaultAsync(m => m.DelYn != true &&
                             m.MeterItemId == model.MeterItemId &&
                             m.Year == model.MeterDt.Year &&
-                            m.Month == model.MeterDt.Month)
+                            m.Month == model.MeterDt.Month && 
+                            m.PlaceTbId == model.PlaceTbId)
                             .ConfigureAwait(false);
 
                         // 일별데이터 저장 후 월별데이터를 저장해줘야함.
@@ -108,7 +110,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                                 CreateUser = model.CreateUser,
                                 UpdateDt = DateTime.Now,
                                 UpdateUser = model.CreateUser,
-                                MeterItemId = model.MeterItemId
+                                MeterItemId = model.MeterItemId,
+                                PlaceTbId = model.PlaceTbId
                             };
 
                             await context.EnergyMonthUsageTbs.AddAsync(MonthTBInfo).ConfigureAwait(false);
@@ -130,7 +133,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                             .Where(m => m.DelYn != true &&
                                         m.MeterItemId == model.MeterItemId &&
                                         m.MeterDt.Year == model.MeterDt.Year &&
-                                        m.MeterDt.Month == model.MeterDt.Month)
+                                        m.MeterDt.Month == model.MeterDt.Month && 
+                                        m.PlaceTbId == model.PlaceTbId)
                             .SumAsync(m => m.TotalAmount)
                             .ConfigureAwait(false);
 
@@ -199,7 +203,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                 List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
                     .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) && 
                                 m.Year == Years && 
-                                m.Month == Month)
+                                m.Month == Month && 
+                                m.PlaceTbId == placeid)
                     .ToListAsync()
                     .ConfigureAwait(false);
 
@@ -209,7 +214,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                 float? MonthTotalPrice = await context.EnergyMonthUsageTbs
                     .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
                                 m.Year == Years &&
-                                m.Month == Month)
+                                m.Month == Month && 
+                                m.PlaceTbId == placeid)
                     .SumAsync(m => m.TotalPrice);
 
                 DayEnergyDTO DTOModel = new DayEnergyDTO();
@@ -285,7 +291,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                 List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
                     .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
                                 m.Year == Years &&
-                                m.Month == Month)
+                                m.Month == Month && 
+                                m.PlaceTbId == placeid)
                     .ToListAsync()
                     .ConfigureAwait(false);
 
@@ -384,7 +391,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                                   .Where(m => meterItemIds.Contains(m.MeterItemId)
                                               && m.DelYn != true
                                               && m.Year == CurrentYears
-                                              && m.Month == CurrentMonth)
+                                              && m.Month == CurrentMonth
+                                              && m.PlaceTbId == placeid)
                                   .SumAsync(m => (float?)m.TotalUsage) // nullable float로 변환
                                   .ConfigureAwait(false) ?? 0;
 
@@ -393,7 +401,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                         .Where(m => meterItemIds.Contains(m.MeterItemId) &&
                         m.DelYn != true &&
                         m.Year == CurrentYears &&
-                        m.Month == previousMonth)
+                        m.Month == previousMonth &&
+                        m.PlaceTbId == placeid)
                         .SumAsync(m => (float?)m.TotalUsage)
                         .ConfigureAwait(false) ?? 0;
 
@@ -402,7 +411,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                         .Where(m => meterItemIds.Contains(m.MeterItemId) &&
                         m.DelYn != true &&
                         m.Year == LastYear &&
-                        m.Month == CurrentMonth)
+                        m.Month == CurrentMonth && 
+                        m.PlaceTbId == placeid)
                         .SumAsync(m => (float?)m.TotalUsage)
                         .ConfigureAwait(false) ?? 0;
 
@@ -541,7 +551,8 @@ namespace FamTec.Server.Repository.Meter.Energy
                 List<EnergyDayUsageTb> UseDaysList = await context.EnergyDayUsageTbs
                   .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
                               m.Year == Years &&
-                              m.Month == Month)
+                              m.Month == Month && 
+                              m.PlaceTbId == placeid)
                   .ToListAsync()
                   .ConfigureAwait(false);
 

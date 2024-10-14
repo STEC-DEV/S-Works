@@ -184,12 +184,12 @@ namespace FamTec.Server.Services.Voc.Hub
                         string placetel = placeTB.Tel!;
 
                         // URL 파라미터 인코딩
-                        byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
-                        string base64 = Convert.ToBase64String(bytes);
+                        //byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
+                        //string base64 = Convert.ToBase64String(bytes);
 
                         /* 테스트 */
                         // 템플릿 http로 새로만들어야함.
-                        string url = $"https://125.131.105.172:5245/m/voc/select/{base64}";
+                        string url = $"http://125.131.105.172:5245/m/voc/select/{result.Code}";
 
 
                         //string url = $"https://sws.s-tec.co.kr/vocinfo?vocid={base64}";

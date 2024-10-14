@@ -162,14 +162,14 @@ namespace FamTec.Server.Services.Voc
                         string placetel = placeTB.Tel!;
 
                         // URL 파라미터 인코딩
-                        byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
-                        string base64 = Convert.ToBase64String(bytes);
+                        //byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
+                        //string base64 = Convert.ToBase64String(bytes);
 
                         
                         //string url = $"http://125.131.105.172:5245/m/voc/select/{base64}";
                         
                         // 템블릿 http로 새로 생성해야함.
-                        string url = $"https://125.131.105.172:5245/m/voc/select/{base64}";
+                        string url = $"http://125.131.105.172:5245/m/voc/select/{VocTB.Code}";
 
                         string StatusResult = string.Empty;
                         if(model.Status == 1)

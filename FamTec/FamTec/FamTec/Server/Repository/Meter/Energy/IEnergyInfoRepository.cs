@@ -20,7 +20,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="month"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        public Task<EnergyDayUsageTb?> GetUsageDaysInfo(int meterid, int year, int month, int day);
+        public Task<EnergyDayUsageTb?> GetUsageDaysInfo(int meterid, int year, int month, int day, int placeid);
 
         /// <summary>
         /// 해당년-월 데이터 전체 리스트 출력

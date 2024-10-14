@@ -3898,10 +3898,16 @@
     "ContainingType": "FamTec.Server.Controllers.Meter.MeterController",
     "Method": "AddMeter",
     "RelativePath": "api/Meter/sign/AddMeter",
-    "HttpMethod": "GET",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Meter.AddMeterDTO",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

@@ -44,7 +44,7 @@ namespace FamTec.Server.Controllers.Meter.Energy
             try
             {
                 AddEnergyDTO dto = new AddEnergyDTO();
-                dto.MeterID = 5;
+                dto.MeterID = 1;
                 dto.MeterDate = DateTime.Now.AddDays(-3); // 검침일자
                 dto.Amount1 = 500; // 소계
                 dto.Amount2 = 700; // 중간부하

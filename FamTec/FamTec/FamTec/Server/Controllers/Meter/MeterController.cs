@@ -11,7 +11,6 @@ namespace FamTec.Server.Controllers.Meter
     [ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     [Route("api/[controller]")]
     [ApiController]
-    //[ServiceFilter(typeof(SlidingWindowPolicyFilter))]
     public class MeterController : ControllerBase
     {
         private IMeterService MeterService;
@@ -29,17 +28,18 @@ namespace FamTec.Server.Controllers.Meter
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpPost]
-        [HttpGet]
+        [HttpPost]
+        //[HttpGet]
         [Route("sign/AddMeter")]
-        public async Task<IActionResult> AddMeter()
-        //public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
+        //public async Task<IActionResult> AddMeter()
+        public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
         {
             try
             {
-                AddMeterDTO dto = new AddMeterDTO();
-                dto.Name = "BCD123";
-                dto.Category = "보일러";
+                //AddMeterDTO dto = new AddMeterDTO();
+                //dto.Name = "B검침기";
+                //dto.Category = "전기";
+                //dto.ContractTbId = 1;
 
                 if (HttpContext is null)
                     return BadRequest();

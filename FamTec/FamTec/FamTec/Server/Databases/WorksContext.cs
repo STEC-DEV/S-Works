@@ -75,9 +75,7 @@ public partial class WorksContext : DbContext
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
-
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
