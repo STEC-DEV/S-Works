@@ -83,7 +83,7 @@
                         @row.CompleteDT
                     </td>
                     <td class="td">
-                        @row.CompleteDT
+                        @(row.DurationDT?.Split(".")[0])
                     </td>
                     <td class="td">
                         <StatusCard Status=@row.Status.ToString() />

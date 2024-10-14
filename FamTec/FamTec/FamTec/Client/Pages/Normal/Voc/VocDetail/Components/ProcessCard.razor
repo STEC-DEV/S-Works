@@ -18,7 +18,7 @@
     <div class="content">
         <div class="content-text">
             <TextField Label="처리 일시" Context="@Data.CreateDT" />
-            <TextField Label="처리 내용" Context="해당 타일 교체 완료" Type="textarea"/>
+            <TextField Label="처리 내용" Context="@Data.Comment" Type="textarea"/>
         </div>
         @if(images.Count != 0)
         {

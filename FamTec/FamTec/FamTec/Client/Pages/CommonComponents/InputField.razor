@@ -10,6 +10,7 @@
         placeholder="@Placeholder"
         @onblur="OnBlur"
         disabled="@(!EditMode)"
+        @onkeypress="(e)=>OnkeyPress(e)"
     />
     @* @oninput="onInputChange" *@
     @* @bind-value:event="oninput" *@
@@ -33,6 +34,7 @@
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback OnBlur{ get; set; }
     [Parameter] public EventCallback OnClick{get;set;}
+    [Parameter] public EventCallback<KeyboardEventArgs> OnKeyPress { get; set; }
 
 
     private async Task onInputChange(ChangeEventArgs e)
@@ -41,6 +43,11 @@
 
 
         await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async void OnkeyPress(KeyboardEventArgs e)
+    {
+        await OnKeyPress.InvokeAsync(e);
     }
 
 }

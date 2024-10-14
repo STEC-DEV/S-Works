@@ -32,7 +32,7 @@
             }
             else
             {
-                <Table ListData="@managerList"
+                <Table ListData="@filterList"
                        OnCheck="OnSelected"
                        Detail="true"
                        CheckItems="@deleteManagerList" />
@@ -44,15 +44,22 @@
 
 @code {
     [Parameter] public bool UserType { get; set; }
+    [Parameter] public string SelectDepartment{ get; set; }
 
     List<ManagerDTO>? managerList;
     List<int>? deleteManagerList = new List<int>();
+    List<ManagerDTO> filterList;
 
     private bool _editMode = false;
 
     protected async override Task OnInitializedAsync()
     {
         await OnLoadManagers();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnSelectFilterData();
     }
 
     private async Task OnLoadManagers()
@@ -69,16 +76,33 @@
             if(resManager.data == null)
             {
                 managerList = new List<ManagerDTO>();
+                filterList = new List<ManagerDTO>();
             }
             else
             {
                 managerList = resManager.data;
+                filterList = new List<ManagerDTO>(managerList);
             }
             return;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
+        }
+
+    }
+
+    private async Task OnSelectFilterData()
+    {
+        if (managerList != null)
+        {
+            filterList = String.IsNullOrEmpty(SelectDepartment)
+                    ? managerList
+                    : managerList.Where(m => m.Department == SelectDepartment).ToList();
+        }
+        else
+        {
+            filterList = new List<ManagerDTO>();
         }
 
     }

@@ -3,7 +3,8 @@
     flex-direction : column;
     justify-content :space-between;
     gap : var(--wide-pd);
-    height:100%;
+    min-height:100%;
+    height:auto;
 }
 
 .voc .header{
@@ -19,16 +20,21 @@
 
 .content{
     flex : 1;
-    /*height:100%;*/
+    min-height:500px;
+    height:100%;
     display : flex;
     flex-direction :column;
     gap:var(--default-pd);
-    overflow : auto;
+    /*overflow : auto;*/
 }
 
-.btns{
-    display : flex;
-    gap : var(--default-pd);
+.checkitem{
+    height:250px;
+}
+
+.btns {
+    display: flex;
+    gap: var(--default-pd);
 }
 
 .blockbtn{

@@ -16,10 +16,13 @@
         <div class="input-wrap">
             <InputCol Label="아이디"
                       Placeholder="아이디"
-                      @bind-Value=@user.UserId />
+                      @bind-Value=@user.UserId 
+                      OnKeyPress="HandleKeyDown" />
             <InputCol Label="비밀번호"
                       Placeholder="비밀번호"
-                      @bind-Value=@user.UserPassword />
+                      ValueType="password"
+                      @bind-Value=@user.UserPassword 
+                      OnKeyPress="HandleKeyDown" />
         </div>
         <Button Name="로그인" Type="0" OnClick="OnSignUp" />
     </div>
@@ -70,6 +73,14 @@
         catch (Exception ex)
         {
             Console.WriteLine("[SignUp][OnSignUp] 로그인 요청 에러" + ex);
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+        {
+            await OnSignUp(); // 로그인 메서드 호출
         }
     }
 }

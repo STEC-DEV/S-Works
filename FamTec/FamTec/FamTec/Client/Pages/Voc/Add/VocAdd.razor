@@ -29,9 +29,12 @@
                   TextArea=true
                   Height=true />
         <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+        
+    </div>
+    <div class="checkitem">
         <CheckItem CheckPerm="OnCheckPerm" />
     </div>
-    
+
     <div class="btns yappear">
         @if(permCheck){
             <Button Name="접수" Type="0" OnClick="@OnAdd" />

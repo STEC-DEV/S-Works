@@ -10,20 +10,27 @@
 
 <div class="manager-container yappear">
     <div class="depart">
-        <Department UserType=@(ADMINEDIT)/>
+        <Department UserType=@(ADMINEDIT) OnSelectedDepartment="HandleDepartmentSelected" />
     </div>
     <div class="managerlist">
-        <ManagerList UserType=@(ADMINEDIT) />
+        <ManagerList UserType=@(ADMINEDIT) SelectDepartment="@selectDepartment" />
     </div>
 </div>
 
 @code {
     public int LoginMode;
+    public string selectDepartment { get; set; } = "";
 
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+    }
+
+    private void HandleDepartmentSelected(string name)
+    {   
+        Console.WriteLine(name);
+        selectDepartment = name;
     }
 
     

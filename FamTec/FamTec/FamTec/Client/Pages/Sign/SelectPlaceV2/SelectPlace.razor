@@ -30,7 +30,13 @@
                     {
                         <li class="li">
                             @place.Name
-                            <input type="radio" name="place" value="@place.Id" @onclick="()=>HandlePlaceSelected(place.Id)" />
+                            <input 
+                                type="radio" 
+                                name="place" 
+                                value="@place.Id" 
+                                @onclick="()=>HandlePlaceSelected(place.Id)" 
+                                @onkeypress="(e)=>HandleKeyDown(e)"
+                                />
                         </li>
                     }
                 </ul>
@@ -145,5 +151,13 @@
         }
     }
 
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+        {
+            await EnterPlace(); // 로그인 메서드 호출
+        }
+    }
     
 }

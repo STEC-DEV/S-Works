@@ -28,8 +28,8 @@
 
         @foreach (var item in DataList)
         {
-            
-            <li class="depart-item @(InputEdit ? "edit": "" ) "  >
+
+            <li class="depart-item @(InputEdit ? "edit": "" )" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
                 <span class="item-title" @onclick=@(()=>OnModal(item.Id)) @onclick:stopPropagation>
                     @item.Name
                 </span>
@@ -71,7 +71,7 @@
     [Parameter] public EventCallback OnListSync { get; set; }
     [Parameter] public bool AddMode {get; set;}
     [Parameter] public List<int> CheckItems { get; set; }
-
+    [Parameter] public EventCallback<string> OnSelectedDepartment { get; set; }
 
     private Dictionary<int, bool> editStates = new Dictionary<int, bool>();
     AddDepartmentDTO newDepartment = new AddDepartmentDTO();
@@ -119,6 +119,11 @@
         {
             Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
         }
+    }
+
+    private async void OnSelect(string name)
+    {
+        await OnSelectedDepartment.InvokeAsync(name);
     }
 
     private void OnModal(int id)

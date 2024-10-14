@@ -76,12 +76,16 @@
         @foreach (var location in ListData.Select((value, idx) => (value, idx)))
         {
             var currentLocation = location.value;
-            bool _isEditing = false;
+            @* bool _isEditing = false; *@
             <tr @key="@currentLocation.RoomID" class="tbody-tr">
-                <td class="td text-left" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@(location.idx + 1)</td>
+                @* <td class="td text-left" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@(location.idx + 1)</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
-                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td>
+                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td> *@
+                <td class="td text-left" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@(location.idx + 1)</td>
+                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.RoomName</td>
+                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.BuildingName</td>
+                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.FloorName</td>
                 @if (BASIC)
                 {
                     <td class="td text-right">
@@ -92,19 +96,23 @@
                 }
                 
             </tr>
-            @if (_isEditing && BASIC)
-            {
-                <ModalBackground>
-                    <ChildComponent>
-                        <UpdateModal OnClose="OnEditLocation" />
-                    </ChildComponent>
-                </ModalBackground>
-            }
+            
         }
     </tbody>
 
 </table>
-
+@if (_itemEdit && BASIC)
+{
+    <ModalBackground>
+        <ChildComponent>
+            @* <UpdateModal OnClose="OnEditLocation" /> *@
+            <UpdateLocation OnClose="OnEditLocationClose"
+                            LocationId="@updateRoomId"
+                            LocationName="@updateRoomName"
+                            OnLoad=OnLoad />
+        </ChildComponent>
+    </ModalBackground>
+}
 @code {
     [Parameter] public List<LocationDTO> Locations {get; set;}
     [Parameter] public List<RoomListDTO> ListData { get; set; }
@@ -114,12 +122,17 @@
     [Parameter] public EventCallback AddMode { get; set; }
     [Parameter] public EventCallback OnAdd { get; set; }
     [Parameter] public EventCallback<(bool, int)> OnCheck{get;set;}
-
+    [Parameter] public EventCallback OnLoad { get; set; }
 
     List<BuildingFloor> Floor;
     private SelectField<BuildingFloor> floorSelectField;
     private HashSet<int> checkedItems = new HashSet<int>();
     private bool _itemEdit = false;
+
+
+    private string updateRoomName="";
+    private int updateRoomId = 0;
+
 
 
     protected override Task OnInitializedAsync()
@@ -199,8 +212,16 @@
     // {
     //     return !edit;
     // }
-    private void OnEditLocation()
+    private void OnEditLocation(string name, int id)
     {
-        _itemEdit = !_itemEdit;
+        _itemEdit = true;
+        updateRoomId = id;
+        updateRoomName = name;
+    }
+
+    private void OnEditLocationClose()
+    {
+        _itemEdit = false; ;
+
     }
 }
