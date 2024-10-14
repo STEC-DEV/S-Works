@@ -1,0 +1,43 @@
+.form-container[b-vema0fw9we] {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    background-color: var(--back-default-color);
+    padding: var(--default-pd);
+}
+
+.form-container .form-title[b-vema0fw9we]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+
+    padding:var(--default-pd);
+
+    border-bottom : var(--default-bd);
+}
+
+.form-container .title[b-vema0fw9we]{
+    display:flex;
+    align-items:center;
+    height:35px;
+    color:var(--main-color);
+}
+
+.form-container .form-input[b-vema0fw9we]{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: var(--default-pd);
+    height: 100%;
+    padding: var(--default-pd);
+}
+
+.form-container .img[b-vema0fw9we]{
+    object-fit :fill;
+}
+
+.form-container .img-wrap[b-vema0fw9we]{
+    width : 200px;
+    height : 200px;
+}

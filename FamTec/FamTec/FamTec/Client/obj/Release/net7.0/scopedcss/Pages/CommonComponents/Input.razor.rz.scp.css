@@ -1,0 +1,29 @@
+
+.input-container[b-hbi683jxzz] {
+    outline: none;
+    width: auto;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    padding: var(--half-pd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    transition : all .3s;
+    /*background-color:var(--main-light);*/
+}
+
+.input-container:focus[b-hbi683jxzz]{
+    border: var(--default-bd);
+}
+
+.padding[b-hbi683jxzz] {
+    padding: var(--default-pd);
+}
+
+[b-hbi683jxzz]::placeholder {
+/*    color: var(--main-color);*/
+}
+
+.width[b-hbi683jxzz] {
+    width:100%;
+}

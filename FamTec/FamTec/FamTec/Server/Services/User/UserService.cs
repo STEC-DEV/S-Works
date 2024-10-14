@@ -90,7 +90,8 @@ namespace FamTec.Server.Services.User
                         new Claim("Role", "User"),
                         new Claim(ClaimTypes.Role, "User"),
                         new Claim("PlaceIdx", PlaceTB.Id!.ToString()), // 사업장 인덱스
-                        new Claim("PlaceName", PlaceTB.Name!.ToString()) // 사업장 명칭
+                        new Claim("PlaceName", PlaceTB.Name!.ToString()), // 사업장 명칭
+                        new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd"))
                     };
 
                     /* 메뉴 접근권한 */
@@ -177,7 +178,8 @@ namespace FamTec.Server.Services.User
                          new Claim("UserType", "ADMIN"), // 직책
                          new Claim("AdminIdx", admintb.Id.ToString()), // 관리자 인덱스
                          new Claim("PlaceIdx", PlaceTB.Id.ToString()), // 사업장 인덱스
-                         new Claim("PlaceName", PlaceTB.Name.ToString()) // 사업장 명
+                         new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 명
+                         new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd"))
                     };
 
                     //string? adminType = admintb.Type switch
