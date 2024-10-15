@@ -12,7 +12,6 @@
             Data="@(_editMode ? UpdatePlace: OriginalPlace)" 
             EditMode=@_editMode 
             OnEdit="OnEditMode" 
-            OnSave="OnUpdate"
             />
     </div>
     <div class="section-row">
@@ -24,6 +23,25 @@
             OnLoadManager="LoadPlaceDetailInfo"
             />
     </div>
+    <div class="btns">
+        @if (ADMINEDIT)
+        {
+            if (_editMode)
+            {
+                <div class="btns">
+                    <Button Name="수정" Width=true Type="0" OnClick="OnUpdate" />
+                    <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
+                </div>
+            }
+            else
+            {
+                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+            }
+            
+
+        }
+    </div>
+    
 </div>
 
 @code {
@@ -43,6 +61,8 @@
     UpdatePlaceDTO UpdatePlace = new UpdatePlaceDTO();
     UpdatePlaceDTO OriginalPlace = new UpdatePlaceDTO();
 
+    //매니저 수정 DTO
+    UpdatePlaceManagerDTO updateManager = new UpdatePlaceManagerDTO();
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,25 +98,39 @@
         UpdatePlace.PlacePerm = OriginalPlace.PlacePerm.DeepCopy();
     }
 
+
     private async Task OnUpdate()
     {
         try
         {
-            ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
-            
-            if (resUpdate.code == 200)
+            foreach(ManagerDTO m in UpdateManagerList)
             {
-                await LoadPlaceDetailInfo();
-                OnEditMode();
+                updateManager.AdminId.Add(m.Id);
             }
+            updateManager.PlaceId = Id;
+            //사업장 (정보 + 권한) + 관리자 
+            ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
+
+            if (resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+
+
+            ResponseUnit<bool> resPut = await apiManager.PutAsync<bool>("AdminPlace/sign/UpdatePlaceManager",updateManager);
+            if(resPut.code != 200)
+            {
+                
+            }
+            updateManager = new UpdatePlaceManagerDTO();
+            await LoadPlaceDetailInfo();
+            OnEditMode();
             StateHasChanged();
-
- 
-
-            return;
         }catch(Exception ex)
         {
-            
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "사업장 수정 에러");
         }
     }
 }

@@ -29,8 +29,15 @@
 
     private void HandleDepartmentSelected(string name)
     {   
-        Console.WriteLine(name);
-        selectDepartment = name;
+        if(selectDepartment == name)
+        {
+            selectDepartment = "";
+        }
+        else
+        {
+            selectDepartment = name;
+        }
+
     }
 
     

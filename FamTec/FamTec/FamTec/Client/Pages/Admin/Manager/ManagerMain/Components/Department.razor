@@ -10,8 +10,8 @@
 <div class="depart-container">
     <div class="depart-wrap">
         <div class="depart-title">
-            <span class="title" @onclick=OnSelectReset>
-                부서관리
+            <span class="title">
+                관리자 그룹
             </span>
         </div>
         <div class="depart-content">
@@ -140,10 +140,10 @@
         }
     }
 
-    private async void OnSelectReset()
-    {
-        await OnSelectedDepartment.InvokeAsync("");
-    }
+    // private async void OnSelectReset()
+    // {
+    //     await OnSelectedDepartment.InvokeAsync("");
+    // }
 
 
 

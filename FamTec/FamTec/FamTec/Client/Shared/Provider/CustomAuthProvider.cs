@@ -335,5 +335,15 @@ namespace FamTec.Client.Shared.Provider
              // 해당 키가 없거나 값이 0이면 권한 없음
             return false;
         }
+
+
+        //===============관리자=====================
+        public async Task<int> GetAdminId()
+        {
+            var user = await ReturnUserClaim();
+            var adminidx = user.Claims.FirstOrDefault(c => c.Type == "AdminIdx").Value;
+            if(adminidx == null) { return 0; }
+            return int.Parse(adminidx);
+        }
     }
 }

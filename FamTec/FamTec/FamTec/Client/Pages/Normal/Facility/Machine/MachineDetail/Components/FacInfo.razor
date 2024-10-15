@@ -42,7 +42,10 @@
                 {
                     <div class="img-btn">
                         <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                        @if(ImageUrl.Count > 0){
+                            <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                        }
+
                     </div>
 
                     

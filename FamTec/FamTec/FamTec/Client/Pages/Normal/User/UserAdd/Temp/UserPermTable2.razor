@@ -35,7 +35,7 @@
             </th>
             <th class="th" rowspan="2">
                 <span>
-                    민원관리
+                    민원 관리
                 </span>
             </th>
         </tr>
@@ -76,7 +76,8 @@
                 var writeChecked = value == 2;
 
                 <td class="td">
-                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)" disabled="@(!EditMode || !readChecked)" />
+                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)" />
+                    @* disabled="@(!EditMode || !readChecked)" *@
                 </td>
             }
         </tr>

@@ -13,7 +13,7 @@
         <div class="detail-perm">
             <UserPermComponent UserPerm="@(EditMode ? User.UserPerm : OriginalUser.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
         </div>
-        @if (User.UserPerm.VocPerm > 1)
+        @if (User.UserPerm.VocPerm == 2)
         {
             <div class="useradd-sub yappear">
                 <UserVocPermComponent UserVocPerm="@(EditMode ? User.UserVocPerm : OriginalUser.UserVocPerm)" EditMode=@EditMode />
@@ -58,6 +58,7 @@
 
     private void OnVocActive(UserPermDTO updatedPerm)
     {
+        User.UserVocPerm = new UserVocPermDTO();
         // User.UserPerm = updatedPerm;
         isVocPerm = !isVocPerm;
         StateHasChanged();
