@@ -28,22 +28,28 @@
                 <ul class="ul">
                     @foreach (PlaceTableDTO place in placeData)
                     {
-                        <li class="li">
-                            @place.Name
+                        <li class="li" @onclick="()=>EnterPlace(place.Id)">
+                            @* @place.Name
                             <input 
                                 type="radio" 
                                 name="place" 
                                 value="@place.Id" 
                                 @onclick="()=>HandlePlaceSelected(place.Id)" 
                                 @onkeypress="(e)=>HandleKeyDown(e)"
-                                />
+                                /> *@
+                            <span class="text">
+                                @place.Name
+                            </span>
+                            <span class="text">
+                                [@place.ContractNum]
+                            </span>
                         </li>
                     }
                 </ul>
             }
         </div>
         <div class="btns">
-            <Button Name="Enter" Type="0" OnClick="EnterPlace"/>
+            @* <Button Name="Enter" Type="0" OnClick="EnterPlace"/> *@
             <Button Name="Exit" Type="1" OnClick="OnExit" />
         </div>
         
@@ -110,14 +116,15 @@
         SelectPlaceId = selectedId;
     }
 
-    private async Task EnterPlace()
+    //param id받는걸로 수정
+    private async Task EnterPlace(int placeid)
     {
-        if (SelectPlaceId == 0)
-        {
-            await JS.InvokeVoidAsync("alert", "사업장을 선택해주세요.");
-            return;
-        }
-        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={SelectPlaceId}");
+        // if (SelectPlaceId == 0)
+        // {
+        //     await JS.InvokeVoidAsync("alert", "사업장을 선택해주세요.");
+        //     return;
+        // }
+        ResponseUnit<string> res = await apiManager.GetUnitAsync<string>($"Login/sign/SelectPlace?placeid={placeid}");
 
         if (res.code != 200)
         {
@@ -152,12 +159,12 @@
     }
 
 
-    private async Task HandleKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
-        {
-            await EnterPlace(); // 로그인 메서드 호출
-        }
-    }
+    // private async Task HandleKeyDown(KeyboardEventArgs e)
+    // {
+    //     if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+    //     {
+    //         await EnterPlace(); // 로그인 메서드 호출
+    //     }
+    // }
     
 }

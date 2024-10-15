@@ -20,7 +20,7 @@
         <div class="voccomment-overflow">
             @foreach(var comment in ListData)
             {
-                <ProcessCard Status="0" Data="@comment" />
+                <ProcessCard Status="0" Data="@comment" OnLoad="OnLoadComment" />
             }
 
             

@@ -7,7 +7,7 @@
     </div>
     <div class="dateslider-display">
         <span class="year">@DisplayYear.</span>
-        <span class="month">@DisplayMonth</span>
+        <span class="month">@DisplayMonth.ToString("00")</span>
     </div>
     <div class="dateslider-btn" @onclick="@OnAfterDate">
         <span class="arrowR">&gt;</span>
@@ -22,37 +22,52 @@
     private string currentDate;
     private string createDate;
 
-    private string DisplayYear;
-    private string DisplayMonth;
+    private int DisplayYear;
+    private int DisplayMonth;
     private string DisplayDate;
     private DateTime dateOnly;
 
+
     protected override void OnInitialized()
     {
-        currentDate = CurrentDate.ToString("yyyyMM");
+        InitializeDates();
+    }
+
+    protected override void OnParametersSet()
+    {
         createDate = CreateDate.ToString("yyyyMM");
-        DisplayYear = CurrentDate.ToString("yyyy");
-        DisplayMonth = CurrentDate.ToString("MM");
-        DisplayDate = currentDate; // 초기화
-        // OnChanged.InvokeAsync(DisplayDate);
-        OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth),1));
+    }
+
+    private void InitializeDates()
+    {
+        currentDate = CurrentDate.ToString("yyyyMM");
+        
+        DisplayYear = CurrentDate.Year;
+        DisplayMonth = CurrentDate.Month;
     }
 
     private void OnUpdateDisplayDate()
     {
-        DisplayDate = DisplayYear + DisplayMonth;
+
+        OnChanged.InvokeAsync(new DateOnly(DisplayYear,DisplayMonth, 1));
+        StateHasChanged();
     }
 
     private void OnBeforeDate()
     {
-        if (int.Parse(DisplayDate) > int.Parse(createDate))
+        if (int.Parse($"{DisplayYear}{DisplayMonth:00}") > int.Parse(createDate))
         {
-            DisplayMonth = DisplayMonth == "1" ? "12" : (int.Parse(DisplayMonth) - 1).ToString("00");
-            DisplayYear = DisplayMonth == "12" ? (int.Parse(DisplayYear) - 1).ToString() : DisplayYear;
+            if (DisplayMonth == 1)
+            {
+                DisplayMonth = 12;
+                DisplayYear--;
+            }
+            else
+            {
+                DisplayMonth--;
+            }
 
-            OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth), 1));
             OnUpdateDisplayDate();
-            // OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {
@@ -62,14 +77,19 @@
 
     private void OnAfterDate()
     {
-        if (int.Parse(DisplayDate) < int.Parse(currentDate))
+        if (int.Parse($"{DisplayYear}{DisplayMonth:00}") < int.Parse(currentDate))
         {
-            DisplayMonth = DisplayMonth == "12" ? "01" : (int.Parse(DisplayMonth) + 1).ToString("00");
-            DisplayYear = DisplayMonth == "01" ? (int.Parse(DisplayYear) + 1).ToString() : DisplayYear;
+            if (DisplayMonth == 12)
+            {
+                DisplayMonth = 1;
+                DisplayYear++;
+            }
+            else
+            {
+                DisplayMonth++;
+            }
 
-            OnChanged.InvokeAsync(new DateOnly(int.Parse(DisplayYear), int.Parse(DisplayMonth), 1));
             OnUpdateDisplayDate();
-            // OnChanged.InvokeAsync(DisplayDate);
         }
         else
         {

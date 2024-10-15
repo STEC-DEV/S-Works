@@ -1,5 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Voc.Components
+@using FamTec.Client.Pages.Normal.Voc.VocDetail.Modal
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Voc
 
@@ -17,7 +18,7 @@
             <StatusCard Status="@Data.Status.ToString()" />
             @if (userIdx == Data.CreateUserId)
             {
-                <SmallButton Name="수정" Width=true Type="0" />
+                <SmallButton Name="수정" Width=true Type="0" OnClick="()=>OnEdit(Data.Id.Value)" />
             }
          </div>
         
@@ -33,27 +34,38 @@
         }
     </div>
 </div>
+@if (edit)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateModal Id="@editCommentId" OnClose="OnEditClose" OnLoad=OnLoad />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public VocCommentListDTO Data{ get; set; }
     [Parameter] public string Status { get; set; }
     [Parameter] public string Writer { get; set; } = "홍길동";
-
+    [Parameter] public EventCallback OnLoad { get; set; }
 
     List<byte[]> images = new List<byte[]>();
     List<int> nullIndex = new List<int>();
     int userIdx;
 
+    bool edit = false;
+    int editCommentId;
+
     protected async override Task OnInitializedAsync()
     {
-       
+
     }
 
     protected override async Task OnParametersSetAsync()
     {
         userIdx = await (_authStateProvider as CustomAuthProvider).GetUserId();
         await OnIMGConvert();
-        
+
 
 
     }
@@ -73,5 +85,17 @@
 
         Console.WriteLine("이미지수 " + images);
         StateHasChanged();
+    }
+
+
+    private async void OnEdit(int id)
+    {
+        edit = true;
+        editCommentId = id;
+    }
+
+    private async void OnEditClose()
+    {
+        edit = false ;
     }
 }

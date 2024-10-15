@@ -52,15 +52,14 @@
 
 .li[b-vokxs8vq93]{
     display : flex;
-    justify-content:space-between;
+    /*justify-content:space-between;*/
+    gap : var(--wide-pd);
 
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     padding : var(--default-pd);
 
-    font-size: var(--normal-size);
-    font-weight : var(--bold-wt);
-    color : var(--main-color);
+   
 
     background-color : var(--content-back-color);
 
@@ -76,4 +75,10 @@
     display : flex;
     gap : var(--default-pd);
     padding: 0 var(--default-pd);
+}
+
+.text[b-vokxs8vq93] {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
 }

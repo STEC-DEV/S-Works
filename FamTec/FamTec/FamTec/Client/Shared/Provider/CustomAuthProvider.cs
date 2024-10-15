@@ -15,6 +15,13 @@ namespace FamTec.Client.Shared.Provider
             _localStorageService = localStorageService;
         }
 
+        //토큰 유저 리턴
+        public async Task<ClaimsPrincipal> ReturnUserClaim()
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            return user;
+        }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             
@@ -181,6 +188,13 @@ namespace FamTec.Client.Shared.Provider
             var user = authState.User;
             string name = user.FindFirst(c => c.Type == "PlaceName").Value;
             return name;
+        }
+
+        public async Task<DateTime> GetPlaceCreate()
+        {
+            var user = await ReturnUserClaim();
+            var createDate = user.Claims.FirstOrDefault(c => c.Type == "PlaceCreateDT").Value;
+            return Convert.ToDateTime(createDate);
         }
 
         //알람 권한 조회

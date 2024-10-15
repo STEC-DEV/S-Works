@@ -1,0 +1,67 @@
+.modal[b-8aced3hzkr] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    height : 80%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.modal .header>.title[b-8aced3hzkr]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+
+.contents[b-8aced3hzkr] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.group[b-8aced3hzkr]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-8aced3hzkr]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.ul[b-8aced3hzkr]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.li[b-8aced3hzkr]{
+    display :flex;
+    gap : var(--half-pd);
+    align-items :center;
+    transition : all .3s;
+}
+
+.img-title[b-8aced3hzkr] {
+    font-size: var(--explain-size);
+    font-weight: bold;
+}
+
+.xicon:hover[b-8aced3hzkr]{
+    cursor:pointer;
+}
+

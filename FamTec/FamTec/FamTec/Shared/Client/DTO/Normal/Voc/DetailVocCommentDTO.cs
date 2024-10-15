@@ -53,8 +53,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
             Status = source.Status;
             CreateDT = source.CreateDT;
             CreateUser = source.CreateUser;
-            Images = source.Images;
-            Images = new List<byte[]>();
+            ImageName = new List<string?>(source.ImageName);
+            Images = new List<byte[]?>(source.Images);
         }
     }
 }
