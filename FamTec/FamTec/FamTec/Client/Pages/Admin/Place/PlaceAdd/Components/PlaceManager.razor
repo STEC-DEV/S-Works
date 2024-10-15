@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="content">
-        <ManagerTable ListData="@SelectList" OnChecked="OnChecked" />
+        <ManagerTable ListData="@SelectList" OnChecked="OnChecked" Checkedobj="@_selectDelList" />
     </div>
     @if (_isModal)
     {
@@ -71,6 +71,7 @@
         {
             SelectList?.Remove(i);
         }
+        _selectDelList.Clear();
         StateHasChanged();
     }
 

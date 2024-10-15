@@ -18,6 +18,9 @@
             <th class="table-th">
                 부서
             </th>
+            <th class="table-th">
+                계정유형
+            </th>
             @if (ADMINEDIT)
             {
                 <th class="table-th">
@@ -50,6 +53,9 @@
                     </td>
                     <td class="table-td" @onclick="()=>OnDetail(row.Id)">
                         @row.Department
+                    </td>
+                    <td class="table-td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Type
                     </td>
                     @if (ADMINEDIT)
                     {

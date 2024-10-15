@@ -16,6 +16,7 @@ namespace FamTec.Shared.Client.DTO
         public string UserId { get; set;}
         [Display(Name = "이름")]
         public string Name { get; set; }
+        public string Type { get; set; }
         [Display(Name = "부서")]
         public string Department { get; set; }
         [Display(Name = "선택")]
@@ -35,6 +36,7 @@ namespace FamTec.Shared.Client.DTO
                 IsSelect = source.IsSelect;
                 UserId = source.UserId;
                 Name = source.Name;
+                Type =  source.Type;
                 Department = source.Department;
             }
         }
