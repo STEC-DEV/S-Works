@@ -80,7 +80,6 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()

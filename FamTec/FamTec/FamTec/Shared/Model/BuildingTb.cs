@@ -26,7 +26,7 @@ public partial class BuildingTb
     /// </summary>
     [Column("BUILDING_CD")]
     [StringLength(255)]
-    public string BuildingCd { get; set; } = null!;
+    public string? BuildingCd { get; set; }
 
     /// <summary>
     /// 건물명
