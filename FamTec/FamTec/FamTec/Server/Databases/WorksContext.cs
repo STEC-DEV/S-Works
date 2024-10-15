@@ -80,7 +80,6 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -717,7 +716,6 @@ public partial class WorksContext : DbContext
                 .HasComment("삭제여부");
             entity.Property(e => e.DepartmentTbId).HasComment("관리부서 인덱스");
             entity.Property(e => e.Name).HasComment("사업장명");
-            entity.Property(e => e.Note).HasComment("비고");
             entity.Property(e => e.PermBeauty).HasComment("미화 권한");
             entity.Property(e => e.PermConstruct).HasComment("건축관리 권한");
             entity.Property(e => e.PermElec).HasComment("전기관리 권한");
@@ -924,7 +922,6 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
-
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -8,7 +8,7 @@
         public int? Id { get; set; }
 
         /// <summary>
-        /// PlaceCode
+        /// 사업장코드
         /// </summary>
         public string? PlaceCd { get; set; }
 
@@ -16,11 +16,6 @@
         /// 사업장명
         /// </summary>
         public string? Name { get; set; }
-
-        /// <summary>
-        /// 비고
-        /// </summary>
-        public string? Note { get; set; } = null;
 
         /// <summary>
         /// 계약번호

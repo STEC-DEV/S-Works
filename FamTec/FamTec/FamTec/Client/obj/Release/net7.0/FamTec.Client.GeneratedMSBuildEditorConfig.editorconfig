@@ -50,10 +50,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXERldGFpbFNlYXJjaFxDb21wb25lbnRzXERhdGFUYWJsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocDetail/Modal/UpdateModal.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NEZXRhaWxcTW9kYWxcVXBkYXRlTW9kYWwucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXFZvY01haW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -901,6 +897,10 @@ build_metadata.AdditionalFiles.CssScope = b-exbaw6icmy
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocDetail/Modal/AddModal.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NEZXRhaWxcTW9kYWxcQWRkTW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-prp9p1j9tr
+
+[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocDetail/Modal/UpdateModal.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NEZXRhaWxcTW9kYWxcVXBkYXRlTW9kYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-8aced3hzkr
 
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocDetail/VocDetail.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NEZXRhaWxcVm9jRGV0YWlsLnJhem9y

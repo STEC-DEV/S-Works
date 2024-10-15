@@ -11,15 +11,12 @@ namespace FamTec.Shared.Server.DTO.Place
         public int? Id { get; set; }
 
         /// <summary>
-        /// 사업장코드
-        /// </summary>
-        [Display(Name = "사업장 코드")]
-        public string? PlaceCd { get; set; }
-
-        /// <summary>
         /// 사업장주소
         /// </summary>
         public string? Address { get; set; }
+
+        [Display(Name = "사업장코드")]
+        public string? PlaceCd { get; set; }
 
         /// <summary>
         /// 사업장명
@@ -58,12 +55,6 @@ namespace FamTec.Shared.Server.DTO.Place
         public bool? Status { get; set; }
 
         /// <summary>
-        /// 비고
-        /// </summary>
-        [Display(Name = "비고")]
-        public string? Note { get; set; }
-
-        /// <summary>
         /// 관리부서 인덱스
         /// </summary>
         public int? DepartmentID { get; set; }
@@ -91,7 +82,6 @@ namespace FamTec.Shared.Server.DTO.Place
                 ContractNum = source.ContractNum;
                 ContractDt = source.ContractDt;
                 CancelDt = source.CancelDt;
-                Note = source.Note;
                 Status = source.Status;
             }
         }

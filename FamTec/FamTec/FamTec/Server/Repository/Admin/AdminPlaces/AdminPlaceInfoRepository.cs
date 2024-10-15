@@ -133,7 +133,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                             Id = place.Id,
                                             PlaceCd = place.PlaceCd,
                                             Name = place.Name,
-                                            Note = place.Note,
                                             ContractNum = place.ContractNum,
                                             ContractDt = place.ContractDt,
                                             Status = place.Status
@@ -270,8 +269,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                 PlaceDetail.PlaceInfo.ContractDt = placetb.ContractDt;
                 PlaceDetail.PlaceInfo.CancelDt = placetb.CancelDt;
                 PlaceDetail.PlaceInfo.Status = placetb.Status;
-                PlaceDetail.PlaceInfo.Note = placetb.Note;
-                        
+
                 DepartmentsTb? DepartmentTB = await context.DepartmentsTbs
                     .FirstOrDefaultAsync(m => m.Id == placetb.DepartmentTbId).ConfigureAwait(false);
                         
@@ -604,8 +602,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             Name = e.Name, // 사업장이름
                             ContractNum = e.ContractNum, // 계약번호
                             ContractDt = e.ContractDt, // 계약일자
-                            Status = e.Status, // 상태
-                            Note = e.Note, // 비고
+                            Status = e.Status // 상태
                         }).ToList();
 
                         return model;
@@ -627,8 +624,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                             Name = e.Name, // 사업장이름
                             ContractNum = e.ContractNum, // 계약번호
                             ContractDt = e.ContractDt, // 계약일자
-                            Status = e.Status, // 상태
-                            Note = e.Note, // 비고
+                            Status = e.Status // 상태
                         }).ToList();
 
                         return model;
@@ -664,7 +660,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                   Name = PlaceTB.Name,
                                                   PlaceCd = PlaceTB.PlaceCd,
                                                   Status = PlaceTB.Status,
-                                                  Note = PlaceTB.Note,
                                                   ContractDt = PlaceTB.ContractDt,
                                                   ContractNum = PlaceTB.ContractNum
                                               }).ToListAsync()

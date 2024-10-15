@@ -15,10 +15,7 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         [Display(Name = "선택")]
         public bool? IsSelect { get; set; } = false;
 
-        /// <summary>
-        /// 사업장코드
-        /// </summary>
-        [Display(Name = "사업장 코드")]
+        [Display(Name = "사업장코드")]
         public string? PlaceCd { get; set; }
 
         /// <summary>
@@ -26,12 +23,6 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         [Display(Name = "사업장명")]
         public string? Name { get; set; }
-
-        /// <summary>
-        /// 비고
-        /// </summary>
-        [Display(Name = "비고")]
-        public string? Note { get; set; } = null;
 
         /// <summary>
         /// 계약번호

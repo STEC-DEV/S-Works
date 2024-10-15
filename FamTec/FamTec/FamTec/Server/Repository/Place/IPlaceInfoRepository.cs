@@ -22,7 +22,7 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="Code"></param>
         /// <returns></returns>
-        Task<bool?> PlaceUKCheck(string Code);
+        Task<bool?> PlaceUKCheck(string ContractNum);
 
 
         /// <summary>

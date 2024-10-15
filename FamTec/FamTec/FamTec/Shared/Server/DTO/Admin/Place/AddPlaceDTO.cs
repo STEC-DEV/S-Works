@@ -6,11 +6,6 @@
     public class AddPlaceDTO
     {
         /// <summary>
-        /// 사업장코드
-        /// </summary>
-        public string? PlaceCd { get; set; }
-
-        /// <summary>
         /// 사업장 명
         /// </summary>
         public string? Name { get; set; }
@@ -20,6 +15,11 @@
         /// </summary>
         /// [Required]
         public string? Tel { get; set; }
+
+        /// <summary>
+        /// 사업장 코드
+        /// </summary>
+        public string? PlaceCd { get; set; }
 
         /// <summary>
         /// 사업장 주소
@@ -90,11 +90,6 @@
         /// VOC 권한
         /// </summary>
         public bool? PermVoc { get; set; } = false;
-
-        /// <summary>
-        /// 비고
-        /// </summary>
-        public string? Note { get; set; }
 
         /// <summary>
         /// 계약상태

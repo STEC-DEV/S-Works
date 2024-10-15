@@ -223,13 +223,13 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 //dto.Note = "테스트데이터";
                 
 
-                if (String.IsNullOrWhiteSpace(dto.PlaceCd))
-                    return NoContent();
-
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Tel))
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(dto.ContractNum))
                     return NoContent();
 
                 if (dto.PermMachine == null)

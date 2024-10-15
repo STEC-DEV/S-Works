@@ -123,12 +123,12 @@ namespace FamTec.Server.Repository.Place
         /// </summary>
         /// <param name="Code"></param>
         /// <returns></returns>
-        public async Task<bool?> PlaceUKCheck(string Code)
+        public async Task<bool?> PlaceUKCheck(string ContractNum)
         {
             try
             {
                 PlaceTb? PlaceTB = await context.PlaceTbs
-                    .FirstOrDefaultAsync(m => m.PlaceCd == Code && m.DelYn != true)
+                    .FirstOrDefaultAsync(m => m.ContractNum == ContractNum && m.DelYn != true)
                     .ConfigureAwait(false);
 
                 if (PlaceTB is null)

@@ -73,7 +73,6 @@ namespace FamTec.Server.Services.Admin.Place
                                 Id = e.Id,
                                 PlaceCd = !String.IsNullOrWhiteSpace(e.PlaceCd) ? e.PlaceCd.Trim() : e.PlaceCd,
                                 Name = !String.IsNullOrWhiteSpace(e.Name) ? e.Name.Trim() : e.Name,
-                                Note = e?.Note,
                                 ContractNum = e?.ContractNum,
                                 ContractDt = e?.ContractDt,
                                 Status = e.Status
@@ -101,7 +100,6 @@ namespace FamTec.Server.Services.Admin.Place
                             Id = e.Id,
                             PlaceCd = e.PlaceCd,
                             Name = e.Name,
-                            Note = e.Note,
                             ContractNum = e.ContractNum,
                             ContractDt = e.ContractDt,
                             Status = e.Status
@@ -230,7 +228,7 @@ namespace FamTec.Server.Services.Admin.Place
                     return new ResponseUnit<int?> { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // UK 검사
-                bool? UKCheck = await PlaceInfoRepository.PlaceUKCheck(dto.PlaceCd!).ConfigureAwait(false);
+                bool? UKCheck = await PlaceInfoRepository.PlaceUKCheck(dto.ContractNum!).ConfigureAwait(false);
                 if (UKCheck != true)
                     return new ResponseUnit<int?> { message = "이미 사용한 이력이 있는 코드입니다.", data = null, code = 202 };
 
@@ -260,7 +258,6 @@ namespace FamTec.Server.Services.Admin.Place
                     UpdateDt = ThisTime,
                     UpdateUser = Creater,
                     Status = dto.Status!.Value,
-                    Note = dto.Note,
                     DepartmentTbId = dto.DepartmentID
                 };
 
@@ -311,7 +308,6 @@ namespace FamTec.Server.Services.Admin.Place
                 model.ContractDt = dto.PlaceInfo.ContractDt;
                 model.CancelDt = dto.PlaceInfo.CancelDt;
                 model.Status = dto.PlaceInfo.Status!.Value;
-                model.Note = dto.PlaceInfo.Note;
                 model.PermMachine = dto.PlacePerm.PermMachine!.Value;
                 model.PermElec = dto.PlacePerm.PermElec!.Value;
                 model.PermLift = dto.PlacePerm.PermLift!.Value;
