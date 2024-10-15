@@ -39,12 +39,6 @@ public partial class EnergyMonthUsageTb
     public float? TotalUsage { get; set; }
 
     /// <summary>
-    /// 청구금액
-    /// </summary>
-    [Column("TOTAL_PRICE")]
-    public float? TotalPrice { get; set; }
-
-    /// <summary>
     /// 단가금액
     /// </summary>
     [Column("UNIT_PRICE")]

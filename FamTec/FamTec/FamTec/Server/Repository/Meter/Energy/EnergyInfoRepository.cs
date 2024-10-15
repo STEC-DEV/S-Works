@@ -1,12 +1,9 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using FamTec.Server.Databases;
+﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Meter.Energy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace FamTec.Server.Repository.Meter.Energy
@@ -165,6 +162,30 @@ namespace FamTec.Server.Repository.Meter.Energy
         }
 
         /// <summary>
+        /// 청구금액 입력
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<EnergyMonthChargePriceDTO?> AddChargePrice(EnergyMonthChargePriceDTO? dto, int placeid)
+        {
+            try
+            {
+                int Years = dto!.TargetDate.Year; // 해당년
+                int Month = dto!.TargetDate.Month; // 해당월
+
+                
+                return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
+
+
+        /// <summary>
         /// 해당년-월 데이터 리스트 출력 
         /// - 검침기 크로스조인
         /// - 해당월의 일별데이터 전체반환
@@ -211,16 +232,18 @@ namespace FamTec.Server.Repository.Meter.Energy
                 Console.WriteLine("asdasd");
 
                 // 해당 사업장에 속한 검침기들의 해당년도-월의 조건에 맞는 TotalPrice 합산
+                /*
                 float? MonthTotalPrice = await context.EnergyMonthUsageTbs
                     .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
                                 m.Year == Years &&
                                 m.Month == Month && 
                                 m.PlaceTbId == placeid)
                     .SumAsync(m => m.TotalPrice);
-
+                
+                
+                
                 DayEnergyDTO DTOModel = new DayEnergyDTO();
                 DTOModel.TotalPrice = MonthTotalPrice;
-
 
 
                 // 그룹 만들 데이터 크로스 조인
@@ -248,6 +271,8 @@ namespace FamTec.Server.Repository.Meter.Energy
 
 
                 return DTOModel;
+                */
+                return null;
             }
             catch (Exception ex)
             {
@@ -576,6 +601,6 @@ namespace FamTec.Server.Repository.Meter.Energy
             }
         }
 
-     
+      
     }
 }

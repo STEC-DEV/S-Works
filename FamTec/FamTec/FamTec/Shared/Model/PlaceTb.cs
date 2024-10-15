@@ -208,6 +208,9 @@ public partial class PlaceTb
     public virtual DepartmentsTb? DepartmentTb { get; set; }
 
     [InverseProperty("PlaceTb")]
+    public virtual ICollection<ElecEnergyAmountTb> ElecEnergyAmountTbs { get; set; } = new List<ElecEnergyAmountTb>();
+
+    [InverseProperty("PlaceTb")]
     public virtual ICollection<InventoryTb> InventoryTbs { get; set; } = new List<InventoryTb>();
 
     [InverseProperty("PlaceTb")]

@@ -29,6 +29,14 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <returns></returns>
         public Task<DayEnergyDTO?> GetMonthList(DateTime SearchDate, int placeid);
 
+        /// <summary>
+        /// 청구금액 입력
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public Task<EnergyMonthChargePriceDTO?> AddChargePrice(EnergyMonthChargePriceDTO? dto, int placeid);
+
         public Task<List<DaysTotalContractTypeEnergyDTO>> GetContractTypeMonthList(DateTime SearchDate, int placeid);
 
         public Task<List<DayTotalMeterEnergyDTO>> GetMeterMonthList(DateTime SearchDate, List<int> MeterId, int placeid);

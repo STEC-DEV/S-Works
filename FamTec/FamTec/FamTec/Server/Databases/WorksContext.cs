@@ -38,6 +38,8 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<DepartmentsTb> DepartmentsTbs { get; set; }
 
+    public virtual DbSet<ElecEnergyAmountTb> ElecEnergyAmountTbs { get; set; }
+
     public virtual DbSet<EnergyDayUsageTb> EnergyDayUsageTbs { get; set; }
 
     public virtual DbSet<EnergyMonthUsageTb> EnergyMonthUsageTbs { get; set; }
@@ -75,7 +77,9 @@ public partial class WorksContext : DbContext
     public virtual DbSet<UsersTb> UsersTbs { get; set; }
 
     public virtual DbSet<VocTb> VocTbs { get; set; }
+
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -108,6 +112,7 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -393,6 +398,25 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Name).HasComment("부서명");
         });
 
+        modelBuilder.Entity<ElecEnergyAmountTb>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("elec_energy_amount_tb", tb => tb.HasComment("전기 월청구 요금"));
+
+            entity.Property(e => e.ChargePrice)
+                .HasDefaultValueSql("'0'")
+                .HasComment("월 청구요금");
+            entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
+            entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.Month).HasComment("월");
+            entity.Property(e => e.Year).HasComment("년");
+
+            entity.HasOne(d => d.PlaceTb).WithMany(p => p.ElecEnergyAmountTbs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_place_tb_id_20241014");
+        });
+
         modelBuilder.Entity<EnergyDayUsageTb>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -422,9 +446,6 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.MeterItemId).HasComment("검침기 인덱스");
             entity.Property(e => e.Month).HasComment("월");
-            entity.Property(e => e.TotalPrice)
-                .HasDefaultValueSql("'0'")
-                .HasComment("청구금액");
             entity.Property(e => e.TotalUsage)
                 .HasDefaultValueSql("'0'")
                 .HasComment("월 총사용량");
@@ -903,6 +924,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
