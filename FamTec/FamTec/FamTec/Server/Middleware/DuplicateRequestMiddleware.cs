@@ -40,10 +40,8 @@ namespace FamTec.Server.Middleware
                 return;
             }
 
-
             // 요청 키 생성 (요청 URL + 쿼리스트링 + HTTP 메서드를 조합하여 고유 키를 생성)
             var requestKey = GenerateRequestKey(context);
-
             
             // 캐시에서 현재 요청 카운트를 확인하거나 없으면 0으로 설정
             if (_cache.TryGetValue(requestKey, out int requestCount))
