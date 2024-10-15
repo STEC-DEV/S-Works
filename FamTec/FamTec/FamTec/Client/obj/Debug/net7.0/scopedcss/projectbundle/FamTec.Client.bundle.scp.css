@@ -1674,7 +1674,10 @@
 }
 
 
-
+.options[b-wdtexlmlgt]{
+    display:flex;
+    gap:var(--half-pd);
+}
 
 
 .manager .content[b-wdtexlmlgt]{

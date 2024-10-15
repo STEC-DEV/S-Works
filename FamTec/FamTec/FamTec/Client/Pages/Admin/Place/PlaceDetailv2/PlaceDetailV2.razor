@@ -82,9 +82,6 @@
     {
         try
         {
-
-            
-
             ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
             
             if (resUpdate.code == 200)

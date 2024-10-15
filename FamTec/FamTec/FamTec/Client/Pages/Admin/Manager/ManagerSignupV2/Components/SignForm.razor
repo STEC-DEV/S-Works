@@ -7,7 +7,7 @@
 
 <div class="form-container">
     <div class="form-title">
-        <span class="title">매니저 정보</span>
+        <span class="title">관리자 정보</span>
     </div>
     <div class="content">
         <div class="img-area">
@@ -69,7 +69,7 @@
                 EditMode=true
                 />
                 <TextField2
-                    Label="직급"
+                    Label="계정유형"
                     Value="@job"
                     Color=true
                     />
@@ -110,7 +110,7 @@
         Console.WriteLine(ADMINJOB);
         job = ADMINJOB switch
         {
-            "SystemMaster" => "마스터",
+            "SystemManager" => "마스터",
             "Master" => "매니저",
             _ => "없음"
         };
