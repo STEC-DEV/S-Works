@@ -23,7 +23,6 @@
         <div class="infosection-1">
             @if (EditMode)
             {
-                <InputCol Label="건물코드" Placeholder="건물코드" ValueType="text" @bind-Value=@Building.Code />
                 <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name />
                 <InputCol Label="건물주소" Placeholder="건물주소" ValueType="text" @bind-Value=@Building.Address />
                 <InputCol Label="대표전화" Placeholder="대표전화 ( - 제외)" ValueType="number" @bind-Value=@Building.Tel />
@@ -37,7 +36,6 @@
             }
             else
             {
-                <TextField2 Label="건물코드" Color=true Value="@(Building.Code  ?? "없음")" />
                 <TextField2 Label="건물이름" Color=true Value="@(Building.Name  ?? "없음")" />
                 <TextField2 Label="건물주소" Color=true Value="@(Building.Address  ?? "없음")" />
                 <TextField2 Label="대표전화" Color=true Value="@(Building.Tel  ?? "없음")" />
