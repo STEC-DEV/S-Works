@@ -14,7 +14,8 @@ namespace FamTec.Server.Repository.Alarm
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public AlarmInfoRepository(WorksContext _context, ILogService _logservice)
+        public AlarmInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

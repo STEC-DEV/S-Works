@@ -101,7 +101,8 @@ namespace FamTec.Server.Services.Admin.Place
                             Name = e.Name,
                             ContractNum = e.ContractNum,
                             ContractDt = e.ContractDt,
-                            Status = e.Status
+                            Status = e.Status,
+                            CancelDt = e.CancelDt
                         }).ToList();
 
                         return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };

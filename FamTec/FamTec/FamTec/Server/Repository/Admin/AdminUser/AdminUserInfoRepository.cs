@@ -237,8 +237,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             }
         }
 
-
-
         /// <summary>
         /// 매개변수의 USERID에 해당하는 관리자모델 모델 조회
         /// </summary>
@@ -287,7 +285,8 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         Id = m.Id,
                         UserId = m.UserTb!.UserId!,
                         Name = m.UserTb.Name!,
-                        Department = m.DepartmentTb!.Name!
+                        Department = m.DepartmentTb!.Name!,
+                        Type = m.Type
                     })
                     .ToListAsync()
                     .ConfigureAwait(false);

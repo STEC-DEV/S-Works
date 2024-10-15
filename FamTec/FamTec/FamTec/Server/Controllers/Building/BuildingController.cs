@@ -190,8 +190,6 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                if (String.IsNullOrWhiteSpace(dto.Code))
-                    return NoContent();
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 

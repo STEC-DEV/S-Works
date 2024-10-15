@@ -20,11 +20,11 @@ namespace FamTec.Server.Services.Facility.Group
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
             ILogService _logservice)
         {
-            FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
-            FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
-            FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
+            this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
+            this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
+            this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
 
-            LogService = _logservice;
+            this.LogService = _logservice;
         }
 
         /// <summary>

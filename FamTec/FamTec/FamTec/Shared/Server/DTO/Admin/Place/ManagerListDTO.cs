@@ -34,6 +34,7 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         public string? Department { get; set; }
 
 
+        public string? Type { get; set; }
 
         // 기본 생성자
         public ManagerListDTO()
@@ -50,6 +51,7 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
                 UserId = source.UserId;
                 Name = source.Name;
                 Department = source.Department;
+                Type = source.Type;
             }
         }
 

@@ -13,7 +13,8 @@ namespace FamTec.Server.Repository.Admin.Departmnet
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public DepartmentInfoRepository(WorksContext _context, ILogService _logservice)
+        public DepartmentInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;
@@ -81,8 +82,6 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 throw;
             }
         }
-
-      
 
         /// <summary>
         /// 부서수정

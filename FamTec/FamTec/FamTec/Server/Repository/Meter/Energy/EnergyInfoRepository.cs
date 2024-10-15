@@ -13,7 +13,8 @@ namespace FamTec.Server.Repository.Meter.Energy
         private readonly WorksContext context;
         private ILogService LogService;
 
-        public EnergyInfoRepository(WorksContext _context, ILogService _logservice)
+        public EnergyInfoRepository(WorksContext _context,
+            ILogService _logservice)
         {
             this.context = _context;
             this.LogService = _logservice;

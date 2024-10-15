@@ -255,7 +255,8 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                                         Id = admintb.Id,
                                                         UserId = usertb.UserId,
                                                         Name = usertb.Name,
-                                                        Department = departmenttb.Name
+                                                        Department = departmenttb.Name,
+                                                        Type = admintb.Type
                                                     }).ToList();
 
                 PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();

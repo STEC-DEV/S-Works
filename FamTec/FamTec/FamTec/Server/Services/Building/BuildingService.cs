@@ -3,10 +3,6 @@ using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
-using Irony.Parsing;
-using System.Collections;
-using System.IO;
-using System.Text;
 
 namespace FamTec.Server.Services.Building
 {
@@ -85,10 +81,6 @@ namespace FamTec.Server.Services.Building
 
                 string NewFileName = files is not null ? FileService.SetNewFileName(UserIdx, files) : String.Empty;
 
-                bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!).ConfigureAwait(false);
-                if (BuildingCodeCheck != true)
-                    return new ResponseUnit<AddBuildingDTO>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
-
                 // 건물 관련한 폴더 없으면 만들기
                 PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
                 di = new DirectoryInfo(PlaceFileFolderPath);
@@ -96,7 +88,7 @@ namespace FamTec.Server.Services.Building
 
                 BuildingTb? model = new BuildingTb()
                 {
-                    BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!, /* 건물코드 */
+                    BuildingCd = dto.Code, /* 건물코드 */
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 건물명 */
                     Address = dto.Address, // 주소
                     Tel = dto.Tel, // 전화번호
@@ -432,13 +424,6 @@ namespace FamTec.Server.Services.Building
                 {
                     byte[]? Images = await FileService.GetImageFile(PlaceFileName, model.Image);
 
-                    //var stream = new MemoryStream(Images);
-                    //IFormFile formFile = new FormFile(stream, 0, Images.Length, "files", model.Image)
-                    //{
-                    //    Headers = new HeaderDictionary(),
-                    //    ContentType = "image/png", // 파일 타입에 맞게 수정
-                    //    ContentDisposition = $"form-data; name=\"files\"; filename=\"{model.Image}\"; filename*=UTF-8''{Uri.EscapeDataString(model.Image)}"
-                    //};
                     dto.ImageName = model.Image;
                     dto.Image = Images;
                 }
@@ -491,18 +476,7 @@ namespace FamTec.Server.Services.Building
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
 
-                if(!String.IsNullOrWhiteSpace(dto.Code))
-                {
-                    if (dto.Code != model.BuildingCd)
-                    {
-                        bool? BuildingCodeCheck = await BuildingInfoRepository.CheckBuildingCD(dto.Code!).ConfigureAwait(false);
-                        if (BuildingCodeCheck != true)
-                            return new ResponseUnit<bool?>() { message = "이미 사용중인 건물코드입니다.", data = null, code = 200 };
-                        else
-                            model.BuildingCd = !String.IsNullOrWhiteSpace(dto.Code) ? dto.Code.Trim() : dto.Code!; /* 건물코드 */
-                    }
-                }
-                
+                model.BuildingCd = dto.Code;
                 model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!; /* 건물명 */
                 model.Address = dto.Address; // 건물주소
                 model.Tel = dto.Tel; // 전화번호
@@ -684,14 +658,6 @@ namespace FamTec.Server.Services.Building
                         return new ResponseUnit<bool?>() { message = "참조하고있는 하위 정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
                 }
 
-                //for (int i = 0; i < buildingid.Count(); i++)
-                //{
-                //    List<FloorTb>? floortb = await FloorInfoRepository.GetFloorList(buildingid[i]);
-
-                //    if (floortb is [_, ..])
-                //        return new ResponseUnit<bool?> { message = "해당 건물에 속한 층정보가 있어 삭제가 불가능합니다.", data = null, code = 200 };
-                //}
-
                 bool? DeleteResult = await BuildingInfoRepository.DeleteBuildingList(buildingid, creater).ConfigureAwait(false);
                 return DeleteResult switch
                 {
@@ -727,7 +693,6 @@ namespace FamTec.Server.Services.Building
                 if(buildinglist is not { Count: > 0})
                     return new ResponseList<PlaceBuildingListDTO>() { message = "조회결과가 없습니다.", data = new List<PlaceBuildingListDTO>(), code = 200 };
 
-                
                 List<PlaceBuildingListDTO> dto = new List<PlaceBuildingListDTO>();
 
                 foreach(BuildingTb Building in buildinglist)
