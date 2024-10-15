@@ -132,7 +132,6 @@ namespace FamTec.Server.Middleware
                     context.Items.Add("UserType", jobj["UserType"].ToString());
                     context.Items.Add("jti", jobj["jti"].ToString());
                     context.Items.Add("Role", jobj["Role"].ToString());
-                    context.Items.Add("PlaceCreateDT", jobj["PlaceCreateDT"]!.ToString()); // 사업장 생성일
 
                     JObject parse = new JObject(JObject.Parse(jobj["UserPerms"].ToString()));
 
