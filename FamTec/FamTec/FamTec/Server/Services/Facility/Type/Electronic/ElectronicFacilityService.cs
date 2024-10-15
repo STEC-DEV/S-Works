@@ -67,7 +67,8 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 }
 
                 // 전기설비 관련한 폴더 없으면 만들기 
-                ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeidx);
+                //ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeidx);
+                ElectronicFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Electronic");
 
                 di = new DirectoryInfo(ElectronicFileFolderPath);
                 if (!di.Exists) di.Create();
@@ -184,7 +185,9 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 dto.RoomId = model.RoomTbId;
                 dto.RoomName = room.Name;
 
-                ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                //ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                ElectronicFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Electronic");
+
                 di = new DirectoryInfo(ElectronicFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -227,7 +230,9 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                //ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
+                ElectronicFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Electronic");
+
                 di = new DirectoryInfo(ElectronicFileFolderPath);
                 if (!di.Exists) di.Create();
 

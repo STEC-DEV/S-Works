@@ -65,7 +65,8 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 }
 
                 // 기계설비 관련한 폴더 없으면 만들기
-                LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeidx.ToString());
+                //LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeidx.ToString());
+                LiftFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Lift");
 
                 di = new DirectoryInfo(LiftFileFolderPath);
                 if (!di.Exists) di.Create();
@@ -177,7 +178,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 dto.RoomId = model.RoomTbId;
                 dto.RoomName = room.Name;
 
-                LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
+                //LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
+                LiftFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Lift");
+
                 di = new DirectoryInfo(LiftFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -222,7 +225,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
+                //LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
+                LiftFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Lift");
+
                 di = new DirectoryInfo(LiftFileFolderPath);
                 if (!di.Exists) di.Create();
 

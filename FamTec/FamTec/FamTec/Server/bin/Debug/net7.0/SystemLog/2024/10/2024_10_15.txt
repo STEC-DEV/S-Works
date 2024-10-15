@@ -621,3 +621,23 @@
    at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
    at FamTec.Server.Repository.Place.PlaceInfoRepository.GetAllList() in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Place\PlaceInfoRepository.cs:line 67
    at FamTec.Server.Services.Admin.Place.AdminPlaceService.GetAllWorksService(HttpContext context) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Place\AdminPlaceService.cs:line 95
+[2024-10-15 오후 2:48:07]	System.InvalidOperationException: Already committed or rolled back.
+   at MySqlConnector.MySqlTransaction.VerifyValid() in /_/src/MySqlConnector/MySqlTransaction.cs:line 277
+   at MySqlConnector.MySqlTransaction.CommitAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlTransaction.cs:line 30
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.CommitAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.CommitAsync(CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Admin.AdminPlaces.AdminPlaceInfoRepository.<>c__DisplayClass11_0.<<UpdatePlaceManager>b__0>d.MoveNext() in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Admin\AdminPlaces\AdminPlaceInfoRepository.cs:line 465
+[2024-10-15 오후 2:48:07]	System.InvalidOperationException: Already committed or rolled back.
+   at MySqlConnector.MySqlTransaction.VerifyValid() in /_/src/MySqlConnector/MySqlTransaction.cs:line 277
+   at MySqlConnector.MySqlTransaction.CommitAsync(IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlTransaction.cs:line 30
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.CommitAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalTransaction.CommitAsync(CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Admin.AdminPlaces.AdminPlaceInfoRepository.<>c__DisplayClass11_0.<<UpdatePlaceManager>b__0>d.MoveNext() in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Admin\AdminPlaces\AdminPlaceInfoRepository.cs:line 465
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at FamTec.Server.Repository.Admin.AdminPlaces.AdminPlaceInfoRepository.UpdatePlaceManager(UpdatePlaceManagerDTO dto, String updater) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Repository\Admin\AdminPlaces\AdminPlaceInfoRepository.cs:line 395
+   at FamTec.Server.Services.Admin.Place.AdminPlaceService.UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto) in C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\Services\Admin\Place\AdminPlaceService.cs:line 682

@@ -114,5 +114,13 @@ namespace FamTec.Server.Services.Admin.Place
         /// <param name="placeid"></param>
         /// <returns></returns>
         public Task<ResponseUnit<string?>> GetPlaceName(int placeid);
+
+        /// <summary>
+        /// 사업장에 할당된 매니저 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool?>> UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto);
     }
 }

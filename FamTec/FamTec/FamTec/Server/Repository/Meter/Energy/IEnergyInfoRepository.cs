@@ -35,7 +35,7 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="dto"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public Task<EnergyMonthChargePriceDTO?> AddChargePrice(EnergyMonthChargePriceDTO? dto, int placeid);
+        public Task<int?> AddChargePrice(EnergyMonthChargePriceDTO? dto, string creater, int placeid);
 
         public Task<List<DaysTotalContractTypeEnergyDTO>> GetContractTypeMonthList(DateTime SearchDate, int placeid);
 

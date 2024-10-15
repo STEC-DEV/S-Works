@@ -213,7 +213,9 @@ namespace FamTec.Server.Repository.Maintenence
                         if (MaintenenceHistory is null)
                             return (bool?)null;
 
-                        MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                        //MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                        MaintanceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Maintance");
+
                         di = new DirectoryInfo(MaintanceFileFolderPath);
                         if (!di.Exists) di.Create();
 
@@ -817,7 +819,9 @@ namespace FamTec.Server.Repository.Maintenence
                 if (MainTenenceList is [_, ..])
                 {
                     // 여기서 DTO에 이미지 변환시켜 넣어야함.
-                    MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                    //MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                    MaintanceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Maintance");
+
                     di = new DirectoryInfo(MaintanceFileFolderPath);
                     if (!di.Exists) di.Create();
 

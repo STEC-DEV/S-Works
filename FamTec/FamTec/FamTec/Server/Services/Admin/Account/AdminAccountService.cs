@@ -216,7 +216,9 @@ namespace FamTec.Server.Services.Admin.Account
 
 
                 // 관리자 관련한 폴더가 없으면 만듬
-                string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                //string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                string AdminFileFolderPath = Path.Combine(Common.FileServer, "Administrator");
+
                 di = new DirectoryInfo(AdminFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -411,7 +413,9 @@ namespace FamTec.Server.Services.Admin.Account
                 if(dto is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
-                string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
+                //string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
+                string AdminFileName = Path.Combine(Common.FileServer, "Administrator");
+
                 di = new DirectoryInfo(AdminFileName);
                 if (!di.Exists) di.Create();
 

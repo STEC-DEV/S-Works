@@ -122,5 +122,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         /// <param name="adminid"></param>
         /// <returns></returns>
         Task<List<AdminPlaceDTO>?> GetNotContainsPlaceList(int adminid);
+
+        Task<int?> UpdatePlaceManager(UpdatePlaceManagerDTO dto, string updater);
     }
 }

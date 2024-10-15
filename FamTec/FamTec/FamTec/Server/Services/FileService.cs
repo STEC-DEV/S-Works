@@ -183,7 +183,8 @@ namespace FamTec.Server.Services
                 {
                     if (!String.IsNullOrWhiteSpace(filename))
                     {
-                        filepath = String.Format(@"{0}\\{1}", folderPath, filename);
+                        //filepath = String.Format(@"{0}\\{1}", folderPath, filename);
+                        filepath = Path.Combine(folderPath, filename);
                         if (File.Exists(filepath))
                         {
                             File.Delete(filepath);

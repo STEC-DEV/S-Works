@@ -60,7 +60,8 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 }
 
                 // 전기설비 관련한 폴더 없으면 만들기 
-                NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeidx);
+                //NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeidx);
+                NetworkFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Network");
 
                 di = new DirectoryInfo(NetworkFileFolderPath);
                 if (!di.Exists) di.Create();
@@ -172,7 +173,9 @@ namespace FamTec.Server.Services.Facility.Type.Network
                 dto.RoomId = model.RoomTbId;
                 dto.RoomName = room.Name;
 
-                NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeid);
+                //NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeid);
+                NetworkFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Network");
+
                 di = new DirectoryInfo(NetworkFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -214,9 +217,11 @@ namespace FamTec.Server.Services.Facility.Type.Network
 
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                
+
                 // 이미지 변경 or 삭제
-                NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeid);
+                //NetworkFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Network", Common.FileServer, placeid);
+                NetworkFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Network");
+
                 di = new DirectoryInfo(NetworkFileFolderPath);
                 if (!di.Exists) di.Create();
 

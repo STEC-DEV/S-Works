@@ -168,21 +168,82 @@ namespace FamTec.Server.Repository.Meter.Energy
         /// <param name="dto"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<EnergyMonthChargePriceDTO?> AddChargePrice(EnergyMonthChargePriceDTO? dto, int placeid)
+        public async Task<int?> AddChargePrice(EnergyMonthChargePriceDTO? dto, string creater, int placeid)
         {
-            try
-            {
-                int Years = dto!.TargetDate.Year; // 해당년
-                int Month = dto!.TargetDate.Month; // 해당월
 
-                
-                return null;
-            }
-            catch(Exception ex)
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            bool SaveResult = false;
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
             {
-                LogService.LogMessage(ex.ToString());
-                throw;
-            }
+#if DEBUG
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        int Years = dto!.TargetDate.Year; // 해당년
+                        int Month = dto!.TargetDate.Month; // 해당월
+
+                        DateTime ThisDate = DateTime.Now; // 현재시간
+
+                        ElecEnergyAmountTb? ElecEnergyAmountTB = await context.ElecEnergyAmountTbs
+                            .FirstOrDefaultAsync(m => m.DelYn != true &&
+                                                      m.Year == Years &&
+                                                      m.Month == Month &&
+                                                      m.PlaceTbId == placeid)
+                            .ConfigureAwait(false);
+
+                        if (ElecEnergyAmountTB is not null)
+                            return -1; // 이미 데이터가 있음.
+
+                        ElecEnergyAmountTb NewAmountTB = new ElecEnergyAmountTb();
+                        NewAmountTB.Year = Years; // 년
+                        NewAmountTB.Month = Month; // 월
+                        NewAmountTB.ChargePrice = dto.ChargePrice; // 청구요금
+                        NewAmountTB.CreateDt = ThisDate; // 현재시간
+                        NewAmountTB.CreateUser = creater;
+                        NewAmountTB.UpdateDt = ThisDate; // 현재시간
+                        NewAmountTB.UpdateUser = creater;
+                        NewAmountTB.PlaceTbId = placeid; // 사업장
+
+                        await context.AddAsync(NewAmountTB).ConfigureAwait(false);
+                        SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                        if(!SaveResult)
+                        {
+                            await transaction.RollbackAsync();
+                            return 0; // 트랜잭션 에러
+                        }
+
+                        // 월별 단가를 지정해야함.
+                        List<MeterItemTb>? MeterItemList = await context.MeterItemTbs.Where(m => m.DelYn != true && m.Category == "전기" && m.PlaceTbId == placeid).ToListAsync().ConfigureAwait(false);
+                        if(MeterItemList is [_, ..])
+                        {
+                            List<int> MeterItemIdx = MeterItemList.Select(m => m.MeterItemId).ToList();
+
+                            List<EnergyMonthUsageTb> EnergyMonthList = await context.EnergyMonthUsageTbs
+                            .Where(m => MeterItemIdx.Contains(m.MeterItemId) && 
+                                        m.Year == Years && 
+                                        m.Month == Month && 
+                                        m.DelYn != true)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
+
+                        }
+
+
+                        return 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+                        throw;
+                    }
+                }
+            });
         }
 
 
@@ -233,6 +294,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                 Console.WriteLine("asdasd");
 
                 // 해당 사업장에 속한 검침기들의 해당년도-월의 조건에 맞는 TotalPrice 합산
+
                 /*
                 float? MonthTotalPrice = await context.EnergyMonthUsageTbs
                     .Where(m => allMeterItems.Select(m => m.MeterItemId).ToList().Contains(m.MeterItemId) &&
@@ -240,15 +302,22 @@ namespace FamTec.Server.Repository.Meter.Energy
                                 m.Month == Month && 
                                 m.PlaceTbId == placeid)
                     .SumAsync(m => m.TotalPrice);
-                
-                
-                
+                */
+
+                ElecEnergyAmountTb? AmountTB = await context.ElecEnergyAmountTbs
+                    .FirstOrDefaultAsync(m => m.DelYn != true && m.Year == Years && m.Month == Month && m.PlaceTbId == placeid);
+
+                float MonthChargePrice = 0;
+                if (AmountTB is not null)
+                {
+                    MonthChargePrice = AmountTB.ChargePrice!.Value;
+                }
+
                 DayEnergyDTO DTOModel = new DayEnergyDTO();
-                DTOModel.TotalPrice = MonthTotalPrice;
+                DTOModel.TotalPrice = MonthChargePrice;
 
 
                 // 그룹 만들 데이터 크로스 조인
-
                 DTOModel.TotalList =  (from MeterTB in allMeterItems
                                       from date in allDates
                                       join EnergyDayTB in UseDaysList
@@ -269,11 +338,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                                     .ThenBy(x => x.Date) // Date를 기준으로 오름차순 정렬
                                     .ToList();
 
-
-
                 return DTOModel;
-                */
-                return null;
             }
             catch (Exception ex)
             {

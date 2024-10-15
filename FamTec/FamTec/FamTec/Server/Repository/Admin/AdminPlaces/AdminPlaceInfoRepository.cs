@@ -385,6 +385,151 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         }
 
         /// <summary>
+        /// 사업장에 할당되어있는 매니저 수정
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="updater"></param>
+        /// <returns></returns>
+        public async Task<int?> UpdatePlaceManager(UpdatePlaceManagerDTO dto, string updater)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            bool UpdateResult = false;
+            DateTime ThisDate = DateTime.Now;
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        List<AdminPlaceTb>? AdminPlaceList = await context.AdminPlaceTbs.Where(m => m.DelYn != true && m.PlaceTbId == dto.PlaceId).ToListAsync().ConfigureAwait(false);
+
+                        if (AdminPlaceList is [_, ..])
+                        {
+                            // INSERT REMOVE 하면됨
+
+                            foreach (int adminid in dto.AdminId)
+                            {
+                                AdminTb? AdminTB = await context.AdminTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == adminid).ConfigureAwait(false);
+                                if (AdminTB is null)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    return -1; // 없는 데이터임.
+                                }
+                            }
+
+                            // 현재 상태값.
+                            List<int> CurrentPlaceIdx = AdminPlaceList.Select(m => m.AdminTbId).ToList();
+
+                            List<int> RemoveTarget = CurrentPlaceIdx.Except(dto.AdminId).ToList();
+                            List<int> InsertTarget = dto.AdminId.Except(CurrentPlaceIdx).ToList();
+
+                            // 삭제먼저
+                            if (RemoveTarget.Count > 0)
+                            {
+                                foreach (int RemoveIdx in RemoveTarget)
+                                {
+                                    AdminPlaceTb? AdminPlaceTB = await context.AdminPlaceTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.AdminTbId == RemoveIdx && m.PlaceTbId == dto.PlaceId).ConfigureAwait(false);
+
+                                    if (AdminPlaceTB is null)
+                                    {
+                                        await transaction.RollbackAsync().ConfigureAwait(false);
+                                        return -1;
+                                    }
+
+                                    context.AdminPlaceTbs.Remove(AdminPlaceTB);
+                                }
+
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    return 0;
+                                }
+                            }
+
+                            if (InsertTarget.Count > 0)
+                            {
+                                // 그다음 추가
+                                foreach (int InsertIdx in InsertTarget)
+                                {
+                                    AdminPlaceTb AdminPlaceTB = new AdminPlaceTb();
+                                    AdminPlaceTB.CreateDt = ThisDate;
+                                    AdminPlaceTB.CreateUser = updater;
+                                    AdminPlaceTB.UpdateDt = ThisDate;
+                                    AdminPlaceTB.UpdateUser = updater;
+                                    AdminPlaceTB.AdminTbId = InsertIdx;
+                                    AdminPlaceTB.PlaceTbId = dto.PlaceId;
+
+                                    await context.AdminPlaceTbs.AddAsync(AdminPlaceTB).ConfigureAwait(false);
+                                }
+
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    return 0;
+                                }
+                            }
+
+                            await transaction.CommitAsync().ConfigureAwait(false);
+                            return 1;
+                        }
+                        else
+                        {
+                            // 전부다 INSERT 시키면됨.
+                            foreach(int InsertIdx in dto.AdminId)
+                            {
+                                AdminTb? AdminTB = await context.AdminTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == InsertIdx).ConfigureAwait(false);
+                                if(AdminTB is null)
+                                {
+                                    await transaction.RollbackAsync().ConfigureAwait(false);
+                                    return -1;
+                                }
+
+                                AdminPlaceTb AdminPlaceTB = new AdminPlaceTb();
+                                AdminPlaceTB.CreateDt = ThisDate;
+                                AdminPlaceTB.CreateUser = updater;
+                                AdminPlaceTB.UpdateDt = ThisDate;
+                                AdminPlaceTB.UpdateUser = updater;
+                                AdminPlaceTB.AdminTbId = InsertIdx;
+                                AdminPlaceTB.PlaceTbId = dto.PlaceId;
+
+                                await context.AdminPlaceTbs.AddAsync(AdminPlaceTB).ConfigureAwait(false);
+                            }
+
+                            UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                            if(!UpdateResult)
+                            {
+                                await transaction.RollbackAsync().ConfigureAwait(false);
+                                return 0;
+                            }
+
+                            await transaction.CommitAsync().ConfigureAwait(false);
+                            return 1;
+                        }
+                    }
+                    catch (Exception ex) when (IsDeadlockException(ex))
+                    {
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+                        throw;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
         /// 해당 사업장에 할당된 관리자 삭제 - DelYN 삭제함.
         /// </summary>
         /// <param name="admintbid"></param>

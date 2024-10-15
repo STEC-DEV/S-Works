@@ -657,5 +657,45 @@ namespace FamTec.Server.Services.Admin.Place
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+        /// <summary>
+        /// 사업장에 할당된 매니저 수정
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool?>> UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? updater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(updater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetBuildingPlace(dto.PlaceId).ConfigureAwait(false);
+                if (PlaceTB is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                int? Result = await AdminPlaceInfoRepository.UpdatePlaceManager(dto, updater).ConfigureAwait(false);
+
+                if (Result is 1)
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                else if (Result is 0)
+                    return new ResponseUnit<bool?>() { message = "이미 삭제된 데이터가 존재합니다.", data = false, code = 200 };
+                else if (Result is -1)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                else
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 }

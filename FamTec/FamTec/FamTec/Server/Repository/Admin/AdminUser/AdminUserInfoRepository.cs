@@ -466,7 +466,9 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         if (UserInfo is null)
                             return false;
 
-                        string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                        //string AdminFileFolderPath = String.Format(@"{0}\\Administrator", Common.FileServer);
+                        string AdminFileFolderPath = Path.Combine(Common.FileServer, "Administrator");
+
                         di = new DirectoryInfo(AdminFileFolderPath);
                         if (!di.Exists) di.Create();
 

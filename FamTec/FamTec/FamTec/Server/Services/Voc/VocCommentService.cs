@@ -94,7 +94,8 @@ namespace FamTec.Server.Services.Voc
                 }
 
                 // VOC관련한 폴더 없으면 만들기
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, dto.VocTbId!.Value);
+                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, dto.VocTbId!.Value);
+                VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", dto.VocTbId!.Value.ToString(), "VocComment");
 
                 di = new DirectoryInfo(VocCommentFileFolderPath);
                 if (!di.Exists) di.Create();
@@ -262,7 +263,9 @@ namespace FamTec.Server.Services.Voc
                 if(BuildingTB is null)
                     return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
+                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
+                VocCommentFileFolderPath = Path.Combine(Common.FileServer, BuildingTB!.PlaceTbId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
+
                 di = new DirectoryInfo(VocCommentFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -347,7 +350,8 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateDT = model.CreateDt; // VOC 댓글 작성시간
                 dto.CreateUser = model.CreateUser; // 댓글 작성자
 
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, VocTB.Id);
+                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, VocTB.Id);
+                VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
                 var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
                 foreach (var image in imageFiles)
@@ -426,7 +430,9 @@ namespace FamTec.Server.Services.Voc
                 List<string> RemoveTemplist = new List<string>();
 
                 // VOC관련한 폴더 경로
-                VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, model.VocTbId);
+                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, model.VocTbId);
+                VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", model.VocTbId.ToString(), "VocComment");
+
                 di = new DirectoryInfo(VocCommentFileFolderPath);
                 if (!di.Exists) di.Create();
 

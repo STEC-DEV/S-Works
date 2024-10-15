@@ -149,6 +149,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
+    "Method": "UpdatePlaceManager",
+    "RelativePath": "api/AdminPlace/sign/UpdatePlaceManager",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Place.UpdatePlaceManagerDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
     "Method": "UpdateWorks",
     "RelativePath": "api/AdminPlace/sign/UpdateWorks",
     "HttpMethod": "PUT",
@@ -2127,6 +2143,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Meter.Energy.EnergyController",
+    "Method": "AddChargePrice",
+    "RelativePath": "api/Energy/sign/AddChargePrice",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

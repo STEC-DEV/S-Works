@@ -76,7 +76,8 @@ namespace FamTec.Server.Services.Material
                 if(MaterialCheck != true)
                     return new ResponseUnit<AddMaterialDTO>() { message = "이미 존재하는 코드입니다.", data = null, code = 201 };
 
-                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeidx);
+                //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeidx);
+                MaterialFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Material");
 
                 di = new DirectoryInfo(MaterialFileFolderPath);
                 if (!di.Exists) di.Create();
@@ -143,8 +144,10 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialListDTO>() { message = "잘못된 요청입니다.", data = new List<MaterialListDTO>(), code = 404 };
 
-                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
-                
+                //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                MaterialFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Material");
+
+
                 List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid)).ConfigureAwait(false);
                 if(model is null || !model.Any())
                     return new ResponseList<MaterialListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialListDTO>(), code = 200 };
@@ -258,7 +261,8 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<MaterialListDTO>() { message = "잘못된 요청입니다.", data = new List<MaterialListDTO>(), code = 404 };
 
-                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                MaterialFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Material");
 
                 List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialPageNationList(Int32.Parse(placeid), pagenumber, pagesize).ConfigureAwait(false);
                 if (model is null || !model.Any())
@@ -328,7 +332,9 @@ namespace FamTec.Server.Services.Material
                 dto.RoomID = materialTB.RoomTbId; // 기본위치
                 dto.RoomName = RoomTB.Name;
 
-                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                MaterialFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Material");
+
                 di = new DirectoryInfo(MaterialFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -377,7 +383,9 @@ namespace FamTec.Server.Services.Material
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
+                MaterialFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Material");
+
                 di = new DirectoryInfo(MaterialFileFolderPath);
                 if (!di.Exists) di.Create();
 
@@ -392,7 +400,6 @@ namespace FamTec.Server.Services.Material
                 //model.Standard = dto.Standard; // 규격
                 //model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 model.SafeNum = dto.SafeNum; // 안전재고수량
-                //model.DefaultLocation = dto.RoomID!.Value; // 공간위치
                 model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
 

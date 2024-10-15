@@ -385,7 +385,9 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(UserIdx) || String.IsNullOrWhiteSpace(updater) || String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                //MaintanceFileFolderPath = String.Format(@"{0}\\{1}\\Maintance", Common.FileServer, placeid.ToString());
+                MaintanceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Maintance");
+
                 di = new DirectoryInfo(MaintanceFileFolderPath);
                 if (!di.Exists) di.Create();
 

@@ -100,6 +100,28 @@ namespace FamTec.Server.Controllers.Meter.Energy
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/AddChargePrice")]
+        public async Task<IActionResult> AddChargePrice()
+        {
+            try
+            {
+                EnergyMonthChargePriceDTO dto = new EnergyMonthChargePriceDTO();
+                dto.TargetDate = DateTime.Now;
+                dto.ChargePrice = 300000;
+
+                var temp = await EnergyInfoRepository.AddChargePrice(dto, "용", 1);
+                return Ok();
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// (2) 계약종별
         /// 계약종별에 따른 월별 데이터

@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;
@@ -234,6 +235,41 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpPut]
+        //[HttpGet]
+        [Route("sign/UpdatePlaceManager")]
+        //public async Task<IActionResult> UpdatePlaceManager()
+        public async Task<IActionResult> UpdatePlaceManager([FromBody]UpdatePlaceManagerDTO dto)
+        {
+            try
+            {
+                //UpdatePlaceManagerDTO dto = new UpdatePlaceManagerDTO();
+                //dto.PlaceId = 1;
+                //dto.AdminId.Add(1);
+                //dto.AdminId.Add(3);
+                //dto.AdminId.Add(4);
+
+                if (dto.PlaceId is 0)
+                    return NoContent();
+
+                ResponseUnit<bool?> model = await AdminPlaceService.UpdatePlaceManagerService(HttpContext, dto).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+                
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+        
 
         /// <summary>
         /// 사업장 삭제

@@ -25,7 +25,7 @@ namespace FamTec.Server.Repository.Store
             {
                 await context.StoreTbs.AddAsync(model).ConfigureAwait(false);
 
-                bool AddResult =await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                bool AddResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                 
                 if (AddResult)
                     return model;

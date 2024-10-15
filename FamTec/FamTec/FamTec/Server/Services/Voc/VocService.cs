@@ -167,7 +167,8 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateUser = model.CreateUser; // 민원인
                 dto.Phone = model.Phone; // 민원인 전화번호
 
-                string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
+                //string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
+                string VocFileName = Path.Combine(Common.FileServer, PlaceIdx.ToString(), "Voc", model.Id.ToString());
                 di = new DirectoryInfo(VocFileName);
                 if (!di.Exists) di.Create();
 
