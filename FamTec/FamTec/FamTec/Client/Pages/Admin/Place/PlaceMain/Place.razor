@@ -123,9 +123,8 @@
         searchText = text;
         FilterPlaceList = String.IsNullOrEmpty(searchText) 
                                     ? PlaceList
-                                    : PlaceList.Where(p => (p.PlaceCd?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                    (p.Name?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                                    (p.ContractNum?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                    : PlaceList.Where(p => (p.Name?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                                        (p.ContractNum?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                             ).ToList();
 
 

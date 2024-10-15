@@ -7,11 +7,6 @@
         <tr class="thead-tr">
             <th class="th">
                 <span>
-                    사업장 코드
-                </span>
-            </th>
-            <th class="th">
-                <span>
                     사업장명
                 </span>
             </th>
@@ -58,9 +53,6 @@
             {
                 <tr class="tbody-tr">
                     <td class="td">
-                        @row.PlaceCd
-                    </td>
-                    <td class="td">
                         @row.Name
                     </td>
                     <td class="td">
@@ -92,7 +84,7 @@
     private bool IsChecked(PlaceTableDTO place)
     {
         // CheckedData 리스트에서 현재 행에 해당하는 place가 있는지 확인
-        return CheckedData != null && CheckedData.Any(x => x.PlaceCd == place.PlaceCd);
+        return CheckedData != null && CheckedData.Any(x => x.Id== place.Id);
     }
 
 
