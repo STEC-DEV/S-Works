@@ -30,7 +30,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://125.131.105.172:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -151,21 +151,43 @@ namespace FamTec.Client.Middleware
                     {
                         var value = item.GetValue(data);
                         var imageProperty = data.GetType().GetProperty("ImageName");
-                        var imageName = imageProperty != null ? imageProperty.GetValue(data)?.ToString() : null;
+                        var imageNames = imageProperty?.GetValue(data);
+                        //var imageName = imageProperty != null ? imageProperty.GetValue(data)?.ToString() : null;
                         
                           if(value is byte[] fileBytes && fileBytes.Length > 0)
                         {
-                            
+                            string imageName = "file";
+                            // ImageName이 string인 경우
+                            if (imageNames is string singleImageName)
+                            {
+                                imageName = singleImageName;
+                            }
+
                             if (!string.IsNullOrEmpty(imageName))
                             {
                                 var fileContent = new ByteArrayContent(fileBytes);
                                 fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
                                 content.Add(fileContent, "files", imageName);
                             }
-                            else { 
+                        }
+                        // List<byte[]> 처리
+                        else if (value is List<byte[]> listFileBytes && listFileBytes.Count > 0)
+                        {
+                            for (int i = 0; i < listFileBytes.Count; i++)
+                            {
+                                var bytes = listFileBytes[i];
+                                if (bytes != null && bytes.Length > 0)
+                                {
+                                    string listImageName = $"file_{i}";
+                                    if (imageNames is List<string> imageNameList && i < imageNameList.Count)
+                                    {
+                                        listImageName = imageNameList[i];
+                                    }
+                                    var fileContent = new ByteArrayContent(bytes);
+                                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                                    content.Add(fileContent, "files", listImageName);
+                                }
                             }
-                            //fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                            //content.Add(fileContent, "files", $"{imageName}");
                         }
                         else
                         {

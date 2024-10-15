@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Voc
 <div class="vochistory-container yappear">
     <div class="vochistory-wrap">
@@ -11,7 +12,7 @@
             @if (FilterOption ==0)
             {
                 <div class="vochistory-slider @(FilterOption == 1 ? "date-none" : "")">
-                    <DateSlider CreateDate="createdate" OnChanged="OnSelectDate" />
+                    <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" />
                 </div>
             }
             
@@ -37,7 +38,7 @@
     [Parameter] public int DefaultOption { get; set; }
     [Parameter] public bool IsLoading { get; set;  }
     //사업장 생성일자 필요함
-    public DateTime createdate = new DateTime(2023, 11, 4, 12, 0, 0, 0, 0);
+    public DateTime createdate;
 
     List<ListVocDTO> listvoc = new List<ListVocDTO>();
     List<ListVocDTO> originalData = new List<ListVocDTO>();
@@ -52,7 +53,8 @@
 
 
     protected async override Task OnInitializedAsync()
-    {        
+    {
+        createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
         DateTime date = DateTime.Now;
         curDate = date.ToString("yyyy-M");
         FilterOption = DefaultOption;

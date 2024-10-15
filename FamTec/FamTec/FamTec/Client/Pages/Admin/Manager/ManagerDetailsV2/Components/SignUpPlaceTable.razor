@@ -75,7 +75,7 @@
                         @row.ContractNum
                     </td>
                     <td class="td">
-                        @row.ContractDt
+                        @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
                     @if (EditMode)
                     {

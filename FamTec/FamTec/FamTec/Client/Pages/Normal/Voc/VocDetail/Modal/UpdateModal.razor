@@ -1,4 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Voc.Add.Components
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
 
@@ -10,23 +12,64 @@
         </span>
     </div>
     <div class="contents">
-        <InputCol Label="처리 내용" ValueType="textarea" @bind-Value=@comment.Content/>
-
+        @* <InputCol Label="처리 내용" ValueType="textarea" @bind-Value=@comment.Content/> *@
+        <VocInput Label="처리 내용"
+                  @bind-Value=@comment.Content
+                  Placeholder="내용"
+                  TextArea=true
+                  Height=true />
+        @if(image.Count > 0)
+        {
+            <ImageSlider Label="처리 이미지" Images="@image" />
+            <ul class="ul">
+                @foreach (string i in _imageName)
+                {
+                    <li class="li">
+                        <span class="img-title">
+                            @i
+                        </span>
+                        <svg 
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" 
+                            class="bi bi-x xicon" viewBox="0 0 16 16"
+                            @onclick="()=>OnDelImg(i)"
+                        >
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    </li>
+                }
+            </ul>
+        }
+        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+        
+        
     </div>
     <div class="btns">
-        
+        <Button Name="수정" Type="0" OnClick="OnUpDate" />
+        <Button Name="닫기" Type="1" OnClick="OnClosed" />
     </div>
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback OnClose{ get; set; }
+    [Parameter] public EventCallback OnLoad{ get; set; }
 
     DetailVocCommentDTO comment = new DetailVocCommentDTO();
-    List<byte[]> img = new List<byte[]>();
+    List<byte[]> image = new List<byte[]>();
+    List<string> _imageName = new List<string>();
+    List<int> emptyIdx = new List<int>();
+
 
     protected override async Task OnInitializedAsync()
     {
         await OnLoadDetailCommment();
+        await ConvertImage();
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
     }
 
     //댓글 상세 조회
@@ -41,15 +84,158 @@
                 return;
             }
             comment = new DetailVocCommentDTO(resGet.data);
-
+            await ConvertImage();
         }catch(Exception ex)
         {
             await JS.InvokeVoidAsync("alert", "처리내역 상세 조회 실패");
         }
     }
 
-    private async void ConvertImage()
+
+    private async Task ConvertImage()
     {
-        
+
+        image.Clear();
+        emptyIdx.Clear();
+        _imageName.Clear();
+        if (comment.Images != null)
+        {
+            foreach (var img in comment.Images.Select((value, idx) => (value, idx)))
+            {
+                if (img.value != null)
+                {
+                    if (!image.Any(i => i.SequenceEqual(img.value)))
+                    {
+                        image.Add(img.value);
+
+                        // _imageName에 중복 검사 후 추가
+                        string? currentImageName = comment.ImageName[img.idx];
+                        if (currentImageName != null && !_imageName.Contains(currentImageName))
+                        {
+                            _imageName.Add(currentImageName);
+                        }
+                    }
+                }
+                else
+                {
+                    // image.Add(null);
+                    //빈 인덱스
+                    emptyIdx.Add(img.idx);
+                }
+            }
+        }
+
     }
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        List<byte[]> temp = new List<byte[]>();
+        List<string> names = new List<string>();
+
+        Console.WriteLine("empty" + emptyIdx.Count);
+        Console.WriteLine("이미지 수" + images.Count);
+        if (emptyIdx.Count < images.Count)
+        {
+            await JS.InvokeVoidAsync("alert", "최대 3개의 이미지만 등록 가능합니다.");
+        }
+        else
+        {
+            foreach (var newImage in images)
+            {
+
+
+                int idx = emptyIdx[0];
+                if(emptyIdx.Count != 0)
+                {
+                    emptyIdx.RemoveAt(0);
+                }
+                // image[idx] = newImage.Image;
+                image.Add(newImage.Image);
+                _imageName.Add(newImage.Name);
+                comment.Images[idx] = newImage.Image;
+                comment.ImageName[idx] = newImage.Name;
+
+
+            }
+        }
+        foreach(var i in comment.ImageName)
+        {
+            Console.WriteLine(i);
+        }
+
+        //이미지 이름추가
+        // comment.Images = image.ToList();
+
+
+        StateHasChanged();
+    }
+
+
+    private async Task OnUpDate()
+    {
+        try
+        {
+            foreach (var i in comment.Images.Select((value,idx)=>(value, idx)))
+            {
+                Console.WriteLine("이미지 이름" + comment.ImageName[i.idx]);
+                Console.WriteLine("이미지 타입" + i.value);
+
+            }
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("VocComment/sign/VocCommentUpdate", comment, true);
+            if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                OnClosed();
+                return;
+            }
+            await OnLoad.InvokeAsync();
+            OnClosed();
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "민원 수정 에러");
+        }
+
+    }
+
+
+    private async void OnDelImg(string name)
+    {
+        Console.WriteLine("=======이미지 삭제========");
+        int slideridx = _imageName.IndexOf(name);
+        Console.WriteLine("슬라이드 이미지" + slideridx);
+        int originalidx = comment.ImageName.IndexOf(name);
+        Console.WriteLine("오리지날 이미지" + originalidx);
+        if(slideridx == -1 || originalidx == -1)
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 이미지 입니다.");
+            return;
+        }
+        //슬라이더 삭제
+        image.RemoveAt(slideridx);
+        _imageName.RemoveAt(slideridx);
+        //데이터 삭제
+        // comment.ImageName.RemoveAt(originalidx);
+        // comment.Images.RemoveAt(originalidx);
+        comment.ImageName[originalidx] = null;
+        comment.Images[originalidx] = null;
+
+        emptyIdx.Add(originalidx);
+
+        foreach(var i in emptyIdx)
+        {
+            Console.WriteLine("남은 empty" + i);
+        }
+
+
+        Console.WriteLine("=======이미지 삭제 끝========");
+        StateHasChanged();
+    }
+
 }
