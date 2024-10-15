@@ -89,7 +89,6 @@
         FilterPlaceList = PlaceList
         .Where(p => !SelectPlace.Any(s => s.Id == p.Id))
         .Where(p => String.IsNullOrEmpty(_searchText) ||
-                    (p.PlaceCd?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.ContractNum?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false))
         .ToList();  

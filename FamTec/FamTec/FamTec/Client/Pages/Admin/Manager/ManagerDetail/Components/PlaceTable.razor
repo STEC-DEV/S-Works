@@ -120,7 +120,6 @@
         FilterPlaceList = string.IsNullOrEmpty(searchText)
             ? PlaceList
             : PlaceList.Where(p => p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                                   p.PlaceCd.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                                    p.ContractNum.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                         .ToList();
     }

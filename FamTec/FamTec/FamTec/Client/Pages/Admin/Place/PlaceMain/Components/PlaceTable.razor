@@ -7,17 +7,7 @@
         <tr class="thead-tr">
             <th class="th">
                 <span>
-                    사업장 코드
-                </span>
-            </th>
-            <th class="th">
-                <span>
                     사업장명
-                </span>
-            </th>
-            <th class="th">
-                <span>
-                    비고
                 </span>
             </th>
             <th class="th">
@@ -32,7 +22,12 @@
             </th>
             <th class="th">
                 <span>
-                    계약상태
+                    해약일자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    상태
                 </span>
             </th>
             @if (ADMINEDIT)
@@ -70,19 +65,16 @@
 
                 <tr class="tbody-tr">
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
-                        @row.PlaceCd
-                    </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
                         @row.Name
-                    </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
-                        @row.Note
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
                         @row.ContractNum
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
                         @row.ContractDt?.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                        @row.CancelDt?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td" @onclick="() => OnDeatail(row.Id)">
                         <StatusCard Status="@(row.Status)" />

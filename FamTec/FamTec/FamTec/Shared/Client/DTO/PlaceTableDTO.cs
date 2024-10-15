@@ -13,8 +13,6 @@ namespace FamTec.Shared.Client.DTO
         public int Id { get; set; }
         [Display(Name = "선택")]
         public bool IsSelect { get; set; } = false;
-        [Display(Name ="사업장 코드")]
-        public string? PlaceCd {  get; set; }
         [Display(Name = "사업장명")]
         public string? Name { get; set; } = null;
         [Display(Name = "비고")]
@@ -23,6 +21,8 @@ namespace FamTec.Shared.Client.DTO
         public string? ContractNum { get; set; } = null;
         [Display(Name = "계약일자")]
         public DateTime? ContractDt { get; set; }
+        [Display(Name = "해약일자")]
+        public DateTime? CancelDt { get; set; }
         [Display(Name = "계약상태")]
         public bool? Status { get; set; }
     }
