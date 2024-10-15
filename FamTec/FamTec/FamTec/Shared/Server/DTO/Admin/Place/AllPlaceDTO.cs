@@ -15,9 +15,6 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         [Display(Name = "선택")]
         public bool? IsSelect { get; set; } = false;
 
-        [Display(Name = "사업장코드")]
-        public string? PlaceCd { get; set; }
-
         /// <summary>
         /// 사업장명
         /// </summary>
@@ -41,6 +38,9 @@ namespace FamTec.Shared.Server.DTO.Admin.Place
         /// </summary>
         [Display(Name = "계약상태")]
         public bool? Status { get; set; }
+
+        [Display(Name = "해약일자")]
+        public DateTime? CancelDt { get; set; }
         
     }
 }

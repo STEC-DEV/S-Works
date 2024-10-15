@@ -80,6 +80,7 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -111,7 +112,6 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -727,7 +727,6 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.PermNetwork).HasComment("통신관리 권한");
             entity.Property(e => e.PermSecurity).HasComment("보안 권한");
             entity.Property(e => e.PermVoc).HasComment("민원관리 권한");
-            entity.Property(e => e.PlaceCd).HasComment("사업장 코드");
             entity.Property(e => e.Status).HasComment("계약상태");
             entity.Property(e => e.Tel).HasComment("전화번호");
             entity.Property(e => e.UpdateDt).HasComment("수정일자");

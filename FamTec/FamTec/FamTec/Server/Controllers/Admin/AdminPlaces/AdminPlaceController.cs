@@ -81,9 +81,9 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model.code == 200)
                     return Ok(model);
+
                 else
                     return Ok(model);
-
             }
             catch (Exception ex)
             {
@@ -380,19 +380,22 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (dto.PlaceInfo.Id is null)
                     return NoContent();
 
-                if(String.IsNullOrWhiteSpace(dto.PlaceInfo.PlaceCd))
-                    return NoContent();
-
                 if(String.IsNullOrWhiteSpace(dto.PlaceInfo.Name))
                     return NoContent();
 
                 if(String.IsNullOrWhiteSpace(dto.PlaceInfo.Tel))
                     return NoContent();
 
-                if(dto.PlaceInfo.Status is null)
+                if(String.IsNullOrWhiteSpace(dto.PlaceInfo.ContractNum))
                     return NoContent();
 
-                if(dto.PlacePerm.PermMachine is null)
+                if (dto.PlaceInfo.Status is null)
+                    return NoContent();
+
+                if(dto.PlaceInfo.ContractNum is null)
+                    return NoContent();
+
+                if (dto.PlacePerm.PermMachine is null)
                     return NoContent();
 
                 if(dto.PlacePerm.PermElec is null)

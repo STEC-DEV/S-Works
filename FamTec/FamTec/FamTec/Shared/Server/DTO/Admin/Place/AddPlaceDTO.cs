@@ -17,11 +17,6 @@
         public string? Tel { get; set; }
 
         /// <summary>
-        /// 사업장 코드
-        /// </summary>
-        public string? PlaceCd { get; set; }
-
-        /// <summary>
         /// 사업장 주소
         /// </summary>
         public string? Address { get; set; }

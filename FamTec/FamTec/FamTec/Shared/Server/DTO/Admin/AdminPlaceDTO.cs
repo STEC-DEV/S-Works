@@ -8,11 +8,6 @@
         public int? Id { get; set; }
 
         /// <summary>
-        /// 사업장코드
-        /// </summary>
-        public string? PlaceCd { get; set; }
-
-        /// <summary>
         /// 사업장명
         /// </summary>
         public string? Name { get; set; }

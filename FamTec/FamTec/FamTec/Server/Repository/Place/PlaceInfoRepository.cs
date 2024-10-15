@@ -226,7 +226,6 @@ namespace FamTec.Server.Repository.Place
             try
             {
                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                model.PlaceCd = $"{model.PlaceCd}_{model.Id}";
                 context.PlaceTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
@@ -279,8 +278,6 @@ namespace FamTec.Server.Repository.Place
 
                             if (PlaceTB is not null)
                             {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                PlaceTB.PlaceCd = $"{PlaceTB.PlaceCd}_{PlaceTB.Id}";
                                 PlaceTB.DelYn = true;
                                 PlaceTB.DelDt = ThisDate;
                                 PlaceTB.DelUser = Name;

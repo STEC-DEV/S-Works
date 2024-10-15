@@ -71,11 +71,11 @@ namespace FamTec.Server.Services.Admin.Place
                             var PlaceData = placetb.Select(e => new AllPlaceDTO()
                             {
                                 Id = e.Id,
-                                PlaceCd = !String.IsNullOrWhiteSpace(e.PlaceCd) ? e.PlaceCd.Trim() : e.PlaceCd,
                                 Name = !String.IsNullOrWhiteSpace(e.Name) ? e.Name.Trim() : e.Name,
                                 ContractNum = e?.ContractNum,
                                 ContractDt = e?.ContractDt,
-                                Status = e.Status
+                                Status = e.Status,
+                                CancelDt = e.CancelDt
                             }).ToList();
 
                             return new ResponseList<AllPlaceDTO>() { message = "요청이 정상 처리되었습니다.", data = PlaceData, code = 200 };
@@ -98,7 +98,6 @@ namespace FamTec.Server.Services.Admin.Place
                         var PlaceData = model.Select(e => new AllPlaceDTO()
                         {
                             Id = e.Id,
-                            PlaceCd = e.PlaceCd,
                             Name = e.Name,
                             ContractNum = e.ContractNum,
                             ContractDt = e.ContractDt,
@@ -236,7 +235,6 @@ namespace FamTec.Server.Services.Admin.Place
 
                 PlaceTb? place = new PlaceTb()
                 {
-                    PlaceCd = !String.IsNullOrWhiteSpace(dto.PlaceCd) ? dto.PlaceCd.Trim() : dto.PlaceCd!,
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!,
                     Tel = !String.IsNullOrWhiteSpace(dto.Tel) ? dto.Tel.Trim() : dto.Tel!,
                     Address = dto.Address,
@@ -301,7 +299,6 @@ namespace FamTec.Server.Services.Admin.Place
                 if(model is null)
                     return new ResponseUnit<UpdatePlaceDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                model.PlaceCd = !String.IsNullOrWhiteSpace(dto.PlaceInfo.PlaceCd) ? dto.PlaceInfo.PlaceCd.Trim() : dto.PlaceInfo.PlaceCd!;
                 model.Name = !String.IsNullOrWhiteSpace(dto.PlaceInfo.Name) ? dto.PlaceInfo.Name.Trim() : dto.PlaceInfo.Name!;
                 model.Tel = !String.IsNullOrWhiteSpace(dto.PlaceInfo.Tel) ? dto.PlaceInfo.Tel.Trim() : dto.PlaceInfo.Tel!;
                 model.ContractNum = dto.PlaceInfo.ContractNum;

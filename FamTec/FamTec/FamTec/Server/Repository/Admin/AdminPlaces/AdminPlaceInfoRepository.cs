@@ -131,7 +131,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                         select new AdminPlaceDTO
                                         {
                                             Id = place.Id,
-                                            PlaceCd = place.PlaceCd,
                                             Name = place.Name,
                                             ContractNum = place.ContractNum,
                                             ContractDt = place.ContractDt,
@@ -261,7 +260,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
 
                 PlaceDetailDTO PlaceDetail = new PlaceDetailDTO();
                 PlaceDetail.PlaceInfo!.Id = placetb.Id;
-                PlaceDetail.PlaceInfo.PlaceCd = placetb.PlaceCd;
                 PlaceDetail.PlaceInfo.Address = placetb.Address; // 주소
                 PlaceDetail.PlaceInfo.Name = placetb.Name;
                 PlaceDetail.PlaceInfo.Tel = placetb.Tel;
@@ -598,7 +596,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
                         {
                             Id = e.Id, // 사업장ID
-                            PlaceCd = e.PlaceCd, // 사업장코드
                             Name = e.Name, // 사업장이름
                             ContractNum = e.ContractNum, // 계약번호
                             ContractDt = e.ContractDt, // 계약일자
@@ -620,7 +617,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         List<AdminPlaceDTO> model = placetb.Select(e => new AdminPlaceDTO
                         {
                             Id = e.Id, // 사업장ID
-                            PlaceCd = e.PlaceCd, // 사업장코드
                             Name = e.Name, // 사업장이름
                             ContractNum = e.ContractNum, // 계약번호
                             ContractDt = e.ContractDt, // 계약일자
@@ -658,7 +654,6 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                                               {
                                                   Id = PlaceTB.Id,
                                                   Name = PlaceTB.Name,
-                                                  PlaceCd = PlaceTB.PlaceCd,
                                                   Status = PlaceTB.Status,
                                                   ContractDt = PlaceTB.ContractDt,
                                                   ContractNum = PlaceTB.ContractNum

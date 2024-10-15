@@ -15,9 +15,6 @@ namespace FamTec.Shared.Server.DTO.Place
         /// </summary>
         public string? Address { get; set; }
 
-        [Display(Name = "사업장코드")]
-        public string? PlaceCd { get; set; }
-
         /// <summary>
         /// 사업장명
         /// </summary>
@@ -76,7 +73,6 @@ namespace FamTec.Shared.Server.DTO.Place
             if (source != null)
             {
                 Id = source.Id;
-                PlaceCd = source.PlaceCd;
                 Name = source.Name;
                 Tel = source.Tel;
                 ContractNum = source.ContractNum;

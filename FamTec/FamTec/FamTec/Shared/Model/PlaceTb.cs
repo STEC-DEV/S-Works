@@ -19,13 +19,6 @@ public partial class PlaceTb
     public int Id { get; set; }
 
     /// <summary>
-    /// 사업장 코드
-    /// </summary>
-    [Column("PLACE_CD")]
-    [StringLength(255)]
-    public string PlaceCd { get; set; } = null!;
-
-    /// <summary>
     /// 사업장명
     /// </summary>
     [Column("NAME")]
