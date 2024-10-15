@@ -9,7 +9,7 @@ namespace FamTec.Shared.Client.DTO.Manager
 {
     public class DManagerDTO
     {
-        public int Id { get; set; }
+        public int AdminId { get; set; }
         [Display(Name = "이름")]
         public string Name { get; set; }
         [Display(Name="아이디")]
@@ -37,7 +37,7 @@ namespace FamTec.Shared.Client.DTO.Manager
         {
             if(source != null)
             {
-                Id = source.Id; 
+                AdminId = source.AdminId; 
                 Name = source.Name; 
                 UserId = source.UserId;
                 Password = source.Password;

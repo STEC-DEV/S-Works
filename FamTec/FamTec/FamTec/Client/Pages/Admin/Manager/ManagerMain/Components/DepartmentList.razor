@@ -13,24 +13,22 @@
         @if (Edit)
         {
             <li class="depart-add-form">
-                
-                
                 <div class="add-form">
-                    <Input Type="text" Placeholder="부서명" @bind-Value=@newDepartment.Name />
+                    <Input Type="text" Placeholder="그룹명" @bind-Value=@newDepartment.Name />
                     <Button Name="추가" OnClick="@AddDepartment" />
                 </div>
-                <Toggle Title="사업장 관리부서"
+                @* <Toggle Title="사업장 관리부서"
                         @bind-Value=@newDepartment.ManagerYN
                         IsChecked="@newDepartment.ManagerYN"
-                        EditMode=true />
+                        EditMode=true /> *@
             </li>
         }
 
         @foreach (var item in DataList)
         {
 
-            <li class="depart-item @(InputEdit ? "edit": "" )" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
-                <span class="item-title" @onclick=@(()=>OnModal(item.Id)) @onclick:stopPropagation>
+            <li class="depart-item @(Edit ? "" : "hover" ) @(selectedDepartment==item.Name ?"active":"")" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
+                <span class="item-title @(Edit ? "hover": "" )" @onclick=@(()=>OnModal(item.Id)) @onclick:stopPropagation>
                     @item.Name
                 </span>
                 @if (Edit)
@@ -78,7 +76,7 @@
 
     public bool InputEdit { get; set; } = false;
     private int? openModalId = null;
-
+    private string selectedDepartment = "";
 
 
     private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
@@ -98,14 +96,14 @@
             Console.WriteLine(newDepartment.Name == null);
             if (string.IsNullOrEmpty(newDepartment.Name))
             {
-                await JS.InvokeVoidAsync("alert", "부서명을 입력해 주세요.");
+                await JS.InvokeVoidAsync("alert", "그룹명을 입력해 주세요.");
                 Console.WriteLine("입력된 값이 없습니다.");
                 return;
             }
             ResponseUnit<AddDepartmentDTO> resDepartment = await apiManager.PostAsync<AddDepartmentDTO>("Department/sign/AddDepartment", newDepartment);
             if (resDepartment.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "부서 추가 실패.");
+                await JS.InvokeVoidAsync("alert", "그룹 추가 실패.");
                 newDepartment = new AddDepartmentDTO();
                 return;
             }
@@ -117,12 +115,21 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
+            Console.WriteLine($"[Admin][ModalDepartment] 그룹 추가 에러 : {ex.Message}");
         }
     }
 
     private async void OnSelect(string name)
     {
+        if(selectedDepartment== name)
+        {
+            selectedDepartment = "";
+        }
+        else
+        {
+            selectedDepartment = name;
+        }
+        
         await OnSelectedDepartment.InvokeAsync(name);
     }
 

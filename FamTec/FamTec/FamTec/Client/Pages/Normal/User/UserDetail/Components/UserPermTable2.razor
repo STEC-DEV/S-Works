@@ -76,7 +76,8 @@
                 var writeChecked = value == 2;
 
                 <td class="td">
-                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)" disabled="@(!EditMode || !readChecked)" />
+                    <input type="checkbox" checked="@writeChecked" @onchange="(e) => OnPermissionChange(e, prop.Name, false)"  disabled="@(!EditMode)"/>
+                    @* disabled="@(!EditMode || !readChecked)" *@
                 </td>
             }
         </tr>

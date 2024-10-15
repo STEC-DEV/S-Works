@@ -10,7 +10,7 @@
     <div class="modaldepart-wrap">
         <div class="modaldepart-title">
             <span>
-                부서 편집
+                그룹 편집
             </span>
             <div class="modaldepart-btns">
                 <Button 
@@ -68,7 +68,7 @@
             ResponseList<DepartmentDTO> resDepartment = await apiManager.GetListAsync<DepartmentDTO>("Department/sign/GetDepartmentList");
             if (resDepartment.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "부서 조회 실패");
+                await JS.InvokeVoidAsync("alert", resDepartment.message);
                 return;
             }
 
@@ -77,7 +77,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][Department] 클라이언트 부서 조회 에러");
+            Console.WriteLine($"[Admin][Department] 그룹 조회 에러");
         }
 
     }
@@ -117,7 +117,7 @@
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"[Admin][ModalDepartment] 부서 삭제 에러 : {ex.Message}");
+            Console.WriteLine($"[Admin][ModalDepartment] 그룹 삭제 에러 : {ex.Message}");
 
         }
     }

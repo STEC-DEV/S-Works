@@ -70,7 +70,7 @@
                                  ValidChanged="@(isValid => UpdateValidState("Email", isValid))"
                                  Type="EMAIL" />
 
-                <SelectField Label="부서"
+                <SelectField Label="그룹"
                              SelectData="DepartmentList"
                              @bind-Value=@Manager.DepartmentId
                              EditMode=true />
@@ -85,7 +85,7 @@
                 <TextField2 Label="이름"
                             Value="@Manager.Name"
                             Color=true />
-                <TextField2 Label="부서"
+                <TextField2 Label="그룹"
                             Value="@Manager.Department"
                             Color=true />
                 <TextField2 Label="전화번호"

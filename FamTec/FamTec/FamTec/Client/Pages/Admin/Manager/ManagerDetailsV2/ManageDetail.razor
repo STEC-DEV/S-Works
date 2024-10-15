@@ -2,6 +2,7 @@
 
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Admin.Manager.ManagerDetailsV2.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO
 @using FamTec.Shared.Client.DTO.Manager
 @using FamTec.Shared.Client.DTO.Place
@@ -14,6 +15,7 @@
 
 @inject HttpClient HttpClient
 @inject NavigationManager Navigation
+@inherits PermissionComponentBase
 
 <div class="admin-signup-container yappear">
     <div class="admin-signup-wrap">
@@ -39,18 +41,24 @@
         </div>
 
     </div>
+    @if (ADMINEDIT || (_adminId == Id))
+    {
+        <div class="btns">
+            @if (EditMode)
+            {
+                <Button Name="저장" Width="true" Type=0 OnClick="OnUpdate" />
+                <Button Name="취소" Width="true" Type=1 OnClick="OnEdit" />
+            }
+            else
+            {
+            
+                    <Button Name="편집" Width=true Type=0 OnClick="OnEdit" />
+            
 
-    <div class="btns">
-        @if (EditMode)
-        {
-            <Button Name="저장" Width="true" Type=0 OnClick="OnUpdate" />
-            <Button Name="취소" Width="true" Type=1 OnClick="OnEdit" />
-        }
-        else
-        {
-            <Button Name="편집" Width=true Type=0 OnClick="OnEdit" />
-        }
-    </div>
+            }
+        
+        </div>
+    }
 </div>
 
 @code {
@@ -69,9 +77,12 @@
     List<PlaceTableDTO> PlaceList = new List<PlaceTableDTO>();
     UpdateManagerDTO UpdatedManager = new UpdateManagerDTO();
     bool EditMode = false;
+    private int _adminId;
 
     protected async override Task OnInitializedAsync()
     {
+        _adminId = await (_authStateProvider as CustomAuthProvider).GetAdminId();
+        await base.OnInitializedAsync();
         await OnLoadDepartments();
         await OnLoadDetailManager();
         await OnLoadManagerPlace();

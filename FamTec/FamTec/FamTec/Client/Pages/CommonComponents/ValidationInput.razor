@@ -40,6 +40,13 @@
             <span class="text">
                 중복 검사
             </span>
+            @if (block)
+            {
+                <span class="text block">
+                    | 사용중인 아이디 입니다.
+                </span>
+            }
+
         </div>
     }
 
@@ -109,6 +116,8 @@
     bool pw_check = false;
     bool emailValid = false;
 
+
+    bool block = false;
     protected override async Task OnInitializedAsync()
     {
         ValidateInput(Value);
@@ -122,7 +131,7 @@
         Value = e.Value?.ToString();
         ValidateInput(Value);
         await ValueChanged.InvokeAsync(Value);
-        
+
         //rjawmd
         bool isValid = DetermineValidity();
         await ValidChanged.InvokeAsync(isValid);
@@ -185,6 +194,12 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
+            if (!resGet.data)
+            {
+                block = true;
+                return;
+            }
+            block = false;
             idDuplication = resGet.data;
         }catch(Exception ex)
         {

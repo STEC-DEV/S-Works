@@ -9,15 +9,15 @@ namespace FamTec.Shared.Client.DTO.Normal.Users
     public class UserVocPermDTO
     {
 
-        public bool MachineVoc{get; set;}
-        public bool ElecVoc{get; set;}
-        public bool LiftVoc {get; set;}
-        public bool FireVoc {get; set;}
-        public bool ConstructVoc {get; set;}
-        public bool NetworkVoc {get; set;}
-        public bool BeautyVoc {get; set; }
-        public bool SecurityVoc { get; set; }
-        public bool ETCVoc { get; set; }
+        public bool MachineVoc { get; set; } = false;
+        public bool ElecVoc{get; set; } = false;
+        public bool LiftVoc {get; set; } = false;
+        public bool FireVoc {get; set; } = false;
+        public bool ConstructVoc {get; set; } = false;
+        public bool NetworkVoc {get; set; } = false;
+        public bool BeautyVoc {get; set; } = false;
+        public bool SecurityVoc { get; set; } = false;
+        public bool ETCVoc { get; set; } = false;
 
 
         public UserVocPermDTO Clone()

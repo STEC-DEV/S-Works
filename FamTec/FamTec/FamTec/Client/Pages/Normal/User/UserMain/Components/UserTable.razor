@@ -15,7 +15,7 @@
             </th>
             <th class="th text-center">
                 <span>
-                    부서
+                    직책
                 </span>
             </th>
             <th class="th">
@@ -65,22 +65,8 @@
             {
             @foreach (ListUser row in Data)
                 {
-                @* string id = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
-                var created = typeof(T).GetProperty("Created")?.GetValue(row); *@
-                @* DateTime? createdDate = created as DateTime?; *@
+
                 <tr class="tbody-tr">
-                    @* <td class="td userinfo" @onclick="()=>OnDetail(id)">
-                         <img class="table-img" alt=""/>
-                        <div class="title-wrap">
-                            <a class="maintitle">
-                                @typeof(T).GetProperty("Name")?.GetValue(row)?.ToString()
-                            </a>
-                            <span class="subtitle italic">
-                                @typeof(T).GetProperty("UserId")?.GetValue(row)?.ToString()
-                            </span>
-                        </div>
-                        
-                    </td> *@
                     <td class="td userinfo" @onclick="()=>OnDetail(row.Id)">
                         @* <img class="table-img" alt=""/> *@
                         <div class="title-wrap">

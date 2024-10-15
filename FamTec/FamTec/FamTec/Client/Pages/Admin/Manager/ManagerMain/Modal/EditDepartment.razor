@@ -6,19 +6,19 @@
 <div class="modal">
     <div class="header">
         <span class="title">
-            부서 수정
+            그룹 수정
         </span>
     </div>
     <div class="content">
         
         <InputCol
-            Label="부서명"
+            Label="그룹명"
             @bind-Value=@_editDep
             />
-        <Toggle Title="사업장 관리부서"
+        @* <Toggle Title="사업장 관리부서"
                 @bind-Value=@_editCheck
                 IsChecked="@Data.ManagerYN"
-                EditMode=true />
+                EditMode=true /> *@
     </div>
     <div class="btns">
         <Button Name="수정" Type="0" OnClick="OnSubmitEdit" />
@@ -67,7 +67,7 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "부서 수정 에러");
+            await JS.InvokeVoidAsync("alert", "그룹 수정 에러");
         }
         
  

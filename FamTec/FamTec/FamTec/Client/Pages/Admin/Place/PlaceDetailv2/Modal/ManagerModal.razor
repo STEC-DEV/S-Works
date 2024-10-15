@@ -12,7 +12,7 @@
         </span>
     </div>
     <Input
-        Placeholder="관리자명, 부서명"
+        Placeholder="관리자명, 그룹명"
         Value="@_searchText"
         Padding=true
         ValueChanged="OnSearch"
@@ -52,7 +52,7 @@
     //체크된 데이터 목록
     List<ManagerDTO> CheckedManagerList = new List<ManagerDTO>();
     List<int> checkManager = new List<int>();
-    
+
     string _searchText = "";
 
 
@@ -66,46 +66,55 @@
     }
 
 
+    //추가
     private async Task OnAdd()
     {
-
-        try
+        if (CheckedManagerList.Count == 0)
         {
-            if (CheckedManagerList.Count == 0)
-            {
-                await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
-                return;
-            }
-
-            // 선택된 매니저들을 기존 SelectManagerList에 추가
-            foreach (var manager in CheckedManagerList)
-            {
-                if (!SelectManagerList.Any(m => m.Id == manager.Id))
-                {
-                    SelectManagerList.Add(manager);
-                }
-            }
-
-            AddManager.PlaceId = Id;
-            AddManager.PlaceManager = CheckedManagerList;
-            ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", AddManager);
-            if (resAdd.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", resAdd.message);
-                OnCanceled();
-                return;
-            }
-            
-            await OnLoadManagerList();
-            StateHasChanged();
-            OnCanceled();
+            await JS.InvokeVoidAsync("alert", "관리자를 선택해주세요");
             return;
         }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", ex);
-            OnCanceled();
-        }
+        await OnAddManager.InvokeAsync(CheckedManagerList);
+        CheckedManagerList.Clear();
+        checkManager.Clear();
+        OnCanceled();
+        // try
+        // {
+        //     if (CheckedManagerList.Count == 0)
+        //     {
+        //         await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
+        //         return;
+        //     }
+
+        //     // 선택된 매니저들을 기존 SelectManagerList에 추가
+        //     foreach (var manager in CheckedManagerList)
+        //     {
+        //         if (!SelectManagerList.Any(m => m.Id == manager.Id))
+        //         {
+        //             SelectManagerList.Add(manager);
+        //         }
+        //     }
+
+        //     AddManager.PlaceId = Id;
+        //     AddManager.PlaceManager = CheckedManagerList;
+        //     ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", AddManager);
+        //     if (resAdd.code != 200)
+        //     {
+        //         await JS.InvokeVoidAsync("alert", resAdd.message);
+        //         OnCanceled();
+        //         return;
+        //     }
+            
+        //     await OnLoadManagerList();
+        //     StateHasChanged();
+        //     OnCanceled();
+        //     return;
+        // }
+        // catch (Exception ex)
+        // {
+        //     await JS.InvokeVoidAsync("alert", ex);
+        //     OnCanceled();
+        // }
     }
 
     //매니저 로드
