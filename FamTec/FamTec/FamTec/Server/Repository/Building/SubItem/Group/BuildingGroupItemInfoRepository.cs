@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Building.Group;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
@@ -175,6 +176,117 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                 throw;
             }
         }
+
+        /// <summary>
+        /// 건물에 그룹 한번에 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="creater"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<int> AddGroupAsync(List<AddGroupDTO> dto, string creater, int placeid)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            bool SaveResult = false;
+            DateTime ThisDate = DateTime.Now;
+
+            // ExecutionStrategy를 통해 트랜잭션 재시도 가능
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        // GROUP INSERT
+                        foreach(AddGroupDTO Group in dto)
+                        {
+                            BuildingTb? BuildingTB = await context.BuildingTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.PlaceTbId == placeid && m.Id == Group.BuildingIdx).ConfigureAwait(false);
+                            
+                            if (BuildingTB is null)
+                                return -1; // 잘못된 요청임.
+
+                            BuildingItemGroupTb GroupTB = new BuildingItemGroupTb();
+                            GroupTB.Name = Group.Name!.ToString(); // 그룹의 명칭
+                            GroupTB.CreateDt = ThisDate; // 현재시간
+                            GroupTB.CreateUser = creater; // 생성자
+                            GroupTB.UpdateDt = ThisDate; // 현재시간
+                            GroupTB.UpdateUser = creater; // 생성자
+                            GroupTB.BuildingTbId = Group.BuildingIdx!.Value; // 건물 ID
+
+                            await context.BuildingItemGroupTbs.AddAsync(GroupTB).ConfigureAwait(false);
+                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                            if(!SaveResult)
+                            {
+                                await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                return 0;
+                            }
+
+
+                            if (Group.AddGroupKey is [_, ..])
+                            {
+                                // KEY INSERT
+                                foreach (AddGroupItemKeyDTO Key in Group.AddGroupKey)
+                                {
+                                    BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
+                                    KeyTB.Name = Key.Name!.ToString(); // 키의 명칭
+                                    KeyTB.Unit = Key.Unit!.ToString(); // 키의 단위
+                                    KeyTB.BuildingGroupTbId = GroupTB.Id; // 상위 그룹 ID
+                                    KeyTB.CreateDt = ThisDate; // 현재시간
+                                    KeyTB.CreateUser = creater; // 생성자
+                                    KeyTB.UpdateDt = ThisDate; // 현재시간
+                                    KeyTB.UpdateUser = creater; // 생성자
+
+                                    await context.BuildingItemKeyTbs.AddAsync(KeyTB).ConfigureAwait(false);
+                                    SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                    if (!SaveResult)
+                                    {
+                                        await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                        return 0;
+                                    }
+
+                                    if (Key.ItemValues is [_, ..])
+                                    {
+                                        foreach (AddGroupItemValueDTO Value in Key.ItemValues)
+                                        {
+                                            BuildingItemValueTb ValueTB = new BuildingItemValueTb();
+                                            ValueTB.ItemValue = Value.Values!.ToString(); // 값
+                                            ValueTB.CreateDt = ThisDate;
+                                            ValueTB.CreateUser = creater;
+                                            ValueTB.UpdateDt = ThisDate;
+                                            ValueTB.UpdateUser = creater;
+                                            ValueTB.BuildingKeyTbId = KeyTB.Id;
+
+                                            await context.BuildingItemValueTbs.AddAsync(ValueTB).ConfigureAwait(false);
+                                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                            if(!SaveResult)
+                                            {
+                                                await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                                return 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // 모든 작업이 성공적으로 완료된 후 트랜잭션 커밋
+                        await transaction.CommitAsync().ConfigureAwait(false);
+                        return 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+                        throw;
+                    }
+                }
+            });
+        }
+
 
         /// <summary>
         /// 그룹삭제 - 2 Transaction
@@ -365,5 +477,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
 
             return false;
         }
+
+        
     }
 }

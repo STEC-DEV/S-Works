@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Facility.Group;
 
 namespace FamTec.Server.Repository.Facility.Group
 {
@@ -10,6 +11,15 @@ namespace FamTec.Server.Repository.Facility.Group
         /// <param name="model"></param>
         /// <returns></returns>
         Task<FacilityItemGroupTb?> AddAsync(FacilityItemGroupTb model);
+
+        /// <summary>
+        /// 설비 그룹 한번에 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="creater"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<int> AddGroupAsync(List<AddGroupDTO> dto, string creater);
 
         /// <summary>
         /// 설비ID에 포함되어있는 그룹List 조회

@@ -770,6 +770,11 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
         "Name": "Code",
         "Type": "System.String",
         "IsRequired": false
@@ -1048,6 +1053,22 @@
     "Parameters": [
       {
         "Name": "buildingid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "GetMaterialBuildings",
+    "RelativePath": "api/Building/sign/GetMaterialBuildings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "materialid",
         "Type": "System.Int32",
         "IsRequired": false
       }
@@ -1401,7 +1422,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "FamTec.Shared.Server.DTO.Building.Group.AddGroupDTO",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Building.Group.AddGroupDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "IsRequired": true
       }
     ],
@@ -2222,6 +2243,22 @@
       {
         "Name": "dto",
         "Type": "FamTec.Shared.Server.DTO.Facility.Group.AddGroupDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.Group.FacilityGroupController",
+    "Method": "AddFacilityGroups",
+    "RelativePath": "api/FacilityGroup/sign/AddFacilityGroups",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "System.Collections.Generic.List\u00601[[FamTec.Shared.Server.DTO.Facility.Group.AddGroupDTO, FamTec.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "IsRequired": true
       }
     ],
@@ -3894,6 +3931,11 @@
         "IsRequired": false
       },
       {
+        "Name": "RoomID",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
         "Name": "ContentType",
         "Type": "System.String",
         "IsRequired": false
@@ -4652,23 +4694,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "materialid",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "Startdate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      },
-      {
-        "Name": "EndDate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

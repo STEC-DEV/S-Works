@@ -5,7 +5,7 @@
         /// <summary>
         /// 설비 인덱스
         /// </summary>
-        public int? FacilityIdx { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
         /// 설비명칭

@@ -8,6 +8,8 @@ namespace FamTec.Shared.Server.DTO.Building.Building
     /// </summary>
     public class AddBuildingDTO
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// 건물코드
         /// </summary>

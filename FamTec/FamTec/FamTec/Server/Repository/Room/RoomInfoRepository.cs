@@ -393,6 +393,38 @@ namespace FamTec.Server.Repository.Room
                 if (RoomList is null || !RoomList.Any())
                     return null;
 
+                #region 수정
+                List<PlaceRoomListDTO>? model = BuildingList
+                .Select(building => new PlaceRoomListDTO
+                {
+                    Id = building.Id,
+                    Name = building.Name,
+                    FloorList = FloorList
+                        .Where(floor => floor.BuildingTbId == building.Id && RoomList.Any(room => room.FloorTbId == floor.Id))
+                        .Select(floor => new BuildingFloor
+                        {
+                            Id = floor.Id,
+                            Name = floor.Name,
+                            RoomList = RoomList
+                                .Where(room => room.FloorTbId == floor.Id)
+                                .Select(room => new FloorRoom
+                                {
+                                    Id = room.Id,
+                                    Name = room.Name
+                                }).ToList()
+                        })
+                        .Where(floor => floor.RoomList.Any()) // RoomList가 비어 있지 않은 Floor만 선택
+                        .ToList()
+                })
+                .Where(building => building.FloorList.Any()) // FloorList가 비어 있지 않은 Building만 선택
+                .ToList();
+
+                            if (model is [_, ..])
+                                return model;
+                            else
+                                return null;
+                #endregion
+                /*
                 List<PlaceRoomListDTO>? model = BuildingList.Select(building => new PlaceRoomListDTO
                 {
                     Id = building.Id,
@@ -415,6 +447,7 @@ namespace FamTec.Server.Repository.Room
                     return model;
                 else
                     return null;
+                */
             }
             catch (MySqlException mysqlEx)
             {

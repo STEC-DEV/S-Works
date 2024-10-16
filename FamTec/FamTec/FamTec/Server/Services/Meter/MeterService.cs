@@ -13,7 +13,6 @@ namespace FamTec.Server.Services.Meter
 
         private ILogService LogService;
 
-
         public MeterService(IMeterInfoRepository _meterinforepository, 
             IContractInfoRepository _contractinforepository,
             ILogService _logservice)

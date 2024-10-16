@@ -102,7 +102,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -158,7 +158,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -204,7 +204,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -306,7 +306,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -337,7 +337,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -363,7 +363,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -403,7 +403,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -451,7 +451,7 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -475,7 +475,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 //DateTime StartDate = DateTime.Now.AddDays(-30);
                 //DateTime EndDate = DateTime.Now;
-                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
+                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화","보안","기타" };
                 //List<int> type = new List<int>() { 0,1}; // 전체
 
                 if (HttpContext is null)
@@ -495,13 +495,15 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (model.code == 200)
                     return Ok(model);
+                else if (model.code == 401)
+                    return Ok(model);
                 else
                     return BadRequest();
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 
@@ -520,7 +522,7 @@ namespace FamTec.Server.Controllers.Maintenance
             try
             {
                 //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
-                //List<int> type = new List<int>() { 0, 1 };
+                //List<int> type = new List<int>() {  0,1 };
                 
                 if (HttpContext is null)
                     return BadRequest();
@@ -539,13 +541,15 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 if (model.code == 200)
                     return Ok(model);
+                else if (model.code == 401)
+                    return Ok(model);
                 else
                     return BadRequest();
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return Problem("서버에서 처리하지 못함", statusCode: 500);
+                return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
 

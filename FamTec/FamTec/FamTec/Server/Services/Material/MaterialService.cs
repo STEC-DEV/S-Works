@@ -400,6 +400,7 @@ namespace FamTec.Server.Services.Material
                 //model.Standard = dto.Standard; // 규격
                 //model.ManufacturingComp = dto.ManufacturingComp; // 제조사
                 model.SafeNum = dto.SafeNum; // 안전재고수량
+                model.RoomTbId = dto.RoomID!.Value; // 공간
                 model.UpdateDt = ThisDate;
                 model.UpdateUser = creater;
 

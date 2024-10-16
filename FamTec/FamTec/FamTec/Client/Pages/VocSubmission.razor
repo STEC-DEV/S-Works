@@ -61,7 +61,7 @@
             <p>첨부파일</p>
             
             <label for="fileInput" class="custom-file-label">파일 선택</label>
-            <InputFile id="fileInput" OnChange="@LoadFiles" multiple style="display:none;" />
+            <InputFile id="fileInput" OnChange="@LoadFiles" multiple style="display:none;" accept=".png"/>
 
            @*
             <input type="file" @ref="inputReference" @onchange="async () => await btnUpload()" multiple />

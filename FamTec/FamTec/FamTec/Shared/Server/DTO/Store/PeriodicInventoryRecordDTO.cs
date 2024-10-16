@@ -71,5 +71,14 @@
         /// </summary>
         public string? Note { get; set; }
 
+        /// <summary>
+        /// 유지보수 ID
+        /// </summary>
+        public int? MaintanceId { get; set; }
+
+        /// <summary>
+        /// 유지보수 이동 URL
+        /// </summary>
+        public string? Url { get; set; }
     }
 }

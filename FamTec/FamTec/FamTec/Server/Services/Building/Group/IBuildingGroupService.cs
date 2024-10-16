@@ -11,7 +11,7 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<AddGroupDTO>> AddBuildingGroupService(HttpContext context, AddGroupDTO dto);
+        public Task<ResponseUnit<bool>> AddBuildingGroupService(HttpContext context, List<AddGroupDTO> dto);
 
         /// <summary>
         /// 그룹만 추가 서비스

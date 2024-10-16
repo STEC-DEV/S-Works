@@ -14,6 +14,14 @@ namespace FamTec.Server.Services.Facility.Group
         public Task<ResponseUnit<AddGroupDTO>> AddFacilityGroupService(HttpContext context, AddGroupDTO dto);
 
         /// <summary>
+        /// 그룹 - 키 - 값 추가 서비스2
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> AddFacilityGroupKeyValueService(HttpContext context, List<AddGroupDTO> dto);
+
+        /// <summary>
         /// 그룹만 추가 서비스
         /// </summary>
         /// <param name="context"></param>

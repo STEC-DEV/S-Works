@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
@@ -16,14 +17,55 @@ namespace FamTec.Server.Controllers.Building
         private IBuildingService BuildingService;
         private IFileService FileService;
         private ILogService LogService;
+        private IBuildingInfoRepository BuildingInfoRepository;
 
         public BuildingController(IBuildingService _buildingservice,
+            IBuildingInfoRepository _buildinginforepository,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.BuildingService = _buildingservice;
+
+            this.BuildingInfoRepository = _buildinginforepository;
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
+        }
+        
+        /// <summary>
+        /// 해당 자재가 존재하는 건물들 반환
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMaterialBuildings")]
+        public async Task<IActionResult> GetMaterialBuildings([FromQuery]int materialid)
+        {
+            try
+            {
+                //int placeid = 1;
+                //int materialid = 1;
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (materialid is 0)
+                    return NoContent();
+
+                ResponseList<PlaceBuildingNameDTO>? model = await BuildingService.GetPlaceAvailableBuildingList(HttpContext, materialid).ConfigureAwait(false);
+                
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         [AllowAnonymous]

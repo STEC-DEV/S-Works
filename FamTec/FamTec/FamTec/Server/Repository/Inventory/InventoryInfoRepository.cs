@@ -88,13 +88,21 @@ namespace FamTec.Server.Repository.Inventory
                             Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                             await context.InventoryTbs.AddAsync(Inventorytb).ConfigureAwait(false);
 
+                            //int thisCurrentNum = await context.InventoryTbs
+                            //    .Where(m => m.DelYn != true &&
+                            //                m.MaterialTbId == InventoryDTO.MaterialID &&
+                            //                m.RoomTbId == InventoryDTO.AddStore.RoomID &&
+                            //                m.PlaceTbId == placeid)
+                            //    .SumAsync(m => m.Num)
+                            //    .ConfigureAwait(false);
+
                             int thisCurrentNum = await context.InventoryTbs
                                 .Where(m => m.DelYn != true &&
                                             m.MaterialTbId == InventoryDTO.MaterialID &&
-                                            m.RoomTbId == InventoryDTO.AddStore.RoomID &&
                                             m.PlaceTbId == placeid)
                                 .SumAsync(m => m.Num)
                                 .ConfigureAwait(false);
+
 
                             Storetb.CurrentNum = thisCurrentNum + InventoryDTO.AddStore.Num!.Value;
                             context.Update(Storetb);
@@ -150,54 +158,78 @@ namespace FamTec.Server.Repository.Inventory
         {
             try
             {
-                List<StoreTb>? StoreList = await context.StoreTbs
-                    .Where(m => materialid.Contains(m.MaterialTbId) && m.DelYn != true &&
-                    m.PlaceTbId == placeid &&
-                    m.CreateDt >= startDate &&
-                    m.CreateDt <= endDate)
+                // 1. StoreTb 리스트를 필터링하고 가져오기
+                List<StoreTb> storeList = await context.StoreTbs
+                    .Where(m => materialid.Contains(m.MaterialTbId) &&
+                                m.PlaceTbId == placeid &&
+                                m.CreateDt >= startDate &&
+                                m.CreateDt <= endDate)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync()
                     .ConfigureAwait(false);
 
-                if (StoreList is null || !StoreList.Any())
-                    return null;
+                if (!storeList.Any()) return null;
 
-                List<PeriodicDTO>? dtoList = (from StoreTB in StoreList
-                                             join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
-                                             on StoreTB.MaterialTbId equals MaterialTB.Id
-                                             group new { StoreTB, MaterialTB } by new
-                                             {
-                                                 StoreTB.MaterialTbId,
-                                                 MaterialTB.Code,
-                                                 MaterialTB.Name
-                                             } into g
-                                             select new PeriodicDTO
-                                             {
-                                                 ID = g.Key.MaterialTbId,
-                                                 Code = g.Key.Code,
-                                                 Name = g.Key.Name,
-                                                 InventoryList = g.Select(x => new InventoryRecord
-                                                 {
-                                                     INOUT_DATE = x.StoreTB.CreateDt,  // 거래일
-                                                     Type = x.StoreTB.Inout,           // 입출고 구분
-                                                     ID = x.StoreTB.MaterialTbId, // 품목코드
-                                                     Code = x.MaterialTB.Code,
-                                                     Name = x.MaterialTB.Name,    // 품목명
-                                                     MaterialUnit = x.MaterialTB.Unit,    // 품목 단위
-                                                     InOutNum = x.StoreTB.Num,            // 입출고 수량
-                                                     InOutUnitPrice = x.StoreTB.UnitPrice, // 입출고 단가
-                                                     InOutTotalPrice = x.StoreTB.TotalPrice, // 총 가격
-                                                     CurrentNum = x.StoreTB.CurrentNum,   // 시점 재고 수량
-                                                     Note = x.StoreTB.Note                // 비고
-                                                 }).OrderBy(r => r.INOUT_DATE).ToList() // Sort by 거래일
-                                             })
-                             .OrderBy(dto => dto.ID)
-                             .ToList();
+                // 2. 관련된 MaterialTb 정보를 가져오기
+                List<int> materialIds = storeList.Select(m => m.MaterialTbId).Distinct().ToList();
 
-                if (dtoList is not null && dtoList.Any())
-                    return dtoList;
-                else
-                    return new List<PeriodicDTO>();
+                List<MaterialTb> materials = await context.MaterialTbs
+                    .Where(m => materialIds.Contains(m.Id) && m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // 3. 유지보수 이력과 시설 정보 미리 로드
+                List<int> maintenenceIds = storeList
+                    .Where(m => m.MaintenenceHistoryTbId != null)
+                    .Select(m => m.MaintenenceHistoryTbId.Value)
+                    .Distinct()
+                    .ToList();
+
+                List<MaintenenceHistoryTb> maintenanceHistories = await context.MaintenenceHistoryTbs
+                    .Where(m => maintenenceIds.Contains(m.Id))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                List<int> facilityIds = maintenanceHistories
+                    .Select(m => m.FacilityTbId)
+                    .Distinct()
+                    .ToList();
+
+                List<FacilityTb> facilities = await context.FacilityTbs
+                    .Where(f => facilityIds.Contains(f.Id))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // 4. DTO 생성
+                List<PeriodicDTO> dtoList = materials.Select(material => new PeriodicDTO
+                {
+                    ID = material.Id,
+                    Code = material.Code,
+                    Name = material.Name,
+                    InventoryList = storeList
+                        .Where(s => s.MaterialTbId == material.Id)
+                        .Select(s => new InventoryRecord
+                        {
+                            INOUT_DATE = s.CreateDt,
+                            Type = s.Inout,
+                            ID = s.MaterialTbId,
+                            Code = material.Code,
+                            Name = material.Name,
+                            MaterialUnit = material.Unit,
+                            InOutNum = s.Num,
+                            InOutUnitPrice = s.UnitPrice,
+                            InOutTotalPrice = s.TotalPrice,
+                            CurrentNum = s.CurrentNum,
+                            Note = s.Note,
+                            MaintanceId = s.MaintenenceHistoryTbId,
+                            Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
+                        })
+                        .OrderBy(r => r.INOUT_DATE)
+                        .ToList()
+                }).OrderBy(dto => dto.ID)
+                .ToList();
+
+                return dtoList.Any() ? dtoList : new List<PeriodicDTO>();
             }
             catch (MySqlException mysqlEx)
             {
@@ -209,6 +241,139 @@ namespace FamTec.Server.Repository.Inventory
                 LogService.LogMessage(ex.ToString());
                 throw;
             }
+
+            #region 개선전 코드
+            //try
+            //{
+            //    List<StoreTb>? StoreList = await context.StoreTbs
+            //        .Where(m => materialid.Contains(m.MaterialTbId) &&
+            //        m.PlaceTbId == placeid &&
+            //        m.CreateDt >= startDate &&
+            //        m.CreateDt <= endDate)
+            //        .OrderBy(m => m.CreateDt)
+            //        .ToListAsync()
+            //        .ConfigureAwait(false);
+
+            //    if (StoreList is null || !StoreList.Any())
+            //        return null;
+
+            //    List<PeriodicDTO>? dtoList = (from StoreTB in StoreList
+            //                                 join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
+            //                                 on StoreTB.MaterialTbId equals MaterialTB.Id
+            //                                 group new { StoreTB, MaterialTB } by new
+            //                                 {
+            //                                     StoreTB.MaterialTbId,
+            //                                     MaterialTB.Code,
+            //                                     MaterialTB.Name
+            //                                 } into g
+            //                                 select new PeriodicDTO
+            //                                 {
+            //                                     ID = g.Key.MaterialTbId,
+            //                                     Code = g.Key.Code,
+            //                                     Name = g.Key.Name,
+            //                                     InventoryList = g.Select(x => new InventoryRecord
+            //                                     {
+            //                                         INOUT_DATE = x.StoreTB.CreateDt,  // 거래일
+            //                                         Type = x.StoreTB.Inout,           // 입출고 구분
+            //                                         ID = x.StoreTB.MaterialTbId, // 품목코드
+            //                                         Code = x.MaterialTB.Code,
+            //                                         Name = x.MaterialTB.Name,    // 품목명
+            //                                         MaterialUnit = x.MaterialTB.Unit,    // 품목 단위
+            //                                         InOutNum = x.StoreTB.Num,            // 입출고 수량
+            //                                         InOutUnitPrice = x.StoreTB.UnitPrice, // 입출고 단가
+            //                                         InOutTotalPrice = x.StoreTB.TotalPrice, // 총 가격
+            //                                         CurrentNum = x.StoreTB.CurrentNum,   // 시점 재고 수량
+            //                                         Note = x.StoreTB.Note,                // 비고
+            //                                         MaintanceId = x.StoreTB.MaintenenceHistoryTbId // 유지보수 이력 ID
+            //                                     }).OrderBy(r => r.INOUT_DATE).ToList() // Sort by 거래일
+            //                                 })
+            //                 .OrderBy(dto => dto.ID)
+            //                 .ToList();
+
+            //    if (dtoList is not null && dtoList.Any())
+            //    {
+            //        foreach(PeriodicDTO Periodic in dtoList)
+            //        {
+            //            if (Periodic.InventoryList is [_, ..])
+            //            {
+            //                foreach (InventoryRecord Record in Periodic.InventoryList)
+            //                {
+            //                    if (Record.MaintanceId is not null) // 유지보수 이력 ID가 있는경우 얘는 유지보수용으로 입출고 것임.
+            //                    {
+            //                        MaintenenceHistoryTb? HistoryTB = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == Record.MaintanceId);
+            //                        if (HistoryTB is not null)
+            //                        {
+            //                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId);
+            //                            if (FacilityTB is not null)
+            //                            {
+            //                                if (FacilityTB.Category == "기계")
+            //                                    Record.Url = $"facility/machine/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "전기")
+            //                                    Record.Url = $"facility/electronic/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "승강")
+            //                                    Record.Url = $"facility/lift/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "소방")
+            //                                    Record.Url = $"facility/fire/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "건축")
+            //                                    Record.Url = $"facility/construct/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "통신")
+            //                                    Record.Url = $"facility/network/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "미화")
+            //                                    Record.Url = $"facility/beauty/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else if (FacilityTB.Category == "보안")
+            //                                    Record.Url = $"facility/security/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
+            //                                else
+            //                                    Record.Url = String.Empty;
+            //                            }
+
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        return dtoList;
+            //    }
+            //    else
+            //        return new List<PeriodicDTO>();
+            //}
+            //catch (MySqlException mysqlEx)
+            //{
+            //    LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+            //    throw;
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogService.LogMessage(ex.ToString());
+            //    throw;
+            //}
+            #endregion
+        }
+
+
+
+        // 유지보수 URL 생성 함수
+        private string GenerateMaintenanceUrl(int? maintenenceId, List<MaintenenceHistoryTb> histories, List<FacilityTb> facilities)
+        {
+            if (maintenenceId == null) return string.Empty;
+
+            var history = histories.FirstOrDefault(h => h.Id == maintenenceId);
+            if (history == null) return string.Empty;
+
+            var facility = facilities.FirstOrDefault(f => f.Id == history.FacilityTbId);
+            if (facility == null) return string.Empty;
+
+            return facility.Category switch
+            {
+                "기계" => $"facility/machine/{facility.Id}/maintenance/{history.Id}",
+                "전기" => $"facility/electronic/{facility.Id}/maintenance/{history.Id}",
+                "승강" => $"facility/lift/{facility.Id}/maintenance/{history.Id}",
+                "소방" => $"facility/fire/{facility.Id}/maintenance/{history.Id}",
+                "건축" => $"facility/construct/{facility.Id}/maintenance/{history.Id}",
+                "통신" => $"facility/network/{facility.Id}/maintenance/{history.Id}",
+                "미화" => $"facility/beauty/{facility.Id}/maintenance/{history.Id}",
+                "보안" => $"facility/security/{facility.Id}/maintenance/{history.Id}",
+                _ => String.Empty
+            };
         }
 
 
@@ -721,7 +886,6 @@ namespace FamTec.Server.Repository.Inventory
                                             int OutStoreEA = OutInventoryTb.Num;
                                             checksum += OutInventoryTb.Num;
 
-
                                             OutInventoryTb.Num -= OutInventoryTb.Num;
                                             OutInventoryTb.UpdateDt = ThisDate;
                                             OutInventoryTb.UpdateUser = creater;
@@ -741,13 +905,20 @@ namespace FamTec.Server.Repository.Inventory
                                                 return ReturnResult;
                                             }
 
+                                            //CurrentTotalNum = await context.InventoryTbs
+                                            //                    .Where(m => m.DelYn != true &&
+                                            //                                m.MaterialTbId == model.MaterialID &&
+                                            //                                m.RoomTbId == model.AddStore.RoomID &&
+                                            //                                m.PlaceTbId == placeid)
+                                            //                    .SumAsync(m => m.Num)
+                                            //                    .ConfigureAwait(false);
+
                                             CurrentTotalNum = await context.InventoryTbs
-                                                                .Where(m => m.DelYn != true &&
-                                                                            m.MaterialTbId == model.MaterialID &&
-                                                                            m.RoomTbId == model.AddStore.RoomID &&
-                                                                            m.PlaceTbId == placeid)
-                                                                .SumAsync(m => m.Num)
-                                                                .ConfigureAwait(false);
+                                                               .Where(m => m.DelYn != true &&
+                                                                           m.MaterialTbId == model.MaterialID &&
+                                                                           m.PlaceTbId == placeid)
+                                                               .SumAsync(m => m.Num)
+                                                               .ConfigureAwait(false);
 
                                             StoreTb StoreTB = new StoreTb();
                                             StoreTB.Inout = 0;
@@ -798,12 +969,19 @@ namespace FamTec.Server.Repository.Inventory
                                             }
 
                                             CurrentTotalNum = await context.InventoryTbs
-                                            .Where(m => m.DelYn != true &&
-                                                        m.MaterialTbId == model.MaterialID &&
-                                                        m.RoomTbId == model.AddStore.RoomID &&
-                                                        m.PlaceTbId == placeid)
-                                            .SumAsync(m => m.Num)
-                                            .ConfigureAwait(false);
+                                           .Where(m => m.DelYn != true &&
+                                                       m.MaterialTbId == model.MaterialID &&
+                                                       m.PlaceTbId == placeid)
+                                           .SumAsync(m => m.Num)
+                                           .ConfigureAwait(false);
+
+                                            //CurrentTotalNum = await context.InventoryTbs
+                                            //.Where(m => m.DelYn != true &&
+                                            //            m.MaterialTbId == model.MaterialID &&
+                                            //            m.RoomTbId == model.AddStore.RoomID &&
+                                            //            m.PlaceTbId == placeid)
+                                            //.SumAsync(m => m.Num)
+                                            //.ConfigureAwait(false);
 
                                             StoreTb StoreTB = new StoreTb();
                                             StoreTB.Inout = 0;

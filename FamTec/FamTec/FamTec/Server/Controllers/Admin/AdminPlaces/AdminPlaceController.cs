@@ -1,5 +1,4 @@
 ﻿using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Place;
 using FamTec.Shared.Server.DTO;

@@ -157,6 +157,7 @@ namespace FamTec.Server.Services.Building
                         message = "요청이 정상 처리되었습니다.",
                         data = new AddBuildingDTO()
                         {
+                            Id = buildingtb.Id, // 아이디
                             Code = buildingtb.BuildingCd, // 건물코드
                             Name = buildingtb.Name, // 건물명
                             Address = buildingtb.Address,  // 건물주소
@@ -752,5 +753,46 @@ namespace FamTec.Server.Services.Building
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+        /// <summary>
+        /// 자재가 포함되어있는 건물 리스트 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceAvailableBuildingList(HttpContext context, int materialid)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<BuildingTb>? BuildingList = await BuildingInfoRepository.GetPlaceAvailableBuildingList(Convert.ToInt32(placeidx), materialid);
+                if (BuildingList is [_, ..])
+                {
+                    List<PlaceBuildingNameDTO> model = BuildingList.Select(e => new PlaceBuildingNameDTO
+                    {
+                        ID = e.Id,
+                        Name = e.Name
+                    }).ToList();
+
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                {
+                    return new ResponseList<PlaceBuildingNameDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<PlaceBuildingNameDTO>(), code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                return new ResponseList<PlaceBuildingNameDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
     }
 }

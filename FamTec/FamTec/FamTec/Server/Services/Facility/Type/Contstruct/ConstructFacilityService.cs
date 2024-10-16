@@ -100,7 +100,20 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
                         bool? AddFile = await FileService.AddResizeImageFile(NewFileName, ConstructFileFolderPath, files).ConfigureAwait(false);
                     }
                     
-                    return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                    return new ResponseUnit<FacilityDTO>() { message = "요청이 정상 처리되었습니다.", data = new FacilityDTO()
+                    {
+                        ID = result.Id,
+                        Category = result.Category,
+                        Num = result.Num,
+                        Name = result.Name,
+                        LifeSpan = result.Lifespan,
+                        ChangeDT = result.ChangeDt,
+                        EquipDT = result.EquipDt,
+                        Type = result.Type,
+                        Unit = result.Unit,
+                        Standard_capacity = result.StandardCapacity,
+                        RoomId = result.RoomTbId
+                    }, code = 200 };
                 }
                 else
                     return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };

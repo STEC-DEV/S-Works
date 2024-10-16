@@ -24,7 +24,7 @@ namespace FamTec.Server.Controllers.Store
         }
 
         /// <summary>
-        /// 입고 등록
+        /// 입고 등록 - 수정완료
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -102,7 +102,7 @@ namespace FamTec.Server.Controllers.Store
         }
 
         /// <summary>
-        /// 출고 등록
+        /// 출고 등록 - 수정
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -330,11 +330,12 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
+        //public async Task<IActionResult> PeriodicRecord()
         public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
-                //List<int> materialid = new List<int>() { 10,11};
+                //List<int> materialid = new List<int>() { 1};
                 //DateTime Startdate = DateTime.Now.AddDays(-50);
                 //DateTime EndDate = DateTime.Now;
 

@@ -34,82 +34,34 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<AddGroupDTO>> AddBuildingGroupService(HttpContext context, AddGroupDTO dto)
+        public async Task<ResponseUnit<bool>> AddBuildingGroupService(HttpContext context, List<AddGroupDTO> dto)
         {
             try
             {
                 if (context is null)
-                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
                 string? creater = Convert.ToString(context.Items["Name"]);
-                if (String.IsNullOrWhiteSpace(creater))
-                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
-
-                DateTime ThisTime = DateTime.Now;
-
-                BuildingItemGroupTb GroupTB = new BuildingItemGroupTb()
-                {
-                    Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 그룹이름 */
-                    CreateDt = ThisTime,
-                    CreateUser = creater,
-                    UpdateDt = ThisTime,
-                    UpdateUser = creater,
-                    BuildingTbId = dto.BuildingIdx!.Value // 빌딩인덱스
-                };
-
-                BuildingItemGroupTb? AddGroupTable = await BuildingGroupItemInfoRepository.AddAsync(GroupTB).ConfigureAwait(false);
-                if(AddGroupTable is null)
-                    return new ResponseUnit<AddGroupDTO>() { message = "잘못된 요청입니다.", data = new AddGroupDTO(), code = 404 };
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
                 
-                if (dto.AddGroupKey is not null && dto.AddGroupKey.Any())
-                {
-                    foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
-                    {
-                        BuildingItemKeyTb KeyTB = new BuildingItemKeyTb()
-                        {
-                            Name = !String.IsNullOrWhiteSpace(KeyDTO.Name) ? KeyDTO.Name.Trim() : KeyDTO.Name!, /* 키 명칭 */
-                            Unit = !String.IsNullOrWhiteSpace(KeyDTO.Unit) ? KeyDTO.Unit.Trim() : KeyDTO.Unit!, /* 키 단위 */
-                            CreateDt = ThisTime,
-                            CreateUser = creater,
-                            UpdateDt = ThisTime,
-                            UpdateUser = creater,
-                            BuildingGroupTbId = AddGroupTable.Id
-                        };
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                        BuildingItemKeyTb? AddKeyTable = await BuildingItemKeyInfoRepository.AddAsync(KeyTB).ConfigureAwait(false);
-                        if(AddKeyTable is null)
-                            return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
 
-                       
-                        if (KeyDTO.ItemValues is not null && KeyDTO.ItemValues.Any())
-                        {
-                            foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
-                            {
-                                BuildingItemValueTb ValueTB = new BuildingItemValueTb()
-                                {
-                                    ItemValue = !String.IsNullOrWhiteSpace(ValueDTO.Values) ? ValueDTO.Values.Trim() : ValueDTO.Values!,
-                                    CreateDt = ThisTime,
-                                    CreateUser = creater,
-                                    UpdateDt = ThisTime,
-                                    UpdateUser = creater,
-                                    BuildingKeyTbId = AddKeyTable.Id
-                                };
-
-                                BuildingItemValueTb? AddValueTable = await BuildingItemValueInfoRepository.AddAsync(ValueTB).ConfigureAwait(false);
-                                
-                                if (AddValueTable is null)
-                                    return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
-                            }
-                        }
-                    }
-                }
-
-                return new ResponseUnit<AddGroupDTO>() { message = "요청이 정상 처리되었습니다", data = dto, code = 200 };
+                int Result = await BuildingGroupItemInfoRepository.AddGroupAsync(dto, creater, Convert.ToInt32(placeid));
+                if(Result == 1)
+                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다", data = true, code = 200 };
+                else if(Result == -1)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                else if(Result == 0)
+                    return new ResponseUnit<bool>() { message = "이미 처리된 작업이 존재합니다.", data = false, code = 201 };
+                else
+                    return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddGroupDTO(), code = 500 };
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
 

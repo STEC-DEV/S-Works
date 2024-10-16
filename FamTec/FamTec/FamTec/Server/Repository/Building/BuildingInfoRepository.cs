@@ -213,36 +213,6 @@ namespace FamTec.Server.Repository.Building
         }
 
         /// <summary>
-        /// 사용가능한 건물코드인지 검사
-        /// </summary>
-        /// <param name="buildingcode"></param>
-        /// <returns></returns>
-        public async Task<bool?> CheckBuildingCD(string buildingcode)
-        {
-            try
-            {
-                BuildingTb? model = await context.BuildingTbs
-                    .FirstOrDefaultAsync(m => m.BuildingCd.Equals(buildingcode))
-                    .ConfigureAwait(false);
-
-                if (model is null)
-                    return true;
-                else
-                    return false;
-            }
-            catch (MySqlException mysqlEx)
-            {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-                throw;
-            }
-        }
-
-        /// <summary>
         /// 건물정보 수정
         /// </summary>
         /// <param name="model"></param>
@@ -571,6 +541,53 @@ namespace FamTec.Server.Repository.Building
             });
         }
 
+        public async Task<List<BuildingTb>?> GetPlaceAvailableBuildingList(int placeid, int materialid)
+        {
+            try
+            {
+                List<InventoryTb>? InventoryList = await context.InventoryTbs
+                  .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MaterialTbId == materialid)
+                  .GroupBy(m => new { m.RoomTbId })  // RoomTbId로 그룹화
+                  .Select(g => g.First())  // 각 그룹에서 첫 번째 InventoryTb 항목 선택
+                  .ToListAsync()
+                  .ConfigureAwait(false);
+
+                if (InventoryList is null || !InventoryList.Any())
+                    return null;
+
+                //// RoomID 리스트로 만듬
+                List<int>? RoomIdx = InventoryList.Select(m => m.RoomTbId).Distinct().ToList();
+                
+
+                List<RoomTb>? RoomList = await context.RoomTbs.Where(m => RoomIdx.Contains(m.Id) && m.DelYn != true).ToListAsync().ConfigureAwait(false);
+                if(RoomList is null || !RoomList.Any())
+                    return null;
+
+                List<int>? RoomFloorList = RoomList.Select(m => m.FloorTbId).Distinct().ToList();
+
+                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => RoomFloorList.Contains(m.Id)).ToListAsync().ConfigureAwait(false);
+                if (FloorList is null || !FloorList.Any())
+                    return null;
+
+                List<int>? FloorBuildingList = FloorList.Select(m => m.BuildingTbId).Distinct().ToList();
+
+                List<BuildingTb> BuildingList = await context.BuildingTbs
+                    .Where(m => FloorBuildingList.Contains(m.Id))
+                    .GroupBy(m => new { m.Id})
+                    .Select(g => g.First())
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                return BuildingList;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+                throw;
+            }
+        }
+
+
         /// <summary>
         /// 데드락 감지코드
         /// </summary>
@@ -588,5 +605,7 @@ namespace FamTec.Server.Repository.Building
 
             return false;
         }
+
+        
     }
 }

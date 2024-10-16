@@ -32,6 +32,13 @@ namespace FamTec.Server.Repository.Building
         Task<List<BuildingTb>?> GetAllBuildingList(int placeid);
 
         /// <summary>
+        /// 공간이 있는 건물List 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<BuildingTb>?> GetPlaceAvailableBuildingList(int placeid, int materialid);
+
+        /// <summary>
         /// 해당 사업장의 건물조회 - 페이지네이션
         /// </summary>
         /// <param name="placeid"></param>
@@ -46,13 +53,6 @@ namespace FamTec.Server.Repository.Building
         /// <param name="buildingId"></param>
         /// <returns></returns>
         Task<BuildingTb?> GetBuildingInfo(int buildingId);
-
-        /// <summary>
-        /// 사용가능한 건물코드인지 검사
-        /// </summary>
-        /// <param name="buildingcode"></param>
-        /// <returns></returns>
-        Task<bool?> CheckBuildingCD(string buildingcode);
 
         /// <summary>
         /// 건물정보 수정

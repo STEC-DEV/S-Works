@@ -77,5 +77,13 @@ namespace FamTec.Server.Services.Building
         /// <param name="buildingid"></param>
         /// <returns></returns>
         public Task<ResponseUnit<string?>> GetBuildingName(int buildingid);
+
+        /// <summary>
+        /// 자재가 포함되어있는 건물 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <returns></returns>
+        public Task<ResponseList<PlaceBuildingNameDTO>> GetPlaceAvailableBuildingList(HttpContext context, int materialid);
     }
 }

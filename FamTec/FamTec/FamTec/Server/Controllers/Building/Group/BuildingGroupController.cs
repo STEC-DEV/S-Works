@@ -56,86 +56,110 @@ namespace FamTec.Server.Controllers.Building.Group
         }
 
         [AllowAnonymous]
+        //[HttpGet]
         [HttpPost]
         [Route("sign/AddBuildingGroup")]
-        public async Task<IActionResult> AddBuildingGroup([FromBody] AddGroupDTO dto)
+        //public async Task<IActionResult> AddBuildingGroup()
+        public async Task<IActionResult> AddBuildingGroup([FromBody] List<AddGroupDTO> dto)
         {
             try
             {
-                //AddGroupDTO dto = new AddGroupDTO();
-                //dto.BuildingIdx = 12;
-                //dto.Name = "옥상주차장";
+                //List<AddGroupDTO> dto = new List<AddGroupDTO>();
 
-                //AddGroupItemKeyDTO key = new AddGroupItemKeyDTO();
-                //key.Name = "전기차";
-                //key.Unit = "대";
+                //AddGroupDTO GroupDTO = new AddGroupDTO();
+                //GroupDTO.BuildingIdx = 1;
+                //GroupDTO.Name = "B그룹";
 
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //// AddGroupKey가 null일 수 있으므로 초기화
+                //GroupDTO.AddGroupKey = new List<AddGroupItemKeyDTO>();
+                //GroupDTO.AddGroupKey.Add(new AddGroupItemKeyDTO
                 //{
-                //    Values = "3",
+                //    Name = "B항목",
+                //    Unit = "B단위",
+                //    // ItemValues 리스트가 null일 수 있으므로 초기화
+                //    ItemValues = new List<AddGroupItemValueDTO>()
                 //});
 
-                //dto.AddGroupKey.Add(key);
-
-                //key = new AddGroupItemKeyDTO();
-                //key.Name = "수소차";
-                //key.Unit = "대";
-
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //// ItemValues에 새로운 AddGroupItemValueDTO 객체 추가
+                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
                 //{
-                //    Values = "5"
+                //    Values = "값1"
                 //});
-                //key.ItemValues.Add(new AddGroupItemValueDTO()
+                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
                 //{
-                //    Values = "8"
+                //    Values = "값2"
+                //});
+                //dto.Add(GroupDTO);
+
+                //GroupDTO = new AddGroupDTO();
+                //GroupDTO.BuildingIdx = 1;
+                //GroupDTO.Name = "C그룹";
+
+                //// AddGroupKey가 null일 수 있으므로 초기화
+                //GroupDTO.AddGroupKey = new List<AddGroupItemKeyDTO>();
+                //GroupDTO.AddGroupKey.Add(new AddGroupItemKeyDTO
+                //{
+                //    Name = "C항목",
+                //    Unit = "C단위",
+                //    // ItemValues 리스트가 null일 수 있으므로 초기화
+                //    ItemValues = new List<AddGroupItemValueDTO>()
                 //});
 
-                //dto.AddGroupKey.Add(key);
+                //// ItemValues에 새로운 AddGroupItemValueDTO 객체 추가
+                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
+                //{
+                //    Values = "값1"
+                //});
+                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
+                //{
+                //    Values = "값2"
+                //});
+                //dto.Add(GroupDTO);
 
                 // ------------- DTO 검사
                 if (dto is null)
                     return NoContent();
 
-                if(dto.BuildingIdx is null)
-                    return NoContent();
-
-                if (String.IsNullOrWhiteSpace(dto.Name))
-                    return NoContent();
-
-                if(dto.AddGroupKey is null)
-                    return NoContent();
-                if(dto.AddGroupKey.Count == 0)
-                    return NoContent();
-
-                foreach (AddGroupItemKeyDTO KeyDTO in dto.AddGroupKey)
+                foreach(AddGroupDTO group in dto)
                 {
-                    if (String.IsNullOrWhiteSpace(KeyDTO.Name))
+                    if(group.BuildingIdx is null || group.BuildingIdx == 0)
                         return NoContent();
-                    if (String.IsNullOrWhiteSpace(KeyDTO.Unit))
-                        return NoContent();
-
-                    if(KeyDTO.ItemValues is null)
-                        return NoContent();
-                    if(KeyDTO.ItemValues.Count == 0)
+                    if(String.IsNullOrWhiteSpace(group.Name))
                         return NoContent();
 
-                    foreach (AddGroupItemValueDTO ValueDTO in KeyDTO.ItemValues)
+                    if (group.AddGroupKey is [_, ..])
                     {
-                        if(String.IsNullOrWhiteSpace(ValueDTO.Values))
-                            return NoContent();
+                        foreach (var key in group.AddGroupKey)
+                        {
+                            if (String.IsNullOrWhiteSpace(key.Name))
+                                return NoContent();
+                            if (String.IsNullOrWhiteSpace(key.Unit))
+                                return NoContent();
+
+                            if (key.ItemValues is [_, ..])
+                            {
+                                foreach (var value in key.ItemValues)
+                                {
+                                    if (String.IsNullOrWhiteSpace(value.Values))
+                                        return NoContent();
+                                }
+                            }
+                        }
                     }
-                    
                 }
+
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<AddGroupDTO> model = await GroupService.AddBuildingGroupService(HttpContext, dto).ConfigureAwait(false);
+                ResponseUnit<bool> model = await GroupService.AddBuildingGroupService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
 
                 if (model.code == 200)
+                    return Ok(model);
+                else if(model.code == 201)
                     return Ok(model);
                 else
                     return BadRequest();

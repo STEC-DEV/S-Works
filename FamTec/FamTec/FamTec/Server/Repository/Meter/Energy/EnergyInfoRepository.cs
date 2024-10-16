@@ -173,6 +173,7 @@ namespace FamTec.Server.Repository.Meter.Energy
 
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+            DateTime ThisDate = DateTime.Now;
             bool SaveResult = false;
 
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
@@ -232,9 +233,24 @@ namespace FamTec.Server.Repository.Meter.Energy
                             .ToListAsync()
                             .ConfigureAwait(false);
 
+                            // 반복돌면서 단가입력
+                            foreach(EnergyMonthUsageTb EnergyMonthUsageTB in EnergyMonthList)
+                            {
+                                // 해당 검침기의 단가 : 월청구금액 / 해당검침기 월 사용량
+                                float MonthUnitPrice = dto.ChargePrice / (EnergyMonthUsageTB.TotalUsage ?? 0);
+
+                                EnergyMonthUsageTB.UnitPrice = MonthUnitPrice; // 단가입력
+                                EnergyMonthUsageTB.UpdateDt = ThisDate; // 현재시간
+                                EnergyMonthUsageTB.UpdateUser = creater; // 수정자
+
+
+                            }
+
+                            Console.WriteLine("sadfasf");
                         }
 
 
+                        await transaction.RollbackAsync(); // 테스트에서에는 커밋 XXX
                         return 1;
                     }
                     catch (Exception ex)

@@ -177,7 +177,6 @@ namespace FamTec.Server.Services.Store
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<InOutHistoryListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-
                 List<InOutHistoryListDTO>? model = await StoreInfoRepository.GetInOutPageNationList(Convert.ToInt32(placeid), pagenum, pagesize).ConfigureAwait(false);
 
                 if (model is not null && model.Any())

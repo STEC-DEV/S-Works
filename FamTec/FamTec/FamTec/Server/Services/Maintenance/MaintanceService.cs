@@ -1,10 +1,10 @@
 ﻿using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Maintenence;
+using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -12,21 +12,24 @@ namespace FamTec.Server.Services.Maintenance
     {
         private readonly IMaintanceRepository MaintanceRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
-        
+        private readonly IUserInfoRepository UserInfoRepository;
+
         private IFileService FileService;
         private ILogService LogService;
         
         private string? MaintanceFileFolderPath;
-        private DirectoryInfo di = null;
+        private DirectoryInfo? di;
 
         public MaintanceService(IMaintanceRepository _maintancerepository,
             IFacilityInfoRepository _facilityinforepository,
+            IUserInfoRepository _userinforepository,
             IFileService _fileservice,
             ILogService _logservice)
         {
             this.MaintanceRepository = _maintancerepository;
             this.FacilityInfoRepository = _facilityinforepository;
-            
+            this.UserInfoRepository = _userinforepository;
+
             this.FileService = _fileservice;
             this.LogService = _logservice;
         }
@@ -273,9 +276,39 @@ namespace FamTec.Server.Services.Maintenance
                 if (context is null)
                     return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? UserId = Convert.ToString(context.Items["UserIdx"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if(String.IsNullOrWhiteSpace(placeid))
+                
+                if(String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
                     return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
+                if(UserTB is null)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // -- USER 권한검사
+                // 권한과 명칭을 쌍으로 매핑
+                var permMapping = new Dictionary<Func<bool>, string>
+                {
+                    { () => UserTB.PermBasic > 0, "기타" },
+                    { () => UserTB.PermMachine > 0, "기계" },
+                    { () => UserTB.PermElec > 0, "전기" },
+                    { () => UserTB.PermLift > 0, "승강" },
+                    { () => UserTB.PermFire > 0, "소방" },
+                    { () => UserTB.PermConstruct > 0, "건축" },
+                    { () => UserTB.PermNetwork > 0, "통신" },
+                    { () => UserTB.PermBeauty > 0, "미화" },
+                    { () => UserTB.PermSecurity > 0, "보안" }
+                };
+
+                // 권한이 있는 항목만 리스트에 추가
+                List<string> UserPerm = permMapping.Where(p => p.Key()).Select(p => p.Value).ToList();
+
+                // category와 비교하여 없는 항목 찾기
+                List<string> PermCheck = category.Except(UserPerm).ToList();
+
+                if (PermCheck.Count() > 0)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
 
                 List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetDateHistoryList(Convert.ToInt32(placeid), StartDate, EndDate, category, type).ConfigureAwait(false);
 
@@ -306,9 +339,40 @@ namespace FamTec.Server.Services.Maintenance
                 if (context is null)
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string? UserId = Convert.ToString(context.Items["UserIdx"]);
                 string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
-                if (String.IsNullOrWhiteSpace(placeid))
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
                     return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+
+                UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
+                if (UserTB is null)
+                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // -- USER 권한검사
+                // 권한과 명칭을 쌍으로 매핑
+                var permMapping = new Dictionary<Func<bool>, string>
+                {
+                    { () => UserTB.PermBasic > 0, "기타" },
+                    { () => UserTB.PermMachine > 0, "기계" },
+                    { () => UserTB.PermElec > 0, "전기" },
+                    { () => UserTB.PermLift > 0, "승강" },
+                    { () => UserTB.PermFire > 0, "소방" },
+                    { () => UserTB.PermConstruct > 0, "건축" },
+                    { () => UserTB.PermNetwork > 0, "통신" },
+                    { () => UserTB.PermBeauty > 0, "미화" },
+                    { () => UserTB.PermSecurity > 0, "보안" }
+                };
+
+                // 권한이 있는 항목만 리스트에 추가
+                List<string> UserPerm = permMapping.Where(p => p.Key()).Select(p => p.Value).ToList();
+
+                // category와 비교하여 없는 항목 찾기
+                List<string> PermCheck = category.Except(UserPerm).ToList();
+
+                if (PermCheck.Count() > 0)
+                    return new ResponseList<AllMaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
+
 
                 List<AllMaintanceHistoryDTO>? model = await MaintanceRepository.GetAllHistoryList(Convert.ToInt32(placeid), category, type).ConfigureAwait(false);
 
@@ -401,7 +465,6 @@ namespace FamTec.Server.Services.Maintenance
                 model.UpdateDt = ThisDate;
                 model.UpdateUser = updater;
 
-                
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {
                     if(files.FileName != model.Image) // 넘어온 이미지의 이름과 DB에 저장된 이미지의 이름이 다르면

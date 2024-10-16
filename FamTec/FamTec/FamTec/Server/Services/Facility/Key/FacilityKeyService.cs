@@ -4,7 +4,6 @@ using FamTec.Server.Repository.Facility.ItemValue;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility.Group;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FamTec.Server.Services.Facility.Key
 {

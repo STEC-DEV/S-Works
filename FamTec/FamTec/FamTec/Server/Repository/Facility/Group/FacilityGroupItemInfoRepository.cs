@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Facility.Group;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
@@ -176,6 +177,113 @@ namespace FamTec.Server.Repository.Facility.Group
         }
 
         /// <summary>
+        /// 설비그룹 한번에 추가
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="creater"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<int> AddGroupAsync(List<AddGroupDTO> dto, string creater)
+        {
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            bool SaveResult = false;
+            DateTime ThisDate = DateTime.Now;
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        // GROUP INSERT
+                        foreach(AddGroupDTO Group in dto)
+                        {
+                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.DelYn != true && m.Id == Group.Id).ConfigureAwait(false);
+
+                            if (FacilityTB is null)
+                                return -1; // 잘못된 요청임
+
+                            FacilityItemGroupTb GroupTB = new FacilityItemGroupTb();
+                            GroupTB.Name = Group.Name!.ToString(); // 그룹의 명칭
+                            GroupTB.CreateDt = ThisDate; // 현재시간
+                            GroupTB.CreateUser = creater; // 생성자
+                            GroupTB.UpdateDt = ThisDate; // 현재식나
+                            GroupTB.UpdateUser = creater; // 생성자
+                            GroupTB.FacilityTbId = Group.Id!.Value; // 설비 ID
+
+                            await context.FacilityItemGroupTbs.AddAsync(GroupTB).ConfigureAwait(false);
+                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                            if(!SaveResult)
+                            {
+                                await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                return 0;
+                            }
+
+                            if(Group.AddGroupKey is [_, ..])
+                            {
+                                // KEY INSERT
+                                foreach(AddGroupItemKeyDTO Key in Group.AddGroupKey)
+                                {
+                                    FacilityItemKeyTb KeyTB = new FacilityItemKeyTb();
+                                    KeyTB.Name = Key.Name!.ToString(); // 키의 명칭
+                                    KeyTB.Unit = Key.Unit!.ToString(); // 키의 단위
+                                    KeyTB.FacilityItemGroupTbId = GroupTB.Id; // 상위 그룹 ID
+                                    KeyTB.CreateDt = ThisDate; // 현재시간
+                                    KeyTB.CreateUser = creater; // 생성자
+                                    KeyTB.UpdateDt = ThisDate; // 현재시간
+                                    KeyTB.UpdateUser = creater; // 생성자
+
+                                    await context.FacilityItemKeyTbs.AddAsync(KeyTB).ConfigureAwait(false);
+                                    SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                    if(!SaveResult)
+                                    {
+                                        await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                        return 0;
+                                    }
+
+                                    if(Key.ItemValues is [_, ..])
+                                    {
+                                        foreach(AddGroupItemValueDTO Value in Key.ItemValues)
+                                        {
+                                            FacilityItemValueTb ValueTB = new FacilityItemValueTb();
+                                            ValueTB.ItemValue = Value.Values!.ToString(); // 값
+                                            ValueTB.CreateDt = ThisDate; // 현재시간
+                                            ValueTB.CreateUser = creater;
+                                            ValueTB.UpdateDt = ThisDate; // 현재시간
+                                            ValueTB.UpdateUser = creater;
+                                            ValueTB.FacilityItemKeyTbId = KeyTB.Id;
+
+                                            await context.FacilityItemValueTbs.AddAsync(ValueTB).ConfigureAwait(false);
+                                            SaveResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                            if(!SaveResult)
+                                            {
+                                                await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션
+                                                return 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // 모든 작업이 성공적으로 완료된 후 트랜잭션 커밋
+                        await transaction.CommitAsync().ConfigureAwait(false);
+                        return 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.LogMessage(ex.ToString());
+                        throw;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
         /// 그룹삭제 -2
         /// </summary>
         /// <param name="groupid"></param>
@@ -299,5 +407,7 @@ namespace FamTec.Server.Repository.Facility.Group
 
             return false;
         }
+
+    
     }
 }
