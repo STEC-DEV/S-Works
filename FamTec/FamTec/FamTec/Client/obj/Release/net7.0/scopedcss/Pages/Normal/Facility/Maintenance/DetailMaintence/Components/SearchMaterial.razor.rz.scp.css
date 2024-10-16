@@ -16,7 +16,7 @@
 
 .header[b-vy1mj19aab]{
     display : flex;
-    padding : var(--default-pd);
+    padding : var(--default-pd) 0;
 
     justify-content : space-between;
     border-bottom : var(--default-bd);

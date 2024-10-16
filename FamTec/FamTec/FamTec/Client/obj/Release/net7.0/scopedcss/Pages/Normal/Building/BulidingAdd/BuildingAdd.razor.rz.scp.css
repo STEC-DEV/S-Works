@@ -20,3 +20,30 @@
 .buildingadd-container .buildingadd-info[b-37r0e6eic7] {
     height: 100%;
 }
+.group[b-37r0e6eic7] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--default-pd);
+}
+.sub-btn[b-37r0e6eic7] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding :var(--half-pd);
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    
+    background-color: #eeeeee;
+    border-radius: 10px;
+    transition: all .3s;
+    box-shadow : 0 2px 15px gray;
+}
+
+
+.sub-btn:hover[b-37r0e6eic7]{
+    /*color: var(--main-color);*/
+    background-color: #fefefe
+}
