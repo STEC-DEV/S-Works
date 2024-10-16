@@ -6,7 +6,7 @@
 <div class="modal">
     <div class="hedaer">
         <span class="title">
-            요소 추가
+            정보 수정
         </span>
     </div>
     <div class="input">
@@ -14,8 +14,7 @@
         <input type="text" placeholder="항목명" @bind-value=@_editData.ItemKey />
     </div>
     <div class="input">
-        <label>단위</label>
-        <input type="text" placeholder="단위" @bind-value=@_editData.Unit />
+        <InputCol Label="단위" Placeholder="단위" @bind-Value=@_editData.Unit Unit=true />
     </div>
     <div class="item-header">
         <span>값</span>
@@ -27,7 +26,7 @@
     <ul class="value-ul">
         @foreach (var item in _editData.valueList.Select((value, idx) => (value, idx)))
         {
-            Console.WriteLine("생성");
+            
             <li class="value-li">
                 <input type="checkbox" @onchange="e=>OnCheck(e,item.idx)" />
                 <input class="value-input" type="text" @bind-value=item.value.itemValue />
@@ -36,8 +35,8 @@
     </ul>
 
     <div class="btns">
-        <Button Name="수정" Type="0" OnClick="OnAdd"/>
-        <Button Name="닫기" Type="1" OnClick="OnModal" />
+        <Button Name="저장" Type="0" OnClick="OnAdd"/>
+        <Button Name="취소" Type="1" OnClick="OnModal" />
     </div>
 </div>
 
@@ -50,6 +49,7 @@
     
 
     List<int> Checked = new List<int>();
+    
 
     protected override Task OnInitializedAsync()
     {
@@ -137,4 +137,6 @@
     {
         OnClose.InvokeAsync();
     }
+
+  
 }

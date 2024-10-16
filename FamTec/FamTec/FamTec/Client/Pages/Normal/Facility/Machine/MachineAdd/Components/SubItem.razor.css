@@ -1,0 +1,57 @@
+﻿
+.item-container {
+    display: block;
+}
+
+.item-wrap {
+    display: flex;
+    flex-wrap : wrap;
+    gap: var(--default-pd);
+    align-items : center;
+}
+
+.item-label {
+    ;
+    /*flex :1;*/
+    /*padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);*/
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color : var(--main-color);
+    /*color: var(--default-color);
+    background-color: var(--main-color);*/
+}
+
+.item-values {
+    /*flex:6;*/
+    display: flex;
+    gap : var(--half-pd);
+    flex-wrap : nowrap;
+    /*flex-direction: column;*/
+}
+
+.value {
+    /*white-space :nowrap;*/
+    padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+
+
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    background-color: var(--content-back-color);
+}
+
+.del-btn {
+    width: 15px;
+    height: 15px;
+    border : none;
+    border-radius: 50px;
+    background-color :var(--del-color);
+}
+
+.del-btn:hover{
+    background-color :var(--del-hover);
+}

@@ -1,0 +1,81 @@
+
+
+.filter[b-8ni0pr2h7a] {
+    padding: var(--default-pd);
+    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.filter-wrap[b-8ni0pr2h7a] {
+    background-color: var(--default-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
+    min-height: 100%;
+    height: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    box-shadow: var(--shadow-1);
+}
+
+.header[b-8ni0pr2h7a] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--default-pd) 0;
+    border-bottom: var(--default-bd);
+}
+
+.title[b-8ni0pr2h7a] {
+    white-space: nowrap;
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.content[b-8ni0pr2h7a]{
+    display :flex;
+    justify-content : space-between;
+    /*grid-template-columns : repeat(2, 1fr);*/
+    gap : var(--default-pd);
+}
+
+.filter-date[b-8ni0pr2h7a]{
+    width:100%;
+    display : flex;
+    /*flex-direction : column;*/
+    gap:var(--default-pd);
+
+}
+
+.filter-date .filter-date-title[b-8ni0pr2h7a]{
+    display:flex;
+    align-items:center;
+    font-size:var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+    white-space:nowrap;
+}
+
+.filter-date-content[b-8ni0pr2h7a]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.filter-date-item[b-8ni0pr2h7a]{
+    display : flex;
+    align-items :center;
+    gap : var(--half-pd);
+}
+
+.filter-date .label[b-8ni0pr2h7a] {
+    color: var(--main-color);
+    white-space: nowrap;
+}
+
+.none[b-8ni0pr2h7a]{
+    display : none;
+}

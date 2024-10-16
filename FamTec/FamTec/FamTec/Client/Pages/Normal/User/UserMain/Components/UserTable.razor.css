@@ -112,14 +112,15 @@
 
 .table .maintitle{
     font-size : 1rem;
+    font-weight :bold;
     color : var(--main-color);
 
 }
 
 .table .subtitle{
-    font-size : 14px;
+    font-size : 0.8rem;
     color : var(--main-color);
-    
+    font-weight : bold;
 }
 
 .table .text-right{
@@ -127,8 +128,9 @@
 }
 
 .italic {
-    font-style: italic;
+    /*font-style: italic;*/
     color : #333;
+    
 }
 
 .motion {

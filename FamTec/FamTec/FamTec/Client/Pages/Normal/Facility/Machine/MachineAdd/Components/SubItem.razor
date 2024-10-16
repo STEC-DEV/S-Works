@@ -1,0 +1,57 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineAdd.Modal
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+
+<div class="item-container">
+    <div class="item-wrap" >
+        <label class="item-label">
+            @item.Name (@item.Unit)
+        </label>
+        <div class="item-values" >
+            @foreach (var i in item.ItemValues)
+            {
+                <span class="value">
+                    @i.Values
+                </span>
+            }
+        </div>
+        <EditButton OnClick="OnItemEdit"/>
+        <XButton OnClick="OnDelete" />
+    </div>
+    @if (ItemEdit)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <UpdateSubItemModal Data="@item" OnClose="OnItemEdit" DataChange="OnUpdate" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public AddGroupKey item { get; set; }
+    [Parameter] public EventCallback<AddGroupKey> OnDel { get; set; }
+    private bool ItemEdit = false;
+    AddGroupKey editItem = new AddGroupKey();
+
+
+    private void OnItemEdit()
+    {
+        ItemEdit = !ItemEdit;
+
+    }
+
+    private async void OnUpdate(AddGroupKey update)
+    {
+        item = update;
+        StateHasChanged();
+    }
+
+    private async void OnDelete()
+    {
+        await OnDel.InvokeAsync(item);
+    }
+
+}

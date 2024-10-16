@@ -19,7 +19,22 @@
         readonly="@ReadOnly"
         @onkeypress="(e)=>OnkeyPress(e)"
         />
+    @if(Unit)
+    {
+        <div class="unit-btn">
+            <Button Name="단위" OnClick="OnUnitModal" />
+        </div>
+    }
 </div>
+@if (unitModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UnitButton OnCancel="OnUnitModal" ReturnValue="OnUnitValue" />
+        </ChildComponent>
+    </ModalBackground>
+}
+
 
 @code {
     [Parameter] public string? Label { get; set; }
@@ -29,10 +44,13 @@
     [Parameter] public int? Min { get; set; } = 0;
     [Parameter] public int? Max { get; set; }
     [Parameter] public bool? Row { get; set; }
+    [Parameter] public bool Unit { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
     [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public EventCallback<KeyboardEventArgs> OnKeyPress { get; set; }
 
+
+    private bool unitModal = false;
 
     private async Task OnValueChanged(ChangeEventArgs e)
     {
@@ -101,6 +119,33 @@
     private async void OnkeyPress(KeyboardEventArgs e)
     {
         await OnKeyPress.InvokeAsync(e);
+    }
+
+    private void OnUnitModal()
+    {
+        unitModal = !unitModal;
+    }
+
+
+    private async void OnUnitValue(string unit)
+    {
+        if (typeof(T) == typeof(string))
+        {
+            string newValue;
+
+            // Value가 문자열이고 값이 있을 경우
+            if (Value is string currentValue && !string.IsNullOrEmpty(currentValue))
+            {
+                // 기존 문자열에 단위 추가
+                newValue = currentValue + unit;
+            }
+            else
+            {
+                // 값이 없으면 단위만 추가
+                newValue = unit;
+            }
+            await ValueChanged.InvokeAsync((T)(object)newValue);
+        }
     }
 
 }

@@ -1,0 +1,215 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Server.DTO
+<div class="container">
+    <div class="filter-wrap">
+        <div class="header">
+            <span class="title">
+                조회 조건
+            </span>
+            <Button Name="조회" Width=true Type="0" OnClick="OnSearch" />
+        </div>
+        <div class="content">
+            <div class="filter-date">
+                @* 조회기간 컴포넌트 시작 *@
+                <span class="filter-date-title">
+                    조회기간
+                </span>
+                <div class="filter-date-content">
+                    <div class="filter-date-item">
+                        <input type="radio" name="date" value=0 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==0)">
+                        <span class="label">월간</span>
+                    </div>
+                    <div class="filter-date-item">
+                        <div class="label">
+                            <input type="radio" name="date" value=1 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==1)">
+                            <span class="label">기간 설정</span>
+                        </div>
+                        <div class="@(selectDefaultOption != 1 ? "none" : "") ">
+                            <InputDuration 
+                                Row="true"
+                                StartDT="@startDt" 
+                                EndDT="@endDt" 
+                                StartDTChanged="@(newDate => startDt = newDate)"
+                                EndDTChanged="@(newDate => endDt = newDate)"
+                                />
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            @* 조회기간 컴포넌트 끝 *@
+            <SelectField Key="SelectData="
+                         SelectData="@facType"
+                         @bind-Value="@selectFacType"
+                         OnChange="OnChangeFactype"
+                         Label="설비유형"
+                         Row="true"
+                         EditMode="true" />
+            <SelectField Key="WorkType"
+                         SelectData="workType"
+                         @bind-Value="@selectWorkType"
+                         OnChange="OnChangeWorktype"
+                         Label="작업 구분"
+                         Row="true"
+                         EditMode="true" />
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<List<AllMaintanceHistoryDTO>> OnSearchMonthData { get; set; }
+    [Parameter]
+    public EventCallback<List<MaintanceHistoryDTO>> OnSearchDurationData { get; set; }
+
+    List<AllMaintanceHistoryDTO> MonthData = new List<AllMaintanceHistoryDTO>();
+    List<MaintanceHistoryDTO> DurationData = new List<MaintanceHistoryDTO>();
+
+    private int selectDefaultOption = 0;
+    private DateTime startDt = DateTime.Now;
+    private DateTime endDt = DateTime.Now;
+
+    //설비유형 변수
+    int selectFacType=9;
+    //작업구분 변수
+    int selectWorkType=9;
+
+
+    //설비 유형 -> 사용자 권한 검사 해야함
+    List<object> facType = new List<object>()
+    {
+        new { Id = 0, Name = "전체" },
+        new { Id = 1, Name = "기계" },
+        new { Id = 2, Name = "전기" },
+        new { Id = 3, Name = "승강" },
+        new { Id = 4, Name = "소방" },
+        new { Id = 5, Name = "건축" },
+        new { Id = 6, Name = "통신" },
+        new { Id = 7, Name = "미화" },
+        new { Id = 8, Name = "보안" },
+    };
+
+    //작업 구분 데이터
+    List<object> workType = new List<object>()
+    {
+        new { Id = 2, Name = "전체" },
+        new { Id = 0, Name = "자체" },
+        new { Id = 1, Name = "외주" },
+
+    };
+
+    //조회 기간
+    private void OnDateOptionChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            selectDefaultOption = value;
+
+        }
+    }
+
+
+    //설비유형 선택 이벤트
+    private void OnChangeFactype(int select)
+    {
+        selectFacType = select;
+    }
+
+    //작업구분 선택 이벤트
+    private void OnChangeWorktype(int select)
+    {
+        selectWorkType = select;
+    }
+
+
+    private async Task OnSearch()
+    {
+        try
+        {
+
+            if(selectFacType == 9 || selectWorkType == 9)
+            {
+                await JS.InvokeVoidAsync("alert", "조회 조건을 확인해주세요.");
+                return;
+            }
+            List<string> FacType = new List<string>();
+            List<int> WorkType= new List<int>();
+
+            //설비타입
+            if(selectFacType == 0)
+            {
+                List<string> all = new List<string> { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안" };
+                foreach(var type in all)
+                {
+                    FacType.Add(type);
+                }
+            }
+            else
+            {
+                FacType.Add(convertFactype(selectFacType));
+            }
+
+            //작업구분
+            if(selectWorkType == 2)
+            {
+                WorkType.Add(0);
+                WorkType.Add(1);
+            }
+            else
+            {
+                WorkType.Add(selectWorkType);
+            }
+
+            var categoryQuery = string.Join("&category=", FacType);
+            var typeQuery = string.Join("&type=", WorkType);
+
+            if (selectDefaultOption ==0)
+            {
+                ResponseList<AllMaintanceHistoryDTO> resGet = await apiManager.GetListAsync<AllMaintanceHistoryDTO>($"Maintenance/sign/GetAllHistoryList?category={categoryQuery}&type={typeQuery}");
+                if (resGet.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", resGet.message);
+                    return;
+                }
+                await OnSearchMonthData.InvokeAsync(resGet.data);
+                
+
+            }
+            else
+            {
+                ResponseList<MaintanceHistoryDTO> resGet = await apiManager.GetListAsync<MaintanceHistoryDTO>($"Maintenance/sign/GetDateHistoryList?StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}&category={categoryQuery}&type={typeQuery}");
+                if (resGet.code != 200)
+                {
+                    await JS.InvokeVoidAsync("alert", resGet.message);
+                    return;
+                }
+
+                await OnSearchDurationData.InvokeAsync(resGet.data);
+            }
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "유지보수 조회 검색 에러");
+        }
+    }
+
+    private string convertFactype(int facType)
+    {
+        return facType switch
+        {
+            1 => "기계",
+            2 => "전기",
+            3 => "승강",
+            4 => "소방",
+            5 => "건축" ,
+            6 => "통신",
+            7 => "미화",
+            8 => "보안",
+
+        };
+    }
+}

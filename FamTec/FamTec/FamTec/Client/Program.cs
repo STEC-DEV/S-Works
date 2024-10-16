@@ -48,7 +48,7 @@ builder.Services.AddAuthorizationCore();
 // 연결 -- 아래 코드 (게시용)
 //string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 
-string HubUrl = "http://125.131.105.172:5245/VocHub";
+string HubUrl = "http://123.2.156.28:5245/VocHub";
 
 
 HubObject.hubConnection = new HubConnectionBuilder()
@@ -80,19 +80,3 @@ catch(Exception ex)
 }
 await builder.Build().RunAsync();
 
-//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
-//HubObject.hubConnection = new HubConnectionBuilder()
-//      .WithUrl(HubUrl, options =>
-//      {
-//          options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
-//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
-//                               Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
-//      })
-//    .WithAutomaticReconnect() // 서버와의 연결이 끊어지면 자동으로 재연결
-//    .ConfigureLogging(logging =>
-//    {
-//        //logging.AddConsole();
-//        // This will set ALL logging to Debug level
-//        logging.SetMinimumLevel(LogLevel.Debug);
-//    })
-//   .Build();

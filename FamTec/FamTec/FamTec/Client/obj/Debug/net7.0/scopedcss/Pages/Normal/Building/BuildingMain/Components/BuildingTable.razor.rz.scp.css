@@ -78,7 +78,8 @@
 }
 
 .building-table .name[b-ytu5hwp48s]{
-    font-size : 0.9rem;
+    font-size : 0.8rem;
+    color : var(--main-color);
 }
 
 .building-table .code[b-ytu5hwp48s]{

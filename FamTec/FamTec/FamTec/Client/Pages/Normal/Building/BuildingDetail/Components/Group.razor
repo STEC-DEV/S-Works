@@ -17,13 +17,13 @@
 
                 @if (EditMode)
                 {
-                    <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+                    <Button Name="등록" Width=true Type="0" OnClick="OnModal" />
                     <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelGroup(GroupData.id)" />
-                    <Button Name="닫기" Width=true Type="2" OnClick="OnEditMode" />
+                    <Button Name="취소" Width=true Type="2" OnClick="OnEditMode" />
                 }
                 else
                 {
-                    <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
+                    <Button Name="수정" Width=true Type="0" OnClick="OnEditMode" />
                 }
             </div>
         }

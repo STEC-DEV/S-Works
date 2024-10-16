@@ -1,0 +1,131 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+@using FamTec.Shared.Client.DTO.Normal.Buildings.GroupList
+@using FamTec.Shared.Server.DTO
+
+<div class="modal">
+    <div class="hedaer">
+        <span class="title">
+            정보 수정
+        </span>
+    </div>
+    <div class="input">
+        <label>이름</label>
+        <input type="text" placeholder="항목명" @bind-value=@_editData.Name />
+    </div>
+    <div class="input">
+        <InputCol Label="단위" Placeholder="단위" @bind-Value=@_editData.Unit Unit=true />
+    </div>
+    <div class="item-header">
+        <span>값</span>
+        <div class="btns">
+            <Button Name="추가" Type="0" Width=true OnClick="OnInCreaseValueNum" />
+            <Button Name="삭제" Type="1" Width=true OnClick="OnDeCreaseValueNum" />
+        </div>
+    </div>
+    <ul class="value-ul">
+        @foreach (var item in _editData.ItemValues.Select((value, idx) => (value, idx)))
+        {
+            Console.WriteLine("생성");
+            <li class="value-li">
+                <input type="checkbox" @onchange="e=>OnCheck(e,item.idx)" />
+                <input class="value-input" type="text" @bind-value=item.value.Values />
+            </li>
+        }
+    </ul>
+
+    <div class="btns">
+        <Button Name="저장" Type="0" OnClick="OnAdd"/>
+        <Button Name="취소" Type="1" OnClick="OnModal" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public AddGroupKey Data { get; set; }
+    [Parameter] public EventCallback<AddGroupKey> DataChange { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+
+
+
+    private AddGroupKey _editData = new AddGroupKey();
+
+
+    List<int> Checked = new List<int>();
+
+
+    protected override void OnInitialized()
+    {
+        _editData = new AddGroupKey(Data);
+    }
+
+
+    private async void OnDeCreaseValueNum()
+    {
+
+        if (_editData.ItemValues.Count - Checked.Count < 1)
+        {
+            await JS.InvokeVoidAsync("alert", "최소 1개의 값은 필요합니다.");
+            return;
+        }
+
+        // Checked 리스트를 내림차순으로 정렬
+        Checked.Sort((a, b) => b.CompareTo(a));
+
+        foreach (var idx in Checked)
+        {
+            if (idx < _editData.ItemValues.Count)
+            {
+                _editData.ItemValues.RemoveAt(idx);
+            }
+        }
+
+        // 삭제 후 Checked 리스트 초기화
+        Checked.Clear();
+
+        StateHasChanged();
+
+    }
+
+    private void OnCheck(ChangeEventArgs e, int idx)
+    {
+        //체크한 경우
+        if ((bool)e.Value)
+        {
+            Checked.Add(idx);
+        }
+        else //체크 해제
+        {
+            if (Checked.Find(c => c == idx) == idx)
+            {
+                Checked.Remove(idx);
+            }
+        }
+    }
+
+
+    private async void OnInCreaseValueNum()
+    {
+        if (_editData.ItemValues.Count >= 3)
+        {
+            await JS.InvokeVoidAsync("alert", "최대 3개까지 입력할 수 있습니다.");
+            return;
+        }
+        _editData.ItemValues.Add(new AddGroupItemValueDTO());
+        StateHasChanged();
+    }
+
+    private async void OnAdd()
+    {
+        Data = _editData;
+        await DataChange.InvokeAsync(Data);
+        OnModal();
+    }
+
+    private void OnModal()
+    {
+        OnClose.InvokeAsync();
+    }
+
+  
+}

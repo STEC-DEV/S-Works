@@ -6,7 +6,7 @@
 <div class="modal">
     <div class="hedaer">
         <span class="title">
-            요소 추가
+            정보 추가
         </span>
     </div>
     <div class="input">
@@ -14,8 +14,10 @@
         <input type="text" placeholder="항목명" @bind-value=@Item.Name />
     </div>
     <div class="input">
-        <label>단위</label>
-        <input type="text" placeholder="단위" @bind-value=@Item.Unit />
+        @* <label>단위</label>
+        <input type="text" placeholder="단위" @bind-value=@Item.Unit/> *@
+        <InputCol Label="단위" Placeholder="단위" @bind-Value=@Item.Unit Unit=true/>
+        
     </div>
     <div class="item-header">
         <span>값</span>
@@ -37,7 +39,7 @@
 
     <div class="btns">
         <Button Name="추가" Type="0" OnClick="OnAdd"/>
-        <Button Name="닫기" Type="1" OnClick="OnModal" />
+        <Button Name="취소" Type="1" OnClick="OnModal" />
     </div>
 </div>
 

@@ -23,9 +23,6 @@
             }
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
-            <li class="option-item" @onclick="() => OnSelectRow(null)">
-                Select
-            </li>
             @if (SelectData != null && SelectData.Any())
             {
                 @foreach (var selectRow in SelectData)
@@ -34,7 +31,8 @@
                     {
 
                         <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
-                            @selectRow.GetType().GetProperty("RoomName").GetValue(selectRow) @selectRow.GetType().GetProperty("Num").GetValue(selectRow)
+                            <span class="item-text">@selectRow.GetType().GetProperty("RoomName").GetValue(selectRow)</span>
+                            <span class="item-text">@selectRow.GetType().GetProperty("Num").GetValue(selectRow)</span>
                         </li>
                     }
                     catch (Exception ex)
@@ -68,30 +66,6 @@
         await base.OnParametersSetAsync();
     }
 
-    // public void Reset()
-    // {
-    //     SelectName = "Select";
-    //     StateHasChanged();
-    // }
-
-    //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
-    // public void OnSelectRow(object row)
-    // {
-        
-    //     if(row == null)
-    //     {
-    //         SelectName = "Select";
-    //         OnChange.InvokeAsync(0);
-    //         OnActive();
-    //         return;
-    //     }
-    //     int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-    //     SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-
-    //     OnChange.InvokeAsync(id);
-    //     OnActive();
-    //     StateHasChanged();
-    // }
     private async Task UpdateSelectName()
     {
         if (Value != 0 && SelectData != null)

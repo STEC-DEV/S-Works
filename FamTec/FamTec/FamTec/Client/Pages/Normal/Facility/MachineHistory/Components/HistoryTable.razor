@@ -1,0 +1,185 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
+@inherits PermissionComponentBase
+
+<table class="table">
+    <thead class="thead">
+        <tr class="thead-rt">
+            <th class="th">
+                <span>
+                    설비 유형
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    일자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    수리(보수) 이력
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    작업구분
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    작업자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    사용자재
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    내용 년수
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    교체 년월
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    QR
+                </span>
+            </th>
+            @if (HasEditPermission())
+            {
+                <th class="th">
+                    <span>
+                    </span>
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        @if(ListData == null)
+        {
+            
+                <tr>
+                    <div class="height">
+                        <td colspan="100" style="text-align:center">
+                            <Loading />
+                        </td>
+                    </div>
+                </tr>
+            
+            
+        }
+        else if(ListData.Count == 0)
+        {
+            <tr>
+                <td colspan="100" style="text-align:center">
+                    <Empty />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var row in ListData)
+            {
+                <tr class="tbody-tr">
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Name
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)" >
+                        @row.Type
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.Num
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.RoomName
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.StandardCapacity
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.EquipDT?.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.LifeSpan
+                    </td>
+                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                        @row.ChangeDT?.ToString("yyyy-MM-dd")
+                    </td>
+                    <td class="td">
+                        <QR 
+                        BaseUrl="facility"
+                        BtnName="QR"
+                        Type="facility"
+                        DetailType="@FacType" 
+                        PlaceId="@PLACEIDX.Value"
+                        Id="@row.Id"
+                        />
+                    </td>
+                    @if (HasEditPermission())
+                    {
+                        <td class="td">
+                            <input type="checkbox" 
+                                @onchange="(e)=>OnChecked(e,row.Id)"
+                                checked=@(Checkitems.Contains(row.Id))
+                                />
+                        </td>
+                    }
+                    
+                </tr>
+            }
+        }
+       
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<FacilityListDTO?> ListData { get; set; }
+    [Parameter] public string FacType { get; set; }
+    [Parameter] public EventCallback<(bool,int)> OnCheck { get; set; }
+    [Parameter] public List<int> Checkitems { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        Console.WriteLine("현재 사업장아이디 : "+PLACEIDX);
+    }
+
+    private void OnDetail(int Id)
+    {
+        Navigation.NavigateTo($"/facility/{FacType}/{Id}");
+
+    }
+
+    private async void OnChecked(ChangeEventArgs e, int id)
+    {
+        await OnCheck.InvokeAsync(((bool)e.Value, id));
+    }
+
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
+}
+
+
+@code {
+
+}

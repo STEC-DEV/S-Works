@@ -20,7 +20,7 @@
     <div class="signup-wrap">
         <div class="signup-title">
             <span class="title">
-                Login
+                로그인
             </span>
             <Toggle Title="관리자모드"
                     EditMode=true
@@ -29,13 +29,13 @@
         <div class="signup-form">
             <InputField Label="ID"
                         EditMode=true
-                        Placeholder="ID"
+                        Placeholder="아이디"
                         @bind-Value="@user.UserID" 
                         OnKeyPress="HandleKeyDown" />
             <InputField Label="PW"
                         InputType="Password"
                         EditMode=true
-                        Placeholder="Password"
+                        Placeholder="비밀번호"
                         @bind-Value="@user.UserPassword" 
                         OnKeyPress="HandleKeyDown" />
         </div>

@@ -1,0 +1,85 @@
+﻿@inherits PermissionComponentBase
+@using FamTec.Client.Pages.CommonComponents
+
+
+
+@using FamTec.Client.Pages.Normal.Facility.Machine.MachineAdd.Modal
+@using FamTec.Shared.Client.DTO.Normal.Facility.Group
+@using FamTec.Shared.Server.DTO
+
+
+
+<div class="group yappear">
+    <div class="header">
+        <span class="title">
+            @GroupData.Name
+        </span>
+        <div class="options">
+            <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+            <Button Name="삭제" Width=true Type="1" OnClick="OnDel" />
+        </div>
+        
+        
+    </div>
+    <div class="content">
+        @*요소 컴포넌트 자리*@
+        @if (GroupData.AddGroupKey.Count > 0)
+        {
+            @foreach (AddGroupKey item in GroupData.AddGroupKey)
+            {
+                <SubItem item="item" OnDel="OnDelItem" />
+            }
+        }
+
+    </div>
+    @if (IsModal)
+    {
+
+        <ModalBackground>
+            <ChildComponent>
+                <SubItemModal OnAdd="OnAdd" OnClose="OnModal"/>
+            </ChildComponent>
+        </ModalBackground>
+    }
+</div>
+
+@code {
+    [Parameter] public AddGroupListDTO? GroupData { get; set; }
+    [Parameter] public EventCallback<AddGroupListDTO> OnDelGroup { get; set; }
+
+    bool IsModal = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private async void OnAdd(AddGroupKey item)
+    {
+        GroupData.AddGroupKey.Add(item);
+        StateHasChanged();
+    }
+
+    //그룹삭제
+    private async void OnDel()
+    {
+        await OnDelGroup.InvokeAsync(GroupData);
+    }
+
+
+    //요소 삭제
+    private async void OnDelItem(AddGroupKey delItem)
+    {
+        Console.WriteLine("여기");
+        GroupData.AddGroupKey.Remove(delItem);
+    }
+
+
+    private void OnModal()
+    {
+        IsModal = !IsModal;
+    }
+
+
+}

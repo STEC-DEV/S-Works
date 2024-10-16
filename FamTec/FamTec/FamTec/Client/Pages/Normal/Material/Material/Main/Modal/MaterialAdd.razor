@@ -14,15 +14,14 @@
     </div>
     <div class="content">
         <InputCol 
-            Label="자재코드" 
-            Placeholder="자재코드" 
+            Label="품목코드" 
+            Placeholder="품목코드" 
             ValueType="text"
             @bind-Value="@AddMaterial.Code" 
             />
         <div class="group">
-            <InputCol 
-                Label="자재명" 
-                Placeholder="자재명" 
+            <InputCol Label="품목명"
+                      Placeholder="품목명" 
                 ValueType="text" 
                 @bind-Value="@AddMaterial.Name" 
                 />
@@ -48,6 +47,7 @@
             <InputCol Label="단위"
                         Placeholder="단위"
                         ValueType="text"
+                        Unit=true
                         @bind-Value="@AddMaterial.Unit" />
         </div>
         
@@ -87,7 +87,7 @@
     </div>
     <div class="btns">
         <Button Name="등록" Type="0" OnClick="OnAdd"/>
-        <Button Name="닫기" Type="1" OnClick="OnClosed" />
+        <Button Name="취소" Type="1" OnClick="OnClosed" />
     </div>
 </div>
 

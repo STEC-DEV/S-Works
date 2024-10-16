@@ -20,7 +20,7 @@
 }
 
 .floor .floor-title{
-    padding : var(--default-pd);
+    padding : var(--default-pd) 0;
     font-size : var(--title-size);
     font-weight : var(--bold-wt);
     border-bottom : var(--default-bd);

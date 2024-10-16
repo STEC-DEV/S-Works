@@ -13,14 +13,16 @@
         OnLoad="@OnLoadBuilding" 
 
         />
-    @foreach(var group in Group)
-    {
-        <Group GroupData="@group" LoadGroup="OnLoadGroup" />
+    <div class="group yappear">
+        @foreach(var group in Group)
+        {
+            <Group GroupData="@group" LoadGroup="OnLoadGroup" />
 
-    }
+        }
+    </div>
     @if(BASIC){
         <label class="sub-btn" @onclick=@OnModal>
-            항목 추가
+            +
         </label>
     }
     @if (IsModal && BASIC)

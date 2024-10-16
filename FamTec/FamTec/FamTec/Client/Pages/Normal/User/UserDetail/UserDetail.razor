@@ -8,7 +8,7 @@
 <div class="detail-container">
     <div class="detail-wrap">
         <div class="detail-form">
-            <SignForm UserInfo="@(EditMode ? User.UserInfo : OriginalUser.UserInfo)" EditMode=@EditMode />
+            <SignForm UserInfo="@(EditMode ? User.UserInfo : OriginalUser.UserInfo)" EditMode=@EditMode OnEdit="OnEditMode" OnSave="OnUpdate" />
         </div>
         <div class="detail-perm">
             <UserPermComponent UserPerm="@(EditMode ? User.UserPerm : OriginalUser.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
@@ -20,7 +20,7 @@
             </div>
         }
     </div>
-    @if (USER)
+    @* @if (USER)
     {
         <div class="btns">
             @if (!EditMode)
@@ -35,7 +35,7 @@
 
         </div>
     }
-
+ *@
 </div>
 
 @code {

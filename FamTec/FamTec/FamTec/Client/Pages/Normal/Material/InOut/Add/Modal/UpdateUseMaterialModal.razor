@@ -11,7 +11,7 @@
     </div>
     <div class="content">
         <div class="wrap">
-            <TextField2 Label="자재명" Color=true Value="@UseMaterial.MaterialName"/>
+            <TextField2 Label="품목명" Color=true Value="@UseMaterial.MaterialName" />
             <TextField2 Label="위치" Color=true Value="@UseMaterial.AddStore.RoomName"/>
             <TextField2 Label="단가" Color=true Value="@UseMaterial.AddStore.UnitPrice.ToString()"/>
         </div>
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="btns">
-        <Button Name="수정" Type="0" OnClick="OnUpdate" />
+        <Button Name="저장" Type="0" OnClick="OnUpdate" />
         <Button Name="취소" Type="1" OnClick="OnCanceled" />
     </div>
 </div>
