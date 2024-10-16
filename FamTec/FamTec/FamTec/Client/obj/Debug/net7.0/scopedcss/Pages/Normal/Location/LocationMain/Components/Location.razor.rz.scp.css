@@ -7,7 +7,7 @@
     overflow:hidden;
     background-color : var(--default-color);
     box-shadow : var(--shadow-1);
-    padding : var(--default-pd);
+    padding : var(--default-pd) var(--wide-pd);
 }
 
 .location-container .location-wrap[b-0551ht3dkg]{
@@ -24,7 +24,7 @@
 
 .location-container .location-header[b-0551ht3dkg] { 
     display : flex;
-    padding : var(--default-pd);
+    padding : var(--default-pd) 0;
 
     justify-content : space-between;
     border-bottom : var(--default-bd);

@@ -1,0 +1,103 @@
+﻿.modal{
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.header {
+    
+}
+
+.title {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>label{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+
+.content{
+    display : fle
+}
+
+.item-header{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.item-header >span{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+}
+
+
+.value-ul{
+    display : flex;
+    flex-direction:column;
+    gap :var(--half-pd);
+}
+
+.value-li{
+    display:flex;
+    gap: var(--default-pd)
+}
+
+.value-input{
+    width:100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.value-input:focus{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns{
+    display :flex;
+    gap:var(--default-pd);
+}

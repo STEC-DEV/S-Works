@@ -1,0 +1,90 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Unit
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            단위 목록
+        </span>
+    </div>
+    @if(UnitList == null)
+    {
+        <Loading/>
+    }
+    else
+    {
+        <ul class="ul">
+            @foreach (UnitDTO unit in UnitList)
+            {
+                <li class="li" @onclick="()=>OnChangeValue(unit.Unit)">
+                    @unit.Unit
+                </li>
+            }
+        </ul>
+    }
+
+    <TextField2 Label="입력 단위" Color=true Value="@unit" />
+    <div class="btns">
+        <Button Name="추가" Type="0" OnClick="OnAdd" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+</div>
+
+}
+@code {
+
+    [Parameter] public EventCallback<string> ReturnValue { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    List<UnitDTO> UnitList;
+
+    private string unit = "　";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnLoadUnit();
+    }
+
+    private async Task OnLoadUnit()
+    {
+        try
+        {
+            ResponseList<UnitDTO> resGet = await apiManager.GetListAsync<UnitDTO>("Unit/sign/SelectUnitList");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if(resGet.data == null)
+            {
+                UnitList = new List<UnitDTO>();
+            }
+            UnitList = new List<UnitDTO>(resGet.data);
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "단위 조회 에러");
+        }
+    }
+
+
+    private async Task OnAdd()
+    {
+        await ReturnValue.InvokeAsync(unit);
+        await OnCanceled();
+    }
+
+    private async Task OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+    private void OnChangeValue(string u)
+    {
+        unit = u;
+        StateHasChanged();
+    }
+
+
+}

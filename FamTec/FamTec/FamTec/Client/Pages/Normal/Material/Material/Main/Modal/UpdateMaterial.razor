@@ -5,19 +5,19 @@
 <div class="modal yappear">
     <div class="header">
         <span class="title">
-            자재 수정
+            품목 수정
         </span>
     </div>
     <div class="content">
         <TextField2 
-            Label="자재코드" 
+            Label="품목코드" 
             Value="@Material.Code" 
             Color=true
             />
         <div class="group">
             <InputCol 
-                Label="자재명" 
-                Placeholder="자재명" 
+                Label="품목명" 
+                Placeholder="품목명" 
                 ValueType="text" 
                 @bind-Value="@EditMaterial.Name" 
                 />
@@ -47,7 +47,7 @@
         <div class="img-wrap">
             @if (EditMaterial.Image != null)
             {
-                <ImageSlider Images="@MaterialImages" Label="자재 이미지" @key="MaterialImages" />
+                <ImageSlider Images="@MaterialImages" Label="품목 이미지" @key="MaterialImages" />
             }
             <div class="img-options">
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />

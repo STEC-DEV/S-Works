@@ -9,6 +9,23 @@
 <div class="form-container yappear">
     <div class="form-title">
         <span class="title">사용자 정보</span>
+        @if (USER)
+        {
+            <div class="btns">
+                @if (!EditMode)
+                {
+                    <Button Name="수정" Width=true Type="0" OnClick="OnEdited" />
+                }
+                else
+                {
+                    <div class="btns">
+                        <Button Name="저장" Width=true Type="0" OnClick="OnSaved" />
+                        <Button Name="취소" Width=true Type="1" OnClick="OnEdited" />
+                    </div>
+                }
+
+            </div>
+        }
     </div>
     <div class="form-area">
         <div class="img-wrap">
@@ -107,6 +124,10 @@
 @code {
     [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback OnEdit{get;set;}
+    [Parameter] public EventCallback OnSave{get;set;}
+
+
 
     private byte[] imageData;
     // private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
@@ -152,7 +173,7 @@
             !ImageUrl.Any(i => i.SequenceEqual(UserInfo.Image))
         )
         {
-            
+
             ImageUrl.Add(UserInfo.Image);
         }
     }
@@ -191,4 +212,14 @@
         StateHasChanged();
     }
 
+
+    private async void OnEdited()
+    {
+        await OnEdit.InvokeAsync();
+    }
+
+    private async void OnSaved()
+    {
+        await OnSave.InvokeAsync();
+    }
 }

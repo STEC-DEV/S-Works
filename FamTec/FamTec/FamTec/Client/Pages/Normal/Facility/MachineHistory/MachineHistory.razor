@@ -1,0 +1,31 @@
+﻿@page "/facility/history"
+@using FamTec.Client.Pages.Normal.Facility.MachineHistory.Components
+@using FamTec.Shared.Client.DTO.Normal.Facility
+
+<div class="container">
+    <SearchFilter 
+        OnSearchMonthData="OnChangeMonthData"
+        OnSearchDurationData="OnChangeDuratopmhData"
+        />
+    @if ((MonthData != null) || (DurationData !=null))
+    {
+        <MaintanenceHistory/>
+    }
+
+</div>
+
+@code {
+    List<AllMaintanceHistoryDTO> MonthData;
+    List<MaintanceHistoryDTO> DurationData;
+
+    private void OnChangeMonthData(List<AllMaintanceHistoryDTO> data)
+    {
+
+        MonthData = data;
+    }
+
+    private void OnChangeDuratopmhData(List<MaintanceHistoryDTO> data)
+    {
+        DurationData = data;
+    }
+}

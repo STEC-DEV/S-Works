@@ -1,0 +1,56 @@
+﻿@using FamTec.Shared.Client.Class
+
+
+<div class="multi-select">
+    @if (!String.IsNullOrEmpty(Label))
+    {
+        <label class="label">
+            @Label
+        </label>
+    }
+
+    <div class="selectbox @(IsActive ? "active" : "")" @onclick="ToggleDropdown">
+        <label class="display">
+            <span class="display-title">
+                @SelectedNames
+            </span>
+        </label>
+    </div>
+
+    @if (IsActive)
+    {
+        <ul class="options">
+            @foreach (FilterItem item in SelectItems)
+            {
+                <li class="option-item">
+                    <input type="checkbox" @onchange="(e) => OnCheckChanged(item, e)" />
+                    <span>@item.Name</span>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; }
+    [Parameter] public List<FilterItem> SelectItems { get; set; }
+    [Parameter] public EventCallback<List<FilterItem>> OnSelectionChanged { get; set; }
+
+    public bool IsActive { get; set; } = false;
+
+    // 선택된 항목 이름을 출력하는 속성
+    public string SelectedNames => string.Join(", ", SelectItems.Where(x => x.IsChecked).Select(x => x.Name));
+
+    
+
+    private void ToggleDropdown()
+    {
+        IsActive = !IsActive;
+    }
+
+    private async Task OnCheckChanged(FilterItem item, ChangeEventArgs e)
+    {
+        item.IsChecked = (bool)e.Value;
+        await OnSelectionChanged.InvokeAsync(SelectItems);
+    }
+}

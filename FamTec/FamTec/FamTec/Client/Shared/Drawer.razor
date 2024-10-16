@@ -161,6 +161,12 @@
         {
             if (machine || elec || lift || fire || construct || network || beauty || security)
             {
+                // 권한이 하나라도 있으면 유지 보수 이력을 추가
+                var hasAnyPermission =
+                    _placePerm.PermMachine.Value || _placePerm.PermElec.Value ||
+                    _placePerm.PermLift.Value || _placePerm.PermFire.Value ||
+                    _placePerm.PermConstruct.Value || _placePerm.PermNetwork.Value ||
+                    _placePerm.PermBeauty.Value || _placePerm.PermSecurity.Value;
                 test.Add(
                 new Category
                     {
@@ -176,8 +182,8 @@
                         _placePerm.PermNetwork.Value && network? new Category { Name = "통신 설비", Url = "/network" } : null,
                         _placePerm.PermBeauty.Value && beauty? new Category { Name = "미화 설비", Url = "/beauty" } : null,
                         _placePerm.PermSecurity.Value && security? new Category { Name = "보안 설비", Url = "/security" } : null,
-
-                                },
+                        hasAnyPermission ? new Category { Name = "유지 보수 이력", Url = "/history" } : null,
+                                }.Where(c => c != null).ToList()
 
                     }
             );

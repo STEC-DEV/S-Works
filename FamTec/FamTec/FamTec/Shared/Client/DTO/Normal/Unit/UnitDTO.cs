@@ -12,5 +12,14 @@ namespace FamTec.Shared.Client.DTO.Normal.Unit
         public bool SystemCreate { get; set; }
 
         public string Unit { get; set; }
+
+
+        public UnitDTO() { }
+        public UnitDTO(UnitDTO source) 
+        {
+            this.Id = source.Id;
+            this.SystemCreate = source.SystemCreate;
+            this.Unit = source.Unit;
+        }
     }
 }

@@ -39,6 +39,7 @@
                 </div>
                 
             </div>
+            <MultiSelectDrop Label="민원 유형" SelectItems="@type" OnSelectionChanged="HandleSelectionChange" />
             <CheckBoxVocType Name="민원 유형" Items="@type" />
             <CheckBoxVocType Name="민원 상태" Items="@state" />
             <CheckBoxVocType Name="민원 위치" Items="@locations" />
@@ -177,6 +178,10 @@
         }
     }
 
-
+    private void HandleSelectionChange(List<FilterItem> selectedItems)
+    {
+        var selectedNames = string.Join(", ", selectedItems.Where(x => x.IsChecked).Select(x => x.Name));
+        Console.WriteLine($"Selected items: {selectedNames}");
+    }
 }
       

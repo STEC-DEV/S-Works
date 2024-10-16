@@ -6,7 +6,7 @@
 <div class="modal">
     <div class="hedaer">
         <span class="title">
-            요소 추가
+            정보 추가
         </span>
     </div>
     <div class="input">
@@ -27,7 +27,6 @@
     <ul class="value-ul">
         @foreach (var item in Item.ItemValues.Select((value, idx) => (value, idx)))
         {
-            Console.WriteLine("생성");
             <li class="value-li">
                 <input type="checkbox" @onchange="e=>OnCheck(e,item.idx)" />
                 <input class="value-input" type="text" @bind-value=item.value.Values />
@@ -37,7 +36,7 @@
 
     <div class="btns">
         <Button Name="추가" Type="0" OnClick="OnAdd"/>
-        <Button Name="닫기" Type="1" OnClick="OnModal" />
+        <Button Name="취소" Type="1" OnClick="OnModal" />
     </div>
 </div>
 

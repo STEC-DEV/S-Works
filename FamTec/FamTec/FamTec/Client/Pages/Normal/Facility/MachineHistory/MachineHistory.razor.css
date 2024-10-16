@@ -1,0 +1,5 @@
+﻿.container{
+    padding : var(--default-pd);
+    display : flex;
+    flex-direction : column;
+}

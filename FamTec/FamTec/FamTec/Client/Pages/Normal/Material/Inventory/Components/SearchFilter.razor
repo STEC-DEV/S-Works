@@ -14,7 +14,7 @@
     </div>
     <div class="content">
         <div class="filter-item">
-            <TextField2 Label="조회 자재" Value="@titles" Row=true />
+            <TextField2 Label="조회 품목" Value="@titles" Row=true />
             <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
         </div>
         <div class="filter-item">
@@ -53,7 +53,7 @@
 
     private bool _selectType = true;
     private bool _isSearch = false;
-    private string titles = "자재를 검색해 주세요.";
+    private string titles = "품목을 검색해 주세요.";
     List<MaterialSearchListDTO> MaterialList;
     private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
     List<MaterialSearchListDTO> SelectedMaterialList

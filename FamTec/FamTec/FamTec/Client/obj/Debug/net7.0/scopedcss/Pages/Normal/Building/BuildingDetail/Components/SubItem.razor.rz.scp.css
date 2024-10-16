@@ -12,7 +12,7 @@
 
 .item-label[b-g0m4qyatee] {
     white-space : nowrap;
-    flex :1;
+    
     /*padding: var(--half-pd) var(--default-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);*/
@@ -24,7 +24,7 @@
 }
 
 .item-values[b-g0m4qyatee] {
-    flex:6;
+    
     display: flex;
     gap : var(--half-pd);
     /*flex-direction: column;*/

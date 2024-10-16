@@ -1,0 +1,32 @@
+﻿@using FamTec.Shared.Client.DTO.Normal.Facility
+
+
+<div class="container">
+    <div class="header">
+        <span class="title">
+            유지보수 이력
+        </span>
+    </div>
+    <div class="content">
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<AllMaintanceHistoryDTO> MonthData{ get; set; }
+    [Parameter] public List<MaintanceHistoryDTO> DuratopmData { get; set; }
+
+    //월간 조회 1, 기간조회 2
+    int selecType = 0;
+    protected override async Task OnParametersSetAsync()
+    {
+        if(MonthData != null)
+        {
+            selecType = 1;
+        }
+        if (DuratopmData != null)
+        {
+            selecType = 2;
+        }
+    }
+}

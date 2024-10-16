@@ -1,8 +1,10 @@
 ﻿@page "/basic/buildings/add"
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Building.BulidingAdd.Components
+@using FamTec.Client.Pages.Normal.Building.BulidingAdd.Modal
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
+@using FamTec.Shared.Client.DTO.Normal.Buildings.GroupList
 @using FamTec.Shared.Server.DTO
 @inherits PermissionComponentBase
 
@@ -17,6 +19,18 @@
             </CascadingValue>
 
         </div>
+        <div class="group yappear">
+        @if(GroupList.Count > 0)
+        {
+            foreach (AddGroupListDTO group in GroupList)
+            {
+                <Group GroupData="group" OnDelGroup="OnDeleteGroup"/>
+            }
+        }
+        </div>
+        <label class="sub-btn" @onclick=@OnModal>
+            +
+        </label>
         <div class="buildingadd-btns">
             <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
             <Button Name="취소" Width=true Type=1 />
@@ -24,10 +38,20 @@
     </div>
 }
 
+ @if (IsModal)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <SubGroupModal CloseModal="OnModal"  OnAdd="OnAddGroup"/>
+            </ChildComponent>
+        </ModalBackground>
+    }
 
 @code {
     AddBuildingDTO Building;
     List<string> BuildingProperties;
+
+    List<AddGroupListDTO> GroupList = new List<AddGroupListDTO>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,16 +59,29 @@
         await base.OnInitializedAsync();
         await OnCheckPerm();
     }
-
+    bool IsModal = false;
     private async void OnAdd()
     {
         ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
         if(ResAdd.code != 200)
         {
-            await JS.InvokeVoidAsync("alert", "건물 생성 실패");
+            await JS.InvokeVoidAsync("alert", ResAdd.message);
+            Navigation.NavigateTo("/basic/buildings");
+            return;
+        }
+
+        foreach(AddGroupListDTO g in GroupList)
+        {
+            g.BuildingIdx = ResAdd.data.Id;
+        }
+
+        ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("BuildingGroup/sign/AddBuildingGroup", GroupList);
+        if (resAdd.code != 200)
+        {
+            await JS.InvokeVoidAsync("alert", resAdd.message);
         }
         Navigation.NavigateTo("/basic/buildings");
-
+        return;
     }
 
     private async Task OnCheckPerm()
@@ -57,4 +94,19 @@
         }
     }
 
+    private async void OnDeleteGroup(AddGroupListDTO group)
+    {
+        GroupList.Remove(group);
+    }
+
+    private void OnAddGroup(AddGroupListDTO newGroup)
+    {
+        GroupList.Add(newGroup);
+    }
+
+
+    private void OnModal()
+    {
+        IsModal = !IsModal;
+    }
 }

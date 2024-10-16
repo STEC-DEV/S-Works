@@ -10,10 +10,10 @@
         {
             <input type="checkbox" />
         } *@
-        <label class="item-label" @onclick=@OnItemEdit>
+        <label class="item-label">
             @item.ItemKey (@item.Unit)
         </label>
-        <div class="item-values" @onclick=@OnItemEdit>
+        <div class="item-values" >
             @foreach (var i in item.valueList)
             {
                 <span class="value">
@@ -23,7 +23,8 @@
         </div>
         @if (EditMode)
         {
-            <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelItem(item.Id)" />
+            <EditButton OnClick="@OnItemEdit" />
+            <XButton OnClick="()=>OnDelItem(item.Id)" />
         }
 
     </div>

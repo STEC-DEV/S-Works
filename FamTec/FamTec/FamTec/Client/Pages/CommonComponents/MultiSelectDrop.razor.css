@@ -1,0 +1,78 @@
+﻿.multi-select {
+    position: relative;
+    width: 250px;
+    font-family: Arial, sans-serif;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.selectbox {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selectbox.active {
+    border-color: #007bff;
+}
+
+.display-title {
+    font-size: 14px;
+    color: #333;
+}
+
+.options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    margin-top: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.option-item {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.option-item:last-child {
+    border-bottom: none;
+}
+
+.option-item:hover {
+    background-color: #f1f1f1;
+}
+
+.option-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.option-item span {
+    font-size: 14px;
+    color: #333;
+}
+
+.selectbox.active + .options {
+    display: block;
+}
+
