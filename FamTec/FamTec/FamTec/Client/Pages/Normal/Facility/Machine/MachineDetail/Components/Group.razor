@@ -15,17 +15,7 @@
         @if (USEREDIT)
         {
             <div class="options">
-
-                @if (EditMode)
-                {
-                    <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-                    <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelGroup(GroupData.id)" />
-                    <Button Name="닫기" Width=true Type="1" OnClick="OnEditMode" />
-                }
-                else
-                {
-                    <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
-                }
+                <Button Name="삭제" Width=true Type="1" OnClick="OnIsDel" />
             </div>
         }
         
@@ -33,8 +23,15 @@
     <div class="content">
         @foreach(var item in GroupData.keyListDTO)
         {
-            <SubItem item="item" EditMode=EditMode OnLoad="LoadGroup" />
+            <SubItem item="item" OnLoad="LoadGroup" />
         }
+        @if (USEREDIT)
+        {
+            <div class="add-item" @onclick="OnModal">
+                +
+            </div>
+        }
+
     </div>
     @if (IsModal)
     {
@@ -44,7 +41,14 @@
             </ChildComponent>
         </ModalBackground>
     }
-    @* <button class="del-group">삭제</button> *@
+    @if (isDel)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <ConfirmModal OnConfirm="()=>OnDelGroup(GroupData.id)" OnCancel="OnIsDel" />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
@@ -52,7 +56,8 @@
     // [Parameter] public bool EditMode { get; set; } = false;
     [Parameter] public EventCallback LoadGroup { get; set; }
     bool IsModal = false;
-    bool EditMode = false;
+    // bool EditMode = false;
+    bool isDel = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,8 +89,13 @@
         IsModal = !IsModal;
     }
 
-    private void OnEditMode()
+    // private void OnEditMode()
+    // {
+    //     EditMode = !EditMode;
+    // }
+
+    private void OnIsDel()
     {
-        EditMode = !EditMode;
+        isDel = !isDel;
     }
 }

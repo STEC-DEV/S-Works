@@ -8,11 +8,6 @@
         <tr class="thead-tr">
             <th class="th">
                 <span>
-                    거래일
-                </span>
-            </th>
-            <th class="th">
-                <span>
                     위치
                 </span>
             </th>
@@ -73,25 +68,19 @@
             {
                 <tr class="tr">
                     <td class="td" @onclick="() => OnRowClick(row)">
-                        @row.AddStore.InOutDate
-                    </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
-                        @row.AddStore.RoomName
-                    </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
                     </td>
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialName
                     </td>
                     <td class="td" @onclick="() => OnRowClick(row)">
+                        @row.AddStore.RoomName
+                    </td>
+                    <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.Num
-                    </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
-                        @row.AddStore.UnitPrice
                     </td>
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.AddStore.TotalPrice

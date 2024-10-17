@@ -16,7 +16,7 @@
         />
     @if (HasEditPermission())
     {
-        <label class="sub-btn yappear" @onclick=@OnModal>
+        <label class="sub-btn yappear" @onclick=@OnModal title="그룹 추가">
             +
         </label>
     }
@@ -67,7 +67,7 @@
 
     private async Task OnLoadFacility()
     {
-        ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={Id}");
+        ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"{FacType}Facility/sign/Detail{FacType}Facility?facilityid={Id}");
         if(resFacInfo.code != 200)
         {
             await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");

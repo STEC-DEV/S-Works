@@ -9,23 +9,26 @@
 <div class="infocard-container">
     <div class="infocard-header">
         <span>
-            장비 제원
+            설비 제원
         </span>
     </div>
     <div class="infocard-content">
         <div class="infocard-img-area">
             @* <PreviewBox ImageUrls="@ImageUrl" /> *@
-            <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+            <ImageSlider Label="설비 사진" Images="@ImageUrl"/>
             <div class="img-btn">
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                @if (ImageUrl.Count > 0)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                }
             </div>
             
         </div>
         <div class="infocard-inputs">
             <InputCol
-                Label="장비명"
-                Placeholder="장비명"
+                Label="설비이름"
+                Placeholder="설비이름"
                 Row="true" 
                 @bind-Value=@Facility.Name
                 />
@@ -56,8 +59,8 @@
             }
 
             <InputCol
-                Label="규격 용량"
-                Placeholder="규격 용량"
+                Label="규격용량"
+                Placeholder="규격용량"
                 Row="true" 
                 @bind-Value=@Facility.Standard_capacity
                 />
@@ -70,7 +73,7 @@
                 />
             <InputCol
                 Label="내용년수"
-                Placeholder="내용 년수"
+                Placeholder="내용년수"
                 Row="true" 
                 @bind-Value=@Facility.LifeSpan
                 />

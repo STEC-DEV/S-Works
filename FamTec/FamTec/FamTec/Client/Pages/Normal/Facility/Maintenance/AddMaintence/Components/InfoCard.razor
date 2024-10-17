@@ -16,28 +16,32 @@
     <div class="infocard-content">
         <div class="infocard-img-area">
             @* <PreviewBox ImageUrls="@ImageUrl" /> *@
-            <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+            <ImageSlider Label="사진" Images="@ImageUrl"/>
             <div class="img-btn">
                 <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                @if (ImageUrl.Count > 0)
+                {
+                    <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                }
+
             </div>
 
             
         </div>
         <div class="infocard-inputs">
-            <DateInput Label="작업일자"
+            <DateInput Label="작업년월"
                        Row="true"
                        @bind-Date=@Maintenance.WorkDT
                        Placeholder="YYYYMMDD" />
-            <InputCol Label="작업명"
-                      Placeholder="작업명"
+            <InputCol Label="작업이름"
+                      Placeholder="작업이름"
                       Row="true"
                       @bind-Value=@Maintenance.Name />
             <SelectField Key="WorkType"
                          SelectData="WorkType"
                          @bind-Value="Maintenance.Type"
                          OnChange="OnWorkTypeChange"
-                         Label="작업 구분"
+                         Label="작업구분"
                          Row="true"
                          EditMode="true" />
 

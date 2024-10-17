@@ -19,6 +19,9 @@
             </CascadingValue>
 
         </div>
+        <label class="sub-btn" @onclick=@OnModal title="그룹 추가">
+            +
+        </label>
         <div class="group yappear">
         @if(GroupList.Count > 0)
         {
@@ -28,9 +31,7 @@
             }
         }
         </div>
-        <label class="sub-btn" @onclick=@OnModal>
-            +
-        </label>
+        
         <div class="buildingadd-btns">
             <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
             <Button Name="취소" Width=true Type=1 />

@@ -1,6 +1,8 @@
 ﻿
 .item-container {
-    display: block;
+    /*display: block;*/
+    display: flex;
+    align-content: center;
 }
 
 .item-wrap {
@@ -24,9 +26,9 @@
 }
 
 .item-values {
-    
     display: flex;
-    gap : var(--half-pd);
+    gap: var(--half-pd);
+    flex-wrap: wrap;
     /*flex-direction: column;*/
 }
 
@@ -41,6 +43,7 @@
     color: var(--main-color);
     background-color: var(--content-back-color);
 }
+
 
 .del-btn {
     width: 15px;

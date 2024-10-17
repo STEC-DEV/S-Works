@@ -1,6 +1,7 @@
 ﻿
 .item-container {
-    display: block;
+    display: flex;
+    align-content: center;
 }
 
 .item-wrap {
@@ -11,22 +12,21 @@
 }
 
 .item-label {
-    flex :1;
+    white-space: nowrap;
     /*padding: var(--half-pd) var(--default-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);*/
     font-size: calc(var(--normal-size) + 0.1rem);
     font-weight: var(--bold-wt);
-    color : var(--main-color);
-    white-space:nowrap;
+    color: var(--main-color);
     /*color: var(--default-color);
     background-color: var(--main-color);*/
 }
 
 .item-values {
-    flex:6;
     display: flex;
-    gap : var(--half-pd);
+    gap: var(--half-pd);
+    flex-wrap: wrap;
     /*flex-direction: column;*/
 }
 

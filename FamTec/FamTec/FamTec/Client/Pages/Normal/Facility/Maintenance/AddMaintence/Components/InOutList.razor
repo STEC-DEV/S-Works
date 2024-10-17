@@ -7,7 +7,10 @@
         <span class="title">
             사용 자재 목록
         </span>
-        <Button Name="삭제" Width=true />
+        @if (ListData.Count > 0)
+        {
+            <Button Name="삭제" Width=true Type="1"/>
+        }
     </div>
     <div class="content">
         <InOutTable ListData="@ListData" />

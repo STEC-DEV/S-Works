@@ -8,20 +8,20 @@
 <div class="modal">
     <div class="header">
         <span class="title">
-            자재 검색
+            품목 검색
         </span>
     </div>
      <div class="content">
         <InputCol 
             @bind-Value="@searchData" 
-            Placeholder="자재코드, 자재명, 제조사"
+            Placeholder="품목코드, 품목명, 제조사"
             />
         <Button Name="검색" Width=true Type="0" OnClick="OnSearch" />
     </div>
     <SearchTable OnCheck="OnCheck" ListData="@SearchList" CheckedItem="@checkItem" />
     <div class="btns">
-        <Button Name="등록" Type="0" OnClick="OnAdd" />
-        <Button Name="닫기" Type="1" OnClick="OnClicked" />
+        <Button Name="확인" Type="0" OnClick="OnAdd" />
+        <Button Name="취소" Type="1" OnClick="OnClicked" />
     </div>
     
 </div>

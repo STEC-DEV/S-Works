@@ -13,6 +13,12 @@
         OnLoad="@OnLoadBuilding" 
 
         />
+    @if (BASIC)
+    {
+        <label class="sub-btn" @onclick=@OnModal title="그룹 추가">
+            +
+        </label>
+    }
     <div class="group yappear">
         @foreach(var group in Group)
         {
@@ -20,11 +26,7 @@
 
         }
     </div>
-    @if(BASIC){
-        <label class="sub-btn" @onclick=@OnModal>
-            +
-        </label>
-    }
+    
     @if (IsModal && BASIC)
     {
         <ModalBackground>

@@ -10,7 +10,7 @@
 <div class="infocard-container yappear">
     <div class="infocard-header">
         <span>
-            장비 제원
+            설비 제원
         </span>
         @if (USEREDIT)
         {
@@ -22,7 +22,7 @@
                 }
                 else
                 {
-                    <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
+                    <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
                 }
             </div>
         }
@@ -37,7 +37,7 @@
         {
             <div class="infocard-img-area">
                 @* <PreviewBox ImageUrls="@ImageUrl" /> *@
-                <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
+                <ImageSlider Label="설비 이미지" Images="@ImageUrl"/>
                 @if (EditMode)
                 {
                     <div class="img-btn">
@@ -55,8 +55,8 @@
             <div class="infocard-inputs">
                 @if (EditMode)
                 {
-                    <InputCol Label="장비명"
-                              Placeholder="장비명"
+                    <InputCol Label="설비이름"
+                              Placeholder="설비이름"
                               Row="true"
                               @bind-Value=@UpdateFacility.Name />
                     <InputCol Label="형식"
@@ -82,8 +82,8 @@
                                      EditMode="true" />
                     }
 
-                    <InputCol Label="규격 용량"
-                              Placeholder="규격 용량"
+                    <InputCol Label="규격용량"
+                              Placeholder="규격용량"
                               Row="true"
                               @bind-Value=@UpdateFacility.Standard_capacity />
                     <InputCol Label="수량"
@@ -92,7 +92,7 @@
                               ValueType="number"
                               @bind-Value=@UpdateFacility.Num />
                     <InputCol Label="내용년수"
-                              Placeholder="내용 년수"
+                              Placeholder="내용년수"
                               Row="true"
                               @bind-Value=@UpdateFacility.LifeSpan />
                     <DateInput Label="설치년월"
@@ -106,7 +106,7 @@
                 }
                 else
                 {
-                    <TextField2 Label="장비명"
+                    <TextField2 Label="설비이름"
                                 Value=@Facility.Name
                                 Row=true />
                     <TextField2 Label="형식"
@@ -115,7 +115,7 @@
                     <TextField2 Label="위치"
                                 Value=@Facility.RoomName
                                 Row=true />
-                    <TextField2 Label="규격 용량"
+                    <TextField2 Label="규격용량"
                                 Value=@Facility.Standard_capacity
                                 Row=true />
                     <TextField2 Label="수량"
