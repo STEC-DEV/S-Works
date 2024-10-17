@@ -8268,6 +8268,11 @@ body[b-mjfp83w87d] {
     width: 400px;
     max-width: 100%;
 }
+
+.btns[b-f9mpss541t]{
+    display:flex;
+    gap : var(--half-pd);
+}
 /* /Pages/Normal/Facility/Maintenance/DetailMaintence/Components/InOutList.razor.rz.scp.css */
 
 .list[b-3v5w77a3w0] {

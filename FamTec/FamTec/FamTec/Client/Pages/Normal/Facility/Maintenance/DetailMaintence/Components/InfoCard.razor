@@ -18,8 +18,11 @@
             <div class="option">
                 @if (EditMode)
                 {
-                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    <div class="btns">
+                        <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                        <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    </div>
+
                 }
                 else
                 {
@@ -45,7 +48,11 @@
                 {
                     <div class="img-btn">
                         <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                        @if(ImageUrl.Count > 0)
+                        {
+                            <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                        }
+
                     </div>
                 }
                 
@@ -53,7 +60,7 @@
             <div class="infocard-inputs">
                 @if (EditMode)
                 {
-                    <TextField2 Label="작업일자"
+                    <TextField2 Label="작업년월"
                                 Row=true
                                 Value="@UpdateMaintenance.WorkDT" />
                     <InputCol Label="작업명"
@@ -74,7 +81,7 @@
                 }
                 else
                 {
-                    <TextField2 Label="작업일자"
+                    <TextField2 Label="작업년월"
                                 Row=true
                                 Value="@Maintenance.WorkDT" />
                     <TextField2 Label="작업명"
@@ -101,6 +108,8 @@
     [Parameter] public float TotalPrice { get; set; }
     [Parameter] public DetailMaintenanceDTO Maintenance { get; set; }
     [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+    [Parameter] public EventCallback OnEditMode { get; set; }
+    [Parameter] public bool EditMode { get; set; }
     // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
     DetailMaintenanceDTO UpdateMaintenance;
@@ -116,7 +125,8 @@
 
     // private List<string> ImageUrl = new List<string>();//이미지 프리뷰
     private List<byte[]> ImageUrl = new List<byte[]>();//이미지 프리뷰
-    bool EditMode = false;
+                                                       // bool EditMode = false;
+
 
     List<object> WorkType = new List<object>()
     {
@@ -220,7 +230,8 @@
 
     private async void OnEdit()
     {
-        EditMode = !EditMode;
+        // EditMode = !EditMode;
+        await OnEditMode.InvokeAsync();
         await ImgConvert();
         UpdateMaintenance = Maintenance.DeepCopy();
     }

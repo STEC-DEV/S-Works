@@ -34,5 +34,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// 총 비용
         /// </summary>
         public float? TotalPrice { get; set; }
+
+        public string Note { get; set; }
     }
 }

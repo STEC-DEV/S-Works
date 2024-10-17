@@ -47,7 +47,7 @@
         </div>
         <div class="form">
             <div class="row">
-                <TextField2 Label="자재 위치" Value="@UseMaterial.RoomName" Color=true />
+                <TextField2 Label="품목 위치" Value="@UseMaterial.RoomName" Color=true />
                 <TextField2 Label="재고 수량" Value="@UseMaterial.TotalAvailableInventory.ToString()" Color=true />
             </div>
             <InputCol Label="수량"
@@ -60,7 +60,7 @@
         </div>
     </div>
     <div class="btns">
-        <Button Name="수정" Type="0" OnClick="OnUpdate" />
+        <Button Name="저장" Type="0" OnClick="OnUpdate" />
         <Button Name="취소" Type="1" OnClick="OnCanceled" />
     </div>
 </div>

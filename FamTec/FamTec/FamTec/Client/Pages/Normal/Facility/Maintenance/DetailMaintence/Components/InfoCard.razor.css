@@ -72,3 +72,8 @@
     width: 400px;
     max-width: 100%;
 }
+
+.btns{
+    display:flex;
+    gap : var(--half-pd);
+}
