@@ -37,6 +37,11 @@
                     금액
                 </span>
             </th>
+            <th class="th">
+                <span>
+                    비고
+                </span>
+            </th>
             @if (EditMode)
             {
                 <th class="th">
@@ -88,6 +93,9 @@
                     </td>
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.TotalPrice
+                    </td>
+                    <td class="td" @onclick="() => OnRowClick(row)">
+                        @row.Note
                     </td>
                     @if (EditMode)
                     {

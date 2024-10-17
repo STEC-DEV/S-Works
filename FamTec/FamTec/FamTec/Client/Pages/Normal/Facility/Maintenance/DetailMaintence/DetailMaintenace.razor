@@ -10,7 +10,7 @@
 
 <div class="container">
     @* <InfoCard @bind-Maintenance=Maintenance OriginalMaintenance="@OriginalMaintenance" /> *@
-    <InfoCard Maintenance="@Maintenance" OnLoadMaintenance="OnLoadMaintenance" />
+    <InfoCard Maintenance="@Maintenance" OnLoadMaintenance="OnLoadMaintenance" OnEditMode="OnEdit" EditMode=_useMaterialEditMode />
 
     @if (Maintenance.Type == 0)
     {

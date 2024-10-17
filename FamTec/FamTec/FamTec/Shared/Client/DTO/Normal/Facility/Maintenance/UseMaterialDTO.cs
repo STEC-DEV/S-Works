@@ -67,8 +67,13 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
         /// 출고금액
         /// </summary>
         public float TotalPrice { get; set; }
-
-
+        /// <summary>
+        /// 출고금액
+        /// </summary>
+        public string Note{ get; set; }
+        /// <summary>
+        /// 비고
+        /// </summary>
         public UseMaterialDTO() { }
 
         public UseMaterialDTO(UseMaterialDTO source)
@@ -85,6 +90,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
             Num = source.Num;
             Unit = source.Unit;
             TotalPrice = source.TotalPrice;
+            Note = source.Note;
         }
 
         public UseMaterialDTO DeepCopy()
