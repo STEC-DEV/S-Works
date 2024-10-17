@@ -6,3 +6,8 @@
 svg:hover[b-at4h593xxn] {
     cursor: pointer;
 }
+
+
+svg>path[b-at4h593xxn] {
+    stroke-width : 10px;
+}

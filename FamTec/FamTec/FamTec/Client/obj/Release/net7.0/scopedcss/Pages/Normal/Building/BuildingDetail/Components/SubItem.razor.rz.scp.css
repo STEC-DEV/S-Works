@@ -1,6 +1,8 @@
 
 .item-container[b-g0m4qyatee] {
-    display: block;
+    /*display: block;*/
+    display: flex;
+    align-content: center;
 }
 
 .item-wrap[b-g0m4qyatee] {
@@ -24,9 +26,9 @@
 }
 
 .item-values[b-g0m4qyatee] {
-    
     display: flex;
-    gap : var(--half-pd);
+    gap: var(--half-pd);
+    flex-wrap: wrap;
     /*flex-direction: column;*/
 }
 
@@ -41,6 +43,7 @@
     color: var(--main-color);
     background-color: var(--content-back-color);
 }
+
 
 .del-btn[b-g0m4qyatee] {
     width: 15px;

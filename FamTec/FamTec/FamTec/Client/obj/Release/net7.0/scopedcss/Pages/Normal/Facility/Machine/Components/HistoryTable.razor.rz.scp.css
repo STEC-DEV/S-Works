@@ -82,3 +82,8 @@
 .table[b-p5si2pwiyx]  .table-td-link {
     color : var(--main-color);
 }
+
+
+.table .text-right[b-p5si2pwiyx] {
+    text-align: right;
+}
