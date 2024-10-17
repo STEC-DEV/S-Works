@@ -106,5 +106,10 @@ namespace FamTec.Shared.Server.DTO.Maintenence
         /// 출고금액
         /// </summary>
         public float TotalPrice { get; set; }
+
+        /// <summary>
+        /// 비고
+        /// </summary>
+        public string? Note { get; set; }
     }
 }

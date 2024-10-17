@@ -148,7 +148,7 @@ namespace FamTec.Server.Repository.Maintenence
                     {
                         return null;
                     }
-
+                    
                     UseMaterialDTO dto = new UseMaterialDTO
                     {
                         ID = item.UseMaintenenceMaterial.Id,
@@ -161,7 +161,8 @@ namespace FamTec.Server.Repository.Maintenence
                         RoomName = item.Room.Name,
                         Num = item.UseMaintenenceMaterial.Num,
                         TotalPrice = item.UseMaintenenceMaterial.Totalprice,
-                        Unit = item.Material.Unit
+                        Unit = item.Material.Unit,
+                        Note = item.UseMaintenenceMaterial.Note
                     };
 
                     maintanceDTO.UseMaterialList.Add(dto);
@@ -985,7 +986,7 @@ namespace FamTec.Server.Repository.Maintenence
                                     StoreTB.DelYn = true;
                                     StoreTB.DelUser = deleter;
                                     StoreTB.Note = DeleteDTO.Note; // 삭제이유 있으면 삽입
-                                    StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintanceHistoryTB.Name}건 [시스템 삭제]";
+                                    StoreTB.Note2 = $"[유지보수 취소건 삭제]";
                                     context.StoreTbs.Update(StoreTB);
 
                                     UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
@@ -1212,7 +1213,7 @@ namespace FamTec.Server.Repository.Maintenence
                                             StoreTB.DelUser = deleter;
                                             StoreTB.InoutDate = ThisDate;
                                             StoreTB.Note = dto.Note;
-                                            StoreTB.Note2 = $"{FacilityTB!.Name}설비의 {MaintenenceTB.Name}건 [시스템]삭제";
+                                            StoreTB.Note2 = $"[유지보수 취소건 삭제]";
                                             context.StoreTbs.Update(StoreTB);
 
 
