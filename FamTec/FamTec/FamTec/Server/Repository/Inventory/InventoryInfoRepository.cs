@@ -224,7 +224,7 @@ namespace FamTec.Server.Repository.Inventory
                             MaintanceId = s.MaintenenceHistoryTbId,
                             Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
                         })
-                        .OrderBy(r => r.INOUT_DATE)
+                        .OrderByDescending(r => r.INOUT_DATE)
                         .ToList()
                 }).OrderBy(dto => dto.ID)
                 .ToList();
