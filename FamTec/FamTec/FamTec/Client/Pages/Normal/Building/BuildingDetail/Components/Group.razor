@@ -14,32 +14,38 @@
         @if (USEREDIT)
         {
             <div class="options">
+                <Button Name="삭제" Width=true Type="1" OnClick="OnIsDel" />
 
-                @if (EditMode)
-                {
-                    <Button Name="등록" Width=true Type="0" OnClick="OnModal" />
-                    <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelGroup(GroupData.id)" />
-                    <Button Name="취소" Width=true Type="2" OnClick="OnEditMode" />
-                }
-                else
-                {
-                    <Button Name="수정" Width=true Type="0" OnClick="OnEditMode" />
-                }
             </div>
         }
-        
     </div>
     <div class="content">
         @foreach(var item in GroupData.keyListDTO)
         {
-            <SubItem item="item" EditMode=EditMode OnLoad="LoadGroup" />
+            <SubItem item="item" OnLoad="LoadGroup" />
         }
+        @if (USEREDIT)
+        {
+            <div class="add-item" @onclick="OnModal">
+                +
+            </div>
+        }
+
     </div>
     @if (IsModal)
     {
         <ModalBackground>
             <ChildComponent>
                 <SubItemModal OnClose="OnModal" GroupId="@GroupData.id" LoadGroup="LoadGroup" />
+            </ChildComponent>
+        </ModalBackground>
+    }
+
+    @if (isDel)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <ConfirmModal OnConfirm="()=>OnDelGroup(GroupData.id)" OnCancel="OnIsDel" />
             </ChildComponent>
         </ModalBackground>
     }
@@ -51,13 +57,16 @@
     // [Parameter] public bool EditMode { get; set; } = false;
     [Parameter] public EventCallback LoadGroup { get; set; }
     bool IsModal = false;
-    bool EditMode = false;
+    bool isDel = false;
+
+
 
     protected override async Task OnInitializedAsync()
     {
         //권한
         await base.OnInitializedAsync();
     }
+
 
     //그룹삭제
     private async Task OnDelGroup(int groupid)
@@ -83,8 +92,8 @@
         IsModal = !IsModal;
     }
 
-    private void OnEditMode()
+    private void OnIsDel()
     {
-        EditMode = !EditMode;
+        isDel = !isDel;
     }
 }

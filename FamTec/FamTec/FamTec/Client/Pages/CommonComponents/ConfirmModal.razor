@@ -1,0 +1,37 @@
+﻿<div class="modal">
+    <span class="title">
+        @context
+    </span>
+    <div class="btns">
+        <Button Name="확인" Type="0" OnClick="OnConfirm" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public string Context { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+
+    string context = "삭제하시겠습니까?";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!String.IsNullOrEmpty(Context))
+        {
+            context = Context;
+        }
+
+    }
+
+    private async void OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+    private async void OnConfirmed()
+    {
+        await OnConfirm.InvokeAsync();
+        OnCanceled();
+    }
+}

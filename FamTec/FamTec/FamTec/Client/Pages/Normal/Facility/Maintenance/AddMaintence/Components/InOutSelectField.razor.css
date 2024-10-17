@@ -1,4 +1,4 @@
-﻿.selectfield{
+﻿/*.selectfield{
     display : flex;
     flex-direction : column;
     gap : var(--half-pd);
@@ -18,9 +18,9 @@
     white-space : nowrap;
 }
 
-.row>.selectbox>.display {
-    background-color : var(--content-back-color);
-}
+.row>.selectbox>.display {*/
+    /*background-color : var(--content-back-color);*/
+/*}
 
 .selectbox{
     position : relative;
@@ -44,7 +44,11 @@
     transition : all .3s;
 }
 
-
+.item-text {
+    font-size: var(--normal-size);*/
+    /*font-weight : bold;*/
+    /*color : var(--main-color);*/
+/*}
 .display:hover,
 .active {
     border: var(--default-bd);
@@ -75,5 +79,104 @@
    
     background-color : var(--main-color);
     color :var(--default-color);
+}*/
+
+
+.selectfield{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+    width :100%;
+}
+
+.row{
+    flex-direction:row;
+    align-items:center;
+    gap : var(--default-pd);
+}
+
+.label{
+    font-weight :var(--bold-wt);
+    font-size : var(--normal-size);
+    color : var(--main-color);
+    white-space : nowrap;
+}
+
+.row>.selectbox>.display {
+    /*background-color : var(--content-back-color);*/
+}
+
+.selectbox{
+    position : relative;
+    width : 100%;
+    
+}
+
+.none{
+    pointer-events : none;
+}
+
+.display {
+    position : relative;
+    display:block;
+    width:100%;
+    padding: var(--default-pd);
+    border :var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color :var(--default-color);
+    cursor : pointer;
+    transition : all .3s;
+}
+
+
+
+.display:hover,
+.active {
+    border: var(--default-bd);
+}
+
+.display-title{
+    font-size:var(--normal-size);
+}
+
+.options {
+    overflow : auto;
+    display: none;
+    position: absolute;
+    margin-top: var(--half-pd);
+    padding : var(--default-pd);
+    width: 100%;
+    max-height : calc(100%*5);
+    border-radius: var(--default-rd);
+
+    background-color :var(--default-color);
+}
+.active {
+    display: block
+}
+
+.option-item {
+    display:flex;
+    justify-content:space-between;
+    padding: var(--half-pd) ;
+    border-radius : var(--default-rd);
+    font-size : var(--normal-size);
+
+}
+
+.item-text{
+    font-size:var(--normal-size);
+    /*font-weight : bold;*/
+    /*color : var(--main-color);*/
+}
+
+.option-item:hover{
+   
+    background-color : var(--main-color);
+    color :var(--default-color);
+}
+
+.option-item:hover .item-text{
+    color:var(--default-color);
 }
 

@@ -33,7 +33,25 @@
     /*gap: 30px var(--pad-wide);*/
     grid-row-gap : var(--wide-pd);
 }
+.add-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color :var(--main-color);
+    font-size: 1.5rem;
+    font-weight:bold;
+    border : dashed 2px var(--main-color);
+    border-radius : var(--default-rd);
+    transition : all .2s;
+}
 
+.add-item:hover{
+    cursor:pointer;
+    background-color:var(--content-back-color);
+    /*color:var(--default-color);*/
+    border : solid 2px var(--main-color);
+    box-shadow:var(--shadow-2);
+}
 
 .del-group{
     position : absolute;

@@ -2,9 +2,13 @@
   "entryAssembly": "FamTec.Client",
   "resources": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "hash": "sha256-Lq/0t5bCEek96/1m7icAzL5gFQ+2cnBf0PEZshleteo=",
 =======
     "hash": "sha256-Rvc3KM7rULD3W0XWeYNrXekwXLimnTKS+ahJh1IiYto=",
+>>>>>>> origin/Front
+=======
+    "hash": "sha256-LbNf2tuF9cFstxqSVQ3GlZxc0VCkiJbxdlYI7o2sxhI=",
 >>>>>>> origin/Front
     "runtime": {
       "dotnet.7.0.20.ipx5sv2cne.js": "sha256-eaJTmow4t8eE7FZMZR5Ja41JMOefGCbIYDTdpclGsac=",
@@ -449,11 +453,15 @@
       "netstandard.dll": "sha256-c9xgB5oQro5/rBTTHeD+4cqLi9QOB+6fhaP3jmkeGo4=",
       "System.Private.CoreLib.dll": "sha256-FGXoQzMt7mcWfUZbWXoXgg8tPIt7PF+QZoXXBQWegAQ=",
       "FamTec.Shared.dll": "sha256-T3osz6gVomscQE1bNMbmRcptdXTrvWzssZGesHM5B3M=",
-      "FamTec.Client.dll": "sha256-ISS2OFAWBw3X895RFZ3TfPP23JbWblBiHESOTtOWODU="
+      "FamTec.Client.dll": "sha256-712gWvLTZRyybaVCUQi3nyvR0LbjCGrjfr50daCbDo4="
     },
     "pdb": {
       "FamTec.Shared.pdb": "sha256-sBg3ctvzfajZ5rfa8JUJmTfCpGOqHCyuuPMyDR47RFQ=",
+<<<<<<< HEAD
       "FamTec.Client.pdb": "sha256-gK9xUCW4kpPe46r/CeJv7vh9coj6JVWV8+R4LM0DIGg="
+>>>>>>> origin/Front
+=======
+      "FamTec.Client.pdb": "sha256-xTPM1fWDy9VRRk9qFRsQk0rnJV0K6U/LOfBCkCkfyZI="
 >>>>>>> origin/Front
     },
     "runtimeAssets": {

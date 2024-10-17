@@ -22,12 +22,13 @@
                 </span>
             }
         </div>
-        @if (EditMode)
+        @if (USEREDIT)
         {
-            <Button Name="삭제" Width=true Type="1" OnClick="()=>OnDelItem(item.Id)" />
+            <EditButton OnClick="@OnItemEdit" />
+            <XButton OnClick="OnIsDel" />
         }
     </div>
-    @if (USEREDIT&& ItemEdit &&EditMode)
+    @if (USEREDIT&& ItemEdit)
     {
         <ModalBackground>
             <ChildComponent>
@@ -36,16 +37,24 @@
         </ModalBackground>
     }
 </div>
-
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="()=>OnDelItem(item.Id)" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 @code {
     [Parameter] public ItemDTO item { get; set; }
     [Parameter] public bool EditMode { get; set; } = false;
     [Parameter] public EventCallback OnLoad { get; set; }
     private bool ItemEdit = false;
+    bool isDel = false;
 
     private void OnItemEdit()
     {
-        if (EditMode)
+        if (USEREDIT)
         {
             ItemEdit = !ItemEdit;
         }
@@ -68,5 +77,10 @@
         {
             await JS.InvokeVoidAsync("alert", "항목 삭제 에러");
         }
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 }

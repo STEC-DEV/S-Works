@@ -15,11 +15,9 @@
             @GroupData.Name
         </span>
         <div class="options">
-            <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
+            @* <Button Name="추가" Width=true Type="0" OnClick="OnModal" /> *@
             <Button Name="삭제" Width=true Type="1" OnClick="OnDel" />
         </div>
-        
-        
     </div>
     <div class="content">
         @*요소 컴포넌트 자리*@
@@ -30,7 +28,9 @@
                 <SubItem item="item" OnDel="OnDelItem" />
             }
         }
-
+        <div class="add-item" @onclick="OnModal">
+            +
+        </div>
     </div>
     @if (IsModal)
     {

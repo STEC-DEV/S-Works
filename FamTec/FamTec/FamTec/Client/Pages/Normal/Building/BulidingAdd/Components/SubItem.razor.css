@@ -1,6 +1,8 @@
 ﻿
 .item-container {
-    display: block;
+    /*display: block;*/
+    display :flex;
+    align-content:center;
 }
 
 .item-wrap {
@@ -26,7 +28,8 @@
 .item-values {
     /*flex:6;*/
     display: flex;
-    gap : var(--half-pd);
+    gap: var(--half-pd);
+    flex-wrap: wrap;
     /*flex-direction: column;*/
 }
 

@@ -3,7 +3,7 @@
 
 <div class="inputimages">
     <label class="label" for="inputimage">
-        첨부파일
+        사진등록
     </label>
     <InputFile id="inputimage" multiple OnChange="OnUploadFiles" />
     @if (images != null)
@@ -15,6 +15,7 @@
 </div>
 
 @code {
+    // [Parameter] public string Name{ get; set; }
     [Parameter] public int MaxFilesNum { get; set; }
     [Parameter] public EventCallback<List<ImageFile>> OnChange { get; set; }
 

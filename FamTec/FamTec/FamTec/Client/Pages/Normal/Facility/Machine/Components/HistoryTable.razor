@@ -8,7 +8,7 @@
         <tr class="th-tr">
             <th class="th" >
                 <span>
-                    작업 일자
+                    작업년월
                 </span>
             </th>
             <th class="th">
@@ -18,7 +18,7 @@
             </th>
             <th class="th">
                 <span>
-                    작업 구분
+                    작업구분
                 </span>
             </th>
             <th class="th">
@@ -76,7 +76,7 @@
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.Worker
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.ID)">
+                    <td class="td text-right" @onclick="()=>OnDetail(row.ID)">
                         @row.TotalPrice
                     </td>
                     @if (EditMode)
@@ -85,8 +85,6 @@
                             <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
                         </td>
                     }
-                    
-
                 </tr>
             }
         }
