@@ -235,7 +235,8 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Facility\\Type\\Machine\\MachineFacilityService.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAvwKoAAAB2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-17T00:12:13.694Z"
+              "WhenOpened": "2024-10-17T00:12:13.694Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -349,7 +350,8 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Inventory\\InventoryInfoRepository.cs",
               "ViewState": "AgIAAK8CAAAAAAAAAAAnwI8CAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T23:49:48.373Z"
+              "WhenOpened": "2024-10-16T23:49:48.373Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -493,7 +495,8 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Material\\MaterialController.cs",
               "ViewState": "AgIAAFcBAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T08:45:03.658Z"
+              "WhenOpened": "2024-10-16T08:45:03.658Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -577,7 +580,8 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Maintenance\\MaintanceService.cs",
               "ViewState": "AgIAAHsAAAAAAAAAAAAvwIwAAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T08:45:23.47Z"
+              "WhenOpened": "2024-10-16T08:45:23.47Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -601,7 +605,8 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminUser\\AdminUserInfoRepository.cs",
               "ViewState": "AgIAADkAAAAAAAAAAAAQwE0AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T08:11:59.154Z"
+              "WhenOpened": "2024-10-16T08:11:59.154Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

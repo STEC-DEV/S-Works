@@ -133,7 +133,7 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/UpdateNetworkFacility")]
         public async Task<IActionResult> UpdateNetworkFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
@@ -188,7 +188,7 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteNetworkFacility")]
         public async Task<IActionResult> DeleteNetworkFacility([FromBody] List<int> delIdx)
         {

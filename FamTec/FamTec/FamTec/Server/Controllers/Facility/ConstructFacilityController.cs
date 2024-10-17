@@ -134,7 +134,7 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/UpdateConstructFacility")]
         public async Task<IActionResult> UpdateConstructFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
@@ -191,7 +191,7 @@ namespace FamTec.Server.Controllers.Facility
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteConstructFacility")]
         public async Task<IActionResult> DeleteConstructFacility([FromBody] List<int> delIdx)
         {

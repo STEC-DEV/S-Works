@@ -157,7 +157,7 @@ namespace FamTec.Server.Controllers.Facility
         /// <param name="files"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/UpdateBeautyFacility")]
         public async Task<IActionResult> UpdateBeautyFacility([FromForm] FacilityDTO dto, [FromForm] IFormFile? files)
         {
@@ -218,7 +218,7 @@ namespace FamTec.Server.Controllers.Facility
         /// <param name="delIdx"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("sign/DeleteBeautyFacility")]
         public async Task<IActionResult> DeleteBeautyFacility([FromBody] List<int> delIdx)
         {
