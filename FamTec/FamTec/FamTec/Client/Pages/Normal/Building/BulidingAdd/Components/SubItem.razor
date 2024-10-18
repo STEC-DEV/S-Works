@@ -6,7 +6,7 @@
 <div class="item-container">
     <div class="item-wrap" >
         <label class="item-label">
-            @item.Name (@item.Unit)
+            @item.Name @unit
         </label>
         <div class="item-values" >
             @foreach (var i in item.ItemValues)
@@ -35,6 +35,16 @@
     private bool ItemEdit = false;
     AddGroupKey editItem = new AddGroupKey();
 
+    private string unit = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!String.IsNullOrEmpty(item.Unit))
+        {
+            unit = "(" + item.Unit + ")";
+        }
+
+    }
 
     private void OnItemEdit()
     {

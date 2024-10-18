@@ -4,11 +4,13 @@
     gap : 20px;
     border : var(--comp-bd);
     padding : var(--default-pd);
-    background-color : var(--content-back-color);
+    /*background-color : var(--content-back-color);*/
     /*place-items: center;*/
 }
 
 .groupfield .groupfield-title{
+    display : flex;
+    justify-content : space-between;
     padding-bottom :var(--half-pd);
     border-bottom : var(--default-bd);
 }
@@ -25,4 +27,10 @@
     display : flex;
     flex-direction : column;
     gap : var(--half-pd);
+}
+
+.unit {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color)
 }

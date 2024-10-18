@@ -1,8 +1,9 @@
 .table[b-jnork00id9]{
     width : 100%;
     border-collapse : separate;
-    max-height : 100%;
-    table-layout:fixed;
+    /*height:100%;*/
+
+    table-layout:auto;
 }
 .table .thead[b-jnork00id9] {
     position: sticky;
@@ -66,7 +67,6 @@
     font-size:0.8rem;
     font-weight:var(--bold-wt);
     color : var(--main-color);
-    
 }
 
 .table .text-left[b-jnork00id9]{

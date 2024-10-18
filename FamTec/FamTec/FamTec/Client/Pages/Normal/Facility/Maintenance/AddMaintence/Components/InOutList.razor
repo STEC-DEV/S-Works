@@ -7,13 +7,13 @@
         <span class="title">
             사용 자재 목록
         </span>
-        @if (ListData.Count > 0)
+        @if (CheckList.Count > 0)
         {
-            <Button Name="삭제" Width=true Type="1"/>
+            <Button Name="삭제" Width=true Type="1" OnClick="OnDel" />
         }
     </div>
     <div class="content">
-        <InOutTable ListData="@ListData" />
+        <InOutTable ListData="@ListData" CheckItem="@CheckList" OnCheck=@OnCheck/>
     </div>
 </div>
 
@@ -21,6 +21,31 @@
     [Parameter] public string Title{ get; set; }
     [Parameter] public List<InOutInventoryDTO> ListData { get; set; }
 
+    List<InOutInventoryDTO> CheckList = new List<InOutInventoryDTO>();
 
 
+    //선택
+    private async void OnCheck((bool isCheck, InOutInventoryDTO item) data)
+    {
+        if (data.isCheck)
+        {
+            CheckList.Add(data.item);
+        }
+        else
+        {
+            CheckList.Remove(data.item);
+        }
+
+    }
+
+    private async void OnDel()
+    {
+        foreach(InOutInventoryDTO item in CheckList)
+        {
+            ListData.Remove(item);
+        }
+        CheckList.Clear();
+
+        StateHasChanged();
+    }
 }

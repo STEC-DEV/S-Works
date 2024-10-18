@@ -12,10 +12,14 @@
     @if(Maintenance.Type == 0)
     {
         <SearchMaterial @bind-Data=@SelectMaterial />
-        <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
-        <div class="btn">
-            <Button Name="자재 추가" Width=true Type="0" OnClick=@OnAddMaterial />
-        </div>
+        @if (SelectMaterial.Id != 0)
+        {
+            <OutForm MaterialId="SelectMaterial.Id" AddItem="@MaintenanceStore" />
+            <div class="btn">
+                <Button Name="추가" Width=true Type="0" OnClick=@OnAddMaterial />
+            </div>
+        }
+        
         <InOutList ListData="@Maintenance.Inventory" />
     }
     <div class="btns">
@@ -105,7 +109,9 @@
             if(
                 Maintenance.FacilityId == 0 ||
                 Maintenance.WorkDT == null ||
-                Maintenance.Type == null
+                Maintenance.Type == null ||
+                Maintenance.Worker == null ||
+                Maintenance.Name == null
             )
             {
                 await JS.InvokeVoidAsync("alert", "입력 내용을 확인해주세요.");

@@ -7,11 +7,6 @@
 <table class="location-table">
     <thead class="thead">
         <tr class="th-tr">
-            <th class="th text-left">
-                <span>
-                    No.
-                </span>
-            </th>
             <th class="th">
                 <span>
                     위치명
@@ -42,9 +37,6 @@
         @if (isAddingRow && BASIC)
         {
             <tr class="tbody-tr">
-                <td class="td text-left">
-                    @(ListData.Count + 1)
-                </td>
                 <td class="td">
                     <input 
                         class="input" 
@@ -82,13 +74,13 @@
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
                 <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td> *@
-                <td class="td text-left" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@(location.idx + 1)</td>
+                @* <td class="td text-left" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@(location.idx + 1)</td> *@
                 <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.RoomName</td>
                 <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.BuildingName</td>
                 <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.FloorName</td>
                 @if (BASIC)
                 {
-                    <td class="td text-right">
+                    <td class="td">
                         <input type="checkbox"
                                checked="@checkedItems.Contains(location.value.RoomID)"
                                @onchange="(e)=>OnChecked(e,location.value.RoomID)" />

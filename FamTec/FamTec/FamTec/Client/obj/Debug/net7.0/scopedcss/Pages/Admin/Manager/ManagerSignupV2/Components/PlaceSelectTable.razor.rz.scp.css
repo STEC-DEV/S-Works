@@ -12,7 +12,7 @@
     border-radius : var(--default-rd);
     background-color : var(--back-default-color);
 
-    padding : var(--default-pd);
+    padding : var(--default-pd) var(--wide-pd);
 
     box-shadow:var(--shadow-1);
 }
@@ -22,7 +22,7 @@
     justify-content: space-between;
     font-size: var(--title-size);
     font-weight: var(--bold-wt);
-    padding: var(--default-pd);
+    padding: var(--default-pd) 0;
     border-bottom: var(--default-bd);
 }
 .placetable-container .title[b-nv3vkbvc5d] {

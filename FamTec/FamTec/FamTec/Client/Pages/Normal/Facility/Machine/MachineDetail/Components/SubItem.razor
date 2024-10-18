@@ -11,10 +11,10 @@
         {
             <input type="checkbox" />
         } *@
-        <label class="item-label" @onclick=@OnItemEdit>
-            @item.ItemKey (@item.Unit)
+        <label class="item-label" >
+            @item.ItemKey @unit
         </label>
-        <div class="item-values" @onclick=@OnItemEdit>
+        <div class="item-values">
             @foreach (var i in item.valueList)
             {
                 <span class="value">
@@ -51,6 +51,18 @@
     [Parameter] public EventCallback OnLoad { get; set; }
     private bool ItemEdit = false;
     bool isDel = false;
+
+    private string unit = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!String.IsNullOrEmpty(item.Unit))
+        {
+            unit = "(" + item.Unit + ")";
+        }
+
+    }
+
 
     private void OnItemEdit()
     {

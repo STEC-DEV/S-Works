@@ -84,7 +84,10 @@
                         @row.AddStore.Note
                     </td>
                     <td class="td">
-                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                        <input 
+                            type="checkbox" 
+                            checked=@(CheckItem.Any(i=>i.MaterialID == row.MaterialID))
+                            @onchange="(e)=>OnChecked(e,row)" />
                     </td>
                 </tr>
             }
@@ -109,6 +112,7 @@
 @code {
     [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
     [Parameter] public EventCallback<(bool, InOutInventoryDTO)> OnCheck { get; set; }
+    [Parameter] public List<InOutInventoryDTO> CheckItem{ get; set; }
 
     private bool showUpdateModal = false;
 

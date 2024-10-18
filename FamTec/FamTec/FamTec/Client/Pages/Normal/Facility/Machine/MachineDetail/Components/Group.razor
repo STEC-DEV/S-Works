@@ -10,7 +10,7 @@
 <div class="group yappear">
     <div class="header">
         <span class="title">
-            @GroupData.Name
+            @GroupData.Name <EditButton OnClick="OnUpdateGroup" />
         </span>
         @if (USEREDIT)
         {
@@ -49,6 +49,14 @@
             </ChildComponent>
         </ModalBackground>
     }
+    @if (isGroupEdit)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <UpdateGroupModal CloseModal="OnUpdateGroup" GroupData=GroupData LoadGroup=LoadGroup />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
@@ -58,6 +66,7 @@
     bool IsModal = false;
     // bool EditMode = false;
     bool isDel = false;
+    bool isGroupEdit = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,4 +107,11 @@
     {
         isDel = !isDel;
     }
+
+    private void OnUpdateGroup()
+    {
+        isGroupEdit = !isGroupEdit;
+    }
+
+
 }

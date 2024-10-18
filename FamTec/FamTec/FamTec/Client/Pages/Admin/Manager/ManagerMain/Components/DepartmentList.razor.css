@@ -152,3 +152,9 @@
     display:flex;
     gap: var(--half-pd);
 }
+
+
+.btns {
+    display : flex;
+    gap : var(--half-pd);
+}

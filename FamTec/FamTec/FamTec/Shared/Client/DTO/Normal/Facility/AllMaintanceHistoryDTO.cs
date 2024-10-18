@@ -30,6 +30,8 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility
     /// </summary>
     public class MaintanceHistoryDTO
     {
+        public int MaintenanceId { get; set; }
+        public int FacilityId { get; set; }
         /// <summary>
         /// 설비유형
         /// </summary>

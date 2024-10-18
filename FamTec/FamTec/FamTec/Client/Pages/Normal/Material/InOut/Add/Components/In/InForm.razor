@@ -34,7 +34,7 @@
                 ReturnName="OnReturnRoomName"
                 OnChange="OnLocationChange" 
                 EditMode="true" />
-        }
+        
         @if (SelectedRoomId != 0)
         {
         <InputCol 
@@ -71,7 +71,7 @@
             Row="true" 
             @bind-Value="@AddItem.AddStore.Note"  /> 
         }
-
+        }
     </div>
 </div>
 
@@ -170,6 +170,7 @@
     //건물선택
     private async Task OnBuildingChange(int buildingId)
     {
+        SelectedBuildingId = 0;
         PlaceRoom.Clear();
         if (buildingId == 0)
         {

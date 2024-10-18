@@ -7,12 +7,12 @@
         <tr class="thead-rt">
             <th class="th">
                 <span>
-                    설비 유형
+                    설비유형
                 </span>
             </th>
             <th class="th">
                 <span>
-                    일자
+                   작업년월
                 </span>
             </th>
             <th class="th">
@@ -37,44 +37,21 @@
             </th>
             <th class="th">
                 <span>
-                    내용 년수
+                    소요비용
                 </span>
             </th>
-            <th class="th">
-                <span>
-                    교체 년월
-                </span>
-            </th>
-            <th class="th">
-                <span>
-                    QR
-                </span>
-            </th>
-            @if (HasEditPermission())
+            @* @if (HasEditPermission())
             {
                 <th class="th">
                     <span>
                     </span>
                 </th>
-            }
+            } *@
             
         </tr>
     </thead>
     <tbody class="tbody">
-        @if(ListData == null)
-        {
-            
-                <tr>
-                    <div class="height">
-                        <td colspan="100" style="text-align:center">
-                            <Loading />
-                        </td>
-                    </div>
-                </tr>
-            
-            
-        }
-        else if(ListData.Count == 0)
+        @if(ListData.Count == 0)
         {
             <tr>
                 <td colspan="100" style="text-align:center">
@@ -87,50 +64,27 @@
             @foreach (var row in ListData)
             {
                 <tr class="tbody-tr">
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.Name
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId, ConvertFactype(row.Category))">
+                        @row.Category
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)" >
-                        @row.Type
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                        @row.WorkDT?.Split(" ")[0]
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.Num
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                        @row.HistoryTitle
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.RoomName
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                        @(row.Type == 0 ? "자체 작업" : "외주 작업")
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.StandardCapacity
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                        @row.Worker
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.EquipDT?.ToString("yyyy-MM-dd")
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                        @row.HistoryMaterialList.Count()
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.LifeSpan
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                        @row.TotalPrice
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
-                        @row.ChangeDT?.ToString("yyyy-MM-dd")
-                    </td>
-                    <td class="td">
-                        <QR 
-                        BaseUrl="facility"
-                        BtnName="QR"
-                        Type="facility"
-                        DetailType="@FacType" 
-                        PlaceId="@PLACEIDX.Value"
-                        Id="@row.Id"
-                        />
-                    </td>
-                    @if (HasEditPermission())
-                    {
-                        <td class="td">
-                            <input type="checkbox" 
-                                @onchange="(e)=>OnChecked(e,row.Id)"
-                                checked=@(Checkitems.Contains(row.Id))
-                                />
-                        </td>
-                    }
-                    
                 </tr>
             }
         }
@@ -139,20 +93,21 @@
 </table>
 
 @code {
-    [Parameter] public List<FacilityListDTO?> ListData { get; set; }
-    [Parameter] public string FacType { get; set; }
+    [Parameter] public List<MaintanceHistoryDTO> ListData { get; set; }
     [Parameter] public EventCallback<(bool,int)> OnCheck { get; set; }
     [Parameter] public List<int> Checkitems { get; set; }
+
+    string FacType="";
+    string EngFacType="";
 
     protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
-        Console.WriteLine("현재 사업장아이디 : "+PLACEIDX);
     }
 
-    private void OnDetail(int Id)
+    private void OnDetail(int facId, int maintenanceid, string factype)
     {
-        Navigation.NavigateTo($"/facility/{FacType}/{Id}");
+        Navigation.NavigateTo($"/facility/{factype}/{facId}/maintenance/{maintenanceid}");
 
     }
 
@@ -175,6 +130,22 @@
             "beauty" => BEAUTY,
             "security" => SECURITY,
             _ => false
+        };
+    }
+
+    private string ConvertFactype(string type)
+    {
+        return EngFacType switch
+        {
+                    "기계"=>"machine",
+                    "전기" => "electronic",
+                    "승강" => "lift",
+                    "소방" => "fire",
+                    "건축" => "construct",
+                    "통신" => "network",
+                    "미화" => "beauty",
+                    "보안" => "security",
+            _ => "Unknown"
         };
     }
 }

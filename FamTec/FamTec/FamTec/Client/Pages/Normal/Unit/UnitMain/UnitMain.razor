@@ -6,7 +6,7 @@
 
 
 <div class="unit-container">
-    <Unit ListData="@UnitList" OnLoadUnit="OnLoadUnit" />
+    <Unit UserData="@UserUnit" SystemData="SystemUnit" OnLoadUnit="OnLoadUnit" />
     @if (BASIC)
     {
         <UnitForm OnLoadUnit="OnLoadUnit" />
@@ -17,6 +17,9 @@
 @code {
 
     List<UnitDTO> UnitList;
+
+    List<UnitDTO> SystemUnit;
+    List<UnitDTO> UserUnit;
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,12 +40,23 @@
             }
             UnitList = new List<UnitDTO>();
             UnitList = resGet.data;
-
+            DevideData();
         }
         catch (Exception ex)
         {
             Console.WriteLine("[Normal][Unit] 단위 조회 에러");
             await JS.InvokeVoidAsync("alert", "단위 조회 에러");
         }
+    }
+
+    private void DevideData()
+    {
+        SystemUnit = new List<UnitDTO>();
+        UserUnit = new List<UnitDTO>();
+
+        
+
+        SystemUnit =  UnitList.Where(u => u.SystemCreate).ToList();
+        UserUnit = UnitList.Where(u => !u.SystemCreate).ToList();
     }
 }

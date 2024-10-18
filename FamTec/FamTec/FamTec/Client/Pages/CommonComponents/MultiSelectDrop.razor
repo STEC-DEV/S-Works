@@ -1,47 +1,68 @@
 ﻿@using FamTec.Shared.Client.Class
 
 
-<div class="multi-select">
+<div class="multi-select @(Row ? "row" : "")">
     @if (!String.IsNullOrEmpty(Label))
     {
         <label class="label">
             @Label
         </label>
     }
+    <div class="select-container">
+        <div class="selectbox @(IsActive ? "active" : "")" @onclick="ToggleDropdown">
+            <label class="display">
+                <span class="display-title @(SelectedNames =="선택" ?"placeholder" : "")">
+                    @SelectedNames
+                </span>
+            </label>
+        </div>
 
-    <div class="selectbox @(IsActive ? "active" : "")" @onclick="ToggleDropdown">
-        <label class="display">
-            <span class="display-title">
-                @SelectedNames
-            </span>
-        </label>
-    </div>
-
-    @if (IsActive)
-    {
-        <ul class="options">
-            @foreach (FilterItem item in SelectItems)
-            {
+        @if (IsActive)
+        {
+            <ul class="options">
                 <li class="option-item">
-                    <input type="checkbox" @onchange="(e) => OnCheckChanged(item, e)" />
-                    <span>@item.Name</span>
+                    <input type="checkbox"
+                           @onchange="(e)=>OnAllCheckItem(e)"
+                           checked="@OnAllSync()"
+                           />
+                    <span>전체</span>
                 </li>
-            }
-        </ul>
-    }
+                @foreach (FilterItem item in SelectItems)
+                {
+                    <li class="option-item">
+                        <input type="checkbox" 
+                            @onchange="(e) => OnCheckChanged(item, e)" 
+                            checked=@(item.IsChecked) />
+                        <span>@item.Name</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
 </div>
 
 @code {
     [Parameter] public string Label { get; set; }
+    [Parameter] public bool Row { get; set; }
     [Parameter] public List<FilterItem> SelectItems { get; set; }
     [Parameter] public EventCallback<List<FilterItem>> OnSelectionChanged { get; set; }
+    [Parameter] public List<FilterItem> CheckItems { get; set; }
 
     public bool IsActive { get; set; } = false;
-
+    private string defaultText = "선택";
     // 선택된 항목 이름을 출력하는 속성
-    public string SelectedNames => string.Join(", ", SelectItems.Where(x => x.IsChecked).Select(x => x.Name));
+    public string SelectedNames =>SelectItems.Any(x=>x.IsChecked) ? string.Join(", ", SelectItems.Where(x => x.IsChecked).Select(x => x.Name)) : "선택";
 
-    
+    protected override async Task OnParametersSetAsync()
+    {
+    }
+
+    private bool OnAllSync()
+    {
+        bool IsCheck = SelectItems.All(i => i.IsChecked);
+
+        return IsCheck;
+    }
 
     private void ToggleDropdown()
     {
@@ -52,5 +73,14 @@
     {
         item.IsChecked = (bool)e.Value;
         await OnSelectionChanged.InvokeAsync(SelectItems);
+    }
+
+    private async void OnAllCheckItem(ChangeEventArgs e)
+    {
+        foreach (var item in SelectItems)
+        {
+            item.IsChecked = (bool)e.Value;
+        }
+        StateHasChanged();
     }
 }

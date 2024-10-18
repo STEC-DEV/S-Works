@@ -57,57 +57,60 @@
                     Sub1="연면적"
                     Sub2="대지면적"
                     Sub3="건축면적"
+                    Unit="㎡"
                     @bind-Data1="@Building.GrossFloorArea"
                     @bind-Data2="@Building.LandArea"
-                    @bind-Data3="@Building.BuildingArea" />
-        <GroupField Title="층" Sub1="전체" Sub2="지상" Sub3="지하"
+                    @bind-Data3="@Building.BuildingArea" 
+                    EditMode=EditMode
+                    />
+        <GroupField Title="건물층수" Sub1="전체" Sub2="지상" Sub3="지하" Unit="층"
                     @bind-Data1="@Building.FloorNum"
                     @bind-Data2="@Building.GroundFloorNum"
                     @bind-Data3="@Building.BasementFloorNum"
                     EditMode=EditMode />
-        <GroupField Title="높이" Sub1="전체" Sub2="지상" Sub3="지하"
+        <GroupField Title="건물높이" Sub1="전체" Sub2="지상" Sub3="지하" Unit="M"
                     @bind-Data1="@Building.BuildingHeight"
                     @bind-Data2="@Building.GroundHeight"
                     @bind-Data3="@Building.BasementHeight"
                     EditMode=EditMode />
 
-        <GroupField Title="주차장" Sub1="대수" Sub2="옥내" Sub3="옥외"
+        <GroupField Title="주차" Sub1="전체" Sub2="옥내" Sub3="옥외" Unit="대"
                     @bind-Data1="@Building.ParkingNum"
                     @bind-Data2="@Building.InnerParkingNum"
                     @bind-Data3="@Building.OuterParkingNum"
                     EditMode=EditMode />
-        <GroupField Title="용량" Sub1="전기" Sub2="수전" Sub3="발전"
+        <GroupField Title="전기용량" Sub1="전체" Sub2="수전" Sub3="발전"  Unit="kw"
                     @bind-Data1="@Building.ElecCapacity"
                     @bind-Data2="@Building.FaucetCapacity"
                     @bind-Data3="@Building.GenerationCapacity"
                     EditMode=EditMode />
 
-        <GroupField Title="물" Sub1="급수용량" Sub2="고가수조" Sub3="저수조"
+        <GroupField Title="급수용량" Sub1="전체" Sub2="고가수조" Sub3="저수조" Unit="Ton"
                     @bind-Data1="@Building.WaterCapacity"
                     @bind-Data2="@Building.ElevWaterCapacity"
                     @bind-Data3="@Building.WaterTank"
                     EditMode=EditMode />
-        <GroupField Title="가스" Sub1="용량" Sub2="보일러" Sub3="냉온수기"
+        <GroupField Title="가스용량" Sub1="전체" Sub2="보일러" Sub3="냉온수기" Unit="N㎥"
                     @bind-Data1="@Building.GasCapacity"
                     @bind-Data2="@Building.Boiler"
                     @bind-Data3="@Building.WaterDispenser"
                     EditMode=EditMode />
-        <GroupField Title="승강기" Sub1="대수" Sub2="인승용" Sub3="화물용"
+        <GroupField Title="승강기" Sub1="전체" Sub2="인승용" Sub3="화물용" Unit="대"
                     @bind-Data1="@Building.LiftNum"
                     @bind-Data2="@Building.PeopleLiftNum"
                     @bind-Data3="@Building.CargoLiftNum"
                     EditMode=EditMode />
-        <GroupField Title="냉·난방" Sub1="용량" Sub2="난방용량" Sub3="냉방용량"
+        <GroupField Title="냉난방용량" Sub1="전체" Sub2="난방용량" Sub3="냉방용량" Unit="㎡"
                     @bind-Data1="@Building.CoolHeatCapacity"
                     @bind-Data2="@Building.HeatCapacity"
                     @bind-Data3="@Building.CoolCapacity"
                     EditMode=EditMode />
-        <GroupField Title="조경" Sub1="조경면적" Sub2="지상" Sub3="옥상"
+        <GroupField Title="조경면적" Sub1="전체" Sub2="지상" Sub3="옥상" Unit="㎡"
                     @bind-Data1="@Building.LandScapeArea"
                     @bind-Data2="@Building.GroundArea"
                     @bind-Data3="@Building.RooftopArea"
                     EditMode=EditMode />
-        <GroupField Title="화장실" Sub1="전체" Sub2="남자" Sub3="여자"
+        <GroupField Title="화장실" Sub1="전체" Sub2="남자" Sub3="여자" Unit="개소"
                     @bind-Data1="@Building.ToiletNum"
                     @bind-Data2="@Building.MenToiletNum"
                     @bind-Data3="@Building.WomenToiletNum"

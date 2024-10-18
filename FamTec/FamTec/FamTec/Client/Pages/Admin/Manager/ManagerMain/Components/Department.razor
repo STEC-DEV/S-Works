@@ -23,8 +23,6 @@
             {
                 <DepartmentList DataList="departmentList"
                                 OnLoadDepartments="LoadDepartments"
-                                Select="OnCheck"
-                                CheckItems="@DelList"
                                 Edit=EditMode
                                 OnSelectedDepartment=OnSelectedDepartment />
             }
@@ -35,16 +33,11 @@
             {
                 if (EditMode)
                 {
-                    <Button Name="닫기" Type="0" OnClick="OnEditMode" />
-                    @if(DelList.Count > 0)
-                    {
-                        <Button Name="삭제" Type="1" OnClick="OnDelDepartments" />
-                    }
-                    
+                    <Button Name="확인" Type="0" OnClick="OnEditMode" />
                 }
                 else
                 {
-                    <Button Name="편집" OnClick="@OnEditMode" Type=0 />
+                    <Button Name="수정" OnClick="@OnEditMode" Type=0 />
                 }
                 
             }
@@ -60,7 +53,7 @@
     List<DepartmentDTO>? departmentList;
     private bool is_openModal = false;
     private bool EditMode = false;
-    List<int> DelList = new List<int>();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,48 +95,6 @@
 
 
 
-    //부서삭제
-    private async Task OnDelDepartments()
-    {
-        try
-        {
-            if(DelList.Count == 0)
-            {
-                await JS.InvokeVoidAsync("alert", "삭제할 부서를 선택해주세요.");
-                return;
-            }
-            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Department/sign/DeleteDepartment",DelList);
-            if(resDel.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", resDel.message);
-                return;
-            }
-            await LoadDepartments();
-            DelList.Clear();
-            StateHasChanged();
-        }catch(Exception ex)
-        {
-            Console.WriteLine($"[Admin][Department] 클라이언트 부서 삭제 에러");
-        }
-    }
-
-
-    private void OnCheck((bool isChecked, int id) data)
-    {
-        if (data.isChecked)
-        {
-            DelList.Add(data.id);
-        }
-        else
-        {
-            DelList.Remove(data.id);
-        }
-    }
-
-    // private async void OnSelectReset()
-    // {
-    //     await OnSelectedDepartment.InvokeAsync("");
-    // }
 
 
 

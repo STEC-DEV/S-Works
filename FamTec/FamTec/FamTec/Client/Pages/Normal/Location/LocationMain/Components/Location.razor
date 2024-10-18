@@ -17,7 +17,7 @@
                     <Button Name="@(isAddingRow ?"취소" :  "추가")"
                             Width=true
                             OnClick="@OnAddMode"
-                            Type="0" />
+                            Type=@(isAddingRow ? 1 :0) />
                     @if(DelList.Count > 0)
                     {
                         <Button Name="삭제"

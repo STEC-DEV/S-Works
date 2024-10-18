@@ -6,7 +6,7 @@
     flex-direction: column;
     gap: var(--wide-pd);
     background-color: var(--default-color);
-    padding: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: var(--shadow-1);
@@ -14,7 +14,7 @@
 
 .form .header[b-4g6zw8058z]{    
     display: flex;
-    padding: var(--default-pd);
+    padding: var(--default-pd) 0;
     justify-content: space-between;
     border-bottom: var(--default-bd);
 }
@@ -33,7 +33,6 @@
 
 
 .form .content[b-4g6zw8058z]{
-    padding : 0 var(--default-pd);
     display : grid;
     grid-template-columns : repeat(3, 1fr);
     gap : var(--wide-pd);

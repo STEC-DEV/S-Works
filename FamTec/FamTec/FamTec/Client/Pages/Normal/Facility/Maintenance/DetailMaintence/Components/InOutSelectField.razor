@@ -23,9 +23,6 @@
             }
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
-            <li class="option-item" @onclick="() => OnSelectRow(null)">
-                Select
-            </li>
             @if (SelectData != null && SelectData.Any())
             {
                 @foreach (var selectRow in SelectData)
@@ -34,7 +31,8 @@
                     {
 
                         <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
-                            @selectRow.GetType().GetProperty("RoomName").GetValue(selectRow) @selectRow.GetType().GetProperty("Num").GetValue(selectRow)
+                            <span class="item-text">@selectRow.GetType().GetProperty("RoomName").GetValue(selectRow)</span>
+                            <span class="item-text">@selectRow.GetType().GetProperty("Num").GetValue(selectRow)</span>
                         </li>
                     }
                     catch (Exception ex)

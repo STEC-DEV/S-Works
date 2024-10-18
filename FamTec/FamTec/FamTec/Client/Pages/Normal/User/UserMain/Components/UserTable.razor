@@ -8,9 +8,14 @@
 <table class="table">
     <thead class="thead">
         <tr class="tr">
-            <th class="th">
+            <th class="th text-center">
                 <span>
-                    사용자
+                    이름
+                </span>
+            </th>
+            <th class="th text-center">
+                <span>
+                    아이디
                 </span>
             </th>
             <th class="th text-center">
@@ -18,12 +23,12 @@
                     직책
                 </span>
             </th>
-            <th class="th">
+            <th class="th text-center">
                 <span>
                     이메일
                 </span>
             </th>
-            <th class="th">
+            <th class="th text-center">
                 <span>
                     생성 일자
                 </span>
@@ -67,29 +72,27 @@
                 {
 
                 <tr class="tbody-tr">
-                    <td class="td userinfo" @onclick="()=>OnDetail(row.Id)">
-                        @* <img class="table-img" alt=""/> *@
-                        <div class="title-wrap">
-                            <a class="maintitle">
-                                @row.Name
-                            </a>
-                            <span class="subtitle italic">
-                                @row.UserId
-                            </span>
-                        </div>
-
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                        <span class="subtitle">
+                            @row.Name
+                        </span>
+                    </td>
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                        <span class="subtitle">
+                            @row.UserId
+                        </span>
                     </td>
                     <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.Type
                         </span>
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.Email
                         </span>
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @{
                                 DateTime createdDate;

@@ -16,13 +16,13 @@
         </span>
         <div class="place-table-option">
             <Input 
-                Placeholder="search" 
+                Placeholder="목록에서 검색" 
                 Value="@_searchText"
                 ValueChanged="OnSearchTextChanged" />
             @if (EditMode)
             {
                 <Button Name="추가" Width=true OnClick="OnModal" Type=0 />
-                @if (FilterPlace.Count != 0)
+                @if (DelPlace.Count > 0)
                 {
                     <Button Name="삭제" Width=true Type=1 OnClick="OnDelete" />
                 }

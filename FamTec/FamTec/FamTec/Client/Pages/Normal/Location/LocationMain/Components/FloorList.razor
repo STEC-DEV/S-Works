@@ -1,39 +1,56 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Modal
 @using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
 
 
 <ul class="floor-ul">
-    
-    @foreach(var building in Buildings.Select((value, idx)=> (value, idx)))
+    @if (Buildings == null)
     {
-        <li class="floor-li" tabindex="@building.idx">
-            <div class="li-wrap">
-                <span class="title">@building.value.Name</span>
-                @if (EditMode)
-                {
-                    <Button Name="추가" Width=true Type="0" OnClick="()=>OnAddModal(building.value.Id.Value, building.value.Name)" />
-                }
-                
-            </div>
-            
-            <ul class="floor-inner-ul">
-                @foreach(var floor in building.value.FloorList.Select((v,idx) => (v,idx)))
-                {
-                    <li class="floor-inner-li" tabindex="@floor.idx" >
-                        <span class="inner-title" @onclick="@(EditMode ? ()=>OnUpdateModal(floor.v.Id.Value , floor.v.Name) : null  )">
-                            @floor.v.Name
-                        </span>
-                        @if (EditMode)
-                        {
-                            <input type="checkbox" @onchange="(e)=>OnChecked(e,floor.v.Id.Value)" />
-                        }
-                    </li>
-                }
-            </ul>
-            
-        </li>
+        <Loading/>
     }
+    else
+    {
+        @foreach (var building in Buildings.Select((value, idx) => (value, idx)))
+        {
+            <li class="floor-li" tabindex="@building.idx">
+                <div class="li-wrap">
+                    <span class="title">@building.value.Name</span>
+                    @if (EditMode)
+                    {
+                        <div class="center">
+                            <PlusButton OnClick="@(()=> OnAddModal(building.value.Id.Value, building.value.Name))" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <ul class="floor-inner-ul">
+                    @foreach (var floor in building.value.FloorList.Select((v, idx) => (v, idx)))
+                    {
+                        <li class="floor-inner-li" tabindex="@floor.idx">
+                            @* @onclick="@(EditMode ? () => OnUpdateModal(floor.v.Id.Value, floor.v.Name) : null)" *@
+                            <span class="inner-title">
+                                @floor.v.Name
+                            </span>
+                            @if (EditMode)
+                            {
+                                <div class="btns">
+                                    <EditButton OnClick="@(()=>OnUpdateModal(floor.v.Id.Value , floor.v.Name) )" />
+                                    <XButton OnClick="()=>OnDelMode(floor.v.Id.Value)" />
+                                </div>
+                                @* <input type="checkbox" @onchange="(e)=>OnChecked(e,floor.v.Id.Value)" /> *@
+
+                            }
+                        </li>
+                    }
+                </ul>
+
+            </li>
+        }
+    }
+    
 </ul>
 @* 추가 모달 *@
 @if (EditMode && _addModal)
@@ -63,10 +80,18 @@
     </ModalBackground>
 }
 
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelete" OnCancel="OnDelClose" />
+        </ChildComponent>
+    </ModalBackground>
+}
+
 @code {
     [Parameter] public List<BuildingFloorListDTO> Buildings { get; set; }
     [Parameter] public EventCallback OnLoadFloor { get; set; }
-    [Parameter] public EventCallback<(bool, int)> OnCheck { get; set; }
     [Parameter] public bool EditMode { get; set; }
 
     //층 추가 정보 변수
@@ -78,6 +103,10 @@
     private bool _updateModal = false;
     private int _updateFloorId;
     private string _updateFloorName;
+
+    //삭제 변수
+    List<int> DelList = new List<int>();
+    bool isDel = false;
 
     //층 추가 모달 활성화
     private void OnAddModal(int id, string name)
@@ -96,9 +125,26 @@
     }
 
 
-    private async void OnChecked(ChangeEventArgs e, int floorId)
+
+    private async void OnDelete()
     {
-        await OnCheck.InvokeAsync(((bool)e.Value, floorId));
+        try
+        {
+            Console.WriteLine(DelList[0]);
+            ResponseUnit<bool?> resDel = await apiManager.PostAsync<bool?>("Floor/sign/DeleteFloor", DelList);
+            if (resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoadFloor.InvokeAsync();
+            DelList.Clear();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "[위치][층] 삭제 에러!");
+        }
     }
 
     private void OnCancleUpdateModal()
@@ -111,5 +157,17 @@
     private void OnCancle()
     {
         _addModal = false;
+    }
+
+    private void OnDelMode(int floorId)
+    {
+        DelList.Clear();
+        isDel = true;
+        DelList.Add(floorId);
+    }
+
+    private void OnDelClose()
+    {
+        isDel = false ;
     }
 }

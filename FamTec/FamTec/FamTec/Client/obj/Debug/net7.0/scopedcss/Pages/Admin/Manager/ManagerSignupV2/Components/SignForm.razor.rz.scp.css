@@ -8,14 +8,14 @@
     border-radius : var(--default-rd);
     background-color : var(--back-default-color);
     box-shadow:var(--shadow-1);
-    padding : var(--default-pd);
+    padding : var(--default-pd) var(--wide-pd);
 }
 
 .form-container .form-title[b-hqmk3b7mpz]{
     font-size : var(--title-size);
     font-weight : var(--bold-wt);
 
-    padding:var(--default-pd);
+    padding:var(--default-pd) 0;
 
     border-bottom : var(--default-bd);
 }

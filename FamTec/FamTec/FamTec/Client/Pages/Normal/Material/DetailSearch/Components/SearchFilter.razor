@@ -8,16 +8,16 @@
 <div class="searchfilter">
     <div class="header">
         <span class="title">
-            검색 조건
+            조회 조건
         </span>
         <Button Name="조회" Width=true Type="0" OnClick="OnSelect" />
     </div>
     <div class="content">
         <div class="inputmonth">
-            <InputMonth Label="조회 기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
+            <InputMonth Label="조회기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
         </div>
         <div class="filter-item">
-            <TextField2 Label="조회 품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true />
+            <TextField2 Label="조회품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true />
             <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
         </div>
     </div>

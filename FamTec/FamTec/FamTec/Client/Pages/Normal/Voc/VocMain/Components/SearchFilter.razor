@@ -9,7 +9,7 @@
     <div class="filter-wrap">
         <div class="header">
             <span class="title">
-                필터
+                조회 조건
             </span>
             <Button Name="조회" Width=true Type="0" OnClick="OnSearch" />
         </div>
@@ -39,10 +39,12 @@
                 </div>
                 
             </div>
-            <MultiSelectDrop Label="민원 유형" SelectItems="@type" OnSelectionChanged="HandleSelectionChange" />
-            <CheckBoxVocType Name="민원 유형" Items="@type" />
+            <MultiSelectDrop Row=true Label="민원유형" SelectItems="@type" OnSelectionChanged="HandleSelectionChange" />
+            <MultiSelectDrop Row=true Label="민원상태" SelectItems="@state" OnSelectionChanged="HandleSelectionChange" />
+            <MultiSelectDrop Row=true Label="민원위치" SelectItems="@locations" OnSelectionChanged="HandleSelectionChange" />
+            @* <CheckBoxVocType Name="민원 유형" Items="@type" />
             <CheckBoxVocType Name="민원 상태" Items="@state" />
-            <CheckBoxVocType Name="민원 위치" Items="@locations" />
+            <CheckBoxVocType Name="민원 위치" Items="@locations" /> *@
         </div>
     </div>
 </div>

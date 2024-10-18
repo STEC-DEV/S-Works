@@ -9,9 +9,9 @@
 <div class="group yappear">
     <div class="header">
         <span class="title">
-            @GroupData.Name
+            @GroupData.Name @if(BASIC) {<EditButton OnClick="OnUpdateGroup" /> }
         </span>
-        @if (USEREDIT)
+        @if (BASIC)
         {
             <div class="options">
                 <Button Name="삭제" Width=true Type="1" OnClick="OnIsDel" />
@@ -24,7 +24,7 @@
         {
             <SubItem item="item" OnLoad="LoadGroup" />
         }
-        @if (USEREDIT)
+        @if (BASIC)
         {
             <div class="add-item" @onclick="OnModal">
                 +
@@ -49,7 +49,14 @@
             </ChildComponent>
         </ModalBackground>
     }
-    @* <button class="del-group">삭제</button> *@
+    @if (isGroupEdit)
+    {
+        <ModalBackground>
+            <ChildComponent>
+                <UpdateGroupModal CloseModal="OnUpdateGroup" GroupData=GroupData LoadGroup=LoadGroup />
+            </ChildComponent>
+        </ModalBackground>
+    }
 </div>
 
 @code {
@@ -58,7 +65,7 @@
     [Parameter] public EventCallback LoadGroup { get; set; }
     bool IsModal = false;
     bool isDel = false;
-
+    bool isGroupEdit = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -96,4 +103,10 @@
     {
         isDel = !isDel;
     }
+
+    private void OnUpdateGroup()
+    {
+        isGroupEdit = !isGroupEdit;
+    }
+
 }

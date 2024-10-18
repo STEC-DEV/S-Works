@@ -6,7 +6,7 @@
     border-radius: var(--default-rd);
     border: var(--default-bd);
     width: 30%;
-    
+    height : 70%;
     background-color: var(--default-color);
     box-shadow: var(--default-bs);
     
@@ -36,7 +36,7 @@
     flex-direction:column;
     gap:var(--half-pd);
     width:100%;
-
+    height:100%;
     overflow:hidden;
 }
 
@@ -48,14 +48,15 @@
 
 
 .list-wrap[b-pefcekr261]{
-    display:flex;
-    flex-direction:column;
+    /*display:flex;
+    flex-direction:column;*/
     /*gap:var(--half-pd);*/
     padding : var(--default-pd);
     border : var(--comp-bd);
     border-radius : var(--default-rd);
     width:100%;
-    max-height : 300px;
+    height:100%;
+    /*max-height : 300px;*/
     /*overflow:auto;*/
     position:relative;
     scroll-behavior: smooth;
@@ -66,7 +67,7 @@
     top : 0;
     width:100%;
     display:flex;
-    justify-content:space-around;
+    justify-content: space-between;
 
     padding : var(--half-pd);
     border-radius : var(--default-rd);
@@ -77,16 +78,19 @@
 .ul-head>span[b-pefcekr261]{
     color:var(--default-color);
     font-size: var(--normal-size);
+    flex: 1; /* 각 헤더 항목에 동일한 너비를 적용 */
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 .ul[b-pefcekr261]{
     overflow:auto;
 }
 
 .li[b-pefcekr261]{
+    white-space : nowrap;
     display :flex;
     width:100%;
-    justify-content:space-around;
-
+    justify-content: space-between;
+    align-items :center;
     border-bottom: var(--comp-bd);
     padding :var(--default-pd) var(--half-pd);
 
@@ -122,4 +126,93 @@
 .btns[b-pefcekr261]{
     display : flex;
     gap : var(--default-pd);
+}
+
+
+
+
+
+.table[b-pefcekr261] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    /*height: 100%;*/
+}
+
+.table .thead[b-pefcekr261]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    /*box-shadow: 0 8px 12px -2px #a1a1a1;*/
+}
+
+.table .th-tr[b-pefcekr261]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-pefcekr261] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-pefcekr261] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-pefcekr261]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-pefcekr261]{
+    text-align : center;
+}
+
+.table th>span[b-pefcekr261]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-pefcekr261]{
+    overflow:auto;
+}
+
+.table .tr[b-pefcekr261]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tr:hover td[b-pefcekr261]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-pefcekr261]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+.table .tbody-tr:hover td[b-pefcekr261]{
+    background-color:var(--main-light);
+    
+}
+
+.table[b-pefcekr261]  .table-td-link {
+    color : var(--main-color);
 }
