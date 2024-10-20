@@ -80,7 +80,11 @@ public partial class WorksContext : DbContext
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
 
+#if DEBUG
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    => optionsBuilder.UseMySql("server=125.131.105.172,3306;database=works;user id=sworks;password=stecdev1234!", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.11.7-mariadb"));
+#else
+ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
               .SetBasePath(Directory.GetCurrentDirectory())
@@ -111,6 +115,7 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
+#endif
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

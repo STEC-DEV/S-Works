@@ -11,13 +11,36 @@ namespace FamTec.Server.Repository.Admin.Departmnet
     public class DepartmentInfoRepository : IDepartmentInfoRepository
     {
         private readonly WorksContext context;
-        private ILogService LogService;
+        
+        private readonly ILogService LogService;
+        private readonly ILogger<DepartmentInfoRepository> BuilderLogger;
 
         public DepartmentInfoRepository(WorksContext _context,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<DepartmentInfoRepository> _builderlogger)
         {
             this.context = _context;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -36,14 +59,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
 
                 return AdminCheck || DepartmentCheck;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -66,14 +95,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException ex)
             {
-                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
@@ -95,19 +130,28 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 context.DepartmentsTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException ex)
             {
-                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -133,14 +177,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -164,14 +214,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -194,14 +250,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -225,14 +287,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -257,14 +325,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -288,14 +362,20 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -314,19 +394,28 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                 context.DepartmentsTbs.Update(model);
                 return await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException ex)
             {
-                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -392,22 +481,38 @@ namespace FamTec.Server.Repository.Admin.Departmnet
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return false;
                     }
                 }

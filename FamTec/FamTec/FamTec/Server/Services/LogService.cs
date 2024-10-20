@@ -42,13 +42,19 @@ namespace FamTec.Server.Services
                     writer.WriteLine($"[{thisday.ToString()}]\t{message}");
 
 #if DEBUG
+                    Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                    Console.ForegroundColor = ConsoleColor.Green; // 텍스트 색상 설정
                     Console.WriteLine($"[{thisday.ToString()}]\t{message}");
+                    Console.ResetColor();
 #endif
                 }
             }
             catch(Exception ex)
             {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
                 Console.WriteLine(ex.ToString());
+                Console.ResetColor();
             }
         }
     }

@@ -14,17 +14,37 @@ namespace FamTec.Server.Controllers.Place
     [ApiController]
     public class PlaceController : ControllerBase
     {
-        private IUserService UserService;
-        private IAdminPlaceService AdminPlaceService;
-        private ILogService LogService;
+        private readonly IUserService UserService;
+        private readonly IAdminPlaceService AdminPlaceService;
 
+        private readonly ILogService LogService;
+        private readonly ILogger<PlaceController> BuilderLogger;
+        
         public PlaceController(IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<PlaceController> _builderlogger)
         {
             this.AdminPlaceService = _adminplaceservice;
             this.UserService = _userservice;
+
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpGet]
@@ -48,6 +68,9 @@ namespace FamTec.Server.Controllers.Place
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -74,6 +97,9 @@ namespace FamTec.Server.Controllers.Place
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

@@ -13,14 +13,33 @@ namespace FamTec.Server.Controllers.BlackList
     [ApiController]
     public class BlackListController : ControllerBase
     {
-        private IBlackListService BlackListService;
-        private ILogService LogService;
+        private readonly IBlackListService BlackListService;
+        private readonly ILogService LogService;
+        private readonly ILogger<BlackListController> BuilderLogger;
 
         public BlackListController(IBlackListService _blacklistservice, 
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BlackListController> _builderlogger)
         {
             this.BlackListService = _blacklistservice;
+            
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -53,6 +72,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -83,6 +105,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -113,6 +138,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -152,6 +180,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -186,6 +217,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -223,6 +257,9 @@ namespace FamTec.Server.Controllers.BlackList
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

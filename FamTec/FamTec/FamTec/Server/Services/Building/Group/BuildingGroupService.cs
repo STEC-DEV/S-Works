@@ -14,18 +14,40 @@ namespace FamTec.Server.Services.Building.Group
         private readonly IBuildingItemKeyInfoRepository BuildingItemKeyInfoRepository;
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
 
-        private ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ILogger<BuildingGroupService> BuilderLogger;
 
         public BuildingGroupService(IBuildingGroupItemInfoRepository _buildinggroupiteminforepository,
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BuildingGroupService> _builderlogger)
         {
             this.BuildingGroupItemInfoRepository = _buildinggroupiteminforepository;
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
 
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -61,6 +83,9 @@ namespace FamTec.Server.Services.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
@@ -103,6 +128,9 @@ namespace FamTec.Server.Services.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<AddGroupInfoDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -180,6 +208,9 @@ namespace FamTec.Server.Services.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<GroupListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -222,6 +253,9 @@ namespace FamTec.Server.Services.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
@@ -232,7 +266,6 @@ namespace FamTec.Server.Services.Building.Group
         /// <param name="context"></param>
         /// <param name="groupid"></param>
         /// <returns></returns>
-
         public async Task<ResponseUnit<bool?>> DeleteGroupService(HttpContext context, int groupid)
         {
             try
@@ -256,6 +289,9 @@ namespace FamTec.Server.Services.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }

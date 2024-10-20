@@ -12,15 +12,34 @@ namespace FamTec.Server.Controllers.Hubs
     [ApiController]
     public class HubController : ControllerBase
     {
-        private IHubService HubService;
-        private ILogService LogService;
-       
+        private readonly IHubService HubService;
+        private readonly ILogService LogService;
+        private readonly ILogger<HubController> BuilderLogger;
+        
         public HubController(
             IHubService _hubservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<HubController> _builderlogger)
         {
             this.HubService = _hubservice;
+            
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -98,6 +117,9 @@ namespace FamTec.Server.Controllers.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
@@ -127,6 +149,9 @@ namespace FamTec.Server.Controllers.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
@@ -158,6 +183,9 @@ namespace FamTec.Server.Controllers.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }
@@ -185,6 +213,9 @@ namespace FamTec.Server.Controllers.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
         }

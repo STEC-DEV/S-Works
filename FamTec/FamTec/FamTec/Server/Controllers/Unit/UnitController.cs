@@ -13,14 +13,33 @@ namespace FamTec.Server.Controllers.Unit
     [ApiController]
     public class UnitController : ControllerBase
     {
-        private IUnitService UnitService;
-        private ILogService LogService;
+        private readonly IUnitService UnitService;
+        
+        private readonly ILogService LogService;
+        private readonly ILogger<UnitController> BuilderLogger;
 
         public UnitController(IUnitService _unitservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<UnitController> _builderlogger)
         {
-            UnitService = _unitservice;
-            LogService = _logservice;
+            this.UnitService = _unitservice;
+            this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -49,6 +68,9 @@ namespace FamTec.Server.Controllers.Unit
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -86,6 +108,9 @@ namespace FamTec.Server.Controllers.Unit
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -118,6 +143,9 @@ namespace FamTec.Server.Controllers.Unit
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -150,8 +178,13 @@ namespace FamTec.Server.Controllers.Unit
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+
     }
 }

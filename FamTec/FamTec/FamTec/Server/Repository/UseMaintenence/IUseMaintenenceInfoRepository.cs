@@ -22,6 +22,16 @@ namespace FamTec.Server.Repository.UseMaintenence
         Task<UseMaterialDetailDTO?> GetDetailUseStoreList(int usematerialid, int placeid);
 
         /// <summary>
+        /// 사용자재 세부이력 - 신규추가용
+        ///     - 가용자재를 반환하면됨
+        /// </summary>
+        /// <param name="materialid"></param>
+        /// <param name="roomid"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<UseMaterialDetailDTO?> New_GetDetailUseStoreList(int materialid, int roomid, int placeid);
+
+        /// <summary>
         /// 가용한 자재 수량 조회
         /// </summary>
         /// <param name="placeid"></param>
@@ -66,5 +76,14 @@ namespace FamTec.Server.Repository.UseMaintenence
         /// <param name="dto"></param>
         /// <returns></returns>
         Task<int?> UseMatintanceInput(int placeid, string updater, UpdateMaintenanceMaterialDTO dto);
+
+        /// <summary>
+        /// 테스트
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="place"></param>
+        /// <param name="updater"></param>
+        /// <returns></returns>
+        Task<int> UpdateUseMaintance(UpdateMaintancematerialDTO dto, int place, string updater);
     }
 }

@@ -13,14 +13,33 @@ namespace FamTec.Server.Controllers.Meter.Contract
     [ApiController]
     public class ContractController : ControllerBase
     {
-        private IContractService ContractService;
-        private ILogService LogService;
+        private readonly IContractService ContractService;
+        private readonly ILogService LogService;
+        private readonly ILogger<ContractController> BuilderLogger;
 
-
-        public ContractController(IContractService _contractservice, ILogService _logservice)
+        public ContractController(IContractService _contractservice,
+            ILogService _logservice,
+            ILogger<ContractController> _builderlogger)
         {
             this.ContractService = _contractservice;
+
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -55,6 +74,9 @@ namespace FamTec.Server.Controllers.Meter.Contract
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -85,6 +107,9 @@ namespace FamTec.Server.Controllers.Meter.Contract
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

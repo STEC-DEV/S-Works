@@ -14,24 +14,40 @@ namespace FamTec.Server.Controllers.Building
     [ApiController]
     public class BuildingController : ControllerBase
     {
-        private IBuildingService BuildingService;
-        private IFileService FileService;
-        private ILogService LogService;
-        private IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IBuildingService BuildingService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<BuildingController> BuilderLogger;
 
         public BuildingController(IBuildingService _buildingservice,
             IBuildingInfoRepository _buildinginforepository,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BuildingController> _builderlogger)
         {
             this.BuildingService = _buildingservice;
 
-            this.BuildingInfoRepository = _buildinginforepository;
-
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+            
         }
-        
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// 해당 자재가 존재하는 건물들 반환
         /// </summary>
@@ -64,6 +80,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -91,6 +110,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -122,6 +144,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -155,6 +180,9 @@ namespace FamTec.Server.Controllers.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -186,6 +214,9 @@ namespace FamTec.Server.Controllers.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -213,6 +244,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -265,6 +299,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -297,6 +334,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -330,6 +370,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -381,6 +424,9 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -411,11 +457,12 @@ namespace FamTec.Server.Controllers.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
-
 
     }
 }

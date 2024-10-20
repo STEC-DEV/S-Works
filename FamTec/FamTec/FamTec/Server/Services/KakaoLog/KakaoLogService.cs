@@ -10,18 +10,38 @@ namespace FamTec.Server.Services.KakaoLog
     {
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
-        private ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ILogger<KakaoLogService> BuilderLogger;
 
         public KakaoLogService(IKakaoLogInfoRepository _kakaologinforepository,
             IBuildingInfoRepository _buildinginforepository,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<KakaoLogService> _builderlogger)
         {
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
         }
 
-   
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// 해당 사업장의 카카오 로그 리스트 조회
@@ -69,6 +89,9 @@ namespace FamTec.Server.Services.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -95,6 +118,9 @@ namespace FamTec.Server.Services.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -147,6 +173,9 @@ namespace FamTec.Server.Services.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<KakaoLogListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

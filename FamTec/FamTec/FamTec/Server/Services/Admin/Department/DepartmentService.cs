@@ -8,14 +8,35 @@ namespace FamTec.Server.Services.Admin.Department
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentInfoRepository DepartmentInfoRepository;
-        private ILogService LogService;
-
+        private readonly ILogService LogService;
+        private readonly ILogger<DepartmentService> BuilderLogger;
 
         public DepartmentService(IDepartmentInfoRepository _departmentinforepository,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<DepartmentService> _builderlogger)
         {
             this.DepartmentInfoRepository = _departmentinforepository;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -72,11 +93,12 @@ namespace FamTec.Server.Services.Admin.Department
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<AddDepartmentDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddDepartmentDTO(), code = 404 };
             }
         }
-
-
 
         /// <summary>
         /// 부서 전체조회
@@ -107,6 +129,9 @@ namespace FamTec.Server.Services.Admin.Department
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<DepartmentDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<DepartmentDTO>(), code = 500 };
             }
         }
@@ -141,6 +166,9 @@ namespace FamTec.Server.Services.Admin.Department
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<DepartmentDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<DepartmentDTO>(), code = 500 };
             }
         }
@@ -194,6 +222,9 @@ namespace FamTec.Server.Services.Admin.Department
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 404 };
             }
         }
@@ -239,6 +270,9 @@ namespace FamTec.Server.Services.Admin.Department
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<DepartmentDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DepartmentDTO(), code = 500 };
             }
         }

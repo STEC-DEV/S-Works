@@ -202,7 +202,7 @@ builder.Services.AddRateLimiter(options =>
     options.AddSlidingWindowLimiter("SlidingWindowPolicy", config =>
     {
         config.Window = TimeSpan.FromSeconds(30); // 슬라이딩 윈도우를 30초로 설정
-        config.PermitLimit = 3000; // 30초 동안 최대 3000개의 요청 허용
+        config.PermitLimit = 5000; // 30초 동안 최대 3000개의 요청 허용
         config.SegmentsPerWindow = 6; // 윈도우를 6개 세그먼트로 분할
         config.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
         config.QueueLimit = 10; // 제한시 10개의 요청만 대기열에 추가
@@ -225,7 +225,7 @@ builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
             _ => new SlidingWindowRateLimiterOptions
             {
                 Window = TimeSpan.FromSeconds(30), // 윈도우 크기
-                PermitLimit = 3000,                 // 30초 동안 최대 3000개의 요청 허용
+                PermitLimit = 5000,                 // 30초 동안 최대 3000개의 요청 허용
                 SegmentsPerWindow = 6,            // 세그먼트 수
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 10                  // 대기열 제한
@@ -261,6 +261,25 @@ builder.Services.AddAuthentication(options =>
 #endregion
 
 #region DB연결 정보
+#if DEBUG
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!String.IsNullOrWhiteSpace(connectionString))
+{
+    builder.Services.AddDbContext<WorksContext>(options =>
+      options.UseMySql(connectionString, ServerVersion.Parse("10.11.7-mariadb"),
+      mySqlOptions =>
+      {
+          mySqlOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
+          // CommandTimeout을 300초로 설정
+          mySqlOptions.CommandTimeout(300);
+          // 다른 성능 및 안정성 옵션 추가
+          mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
+      }));
+}
+else
+    // 예외를 던져 프로그램이 시작되지 않도록 함.
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty.");
+#else
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
@@ -278,6 +297,8 @@ if (!String.IsNullOrWhiteSpace(connectionString))
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.
     throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty."); 
+#endif
+
 #endregion
 
 

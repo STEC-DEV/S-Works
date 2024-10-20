@@ -31,7 +31,7 @@ namespace FamTec.Server.Services.Voc
 
         private readonly IPlaceInfoRepository PlaceInfoRepository;
         private readonly IHubContext<BroadcastHub> HubContext;
-
+        private readonly ILogger<VocService> BuilderLogger;
 
         // 파일디렉터리
         private DirectoryInfo? di;
@@ -48,7 +48,8 @@ namespace FamTec.Server.Services.Voc
             IHubContext<BroadcastHub> _hubcontext,
             IKakaoService _kakaoservice,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<VocService> _builderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
@@ -63,6 +64,26 @@ namespace FamTec.Server.Services.Voc
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -91,6 +112,9 @@ namespace FamTec.Server.Services.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<AllVocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -123,6 +147,9 @@ namespace FamTec.Server.Services.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<VocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTO>(), code = 500 };
             }
         }
@@ -201,6 +228,9 @@ namespace FamTec.Server.Services.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<VocEmployeeDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -492,6 +522,9 @@ namespace FamTec.Server.Services.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -534,6 +567,9 @@ namespace FamTec.Server.Services.Voc
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return false;
             }
         }
@@ -582,6 +618,9 @@ namespace FamTec.Server.Services.Voc
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

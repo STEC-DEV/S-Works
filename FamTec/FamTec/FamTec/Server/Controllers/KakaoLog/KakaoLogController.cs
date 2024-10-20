@@ -13,13 +13,32 @@ namespace FamTec.Server.Controllers.KakaoLog
     [ApiController]
     public class KakaoLogController : ControllerBase
     {
-        private IKakaoLogService KakaoLogService;
-        private ILogService LogService;
-        
-        public KakaoLogController(IKakaoLogService _kakaologservice, ILogService _logservice)
+        private readonly IKakaoLogService KakaoLogService;
+        private readonly ILogService LogService;
+        private readonly ILogger<KakaoLogController> BuilderLogger;
+
+        public KakaoLogController(IKakaoLogService _kakaologservice,
+            ILogService _logservice,
+            ILogger<KakaoLogController> _builderlogger)
         {
             this.KakaoLogService = _kakaologservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -50,6 +69,9 @@ namespace FamTec.Server.Controllers.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -81,6 +103,9 @@ namespace FamTec.Server.Controllers.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -116,6 +141,9 @@ namespace FamTec.Server.Controllers.KakaoLog
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

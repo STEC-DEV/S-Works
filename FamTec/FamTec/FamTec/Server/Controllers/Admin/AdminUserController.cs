@@ -15,25 +15,44 @@ namespace FamTec.Server.Controllers.Admin
     [ApiController]
     public class AdminUserController : ControllerBase
     {
-        private IAdminAccountService AdminAccountService;
-        private IAdminPlaceService AdminPlaceService;
-        private IFileService FileService;
-        private ILogService LogService;
-        private ICommService CommService;
+        private readonly IAdminAccountService AdminAccountService;
+        private readonly IAdminPlaceService AdminPlaceService;
+        private readonly ICommService CommService;
+        
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<AdminUserController> BuilderLogger;
 
         public AdminUserController(IAdminAccountService _adminservice,
             IAdminPlaceService _adminplaceservice,
-            IFileService _fileservice,
             ICommService _commservice,
-            ILogService _logservice)
+            IFileService _fileservice,
+            ILogService _logservice,
+            ILogger<AdminUserController> _builderlogger)
         {
             this.AdminAccountService = _adminservice;
             this.AdminPlaceService = _adminplaceservice;
-            this.FileService = _fileservice;
             this.CommService = _commservice;
+            
+            this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
         }
 
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// 관리자아이디 생성
@@ -104,6 +123,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -136,6 +158,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -168,6 +193,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -206,6 +234,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -259,6 +290,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -328,6 +362,9 @@ namespace FamTec.Server.Controllers.Admin
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -363,10 +400,12 @@ namespace FamTec.Server.Controllers.Admin
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
 
     }
 }

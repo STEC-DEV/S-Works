@@ -14,20 +14,40 @@ namespace FamTec.Server.Controllers.User
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserService UserService;
-        private IFileService FileService;
-        private ILogService LogService;
-        private ICommService CommService;
+        private readonly IUserService UserService;
+        private readonly ICommService CommService;
+        
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<UserController> BuilderLogger;
 
         public UserController(IUserService _userservice,
             IFileService _fileservice,
             ICommService _commservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<UserController> _builderlogger)
         {
             this.UserService = _userservice;
-            this.FileService = _fileservice;
             this.CommService = _commservice;
+            
+            this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -57,6 +77,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -139,6 +162,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -165,6 +191,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -198,6 +227,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -273,6 +305,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -328,6 +363,9 @@ namespace FamTec.Server.Controllers.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

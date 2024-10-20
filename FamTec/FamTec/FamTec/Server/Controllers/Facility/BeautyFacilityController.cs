@@ -13,17 +13,36 @@ namespace FamTec.Server.Controllers.Facility
     [ApiController]
     public class BeautyFacilityController : ControllerBase
     {
-        private IBeautyFacilityService BeautyFacilityService;
-        private IFileService FileService;
-        private ILogService LogService;
+        private readonly IBeautyFacilityService BeautyFacilityService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<BeautyFacilityController> BuilderLogger;
 
         public BeautyFacilityController(IBeautyFacilityService _beautyfacilityservice,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BeautyFacilityController> _builderlogger)
         {
             this.BeautyFacilityService = _beautyfacilityservice;
+            
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -82,6 +101,9 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -114,6 +136,9 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -146,6 +171,9 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -208,6 +236,9 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -233,7 +264,6 @@ namespace FamTec.Server.Controllers.Facility
                 if(delIdx.Count() == 0)
                     return NoContent();
 
-
                 ResponseUnit<bool?> model = await BeautyFacilityService.DeleteBeautyFacilityService(HttpContext, delIdx).ConfigureAwait(false);
                 
                 if (model is null)
@@ -247,6 +277,9 @@ namespace FamTec.Server.Controllers.Facility
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

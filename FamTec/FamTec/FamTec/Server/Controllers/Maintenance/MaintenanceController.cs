@@ -1,7 +1,7 @@
 ﻿using FamTec.Server.Middleware;
-using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Maintenance;
+using FamTec.Server.Services.UseMaintenence;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
@@ -15,21 +15,127 @@ namespace FamTec.Server.Controllers.Maintenance
     [ApiController]
     public class MaintenanceController : ControllerBase
     {
-        private IMaintanceService MaintanceService;
-        private IFileService FileService;
-        private ILogService LogService;
-        private IMaintanceRepository MaintanceRepository;
+        private readonly IMaintanceService MaintanceService;
+        private readonly IUseMaintenenceService UseMaintenenceService;
+                
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<MaintenanceController> BuilderLogger;
 
         public MaintenanceController(IMaintanceService _maintanceservice,
-            IMaintanceRepository _maintancerepository,
+            IUseMaintenenceService _usermaintenenceservice,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<MaintenanceController> _builderlogger)
         {
             this.MaintanceService = _maintanceservice;
-            this.MaintanceRepository = _maintancerepository;
+            this.UseMaintenenceService = _usermaintenenceservice;
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        //[HttpGet]
+        [Route("sign/UpdateSupMaintenance")]
+        //public async Task<IActionResult> UpdateSupMaintenance()
+        public async Task<IActionResult> UpdateSupMaintenance([FromBody]UpdateMaintancematerialDTO dto)
+        {
+            try
+            {
+                //Logger.LogInformation(dto.ToString());
+                //Logger.LogWarning("테스트-------------------------");
+                //return Ok("asdgasdg");
+
+                //UpdateMaintancematerialDTO dto = new UpdateMaintancematerialDTO();
+                //dto.MaintanceID = 1;
+
+                ////추가 출고
+                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
+                //{
+                //    UseID = 20,
+                //    RoomID = 3,
+                //    Num = 400,
+                //    MaterialID = 1
+                //});
+
+                // 재입고
+                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
+                //{ 
+                //    UseID = 21,
+                //    RoomID = 3,
+                //    Num = 95,
+                //    MaterialID = 1,
+                //});
+
+                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
+                //{
+                //    UseID = 1,
+                //    Num = 100,
+                //});
+
+                // 쌩출고
+                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
+                //{
+                //    Num = 100,
+                //    RoomID = 3,
+                //    MaterialID = 1,
+                //});
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (dto.MaintanceID is 0)
+                    return NoContent();
+
+                if (dto.UpdateUsematerialDTO is [_, ..])
+                {
+                    foreach (var item in dto.UpdateUsematerialDTO)
+                    {
+                        if (item.RoomID is 0)
+                            return NoContent();
+                        if (item.MaterialID is 0)
+                            return NoContent();
+                    }
+                }
+
+                ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(HttpContext, dto).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else if (model.code == 401)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         /// <summary>
@@ -102,6 +208,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -121,7 +230,7 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                if (dto.Id == 0)
+                if (dto.MaintanceID == 0)
                     return BadRequest();
                     
                 //UpdateMaintenanceDTO dto = new UpdateMaintenanceDTO();
@@ -158,6 +267,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -204,6 +316,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -306,6 +421,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -337,6 +455,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -363,6 +484,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -403,6 +527,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -451,6 +578,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -503,6 +633,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }
@@ -549,6 +682,9 @@ namespace FamTec.Server.Controllers.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
         }

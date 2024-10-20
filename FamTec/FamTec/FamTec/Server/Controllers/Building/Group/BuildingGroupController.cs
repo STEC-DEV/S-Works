@@ -13,15 +13,35 @@ namespace FamTec.Server.Controllers.Building.Group
     [ApiController]
     public class BuildingGroupController : ControllerBase
     {
-        private IBuildingGroupService GroupService;
-        private ILogService LogService;
+        private readonly IBuildingGroupService GroupService;
+        private readonly ILogService LogService;
+        private readonly ILogger<BuildingGroupController> BuilderLogger;
 
         public BuildingGroupController(IBuildingGroupService _groupservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BuildingGroupController> _builderlogger)
         {
             this.GroupService = _groupservice;
+            
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
         }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -51,6 +71,9 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -133,8 +156,6 @@ namespace FamTec.Server.Controllers.Building.Group
                         {
                             if (String.IsNullOrWhiteSpace(key.Name))
                                 return NoContent();
-                            if (String.IsNullOrWhiteSpace(key.Unit))
-                                return NoContent();
 
                             if (key.ItemValues is [_, ..])
                             {
@@ -167,6 +188,9 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -199,6 +223,9 @@ namespace FamTec.Server.Controllers.Building.Group
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -237,6 +264,9 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -263,6 +293,9 @@ namespace FamTec.Server.Controllers.Building.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

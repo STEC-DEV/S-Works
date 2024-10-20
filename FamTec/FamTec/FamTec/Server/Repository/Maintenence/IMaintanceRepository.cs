@@ -80,14 +80,14 @@ namespace FamTec.Server.Repository.Maintenence
         Task<List<AllMaintanceHistoryDTO>?> GetAllHistoryList(int placeid, List<string> Category, List<int> type);
 
         /// <summary>
-        /// 유지보수 상세조회
+        /// 기존건 유지보수 상세조회
         /// </summary>
         /// <param name="MaintanceID"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
         Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid);
 
-        
+       
 
         /// <summary>
         /// 유지보수용 출고내용 삭제

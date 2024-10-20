@@ -10,8 +10,10 @@ namespace FamTec.Server.Services.Facility.Type.Lift
     {
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
-        private IFileService FileService;
+        private readonly IFileService FileService;
         private readonly ILogService LogService;
+
+        private readonly ILogger<LiftFacilityService> BuilderLogger;
 
         private DirectoryInfo? di;
         private string? LiftFileFolderPath;
@@ -20,12 +22,33 @@ namespace FamTec.Server.Services.Facility.Type.Lift
            IFacilityInfoRepository _facilityinforepository,
            IRoomInfoRepository _roominforepository,
            IFileService _fileservice,
-           ILogService _logService)
+           ILogService _logService,
+           ILogger<LiftFacilityService> _builderservice)
         {
             this.FacilityInfoRepository = _facilityinforepository;
             this.RoomInfoRepository = _roominforepository;
             this.FileService = _fileservice;
             this.LogService = _logService;
+            this.BuilderLogger = _builderservice;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -125,6 +148,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
         }
@@ -159,6 +185,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<FacilityListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -215,6 +244,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<FacilityDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -347,6 +379,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                         catch(Exception ex)
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -359,6 +394,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                         catch(Exception ex)
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -368,6 +406,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -404,6 +445,9 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

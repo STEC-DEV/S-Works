@@ -27,7 +27,8 @@ namespace FamTec.Server.Services.User
 
         private readonly IFileService FileService;
         private readonly IConfiguration Configuration;
-        private ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ILogger<UserService> BuilderLogger;
 
         DirectoryInfo? di;
         string? PlaceFileFolderPath = String.Empty;
@@ -38,7 +39,8 @@ namespace FamTec.Server.Services.User
             IPlaceInfoRepository _placeinforpeository,
             IConfiguration _configuration,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<UserService> _builderlogger)
         {
             this.UserInfoRepository = _userinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
@@ -48,8 +50,28 @@ namespace FamTec.Server.Services.User
             this.FileService = _fileservice;
             this.Configuration = _configuration;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
         }
-     
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto)
         {
             try
@@ -285,6 +307,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -517,6 +542,9 @@ namespace FamTec.Server.Services.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -718,6 +746,9 @@ namespace FamTec.Server.Services.User
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -769,6 +800,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<ListUser>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<ListUser>(), code = 500 };
             }
         }
@@ -881,6 +915,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -974,6 +1011,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
@@ -1194,6 +1234,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<UsersDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UsersDTO(), code = 500 };
             }
         }
@@ -1354,6 +1397,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -1400,6 +1446,9 @@ namespace FamTec.Server.Services.User
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<PlacePermissionDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

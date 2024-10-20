@@ -14,34 +14,58 @@ namespace FamTec.Server.Controllers.UseMaintenence
     [ApiController]
     public class UseMaintenenceController : ControllerBase
     {
-        private IUseMaintenenceService UseMaintenenceService;
-        private ILogService LogService;
+        private readonly IUseMaintenenceService UseMaintenenceService;
+        
+        private readonly ILogService LogService;
+        private readonly ILogger<UseMaintenenceController> BuilderLogger;
 
-        public UseMaintenenceController(IUseMaintenenceService _usemaintenenceservice, ILogService _logservice)
+        public UseMaintenenceController(IUseMaintenenceService _usemaintenenceservice,
+            ILogService _logservice,
+            ILogger<UseMaintenenceController> builderLogger)
         {
             this.UseMaintenenceService = _usemaintenenceservice;
+            
             this.LogService = _logservice;
+            this.BuilderLogger = builderLogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
-        /// 사용자재 상세보기 - 재고수량 있음.
+        /// 사용자재 상세보기 - [여기]
         /// </summary>
         /// <param name="useid"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDetailUseMaterial")]
-        public async Task<IActionResult> GetDetailUseMaterial([FromQuery]int useid)
+        public async Task<IActionResult> GetDetailUseMaterial([FromQuery]int useid, [FromQuery]int materialid, [FromQuery]int roomid)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                if (useid is 0)
+                if (materialid is 0)
+                    return NoContent();
+                
+                if (roomid is 0)
                     return NoContent();
 
-                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(HttpContext, useid).ConfigureAwait(false);
+                ResponseUnit<UseMaterialDetailDTO>? model = await UseMaintenenceService.GetDetailUseMaterialService(HttpContext, useid, materialid, roomid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -53,6 +77,9 @@ namespace FamTec.Server.Controllers.UseMaintenence
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -98,6 +125,9 @@ namespace FamTec.Server.Controllers.UseMaintenence
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

@@ -13,13 +13,36 @@ namespace FamTec.Server.Repository.Inventory
     public class InventoryInfoRepository : IInventoryInfoRepository
     {
         private readonly WorksContext context;
-        private ILogService LogService;
+        
+        private readonly ILogService LogService;
+        private readonly ILogger<InventoryInfoRepository> BuilderLogger;
 
         public InventoryInfoRepository(WorksContext _context,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<InventoryInfoRepository> _builderlogger)
         {
             this.context = _context;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -119,29 +142,47 @@ namespace FamTec.Server.Repository.Inventory
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
                     catch (DbUpdateConcurrencyException ex) // 다른곳에서 해당 품목을 사용중입니다.
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return -1;
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                 }
@@ -200,45 +241,79 @@ namespace FamTec.Server.Repository.Inventory
                     .ToListAsync()
                     .ConfigureAwait(false);
 
-                // 4. DTO 생성
+                // 4. DTO 생성 -- StoreList 순으로 정렬해야함****
                 List<PeriodicDTO> dtoList = materials.Select(material => new PeriodicDTO
                 {
                     ID = material.Id,
                     Code = material.Code,
                     Name = material.Name,
                     InventoryList = storeList
-                        .Where(s => s.MaterialTbId == material.Id)
-                        .Select(s => new InventoryRecord
-                        {
-                            INOUT_DATE = s.CreateDt,
-                            Type = s.Inout,
-                            ID = s.MaterialTbId,
-                            Code = material.Code,
-                            Name = material.Name,
-                            MaterialUnit = material.Unit,
-                            InOutNum = s.Num,
-                            InOutUnitPrice = s.UnitPrice,
-                            InOutTotalPrice = s.TotalPrice,
-                            CurrentNum = s.CurrentNum,
-                            Note = s.Note,
-                            MaintanceId = s.MaintenenceHistoryTbId,
-                            Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
-                        })
-                        .OrderByDescending(r => r.INOUT_DATE)
-                        .ToList()
-                }).OrderBy(dto => dto.ID)
-                .ToList();
+                     .Where(s => s.MaterialTbId == material.Id)
+                     .Select(s => new InventoryRecord
+                     {
+                         INOUT_DATE = s.CreateDt,
+                         Type = s.Inout,
+                         ID = s.Id, // storeList의 ID 사용
+                         Code = material.Code,
+                         Name = material.Name,
+                         MaterialUnit = material.Unit,
+                         InOutNum = s.Num,
+                         InOutUnitPrice = s.UnitPrice,
+                         InOutTotalPrice = s.TotalPrice,
+                         CurrentNum = s.CurrentNum,
+                         Note = s.Note,
+                         MaintanceId = s.MaintenenceHistoryTbId,
+                         Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
+                     })
+                     .OrderByDescending(r => r.ID)  // storeList의 ID로 내림차순 정렬
+                     .ToList()
+                        }).OrderBy(dto => dto.ID) // PeriodicDTO의 ID는 오름차순 정렬
+             .ToList();
+
+                //List<PeriodicDTO> dtoList = materials.Select(material => new PeriodicDTO
+                //{
+                //    ID = material.Id,
+                //    Code = material.Code,
+                //    Name = material.Name,
+                //    InventoryList = storeList
+                //        .Where(s => s.MaterialTbId == material.Id)
+                //        .Select(s => new InventoryRecord
+                //        {
+                //            INOUT_DATE = s.CreateDt,
+                //            Type = s.Inout,
+                //            ID = s.MaterialTbId,
+                //            Code = material.Code,
+                //            Name = material.Name,
+                //            MaterialUnit = material.Unit,
+                //            InOutNum = s.Num,
+                //            InOutUnitPrice = s.UnitPrice,
+                //            InOutTotalPrice = s.TotalPrice,
+                //            CurrentNum = s.CurrentNum,
+                //            Note = s.Note,
+                //            MaintanceId = s.MaintenenceHistoryTbId,
+                //            Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
+                //        })
+                //        .OrderByDescending(r => r.INOUT_DATE)
+                //        .ToList()
+                //}).OrderBy(dto => dto.ID)
+                //.ToList();
 
                 return dtoList.Any() ? dtoList : new List<PeriodicDTO>();
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
 
@@ -620,14 +695,20 @@ namespace FamTec.Server.Repository.Inventory
                     }
                 }
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return null;
             }
         }
@@ -672,14 +753,20 @@ namespace FamTec.Server.Repository.Inventory
                 else // 개수 조회결과가 아에없음
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -697,14 +784,20 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1039,21 +1132,36 @@ namespace FamTec.Server.Repository.Inventory
                         ReturnResult.ReturnResult = -1;
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
@@ -1061,6 +1169,9 @@ namespace FamTec.Server.Repository.Inventory
                         ReturnResult.ReturnResult = -2;
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                 }
@@ -1091,14 +1202,20 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return null;
             }
            
@@ -1140,6 +1257,9 @@ namespace FamTec.Server.Repository.Inventory
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1200,14 +1320,20 @@ namespace FamTec.Server.Repository.Inventory
                     return new List<InOutLocationDTO>();
                 }
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1300,19 +1426,28 @@ namespace FamTec.Server.Repository.Inventory
                 else
                     return new List<InOutInventoryDTO>();
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException ex)
             {
-                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }

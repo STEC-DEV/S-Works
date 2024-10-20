@@ -15,19 +15,42 @@ namespace FamTec.Server.Repository.Maintenence
     {
         private readonly WorksContext context;
 
-        private IFileService FileService;
-        private ILogService LogService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<MaintanceRepository> BuilderLogger;
 
         private DirectoryInfo? di;
         private string? MaintanceFileFolderPath;
 
         public MaintanceRepository(WorksContext _context,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<MaintanceRepository> _builderlogger)
         {
             this.context = _context;
+            
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -48,14 +71,20 @@ namespace FamTec.Server.Repository.Maintenence
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -78,19 +107,28 @@ namespace FamTec.Server.Repository.Maintenence
                 else
                     return false;
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException ex)
             {
-                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -170,14 +208,20 @@ namespace FamTec.Server.Repository.Maintenence
 
                 return maintanceDTO;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -249,28 +293,46 @@ namespace FamTec.Server.Repository.Maintenence
                         /* 다른곳에서 해당 품목을 사용중입니다.*/
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return false;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션 롤백
                         LogService.LogMessage(ex.ToString());
-                        throw new ArgumentNullException();
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
+                        throw;
                     }
                 }
             });
@@ -343,21 +405,36 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         ReturnResult.ReturnResult = -1;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
@@ -365,6 +442,9 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
                         ReturnResult.ReturnResult = -2;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                 }
@@ -788,21 +868,36 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         ReturnResult.ReturnResult = -1;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
@@ -810,6 +905,9 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
                         ReturnResult.ReturnResult = -2;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                 }
@@ -897,14 +995,20 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
                 }
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1065,12 +1169,6 @@ namespace FamTec.Server.Repository.Maintenence
                             .ToListAsync()
                             .ConfigureAwait(false);
 
-                        if (UseMaterialList is null)
-                        {
-                            await transaction.RollbackAsync().ConfigureAwait(false);
-                            return false;
-                        }
-
                         float totalPrice = UseMaterialList.Sum(m => m.Totalprice);
 
                         MaintanceHistoryTB.UpdateDt = ThisDate;
@@ -1094,21 +1192,36 @@ namespace FamTec.Server.Repository.Maintenence
                         // 다른곳에서 해당 품목을 사용중입니다.
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return false;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
@@ -1116,6 +1229,9 @@ namespace FamTec.Server.Repository.Maintenence
                         // 에러 처리
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return false;
                     }
                 }
@@ -1286,27 +1402,45 @@ namespace FamTec.Server.Repository.Maintenence
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return false;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return null;
                     }
                 }
@@ -1354,14 +1488,20 @@ namespace FamTec.Server.Repository.Maintenence
                 else // 개수 조회결과가 아에없음
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1470,14 +1610,20 @@ namespace FamTec.Server.Repository.Maintenence
                 else
                     return null;
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -1546,6 +1692,8 @@ namespace FamTec.Server.Repository.Maintenence
                                                           m.DelYn != true)
                                 .ConfigureAwait(false);
 
+                            HistoryModel.Maintenanceid = HistoryTB.Id; // 유지보수 ID
+                            HistoryModel.FacilityId = HistoryTB.FacilityTbId; // 설비ID
                             HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
                             HistoryModel.WorkDT = HistoryTB.Workdt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
                             HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
@@ -1588,14 +1736,20 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;
                 }
             }
-            catch (MySqlException mysqlEx)
+            catch (MySqlException ex)
             {
-                LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 throw;
             }
         }
@@ -2269,21 +2423,36 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
                         ReturnResult.ReturnResult = -1;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))
                     {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
-                    catch (DbUpdateException dbEx)
+                    catch (DbUpdateException ex)
                     {
-                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {dbEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
-                    catch (MySqlException mysqlEx)
+                    catch (MySqlException ex)
                     {
-                        LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         throw;
                     }
                     catch (Exception ex)
@@ -2291,11 +2460,16 @@ namespace FamTec.Server.Repository.Maintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
                         ReturnResult.ReturnResult = -2;
+#if DEBUG
+                        CreateBuilderLogger(ex);
+#endif
                         return ReturnResult;
                     }
                 }
             });
         }
+
+      
 
         /// <summary>
         /// 데드락 감지코드
@@ -2314,5 +2488,7 @@ namespace FamTec.Server.Repository.Maintenence
 
             return false;
         }
+
+    
     }
 }

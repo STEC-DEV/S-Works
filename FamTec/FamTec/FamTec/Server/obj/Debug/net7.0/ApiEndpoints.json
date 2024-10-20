@@ -3618,12 +3618,12 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Id",
+        "Name": "MaintanceID",
         "Type": "System.Int32",
         "IsRequired": false
       },
       {
-        "Name": "Name",
+        "Name": "WorkName",
         "Type": "System.String",
         "IsRequired": false
       },
@@ -3661,6 +3661,22 @@
         "Name": "FileName",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Maintenance.MaintenanceController",
+    "Method": "UpdateSupMaintenance",
+    "RelativePath": "api/Maintenance/sign/UpdateSupMaintenance",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FamTec.Shared.Server.DTO.Maintenence.UpdateMaintancematerialDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -4802,6 +4818,16 @@
     "Parameters": [
       {
         "Name": "useid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "materialid",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "roomid",
         "Type": "System.Int32",
         "IsRequired": false
       }

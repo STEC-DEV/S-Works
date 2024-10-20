@@ -33,7 +33,7 @@ public partial class FacilityItemKeyTb
     /// </summary>
     [Column("UNIT")]
     [StringLength(255)]
-    public string Unit { get; set; } = null!;
+    public string? Unit { get; set; }
 
     /// <summary>
     /// 생성일자

@@ -13,17 +13,35 @@ namespace FamTec.Server.Controllers.Material
     [ApiController]
     public class MaterialController : ControllerBase
     {
-        private IMaterialService MaterialService;
-        private IFileService FileService;
-        private ILogService LogService;
+        private readonly IMaterialService MaterialService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<MaterialController> BuilderLogger;
 
         public MaterialController(IMaterialService _materialservice,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<MaterialController> _builderlogger)
         {
             this.MaterialService = _materialservice;
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -83,6 +101,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -113,6 +134,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -144,6 +168,9 @@ namespace FamTec.Server.Controllers.Material
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -175,6 +202,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -216,6 +246,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -267,6 +300,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -325,6 +361,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -362,6 +401,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -408,6 +450,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
@@ -442,6 +487,9 @@ namespace FamTec.Server.Controllers.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }

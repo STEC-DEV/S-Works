@@ -11,8 +11,10 @@ namespace FamTec.Server.Services.Building
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
 
-        private IFileService FileService;
-        private ILogService LogService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+
+        private readonly ILogger<BuildingService> BuilderLogger;
 
         // 파일디렉토리
         private DirectoryInfo? di;
@@ -22,13 +24,34 @@ namespace FamTec.Server.Services.Building
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<BuildingService> _builderlogger)
         {
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -53,6 +76,9 @@ namespace FamTec.Server.Services.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -214,6 +240,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<AddBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -260,6 +289,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -306,6 +338,9 @@ namespace FamTec.Server.Services.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<BuildinglistDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -346,6 +381,9 @@ namespace FamTec.Server.Services.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<PlaceBuildingNameDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -438,6 +476,9 @@ namespace FamTec.Server.Services.Building
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<DetailBuildingDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -611,6 +652,9 @@ namespace FamTec.Server.Services.Building
                         catch(Exception ex)
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -623,6 +667,9 @@ namespace FamTec.Server.Services.Building
                         catch(Exception ex)
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -632,6 +679,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -676,6 +726,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -728,6 +781,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<PlaceBuildingListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -750,6 +806,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -790,6 +849,9 @@ namespace FamTec.Server.Services.Building
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<PlaceBuildingNameDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

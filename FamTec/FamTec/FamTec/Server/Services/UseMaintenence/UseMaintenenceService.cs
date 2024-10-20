@@ -9,13 +9,35 @@ namespace FamTec.Server.Services.UseMaintenence
     public class UseMaintenenceService : IUseMaintenenceService
     {
         private readonly IUseMaintenenceInfoRepository UseMaintenenceInfoRepository;
-        private ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ILogger<UseMaintenenceService> BuilderLogger;
 
         public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<UseMaintenenceService> _builderlogger)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -25,7 +47,7 @@ namespace FamTec.Server.Services.UseMaintenence
         /// <param name="usematerialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid)
+        public async Task<ResponseUnit<UseMaterialDetailDTO>> GetDetailUseMaterialService(HttpContext context, int usematerialid, int materialid, int roomid)
         {
             try
             {
@@ -36,15 +58,31 @@ namespace FamTec.Server.Services.UseMaintenence
                 if(String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.GetDetailUseStoreList(usematerialid, Int32.Parse(placeid)).ConfigureAwait(false);
-                if (model is not null)
-                    return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                if(usematerialid > 0)
+                {
+                    // 수정건
+                    UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.GetDetailUseStoreList(usematerialid, Int32.Parse(placeid)).ConfigureAwait(false);
+                    if (model is not null)
+                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    else
+                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
                 else
-                    return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                {
+                    // 신규건
+                    UseMaterialDetailDTO? model = await UseMaintenenceInfoRepository.New_GetDetailUseStoreList(materialid, roomid, Int32.Parse(placeid)).ConfigureAwait(false);
+                    if (model is not null)
+                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    else
+                        return new ResponseUnit<UseMaterialDetailDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                }
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<UseMaterialDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -146,7 +184,44 @@ namespace FamTec.Server.Services.UseMaintenence
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        public async Task<ResponseUnit<bool?>> UpdateUseMaintanceService(HttpContext context, UpdateMaintancematerialDTO dto)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                string? updater = Convert.ToString(context.Items["Name"]);
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                int result = await UseMaintenenceInfoRepository.UpdateUseMaintance(dto, Convert.ToInt32(placeid), updater).ConfigureAwait(false);
+                if (result == 1)
+                    return new ResponseUnit<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
+                else if (result == -1)
+                    return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                else if (result == -2)
+                    return new ResponseUnit<bool?>() { message = "수량이 부족합니다.", data = false, code = 204 };
+                else if (result == -3)
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 401 };
+                else
+                    return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
+                return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

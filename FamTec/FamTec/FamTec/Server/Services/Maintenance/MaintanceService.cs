@@ -14,9 +14,10 @@ namespace FamTec.Server.Services.Maintenance
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
 
-        private IFileService FileService;
-        private ILogService LogService;
-        
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<MaintanceService> BuilderLogger;
+
         private string? MaintanceFileFolderPath;
         private DirectoryInfo? di;
 
@@ -24,7 +25,8 @@ namespace FamTec.Server.Services.Maintenance
             IFacilityInfoRepository _facilityinforepository,
             IUserInfoRepository _userinforepository,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<MaintanceService> _builderlogger)
         {
             this.MaintanceRepository = _maintancerepository;
             this.FacilityInfoRepository = _facilityinforepository;
@@ -32,6 +34,26 @@ namespace FamTec.Server.Services.Maintenance
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
@@ -56,6 +78,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -114,6 +139,9 @@ namespace FamTec.Server.Services.Maintenance
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -151,6 +179,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -184,6 +215,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -218,6 +252,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다", data = null, code = 500 };
             }
         }
@@ -256,6 +293,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaintanceListDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -321,6 +361,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -385,6 +428,9 @@ namespace FamTec.Server.Services.Maintenance
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<AllMaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -406,15 +452,21 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+             
+                // 수정임
                 DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid)).ConfigureAwait(false);
                 if (model is not null)
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+               
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<DetailMaintanceDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -455,12 +507,12 @@ namespace FamTec.Server.Services.Maintenance
                 di = new DirectoryInfo(MaintanceFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                MaintenenceHistoryTb? model = await MaintanceRepository.GetMaintenanceInfo(dto.Id).ConfigureAwait(false);
+                MaintenenceHistoryTb? model = await MaintanceRepository.GetMaintenanceInfo(dto.MaintanceID).ConfigureAwait(false);
 
                 if(model is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                model.Name = dto.Name!; // 유지보수명
+                model.Name = dto.WorkName!; // 유지보수명
                 model.Worker = dto.Worker!; // 작업자
                 model.UpdateDt = ThisDate;
                 model.UpdateUser = updater;
@@ -544,6 +596,9 @@ namespace FamTec.Server.Services.Maintenance
                         catch (Exception ex)
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -556,6 +611,9 @@ namespace FamTec.Server.Services.Maintenance
                         catch (Exception ex)
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -565,6 +623,9 @@ namespace FamTec.Server.Services.Maintenance
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

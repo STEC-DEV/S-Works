@@ -5,7 +5,6 @@ using FamTec.Server.Services.Meter.Energy;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Meter.Energy;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Meter.Energy
@@ -15,18 +14,35 @@ namespace FamTec.Server.Controllers.Meter.Energy
     [ApiController]
     public class EnergyController : ControllerBase
     {
-        private IEnergyService EnergyService;
-        private ILogService LogService;
-        private IEnergyInfoRepository EnergyInfoRepository;
-
+        private readonly IEnergyService EnergyService;
+        private readonly ILogService LogService;
+        private readonly IEnergyInfoRepository EnergyInfoRepository;
+        private readonly ILogger<EnergyController> BuilderLogger;
 
         public EnergyController(IEnergyService _energyservice,
             IEnergyInfoRepository _energyinforepository,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<EnergyController> _builderlogger)
         {
             this.EnergyService = _energyservice;
             this.EnergyInfoRepository = _energyinforepository;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -70,6 +86,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -96,6 +115,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -118,6 +140,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -143,6 +168,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -168,6 +196,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -192,6 +223,9 @@ namespace FamTec.Server.Controllers.Meter.Energy
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

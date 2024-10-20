@@ -6,12 +6,12 @@
         /// <summary>
         /// 유지보수 ID
         /// </summary>
-        public int Id { get; set; }
+        public int MaintanceID { get; set; }
         
         /// <summary>
         /// 작업명
         /// </summary>
-        public string? Name { get; set; }
+        public string? WorkName { get; set; }
 
         /// <summary>
         /// 작업자

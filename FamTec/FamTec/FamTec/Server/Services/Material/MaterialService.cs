@@ -18,8 +18,9 @@ namespace FamTec.Server.Services.Material
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IFloorInfoRepository FloorInfoRepository;
 
-        private IFileService FileService;
-        private ILogService LogService;
+        private readonly IFileService FileService;
+        private readonly ILogService LogService;
+        private readonly ILogger<MaterialService> BuilderLogger;
 
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
@@ -30,7 +31,8 @@ namespace FamTec.Server.Services.Material
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<MaterialService> _builderlogger)
         {
             this.MaterialInfoRepository = _materialinforepository;
             this.InventoryInfoRepository = _inventoryinforepository;
@@ -40,8 +42,28 @@ namespace FamTec.Server.Services.Material
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
         }
-        
+
+        /// <summary>
+        /// ASP - 빌드로그
+        /// </summary>
+        /// <param name="ex"></param>
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// 자재추가
         /// </summary>
@@ -124,6 +146,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<AddMaterialDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddMaterialDTO(), code = 500 };
             }
         }
@@ -174,6 +199,9 @@ namespace FamTec.Server.Services.Material
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaterialListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<MaterialListDTO>(), code = 500 };
             }
         }
@@ -212,6 +240,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -239,6 +270,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -290,6 +324,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaterialListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
 
             }
@@ -349,6 +386,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<DetailMaterialDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DetailMaterialDTO(), code = 500 };
             }
         }
@@ -482,6 +522,9 @@ namespace FamTec.Server.Services.Material
                         catch (Exception ex)
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -494,6 +537,9 @@ namespace FamTec.Server.Services.Material
                         catch (Exception ex)
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
+#if DEBUG
+                            CreateBuilderLogger(ex);
+#endif
                         }
                     }
 
@@ -503,6 +549,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
@@ -557,6 +606,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
         }
@@ -691,6 +743,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
@@ -721,6 +776,9 @@ namespace FamTec.Server.Services.Material
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }

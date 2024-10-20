@@ -24,6 +24,17 @@
     /// </summary>
     public class MaintanceHistoryDTO
     {
+
+        /// <summary>
+        /// 유지보수ID
+        /// </summary>
+        public int Maintenanceid { get; set; }
+        
+        /// <summary>
+        /// 설비ID
+        /// </summary>
+        public int FacilityId { get; set; }
+
         /// <summary>
         /// 설비유형
         /// </summary>
@@ -78,3 +89,6 @@
     }
 
 }
+
+
+

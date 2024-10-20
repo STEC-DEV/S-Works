@@ -13,14 +13,34 @@ namespace FamTec.Server.Controllers.Facility.Group
     [ApiController]
     public class FacilityGroupKeyController : ControllerBase
     {
-        private IFacilityKeyService FacilityKeyService;
-        private ILogService LogService;
+        private readonly IFacilityKeyService FacilityKeyService;
+        private readonly ILogService LogService;
+        private readonly ILogger<FacilityGroupKeyController> BuilderLogger;
 
         public FacilityGroupKeyController(IFacilityKeyService _facilitykeyservice,
-            ILogService _logservice)
+            ILogService _logservice,
+            ILogger<FacilityGroupKeyController> _builderlogger)
         {
             this.FacilityKeyService = _facilitykeyservice;
+            
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [AllowAnonymous]
@@ -39,9 +59,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                     return NoContent();
 
                 if (String.IsNullOrWhiteSpace(dto.Name))
-                    return NoContent();
-
-                if (String.IsNullOrWhiteSpace(dto.Unit))
                     return NoContent();
 
                 if(dto.ItemValues is [_, ..])
@@ -64,6 +81,9 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -100,6 +120,9 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -133,6 +156,9 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
@@ -160,6 +186,9 @@ namespace FamTec.Server.Controllers.Facility.Group
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }

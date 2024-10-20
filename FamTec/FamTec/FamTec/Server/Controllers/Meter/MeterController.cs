@@ -13,13 +13,34 @@ namespace FamTec.Server.Controllers.Meter
     [ApiController]
     public class MeterController : ControllerBase
     {
-        private IMeterService MeterService;
-        private ILogService LogService;
+        private readonly IMeterService MeterService;
 
-        public MeterController(IMeterService _meterservice, ILogService _logservice)
+        private readonly ILogService LogService;
+        private readonly ILogger<MeterController> BuilderLogger;
+
+        public MeterController(IMeterService _meterservice,
+            ILogService _logservice,
+            ILogger<MeterController> _builderlogger)
         {
             this.MeterService = _meterservice;
+
             this.LogService = _logservice;
+            this.BuilderLogger = _builderlogger;
+        }
+
+        private void CreateBuilderLogger(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
+                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
+                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
+                Console.ResetColor(); // 색상 초기화
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -72,6 +93,9 @@ namespace FamTec.Server.Controllers.Meter
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger(ex);
+#endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
