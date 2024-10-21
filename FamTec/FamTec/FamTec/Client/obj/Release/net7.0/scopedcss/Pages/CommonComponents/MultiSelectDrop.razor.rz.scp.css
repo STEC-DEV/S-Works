@@ -1,0 +1,112 @@
+.multi-select[b-95ao32x48a] {
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+    position: relative;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.row[b-95ao32x48a] {
+    flex-direction: row;
+    gap: var(--default-pd);
+    
+}
+
+.label[b-95ao32x48a] {
+    white-space : nowrap;
+    display: flex;
+    align-items : center;
+    font-weight: bold;
+    font-size: var(--normal-size);
+    color : var(--main-color);
+}
+.select-container[b-95ao32x48a] {
+    position: relative;
+    width: 100%;
+}
+
+.selectbox[b-95ao32x48a] {
+    /*position : relative;*/
+    width : 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    padding: var(--half-pd);
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    transition : all .3s;
+}
+.selectbox:hover[b-95ao32x48a]{
+    border : var(--default-bd);
+}
+.selectbox.active[b-95ao32x48a] {
+    border : var(--default-bd);
+}
+
+.display-title[b-95ao32x48a] {
+    font-size: var(--normal-size);
+    font-weight: bold;
+    color: var(--main-color);
+}
+.placeholder[b-95ao32x48a] {
+    color: #a1a1a1;
+    font-weight: 300;
+}
+.options[b-95ao32x48a] {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    max-height: 200px;
+    overflow-y: auto;
+    padding : var(--default-pd);
+    z-index: 10;
+    margin-top: 4px;
+    box-shadow: var(--shadow-1);
+    box-sizing: border-box; 
+}
+
+.option-item[b-95ao32x48a] {
+    padding: var(--half-pd);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius : 4px;
+    
+}
+
+/*.option-item:last-child {
+    border-bottom: none;
+}*/
+
+.option-item:hover[b-95ao32x48a] {
+    background-color: var(--main-color);
+    
+}
+
+.option-item:hover >span[b-95ao32x48a]{
+    color :white;
+}
+
+.option-item input[type="checkbox"][b-95ao32x48a] {
+    margin-right: 8px;
+}
+
+.option-item span[b-95ao32x48a] {
+    font-size: var(--normal-size);
+     
+    color : var(--main-color);
+}
+
+.selectbox.active + .options[b-95ao32x48a] {
+    display: block;
+}
+
