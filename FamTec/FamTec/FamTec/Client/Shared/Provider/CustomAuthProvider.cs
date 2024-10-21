@@ -72,6 +72,13 @@ namespace FamTec.Client.Shared.Provider
             return Convert.FromBase64String(base64);
         }
 
+        public async Task<string> GetUserName()
+        {
+            var user = await ReturnUserClaim();
+            string name = user.Claims.FirstOrDefault(c => c.Type == "Name")?.Value;
+            return name;
+        }
+
         //관리자에서 [시스템 관리자, 마스터] / [매니저] 구분 write권한
         public async Task<string> AdminRole()
         {

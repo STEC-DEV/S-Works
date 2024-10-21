@@ -9,7 +9,7 @@
             <tr class="th-tr">
                 <th class="th">
                     <span>
-                        작업 일자
+                        작업년월
                     </span>
                 </th>
                 <th class="th">
@@ -19,7 +19,7 @@
                 </th>
                 <th class="th">
                     <span>
-                        작업 구분
+                        작업구분
                     </span>
                 </th>
                 <th class="th">
@@ -65,7 +65,7 @@
                         @row.Name
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
-                        @(row.Type == 1 ? "자체 작업" : "외주 작업")
+                        @(row.Type == 0 ? "자체 작업" : "외주 작업")
                     </td>
                     <td class="td" @onclick="()=>OnDetail(row.ID)">
                         @row.Worker

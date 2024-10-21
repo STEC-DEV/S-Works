@@ -1,5 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using System.IdentityModel.Tokens.Jwt
+@using FamTec.Client.Pages.Voc.Add.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
@@ -12,12 +14,7 @@
         </span>
     </div>
     <div class="content"> 
-        <div class="col">
-            <label>작업자</label>
-            <span>
-                @WriterName
-            </span>
-        </div>
+        <TextField2 Label="작업자" Color=true Value="@WriterName"/>
         <div class="col">
             <InputSelectField 
                 Label="처리 상태" 
@@ -26,17 +23,33 @@
                 SelectedValue="@Comment.Status"
                 SelectedValueChanged="HandleSelectedValueChange"
                 />
+                
         </div>
-        <div class="col height">
-            <label>처리 내용</label>
-            <InputTextArea @bind-Value=@Comment.Content />
-        </div>
-        <div class="col">
-            <label>첨부 이미지</label>
-            @* <input type="file" multiple @bind-value=@Comment.ImageList /> *@
-            @* <InputFile OnChange="OnFileChange" multiple /> *@
-            <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
-        </div>
+        <VocInput Label="처리 내용"
+                  @bind-Value=@Comment.Content
+                  Placeholder="내용"
+                  TextArea=true
+                  Height=true />
+        @if (image.Count > 0)
+        {
+            <ImageSlider Label="처리 이미지" Images="@image" />
+            <ul class="ul">
+                @foreach (string i in _imageName)
+                {
+                    <li class="li">
+                        <span class="img-title">
+                            @i
+                        </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red"
+                             class="bi bi-x xicon" viewBox="0 0 16 16"
+                             @onclick="()=>OnDelImg(i)">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    </li>
+                }
+            </ul>
+        }
+        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
     </div>
     <div class="btns">
         <Button Name="등록" Type="0" OnClick="@OnAdd" />
@@ -49,9 +62,12 @@
     [Parameter] public int Id { get; set; }
     [Parameter] public EventCallback CloseModal { get; set; }
     [Parameter] public EventCallback OnChanged { get; set; }
-    
+
     AddCommentDTO Comment;
-    private List<IBrowserFile> browserFiles = new List<IBrowserFile>();
+    List<byte[]> image = new List<byte[]>();
+    List<string> _imageName = new List<string>();
+    // List<string> _imageName = new List<string>();
+    // List<int> emptyIdx = new List<int>();
 
     string text;
     string WriterName;
@@ -64,7 +80,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        WriterName = await (_authStateProvider as CustomAuthProvider).GetUserName();
         Comment = new AddCommentDTO();
+       
     }
 
 
@@ -96,23 +114,53 @@
 
     private async void OnUploadImage(List<ImageFile> images)
     {
-        List<byte[]> temp = new List<byte[]>();
-        List<string> names = new List<string>();
-        foreach (var image in images)
+        if (Comment.Images == null)
         {
-            temp.Add(image.Image);
-            names.Add(image.Name);
-
+            Comment.Images = new List<byte[]>();
+            Comment.ImageName = new List<string>();
         }
-        Comment.Image = temp;
-        Comment.ImageName = names;
-    }
 
+        foreach (var newImage in images)
+        {
+            if (Comment.Images.Count < 3)
+            {
+                Comment.Images.Add(newImage.Image);
+                Comment.ImageName.Add(newImage.Name);
+                image.Add(newImage.Image);
+                _imageName.Add(newImage.Name);
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "최대 3개의 이미지만 등록 가능합니다.");
+                break;
+            }
+        }
+
+        StateHasChanged();
+    }
 
     private void HandleSelectedValueChange(int value)
     {
         Comment.Status = value;
 
+    }
+
+
+    private async void OnDelImg(string name)
+    {
+        int index = _imageName.IndexOf(name);
+        if (index != -1)
+        {
+            image.RemoveAt(index);
+            _imageName.RemoveAt(index);
+            Comment.Images.RemoveAt(index);
+            Comment.ImageName.RemoveAt(index);
+            StateHasChanged();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 이미지입니다.");
+        }
     }
     
 }

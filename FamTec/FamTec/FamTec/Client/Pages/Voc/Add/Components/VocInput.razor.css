@@ -36,7 +36,8 @@
 
 .textarea {
     flex: 1; /* 추가 */
-    min-height: 50%; /* 변경 */
+    min-height: 150px; /* 변경 */
+    /*height : 300px;*/
     max-height: 100%; /* 추가 */
     border :none;
     outline :none;

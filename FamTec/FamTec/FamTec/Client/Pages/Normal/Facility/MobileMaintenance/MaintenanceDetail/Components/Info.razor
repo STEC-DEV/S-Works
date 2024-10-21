@@ -18,7 +18,7 @@
             }
         </div>
         <div class="grid">
-            <TextField2 Label="작업일자"
+            <TextField2 Label="작업년월"
                         Color=true
                         Row=true
                         Value="@Maintenance.WorkDT" />
@@ -29,7 +29,7 @@
             <TextField2 Label="위치"
                         Color=true
                         Row=true
-                        Value=@(Maintenance.Type == 1? "자체 작업" : "외주 작업") />
+                        Value=@(Maintenance.Type == 0? "자체 작업" : "외주 작업") />
             <TextField2 Label="작업자"
                         Color=true
                         Row=true

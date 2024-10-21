@@ -107,6 +107,9 @@
 
     private void OnDetail(int facId, int maintenanceid, string factype)
     {
+        Console.WriteLine("사업장 "+facId);
+        Console.WriteLine("유지보수 "+maintenanceid);
+        Console.WriteLine("타입 "+ factype);
         Navigation.NavigateTo($"/facility/{factype}/{facId}/maintenance/{maintenanceid}");
 
     }
@@ -135,6 +138,7 @@
 
     private string ConvertFactype(string type)
     {
+        Console.WriteLine("카테고리 변환 : "+ type);
         return EngFacType switch
         {
                     "기계"=>"machine",

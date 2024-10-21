@@ -3331,6 +3331,7 @@
 
 .img-wrap img[b-kv6760d2ya] {
     width:100%;
+    height:100%;
     /*height:100%;
     max-height: 100%;*/ /* 이미지가 부모의 높이를 넘지 않도록 설정 */
     border-radius : var(--default-rd);
@@ -3723,16 +3724,16 @@
 .selectfield-container .selectfield-select[b-iv6h6rvvwi] {
     display: none;
     position: absolute;
-    top:120%;
+    top: 120%;
     background-color: var(--default-color);
-    border: var(--input-bd);
+    border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: var(--one-q-pd);
     list-style: none;
     margin: 0;
     z-index: 1;
-    max-height:200px;
+    max-height: 200px;
 }
 
 .selectfield-container .reverse[b-iv6h6rvvwi]{
@@ -3751,7 +3752,9 @@
 
 
 .col .selectfield-wrap[b-iv6h6rvvwi] {
-    border: var(--input-bd);
+    /*border: var(--input-bd);*/
+    border: var(--comp-bd);
+    
     border-radius: var(--default-rd);
 }
 
@@ -13562,10 +13565,17 @@ modal-table[b-all74yxmu0]{
 
 
 .content[b-prp9p1j9tr] {
-    height: 100%;
+    /*height: 100%;
     display : flex;
     flex-direction : column;
     gap : var(--default-pd);
+    overflow: auto;*/
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: var(--default-pd);
     overflow: auto;
 }
 
@@ -13611,7 +13621,31 @@ modal-table[b-all74yxmu0]{
 .btns[b-prp9p1j9tr]{
     display : flex;
     gap : var(--default-pd);
+
 }
+
+.ul[b-prp9p1j9tr] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+}
+
+.li[b-prp9p1j9tr] {
+    display: flex;
+    gap: var(--half-pd);
+    align-items: center;
+    transition: all .3s;
+}
+
+.img-title[b-prp9p1j9tr] {
+    font-size: var(--explain-size);
+    font-weight: bold;
+}
+
+.xicon:hover[b-prp9p1j9tr] {
+    cursor: pointer;
+}
+
 /* /Pages/Normal/Voc/VocDetail/Modal/UpdateModal.razor.rz.scp.css */
 .modal[b-8aced3hzkr] {
     display: flex;
@@ -14593,6 +14627,22 @@ modal-table[b-all74yxmu0]{
     overflow : auto;
     
 }
+
+.item[b-0cxp5qukkw]{
+    display:flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.text[b-0cxp5qukkw]{
+}
+
+.subtext[b-0cxp5qukkw]{
+    display:block;
+    text-indent : 2rem;
+    font-weight:bold;
+    color : #8f8f8f;
+}
 /* /Pages/Voc/Add/Components/VocInput.razor.rz.scp.css */
 .inputfield[b-t973amhyoc]{
     display :flex;
@@ -14632,7 +14682,8 @@ modal-table[b-all74yxmu0]{
 
 .textarea[b-t973amhyoc] {
     flex: 1; /* 추가 */
-    min-height: 50%; /* 변경 */
+    min-height: 150px; /* 변경 */
+    /*height : 300px;*/
     max-height: 100%; /* 추가 */
     border :none;
     outline :none;
@@ -14918,6 +14969,7 @@ modal-table[b-all74yxmu0]{
 
 .full-width[b-lks9rc0458] {
     grid-column: 1 / -1;
+    align-content:center;
 }
 /* /Pages/Voc/Select/Components/StateBar.razor.rz.scp.css */
 .statebar[b-nawc4o3qgl]{

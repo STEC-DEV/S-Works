@@ -62,7 +62,14 @@
                 @* var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
                 int id = int.Parse(sid);
  *@
-
+                TimeSpan timespan = new TimeSpan();
+                Console.WriteLine(timespan);
+                if (!string.IsNullOrEmpty(row.DurationDT))
+                {
+                    timespan = TimeSpan.Parse(row.DurationDT);
+                }
+                
+            
                 <tr class="tbody-tr" @onclick="() => OnDeatail(row.Id)">
                     <td class="td">
                         @row.BuildingName
@@ -83,7 +90,16 @@
                         @row.CompleteDT
                     </td>
                     <td class="td">
-                        @(row.DurationDT?.Split(".")[0])
+                        @if (!string.IsNullOrEmpty(row.DurationDT))
+                        {
+                            @if (timespan.Days > 0)
+                            {
+                                @($"{timespan.Days} 일")
+
+                            }
+                            @($"{timespan.Hours}시간 {timespan.Minutes}분 {timespan.Seconds}초")
+                        }
+                        
                     </td>
                     <td class="td">
                         <StatusCard Status=@row.Status.ToString() />

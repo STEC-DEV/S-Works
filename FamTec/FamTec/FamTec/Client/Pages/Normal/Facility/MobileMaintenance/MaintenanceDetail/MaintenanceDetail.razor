@@ -10,7 +10,7 @@
 <div class="maintenance">
     <Info MaintenanceId="@MaintenanceId" Maintenance=Maintenance />
 
-     @if (Maintenance.Type == 1)
+     @if (Maintenance.Type == 0)
     {
         <Material
             ListData="@Maintenance.UseMaterialList" 
@@ -39,7 +39,9 @@
             Navigation.NavigateTo($"/m/sign/{PlaceId}/{FacType}/{FacId}");
             return;
         }
+        convertFactype();
         ReadPerm = await (_authStateProvider as CustomAuthProvider).HasFacilityReadPerm(TokenFacType);
+        // await JS.InvokeVoidAsync("alert", ReadPerm);
         Console.WriteLine($"{TokenFacType} 권한" + ReadPerm);
         if (!ReadPerm)
         {
@@ -93,6 +95,24 @@
         {
             await JS.InvokeVoidAsync("alert", "로그아웃 에러");
         }
+    }
+
+    private void convertFactype()
+    {
+        TokenFacType = FacType switch
+        {
+            "machine" => "UserPerm_Machine",
+            "electronic" => "UserPerm_Elec",
+            "lift" => "UserPerm_Lift",
+            "fire" => "UserPerm_Fire",
+            "construct" => "UserPerm_Construct",
+            "network" => "UserPerm_Network",
+            "beauty" => "UserPerm_Beauty",
+            "security" => "UserPerm_Security",
+            "material" => "UserPerm_Material",
+            "energy" => "UserPerm_Energy",
+
+        };
     }
 
 }
