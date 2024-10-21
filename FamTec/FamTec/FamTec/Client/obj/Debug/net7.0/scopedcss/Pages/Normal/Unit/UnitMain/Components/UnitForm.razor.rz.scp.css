@@ -1,12 +1,13 @@
-.unitform[b-bwrloohx4k]{    
-    width : 100%;
-    height:fit-content;
-    border : var(--comp-bd);
-    border-radius : var(--default-rd);
-    overflow:hidden;
-    background-color : var(--default-color);
-    box-shadow:var(--shadow-1);
-    padding : var(--default-pd) var(--wide-pd);
+.unitform[b-bwrloohx4k] {
+    flex: 1;
+    width: 100%;
+    height: fit-content;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    overflow: hidden;
+    background-color: var(--default-color);
+    box-shadow: var(--shadow-1);
+    padding: var(--default-pd) var(--wide-pd);
 }
 
 .unitform .unitform-wrap[b-bwrloohx4k]{

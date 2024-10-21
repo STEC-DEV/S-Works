@@ -1,0 +1,62 @@
+
+
+
+.modal[b-rim8d9kw00] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    /*height: 20%;*/
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.modal .hedaer[b-rim8d9kw00] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-bd);
+}
+
+.modal .header > .title[b-rim8d9kw00] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input[b-rim8d9kw00]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>span[b-rim8d9kw00]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input[b-rim8d9kw00]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus[b-rim8d9kw00]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns[b-rim8d9kw00]{
+    display : flex;
+    gap : var(--default-pd)
+}

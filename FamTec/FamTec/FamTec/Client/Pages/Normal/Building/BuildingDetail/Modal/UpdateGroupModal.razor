@@ -1,0 +1,72 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            그룹 수정
+        </span>
+    </div>
+    <div class="input">
+        <span>
+            그룹명
+        </span>
+        <input type="text" placeholder="그룹명" @bind-value=@Name>
+    </div>
+    <div class="btns">
+        <Button Name="저장" Type="0" OnClick="OnUpdate" />
+        <Button Name="취소" Type="1" OnClick="OnCloseModal" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public GroupDTO GroupData { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+    [Parameter] public EventCallback LoadGroup { get; set; }
+
+    UpdateGroupDTO updateGroup = new UpdateGroupDTO();
+    string Name ="";
+    protected override async Task OnInitializedAsync()
+    {
+        Name = GroupData.Name;
+    }
+
+    private async void OnUpdate()
+    {
+        try
+        {
+            @if (Name == GroupData.Name)
+            {
+                await JS.InvokeVoidAsync("alert", "수정된 내용이 없습니다.");
+                return;
+
+            }
+            updateGroup.GroupId = GroupData.id;
+            updateGroup.GroupName = Name;
+            ResponseUnit<bool> resPut = await apiManager.PutAsync<bool>("BuildingGroup/sign/UpdateGroup",updateGroup);
+            if(resPut.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPut.message);
+                OnCloseModal();
+                return;
+            }
+            await LoadGroup.InvokeAsync();
+            OnCloseModal();
+        }catch( Exception ex)
+        {
+            
+        }
+        
+
+    }
+
+    private void OnCloseModal()
+    {
+        CloseModal.InvokeAsync();
+    }
+}
+;

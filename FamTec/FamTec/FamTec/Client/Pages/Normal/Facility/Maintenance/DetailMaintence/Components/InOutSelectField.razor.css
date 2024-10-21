@@ -19,7 +19,7 @@
 }
 
 .row>.selectbox>.display {
-    background-color : var(--content-back-color);
+    /*background-color : var(--content-back-color);*/
 }
 
 .selectbox{
@@ -45,9 +45,14 @@
 }
 
 
+
 .display:hover,
 .active {
     border: var(--default-bd);
+}
+
+.display-title{
+    font-size:var(--normal-size);
 }
 
 .options {
@@ -67,13 +72,27 @@
 }
 
 .option-item {
+    display:flex;
+    justify-content:space-between;
     padding: var(--half-pd) ;
     border-radius : var(--default-rd);
+    font-size : var(--normal-size);
+
+}
+
+.item-text{
+    font-size:var(--normal-size);
+    /*font-weight : bold;*/
+    /*color : var(--main-color);*/
 }
 
 .option-item:hover{
    
     background-color : var(--main-color);
     color :var(--default-color);
+}
+
+.option-item:hover .item-text{
+    color:var(--default-color);
 }
 

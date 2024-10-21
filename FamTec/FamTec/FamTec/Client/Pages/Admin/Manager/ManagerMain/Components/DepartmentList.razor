@@ -28,18 +28,15 @@
         {
 
             <li class="depart-item @(Edit ? "" : "hover" ) @(selectedDepartment==item.Name ?"active":"")" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
-                <span class="item-title @(Edit ? "hover": "" )" @onclick=@(()=>OnModal(item.Id)) @onclick:stopPropagation>
+                <span class="item-title @(Edit ? "hover": "" )" @onclick:stopPropagation>
                     @item.Name
                 </span>
+                @* @onclick=@(() => OnModal(item.Id)) *@
                 @if (Edit)
                 {
-                    <div class="item-option">
-                        <input class="depart-select"
-                               type="checkbox"
-                               value="@item.Id"
-                               @onchange="(e)=>InVokeCheckboxSelect(e, item.Id)" 
-                               checked=@(CheckItems.Contains(item.Id))
-                               />
+                    <div class="btns">
+                        <EditButton OnClick="@(()=>OnModal(item.Id))" />
+                        <XButton OnClick="@(()=>OnDel(item.Id))"/>
                     </div>
                 }
             </li>
@@ -61,10 +58,19 @@
     }
     
 </ul>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnCancel="OnDelClose" OnConfirm="OnDelDepartments" />
+        </ChildComponent>
+    </ModalBackground>
+}
+
 @code {
     [Parameter] public List<DepartmentDTO> DataList { get; set; }
     [Parameter] public bool Edit { get; set; }
-    [Parameter] public EventCallback<(bool ,int)> Select { get; set; }
+    // [Parameter] public EventCallback<(bool ,int)> Select { get; set; }
     [Parameter] public EventCallback OnLoadDepartments { get; set; }
     [Parameter] public EventCallback OnListSync { get; set; }
     [Parameter] public bool AddMode {get; set;}
@@ -78,12 +84,14 @@
     private int? openModalId = null;
     private string selectedDepartment = "";
 
+    List<int> DelList = new List<int>();
+    bool isDel = false;
 
-    private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
-    {
-        bool isChecked = (bool)(e.Value ?? false);
-        await Select.InvokeAsync((isChecked, id));
-    }
+    // private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id)
+    // {
+    //     bool isChecked = (bool)(e.Value ?? false);
+    //     // await Select.InvokeAsync((isChecked, id));
+    // }
 
 
     /*
@@ -119,6 +127,33 @@
         }
     }
 
+    //부서삭제
+    private async Task OnDelDepartments()
+    {
+        try
+        {
+            if (DelList.Count == 0)
+            {
+                await JS.InvokeVoidAsync("alert", "삭제할 부서를 선택해주세요.");
+                return;
+            }
+            ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Department/sign/DeleteDepartment", DelList);
+            if (resDel.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDel.message);
+                return;
+            }
+            await OnLoadDepartments.InvokeAsync();
+            await OnListSync.InvokeAsync();
+            DelList.Clear();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 클라이언트 부서 삭제 에러");
+        }
+    }
+
     private async void OnSelect(string name)
     {
         if(selectedDepartment== name)
@@ -129,7 +164,7 @@
         {
             selectedDepartment = name;
         }
-        
+
         await OnSelectedDepartment.InvokeAsync(name);
     }
 
@@ -145,6 +180,20 @@
     private void CloseModal()
     {
         openModalId = 0;
+    }
+
+
+    private void OnDel(int data)
+    {
+        DelList.Clear();
+        isDel = true;
+        DelList.Add(data);
+    }
+
+    private void OnDelClose()
+    {
+        isDel = false;
+        DelList.Clear();
     }
 
 }

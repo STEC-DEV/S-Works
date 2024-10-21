@@ -81,25 +81,47 @@
 
     protected override async Task OnInitializedAsync()
     {
-        SelectedBuildingId = 0;
-        SelectedRoomId = 0;
-        await OnLoadBuilding();
+        // SelectedBuildingId = 0;
+        // SelectedRoomId = 0;
+        // await OnLoadBuilding();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-
+        SelectedBuildingId = 0;
+        SelectedRoomId = 0;
+        await OnLoadBuilding();
         StateHasChanged(); // UI 업데이트 강제
     }
+
+    // private async Task OnLoadBuilding()
+    // {
+    //     try
+    //     {
+    //         ResponseList<BuildingNameDTO> resGet = await apiManager.GetListAsync<BuildingNameDTO>("Building/sign/GetPlaceBuilding");
+    //         if (resGet.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "건물 정보 조회 실패");
+    //             return;
+    //         }
+    //         Building = resGet.data;
+
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+
+    //     }
+    // }
 
     private async Task OnLoadBuilding()
     {
         try
         {
-            ResponseList<BuildingNameDTO> resGet = await apiManager.GetListAsync<BuildingNameDTO>("Building/sign/GetPlaceBuilding");
+            ResponseList<BuildingNameDTO> resGet = await apiManager.GetListAsync<BuildingNameDTO>($"Building/sign/GetMaterialBuildings?materialid={MaterialId}");
             if (resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "건물 정보 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
             Building = resGet.data;
@@ -108,7 +130,7 @@
         }
         catch (Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "건물 조회 에러");
         }
     }
 

@@ -1,0 +1,52 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+
+@using FamTec.Shared.Client.DTO.Normal.Buildings.Group
+@using FamTec.Shared.Client.DTO.Normal.Buildings.GroupList
+@using FamTec.Shared.Server.DTO
+
+
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            그룹 수정
+        </span>
+    </div>
+    <div class="input">
+        <span>
+            그룹명
+        </span>
+        <input type="text" placeholder="그룹명" @bind-value=@Name>
+    </div>
+    <div class="btns">
+        <Button Name="저장" Type="0" OnClick="OnUpdate" />
+        <Button Name="취소" Type="1" OnClick="OnCloseModal" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public AddGroupListDTO GroupData { get; set; }
+    [Parameter] public EventCallback CloseModal { get; set; }
+    [Parameter] public EventCallback LoadGroup { get; set; }
+    AddGroupDTO Group = new AddGroupDTO();
+
+    string Name ="";
+    protected override async Task OnInitializedAsync()
+    {
+        Name = GroupData.Name;
+    }
+
+    private async void OnUpdate()
+    {
+
+        GroupData.Name = Name;
+        OnCloseModal();
+
+    }
+
+    private void OnCloseModal()
+    {
+        CloseModal.InvokeAsync();
+    }
+}
+;

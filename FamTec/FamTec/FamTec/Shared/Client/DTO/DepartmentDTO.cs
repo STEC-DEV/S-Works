@@ -14,5 +14,17 @@ namespace FamTec.Shared.Client.DTO
         public string? Name { get; set; }
         public bool ManagerYN { get; set; } = false;
         public string? Description { get; set; } = null;
+
+        public DepartmentDTO() { }
+        public DepartmentDTO(DepartmentDTO soruce)
+        {
+            Id = soruce.Id;
+            IsSelect = soruce.IsSelect;
+            Name = soruce.Name;
+            Description = soruce.Description;
+            ManagerYN = soruce.ManagerYN;
+
+        }
+
     }
 }

@@ -19,13 +19,21 @@
             +
         </label>
     }
-    <div class="group yappear">
-        @foreach(var group in Group)
-        {
-            <Group GroupData="@group" LoadGroup="OnLoadGroup" />
+    @if (Group == null)
+    {
+        <Loading />
+    }
+    else
+    {
+        <div class="group yappear">
+            @foreach (var group in Group)
+            {
+                <Group GroupData="@group" LoadGroup="OnLoadGroup" />
 
-        }
-    </div>
+            }
+        </div>
+    }
+
     
     @if (IsModal && BASIC)
     {
@@ -82,9 +90,15 @@
                 await JS.InvokeVoidAsync("alert","그룹 조회 실패");
                 return;
             }
-            Group = resGroup.data;
-            Console.WriteLine(Group[0].keyListDTO[0].ItemKey);
-            Console.WriteLine(Group[0].keyListDTO[0].valueList[0].itemValue);
+            if(resGroup.data == null)
+            {
+                List<GroupDTO> Group = new List<GroupDTO>();
+            }
+            else
+            {
+                Group = resGroup.data;
+            }
+
         }
         catch (Exception ex)
         {

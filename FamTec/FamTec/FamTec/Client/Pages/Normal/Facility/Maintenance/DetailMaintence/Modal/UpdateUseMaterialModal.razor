@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
 
@@ -15,35 +16,28 @@
                 입출고 내역
             </span>
             <div class="list-wrap">
-                <div class="ul-head">
-                    <span>
-                        구분
-                    </span>
-                    <span>
-                        단가
-                    </span>
-                    <span>
-                        수량
-                    </span>
-                </div>
-                <ul class="ul">
-                    @foreach (UseDetailStoreDTO material in UseMaterial.UseList)
-                    {
-                        <li class="li">
-                            <span class="text">
-                                @(material.InOut == 0 ? "출고" : "입고")
-                            </span>
-                            <span class="text">
-                                @material.UnitPrice
-                            </span>
-                            <span class="text">
-                                @material.Num
-                            </span>
-                        </li>
-                    }
-                </ul>
-            </div>
-                
+                <table class="table">
+                    <thead class="thead">
+                        <tr class="th-tr">
+                            <th class="th"><span>출고일시</span></th>
+                            <th class="th"><span>구분</span></th>
+                            <th class="th"><span>단가</span></th>
+                            <th class="th"><span>수량</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="body">
+                        @foreach (UseDetailStoreDTO material in UseMaterial.UseList)
+                        {
+                            <tr class="tr">
+                                <td class="td">2024-10-17 17:53:28</td>
+                                <td class="td">@(material.InOut == 0 ? "출고" : "입고")</td>
+                                <td class="td">@material.UnitPrice</td>
+                                <td class="td">@material.Num</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>       
         </div>
         <div class="form">
             <div class="row">
@@ -66,8 +60,9 @@
 </div>
 
 @code {
-    [Parameter] public int UseMaterialId {get;set;}
-    [Parameter] public int CurMaterialNum { get; set; }
+    // [Parameter] public int UseMaterialId {get;set;}
+    // [Parameter] public int CurMaterialNum { get; set; }
+    [Parameter] public UpdateUseMaterialDTO Data { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback OnLoadMaintenance { get; set; }
     //수정 변수
@@ -80,8 +75,8 @@
     protected override async Task OnInitializedAsync()
     {
         await OnLoadDetailUseMaterial();
-        ChangeNum = CurMaterialNum;
-        MaxNum = UseMaterial.TotalAvailableInventory + CurMaterialNum;
+        ChangeNum = Data.Num;
+        MaxNum = UseMaterial.TotalAvailableInventory + Data.Num;
     }
 
     private async void OnCanceled()
@@ -93,7 +88,7 @@
     {
         try
         {
-            ResponseUnit<UseMaterialDetailDTO> resGet = await apiManager.GetUnitAsync<UseMaterialDetailDTO>($"UseMaintenence/sign/GetDetailUseMaterial?useid={UseMaterialId}");
+            ResponseUnit<UseMaterialDetailDTO> resGet = await apiManager.GetUnitAsync<UseMaterialDetailDTO>($"UseMaintenence/sign/GetDetailUseMaterial?useid={Data.UseID}&materialid={Data.MaterialID}&roomId={Data.RoomID}");
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);
@@ -103,42 +98,26 @@
 
         }catch(Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "사용자재 상세 조회 에러");
         }
     }
 
     private async Task OnUpdate()
     {
-        try
+
+        if(ChangeNum == Data.Num)
         {
-            Console.WriteLine(ChangeNum);
-            if(ChangeNum == CurMaterialNum)
-            {
-                await JS.InvokeVoidAsync("alert", "수량이 변경되지 않았습니다.");
-                return;
-            }
-            if(ChangeNum > MaxNum)
-            {
-                await JS.InvokeVoidAsync("alert", "변경 수량이 재고 수량보다 많습니다.");
-                return;
-            }
-
-            await OnSumUpdateData();
-
-            ResponseUnit<bool> resPost = await apiManager.PostAsync<bool>("UseMaintenence/sign/UpdateUseMaterial",UpdateUseMaterial);
-            if(resPost.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", resPost.message);
-                return;
-            }
-            await OnLoadMaintenance.InvokeAsync();
-            OnCanceled();
-
-        }catch(Exception ex)
-        {
-            Console.WriteLine("[유지보수][사용자재] 수정 에러"+ ex);
-            await JS.InvokeVoidAsync("alert","[유지보수][사용자재] 수정 에러");
+            await JS.InvokeVoidAsync("alert", "수량이 변경되지 않았습니다.");
+            return;
         }
+        if(ChangeNum > MaxNum)
+        {
+            await JS.InvokeVoidAsync("alert", "변경 수량이 재고 수량보다 많습니다.");
+            return;
+        }
+        Data.Num = ChangeNum;
+        OnCanceled();
+
     }
 
     private async Task OnSumUpdateData()

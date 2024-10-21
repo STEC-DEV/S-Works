@@ -4,11 +4,6 @@
 <table class="table">
     <thead class="thead">
         <tr class="th-tr">
-            <th class="th text-left">
-                <span>
-                    No.
-                </span>
-            </th>
             <th class="th">
                 <span>
                     구분
@@ -34,9 +29,9 @@
         @foreach(var unit in ListData.Select((value,idx) => (value,idx)))
         {
             <tr class="tbody-tr">
-                <td class="td text-left">
+                @* <td class="td text-left">
                     @(unit.idx+1)
-                </td>
+                </td> *@
                 <td class="td">
                     @(unit.value.SystemCreate ? "시스템" : "사용자 정의")
                 </td>
@@ -45,7 +40,7 @@
                 </td>
                 @if (BASIC)
                 {
-                    <td class="td text-right">
+                    <td class="td ">
                         @if (!unit.value.SystemCreate)
                         {
                             <input type="checkbox" @onchange="(e)=>OnChecked(e, unit.value.Id)" />

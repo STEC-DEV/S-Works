@@ -34,9 +34,7 @@
     <div class="infocard-content">
         @if(Maintenance == null)
         {
-            <div>
-                <Loading/>
-            </div>
+            <Loading/>
 
         }
         else
@@ -110,6 +108,7 @@
     [Parameter] public EventCallback OnLoadMaintenance { get; set; }
     [Parameter] public EventCallback OnEditMode { get; set; }
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public UpdateMaintancematerialDTO UpdateUseMaterial { get; set; }
     // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
     DetailMaintenanceDTO UpdateMaintenance;
@@ -145,13 +144,20 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        UpdateMaintenance = Maintenance.DeepCopy();
+        // if (Maintenance != null)
+        // {
+        //     UpdateMaintenance = Maintenance.DeepCopy();
+        // }
+        UpdateMaintenance = new DetailMaintenanceDTO(Maintenance);
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        UpdateMaintenance = Maintenance.DeepCopy();
-        await ImgConvert();
+        // if (Maintenance != null)
+        // {
+        //     UpdateMaintenance = Maintenance.DeepCopy();
+        //     await ImgConvert();
+        // }
     }
 
 
@@ -187,18 +193,17 @@
     {
         try
         {
-            updateMaintenance.Id = UpdateMaintenance.MaintanceID;
-            updateMaintenance.Name = UpdateMaintenance.WorkName;
-            updateMaintenance.Worker = UpdateMaintenance.Worker;
-            updateMaintenance.Image = UpdateMaintenance.Image;
-            updateMaintenance.ImageName = UpdateMaintenance.ImageName;
-
-            Console.WriteLine(updateMaintenance.Id);
-            Console.WriteLine(updateMaintenance.Name);
-            Console.WriteLine(updateMaintenance.Worker);
-
-            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", updateMaintenance, true);
+            Console.WriteLine("설비" + UpdateMaintenance.WorkName);
+            Console.WriteLine("설비" + UpdateMaintenance.MaintanceID);
+            
+            ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", UpdateMaintenance, true);
             if(resUpdate.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
+                return;
+            }
+            ResponseUnit<bool> resMUpdate = await apiManager.PostAsync<bool>("Maintenance/sign/UpdateSupMaintenance", UpdateUseMaterial);
+            if(resMUpdate.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resUpdate.message);
                 return;
@@ -209,6 +214,7 @@
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await JS.InvokeVoidAsync("alert", "유지보수 정보 수정 에러");
         }
     }

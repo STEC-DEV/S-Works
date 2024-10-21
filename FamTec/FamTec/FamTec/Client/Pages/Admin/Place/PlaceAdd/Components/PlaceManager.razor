@@ -6,11 +6,15 @@
 <div class="manager">
     <div class="header">
         <span class="title">
-            사업장 매니저
+            사업장 관리자
         </span>
         <div class="options">
             <Button Name="추가" Width=true Type="0" OnClick="OnModal" />
-            <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+            @if (_selectDelList.Count > 0)
+            {
+                <Button Name="삭제" Width=true Type="1" OnClick="OnDelManager" />
+            }
+            
         </div>
     </div>
     <div class="content">

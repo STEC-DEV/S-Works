@@ -13,19 +13,18 @@
             </span>
         </div>
         <div class="floor-contents">
-            <FloorList Buildings=@ListData EditMode=@_editMode OnLoadFloor=OnLoadFloor OnCheck=OnChecked />
+            <FloorList Buildings=@ListData EditMode=@_editMode OnLoadFloor=OnLoadFloor />
         </div>
         @if (BASIC)
         {
             <div class="floor-btns">
                 @if (_editMode)
                 {
-                    <Button Name="닫기" Type="0" OnClick="OnEdit"/>
-                    <Button Name="삭제" Type="1" OnClick="OnDelete" />
+                    <Button Name="확인" Type="0" OnClick="OnEdit"/>
                 }
                 else
                 {
-                    <Button Name="편집"
+                    <Button Name="수정"
                             Type="0"
                             OnClick=OnEdit />
                 }
@@ -41,54 +40,20 @@
     [Parameter] public EventCallback OnLoadFloor { get; set; }
 
     private bool _editMode = false;
-    private List<int> CheckList = new List<int>();
+    
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    private void OnChecked((bool isCheck, int floorId) data)
-    {
-        if (data.isCheck)
-        {
-            CheckList.Add(data.floorId);
-        }
-        else
-        {
-            CheckList.Remove(data.floorId);
-        }
-    }
 
     private void OnEdit()
     {
         _editMode = !_editMode;
-        CheckList = new List<int>();
+        
     }
 
-    //OnDelete
-    private async Task OnDelete()
-    {
-        try
-        {
-            if(CheckList.Count == 0)
-            {
-                await JS.InvokeVoidAsync("alert", "삭제할 층이 존재하지 않습니다.");
-                return;
-            }
-            ResponseUnit<bool> resDel = await apiManager.PostAsync<bool>("Floor/sign/DeleteFloor", CheckList);
-            if(resDel.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", resDel.message);
-                return;
-            }
-            await OnLoadFloor.InvokeAsync();
-
-        }catch(Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", "[위치][층] 삭제 에러!");
-        }
-    }
 
 
 }

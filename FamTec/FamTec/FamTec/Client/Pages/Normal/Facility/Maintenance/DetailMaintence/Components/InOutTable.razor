@@ -1,5 +1,6 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Modal
+@using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 
@@ -32,11 +33,14 @@
                     단위
                 </span>
             </th>
-            <th class="th">
-                <span>
-                    금액
-                </span>
-            </th>
+            @if (!EditMode)
+            {
+                <th class="th">
+                    <span>
+                        금액
+                    </span>
+                </th>
+            }
             <th class="th">
                 <span>
                     비고
@@ -54,7 +58,7 @@
         </tr>
     </thead>
     <tbody class="tbody">
-        @if(ListData?.Count == 0)
+        @if(ListData.UpdateUsematerialDTO.Count == 0)
         {
             <tr>
                 <td colspan="100" style="text-align:center;">
@@ -62,19 +66,11 @@
                 </td>
             </tr>
         }
-        @if (ListData == null)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Loading />
-                </td>
-            </tr>
-        }
         else
         {
-            @foreach(UseMaterialDTO row in ListData)
+            @foreach (UpdateUseMaterialDTO row in ListData.UpdateUsematerialDTO)
             {
-               
+
                 <tr class="tr">
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
@@ -91,23 +87,32 @@
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
-                        @row.TotalPrice
-                    </td>
+                    @if (!EditMode)
+                    {
+                        <td class="td" @onclick="() => OnRowClick(row)">
+                            @row.Price
+                        </td>
+                    }
                     <td class="td" @onclick="() => OnRowClick(row)">
                         @row.Note
                     </td>
                     @if (EditMode)
                     {
                         <td class="td">
-                            <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                            <input 
+                                type="checkbox" 
+                                @onchange="(e)=>OnChecked(e,row)" 
+                                checked="@(CheckItems?.Any(m => m.MaterialID == row.MaterialID))"
+                                />
                         </td>
                     }
-                    
+
                 </tr>
-                
+
+            }
         }
-        }
+        
+        
     </tbody>
 </table>
 
@@ -116,9 +121,8 @@
     <ModalBackground>
         <ChildComponent>
             <UpdateUseMaterialModal 
-                UseMaterialId="@selectUseMaterialId" 
+                Data="selectedMaterial"
                 OnCancel="CloseModal" 
-                CurMaterialNum="@selectUseMaterialCurNum"
                 OnLoadMaintenance="OnLoadMaintenance"
                 />
         </ChildComponent>
@@ -127,28 +131,31 @@
 
 @code {
     // [Parameter] public List<InOutInventoryDTO>? ListData { get; set; }
-    [Parameter] public List<UseMaterialDTO>? ListData { get; set; }
-    [Parameter] public EventCallback<(bool, UseMaterialDTO)> OnCheck{get;set;}
+    // [Parameter] public List<UseMaterialDTO>? ListData { get; set; }
+    [Parameter] public UpdateMaintancematerialDTO ListData { get; set; }
+    [Parameter] public EventCallback<(bool, UpdateUseMaterialDTO)> OnCheck { get; set; }
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public EventCallback OnLoadMaintenance { get; set; }
+    [Parameter] public List<UpdateUseMaterialDTO> CheckItems { get; set; }
 
     private bool showUpdateModal = false;
-    private UseMaterialDTO? selectedMaterial;
+    private UpdateUseMaterialDTO? selectedMaterial;
     private int selectUseMaterialId;
     private int selectUseMaterialCurNum;
 
-    private async void OnChecked(ChangeEventArgs e, UseMaterialDTO material)
+
+    private async void OnChecked(ChangeEventArgs e, UpdateUseMaterialDTO material)
     {
         await OnCheck.InvokeAsync(((bool)e.Value, material));
     }
 
-    private void OnRowClick(UseMaterialDTO material)
+    private void OnRowClick(UpdateUseMaterialDTO material)
     {
         if (EditMode)
         {
             selectedMaterial = material;
             showUpdateModal = true;
-            selectUseMaterialId = material.ID;
+            selectUseMaterialId = material.MaterialID;
             selectUseMaterialCurNum = material.Num;
         }
     }

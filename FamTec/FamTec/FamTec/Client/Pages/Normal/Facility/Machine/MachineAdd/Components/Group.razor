@@ -12,7 +12,7 @@
 <div class="group yappear">
     <div class="header">
         <span class="title">
-            @GroupData.Name
+            @GroupData.Name <EditButton OnClick="OnUpdateGroup" />
         </span>
         <div class="options">
             @* <Button Name="추가" Width=true Type="0" OnClick="OnModal" /> *@
@@ -42,13 +42,20 @@
         </ModalBackground>
     }
 </div>
-
+@if (isGroupEdit)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <UpdateGroupModal CloseModal="OnUpdateGroup" GroupData=GroupData />
+        </ChildComponent>
+    </ModalBackground>
+}
 @code {
     [Parameter] public AddGroupListDTO? GroupData { get; set; }
     [Parameter] public EventCallback<AddGroupListDTO> OnDelGroup { get; set; }
 
     bool IsModal = false;
-
+    bool isGroupEdit = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,6 +87,9 @@
     {
         IsModal = !IsModal;
     }
-
+    private void OnUpdateGroup()
+    {
+        isGroupEdit = !isGroupEdit;
+    }
 
 }

@@ -52,7 +52,7 @@
 }
 
 .label[b-vu86acb01j]{
-    /*font-size: var(--normal-size);*/
+    font-size: var(--normal-size);
     font-weight: var(--bold-wt);
     color: var(--main-color);
     white-space: nowrap;
@@ -63,9 +63,10 @@
     gap : var(--default-pd);
 }
 
-.name[b-vu86acb01j]{
-    /*font-weight : var(--bold-wt);*/
-    color : var(--main-color);
+.name[b-vu86acb01j] {
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
 }
 
 .item[b-vu86acb01j]{

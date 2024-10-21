@@ -6,7 +6,7 @@
     flex-direction: column;
     gap: var(--wide-pd);
     background-color: var(--default-color);
-    padding: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: var(--shadow-1);
@@ -14,7 +14,7 @@
 
 .perm .header[b-d55g0elbon]{    
     display: flex;
-    padding: var(--default-pd);
+    padding: var(--default-pd) 0;
     justify-content: space-between;
     border-bottom: var(--default-bd);
 }
@@ -33,7 +33,6 @@
 
 
 .perm .content[b-d55g0elbon]{
-    padding : 0 var(--default-pd);
     display : grid;
     grid-template-columns : repeat(2, 1fr);
     gap : var(--wide-pd);

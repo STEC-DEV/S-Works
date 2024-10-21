@@ -1,4 +1,5 @@
-.unit[b-lw769fv04r]{    
+.unit[b-lw769fv04r]{
+    flex:2;
     width : 100%;
     height : 100%;
 
@@ -36,6 +37,12 @@
 }
 
 .unit .contents[b-lw769fv04r] {
-    overflow: auto;
+    display : flex;
+    gap : var(--default-pd);
+    overflow : hidden;
     height: 100%;
+}
+.table-section[b-lw769fv04r] {
+    width: 100%;
+    overflow: auto;
 }

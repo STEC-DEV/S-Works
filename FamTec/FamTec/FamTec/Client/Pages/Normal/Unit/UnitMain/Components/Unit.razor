@@ -21,24 +21,37 @@
             
         </div>
         <div class="contents">
-            <UnitTable 
-                ListData="@ListData" 
+            <div class="table-section">
+                <UnitTable ListData="@UserData"
+                           OnCheck="OnChecked" />
+            </div>
+            
+            <div class="table-section">
+                <UnitTable 
+                ListData="@SystemData" 
                 OnCheck="OnChecked"
                 />
+            </div>
+            
         </div>
     </div>
 </div>
 
 
 @code {
-    [Parameter] public List<UnitDTO> ListData { get; set; }
+    [Parameter] public List<UnitDTO> UserData { get; set; }
+    [Parameter] public List<UnitDTO> SystemData { get; set; }
     [Parameter] public EventCallback OnLoadUnit { get; set; }
     List<int> DelUnits = new List<int>();
+
+    
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
+
+    
 
     //체크 선수 목록
     private void OnChecked((bool isCheck, int id)data)

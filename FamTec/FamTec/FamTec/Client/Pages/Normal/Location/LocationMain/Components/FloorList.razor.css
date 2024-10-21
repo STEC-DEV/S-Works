@@ -32,21 +32,15 @@
     transition : all 0.2s ease-in-out;
 }
 
-/*.floor-ul .floor-li:focus .title{
-    background-color : var(--main-color);
-    color:var(--default-color);
-}*/
+.center{
+    display : flex;
+    align-items : center;
+}
 
-/*.floor-ul .title:hover {
-    background-color : var(--main-color);
-    color:var(--default-color);
-    transition : all 0.2s ease-in-out;
-}*/
-
-.floor-ul .floor-inner-ul{
-    visibility : hidden;
-    flex-direction : column;
-    gap :var(--half-pd);
+.floor-ul .floor-inner-ul {
+    visibility: hidden;
+    flex-direction: column;
+    gap: var(--half-pd);
     max-height: 0;
     opacity: 0;
     transition: all 0.2s ease;
@@ -89,4 +83,10 @@
     transition: all 0.2s ease;
     opacity: 1;
     margin-top: var(--half-pd);
+}
+
+
+.btns{
+    display : flex;
+    gap : var(--half-pd);
 }

@@ -17,8 +17,11 @@
             <div class="option">
                 @if (EditMode)
                 {
-                    <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-                    <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    <div class="btns">
+                        <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                        <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                    </div>
+                    
                 }
                 else
                 {
@@ -185,9 +188,13 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        OriginalFacility = Facility.DeepCopy();
-        UpdateFacility = Facility.DeepCopy();
-        await ImgConvert();
+        if(Facility != null)
+        {
+            OriginalFacility = Facility.DeepCopy();
+            UpdateFacility = Facility.DeepCopy();
+            await ImgConvert();
+        }
+
     }
 
 

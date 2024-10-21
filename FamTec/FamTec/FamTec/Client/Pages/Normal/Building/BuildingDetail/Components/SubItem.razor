@@ -11,7 +11,7 @@
             <input type="checkbox" />
         } *@
         <label class="item-label">
-            @item.ItemKey (@item.Unit)
+            @item.ItemKey @unit
         </label>
         <div class="item-values" >
             @foreach (var i in item.valueList)
@@ -52,6 +52,16 @@
     private bool ItemEdit = false;
     bool isDel = false;
 
+    private string unit = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!String.IsNullOrEmpty(item.Unit))
+        {
+            unit = "(" + item.Unit + ")";
+        }
+
+    }
 
     private void OnItemEdit()
     {

@@ -1,66 +1,99 @@
 ﻿.multi-select {
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
     position: relative;
-    width: 250px;
+    width: 100%;
     font-family: Arial, sans-serif;
 }
 
+.row {
+    flex-direction: row;
+    gap: var(--default-pd);
+    
+}
+
 .label {
-    display: block;
-    margin-bottom: 8px;
+    white-space : nowrap;
+    display: flex;
+    align-items : center;
     font-weight: bold;
-    font-size: 14px;
+    font-size: var(--normal-size);
+    color : var(--main-color);
+}
+.select-container {
+    position: relative;
+    width: 100%;
 }
 
 .selectbox {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
+    /*position : relative;*/
+    width : 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    padding: var(--half-pd);
     background-color: #fff;
     cursor: pointer;
     user-select: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
 
+    transition : all .3s;
+}
+.selectbox:hover{
+    border : var(--default-bd);
+}
 .selectbox.active {
-    border-color: #007bff;
+    border : var(--default-bd);
 }
 
 .display-title {
-    font-size: 14px;
-    color: #333;
+    font-size: var(--normal-size);
+    font-weight: bold;
+    color: var(--main-color);
 }
-
+.placeholder {
+    color: #a1a1a1;
+    font-weight: 300;
+}
 .options {
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
     max-height: 200px;
     overflow-y: auto;
+    padding : var(--default-pd);
     z-index: 10;
     margin-top: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-1);
+    box-sizing: border-box; 
 }
 
 .option-item {
-    padding: 8px;
+    padding: var(--half-pd);
     display: flex;
     align-items: center;
     cursor: pointer;
-    border-bottom: 1px solid #f1f1f1;
+    border-radius : 4px;
+    
 }
 
-.option-item:last-child {
+/*.option-item:last-child {
     border-bottom: none;
-}
+}*/
 
 .option-item:hover {
-    background-color: #f1f1f1;
+    background-color: var(--main-color);
+    
+}
+
+.option-item:hover >span{
+    color :white;
 }
 
 .option-item input[type="checkbox"] {
@@ -68,8 +101,9 @@
 }
 
 .option-item span {
-    font-size: 14px;
-    color: #333;
+    font-size: var(--normal-size);
+     
+    color : var(--main-color);
 }
 
 .selectbox.active + .options {

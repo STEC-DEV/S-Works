@@ -7,7 +7,3 @@ svg:hover {
     cursor: pointer;
 }
 
-
-svg>path {
-    stroke-width : 10px;
-}

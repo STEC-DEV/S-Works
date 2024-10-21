@@ -6,7 +6,7 @@
     flex-direction: column;
     gap: var(--wide-pd);
     background-color: var(--default-color);
-    padding: var(--default-pd);
+    padding: var(--default-pd) var(--wide-pd);
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: var(--shadow-1);
@@ -16,7 +16,7 @@
 
 .manager .header{    
     display: flex;
-    padding: var(--default-pd);
+    padding: var(--default-pd) 0;
     justify-content: space-between;
     border-bottom: var(--default-bd);
 }
