@@ -292,7 +292,7 @@ namespace FamTec.Server.Repository.Facility.Group
                                 {
                                     FacilityItemKeyTb KeyTB = new FacilityItemKeyTb();
                                     KeyTB.Name = Key.Name!.ToString(); // 키의 명칭
-                                    KeyTB.Unit = Key.Unit!.ToString(); // 키의 단위
+                                    KeyTB.Unit = Key.Unit; // 키의 단위
                                     KeyTB.FacilityItemGroupTbId = GroupTB.Id; // 상위 그룹 ID
                                     KeyTB.CreateDt = ThisDate; // 현재시간
                                     KeyTB.CreateUser = creater; // 생성자

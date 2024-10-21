@@ -87,58 +87,6 @@ namespace FamTec.Server.Controllers.Building.Group
         {
             try
             {
-                //List<AddGroupDTO> dto = new List<AddGroupDTO>();
-
-                //AddGroupDTO GroupDTO = new AddGroupDTO();
-                //GroupDTO.BuildingIdx = 1;
-                //GroupDTO.Name = "B그룹";
-
-                //// AddGroupKey가 null일 수 있으므로 초기화
-                //GroupDTO.AddGroupKey = new List<AddGroupItemKeyDTO>();
-                //GroupDTO.AddGroupKey.Add(new AddGroupItemKeyDTO
-                //{
-                //    Name = "B항목",
-                //    Unit = "B단위",
-                //    // ItemValues 리스트가 null일 수 있으므로 초기화
-                //    ItemValues = new List<AddGroupItemValueDTO>()
-                //});
-
-                //// ItemValues에 새로운 AddGroupItemValueDTO 객체 추가
-                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
-                //{
-                //    Values = "값1"
-                //});
-                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
-                //{
-                //    Values = "값2"
-                //});
-                //dto.Add(GroupDTO);
-
-                //GroupDTO = new AddGroupDTO();
-                //GroupDTO.BuildingIdx = 1;
-                //GroupDTO.Name = "C그룹";
-
-                //// AddGroupKey가 null일 수 있으므로 초기화
-                //GroupDTO.AddGroupKey = new List<AddGroupItemKeyDTO>();
-                //GroupDTO.AddGroupKey.Add(new AddGroupItemKeyDTO
-                //{
-                //    Name = "C항목",
-                //    Unit = "C단위",
-                //    // ItemValues 리스트가 null일 수 있으므로 초기화
-                //    ItemValues = new List<AddGroupItemValueDTO>()
-                //});
-
-                //// ItemValues에 새로운 AddGroupItemValueDTO 객체 추가
-                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
-                //{
-                //    Values = "값1"
-                //});
-                //GroupDTO.AddGroupKey[0].ItemValues.Add(new AddGroupItemValueDTO
-                //{
-                //    Values = "값2"
-                //});
-                //dto.Add(GroupDTO);
-
                 // ------------- DTO 검사
                 if (dto is null)
                     return NoContent();
@@ -155,6 +103,8 @@ namespace FamTec.Server.Controllers.Building.Group
                         foreach (var key in group.AddGroupKey)
                         {
                             if (String.IsNullOrWhiteSpace(key.Name))
+                                return NoContent();
+                            if (String.IsNullOrWhiteSpace(key.Unit))
                                 return NoContent();
 
                             if (key.ItemValues is [_, ..])

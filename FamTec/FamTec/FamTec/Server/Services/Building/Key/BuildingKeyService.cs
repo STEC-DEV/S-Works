@@ -77,7 +77,7 @@ namespace FamTec.Server.Services.Building.Key
                 BuildingItemKeyTb KeyTb = new BuildingItemKeyTb()
                 {
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 키 명칭 */
-                    Unit = !String.IsNullOrWhiteSpace(dto.Unit) ? dto.Unit.Trim() : dto.Unit!, /* 단위 */
+                    Unit = dto.Unit, /* 단위 */
                     CreateDt = ThisTime,
                     CreateUser = creater,
                     UpdateDt = ThisTime,

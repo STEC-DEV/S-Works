@@ -292,7 +292,6 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
                 model.UpdateUser = creater;
                 model.RoomTbId = dto.RoomId!.Value;
 
-               
                 if(files is not null) // 파일이 공백이 아닌 경우
                 {
                     if(files.FileName != model.Image) // 넘어온 이미지의 이름과 DB에 저장된 이미지의 이름이 다르면

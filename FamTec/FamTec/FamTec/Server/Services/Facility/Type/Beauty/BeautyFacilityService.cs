@@ -92,7 +92,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                     Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name!, /* 설비명칭 */
                     Type = !String.IsNullOrWhiteSpace(dto.Type) ? dto.Type.Trim() : dto.Type, /* 형식 */
                     Num = dto.Num, // 개수
-                    Unit = !String.IsNullOrWhiteSpace(dto.Unit) ? dto.Unit.Trim() : dto.Unit, /* 단위 */
+                    Unit = dto.Unit, /* 단위 */
                     EquipDt = dto.EquipDT, // 설치년월
                     Lifespan = !String.IsNullOrWhiteSpace(dto.LifeSpan) ? dto.LifeSpan.Trim() : dto.LifeSpan, /* 내용연수 */
                     StandardCapacity = !String.IsNullOrWhiteSpace(dto.Standard_capacity) ? dto.Standard_capacity.Trim() : dto.Standard_capacity, /* 규격용량 */
@@ -204,7 +204,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 dto.Name = !String.IsNullOrWhiteSpace(model.Name) ? model.Name.Trim() : model.Name;
                 dto.Type = !String.IsNullOrWhiteSpace(model.Type) ? model.Type.Trim() : model.Type;
                 dto.Num = model.Num;
-                dto.Unit = !String.IsNullOrWhiteSpace(model.Unit) ? model.Unit.Trim() : model.Unit;
+                dto.Unit = model.Unit;
                 dto.EquipDT = model.EquipDt;
                 dto.LifeSpan = !String.IsNullOrWhiteSpace(model.Lifespan) ? model.Lifespan.Trim() : model.Lifespan;
                 dto.Standard_capacity = model.StandardCapacity;

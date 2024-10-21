@@ -7,13 +7,21 @@ namespace FamTec.Server.Tokens
 {
     public class TokenComm : ITokenComm
     {
+        private readonly string? _authSigningKey;
+
+        public TokenComm(IConfiguration configuration)
+        {
+            _authSigningKey = configuration["JWT:AuthSigningKey"];
+        }
+
         public JObject? TokenConvert(HttpRequest? token)
         {
-            if (token is not null)
+            if (token is not null && !String.IsNullOrWhiteSpace(_authSigningKey))
             {
                 string? accessToken = token.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-                var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
+                var authSigningKey = Encoding.UTF8.GetBytes(_authSigningKey);
+                //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 tokenHandler.ValidateToken(accessToken, new TokenValidationParameters

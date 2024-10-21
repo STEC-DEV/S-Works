@@ -112,6 +112,8 @@ namespace FamTec.Server.Controllers.Login
                     return Ok(model);
                 else if (model.code == 201)
                     return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
                 else
                     return BadRequest();
 

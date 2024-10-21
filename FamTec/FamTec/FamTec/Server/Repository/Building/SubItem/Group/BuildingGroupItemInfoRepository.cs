@@ -298,7 +298,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                                 {
                                     BuildingItemKeyTb KeyTB = new BuildingItemKeyTb();
                                     KeyTB.Name = Key.Name!.ToString(); // 키의 명칭
-                                    KeyTB.Unit = Key.Unit!.ToString(); // 키의 단위
+                                    KeyTB.Unit = Key.Unit; // 키의 단위
                                     KeyTB.BuildingGroupTbId = GroupTB.Id; // 상위 그룹 ID
                                     KeyTB.CreateDt = ThisDate; // 현재시간
                                     KeyTB.CreateUser = creater; // 생성자

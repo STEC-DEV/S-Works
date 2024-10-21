@@ -99,6 +99,15 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
+                // 그룹의 - 키(값) 단위 검사
+                if (dto.AddGroupKey is [_, ..]) {
+                    foreach (var group in dto.AddGroupKey)
+                    {
+                        if (String.IsNullOrWhiteSpace(group.Unit))
+                            return NoContent();
+                    }
+                }
+
                 ResponseUnit<AddGroupDTO> model = await GroupService.AddFacilityGroupService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
@@ -142,8 +151,10 @@ namespace FamTec.Server.Controllers.Facility.Group
                         {
                             if (String.IsNullOrWhiteSpace(key.Name))
                                 return NoContent();
+                            if(String.IsNullOrWhiteSpace(key.Unit))
+                                return NoContent();
 
-                            if(key.ItemValues is [_, ..])
+                            if (key.ItemValues is [_, ..])
                             {
                                 foreach(var value in key.ItemValues)
                                 {

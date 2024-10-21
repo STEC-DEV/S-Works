@@ -84,7 +84,7 @@ namespace FamTec.Server.Services.User
 
                 UsersTb? UserTB = await UserInfoRepository.GetUserInfo(dto.UserId, dto.UserPassword).ConfigureAwait(false);
                 if (UserTB is null)
-                    return new ResponseUnit<string?>() { message = "요청이 잘못되었습니다.", data = null, code = 404 };
+                    return new ResponseUnit<string?>() { message = "존재하지 않는 사용자입니다.", data = null, code = 204 };
 
                 PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.placeid).ConfigureAwait(false);
                 if (PlaceTB is null)
@@ -198,16 +198,6 @@ namespace FamTec.Server.Services.User
                          new Claim("PlaceName", PlaceTB.Name.ToString()), // 사업장 명
                          new Claim("PlaceCreateDT", PlaceTB.CreateDt.ToString("yyyy-MM-dd"))
                     };
-
-                    //string? adminType = admintb.Type switch
-                    //{
-                    //    "시스템관리자" => "SystemManager",
-                    //    "마스터" => "Master",
-                    //    "매니저" => "Manager",
-                    //    _ => null
-                    //};
-                    //if (String.IsNullOrWhiteSpace(adminType))
-                    //    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                     var roleMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                      {
@@ -371,16 +361,6 @@ namespace FamTec.Server.Services.User
                     new Claim("PlaceCreateDT", placeInfo.CreateDt.ToString("yyyy-MM-dd")) // 사업장 생성일
                 };
 
-                /*
-                string? role = context.Items["Role"] switch
-                {
-                    "시스템관리자" => "SystemManager",
-                    "마스터" => "Master",
-                    "매니저" => "Manager",
-                    _ => null
-                };
-                */
-
                 var roleMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                 {
                     { "시스템관리자", "SystemManager" },
@@ -403,27 +383,6 @@ namespace FamTec.Server.Services.User
                 {
                     return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
-
-                //string? role = Convert.ToString(context.Items["Role"]);
-                //if (role == "시스템관리자")
-                //    role = "SystemManager";
-                //else if (role == "마스터")
-                //    role = "Master";
-                //else if (role == "매니저")
-                //    role = "Manager";
-                //else if (role == "SystemManager")
-                //    role = "SystemManager";
-                //else if (role == "Master")
-                //    role = "Master";
-                //else if (role == "Manager")
-                //    role = "Manager";
-                //else
-                //    role = null;
-
-                //if (String.IsNullOrWhiteSpace(role))
-                //{
-                //    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-                //}
 
                 authClaims.Add(new Claim("Role", role));
                 authClaims.Add(new Claim(ClaimTypes.Role, role));

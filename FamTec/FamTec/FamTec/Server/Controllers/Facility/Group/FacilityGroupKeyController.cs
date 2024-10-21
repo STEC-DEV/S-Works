@@ -61,7 +61,10 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if(dto.ItemValues is [_, ..])
+                if(String.IsNullOrWhiteSpace(dto.Unit))
+                    return NoContent();
+
+                if (dto.ItemValues is [_, ..])
                 {
                     foreach(AddGroupItemValueDTO ValueDTO in dto.ItemValues)
                     {

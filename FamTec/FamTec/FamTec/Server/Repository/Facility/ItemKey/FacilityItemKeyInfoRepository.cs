@@ -233,7 +233,7 @@ namespace FamTec.Server.Repository.Facility.ItemKey
                             return (bool?)null;
 
                         KeyTB.Name = dto.Itemkey!;
-                        KeyTB.Unit = dto.Unit!;
+                        KeyTB.Unit = dto.Unit;
 
                         context.FacilityItemKeyTbs.Update(KeyTB);
                         bool KeyUpdate = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
