@@ -14,6 +14,7 @@
         placeholder="@Placeholder"
         min="@Min"
         max="@Max"
+        maxlength="@MaxLength"
         value="@Value"
         @oninput="OnValueChanged"
         readonly="@ReadOnly"
@@ -43,6 +44,7 @@
     [Parameter] public T? Value { get; set; }
     [Parameter] public int? Min { get; set; } = 0;
     [Parameter] public int? Max { get; set; }
+    [Parameter] public int? MaxLength { get; set; }
     [Parameter] public bool? Row { get; set; }
     [Parameter] public bool Unit { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
@@ -63,6 +65,10 @@
             newValue = "0"; // Set default value for empty input
         }
 
+        if (newValue.Length > MaxLength)
+        {
+            newValue = newValue.Substring(0, MaxLength.Value);
+        }
         // Update Value based on input change
         if (typeof(T) == typeof(float))
         {
@@ -151,39 +157,3 @@
 }
 
 
-    @* // private async Task OnValueChanged(ChangeEventArgs e)
-    // {
-    //     // Check if the value is null or empty
-    //     var newValue = e.Value?.ToString();
-
-    //     // Handle empty input for number types
-    //     if (ValueType == "number" && string.IsNullOrEmpty(newValue))
-    //     {
-    //         newValue = "0"; // Set default value for empty input
-    //     }
-        
-    //     // Update Value based on input change
-    //     if (typeof(T) == typeof(float) && float.TryParse(e.Value?.ToString(), out float floatValue))
-    //     {
-    //         if (e.Value.ToString() == "-")
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능 합니다.");
-    //             return;
-    //         }
-    //         await ValueChanged.InvokeAsync((T)(object)floatValue);
-    //     }
-    //     else if (typeof(T) == typeof(int) && int.TryParse(e.Value?.ToString(), out int intValue))
-    //     {
-    //         if (intValue < 0)
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "음수 입력이 불가능합니다.");
-    //             return;
-    //         }
-    //         await ValueChanged.InvokeAsync((T)(object)intValue);
-    //     }
-    //     else if (typeof(T) == typeof(string))
-    //     {
-    //         await ValueChanged.InvokeAsync((T)(object)(e.Value?.ToString() ?? string.Empty));
-    //     }
-    // }
- *@

@@ -1,4 +1,5 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Voc
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Voc
 
 
 <div class="voc-content">
@@ -10,14 +11,22 @@
     <div><TextField Label="건물명" Value=@Data.BuildingName /></div>
     <div class="full-width"><TextField Label="제목" Value=@Data.Title /></div>
     <div class="full-width"><TextField Label="내용" Value=@Data.Contents /></div>
+    <div class="full-width">
+        @if (images.Count != 0)
+        {
+            <ImageSlider Images="@images" Label="첨부파일" />
+        }
+    </div>
+     
 </div>
 
 @code {
     [Parameter] public DetailVocUserDTO Data { get; set; }
 
+    List<byte[]> images = new List<byte[]>();
     private string _status;
     string SelectDepartmentName;
-
+    List<int> nullIndex = new List<int>();
     protected override async Task OnParametersSetAsync()
     {
         _status = Data.Status switch
@@ -26,7 +35,26 @@
             1 => "처리중",
             2 => "처리 완료"
         };
+
+        await OnIMGConvert();
         // OnConvertType();
+    }
+
+
+    private async Task OnIMGConvert()
+    {
+        images = new List<byte[]>();
+        foreach (var data in Data.Images.Select((value, idx) => (value, idx)))
+        {
+            if (data.value == null)
+            {
+                nullIndex.Add(data.idx);
+                return;
+            }
+            images.Add(data.value);
+        }
+
+        StateHasChanged();
     }
 
     // private async Task OnConvertType()

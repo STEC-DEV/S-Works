@@ -12,9 +12,9 @@
             </span>
         </div>
         <div class="option">
-            @if (FilterOption ==1)
+            @if (SearchOption == 1)
             {
-                <div class="vochistory-slider @(FilterOption != 1 ? "date-none" : "")">
+                <div class="vochistory-slider @(SearchOption != 1 ? "date-none" : "")">
                     <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" />
                 </div>
             }
@@ -47,6 +47,7 @@
 @code {
     [Parameter] public List<AllMaintanceHistoryDTO> MonthData{ get; set; }
     [Parameter] public List<MaintanceHistoryDTO> DurationData { get; set; }
+    [Parameter] public int SearchOption { get; set; }
 
     List<MaintanceHistoryDTO> FilterData;
     List<MaintanceHistoryDTO> originalData = new List<MaintanceHistoryDTO>();
@@ -83,8 +84,8 @@
     protected override async Task OnParametersSetAsync()
     {
         // createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
-
-        if(MonthData != null)
+        // MonthData != null &&
+        if (SearchOption == 1)
         {
             Console.WriteLine("1");
             FilterOption = 1;
@@ -94,7 +95,8 @@
             }
             await MonthDecideData();
         }
-        if (DurationData != null)
+        // DurationData != null &&
+        else if (SearchOption == 2)
         {
             Console.WriteLine("2");
             FilterOption = 2;

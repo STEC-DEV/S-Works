@@ -9,7 +9,10 @@
         />
     @if ((MonthData != null) || (DurationData !=null))
     {
-        <MaintanenceHistory MonthData=MonthData DurationData=DurationData />
+        <MaintanenceHistory 
+            MonthData=MonthData 
+            DurationData=DurationData 
+            SearchOption="@FilterOption"/>
     }
 
 </div>
@@ -17,15 +20,17 @@
 @code {
     List<AllMaintanceHistoryDTO> MonthData;
     List<MaintanceHistoryDTO> DurationData;
+    int FilterOption = 0;
 
     private void OnChangeMonthData(List<AllMaintanceHistoryDTO> data)
     {
-
+        FilterOption = 1;
         MonthData = data;
     }
 
     private void OnChangeDuratopmhData(List<MaintanceHistoryDTO> data)
     {
+        FilterOption = 2;
         DurationData = data;
     }
 }
