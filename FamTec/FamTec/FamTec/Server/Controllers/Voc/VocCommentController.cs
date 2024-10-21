@@ -75,6 +75,9 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach(IFormFile file in files)
                     {
+                        if (file.Length > Common.MEGABYTE_10)
+                            return Ok(new ResponseUnit<AddVocCommentDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
                         {
@@ -217,6 +220,9 @@ namespace FamTec.Server.Controllers.Voc
                 {
                     foreach (IFormFile file in files)
                     {
+                        if (file.Length > Common.MEGABYTE_10)
+                            return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                         string? extension = FileService.GetExtension(file);
                         if (String.IsNullOrWhiteSpace(extension))
                         {

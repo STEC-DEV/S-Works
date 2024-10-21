@@ -104,8 +104,8 @@ namespace FamTec.Server.Controllers.Building.Group
                         {
                             if (String.IsNullOrWhiteSpace(key.Name))
                                 return NoContent();
-                            if (String.IsNullOrWhiteSpace(key.Unit))
-                                return NoContent();
+                            //if (String.IsNullOrWhiteSpace(key.Unit))
+                            //    return NoContent();
 
                             if (key.ItemValues is [_, ..])
                             {

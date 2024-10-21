@@ -69,7 +69,7 @@ namespace FamTec.Server.Services.Facility.Key
 
                 FacilityItemKeyTb KeyTb = new FacilityItemKeyTb();
                 KeyTb.Name = dto.Name!.Trim()!; // 키 명칭
-                KeyTb.Unit = dto.Unit!.Trim(); // 단위
+                KeyTb.Unit = dto.Unit; // 단위
                 KeyTb.CreateDt = ThisTime;
                 KeyTb.CreateUser = creater;
                 KeyTb.UpdateDt = ThisTime;

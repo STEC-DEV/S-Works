@@ -129,6 +129,9 @@ namespace FamTec.Server.Controllers.User
                 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -274,6 +277,9 @@ namespace FamTec.Server.Controllers.User
 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<UsersDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

@@ -103,8 +103,10 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (dto.AddGroupKey is [_, ..]) {
                     foreach (var group in dto.AddGroupKey)
                     {
-                        if (String.IsNullOrWhiteSpace(group.Unit))
+                        if (String.IsNullOrWhiteSpace(group.Name))
                             return NoContent();
+                        //if (String.IsNullOrWhiteSpace(group.Unit))
+                        //    return NoContent();
                     }
                 }
 
@@ -151,8 +153,8 @@ namespace FamTec.Server.Controllers.Facility.Group
                         {
                             if (String.IsNullOrWhiteSpace(key.Name))
                                 return NoContent();
-                            if(String.IsNullOrWhiteSpace(key.Unit))
-                                return NoContent();
+                            //if(String.IsNullOrWhiteSpace(key.Unit))
+                            //    return NoContent();
 
                             if (key.ItemValues is [_, ..])
                             {

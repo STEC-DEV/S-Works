@@ -271,6 +271,9 @@ namespace FamTec.Server.Controllers.Building
 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<AddBuildingDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -281,7 +284,7 @@ namespace FamTec.Server.Controllers.Building
                         bool extensioncheck = Common.ImageAllowedExtensions.Contains(extension);
                         if (!extensioncheck)
                         {
-                            return Ok(new ResponseUnit<int?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
+                            return Ok(new ResponseUnit<AddBuildingDTO?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
                         }
                     }
                 }
@@ -396,6 +399,9 @@ namespace FamTec.Server.Controllers.Building
 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

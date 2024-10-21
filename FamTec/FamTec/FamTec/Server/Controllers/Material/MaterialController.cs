@@ -71,6 +71,9 @@ namespace FamTec.Server.Controllers.Material
 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<AddMaterialDTO?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {
@@ -308,7 +311,7 @@ namespace FamTec.Server.Controllers.Material
         }
 
         /// <summary>
-        /// 자재정보 수정
+        /// 자재정보 수정 --- 여기 확인
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="files"></param>
@@ -329,11 +332,14 @@ namespace FamTec.Server.Controllers.Material
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                if (dto.RoomID is null)
-                    return NoContent();
+                //if (dto.RoomID is null)
+                //    return NoContent();
 
                 if (files is not null)
                 {
+                    if (files.Length > Common.MEGABYTE_10)
+                        return Ok(new ResponseUnit<bool?>() { message = "파일의 용량은 10MB까지 가능합니다.", data = null, code = 403 });
+
                     string? extension = FileService.GetExtension(files);
                     if (String.IsNullOrWhiteSpace(extension))
                     {

@@ -47,6 +47,11 @@
         public static readonly int MEGABYTE_5 = 5242880;
 
         /// <summary>
+        /// 10MB
+        /// </summary>
+        public static readonly int MEGABYTE_10 = 10485760;
+
+        /// <summary>
         /// 서버전용 HTTP 전송객체
         /// </summary>
         public static HttpClient HttpClient = new HttpClient();

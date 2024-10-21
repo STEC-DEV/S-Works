@@ -40,6 +40,6 @@
         /// <summary>
         /// 공간ID
         /// </summary>
-        public int? RoomID { get; set; }
+        //public int? RoomID { get; set; }
     }
 }

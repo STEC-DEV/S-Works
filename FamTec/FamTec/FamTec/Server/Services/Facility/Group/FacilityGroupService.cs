@@ -131,7 +131,7 @@ namespace FamTec.Server.Services.Facility.Group
                 {
                     FacilityItemKeyTb KeyTB = new FacilityItemKeyTb();
                     KeyTB.Name = KeyDTO.Name!; // 키의 명칭
-                    KeyTB.Unit = KeyDTO.Unit!; // 단위
+                    KeyTB.Unit = KeyDTO.Unit; // 단위
                     KeyTB.CreateDt = ThisTime;
                     KeyTB.CreateUser = creater;
                     KeyTB.UpdateDt = ThisTime;
