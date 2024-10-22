@@ -32,8 +32,8 @@
                     {
                         <Button Name="삭제"
                             Width="true"
-                            Type=1
-                            OnClick="@OnDeletePlace" />
+                                Type=1
+                            OnClick="@OnIsDel" />
                     }
 
                 }
@@ -53,6 +53,16 @@
         }
     </div>
 </div>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDeletePlace" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
+
+
 
 @code {
      /*
@@ -70,7 +80,7 @@
     private string? _Role;
     private bool LoginMode;
 
-
+    bool isDel = false;
 
     // public HttpClient httpClient = new HttpClient();
 
@@ -217,6 +227,11 @@
     private void OnAddPage()
     {
         Navigation.NavigateTo("/admin/place/add");
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 }
 

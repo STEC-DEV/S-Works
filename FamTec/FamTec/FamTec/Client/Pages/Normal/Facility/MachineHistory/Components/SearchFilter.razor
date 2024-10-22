@@ -1,6 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
 <div class="container">
@@ -42,7 +43,7 @@
             </div>
             @* 조회기간 컴포넌트 끝 *@
             <SelectField Key="SelectData="
-                         SelectData="@facType"
+                         SelectData="@filterType"
                          @bind-Value="@selectFacType"
                          OnChange="OnChangeFactype"
                          Label="설비유형"
@@ -79,6 +80,11 @@
     int selectWorkType=9;
 
 
+    //사용자 설비 권한 리스트 \ 기계,전기,승강,소방,건축,통신,미화,보안 순서
+    List<int> facPerm = new List<int>();
+
+
+    List<object> filterType = new List<object>();
     //설비 유형 -> 사용자 권한 검사 해야함
     List<object> facType = new List<object>()
     {
@@ -101,6 +107,26 @@
         new { Id = 1, Name = "외주" },
 
     };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        facPerm = await (_authStateProvider as CustomAuthProvider).GetFacilityUserPemrList();
+        await ConvertType(facPerm);
+    }
+
+    private async Task ConvertType(List<int> facperm)
+    {
+        filterType.Add(facType[0]);
+        // 권한 값이 1 이상인 항목만 필터링해서 filterType에 추가
+        for (int i = 0; i < facPerm.Count; i++)
+        {
+            if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
+            {
+                filterType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
+            }
+        }
+    }
 
     //조회 기간
     private void OnDateOptionChanged(ChangeEventArgs e)
@@ -143,10 +169,15 @@
             if(selectFacType == 0)
             {
                 List<string> all = new List<string> { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안" };
-                foreach(var type in all)
+                foreach(var type in filterType.Skip(1))
                 {
-                    FacType.Add(type);
+                    var facName = type.GetType().GetProperty("Name").GetValue(type, null);
+                    FacType.Add(facName.ToString());
                 }
+                // foreach(var type in all)
+                // {
+                //     FacType.Add(type);
+                // }
             }
             else
             {

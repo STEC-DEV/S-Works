@@ -84,7 +84,7 @@
                 SelectMaterial.Id == 0
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "출고 내용의 필수값 * 을 확인해 주세요");
                 AddItem = new OutContentDTO();
                 StateHasChanged();
                 return;
@@ -136,11 +136,11 @@
             // AddInItem.AddStore.InOutDate == null ||
             AddInItem.AddStore.Num == 0 || 
             AddInItem.AddStore.RoomID == 0|| 
-            AddInItem.AddStore.TotalPrice == 0 ||
+            AddInItem.AddStore.UnitPrice == 0 ||
             SelectMaterial.Id == 0
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재, 수량, 위치를 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "입고 내용의 필수값 * 을 확인해 주세요");
 
                 StateHasChanged();
                 return;

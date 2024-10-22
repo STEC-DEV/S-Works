@@ -1,13 +1,12 @@
-﻿.location-container{    
-    width : 100%;
-    height : 100%;
-
-    border : var(--comp-bd);
-    border-radius : var(--default-rd);
-    overflow:hidden;
-    background-color : var(--default-color);
-    box-shadow : var(--shadow-1);
-    padding : var(--default-pd) var(--wide-pd);
+﻿.location-container {
+    width: 100%;
+    height: 100%;
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+    overflow: hidden;
+    background-color: var(--default-color);
+    box-shadow: var(--shadow-1);
+    padding: var(--default-pd) var(--wide-pd);
 }
 
 .location-container .location-wrap{
@@ -18,9 +17,10 @@
     width : 100%;
     height : 100%;
     
-
     
 }
+
+
 
 .location-container .location-header { 
     display : flex;

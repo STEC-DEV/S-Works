@@ -1,15 +1,17 @@
-﻿.selectfield{
-    display : flex;
-    flex-direction : column;
-    gap : var(--half-pd);
-    width :100%;
-    min-width :200px;
+﻿.selectfield {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    width: 100%;
+    min-width: 200px;
+    position: relative;
 }
 
 .row{
     flex-direction:row;
     align-items:center;
     gap : var(--default-pd);
+    
 }
 
 .label{
@@ -19,6 +21,14 @@
     color : var(--main-color);
     /*white-space : nowrap;*/
     white-space : normal;
+}
+
+
+.requried::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
 }
 
 .row>.selectbox>.display {

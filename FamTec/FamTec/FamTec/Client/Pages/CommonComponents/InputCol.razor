@@ -2,7 +2,7 @@
 <div class="inputcol @(Row==true ? "row":"")">
     @if (!String.IsNullOrEmpty(Label))
     {
-        <label class="label">
+        <label class="label @(Required.Value ? "required" : "")">
             @Label
         </label>
     }
@@ -46,6 +46,7 @@
     [Parameter] public int? Max { get; set; }
     [Parameter] public int? MaxLength { get; set; }
     [Parameter] public bool? Row { get; set; }
+    [Parameter] public bool? Required { get; set; } = false;
     [Parameter] public bool Unit { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
     [Parameter] public bool ReadOnly { get; set; } = false;

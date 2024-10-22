@@ -19,6 +19,7 @@
                 Label="품목명" 
                 Placeholder="품목명" 
                 ValueType="text" 
+                Required="true"
                 @bind-Value="@EditMaterial.Name" 
                 />
             <TextField2
@@ -41,6 +42,7 @@
             <InputCol Label="단위"
                         Placeholder="단위"
                         ValueType="text"
+                        Unit=true
                       @bind-Value="@EditMaterial.Unit" />
         </div>
         <TextField2 Label="위치" Value="@Material.RoomName" Color=true/>
@@ -127,6 +129,11 @@
     {
         try
         {
+            if (string.IsNullOrEmpty(EditMaterial.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
             ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Material/sign/UpdateMaterial", EditMaterial);
             if(resUpdate.code != 200)
             {

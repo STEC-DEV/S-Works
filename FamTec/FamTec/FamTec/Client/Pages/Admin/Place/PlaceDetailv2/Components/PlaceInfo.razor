@@ -30,12 +30,14 @@
         {
             <InputCol Label="사업장명"
                       Placeholder="사업장명"
+                      Required="true"
                       @bind-Value="Data.PlaceInfo.Name" />
             <InputCol Label="사업장 주소"
                       Placeholder="사업장 주소"
                       @bind-Value=@Data.PlaceInfo.Address />
             <InputCol Label="전화번호"
                       ValueType="number"
+                      Required="true"
                       Placeholder="전화번호( - 제외)"
                       @bind-Value="Data.PlaceInfo.Tel" />
             <InputCol Label="계약번호"

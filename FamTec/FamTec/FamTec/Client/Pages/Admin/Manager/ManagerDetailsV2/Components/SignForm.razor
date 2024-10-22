@@ -42,6 +42,7 @@
                                  Placeholder="비밀번호"
                                  ValueType="password"
                                  @bind-Value=@Manager.Password
+                                 Required="true"
                                  ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
                                  Type="PW" />
 

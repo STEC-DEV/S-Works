@@ -184,7 +184,7 @@
                 Maintenance.Type != 0
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "출고 내용의 필수값 * 을 확인해주세요.");
                 addMaterial = new MaterialDTO();
                 StateHasChanged();
                 return;

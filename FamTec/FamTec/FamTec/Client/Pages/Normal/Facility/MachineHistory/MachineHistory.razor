@@ -7,14 +7,19 @@
         OnSearchMonthData="OnChangeMonthData"
         OnSearchDurationData="OnChangeDuratopmhData"
         />
-    @if ((MonthData != null) || (DurationData !=null))
+    @* @if ((MonthData != null) || (DurationData !=null))
     {
         <MaintanenceHistory 
             MonthData=MonthData 
             DurationData=DurationData 
-            SearchOption="@FilterOption"/>
+        SearchOption="@FilterOption"/>
+    } *@
+    @if (FilterOption != 0)
+    {
+        <MaintanenceHistory MonthData=MonthData
+                            DurationData=DurationData
+                            SearchOption="@FilterOption" />
     }
-
 </div>
 
 @code {
@@ -24,13 +29,29 @@
 
     private void OnChangeMonthData(List<AllMaintanceHistoryDTO> data)
     {
+        if(data == null)
+        {
+            MonthData = new List<AllMaintanceHistoryDTO>();
+        }
+        else
+        {
+            MonthData = data;
+        }
         FilterOption = 1;
-        MonthData = data;
+
     }
 
     private void OnChangeDuratopmhData(List<MaintanceHistoryDTO> data)
     {
+        if(data == null)
+        {
+            DurationData = new List<MaintanceHistoryDTO>();
+        }
+        else
+        {
+            DurationData = data;
+        }
         FilterOption = 2;
-        DurationData = data;
+        
     }
 }

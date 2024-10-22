@@ -18,6 +18,13 @@
     white-space : nowrap;
 }
 
+.required::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
 .row>.selectbox>.display {
     /*background-color : var(--content-back-color);*/
 }

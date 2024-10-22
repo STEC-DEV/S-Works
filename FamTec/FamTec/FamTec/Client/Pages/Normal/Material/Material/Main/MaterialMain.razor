@@ -29,7 +29,7 @@
                             <Button Name="삭제"
                                     Type="1"
                                     Width=true
-                                    OnClick="OnDelete" />
+                                    OnClick="OnIsDel" />
                         }
                     
                     }
@@ -54,6 +54,14 @@
     }
 
 </div>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelete" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     List<MaterialListDTO> Material;
@@ -62,6 +70,9 @@
     private string _searchText="";
     private bool EditMode = false;
     private bool isModal = false;
+
+    bool isDel = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -159,4 +170,9 @@
         EditMode =!EditMode ;
     }
 
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
+    }
 }

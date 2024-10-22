@@ -5,6 +5,7 @@
     flex-direction: column;
     gap: var(--half-pd);
     width: 100%;
+    position: relative;
 }
 
 .row {
@@ -20,6 +21,13 @@
     color: var(--main-color);
     white-space: normal;
 }
+.required::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
 
 .inputs{
     display:flex;

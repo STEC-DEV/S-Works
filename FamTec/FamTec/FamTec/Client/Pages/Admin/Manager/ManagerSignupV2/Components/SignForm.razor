@@ -27,11 +27,14 @@
                 Placeholder="아이디"
                 ValueType="text"
                 @bind-Value=@NewManager.UserId
+                Required="true"
                 Type="USERID"
+                isAdmin="true"
                 />
             <ValidationInput Label="비밀번호"
                              Placeholder="비밀번호"
                              ValueType="password"
+                             Required="true"
                              @bind-Value=@NewManager.Password
                              ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
                              Type="PW" />

@@ -1,15 +1,17 @@
-.selectfield[b-bjmstyaofj]{
-    display : flex;
-    flex-direction : column;
-    gap : var(--half-pd);
-    width :100%;
-    min-width :200px;
+.selectfield[b-bjmstyaofj] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    width: 100%;
+    min-width: 200px;
+    position: relative;
 }
 
 .row[b-bjmstyaofj]{
     flex-direction:row;
     align-items:center;
     gap : var(--default-pd);
+    
 }
 
 .label[b-bjmstyaofj]{
@@ -19,6 +21,14 @@
     color : var(--main-color);
     /*white-space : nowrap;*/
     white-space : normal;
+}
+
+
+.requried[b-bjmstyaofj]::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
 }
 
 .row>.selectbox>.display[b-bjmstyaofj] {

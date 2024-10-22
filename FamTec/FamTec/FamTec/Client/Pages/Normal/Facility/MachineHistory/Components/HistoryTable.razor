@@ -64,25 +64,25 @@
             @foreach (var row in ListData)
             {
                 <tr class="tbody-tr">
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId, ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,row.Category)">
                         @row.Category
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,row.Category)">
                         @row.WorkDT?.Split(" ")[0]
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,row.Category)">
                         @row.HistoryTitle
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId ,row.Category)">
                         @(row.Type == 0 ? "자체 작업" : "외주 작업")
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,row.Category)">
                         @row.Worker
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,row.Category)">
                         @row.HistoryMaterialList.Count()
                     </td>
-                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,ConvertFactype(row.Category))">
+                    <td class="td" @onclick="()=>OnDetail(row.FacilityId,row.MaintenanceId,row.Category)">
                         @row.TotalPrice
                     </td>
                 </tr>
@@ -107,10 +107,10 @@
 
     private void OnDetail(int facId, int maintenanceid, string factype)
     {
-        Console.WriteLine("사업장 "+facId);
-        Console.WriteLine("유지보수 "+maintenanceid);
-        Console.WriteLine("타입 "+ factype);
-        Navigation.NavigateTo($"/facility/{factype}/{facId}/maintenance/{maintenanceid}");
+        ConvertFactype(factype);
+        Console.WriteLine("aaaa"+EngFacType);
+        Console.WriteLine("aaaa" + factype);
+        Navigation.NavigateTo($"/facility/{EngFacType}/{facId}/maintenance/{maintenanceid}");
 
     }
 
@@ -139,18 +139,20 @@
     private string ConvertFactype(string type)
     {
         Console.WriteLine("카테고리 변환 : "+ type);
-        return EngFacType switch
+        EngFacType = type switch
         {
-                    "기계"=>"machine",
-                    "전기" => "electronic",
-                    "승강" => "lift",
-                    "소방" => "fire",
-                    "건축" => "construct",
-                    "통신" => "network",
-                    "미화" => "beauty",
-                    "보안" => "security",
+            "기계"=>"machine",
+            "전기" => "electronic",
+            "승강" => "lift",
+            "소방" => "fire",
+            "건축" => "construct",
+            "통신" => "network",
+            "미화" => "beauty",
+            "보안" => "security",
             _ => "Unknown"
         };
+
+        return EngFacType;
     }
 }
 

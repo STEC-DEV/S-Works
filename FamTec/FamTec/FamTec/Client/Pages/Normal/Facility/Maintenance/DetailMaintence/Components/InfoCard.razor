@@ -63,6 +63,7 @@
                                 Value="@UpdateMaintenance.WorkDT" />
                     <InputCol Label="작업명"
                               Placeholder="작업명"
+                              Required="true"
                               Row="true"
                               @bind-Value=@UpdateMaintenance.WorkName />
                     <TextField2 Label="작업구분"
@@ -70,6 +71,7 @@
                                 Value="@(UpdateMaintenance.Type == 0? "자체 작업" : "외주 작업")" />
                     <InputCol Label="작업자"
                               Placeholder="작업자"
+                              Required="true"
                               Row="true"
                               @bind-Value=@UpdateMaintenance.Worker />
                     <TextField2 Label="소요 비용"
@@ -193,9 +195,12 @@
     {
         try
         {
-            Console.WriteLine("설비" + UpdateMaintenance.WorkName);
-            Console.WriteLine("설비" + UpdateMaintenance.MaintanceID);
-            
+            if (string.IsNullOrEmpty(UpdateMaintenance.Worker) || string.IsNullOrEmpty(UpdateMaintenance.WorkName))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
+
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", UpdateMaintenance, true);
             if(resUpdate.code != 200)
             {

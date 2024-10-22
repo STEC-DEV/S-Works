@@ -22,6 +22,7 @@
             OnChange="OnBuildingChange" 
             Label="건물"
             Row="true"
+            Required="true"
             EditMode="true" />
         @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
         {
@@ -31,6 +32,7 @@
                 @bind-Value="SelectedRoomId" 
                 Label="위치"
                 Row="true"
+                Required="true"
                 ReturnName="OnReturnRoomName"
                 OnChange="OnLocationChange" 
                 EditMode="true" />
@@ -42,6 +44,7 @@
             Label="단가" 
             Placeholder="단가" 
             Row="true" 
+            Required="true"
             ValueType="number"
             @bind-Value="@AddItem.AddStore.UnitPrice"
             @bind-Value:after="CalculateTotalPrice"
@@ -52,6 +55,7 @@
             Label="수량" 
             Placeholder="수량" 
             Row="true" 
+            Required="true"
             ValueType="number"
             @bind-Value="@AddItem.AddStore.Num"
             @bind-Value:after="CalculateTotalPrice"

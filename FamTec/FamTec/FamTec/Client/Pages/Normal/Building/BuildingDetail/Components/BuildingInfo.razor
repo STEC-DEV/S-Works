@@ -67,7 +67,11 @@
     {
         try
         {
-            Console.WriteLine("데이타 : " + _editBuilding.Name);
+            if (string.IsNullOrEmpty(_editBuilding.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Building/sign/UpdateBuilding",_editBuilding, true);
             if(resUpdate.code != 200)
             {

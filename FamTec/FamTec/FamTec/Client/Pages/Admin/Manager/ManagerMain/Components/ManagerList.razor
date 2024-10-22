@@ -19,7 +19,7 @@
                     <Button Name="등록" Type=0 OnClick="@OnSignUp" />
                     @if(deleteManagerList.Count > 0)
                     {
-                        <Button Name="삭제" Type=1 OnClick="@OnDeleteManager" />
+                        <Button Name="삭제" Type=1 OnClick="@OnIsDel" />
                     }
 
                 </div>
@@ -41,6 +41,14 @@
         </div>
     </div>
 </div>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDeleteManager" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public bool UserType { get; set; }
@@ -49,6 +57,9 @@
     List<ManagerDTO>? managerList;
     List<int>? deleteManagerList = new List<int>();
     List<ManagerDTO> filterList;
+
+
+    bool isDel = false;
 
     private bool _editMode = false;
 
@@ -168,6 +179,11 @@
     private void OnSignUp()
     {
         Navigation.NavigateTo("/admin/manager/signup");
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 
 }

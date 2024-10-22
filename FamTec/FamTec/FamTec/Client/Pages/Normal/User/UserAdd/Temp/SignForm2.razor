@@ -26,22 +26,30 @@
                             Placeholder="아이디"
                             @bind-Value="@UserInfo.UserId"
                             Label="아이디"
+                            Required="true"
+                            Type="USERID"
+                            ReturnSuccess="ReturnSuccess"
                             />
             <ValidationInput ValueType="password"
                             Placeholder="비밀번호"
                             Type="PW"
                             @bind-Value="@UserInfo.Password"
                             Label="비밀번호"
+                            Required="true"
+                            ReturnSuccess="ReturnSuccess"
                              />
             <ValidationInput ValueType="password"
                               Placeholder="비밀번호 확인"
                               PasswordCheck="@UserInfo.Password"
                               Type="PWCHECK"
-                              Label="비밀번호 확인" />
+                              Label="비밀번호 확인"
+                             ReturnSuccess="ReturnSuccess" />
             <ValidationInput ValueType="text"
                             Placeholder="이름"
                             @bind-Value="@UserInfo.Name"
                             Label="이름"
+                            Required="true"
+                            ReturnSuccess="ReturnSuccess"
                                 />
             <ValidationInput ValueType="text"
                             Placeholder="전화번호"
@@ -53,6 +61,7 @@
                             Type="EMAIL"
                             @bind-Value="@UserInfo.Email"
                             Label="이메일"
+                            ReturnSuccess="ReturnSuccess"
                              />
             <ValidationInput ValueType="text"
                             Placeholder="직책"
@@ -72,6 +81,7 @@
 @code {
     [Parameter] public UserInfoDTO UserInfo { get; set; }
     [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback<(int, int)> ReturnSuccess { get; set; }
     private byte[] imageData;
     // private List<string> ImageUrl = new List<string>(); //이미지 프리뷰
     private List<byte[]> ImageUrl = new List<byte[]>(); //이미지 프리뷰

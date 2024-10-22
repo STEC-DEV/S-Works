@@ -3,7 +3,7 @@
 <div class="selectfield @(Row==true ? "row":"")">
     @if (!String.IsNullOrEmpty(Label))
     {
-        <label class="label">
+        <label class="label @(Required.Value ? "requried" : "")">
             @Label
         </label>
     }
@@ -23,9 +23,6 @@
             }
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
-            @* <li class="option-item" @onclick="() => OnSelectRow(null)">
-                Select
-            </li> *@
             @if (SelectData != null && SelectData.Any())
             {
                 @foreach (var selectRow in SelectData)
@@ -58,6 +55,7 @@
     [Parameter] public bool EditMode {get;set;}
     [Parameter] public string? Label { get; set; }
     [Parameter] public bool? Row { get; set; }
+    [Parameter] public bool? Required { get; set; } = false;
 
     public string SelectName = "Select";
     public bool IsActive { get; set; } = false;

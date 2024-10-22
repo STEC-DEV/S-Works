@@ -23,7 +23,7 @@
         <div class="infosection-1">
             @if (EditMode)
             {
-                <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name />
+                <InputCol Label="건물이름" Placeholder="건물이름" ValueType="text" @bind-Value=@Building.Name Required=true />
                 <InputCol Label="건물주소" Placeholder="건물주소" ValueType="text" @bind-Value=@Building.Address />
                 <InputCol Label="대표전화" Placeholder="대표전화 ( - 제외)" ValueType="number" @bind-Value=@Building.Tel />
                 <DateInput Label="준공년월" Placeholder="YYYYMMDD" @bind-Date=@Building.CompletionDT />

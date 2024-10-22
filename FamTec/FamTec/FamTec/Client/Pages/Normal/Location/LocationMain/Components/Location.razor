@@ -23,7 +23,7 @@
                         <Button Name="삭제"
                                 Width=true
                                 Type="1"
-                                OnClick="OnDelete" />
+                                OnClick="OnIsDel" />
                     }
 
                 </div>
@@ -44,6 +44,16 @@
         </div>
     </div>
 </div>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelete" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
+
+
 @code {
     [Parameter] public List<BuildingFloorListDTO> BuildingFloor{ get; set; }
     private bool isAddingRow = false;
@@ -60,6 +70,7 @@
     AddLoactionDTO AddLocation;
 
     List<int> DelList = new List<int>();
+    bool isDel = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -171,5 +182,10 @@
     private void RemoveRow(LocationDTO data)
     {
         Locations.Remove(data);
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 }
