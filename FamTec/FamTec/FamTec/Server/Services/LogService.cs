@@ -1,7 +1,6 @@
 ﻿
 namespace FamTec.Server.Services
 {
-
     public class ConsoleLogService<T>
     {
         private readonly ILogger<T> ConsoleLogger;
@@ -20,6 +19,7 @@ namespace FamTec.Server.Services
 
                 // 로그 출력
                 Console.WriteLine($"[INFO] {DateTime.Now}: {message}");
+
                 Console.ResetColor();
 
             }
@@ -38,6 +38,7 @@ namespace FamTec.Server.Services
 
                 // 로그 출력
                 Console.WriteLine($"[Error] {DateTime.Now}: {ex.Message}");
+
                 Console.ResetColor();
 
             }

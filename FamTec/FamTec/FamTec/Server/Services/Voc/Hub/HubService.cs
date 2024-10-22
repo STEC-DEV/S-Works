@@ -196,10 +196,10 @@ namespace FamTec.Server.Services.Voc.Hub
 
                         /* 테스트 */
                         // 템플릿 http로 새로만들어야함.
-                        string url = $"http://125.131.105.172:5245/m/voc/select/{result.Code}";
+                        //string url = $"http://125.131.105.172:5245/m/voc/select/{result.Code}";
 
+                        string url = $"http://sws.s-tec.co.kr/m/voc/select/{result.Code}";
 
-                        //string url = $"https://sws.s-tec.co.kr/vocinfo?vocid={base64}";
 
                         // 카카오 API 전송
                         // 보낸 USER 휴대폰번호에 전송.

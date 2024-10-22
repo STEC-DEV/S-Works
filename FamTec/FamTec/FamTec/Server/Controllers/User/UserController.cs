@@ -6,6 +6,7 @@ using FamTec.Shared.Client.DTO.Normal.Users;
 using Microsoft.AspNetCore.Authorization;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using FamTec.Server.Services.Admin.Account;
 
 namespace FamTec.Server.Controllers.User
 {
@@ -14,6 +15,7 @@ namespace FamTec.Server.Controllers.User
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IAdminAccountService AdminAccountService;
         private readonly IUserService UserService;
         private readonly ICommService CommService;
         
@@ -25,8 +27,10 @@ namespace FamTec.Server.Controllers.User
             IFileService _fileservice,
             ICommService _commservice,
             ILogService _logservice,
+            IAdminAccountService _adminservice,
             ConsoleLogService<UserController> _createbuilderlogger)
         {
+            this.AdminAccountService = _adminservice;
             this.UserService = _userservice;
             this.CommService = _commservice;
             
@@ -381,6 +385,47 @@ namespace FamTec.Server.Controllers.User
             }
         }
 
+        /// <summary>
+        /// 아이디 중복검사
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/UserIdCheck")]
+        public async Task<IActionResult> UserIdCheck([FromQuery] string userid)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (String.IsNullOrWhiteSpace(userid))
+                    return BadRequest();
+
+                ResponseUnit<bool?> model = await AdminAccountService.UserIdCheckService(CommService.getRemoveWhiteSpace(userid)).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
 
     }

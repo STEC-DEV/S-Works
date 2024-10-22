@@ -8,7 +8,6 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
-using System.Text;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -175,11 +174,10 @@ namespace FamTec.Server.Services.Voc
                         //byte[] bytes = Encoding.Unicode.GetBytes(VocTB.Id.ToString());
                         //string base64 = Convert.ToBase64String(bytes);
 
-                        
-                        //string url = $"http://125.131.105.172:5245/m/voc/select/{base64}";
-                        
+
                         // 템블릿 http로 새로 생성해야함.
-                        string url = $"http://125.131.105.172:5245/m/voc/select/{VocTB.Code}";
+                        //string url = $"http://125.131.105.172:5245/m/voc/select/{VocTB.Code}";
+                        string url = $"http://sws.s-tec.co.kr/m/voc/select/{VocTB.Code}";
 
                         string StatusResult = string.Empty;
                         if(model.Status == 1)
