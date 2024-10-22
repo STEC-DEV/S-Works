@@ -15,33 +15,19 @@ namespace FamTec.Server.Controllers.Material
     {
         private readonly IMaterialService MaterialService;
         private readonly IFileService FileService;
+        
         private readonly ILogService LogService;
-        private readonly ILogger<MaterialController> BuilderLogger;
+        private readonly ConsoleLogService<MaterialController> CreateBuilderLogger;
 
         public MaterialController(IMaterialService _materialservice,
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<MaterialController> _builderlogger)
+            ConsoleLogService<MaterialController> _createbuilderlogger)
         {
             this.MaterialService = _materialservice;
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -94,6 +80,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 201)
@@ -105,7 +95,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -129,6 +119,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -138,7 +132,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -163,6 +157,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -172,7 +170,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -196,7 +194,11 @@ namespace FamTec.Server.Controllers.Material
                 
                 if (model is null)
                     return BadRequest();
-                
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -206,7 +208,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -233,6 +235,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -250,7 +256,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -295,6 +301,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -304,7 +314,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -359,6 +369,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -368,7 +382,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -399,6 +413,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -408,7 +426,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -448,6 +466,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -457,7 +479,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
@@ -485,6 +507,10 @@ namespace FamTec.Server.Controllers.Material
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -494,7 +520,7 @@ namespace FamTec.Server.Controllers.Material
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }

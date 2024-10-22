@@ -12,35 +12,18 @@ namespace FamTec.Server.Repository.Material
     public class MaterialInfoRepository : IMaterialInfoRepository
     {
         private readonly WorksContext context;
+        
         private readonly ILogService LogService;
-        private readonly ILogger<MaterialInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<MaterialInfoRepository> CreateBuilderLogger;
 
         public MaterialInfoRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<MaterialInfoRepository> _builderlogger)
+            ConsoleLogService<MaterialInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -67,7 +50,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -75,7 +58,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -103,7 +86,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -111,7 +94,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -119,7 +102,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -167,7 +150,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -176,7 +159,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -185,7 +168,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -194,7 +177,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -227,7 +210,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -235,7 +218,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -265,7 +248,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -273,7 +256,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -300,7 +283,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -308,7 +291,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -343,7 +326,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -351,7 +334,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -381,7 +364,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -389,7 +372,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -411,7 +394,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -419,7 +402,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -427,7 +410,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -500,7 +483,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -509,7 +492,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -518,7 +501,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -527,7 +510,7 @@ namespace FamTec.Server.Repository.Material
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -544,28 +527,32 @@ namespace FamTec.Server.Repository.Material
         {
             try
             {
-                List<MaterialTb>? MaterialList = await context.MaterialTbs
-                    .Where(m => m.DelYn != true &&
-                               (m.Code.Contains(searchData) ||
-                                m.ManufacturingComp.Contains(searchData) ||
-                                m.Name.Contains(searchData) ||
-                                m.Standard.Contains(searchData) &&
-                               m.PlaceTbId == placeid))
-                    .GroupBy(m => m.Id) // ID 기준으로 그룹화
-                    .Select(g => g.First()) // 각 그룹에서 첫 번째 항목 선택
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                var materialList = await (from m in context.MaterialTbs
+                                          join r in context.RoomTbs on m.RoomTbId equals r.Id // MaterialTb와 RoomTb 조인
+                                          join f in context.FloorTbs on r.FloorTbId equals f.Id // RoomTb와 FloorTb 조인
+                                          join b in context.BuildingTbs on f.BuildingTbId equals b.Id // FloorTb와 BuildingTb 조인
+                                          where m.DelYn != true &&
+                                                m.PlaceTbId == placeid &&
+                                                (m.Code.Contains(searchData) ||
+                                                 m.ManufacturingComp.Contains(searchData) ||
+                                                 m.Name.Contains(searchData) ||
+                                                 m.Standard.Contains(searchData))
+                                          group new { m, r, f, b } by m.Id into g
+                                          select g.First()).ToListAsync()
+                          .ConfigureAwait(false);
 
-                if (MaterialList is not null && MaterialList.Any())
+                if (materialList is not null && materialList.Any())
                 {
-                    List<MaterialSearchListDTO> model = MaterialList.Select(e => new MaterialSearchListDTO
+                    List<MaterialSearchListDTO> model = materialList.Select(e => new MaterialSearchListDTO
                     {
-                        Id = e.Id,
-                        Code = e.Code,
-                        Name = e.Name,
-                        Unit = e.Unit,
-                        Standard = e.Standard,
-                        Mfr = e.ManufacturingComp
+                        Id = e.m.Id,
+                        Code = e.m.Code,
+                        Name = e.m.Name,
+                        Unit = e.m.Unit,
+                        Standard = e.m.Standard,
+                        Mfr = e.m.ManufacturingComp,
+                        RoomId = e.m.RoomTbId,
+                        BuildingId = e.b.Id // BuildingTb의 Name
                     }).ToList();
 
                     return model;
@@ -579,7 +566,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -587,7 +574,7 @@ namespace FamTec.Server.Repository.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }

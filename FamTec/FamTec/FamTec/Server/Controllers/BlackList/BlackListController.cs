@@ -15,31 +15,18 @@ namespace FamTec.Server.Controllers.BlackList
     {
         private readonly IBlackListService BlackListService;
         private readonly ILogService LogService;
-        private readonly ILogger<BlackListController> BuilderLogger;
+
+        // 콘솔로그
+        private readonly ConsoleLogService<BlackListController> CreateBuilderLogger;
 
         public BlackListController(IBlackListService _blacklistservice, 
             ILogService _logservice,
-            ILogger<BlackListController> _builderlogger)
+            ConsoleLogService<BlackListController> _createbuilderlogger)
         {
             this.BlackListService = _blacklistservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -64,6 +51,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -73,7 +64,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -97,6 +88,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -106,7 +101,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -130,6 +125,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -139,7 +138,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -172,6 +171,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -181,7 +184,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -209,6 +212,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -218,7 +225,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -249,6 +256,10 @@ namespace FamTec.Server.Controllers.BlackList
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -258,7 +269,7 @@ namespace FamTec.Server.Controllers.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

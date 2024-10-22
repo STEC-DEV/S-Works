@@ -17,18 +17,18 @@ namespace FamTec.Server.Repository.Admin.AdminUser
         
         private readonly IFileService FileService;
         private readonly ILogService LogService;
-        private readonly ILogger<AdminUserInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<AdminUserInfoRepository> CreateBuilderLogger;
 
         public AdminUserInfoRepository(WorksContext _context, 
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<AdminUserInfoRepository> _builderlogger)
+            ConsoleLogService<AdminUserInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -61,13 +61,16 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 throw;
             }
         }
@@ -88,7 +91,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -96,7 +99,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -104,7 +107,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -207,7 +210,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -216,7 +219,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -225,7 +228,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -234,7 +237,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -266,7 +269,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -274,7 +277,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -303,7 +306,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -311,7 +314,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -349,7 +352,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -357,7 +360,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -432,7 +435,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -440,7 +443,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -467,7 +470,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -475,7 +478,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -483,7 +486,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -622,7 +625,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 {
                                     LogService.LogMessage($"파일 복원실패 : {ex.Message}");
 #if DEBUG
-                                    CreateBuilderLogger(ex);
+                                    CreateBuilderLogger.ConsoleLog(ex);
 #endif
                                 }
                             }
@@ -637,7 +640,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                                 {
                                     LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
 #if DEBUG
-                                    CreateBuilderLogger(ex);
+                                    CreateBuilderLogger.ConsoleLog(ex);
 #endif
                                 }
                             }
@@ -651,7 +654,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -660,7 +663,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -669,7 +672,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -678,7 +681,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return false;
                     }
@@ -880,7 +883,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -889,7 +892,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -898,7 +901,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -907,7 +910,7 @@ namespace FamTec.Server.Repository.Admin.AdminUser
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return false;
                     }
@@ -933,23 +936,5 @@ namespace FamTec.Server.Repository.Admin.AdminUser
             return false;
         }
 
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
     }
 }

@@ -20,7 +20,7 @@ namespace FamTec.Server.Services.Material
 
         private readonly IFileService FileService;
         private readonly ILogService LogService;
-        private readonly ILogger<MaterialService> BuilderLogger;
+        private readonly ConsoleLogService<MaterialService> CreateBuilderLogger;
 
         private DirectoryInfo? di;
         private string? MaterialFileFolderPath;
@@ -32,7 +32,7 @@ namespace FamTec.Server.Services.Material
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<MaterialService> _builderlogger)
+            ConsoleLogService<MaterialService> _createbuilderlogger)
         {
             this.MaterialInfoRepository = _materialinforepository;
             this.InventoryInfoRepository = _inventoryinforepository;
@@ -42,26 +42,7 @@ namespace FamTec.Server.Services.Material
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -147,7 +128,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddMaterialDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddMaterialDTO(), code = 500 };
             }
@@ -200,7 +181,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<MaterialListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<MaterialListDTO>(), code = 500 };
             }
@@ -241,7 +222,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -271,7 +252,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -325,7 +306,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<MaterialListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
 
@@ -356,7 +337,14 @@ namespace FamTec.Server.Services.Material
                 RoomTb? RoomTB = await RoomInfoRepository.GetRoomInfo(materialTB.RoomTbId).ConfigureAwait(false);
                 if (RoomTB is null)
                     return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
-                
+
+                FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(RoomTB.FloorTbId).ConfigureAwait(false);
+                if (FloorTB is null)
+                    return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
+
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(FloorTB.BuildingTbId);
+                if (BuildingTB is null)
+                    return new ResponseUnit<DetailMaterialDTO>() { message = "잘못된 요청입니다.", data = new DetailMaterialDTO(), code = 404 };
 
                 DetailMaterialDTO dto = new DetailMaterialDTO();
                 dto.Id = materialTB.Id; // 품목 ID
@@ -368,6 +356,8 @@ namespace FamTec.Server.Services.Material
                 dto.SafeNum = materialTB.SafeNum; // 안전재고 수량
                 dto.RoomID = materialTB.RoomTbId; // 기본위치
                 dto.RoomName = RoomTB.Name;
+                dto.BuildingID = BuildingTB.Id;
+                dto.BuildingName = BuildingTB.Name;
 
                 //MaterialFileFolderPath = String.Format(@"{0}\\{1}\\Material", Common.FileServer, placeid);
                 MaterialFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Material");
@@ -387,7 +377,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<DetailMaterialDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new DetailMaterialDTO(), code = 500 };
             }
@@ -523,7 +513,7 @@ namespace FamTec.Server.Services.Material
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
 #if DEBUG
-                            CreateBuilderLogger(ex);
+                            CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         }
                     }
@@ -538,7 +528,7 @@ namespace FamTec.Server.Services.Material
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
 #if DEBUG
-                            CreateBuilderLogger(ex);
+                            CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         }
                     }
@@ -550,7 +540,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
@@ -607,7 +597,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
@@ -744,7 +734,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -777,7 +767,7 @@ namespace FamTec.Server.Services.Material
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

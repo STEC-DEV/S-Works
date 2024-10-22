@@ -9,11 +9,13 @@ namespace FamTec.Server.Hubs
         // 각 connectionId가 가입된 그룹 목록을 관리하는 ConcurrentDictionary
         private static ConcurrentDictionary<string, HashSet<string>> _connectionGroups = new ConcurrentDictionary<string, HashSet<string>>();
 
-        private ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ConsoleLogService<BroadcastHub> CreateBuilderLogger;
 
-        public BroadcastHub(ILogService _logservice)
+        public BroadcastHub(ILogService _logservice, ConsoleLogService<BroadcastHub> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -58,6 +60,9 @@ namespace FamTec.Server.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
             }
         }
 
@@ -95,6 +100,9 @@ namespace FamTec.Server.Hubs
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
             }
         }
 
@@ -113,6 +121,9 @@ namespace FamTec.Server.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
             }
         }
 
@@ -137,6 +148,9 @@ namespace FamTec.Server.Hubs
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
             }
         }
 

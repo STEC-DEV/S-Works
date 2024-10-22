@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO.KakaoLog;
+﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 
 namespace FamTec.Server.Services
 {
@@ -32,5 +33,16 @@ namespace FamTec.Server.Services
         /// </summary>
         /// <returns></returns>
         public string RandomCode();
+
+        /// <summary>
+        /// 카카오 전송결과 보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="page"></param>
+        /// <param name="pagesize"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="limit_day"></param>
+        /// <returns></returns>
+        public Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(HttpContext context, int page, int pagesize, DateTime StartDate, int limit_day);
     }
 }

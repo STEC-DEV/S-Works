@@ -20,42 +20,27 @@ namespace FamTec.Server.Controllers.Maintenance
                 
         private readonly IFileService FileService;
         private readonly ILogService LogService;
-        private readonly ILogger<MaintenanceController> BuilderLogger;
+        private readonly ConsoleLogService<MaintenanceController> CreateBuilderLogger;
 
         public MaintenanceController(IMaintanceService _maintanceservice,
             IUseMaintenenceService _usermaintenenceservice,
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<MaintenanceController> _builderlogger)
+            ConsoleLogService<MaintenanceController> _createbuilderlogger)
         {
             this.MaintanceService = _maintanceservice;
             this.UseMaintenenceService = _usermaintenenceservice;
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+       
 
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/UpdateSupMaintenance")]
-        //public async Task<IActionResult> UpdateSupMaintenance()
         public async Task<IActionResult> UpdateSupMaintenance([FromBody]UpdateMaintancematerialDTO dto)
         {
             try
@@ -119,6 +104,11 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<bool?> model = await UseMaintenenceService.UpdateUseMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -132,7 +122,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -145,9 +135,7 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/AddSupMaintenance")]
-        //public async Task<IActionResult> AddSupMaintenance()
         public async Task<IActionResult> AddSupMaintenance([FromBody]AddMaintanceMaterialDTO dto)
         {
             try
@@ -195,7 +183,11 @@ namespace FamTec.Server.Controllers.Maintenance
                 ResponseUnit<FailResult?> model = await MaintanceService.AddSupMaintanceService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-            
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 422)
@@ -209,7 +201,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -223,7 +215,6 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="files"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPut]
         [Route("sign/UpdateMaintenance")]
         public async Task<IActionResult> UpdateMaintenance([FromForm]UpdateMaintenanceDTO dto, [FromForm]IFormFile? files)
@@ -262,6 +253,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -271,7 +266,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -314,6 +309,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -323,7 +322,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -336,9 +335,7 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/AddMaintenance")]
-        //public async Task<IActionResult> AddMaintenence()
         public async Task<IActionResult> AddMaintenence([FromBody]AddMaintenanceDTO dto)
         {
             try
@@ -415,6 +412,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 422)
@@ -428,7 +429,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -453,6 +454,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -462,7 +467,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -482,6 +487,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -491,7 +500,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -503,7 +512,6 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
         //public async Task<IActionResult> DeleteMaintenanceList()
@@ -525,6 +533,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -534,7 +546,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -549,9 +561,7 @@ namespace FamTec.Server.Controllers.Maintenance
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/DeleteMaintenanceStore")]
-        //public async Task<IActionResult> DeleteMaintanceHistory()
         public async Task<IActionResult> DeleteMaintenanceStore([FromBody]DeleteMaintanceDTO delInfo)
         {
             try
@@ -576,6 +586,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -585,7 +599,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -604,7 +618,6 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetDateHistoryList")]
-        //public async Task<IActionResult> GetDateHistoryList()
         public async Task<IActionResult> GetDateHistoryList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
@@ -629,6 +642,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 401)
@@ -640,7 +657,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }
@@ -655,7 +672,6 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetAllHistoryList")]
-        //public async Task<IActionResult> GetAllHistoryList()
         public async Task<IActionResult> GetAllHistoryList([FromQuery]List<string> category, [FromQuery]List<int> type)
         {
             try
@@ -678,6 +694,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 401)
@@ -689,7 +709,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
             }

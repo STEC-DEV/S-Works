@@ -21,17 +21,16 @@ namespace FamTec.Server.Services.Voc
         private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
+        
+        private readonly IKakaoService KakaoService;
 
         private readonly ILogService LogService;
         private readonly IFileService FileService;
-        private readonly IKakaoService KakaoService;
+        private readonly ConsoleLogService<VocCommentService> CreateBuilderLogger;
 
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocCommentFileFolderPath;
-
-        private readonly ILogger<VocCommentService> BuilderLogger;
-
 
         public VocCommentService(IVocCommentRepository _voccommentrepository,
             IVocInfoRepository _vocinforepository,
@@ -43,7 +42,7 @@ namespace FamTec.Server.Services.Voc
             IKakaoService _kakaoservice,
             ILogService _logservice,
             IFileService _fileservice,
-            ILogger<VocCommentService> _builderlogger)
+            ConsoleLogService<VocCommentService> _createbuilderlogger)
         {
             this.VocCommentRepository = _voccommentrepository;
             this.VocInfoRepository = _vocinforepository;
@@ -54,28 +53,10 @@ namespace FamTec.Server.Services.Voc
             this.UserInfoRepository = _userinforepository;
 
             this.KakaoService = _kakaoservice;
+
             this.LogService = _logservice;
             this.FileService = _fileservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -260,7 +241,7 @@ namespace FamTec.Server.Services.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddVocCommentDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddVocCommentDTO(), code = 500 };
             }
@@ -342,7 +323,7 @@ namespace FamTec.Server.Services.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<VocCommentListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocCommentListDTO>(), code = 500 };
             }
@@ -413,7 +394,7 @@ namespace FamTec.Server.Services.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<VocCommentDetailDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -668,7 +649,7 @@ namespace FamTec.Server.Services.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

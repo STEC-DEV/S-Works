@@ -9,34 +9,16 @@ namespace FamTec.Server.Services.Unit
     {
         private readonly IUnitInfoRepository UnitInfoRepository;
         private readonly ILogService LogService;
-        private readonly ILogger<UnitService> BuilderLogger;
+        private readonly ConsoleLogService<UnitService> CreateBuilderLogger;
 
         public UnitService(IUnitInfoRepository _unitinforepository,
             ILogService _logservice,
-            ILogger<UnitService> _builderlogger)
+            ConsoleLogService<UnitService> _createbuilderlogger)
         {
             this.UnitInfoRepository = _unitinforepository;
+            
+            this.CreateBuilderLogger = _createbuilderlogger;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         /// <summary>
@@ -93,7 +75,7 @@ namespace FamTec.Server.Services.Unit
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UnitsDTO(), code = 500 };
             }
@@ -138,7 +120,7 @@ namespace FamTec.Server.Services.Unit
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<UnitsDTO>(), code = 500 };
             }
@@ -188,7 +170,7 @@ namespace FamTec.Server.Services.Unit
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
@@ -234,7 +216,7 @@ namespace FamTec.Server.Services.Unit
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<UnitsDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

@@ -16,31 +16,16 @@ namespace FamTec.Server.Controllers.Store
         private readonly IInVentoryService InStoreService;
         
         private readonly ILogService LogService;
-        private readonly ILogger<StoreController> BuilderLogger;
+        private readonly ConsoleLogService<StoreController> CreateBuilderLogger;
 
         public StoreController(IInVentoryService _instoreservice,
             ILogService _logservice,
-            ILogger<StoreController> _builderlogger)
+            ConsoleLogService<StoreController> _createbuilderlogger)
         {
             this.InStoreService = _instoreservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -49,10 +34,8 @@ namespace FamTec.Server.Controllers.Store
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/AddInStore")]
-        //public async Task<IActionResult> AddInStore()
         public async Task<IActionResult> AddInStore([FromBody] List<InOutInventoryDTO> dto)
         {
             try
@@ -108,6 +91,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -118,7 +105,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -130,10 +117,8 @@ namespace FamTec.Server.Controllers.Store
         /// <param name="dto"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        //[HttpGet]
         [HttpPost]
         [Route("sign/OutInventory")]
-        //public async Task<IActionResult> OutInventoryService()
         public async Task<IActionResult> OutInventoryService([FromBody] List<InOutInventoryDTO> dto)
         {
             try
@@ -185,6 +170,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 422)
@@ -198,7 +187,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -223,6 +212,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -233,7 +226,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -265,6 +258,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -274,7 +271,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -299,6 +296,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -308,7 +309,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -342,6 +343,11 @@ namespace FamTec.Server.Controllers.Store
 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -352,7 +358,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -368,14 +374,14 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async Task<IActionResult> PeriodicRecord()
-        //public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
+        //public async Task<IActionResult> PeriodicRecord()
+        public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
-                List<int> materialid = new List<int>() { 1};
-                DateTime Startdate = DateTime.Now.AddDays(-50);
-                DateTime EndDate = DateTime.Now;
+                //List<int> materialid = new List<int>() { 1};
+                //DateTime Startdate = DateTime.Now.AddDays(-50);
+                //DateTime EndDate = DateTime.Now;
 
                 if (HttpContext is null)
                     return BadRequest();
@@ -384,6 +390,10 @@ namespace FamTec.Server.Controllers.Store
 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -394,7 +404,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -421,6 +431,11 @@ namespace FamTec.Server.Controllers.Store
                 ResponseList<InOutLocationDTO> model = await InStoreService.GetMaterialRoomNumService(HttpContext, materialid, buildingid).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -430,7 +445,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -463,6 +478,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -472,7 +491,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -511,6 +530,10 @@ namespace FamTec.Server.Controllers.Store
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -520,7 +543,7 @@ namespace FamTec.Server.Controllers.Store
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

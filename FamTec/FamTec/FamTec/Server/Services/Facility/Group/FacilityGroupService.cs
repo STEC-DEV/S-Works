@@ -14,39 +14,20 @@ namespace FamTec.Server.Services.Facility.Group
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
 
         private readonly ILogService LogService;
-        private readonly ILogger<FacilityGroupService> BuilderLogger;
+        private readonly ConsoleLogService<FacilityGroupService> CreateBuilderLogger;
 
         public FacilityGroupService(IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
             IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
             ILogService _logservice,
-            ILogger<FacilityGroupService> _builderlogger)
+            ConsoleLogService<FacilityGroupService> _createbuilderlogger)
         {
             this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
             this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
 
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -82,7 +63,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
             }
@@ -169,7 +150,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddGroupDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -214,7 +195,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddGroupInfoDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -288,7 +269,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<GroupListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<GroupListDTO?>(), code = 500 };
             }
@@ -337,7 +318,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -378,7 +359,7 @@ namespace FamTec.Server.Services.Facility.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

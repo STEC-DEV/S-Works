@@ -10,34 +10,18 @@ namespace FamTec.Server.Repository.Store
     public class StoreInfoRepository : IStoreInfoRepository
     {
         private readonly WorksContext context;
+        
         private readonly ILogService LogService;
-        private readonly ILogger<StoreInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<StoreInfoRepository> CreateBuilderLogger;
+        
         public StoreInfoRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<StoreInfoRepository> _builderlogger)
+            ConsoleLogService<StoreInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public async Task<StoreTb?> AddAsync(StoreTb model)
@@ -57,7 +41,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -65,7 +49,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -73,7 +57,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -135,7 +119,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -143,7 +127,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -201,7 +185,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -209,7 +193,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -236,7 +220,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -244,7 +228,7 @@ namespace FamTec.Server.Repository.Store
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }

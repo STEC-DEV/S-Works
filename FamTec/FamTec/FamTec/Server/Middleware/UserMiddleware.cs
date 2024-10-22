@@ -10,11 +10,14 @@ namespace FamTec.Server.Middleware
     {
         private readonly RequestDelegate Next;
         private ITokenComm TokenComm;
+        private readonly string? _authSigningKey;
 
-        public UserMiddleware(RequestDelegate _next, ITokenComm _tokencomm)
+
+        public UserMiddleware(RequestDelegate _next, ITokenComm _tokencomm, IConfiguration configuration)
         {
             this.Next = _next;
             this.TokenComm = _tokencomm;
+            this._authSigningKey = configuration["JWT:AuthSigningKey"];
         }
 
 
@@ -37,7 +40,12 @@ namespace FamTec.Server.Middleware
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
+            //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
+
+            if (String.IsNullOrWhiteSpace(_authSigningKey))
+                return;
+
+            var authSigningKey = Encoding.UTF8.GetBytes(_authSigningKey);
 
             try {
                 tokenHandler.ValidateToken(accessToken, new TokenValidationParameters

@@ -15,34 +15,16 @@ namespace FamTec.Server.Repository.Inventory
         private readonly WorksContext context;
         
         private readonly ILogService LogService;
-        private readonly ILogger<InventoryInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<InventoryInfoRepository> CreateBuilderLogger;
 
         public InventoryInfoRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<InventoryInfoRepository> _builderlogger)
+            ConsoleLogService<InventoryInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -145,7 +127,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -154,7 +136,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -163,7 +145,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -172,7 +154,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -181,7 +163,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -304,7 +286,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -312,7 +294,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -429,26 +411,37 @@ namespace FamTec.Server.Repository.Inventory
         // 유지보수 URL 생성 함수
         private string GenerateMaintenanceUrl(int? maintenenceId, List<MaintenenceHistoryTb> histories, List<FacilityTb> facilities)
         {
-            if (maintenenceId == null) return string.Empty;
-
-            var history = histories.FirstOrDefault(h => h.Id == maintenenceId);
-            if (history == null) return string.Empty;
-
-            var facility = facilities.FirstOrDefault(f => f.Id == history.FacilityTbId);
-            if (facility == null) return string.Empty;
-
-            return facility.Category switch
+            try
             {
-                "기계" => $"facility/machine/{facility.Id}/maintenance/{history.Id}",
-                "전기" => $"facility/electronic/{facility.Id}/maintenance/{history.Id}",
-                "승강" => $"facility/lift/{facility.Id}/maintenance/{history.Id}",
-                "소방" => $"facility/fire/{facility.Id}/maintenance/{history.Id}",
-                "건축" => $"facility/construct/{facility.Id}/maintenance/{history.Id}",
-                "통신" => $"facility/network/{facility.Id}/maintenance/{history.Id}",
-                "미화" => $"facility/beauty/{facility.Id}/maintenance/{history.Id}",
-                "보안" => $"facility/security/{facility.Id}/maintenance/{history.Id}",
-                _ => String.Empty
-            };
+                if (maintenenceId == null) return string.Empty;
+
+                var history = histories.FirstOrDefault(h => h.Id == maintenenceId);
+                if (history == null) return string.Empty;
+
+                var facility = facilities.FirstOrDefault(f => f.Id == history.FacilityTbId);
+                if (facility == null) return string.Empty;
+
+                return facility.Category switch
+                {
+                    "기계" => $"facility/machine/{facility.Id}/maintenance/{history.Id}",
+                    "전기" => $"facility/electronic/{facility.Id}/maintenance/{history.Id}",
+                    "승강" => $"facility/lift/{facility.Id}/maintenance/{history.Id}",
+                    "소방" => $"facility/fire/{facility.Id}/maintenance/{history.Id}",
+                    "건축" => $"facility/construct/{facility.Id}/maintenance/{history.Id}",
+                    "통신" => $"facility/network/{facility.Id}/maintenance/{history.Id}",
+                    "미화" => $"facility/beauty/{facility.Id}/maintenance/{history.Id}",
+                    "보안" => $"facility/security/{facility.Id}/maintenance/{history.Id}",
+                    _ => String.Empty
+                };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
 
@@ -699,7 +692,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -707,7 +700,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return null;
             }
@@ -757,7 +750,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -765,7 +758,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -788,7 +781,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -796,7 +789,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1133,7 +1126,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"동시성 에러 {ex.Message}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return ReturnResult;
                     }
@@ -1142,7 +1135,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -1151,7 +1144,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1160,7 +1153,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1170,7 +1163,7 @@ namespace FamTec.Server.Repository.Inventory
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return ReturnResult;
                     }
@@ -1206,7 +1199,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1214,7 +1207,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return null;
             }
@@ -1258,7 +1251,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1324,7 +1317,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1332,7 +1325,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1430,7 +1423,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1438,7 +1431,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1446,7 +1439,7 @@ namespace FamTec.Server.Repository.Inventory
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }

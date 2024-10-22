@@ -10,34 +10,15 @@ namespace FamTec.Server.Services.UseMaintenence
     {
         private readonly IUseMaintenenceInfoRepository UseMaintenenceInfoRepository;
         private readonly ILogService LogService;
-        private readonly ILogger<UseMaintenenceService> BuilderLogger;
+        private readonly ConsoleLogService<UseMaintenenceService> CreateBuilderLogger;
 
         public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
             ILogService _logservice,
-            ILogger<UseMaintenenceService> _builderlogger)
+            ConsoleLogService<UseMaintenenceService> _createbuilderlogger)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -81,7 +62,7 @@ namespace FamTec.Server.Services.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<UseMaterialDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -105,8 +86,6 @@ namespace FamTec.Server.Services.UseMaintenence
                 string? updater = Convert.ToString(context.Items["Name"]);
                 if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                
 
                 UseMaintenenceMaterialTb? UseMaterialTB = await UseMaintenenceInfoRepository.GetUseMaintanceInfo(dto.UseMaintanceID, Int32.Parse(placeid));
                 if(UseMaterialTB is null)
@@ -185,7 +164,7 @@ namespace FamTec.Server.Services.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -219,7 +198,7 @@ namespace FamTec.Server.Services.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

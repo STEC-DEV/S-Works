@@ -94,7 +94,7 @@
         {
             // [4]
             //HttpResponseMessage resDelete = await HttpClient.PutAsJsonAsync("http://127.0.0.1:5245/api/Admin/deletedepartment", deleteDepartment);
-            var resDelete = await HttpClient.PutAsJsonAsync("http://125.131.105.172:5245/api/Department/DeleteDepartmentList", deleteDepartment);
+            var resDelete = await HttpClient.PutAsJsonAsync("http://123.2.156.148:5245/api/Department/DeleteDepartmentList", deleteDepartment);
             if (resDelete.IsSuccessStatusCode)
             {
                 ResponseUnit<bool> res = await resDelete.Content.ReadFromJsonAsync<ResponseUnit<bool>>();

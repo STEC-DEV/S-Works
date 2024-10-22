@@ -14,40 +14,21 @@ namespace FamTec.Server.Services.Facility.Key
         private readonly IFacilityItemValueInfoRepository FacilityItemValueInfoRepository;
 
         private readonly ILogService LogService;
-        private readonly ILogger<FacilityKeyService> BuilderLogger;
+        private readonly ConsoleLogService<FacilityKeyService> CreateBuilderLogger;
 
         public FacilityKeyService(
             IFacilityGroupItemInfoRepository _facilitygroupiteminforepository,
             IFacilityItemKeyInfoRepository _facilityitemkeyinforepository,
             IFacilityItemValueInfoRepository _facilityitemvalueinforepository,
             ILogService _logservice,
-            ILogger<FacilityKeyService> _builderlogger)
+            ConsoleLogService<FacilityKeyService> _createbuilderlogger)
         {
             this.FacilityGroupItemInfoRepository = _facilitygroupiteminforepository;
             this.FacilityItemKeyInfoRepository = _facilityitemkeyinforepository;
             this.FacilityItemValueInfoRepository = _facilityitemvalueinforepository;
 
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public async Task<ResponseUnit<AddKeyDTO>> AddKeyService(HttpContext context, AddKeyDTO dto)
@@ -106,7 +87,7 @@ namespace FamTec.Server.Services.Facility.Key
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new AddKeyDTO(), code = 500 };
             }
@@ -139,7 +120,7 @@ namespace FamTec.Server.Services.Facility.Key
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<UpdateKeyDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new UpdateKeyDTO(), code = 500 };
             }
@@ -197,7 +178,7 @@ namespace FamTec.Server.Services.Facility.Key
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -232,7 +213,7 @@ namespace FamTec.Server.Services.Facility.Key
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

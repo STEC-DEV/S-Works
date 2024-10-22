@@ -30,7 +30,7 @@ namespace FamTec.Server.Services.Voc.Hub
         private readonly IKakaoService KakaoService;
         private readonly IFileService FileService;
         private readonly ILogService LogService;
-        private readonly ILogger<HubService> BuilderLogger;
+        private readonly ConsoleLogService<HubService> CreateBuilderLogger;
 
         // 파일디렉터리
         private DirectoryInfo? di;
@@ -49,7 +49,7 @@ namespace FamTec.Server.Services.Voc.Hub
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<HubService> _builderlogger)
+            ConsoleLogService<HubService> _createbuilderlogger)
         {
             this.VocInfoRepository = _vocinforepository;
             this.VocCommentRepository = _voccommentrepository;
@@ -60,29 +60,12 @@ namespace FamTec.Server.Services.Voc.Hub
             this.AlarmInfoRepository = _alarminforepository;
             this.KakaoLogInfoRepository = _kakaologinforepository;
             this.KakaoService = _kakaoservice;
+            
             this.HubContext = _hubcontext;
+            
             this.FileService = _fileservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -283,7 +266,7 @@ namespace FamTec.Server.Services.Voc.Hub
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddVocReturnDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -369,7 +352,7 @@ namespace FamTec.Server.Services.Voc.Hub
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<VocUserDetailDTO?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -452,7 +435,7 @@ namespace FamTec.Server.Services.Voc.Hub
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<VocCommentListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -525,7 +508,7 @@ namespace FamTec.Server.Services.Voc.Hub
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<VocCommentDetailDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

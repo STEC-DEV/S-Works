@@ -14,36 +14,16 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
         private readonly WorksContext context;
         
         private readonly ILogService LogService;
-        private readonly ILogger<BuildingGroupItemInfoRepository> BuilderLogger;
-
+        private readonly ConsoleLogService<BuildingGroupItemInfoRepository> CreateBuilderLogger;
 
         public BuildingGroupItemInfoRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<BuildingGroupItemInfoRepository> _builderlogger)
+            ConsoleLogService<BuildingGroupItemInfoRepository> _crearebuilderlogger)
         {
             this.context = _context;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _crearebuilderlogger;
         }
 
         /// <summary>
@@ -67,7 +47,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -75,7 +55,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -83,7 +63,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -114,7 +94,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -122,7 +102,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -151,7 +131,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -159,7 +139,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -181,7 +161,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -189,7 +169,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -197,7 +177,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -219,7 +199,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -227,7 +207,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -235,7 +215,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -347,7 +327,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -356,7 +336,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -365,7 +345,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -463,7 +443,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -471,7 +451,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                     {
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -479,7 +459,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                     {
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -487,7 +467,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
                     {
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -519,7 +499,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -527,7 +507,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -557,7 +537,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -565,7 +545,7 @@ namespace FamTec.Server.Repository.Building.SubItem.Group
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }

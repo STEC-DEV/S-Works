@@ -6,10 +6,13 @@ namespace FamTec.Server.Services
     public class FileService : IFileService
     {
         private readonly ILogService LogService;
+        private readonly ConsoleLogService<FileService> CreateBuilderLogger;
 
-        public FileService(ILogService _logservice)
+        public FileService(ILogService _logservice,
+            ConsoleLogService<FileService> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -33,6 +36,9 @@ namespace FamTec.Server.Services
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -98,6 +104,9 @@ namespace FamTec.Server.Services
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -168,41 +177,50 @@ namespace FamTec.Server.Services
 
         private SKBitmap ResizeBitmapWithAspectRatio(SKBitmap originalBitmap, int maxWidth, int maxHeight)
         {
+            try
+            {
+                // 원본 이미지의 가로 및 세로 비율 계산
+                float widthRatio = (float)maxWidth / originalBitmap.Width;
+                float heightRatio = (float)maxHeight / originalBitmap.Height;
 
-            // 원본 이미지의 가로 및 세로 비율 계산
-            float widthRatio = (float)maxWidth / originalBitmap.Width;
-            float heightRatio = (float)maxHeight / originalBitmap.Height;
+                // 더 작은 비율로 축소하여 최대 크기를 넘지 않도록 조정
+                float scale = Math.Min(widthRatio, heightRatio);
 
-            // 더 작은 비율로 축소하여 최대 크기를 넘지 않도록 조정
-            float scale = Math.Min(widthRatio, heightRatio);
+                // 새 크기 계산 (소수점 반올림)
+                int newWidth = (int)Math.Round(originalBitmap.Width * scale);
+                int newHeight = (int)Math.Round(originalBitmap.Height * scale);
 
-            // 새 크기 계산 (소수점 반올림)
-            int newWidth = (int)Math.Round(originalBitmap.Width * scale);
-            int newHeight = (int)Math.Round(originalBitmap.Height * scale);
+                // 크기 조정된 새 비트맵 생성
+                return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
 
-            // 크기 조정된 새 비트맵 생성
-            return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+                //// 원본 비율 계산
+                //float aspectRatio = (float)originalBitmap.Width / originalBitmap.Height;
 
-            //// 원본 비율 계산
-            //float aspectRatio = (float)originalBitmap.Width / originalBitmap.Height;
+                //// 목표 크기에 맞춰 조정된 가로, 세로 계산
+                //int newWidth = maxWidth;
+                //int newHeight = maxHeight;
 
-            //// 목표 크기에 맞춰 조정된 가로, 세로 계산
-            //int newWidth = maxWidth;
-            //int newHeight = maxHeight;
+                //if (aspectRatio > 1)
+                //{
+                //    // 가로가 더 긴 경우, 가로에 맞추고 세로는 비율에 맞게 조정
+                //    newHeight = (int)(maxWidth / aspectRatio);
+                //}
+                //else
+                //{
+                //    // 세로가 더 긴 경우, 세로에 맞추고 가로는 비율에 맞게 조정
+                //    newWidth = (int)(maxHeight * aspectRatio);
+                //}
 
-            //if (aspectRatio > 1)
-            //{
-            //    // 가로가 더 긴 경우, 가로에 맞추고 세로는 비율에 맞게 조정
-            //    newHeight = (int)(maxWidth / aspectRatio);
-            //}
-            //else
-            //{
-            //    // 세로가 더 긴 경우, 세로에 맞추고 가로는 비율에 맞게 조정
-            //    newWidth = (int)(maxHeight * aspectRatio);
-            //}
-
-            //// 크기 조정된 새 비트맵 생성
-            //return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+                //// 크기 조정된 새 비트맵 생성
+                //return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
 
@@ -233,7 +251,10 @@ namespace FamTec.Server.Services
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-                throw new ArgumentNullException();
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
             }
         }
 
@@ -264,6 +285,9 @@ namespace FamTec.Server.Services
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -308,6 +332,9 @@ namespace FamTec.Server.Services
             }catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return false;
             }
         }
@@ -326,6 +353,9 @@ namespace FamTec.Server.Services
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -353,6 +383,9 @@ namespace FamTec.Server.Services
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -376,6 +409,9 @@ namespace FamTec.Server.Services
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }

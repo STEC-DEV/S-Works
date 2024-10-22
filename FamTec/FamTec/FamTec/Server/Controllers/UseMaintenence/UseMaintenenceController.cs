@@ -17,34 +17,19 @@ namespace FamTec.Server.Controllers.UseMaintenence
         private readonly IUseMaintenenceService UseMaintenenceService;
         
         private readonly ILogService LogService;
-        private readonly ILogger<UseMaintenenceController> BuilderLogger;
+        private readonly ConsoleLogService<UseMaintenenceController> CreateBuilderLogger;
 
         public UseMaintenenceController(IUseMaintenenceService _usemaintenenceservice,
             ILogService _logservice,
-            ILogger<UseMaintenenceController> builderLogger)
+            ConsoleLogService<UseMaintenenceController> _createbuilderlogger
+        )
         {
             this.UseMaintenenceService = _usemaintenenceservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = builderLogger;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
         /// 사용자재 상세보기 - [여기]
         /// </summary>
         /// <param name="useid"></param>
@@ -69,6 +54,10 @@ namespace FamTec.Server.Controllers.UseMaintenence
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -78,7 +67,7 @@ namespace FamTec.Server.Controllers.UseMaintenence
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -93,7 +82,6 @@ namespace FamTec.Server.Controllers.UseMaintenence
         [HttpGet]
         [HttpPost]
         [Route("sign/UpdateUseMaterial")]
-        //public async Task<IActionResult> UpdateUseMaterial()
         public async Task<IActionResult> UpdateUseMaterial([FromBody] UpdateMaintenanceMaterialDTO dto)
         {
             try
@@ -109,14 +97,19 @@ namespace FamTec.Server.Controllers.UseMaintenence
 
                 if (dto.MaintanceID is 0)
                     return NoContent();
+
                 if (dto.UseMaintanceID is 0)
                     return NoContent();
                 
-
                 ResponseUnit<bool?> model = await UseMaintenenceService.UpdateDetailUseMaterialService(HttpContext, dto).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -126,12 +119,11 @@ namespace FamTec.Server.Controllers.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
 
     }
 }

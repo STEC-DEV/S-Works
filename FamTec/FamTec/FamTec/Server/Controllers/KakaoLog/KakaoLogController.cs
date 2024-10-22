@@ -15,29 +15,81 @@ namespace FamTec.Server.Controllers.KakaoLog
     {
         private readonly IKakaoLogService KakaoLogService;
         private readonly ILogService LogService;
-        private readonly ILogger<KakaoLogController> BuilderLogger;
+        private readonly IKakaoService KakaoService;
+        
+        private readonly ConsoleLogService<KakaoLogController> CreateBuilderLogger;
 
         public KakaoLogController(IKakaoLogService _kakaologservice,
             ILogService _logservice,
-            ILogger<KakaoLogController> _builderlogger)
+            ConsoleLogService<KakaoLogController> _createbuilderlogger,
+            IKakaoService _kakaoservice)
         {
             this.KakaoLogService = _kakaologservice;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            this.KakaoService = _kakaoservice;
+
+            // 콘솔로그
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        private void CreateBuilderLogger(Exception ex)
+        /// <summary>
+        /// 카카오 로그리스트
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pagesize"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="limit_day"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/KakaoSenderResult")]
+        //public async Task<IActionResult> KakaoSenderResult()
+        public async Task<IActionResult> KakaoSenderResult([FromQuery]int page, [FromQuery]int pagesize, [FromQuery] DateTime StartDate, [FromQuery] int limit_day)
         {
             try
             {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
+                //int page = 1;
+                //int pagesize =50;
+                //DateTime StartDate = DateTime.Now.AddDays(-50);
+                //int limit_day = 100;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (page is 0)
+                    return NoContent();
+
+                if(pagesize is 0)
+                    return NoContent();
+
+                if (StartDate == DateTime.MinValue)
+                    return NoContent();
+
+                if(limit_day is 0)
+                    return NoContent();
+
+                ResponseList<KaKaoSenderResult>? model = await KakaoService.KakaoSenderResult(HttpContext, page, pagesize, StartDate, limit_day);
+                
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+                
             }
-            catch (Exception)
+            catch(Exception ex)
             {
-                throw;
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
 
@@ -60,6 +112,10 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -70,7 +126,7 @@ namespace FamTec.Server.Controllers.KakaoLog
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -95,6 +151,10 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -104,7 +164,7 @@ namespace FamTec.Server.Controllers.KakaoLog
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -133,6 +193,10 @@ namespace FamTec.Server.Controllers.KakaoLog
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -142,7 +206,7 @@ namespace FamTec.Server.Controllers.KakaoLog
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

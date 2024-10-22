@@ -15,33 +15,19 @@ namespace FamTec.Server.Controllers.Building.Group
     {
         private readonly IBuildingGroupService GroupService;
         private readonly ILogService LogService;
-        private readonly ILogger<BuildingGroupController> BuilderLogger;
+
+        // 콘솔로그
+        private readonly ConsoleLogService<BuildingGroupController> CreateBuilderLogger;
 
         public BuildingGroupController(IBuildingGroupService _groupservice,
             ILogService _logservice,
-            ILogger<BuildingGroupController> _builderlogger)
+            ConsoleLogService<BuildingGroupController> _createbuilderlogger)
         {
             this.GroupService = _groupservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
 
         [AllowAnonymous]
         [HttpPost]
@@ -63,6 +49,11 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -72,7 +63,7 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -82,7 +73,6 @@ namespace FamTec.Server.Controllers.Building.Group
         //[HttpGet]
         [HttpPost]
         [Route("sign/AddBuildingGroup")]
-        //public async Task<IActionResult> AddBuildingGroup()
         public async Task<IActionResult> AddBuildingGroup([FromBody] List<AddGroupDTO> dto)
         {
             try
@@ -128,6 +118,10 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if(model.code == 201)
@@ -139,7 +133,7 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -164,7 +158,11 @@ namespace FamTec.Server.Controllers.Building.Group
                 
                 if (model is null)
                     return BadRequest();
-                
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -174,7 +172,7 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -206,6 +204,10 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -215,7 +217,7 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -235,6 +237,10 @@ namespace FamTec.Server.Controllers.Building.Group
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -244,7 +250,7 @@ namespace FamTec.Server.Controllers.Building.Group
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

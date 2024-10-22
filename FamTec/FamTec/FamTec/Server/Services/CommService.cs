@@ -2,11 +2,14 @@
 {
     public class CommService : ICommService
     {
-        ILogService LogService;
+        private readonly ILogService LogService;
+        private readonly ConsoleLogService<CommService> CreateBuilderLogger;
 
-        public CommService(ILogService _logservice)
+        public CommService(ILogService _logservice,
+            ConsoleLogService<CommService> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public string getRemoveWhiteSpace(string str)
@@ -18,6 +21,9 @@
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 throw;
             }
         }

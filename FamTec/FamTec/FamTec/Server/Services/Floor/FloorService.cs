@@ -14,39 +14,20 @@ namespace FamTec.Server.Services.Floor
         private readonly IRoomInfoRepository RoomInfoRepository;
 
         private readonly ILogService LogService;
-        private readonly ILogger<FloorService> BuilderLogger;
+        private readonly ConsoleLogService<FloorService> CreateBuilderLogger;
 
         public FloorService(IFloorInfoRepository _floorinforepository,
             IBuildingInfoRepository _buildinginforepository,
             IRoomInfoRepository _roominforepository,
             ILogService _logservice,
-            ILogger<FloorService> _builderlogger)
+            ConsoleLogService<FloorService> _createbuilderlogger)
         {
             this.FloorInfoRepository = _floorinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.RoomInfoRepository = _roominforepository;
 
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -92,7 +73,7 @@ namespace FamTec.Server.Services.Floor
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FloorDTO(), code = 500 };
             }
@@ -127,7 +108,7 @@ namespace FamTec.Server.Services.Floor
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<FloorDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<FloorDTO>(), code = 500 };
             }
@@ -172,7 +153,7 @@ namespace FamTec.Server.Services.Floor
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -215,7 +196,7 @@ namespace FamTec.Server.Services.Floor
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

@@ -19,33 +19,18 @@ namespace FamTec.Server.Controllers.Voc
         private readonly IVocInfoRepository VocInfoRepository;
         
         private readonly ILogService LogService;
-        private readonly ILogger<VocController> BuilderLogger;
+        private readonly ConsoleLogService<VocController> CreateBuilderLogger;
 
         public VocController(IVocService _vocservice,
             ILogService _logservice,
             IVocInfoRepository _vocinforepository,
-            ILogger<VocController> _builderlogger)
+            ConsoleLogService<VocController> _createbuilderlogger)
         {
             this.VocService = _vocservice;
             this.VocInfoRepository = _vocinforepository;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         [AllowAnonymous]
@@ -61,6 +46,11 @@ namespace FamTec.Server.Controllers.Voc
                 ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDataService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -70,7 +60,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -100,6 +90,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -110,7 +104,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -161,6 +155,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -171,7 +169,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -192,13 +190,17 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocEmployeeDetailDTO> dto = await VocService.GetVocDetail(HttpContext, VocId).ConfigureAwait(false);
+                ResponseUnit<VocEmployeeDetailDTO> model = await VocService.GetVocDetail(HttpContext, VocId).ConfigureAwait(false);
 
-                if (dto is null)
+                if (model is null)
                     return BadRequest();
 
-                if (dto.code == 200)
-                    return Ok(dto);
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
                 else
                     return BadRequest();
             }
@@ -206,7 +208,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -240,6 +242,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -250,7 +256,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

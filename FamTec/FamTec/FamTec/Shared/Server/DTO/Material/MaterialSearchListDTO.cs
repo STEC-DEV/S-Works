@@ -31,5 +31,15 @@
         /// 규격
         /// </summary>
         public string? Standard { get; set; }
+
+        /// <summary>
+        /// 건물ID
+        /// </summary>
+        public int? BuildingId { get; set; }
+
+        /// <summary>
+        /// 공간ID
+        /// </summary>
+        public int? RoomId { get; set; }
     }
 }

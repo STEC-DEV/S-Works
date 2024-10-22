@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using FamTec.Server.Services;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -8,41 +9,58 @@ namespace FamTec.Server.Tokens
     public class TokenComm : ITokenComm
     {
         private readonly string? _authSigningKey;
+        private readonly ConsoleLogService<TokenComm> CreateBuilderLogger;
+        private readonly ILogService LogService;
 
-        public TokenComm(IConfiguration configuration)
+        public TokenComm(IConfiguration configuration,
+            ILogService _logservice,
+            ConsoleLogService<TokenComm> _createbuilderlogger)
         {
-            _authSigningKey = configuration["JWT:AuthSigningKey"];
+            this._authSigningKey = configuration["JWT:AuthSigningKey"];
+            this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public JObject? TokenConvert(HttpRequest? token)
         {
-            if (token is not null && !String.IsNullOrWhiteSpace(_authSigningKey))
+            try
             {
-                string? accessToken = token.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-                var authSigningKey = Encoding.UTF8.GetBytes(_authSigningKey);
-                //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                tokenHandler.ValidateToken(accessToken, new TokenValidationParameters
+                if (token is not null && !String.IsNullOrWhiteSpace(_authSigningKey))
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
+                    string? accessToken = token.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-                int split = validatedToken.ToString()!.IndexOf('.') + 1;
+                    var authSigningKey = Encoding.UTF8.GetBytes(_authSigningKey);
+                    //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
 
-                string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
-                JObject? jobj = JObject.Parse(payload.ToString());
-                return jobj;
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    tokenHandler.ValidateToken(accessToken, new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(authSigningKey),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                        ClockSkew = TimeSpan.Zero
+                    }, out SecurityToken validatedToken);
+
+                    int split = validatedToken.ToString()!.IndexOf('.') + 1;
+
+                    string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
+                    JObject? jobj = JObject.Parse(payload.ToString());
+                    return jobj;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return null;
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
             }
         }
     }

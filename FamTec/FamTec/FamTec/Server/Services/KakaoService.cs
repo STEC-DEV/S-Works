@@ -1,6 +1,8 @@
-﻿using FamTec.Shared.Server.DTO.KakaoLog;
+﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace FamTec.Server.Services
@@ -13,10 +15,81 @@ namespace FamTec.Server.Services
         private string? HttpResponseResult = String.Empty;
 
         private readonly ILogService LogService;
+        private readonly ConsoleLogService<KakaoService> CreateBuilderLogger;
 
-        public KakaoService(ILogService _logservice)
+        public KakaoService(ILogService _logservice,
+            ConsoleLogService<KakaoService> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        // 카카오 메시지결과 테스트
+        public async Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(HttpContext context,int page, int pagesize, DateTime StartDate, int limit_day)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<KaKaoSenderResult>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // [1]. 토큰생성
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    {"key", Common.KakaoAPIKey },
+                    { "userid", Common.KakaoUserId },
+                    { "page",page.ToString()},
+                    { "page_size",pagesize.ToString()},
+                    { "start_date",StartDate.ToString("yyyyMMdd")},
+                    { "limit_day",limit_day.ToString()}
+                });
+
+                //Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                //{
+                //    {"key", Common.KakaoAPIKey },
+                //    { "userid", Common.KakaoUserId },
+                //    { "page","1"},
+                //    { "page_size","50"},
+                //    { "start_date","2024915"},
+                //    { "limit_day","100"}
+                //});
+
+                HttpResponse = await Common.HttpClient.PostAsync("https://apis.aligo.in/list/", Content).ConfigureAwait(false);
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                List<KaKaoSenderResult> SenderList = new List<KaKaoSenderResult>();
+
+
+                JObject? Jobj = JObject.Parse(HttpResponseResult);
+                JToken? AligoList = Jobj["list"];
+
+                if (AligoList is null)
+                    return new ResponseList<KaKaoSenderResult>() { message = "요청이 정상 처리되었습니다.", data = null, code = 200 };
+
+                int count = AligoList.Count();
+                foreach(JToken token in AligoList)
+                {
+                    KaKaoSenderResult item = new KaKaoSenderResult();
+                    item.Sender = token["sender"]?.ToString() ?? String.Empty;
+                    item.Message = token["msg"]?.ToString() ?? String.Empty;
+                    item.SendDate = DateTime.Parse(token["reg_date"]!.ToString());
+                    if (token["fail_count"]!.ToString() == "0")
+                        item.Result = "성공";
+                    else
+                        item.Result = "실패";
+
+                    SenderList.Add(item);
+                }
+
+                return new ResponseList<KaKaoSenderResult>() { message = "요청이 정상 처리되었습니다.", data = SenderList, code = 200};
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<KaKaoSenderResult>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
         }
 
         /// <summary>
@@ -92,6 +165,9 @@ namespace FamTec.Server.Services
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }
@@ -169,6 +245,9 @@ namespace FamTec.Server.Services
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 return null;
             }
         }

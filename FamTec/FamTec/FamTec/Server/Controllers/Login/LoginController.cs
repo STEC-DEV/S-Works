@@ -21,37 +21,22 @@ namespace FamTec.Server.Controllers.Login
         private readonly IUserService UserService;
                 
         private readonly ILogService LogService;
-        private readonly ILogger<LoginController> BuilderLogger;
+        private readonly ConsoleLogService<LoginController> CreateBuilderLogger;
 
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
             ILogService _logservice,
-            ILogger<LoginController> _builderlogger)
+            ConsoleLogService<LoginController> _createbuilderlogger)
         {
             this.AdminAccountService = _adminaccountservice;
             this.AdminPlaceService = _adminplaceservice;
             this.UserService = _userservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
+        
         /// <summary>
         /// 관리자 화면 로그인 [OK]
         /// </summary>
@@ -74,6 +59,10 @@ namespace FamTec.Server.Controllers.Login
                 if (model is null)
                     return BadRequest(model);
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 402)
@@ -87,7 +76,7 @@ namespace FamTec.Server.Controllers.Login
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -108,6 +97,11 @@ namespace FamTec.Server.Controllers.Login
 
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 201)
@@ -122,7 +116,7 @@ namespace FamTec.Server.Controllers.Login
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -151,6 +145,10 @@ namespace FamTec.Server.Controllers.Login
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model); // 유저
                 else if (model.code == 201)
@@ -164,7 +162,7 @@ namespace FamTec.Server.Controllers.Login
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -219,6 +217,10 @@ namespace FamTec.Server.Controllers.Login
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -228,7 +230,7 @@ namespace FamTec.Server.Controllers.Login
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -255,6 +257,10 @@ namespace FamTec.Server.Controllers.Login
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -264,12 +270,11 @@ namespace FamTec.Server.Controllers.Login
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
-
         
 
     }

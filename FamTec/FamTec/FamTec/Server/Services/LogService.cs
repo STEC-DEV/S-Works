@@ -1,6 +1,53 @@
 ﻿
 namespace FamTec.Server.Services
 {
+
+    public class ConsoleLogService<T>
+    {
+        private readonly ILogger<T> ConsoleLogger;
+
+        public ConsoleLogService(ILogger<T> _logger)
+        {
+            this.ConsoleLogger = _logger;
+        }
+
+        public void ConsoleText(string message)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                // 로그 출력
+                Console.WriteLine($"[INFO] {DateTime.Now}: {message}");
+                Console.ResetColor();
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ConsoleLog(Exception ex)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                // 로그 출력
+                Console.WriteLine($"[Error] {DateTime.Now}: {ex.Message}");
+                Console.ResetColor();
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+
     public class LogService : ILogService
     {
         public void LogMessage(string? message)

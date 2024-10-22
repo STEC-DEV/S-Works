@@ -190,6 +190,9 @@ builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 builder.Services.AddTransient<ICommService, CommService>();
 
+
+builder.Services.AddTransient(typeof(ConsoleLogService<>));
+
 builder.Services.AddMemoryCache(); // 메모리캐쉬
 
 builder.Services.AddControllersWithViews();

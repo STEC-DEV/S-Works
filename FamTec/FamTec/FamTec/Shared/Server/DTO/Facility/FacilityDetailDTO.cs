@@ -66,6 +66,16 @@
         public string? RoomName { get; set; }
 
         /// <summary>
+        /// 건물ID
+        /// </summary>
+        public int? BuildingId { get; set; }
+
+        /// <summary>
+        /// 건물명
+        /// </summary>
+        public string? BuildingName { get; set; }
+
+        /// <summary>
         /// 이미지 파일명
         /// </summary>
         public string? ImageName { get; set; }

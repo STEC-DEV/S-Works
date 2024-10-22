@@ -9,34 +9,17 @@ namespace FamTec.Server.Services.BlackList
     {
         private readonly IBlackListInfoRepository BlackListInfoRepository;
         private readonly ILogService LogService;
-        private readonly ILogger<BlackListService> BuilderLogger;
+        private readonly ConsoleLogService<BlackListService> CreateBuilderLogger;
 
         public BlackListService(IBlackListInfoRepository _blacklistinforepository,
             ILogService _logservice,
-            ILogger<BlackListService> _builderlogger)
+            ConsoleLogService<BlackListService> _createbuilderlogger
+        )
         {
             this.BlackListInfoRepository = _blacklistinforepository;
+            
+            this.CreateBuilderLogger = _createbuilderlogger;
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         /// <summary>
@@ -88,7 +71,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddBlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -125,7 +108,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<BlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -150,7 +133,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -189,7 +172,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<BlackListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -234,7 +217,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -274,7 +257,7 @@ namespace FamTec.Server.Services.BlackList
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

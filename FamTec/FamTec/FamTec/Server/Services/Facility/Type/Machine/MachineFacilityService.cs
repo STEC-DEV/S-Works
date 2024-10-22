@@ -1,4 +1,6 @@
-﻿using FamTec.Server.Repository.Facility;
+﻿using FamTec.Server.Repository.Building;
+using FamTec.Server.Repository.Facility;
+using FamTec.Server.Repository.Floor;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
@@ -8,48 +10,34 @@ namespace FamTec.Server.Services.Facility.Type.Machine
 {
     public class MachineFacilityService : IMachineFacilityService
     {
+        private readonly IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IFloorInfoRepository FloorInfoRepository;
         private readonly IFacilityInfoRepository FacilityInfoRepository;
         private readonly IRoomInfoRepository RoomInfoRepository;
         private readonly ILogService LogService;
         private readonly IFileService FileService;
-
-        private readonly ILogger<MachineFacilityService> BuilderLogger;
+        private readonly ConsoleLogService<MachineFacilityService> CreateBuilderLogger;
 
         private DirectoryInfo? di;
         private string? MachineFileFolderPath;
 
         public MachineFacilityService(
             IFacilityInfoRepository _facilityinforepository,
+            IBuildingInfoRepository _buildinginforepository,
+            IFloorInfoRepository _floorinforepository,
             IRoomInfoRepository _roominforepository,
             IFileService _fileservice,
             ILogService _logService,
-            ILogger<MachineFacilityService> _builderlogger)
+            ConsoleLogService<MachineFacilityService> _createbuilderlogger)
         {
             this.FacilityInfoRepository = _facilityinforepository;
+            this.BuildingInfoRepository = _buildinginforepository;
+            this.FloorInfoRepository = _floorinforepository;
             this.RoomInfoRepository = _roominforepository;
 
             this.FileService = _fileservice;
             this.LogService = _logService;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -148,7 +136,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<FacilityDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new FacilityDTO(), code = 500 };
             }
@@ -186,7 +174,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseList<FacilityListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -211,6 +199,14 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 if(room is null)
                     return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
 
+                FloorTb? FloorTB = await FloorInfoRepository.GetFloorInfo(room.FloorTbId);
+                if(FloorTB is null)
+                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+
+                BuildingTb? BuildingTB = await BuildingInfoRepository.GetBuildingInfo(FloorTB.BuildingTbId);
+                if (BuildingTB is null)
+                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 잘못되었습니다", data = null, code = 404 };
+
                 FacilityDetailDTO dto = new FacilityDetailDTO();
                 dto.Id = model.Id;
                 dto.Category = model.Category;
@@ -224,6 +220,8 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 dto.ChangeDT = model.ChangeDt;
                 dto.RoomId = model.RoomTbId;
                 dto.RoomName = room.Name;
+                dto.BuildingId = BuildingTB.Id;
+                dto.BuildingName = BuildingTB.Name;
 
                 //MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
                 MachineFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Machine");
@@ -243,7 +241,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<FacilityDetailDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -378,7 +376,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                         {
                             LogService.LogMessage($"파일 복원실패 : {ex.Message}");
 #if DEBUG
-                            CreateBuilderLogger(ex);
+                            CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         }
                     }
@@ -393,7 +391,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                         {
                             LogService.LogMessage($"파일 삭제실패 : {ex.Message}");
 #if DEBUG
-                            CreateBuilderLogger(ex);
+                            CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         }
                     }
@@ -405,7 +403,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -444,7 +442,7 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

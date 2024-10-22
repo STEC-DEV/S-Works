@@ -38,6 +38,16 @@
         public int? SafeNum { get; set; }
 
         /// <summary>
+        /// 건물ID
+        /// </summary>
+        public int? BuildingID { get; set; }
+
+        /// <summary>
+        /// 건물명
+        /// </summary>
+        public string? BuildingName { get; set; }
+
+        /// <summary>
         /// 공간ID
         /// </summary>
         public int? RoomID { get; set; }

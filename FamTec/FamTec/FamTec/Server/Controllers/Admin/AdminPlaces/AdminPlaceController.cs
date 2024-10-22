@@ -17,33 +17,22 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
     {
         private readonly IAdminPlaceService AdminPlaceService;
         private readonly ILogService LogService;
-        private readonly ILogger<AdminPlaceController> BuilderLogger;
+
+        // 콘솔로그
+        private readonly ConsoleLogService<AdminPlaceController> CreateBuilderLogger;
 
         public AdminPlaceController(IAdminPlaceService _adminplaceservice,
             ILogService _logservice,
-            ILogger<AdminPlaceController> _builderlogger)
+            ConsoleLogService<AdminPlaceController> _createbuilderlogger)
         {
             this.AdminPlaceService = _adminplaceservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
+            // 콘솔로그
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
+       
         /// <summary>
         /// 전체 사업장 리스트 조회 [OK]
         /// [매니저는 본인이 할당된 것 만 출력]
@@ -61,8 +50,13 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                     return BadRequest();
 
                 ResponseList<AllPlaceDTO> model = await AdminPlaceService.GetAllWorksService(HttpContext).ConfigureAwait(false);
+
                 if (model is null)
                     return BadRequest(model);
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
 
                 if (model.code == 200)
                     return Ok(model);
@@ -74,7 +68,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -99,6 +93,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest(model);
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -108,7 +106,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -134,6 +132,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -144,7 +146,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -171,6 +173,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest(model);
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -180,7 +186,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -248,7 +254,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 if (model is null)
                     return BadRequest();
-                
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 // 성공
                 if (model.code == 200) 
                     return Ok(model);
@@ -263,7 +273,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -290,7 +300,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 ResponseUnit<bool?> model = await AdminPlaceService.UpdatePlaceManagerService(HttpContext, dto).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
-                
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -300,7 +314,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -331,6 +345,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -342,7 +360,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -430,6 +448,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 204)
@@ -441,7 +463,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -470,6 +492,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -479,7 +505,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -508,6 +534,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -517,7 +547,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -555,6 +585,11 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 if (model is null)
                     return BadRequest(model);
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else if (model.code == 202) // 이미 포함되어있는 관리자
@@ -566,7 +601,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -601,6 +636,10 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
 
                 ResponseUnit<bool?> model = await AdminPlaceService.DeleteManagerPlaceService(HttpContext, dto).ConfigureAwait(false);
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model is null)
                     return BadRequest(model);
                 
@@ -614,7 +653,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

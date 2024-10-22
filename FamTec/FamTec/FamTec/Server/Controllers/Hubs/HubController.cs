@@ -13,33 +13,20 @@ namespace FamTec.Server.Controllers.Hubs
     public class HubController : ControllerBase
     {
         private readonly IHubService HubService;
-        private readonly ILogService LogService;
-        private readonly ILogger<HubController> BuilderLogger;
         
+        private readonly ILogService LogService;
+        private readonly ConsoleLogService<HubController> CreateBuilderLogger;
+        
+
         public HubController(
             IHubService _hubservice,
             ILogService _logservice,
-            ILogger<HubController> _builderlogger)
+            ConsoleLogService<HubController> _createbuilderlogger)
         {
             this.HubService = _hubservice;
             
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -108,20 +95,20 @@ namespace FamTec.Server.Controllers.Hubs
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+
+#endif
                 if (model.code == 200)
-                {
                     return Ok(model);
-                }
                 else
-                {
                     return BadRequest();
-                }
             }
             catch(Exception ex)
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
@@ -144,6 +131,10 @@ namespace FamTec.Server.Controllers.Hubs
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -153,7 +144,7 @@ namespace FamTec.Server.Controllers.Hubs
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
@@ -178,6 +169,10 @@ namespace FamTec.Server.Controllers.Hubs
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -187,7 +182,7 @@ namespace FamTec.Server.Controllers.Hubs
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }
@@ -208,6 +203,10 @@ namespace FamTec.Server.Controllers.Hubs
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -217,7 +216,7 @@ namespace FamTec.Server.Controllers.Hubs
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리하지 못함", statusCode: 500);
             }

@@ -17,30 +17,16 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
         private readonly WorksContext context;
         
         private readonly ILogService LogService;
-        private readonly ILogger<AdminPlaceInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<AdminPlaceInfoRepository> CreateBuilderLogger;
 
         public AdminPlaceInfoRepository(WorksContext _context, 
-            ILogService _logservice, 
-            ILogger<AdminPlaceInfoRepository> _builderlogger)
+            ILogService _logservice,
+            ConsoleLogService<AdminPlaceInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -83,7 +69,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -92,7 +78,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -124,7 +110,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -181,7 +167,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -236,7 +222,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -259,7 +245,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -339,7 +325,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -367,7 +353,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -427,7 +413,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -571,7 +557,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -580,7 +566,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -611,7 +597,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -634,7 +620,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -670,7 +656,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -735,7 +721,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -765,7 +751,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -787,7 +773,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -858,7 +844,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -895,7 +881,7 @@ namespace FamTec.Server.Repository.Admin.AdminPlaces
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }

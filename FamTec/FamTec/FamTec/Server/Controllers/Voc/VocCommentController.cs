@@ -17,32 +17,19 @@ namespace FamTec.Server.Controllers.Voc
         
         private readonly IFileService FileService;
         private readonly ILogService LogService;
-        private readonly ILogger<VocCommentController> BuilderLogger;
-        
+
+        private readonly ConsoleLogService<VocCommentController> CreateBuilderLogger;
+
         public VocCommentController(IVocCommentService _voccommentservice,
             IFileService _fileservice,
             ILogService _logservice,
-            ILogger<VocCommentController> _builderlogger)
+            ConsoleLogService<VocCommentController> _createbuilderlogger)
         {
             this.VocCommentService = _voccommentservice;
             this.FileService = _fileservice;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor(); // 색상 초기화
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -99,6 +86,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -108,7 +99,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -133,6 +124,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -142,7 +137,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -167,6 +162,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (model is null)
                     return BadRequest();
 
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
@@ -176,7 +175,7 @@ namespace FamTec.Server.Controllers.Voc
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
@@ -242,17 +241,21 @@ namespace FamTec.Server.Controllers.Voc
                 ResponseUnit<bool?> model = await VocCommentService.UpdateCommentService(HttpContext, dto, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
                 if (model.code == 200)
                     return Ok(model);
                 else
                     return BadRequest();
-
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.Message);
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

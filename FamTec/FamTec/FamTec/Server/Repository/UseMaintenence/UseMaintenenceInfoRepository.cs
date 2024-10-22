@@ -13,36 +13,18 @@ namespace FamTec.Server.Repository.UseMaintenence
     public class UseMaintenenceInfoRepository : IUseMaintenenceInfoRepository
     {
         private readonly WorksContext context;
+        
         private readonly ILogService LogService;
-        private readonly ILogger<UseMaintenenceInfoRepository> BuilderLogger;
+        private readonly ConsoleLogService<UseMaintenenceInfoRepository> CreateBuilderLogger;
 
         public UseMaintenenceInfoRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<UseMaintenenceInfoRepository> _builderlogger)
+            ConsoleLogService<UseMaintenenceInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-         
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public async Task<int> UpdateUseMaintance(UpdateMaintancematerialDTO dto, int placeid, string updater)
@@ -161,7 +143,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -176,7 +160,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -194,7 +180,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
                                 }
@@ -276,7 +264,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                     {
                                                         // 트랜잭션 에러
                                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                         return -3;
                                                     }
 
@@ -309,7 +299,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                     if (!SaveResult)
                                                     {
                                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                         return -3;
                                                     }
                                                     StoreID.Add(StoreTB.Id);
@@ -340,7 +332,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                     if (!SaveResult)
                                                     {
                                                         await transaction.RollbackAsync().ConfigureAwait(false); // 트랜잭션 에러
-                                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                         return -3;
                                                     }
 
@@ -373,7 +367,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                     if (!SaveResult)
                                                     {
                                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                         return -3; // 트랜잭션 에러
                                                     }
 
@@ -385,7 +381,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                             if (checksum != InOutNum)
                                             {
                                                 /* 출고하고자 하는 개수와 실제 개수가 다름. */
-                                                Console.WriteLine("결과가 다름 RollBack");
+#if DEBUG
+                                                CreateBuilderLogger.ConsoleText("예상 결과가 다름.");
+#endif
                                                 await transaction.RollbackAsync().ConfigureAwait(false);
                                                 return -3;
                                             }
@@ -405,7 +403,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     {
                                         // 저장실패 트랜잭션
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -418,7 +418,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                         if (UpdateStoreInfo is null)
                                         {
                                             await transaction.RollbackAsync().ConfigureAwait(false);
-                                            BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                            CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                             return -3;
                                         }
 
@@ -430,7 +432,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -453,7 +457,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -1;
                                     }
                                 }
@@ -539,7 +545,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                 {
                                                     // 트랜잭션 에러
                                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                     return -3;
                                                 }
 
@@ -571,7 +579,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                 if (!SaveResult)
                                                 {
                                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                     return -3; // 트랜잭션 에러
                                                 }
 
@@ -602,7 +612,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                 if (!SaveResult)
                                                 {
                                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                     return -3;
                                                 }
 
@@ -635,7 +647,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                                 if (!SaveResult)
                                                 {
                                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                                     return -3; // 트랜잭션 에러
                                                 }
 
@@ -674,7 +688,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (!SaveResult)
                                 {
                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                     return -3;
                                 }
 
@@ -685,7 +701,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (UpdateStoreInfo is null)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -697,7 +715,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (!SaveResult)
                                 {
                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                     return -3;
                                 }
 
@@ -734,7 +754,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (UseMaintenenceTB is null)
                                 {
                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                     return -3;
                                 }
 
@@ -747,7 +769,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (!SaveResult)
                                 {
                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                     return -3;
                                 }
 
@@ -755,7 +779,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (StoreList is null || !StoreList.Any())
                                 {
                                     await transaction.RollbackAsync().ConfigureAwait(false);
-                                    BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                     return -3;
                                 }
 
@@ -772,7 +798,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -792,7 +820,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
 
@@ -823,7 +853,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                                     if (!SaveResult)
                                     {
                                         await transaction.RollbackAsync().ConfigureAwait(false);
-                                        BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                        CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                         return -3;
                                     }
                                 }
@@ -843,7 +875,9 @@ namespace FamTec.Server.Repository.UseMaintenence
                             if (!SaveResult)
                             {
                                 await transaction.RollbackAsync().ConfigureAwait(false);
-                                BuilderLogger.LogInformation("ASPlog > transaction error");
+#if DEBUG
+                                CreateBuilderLogger.ConsoleText("ASPlog > transaction error");
+#endif
                                 return -3;
                             }
                         }
@@ -856,7 +890,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -865,7 +899,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -874,7 +908,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -883,7 +917,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -892,7 +926,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -976,7 +1010,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -984,7 +1018,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1036,7 +1070,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1067,7 +1101,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1075,7 +1109,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1110,7 +1144,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1118,7 +1152,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1166,7 +1200,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1174,7 +1208,7 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -1421,7 +1455,10 @@ namespace FamTec.Server.Repository.UseMaintenence
                                 if (checksum != InOutNum)
                                 {
                                     /* 출고하고자 하는 개수와 실제 개수가 다름. (동시성에서 누가 먼저 뺏을경우 발생함.) */
-                                    Console.WriteLine("결과가 다름 RollBack!");
+                                    
+#if DEBUG
+                                    CreateBuilderLogger.ConsoleText("예상결과가 다름");
+#endif
                                     await transaction.RollbackAsync().ConfigureAwait(false);
                                     return -1;
                                 }
@@ -1506,7 +1543,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -1515,7 +1552,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -1524,7 +1561,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1533,7 +1570,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1542,7 +1579,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -1718,7 +1755,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -1727,7 +1764,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw; // ExecutionStrategy가 자동으로 재시도 처리
                     }
@@ -1736,7 +1773,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1745,7 +1782,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         throw;
                     }
@@ -1754,7 +1791,7 @@ namespace FamTec.Server.Repository.UseMaintenence
                         await transaction.RollbackAsync().ConfigureAwait(false);
                         LogService.LogMessage(ex.ToString());
 #if DEBUG
-                        CreateBuilderLogger(ex);
+                        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                         return -1;
                     }
@@ -1783,13 +1820,11 @@ namespace FamTec.Server.Repository.UseMaintenence
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
         }
-
-    
 
         /// <summary>
         /// 데드락 감지코드
@@ -1808,7 +1843,6 @@ namespace FamTec.Server.Repository.UseMaintenence
 
             return false;
         }
-
         
     }
 }

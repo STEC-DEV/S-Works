@@ -12,36 +12,18 @@ namespace FamTec.Server.Services.Building.Value
         private readonly IBuildingItemValueInfoRepository BuildingItemValueInfoRepository;
 
         private readonly ILogService LogService;
-        private readonly ILogger<BuildingValueService> BuilderLogger;
+        private readonly ConsoleLogService<BuildingValueService> CreateBuilderLogger;
 
         public BuildingValueService(IBuildingItemValueInfoRepository _buildingitemvalueinforepository,
             IBuildingItemKeyInfoRepository _buildingitemkeyinforepository,
             ILogService _logservice,
-            ILogger<BuildingValueService> _builderlogger)
+            ConsoleLogService<BuildingValueService> _createbuilderlogger)
         {
             this.BuildingItemValueInfoRepository = _buildingitemvalueinforepository;
             this.BuildingItemKeyInfoRepository = _buildingitemkeyinforepository;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         public async Task<ResponseUnit<AddValueDTO>> AddValueService(HttpContext context, AddValueDTO dto)
@@ -85,7 +67,7 @@ namespace FamTec.Server.Services.Building.Value
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<AddValueDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -124,7 +106,7 @@ namespace FamTec.Server.Services.Building.Value
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<UpdateValueDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
@@ -163,7 +145,7 @@ namespace FamTec.Server.Services.Building.Value
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }

@@ -9,35 +9,18 @@ namespace FamTec.Server.Repository.Voc
     public class VocCommentRepository : IVocCommentRepository
     {
         private readonly WorksContext context;
+        
         private readonly ILogService LogService;
-        private readonly ILogger<VocCommentRepository> BuilderLogger;
+        private readonly ConsoleLogService<VocCommentRepository> CreateBuilderLogger;
 
         public VocCommentRepository(WorksContext _context,
             ILogService _logservice,
-            ILogger<VocCommentRepository> _builderlogger)
+            ConsoleLogService<VocCommentRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             this.LogService = _logservice;
-            this.BuilderLogger = _builderlogger;
-        }
-
-        /// <summary>
-        /// ASP - 빌드로그
-        /// </summary>
-        /// <param name="ex"></param>
-        private void CreateBuilderLogger(Exception ex)
-        {
-            try
-            {
-                Console.BackgroundColor = ConsoleColor.Black; // 배경색 설정
-                Console.ForegroundColor = ConsoleColor.Red; // 텍스트 색상 설정
-                BuilderLogger.LogError($"ASPlog {ex.Source}\n {ex.StackTrace}");
-                Console.ResetColor();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         /// <summary>
@@ -63,7 +46,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -71,7 +54,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -79,7 +62,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -103,7 +86,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -111,7 +94,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -134,7 +117,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -142,7 +125,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -164,7 +147,7 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
@@ -172,14 +155,16 @@ namespace FamTec.Server.Repository.Voc
             {
                 LogService.LogMessage($"MariaDB 오류 발생: {ex}");
 #if DEBUG
-                CreateBuilderLogger(ex);
+                CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
             }
             catch (Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
-
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
                 // 파일업로드 실패를 대비해서 Throw하면 실행이 종료되니 return false로 흐름을 이어감.
                 return false;
                 //throw new ArgumentNullException();
