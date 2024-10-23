@@ -193,7 +193,7 @@
                 return;
             }
 
-            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>(isAdmin.Value ? $"Admin/sign/UserIdCheck?userid={Value}" : $"User/sign/UserIdCheck?userid={Value}");
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>(isAdmin.Value ? $"AdminUser/sign/UserIdCheck?userid={Value}" : $"User/sign/UserIdCheck?userid={Value}");
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);

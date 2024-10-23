@@ -8,44 +8,30 @@
 <div class="detail-container">
     <div class="detail-wrap">
         <div class="detail-form">
-            <SignForm UserInfo="@(EditMode ? User.UserInfo : OriginalUser.UserInfo)" EditMode=@EditMode OnEdit="OnEditMode" OnSave="OnUpdate" />
+            <SignForm UserInfo="@(EditMode ? User?.UserInfo : OriginalUser?.UserInfo)" EditMode=@EditMode OnEdit="OnEditMode" OnSave="OnUpdate" ReturnSuccess="OnValid" />
         </div>
         <div class="detail-perm">
-            <UserPermComponent UserPerm="@(EditMode ? User.UserPerm : OriginalUser.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
+            <UserPermComponent UserPerm="@(EditMode ? User?.UserPerm : OriginalUser?.UserPerm)" OnVocActive=OnVocActive EditMode=@EditMode />
         </div>
-        @if (User.UserPerm.VocPerm == 2)
+        @if (User?.UserPerm?.VocPerm == 2)
         {
             <div class="useradd-sub yappear">
-                <UserVocPermComponent UserVocPerm="@(EditMode ? User.UserVocPerm : OriginalUser.UserVocPerm)" EditMode=@EditMode />
+                <UserVocPermComponent UserVocPerm="@(EditMode ? User?.UserVocPerm : OriginalUser?.UserVocPerm)" EditMode=@EditMode />
             </div>
         }
     </div>
-    @* @if (USER)
-    {
-        <div class="btns">
-            @if (!EditMode)
-            {
-                <Button Name="편집" Width=true Type="0" OnClick="OnEditMode" />
-            }
-            else
-            {
-                <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-                <Button Name="취소" Width=true Type="1" OnClick="OnEditMode" />
-            }
-
-        </div>
-    }
- *@
 </div>
 
 @code {
     [Parameter] public int Id { get; set; }
-    UserDTO User;
+    UserDTO User = new UserDTO();
     UserDTO OriginalUser;
     UserTbDTO userTb;
     bool EditMode = false;
     bool isVocPerm = false;
 
+    //validation check
+    List<int> valid = new List<int> { 0, 0, 0, 0, 0 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,6 +40,11 @@
         await OnLoadDetail();
     }
 
+
+    private async void OnValid((int value, int index) data)
+    {
+        valid[data.index] = data.value;
+    }
 
     private void OnVocActive(UserPermDTO updatedPerm)
     {
@@ -72,7 +63,8 @@
             await JS.InvokeVoidAsync("alert", "사용자 조회 실패");
             return;
         }
-        userTb = resDetail.data;
+        userTb = resDetail.data ?? new UserTbDTO(); // resDetail.data가 null일 경우 초기화
+        
         OnUserConvert();
     }
 
@@ -80,7 +72,25 @@
     {
         try
         {
+
             OnUserUpdateConvert();
+
+            if (OriginalUser.UserInfo.Password != userTb.PASSWORD)
+            {
+                if(valid[1] + valid[2] != 2)
+                {
+                    await JS.InvokeVoidAsync("alert", "비밀번호 입력조건을 확인해 주세요,");
+                    return;
+                }
+            }
+            if (OriginalUser.UserInfo.Email != userTb.EMAIL)
+            {
+                if (valid[3] != 1)
+                {
+                    await JS.InvokeVoidAsync("alert", "이메일 입력조건을 확인해 주세요,");
+                    return;
+                }
+            }
             ResponseUnit<UserTbDTO> resUpdate = await apiManager.PutAsync<UserTbDTO>("User/sign/UpdateUser", userTb,true);
             if (resUpdate.code != 200)
             {
@@ -105,7 +115,11 @@
         EditMode = !EditMode;
         if (!EditMode)
         {
-            User = OriginalUser.Clone();
+            // User = OriginalUser.Clone();
+            if (OriginalUser != null) // OriginalUser가 null이 아닐 경우에만 Clone
+            {
+                User = OriginalUser.Clone();
+            }
         }
     }
 

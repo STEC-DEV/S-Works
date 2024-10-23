@@ -58,7 +58,8 @@
                         @row.Standard
                     </td>
                     <td class="td">
-                        <input type="checkbox"
+                        <input type="radio"
+                            name="material"
                                checked=@(row.Id==CheckedItem)
                                @onchange="(e)=>OnChecked(e, row)" />
                     </td>
@@ -79,10 +80,20 @@
     private void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
     {
 
-        if ((bool)e.Value)
+        // if ((bool)e.Value)
+        // {
+        //     OnCheck.InvokeAsync(data);
+            
+        // }
+        // else
+        // {
+        //     OnCheck.InvokeAsync(null);
+        // }
+        string selectedValue = e.Value?.ToString();
+        Console.WriteLine(e.Value);
+        if (selectedValue == "on") // "true"는 선택된 값
         {
             OnCheck.InvokeAsync(data);
-            
         }
         else
         {

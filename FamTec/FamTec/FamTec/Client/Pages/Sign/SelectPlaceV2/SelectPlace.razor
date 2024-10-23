@@ -16,7 +16,7 @@
             </span>
         </div>
         <div class="content">
-            @if(placeData.Count == 0)
+            @if(placeData?.Count == 0)
             {
                 <Empty/>
             }else if(placeData == null)
@@ -29,14 +29,6 @@
                     @foreach (PlaceTableDTO place in placeData)
                     {
                         <li class="li" @onclick="()=>EnterPlace(place.Id)">
-                            @* @place.Name
-                            <input 
-                                type="radio" 
-                                name="place" 
-                                value="@place.Id" 
-                                @onclick="()=>HandlePlaceSelected(place.Id)" 
-                                @onkeypress="(e)=>HandleKeyDown(e)"
-                                /> *@
                             <span class="text">
                                 @place.Name
                             </span>

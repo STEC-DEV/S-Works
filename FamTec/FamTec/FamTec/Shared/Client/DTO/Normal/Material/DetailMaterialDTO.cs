@@ -44,6 +44,16 @@ namespace FamTec.Shared.Client.DTO.Normal.Material
         public int? SafeNum { get; set; }
 
         /// <summary>
+        /// 건물id
+        /// </summary>
+        public int? BuildingId { get; set; }
+
+        /// <summary>
+        /// 건물 이름
+        /// </summary>
+        public string BuildingName { get; set; }
+
+        /// <summary>
         /// 공간ID
         /// </summary>
         public int? RoomID { get; set; }

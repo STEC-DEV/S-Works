@@ -30,11 +30,6 @@
         <div class="form-input">
             @if (EditMode)
             {
-                @* <ValidationInput Label="아이디"
-                                 Placeholder="아이디"
-                                 ValueType="text"
-                                 @bind-Value=@Manager.UserId
-                                 Type="USERID" /> *@
                 <TextField2 Label="아이디"
                             Value="@Manager.UserId"
                             Color=true />
@@ -43,6 +38,7 @@
                                  ValueType="password"
                                  @bind-Value=@Manager.Password
                                  Required="true"
+                                 ReturnSuccess="ReturnSuccess"
                                  ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
                                  Type="PW" />
 
@@ -50,6 +46,7 @@
                                  Placeholder="비밀번호 확인"
                                  ValueType="password"
                                  PasswordCheck="@Manager.Password"
+                                 ReturnSuccess="ReturnSuccess"
                                  ValidChanged="@(isValid => UpdateValidState("PasswordCheck", isValid))"
                                  Type="PWCHECK" />
 
@@ -67,12 +64,15 @@
                 <ValidationInput Label="이메일"
                                  Placeholder="이메일"
                                  ValueType="text"
+                                 Required="true"
                                  @bind-Value=@Manager.Email
+                                 ReturnSuccess="ReturnSuccess"
                                  ValidChanged="@(isValid => UpdateValidState("Email", isValid))"
                                  Type="EMAIL" />
 
                 <SelectField Label="그룹"
                              SelectData="DepartmentList"
+                             Required="true"
                              @bind-Value=@Manager.DepartmentId
                              EditMode=true />
                 <TextField2 Label="직급"
@@ -114,7 +114,7 @@
     [Parameter] public bool? Valid { get; set; }
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public EventCallback<bool> ValidChanged { get; set; }
-
+    [Parameter] public EventCallback<(int, int)> ReturnSuccess { get; set; }
 
     //매니저 디테일
     [Parameter] public DManagerDTO Manager { get; set; }
@@ -128,7 +128,7 @@
     private List<byte[]> ImageUrl = new List<byte[]>();
     private Dictionary<string, bool> validationStates = new Dictionary<string, bool>();
 
-
+   
     private void OnSelectDepartment(int value)
     {
         Manager.DepartmentId = value;

@@ -28,7 +28,7 @@
         {
 
             <li class="depart-item @(Edit ? "" : "hover" ) @(selectedDepartment==item.Name ?"active":"")" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
-                <span class="item-title @(Edit ? "hover": "" )" @onclick:stopPropagation>
+                <span class="item-title" @onclick:stopPropagation>
                     @item.Name
                 </span>
                 @* @onclick=@(() => OnModal(item.Id)) *@

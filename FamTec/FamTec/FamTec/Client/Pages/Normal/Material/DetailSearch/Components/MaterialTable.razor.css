@@ -134,3 +134,12 @@
     border-bottom : var(--layout-bd);
     background-color :var(--content-back-color);
 }
+
+.link{
+
+    width:1rem;
+}
+
+.center {
+    text-align:center;
+}

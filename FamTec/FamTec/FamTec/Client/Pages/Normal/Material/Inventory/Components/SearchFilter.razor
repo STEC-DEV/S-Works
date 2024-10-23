@@ -83,11 +83,20 @@
                 await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
-            MaterialList = new List<MaterialSearchListDTO>();
-            MaterialList = resGet.data;
+            if (resGet.data == null)
+            {
+                MaterialList = new List<MaterialSearchListDTO>();
+            }
+            else
+            {
+                MaterialList = resGet.data;
+            }
+
+            
         }catch(Exception ex)
         {
-
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "전체 자재 조회 에러");
         }
     }
 

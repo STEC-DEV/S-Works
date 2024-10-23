@@ -10,6 +10,8 @@
 @inject AuthenticationStateProvider _authStateProvider;
 @inject ILocalStorageService _localStorageService;
 @inherits PermissionComponentBase
+@implements IDisposable
+
 <div class="nav-container">
     <div class="nav-logo">
         <NavLink href="@(LoginMode ? "/admin/place" : "/basic/buildings")" class="nav-wrap-img">
@@ -23,11 +25,13 @@
             @if(!LoginMode)
             {
                 <li class="nav-tab-item alarm " @onclick="OnActiveTimeLine">
-                    <svg class="scale" xmlns="http://www.w3.org/2000/svg" width="15" viewBox="0 0 448 512">
-                        <path fill="white"
-                        d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z" />
-                    </svg>
-                    @if (AlarmData.Count != 0)
+                    <div class="center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+                        </svg>
+                    </div>
+                    
+                    @if (AlarmData?.Count != 0)
                     {
                         <div class="count">
                             @alarmCount
@@ -35,7 +39,7 @@
                     }
                     @if (_timelineActive)
                     {
-                        <TimeLine AlarmData="@AlarmData" OnLoad="@OnLoadAlarmData" />
+                        <TimeLine  AlarmData="@AlarmData" OnLoad="@OnLoadAlarmData" />
                     }
                 </li>
                 
@@ -75,6 +79,10 @@
     [Parameter] public string? UserName { get; set; }
     [Parameter] public string? UserType  { get; set; }
 
+    //영역클릭
+    private DotNetObjectReference<Nav> dotNetReference;
+    private Func<Task> cleanupFunc; // JavaScript cleanup 함수
+    private bool disposedValue;
 
     List<AlarmDTO> AlarmData = new List<AlarmDTO>();
 
@@ -96,10 +104,15 @@
         await OnLoginMode();
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
-
-        await OnLoadAlarmData();
+        if (!LoginMode)
+        {
+            await OnLoadAlarmData();
+        }
         await OnConnectionSocket();
         await Socket();
+
+        dotNetReference = DotNetObjectReference.Create(this);
+        cleanupFunc = await JS.InvokeAsync<Func<Task>>("timelineHandler.initialize", dotNetReference);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -221,7 +234,7 @@
                 }
                 alarmCount = AlarmData.Count.ToString() ;
             }
-            
+
 
             StateHasChanged();
         }catch(Exception ex)
@@ -293,4 +306,39 @@
         }
 
     }
+
+
+
+    /// <summary>
+    /// 영역클릭
+    /// </summary>
+    /// [JSInvokable]
+    ///
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // 관리하는 리소스 해제
+                cleanupFunc?.Invoke();
+                dotNetReference?.Dispose();
+            }
+            disposedValue = true;
+        }
+    }
+
+    [JSInvokable]
+    public void CloseTimeline()
+    {
+        _timelineActive = false;
+        StateHasChanged();
+    }
+
+
 }

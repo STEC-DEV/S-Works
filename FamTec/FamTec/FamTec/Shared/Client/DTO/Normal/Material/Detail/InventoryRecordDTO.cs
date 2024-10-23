@@ -58,6 +58,16 @@ namespace FamTec.Shared.Client.DTO.Normal.Material.Detail
         public int? CurrentNum { get; set; }
 
         /// <summary>
+        /// 유지보수 id
+        /// </summary>
+        public int? MaintanceId { get; set; }
+
+        /// <summary>
+        /// 유지보수 url
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
         /// 비고
         /// </summary>
         public string? Note { get; set; }

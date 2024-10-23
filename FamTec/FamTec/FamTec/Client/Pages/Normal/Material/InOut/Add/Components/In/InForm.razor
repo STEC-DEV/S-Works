@@ -81,6 +81,7 @@
 
 @code {
     [Parameter] public InOutInventoryDTO AddItem { get; set; }
+    [Parameter] public MaterialSearchListDTO  SelectMaterial{ get; set; }
     [Parameter] public int MaterialId{ get; set; }
     [Parameter] public EventCallback<InOutInventoryDTO> ValueChaged { get; set; }
 
@@ -113,12 +114,13 @@
         CalculateTotalPrice();
         await OnLoadBuilding();
         await OnLoadBuilginRoom();
+        await initialRoom();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        SelectedBuildingId = 0;
-        SelectedRoomId = 0;
+        // SelectedBuildingId = 0;
+        // SelectedRoomId = 0;
         AddItem.AddStore.InOutDate = null;
 
         StateHasChanged(); // UI 업데이트 강제
@@ -243,6 +245,19 @@
         StateHasChanged();
     }
 
- 
+    private async Task initialRoom()
+    {
+        SelectedBuildingId = SelectMaterial.BuildingId.Value;
+        SelectedRoomId = SelectMaterial.RoomId.Value;
+        PlaceRoom = new List<PlaceRoom>();
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectMaterial.BuildingId).FirstOrDefault();
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+    }
 
 }

@@ -291,7 +291,7 @@
     width : 100%;
     
 
-    gap : var(--default-pd);
+    /*gap : var(--default-pd);*/
 }
 
 
@@ -1164,6 +1164,7 @@
 
 
 .placetable-container .placetable-table[b-nv3vkbvc5d] {
+    min-height:340px;
     height: 100%;
     overflow: auto;
 }
@@ -1411,7 +1412,7 @@
     width : 100%;
     
 
-    gap : var(--default-pd);
+    /*gap : var(--default-pd);*/
 }
 
 
@@ -3124,7 +3125,8 @@
 }
 /* /Pages/CommonComponents/CloseXButton.razor.rz.scp.css */
 .btn[b-ncwcy3ydco] {
-    
+    width:100%;
+    height:100%;
 }
 .btn:hover[b-ncwcy3ydco] {
     
@@ -3260,9 +3262,9 @@
 }
 /* /Pages/CommonComponents/DetailImage.razor.rz.scp.css */
 .modal[b-3a83pisvol] {
-    width: 70%;
-    height: 60%;
-    background-color: #4e4e4e;
+    width: 100%;
+    height: 100%;
+    background-color: #4e4e4e61;
     position: relative;
     box-shadow: 0 0 10px 2px #4e4e4e;
 }
@@ -3291,9 +3293,10 @@
 
 .btn[b-3a83pisvol] {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 2rem;
+    right: 2rem;
     display: flex;
+    width:1.5rem;
     justify-content: flex-end;
 }
 
@@ -3355,6 +3358,14 @@
 /* /Pages/CommonComponents/IconButton/LeftLineButton.razor.rz.scp.css */
 .ibtn :hover[b-v2zor1jm7b]{
     cursor : pointer;
+}
+/* /Pages/CommonComponents/IconButton/LinkButton.razor.rz.scp.css */
+svg:hover[b-ijf8ad7z4n]{
+    
+    cursor:pointer;
+}
+svg[b-ijf8ad7z4n] {
+    width: 1rem;
 }
 /* /Pages/CommonComponents/IconButton/RightLineButton.razor.rz.scp.css */
 .ibtn :hover[b-uh1f150cmr] {
@@ -3964,6 +3975,7 @@
     position: relative;
     width: 100%;
 }
+
 
 .selectbox[b-95ao32x48a] {
     /*position : relative;*/
@@ -10628,6 +10640,15 @@ svg:hover[b-at4h593xxn] {
     border-bottom : var(--layout-bd);
     background-color :var(--content-back-color);
 }
+
+.link[b-zhhpdd0a7g]{
+
+    width:1rem;
+}
+
+.center[b-zhhpdd0a7g] {
+    text-align:center;
+}
 /* /Pages/Normal/Material/DetailSearch/Components/SearchFilter.razor.rz.scp.css */
 
 .searchfilter[b-w2uu1y7z7h]{
@@ -15732,6 +15753,12 @@ main[b-7s48qd2tqg] {
     text-align: center;
     padding: 0.3rem 0.5rem;
     border-radius: 40%;
+}
+
+.center[b-wg5fiaa4ah]{
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 /* /Shared/NavMenu.razor.rz.scp.css */
 .navbar-toggler[b-wqqoxqzzwa] {

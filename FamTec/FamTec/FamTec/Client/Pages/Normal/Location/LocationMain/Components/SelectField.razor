@@ -59,7 +59,15 @@
 
     public string SelectName = "Select";
     public bool IsActive { get; set; } = false;
+    
+    
+    private DotNetObjectReference<SelectField<T>> _objRef;
 
+    protected override void OnInitialized()
+    {
+        _objRef = DotNetObjectReference.Create(this); // **수정된 부분**
+        base.OnInitialized();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -113,18 +121,6 @@
 
     public async Task OnSelectRow(object row)
     {
-        // if (row == null)
-        // {
-        //     Value = 0;
-        //     SelectName = "Select";
-        // }
-        // else
-        // {
-        //     // int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-        //     // Value = id;
-        //     // SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-        //     // OnReturnName(SelectName);
-        // }
         int id = (int)row.GetType().GetProperty("Id").GetValue(row);
         Value = id;
         SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
@@ -140,8 +136,28 @@
     public void OnActive()
     {
         IsActive = !IsActive;
+        if (IsActive)
+        {
+            JS.InvokeVoidAsync("clickHandler.addClickListener", _objRef);
+        }
+        else
+        {
+            JS.InvokeVoidAsync("clickHandler.removeClickListener", _objRef);
+        }
+    }
+    //외부 영역 클릭
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
     }
 
+    [JSInvokable]
+    public void CloseSelectBox()
+    {
+        IsActive = false;
+        StateHasChanged();
+    }
 
     private async void OnReturnName(string name)
     {

@@ -21,18 +21,29 @@
             
         </div>
         <div class="contents">
+            
             <div class="table-section">
+                @if (SystemData == null)
+                {
+                    <Loading />
+                }
+                else
+                {
+                <UnitTable ListData="@SystemData"
+                           OnCheck="OnChecked" />
+                }
+            </div>
+            <div class="table-section">
+                @if (UserData == null)
+                {
+                    <Loading />
+                }
+                else
+                {
                 <UnitTable ListData="@UserData"
                            OnCheck="OnChecked" />
+                }
             </div>
-            
-            <div class="table-section">
-                <UnitTable 
-                ListData="@SystemData" 
-                OnCheck="OnChecked"
-                />
-            </div>
-            
         </div>
     </div>
 </div>

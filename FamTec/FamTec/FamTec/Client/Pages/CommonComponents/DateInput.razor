@@ -1,7 +1,9 @@
 ﻿
 @* 자동변환 *@
-<div class="dateinput @(Row ==true ? "row" : "")">
-    <label class="label @(Required.Value ? "required": "")">
+@* <div class="dateinput @(Row ==true ? "row" : "")"> *@
+<div class="dateinput @(Row.HasValue && Row.Value ? "row" : "")">
+    @* <label class="label @(Required.Value ? "required": "")"> *@
+    <label class="label @(Required.HasValue && Required.Value ? "required" : "")">
         @Label
     </label>
     <input

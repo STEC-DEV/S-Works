@@ -150,7 +150,11 @@
         // {
         //     UpdateMaintenance = Maintenance.DeepCopy();
         // }
-        UpdateMaintenance = new DetailMaintenanceDTO(Maintenance);
+        if (Maintenance != null)
+        {
+            UpdateMaintenance = new DetailMaintenanceDTO(Maintenance);
+        }
+        
     }
 
     protected override async Task OnParametersSetAsync()

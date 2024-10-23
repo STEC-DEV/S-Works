@@ -90,7 +90,7 @@
             {
                 await IJSRuntime.InvokeVoidAsync("alert", "아이디 또는 패스워드가 공백입니다.");
                 user = new LoginDTO();
-                
+
                 return;
             }
 
@@ -106,7 +106,8 @@
             if (response.code != 200 && response.code != 201)
             {
                 await IJSRuntime.InvokeVoidAsync("alert", response.message);
-                user = new LoginDTO();
+                // user = new LoginDTO();
+                user.UserPassword = "";
                 return;
             }            
             string? token = response.data;

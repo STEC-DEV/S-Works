@@ -60,6 +60,13 @@
     public string SelectName = "Select";
     public bool IsActive { get; set; } = false;
 
+    private DotNetObjectReference<InOutSelectField<T>> _objRef;
+
+    protected override void OnInitialized()
+    {
+        _objRef = DotNetObjectReference.Create(this); // **수정된 부분**
+        base.OnInitialized();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -118,6 +125,27 @@
     public void OnActive()
     {
         IsActive = !IsActive;
+        if (IsActive)
+        {
+            JS.InvokeVoidAsync("clickHandler.addClickListener", _objRef);
+        }
+        else
+        {
+            JS.InvokeVoidAsync("clickHandler.removeClickListener", _objRef);
+        }
+    }
+    //외부 영역 클릭
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+    }
+
+    [JSInvokable]
+    public void CloseSelectBox()
+    {
+        IsActive = false;
+        StateHasChanged();
     }
 
 }
