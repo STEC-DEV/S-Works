@@ -16,7 +16,7 @@ namespace FamTec.Server.Middleware
         {
             this.Next = _next;
             this.TokenComm = _tokencomm;
-            this._authSigningkey = _authSigningkey;
+            this._authSigningkey = configuration["JWT:AuthSigningKey"];
         }
 
         public async Task InvokeAsync(HttpContext context)
