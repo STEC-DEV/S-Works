@@ -8,7 +8,7 @@
     <ul class="drawer-wrap">
         @foreach (var category in CategoryList)
         {
-            <li class="drawer-item">
+            <li class="drawer-item pointer">
                 @if(category.Url == null)
                 {
                     <NavLink class="drawer-link none">
@@ -90,8 +90,10 @@
         if (!LoginMode)
         {
             await OnLoadPlacePerm();
+            await OnCheckUserPerm();
         }
-        await OnCheckUserPerm();
+        
+        
         await LoadCategory();
     }
 
@@ -278,7 +280,7 @@
             _placePerm = resGet.data;
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "사업장 권한 조회 에러" + ex);
+            Console.WriteLine(ex);
         }
 
     }

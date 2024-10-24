@@ -44,32 +44,32 @@
         {
             @foreach (var row in ListData)
             {
-                <tr class="tbody-tr">
-                    <td class="td">
+                <tr class="tbody-tr" @onclick=@(()=>OnCheck(row))>
+                    <td class="td pointer">
                         <span>
                             @row.UserId
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         <span>
                             @row.Name
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         <span>
                             @row.Department
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         <span>
                             @row.Type
                         </span>
                     </td>
                     <td class="td">
                         <input 
+                            class="pointer"
                             type="checkbox"
                                checked=@((Checkedobj != null && Checkedobj.Any(m => m.Id == row.Id)) || (CheckedItem != null && CheckedItem.Contains(row.Id)))
-                            @onchange="(e) => OnCheck(e, row)" 
                             />
                     </td>
                 </tr>
@@ -80,15 +80,15 @@
 </table>
 @code {
     [Parameter] public List<ManagerDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool,ManagerDTO)> OnChecked { get; set; }
+    [Parameter] public EventCallback<ManagerDTO> OnChecked { get; set; }
     [Parameter] public List<int> CheckedItem { get; set; }
     [Parameter] public List<ManagerDTO> Checkedobj { get; set; }
 
 
     //체크 함수
-    private async void OnCheck(ChangeEventArgs e, ManagerDTO manager)
+    private async void OnCheck(ManagerDTO manager)
     {
-        await OnChecked.InvokeAsync(((bool)e.Value, manager));
+        await OnChecked.InvokeAsync(manager);
     }
 
 

@@ -16,6 +16,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Material.InOut
         public string Standard { get; set; }
         public int? BuildingId { get; set; }
         public int? RoomId{ get; set; }
+        public string RoomName { get; set; }
 
     }
 }

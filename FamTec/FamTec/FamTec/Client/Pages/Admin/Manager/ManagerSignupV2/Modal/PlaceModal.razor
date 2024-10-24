@@ -24,7 +24,7 @@
         </div>
         <div class="placemodal-count">
             <span class="count">
-                선택 : @SelectCount
+                선택 : @SelectItems.Count
             </span>
         </div>
         <div class="placemodal-btns">
@@ -98,18 +98,27 @@
 
 
 
-    private void OnChecked((bool isCheck, PlaceTableDTO place)data)
+    private void OnChecked(PlaceTableDTO place)
     {
-        if (data.isCheck)
+        if(SelectItems.Any(c => c.Id == place.Id))
         {
-            SelectItems.Add(data.place);
-            SelectCount += 1;
+            SelectItems.RemoveAll(p => p.Id == place.Id);
         }
         else
         {
-            SelectItems.Remove(data.place);
-            SelectCount -= 1;
+            SelectItems.Add(place);
         }
+
+        // if (data.isCheck)
+        // {
+        //     SelectItems.Add(data.place);
+        //     SelectCount += 1;
+        // }
+        // else
+        // {
+        //     SelectItems.Remove(data.place);
+        //     SelectCount -= 1;
+        // }
     }
 
     //리스트에추가

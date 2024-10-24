@@ -99,20 +99,20 @@
                     <td class="td">
                         @(row.Type == 1 ? row.InOutNum : 0)
                     </td>
-                    <td class="td">
-                        @(row.Type == 1 ? row.InOutUnitPrice : 0)
+                    <td class="td text-right">
+                        @(row.Type == 1 ? row.InOutUnitPrice?.ToString("N0") : 0)
                     </td>
-                    <td class="td">
-                        @(row.Type == 1 ? row.InOutTotalPrice : 0)
+                    <td class="td text-right">
+                        @(row.Type == 1 ? row.InOutTotalPrice?.ToString("N0") : 0)
                     </td>
                     <td class="td">
                         @(row.Type == 0 ? row.InOutNum : 0)
                     </td>
-                    <td class="td">
-                        @(row.Type == 0 ? row.InOutUnitPrice : 0)
+                    <td class="td text-right">
+                        @(row.Type == 0 ? row.InOutUnitPrice?.ToString("N0") : 0)
                     </td>
-                    <td class="td">
-                        @(row.Type == 0 ? row.InOutTotalPrice : 0)
+                    <td class="td text-right">
+                        @(row.Type == 0 ? row.InOutTotalPrice?.ToString("N0") : 0)
                     </td>
                     <td class="td">
                         @row.CurrentNum
@@ -138,12 +138,12 @@
     <tfoot class="tfoot">
         <tr class="tfoot-tr">
             <td class="tf-td" colspan="4">소계</td>
-            <td class="tf-td">@totalInQty</td>
-            <td class="tf-td">@totalInPrice</td>
-            <td class="tf-td">@totalInAmount</td>
+            <td class="tf-td ">@totalInQty</td>
+            <td class="tf-td text-right">@totalInPrice?.ToString("N0")</td>
+            <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
             <td class="tf-td">@totalOutQty</td>
-            <td class="tf-td">@totalOutPrice</td>
-            <td class="tf-td">@totalOutAmount</td>
+            <td class="tf-td text-right">@totalOutPrice?.ToString("N0")</td>
+            <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
             <td class="tf-td">@totalCurrentNum</td>
             <td class="tf-td"></td>
         </tr>

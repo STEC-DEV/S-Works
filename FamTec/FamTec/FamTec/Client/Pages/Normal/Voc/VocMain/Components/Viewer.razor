@@ -1,12 +1,12 @@
 ﻿
 <div class="viewer" @onclick=OnActive>
-    <label class="label @(IsShow ? "focus" : "")">
+    <label class="label @(IsShow ? "focus" : "") pointer">
         @CurrentViewNum
     </label>
     <ul class="ul @(IsShow ? "show" : "")">
         @foreach(var i in viewer)
         {
-            <li class="li" @onclick="()=>OnChangedValue(i)">
+            <li class="li pointer" @onclick="()=>OnChangedValue(i) ">
                 @i.Name
             </li>
         }

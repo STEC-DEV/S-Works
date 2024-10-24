@@ -9,12 +9,12 @@
     <div class="content">
         @if(ImageDataUrl.Count > 1)
         {
-            <div class="left-btn" @onclick="ShowPreviousImage">
+            <div class="left-btn pointer" @onclick="ShowPreviousImage">
                 &lt;
             </div>
         }
 
-        <div class="img-wrap" @onclick=OnDetail>
+        <div class="img-wrap pointer" @onclick=OnDetail>
             <div class="img">
                 @if(ImageDataUrl.Count != 0)
                 {
@@ -25,7 +25,7 @@
         </div>
         @if (ImageDataUrl.Count > 1)
         {
-            <div class="right-btn" @onclick="ShowNextImage">
+            <div class="right-btn pointer" @onclick="ShowNextImage">
                 &gt;
             </div>
         }

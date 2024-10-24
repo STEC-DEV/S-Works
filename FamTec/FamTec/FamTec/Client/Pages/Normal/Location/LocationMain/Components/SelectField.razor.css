@@ -48,6 +48,7 @@
 .display {
     position : relative;
     display:block;
+    
     width:100%;
     padding: var(--default-pd);
     border :var(--comp-bd);
@@ -78,6 +79,7 @@
 }
 .active {
     display: block
+       
 }
 
 .option-item {
@@ -88,8 +90,16 @@
 }
 
 .option-item:hover{
-   
+   cursor:pointer;
     background-color : var(--main-color);
     color :var(--default-color);
 }
 
+.display-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon{
+    width:0.6rem;
+}

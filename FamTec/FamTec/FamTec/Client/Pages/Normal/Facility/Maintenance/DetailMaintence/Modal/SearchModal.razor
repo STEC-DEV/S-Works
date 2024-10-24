@@ -15,6 +15,7 @@
         <InputCol 
             @bind-Value="@searchData" 
             Placeholder="품목코드, 품목명, 제조사"
+            OnKeyPress="HandleKeyDown"
             />
         <Button Name="검색" Width=true Type="0" OnClick="OnSearch" />
     </div>
@@ -78,4 +79,13 @@
     {
         await OnClose.InvokeAsync();
     }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+        {
+            await OnSearch(); // 로그인 메서드 호출
+        }
+    }
+}
 }

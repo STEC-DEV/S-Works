@@ -80,3 +80,8 @@
 .table ::deep .table-td-link {
     color : var(--main-color);
 }
+
+
+.tr .text-right{
+    text-align:right;
+}

@@ -1,4 +1,5 @@
-﻿@using FamTec.Shared.Client.Class
+﻿@using FamTec.Client.Pages.CommonComponents.IconButton
+@using FamTec.Shared.Client.Class
 
 
 <div class="multi-select @(Row ? "row" : "")" @ref="multiSelectElement" @onclick:stopPropagation="true">
@@ -11,18 +12,24 @@
     <div class="select-container" >
         
         <div class="selectbox @(IsActive ? "active" : "")" @onclick="ToggleDropdown">
-            <label class="display">
+            <label class="display pointer">
+
                 <span class="display-title @(SelectedNames =="선택" ?"placeholder" : "")">
                     @SelectedNames
                 </span>
+                <div class="icon">
+                    <DownTriangleButton/>
+                </div>
             </label>
         </div>
 
         @if (IsActive)
         {
             <ul class="options">
-                <li class="option-item" @onclick="() => OnAllCheckItem(!OnAllSync())">
-                    <input type="checkbox"
+                <li class="option-item pointer" @onclick="() => OnAllCheckItem(!OnAllSync())">
+                    <input 
+                        class="pointer"
+                        type="checkbox"
                            @onchange="@((e) => OnAllCheckItem(e.Value.ToString() == " true"))"
                            checked="@OnAllSync()"
                            />
@@ -31,8 +38,10 @@
                 @* @onchange="(e)=>OnAllCheckItem(e)" *@
                 @foreach (FilterItem item in SelectItems)
                 {
-                    <li class="option-item" @onclick="() => OnCheckChanged(item, null)">
-                        <input type="checkbox" 
+                    <li class="option-item pointer" @onclick="() => OnCheckChanged(item, null)">
+                        <input 
+                            class="pointer"
+                            type="checkbox" 
                             @onchange="(e) => OnCheckChanged(item, e)" 
                             checked=@(item.IsChecked) />
                         <span>@item.Name</span>

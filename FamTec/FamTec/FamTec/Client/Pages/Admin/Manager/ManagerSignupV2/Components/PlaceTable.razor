@@ -50,22 +50,24 @@
         {
              @foreach(var row in ListData)
             {
-                <tr class="tbody-tr">
-                    <td class="td">
+                <tr class="tbody-tr"@onclick=@(()=>onCheckItem(row))>
+                    <td class="td pointer">
                         @row.Name
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                        @row.ContractNum
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
                     @if (ADMINEDIT)
                     {
                         <td class="td">
-                            <input type="checkbox" 
-                                checked=@(_checkItem.Contains(row.Id)) 
-                                @onchange=" e => onCheckItem(e, row)" />
+                            <input 
+                                class="pointer"
+                                type="checkbox" 
+                                checked=@(CheckedData.Any(p => p.Id == row.Id)) 
+                                />
                         </td>
                     }
                     
@@ -78,7 +80,7 @@
 
 @code {
     [Parameter] public List<PlaceTableDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool,PlaceTableDTO)> OnCheck { get; set; }
+    [Parameter] public EventCallback<PlaceTableDTO> OnCheck { get; set; }
 
     List<PlaceTableDTO> CheckedData = new List<PlaceTableDTO>();
 
@@ -87,26 +89,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
 
 
-    private async void onCheckItem(ChangeEventArgs e,PlaceTableDTO place)
+    private async void onCheckItem(PlaceTableDTO place)
     {
-        //현재 컴포넌트내에서 검색과 체크 동기화
-        if((bool)e.Value)
+        Console.WriteLine("체크");
+        if (CheckedData.Any(c => c.Id == place.Id))
         {
-            _checkItem.Add(place.Id);
+            CheckedData.RemoveAll(p => p.Id == place.Id);
         }
         else
         {
-            _checkItem.Remove(place.Id);
+            CheckedData.Add(place);
         }
 
 
         //체크여부 부모로 넘김
-        await OnCheck.InvokeAsync(((bool)e.Value, place));
+        await OnCheck.InvokeAsync(place);
     }
 
 

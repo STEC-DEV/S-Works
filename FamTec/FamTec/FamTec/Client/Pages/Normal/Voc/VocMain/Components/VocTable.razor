@@ -71,25 +71,25 @@
                 
             
                 <tr class="tbody-tr" @onclick="() => OnDeatail(row.Id)">
-                    <td class="td">
+                    <td class="td pointer">
                         @row.BuildingName
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @OnConvertType(row.Type)
                     </td>
                     @* <td class="td">
                         @typeof(T).GetProperty("Writer")?.GetValue(row)?.ToString()
                     </td> *@
-                    <td class="td">
+                    <td class="td pointer">
                         @row.Title
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.CreateDT
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.CompleteDT
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @if (!string.IsNullOrEmpty(row.DurationDT))
                         {
                             @if (timespan.Days > 0)
@@ -101,7 +101,7 @@
                         }
                         
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         <StatusCard Status=@row.Status.ToString() />
                     </td>
                 </tr>

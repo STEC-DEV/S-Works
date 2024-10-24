@@ -247,6 +247,7 @@
 
     private async Task initialRoom()
     {
+        AddItem.AddStore.RoomName = SelectMaterial.RoomName;
         SelectedBuildingId = SelectMaterial.BuildingId.Value;
         SelectedRoomId = SelectMaterial.RoomId.Value;
         PlaceRoom = new List<PlaceRoom>();

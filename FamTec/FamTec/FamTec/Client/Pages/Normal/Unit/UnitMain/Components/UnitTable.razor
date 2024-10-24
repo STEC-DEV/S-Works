@@ -39,7 +39,7 @@
         {
             @foreach (var unit in ListData.Select((value, idx) => (value, idx)))
             {
-                <tr class="tbody-tr">
+                <tr class="tbody-tr" @onclick=@(()=>OnChecked(unit.value.Id))>
                     @* <td class="td text-left">
             @(unit.idx+1)
             </td> *@
@@ -54,7 +54,7 @@
                         <td class="td ">
                             @if (!unit.value.SystemCreate)
                             {
-                                <input type="checkbox" @onchange="(e)=>OnChecked(e, unit.value.Id)" />
+                                <input type="checkbox" checked=@(CheckedItems.Contains(unit.value.Id)) />
                             }
                         </td>
                     }
@@ -69,7 +69,8 @@
 
 @code {
     [Parameter] public List<UnitDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool,int)> OnCheck { get; set; }
+    [Parameter] public EventCallback<int> OnCheck { get; set; }
+    [Parameter] public List<int> CheckedItems { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,8 +78,8 @@
     }
 
 
-    private async void OnChecked(ChangeEventArgs e, int id)
+    private async void OnChecked(int id)
     {
-        await OnCheck.InvokeAsync(((bool)e.Value, id));
+        await OnCheck.InvokeAsync(id);
     }
 }

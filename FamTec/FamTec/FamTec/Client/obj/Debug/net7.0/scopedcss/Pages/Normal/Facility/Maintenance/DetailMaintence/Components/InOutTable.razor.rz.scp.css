@@ -82,3 +82,11 @@
 .table[b-mp3mr0yprm]  .table-td-link {
     color : var(--main-color);
 }
+
+.tr .text-right[b-mp3mr0yprm]{
+    text-align:right;
+}
+
+.pointer[b-mp3mr0yprm] {
+    cursor: pointer;
+}

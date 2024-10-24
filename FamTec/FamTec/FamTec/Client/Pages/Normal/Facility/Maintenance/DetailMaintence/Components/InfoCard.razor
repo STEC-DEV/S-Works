@@ -13,7 +13,7 @@
         <span>
             유지보수 정보
         </span>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="option">
                 @if (EditMode)
@@ -111,6 +111,7 @@
     [Parameter] public EventCallback OnEditMode { get; set; }
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public UpdateMaintancematerialDTO UpdateUseMaterial { get; set; }
+    [Parameter] public string FacType { get; set; }
     // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
     DetailMaintenanceDTO UpdateMaintenance;
@@ -258,6 +259,20 @@
         ImageUrl.Clear();
         StateHasChanged();
     }
-    
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
 
 }

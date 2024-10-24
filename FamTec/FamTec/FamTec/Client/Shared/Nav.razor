@@ -22,7 +22,7 @@
         @* 로그인 여부 *@
         <ul class="nav-tab-wrap">
             <!-- 알림 -->
-            @if(!LoginMode)
+            @if(!LoginMode && !ISADMIN)
             {
                 <li class="nav-tab-item alarm " @onclick="OnActiveTimeLine">
                     <div class="center">
@@ -97,14 +97,15 @@
 
 
     private string alarmCount = "";
-
+    private string valid = "";
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await OnLoginMode();
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
-        if (!LoginMode)
+        valid = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
+        if (!LoginMode & !string.IsNullOrEmpty(valid))
         {
             await OnLoadAlarmData();
         }
@@ -142,6 +143,7 @@
 
     private async Task OnLogOut()
     {
+        NavigationManager.NavigateTo("/login");
 
         await _localStorageService.RemoveItemAsync("sworks-jwt-token");
 
@@ -151,7 +153,7 @@
         // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
         (_authStateProvider as CustomAuthProvider).NotifyLogout();
 
-        NavigationManager.NavigateTo("/");
+        
     }
 
 

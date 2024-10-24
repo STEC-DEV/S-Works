@@ -7,10 +7,6 @@
 
 <div class="item-container">
     <div class="item-wrap" >
-        @* @if (EditMode)
-        {
-            <input type="checkbox" />
-        } *@
         <label class="item-label" >
             @item.ItemKey @unit
         </label>
@@ -22,13 +18,13 @@
                 </span>
             }
         </div>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <EditButton OnClick="@OnItemEdit" />
             <XButton OnClick="OnIsDel" />
         }
     </div>
-    @if (USEREDIT&& ItemEdit)
+    @if (HasEditPermission() && ItemEdit)
     {
         <ModalBackground>
             <ChildComponent>
@@ -49,6 +45,7 @@
     [Parameter] public ItemDTO item { get; set; }
     [Parameter] public bool EditMode { get; set; } = false;
     [Parameter] public EventCallback OnLoad { get; set; }
+    [Parameter] public string FacType { get; set; }
     private bool ItemEdit = false;
     bool isDel = false;
 
@@ -94,5 +91,21 @@
     private void OnIsDel()
     {
         isDel = !isDel;
+    }
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
     }
 }

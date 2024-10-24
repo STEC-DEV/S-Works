@@ -1,4 +1,5 @@
-﻿@typeparam T
+﻿@using FamTec.Client.Pages.CommonComponents.IconButton
+@typeparam T
 
 <div class="selectfield @(Row==true ? "row":"")">
     @if (!String.IsNullOrEmpty(Label))
@@ -11,16 +12,21 @@
     <ul class="selectbox @(EditMode ? "" : "none")">
         <label class="display @(IsActive ? "active" : "")"
                @onclick=OnActive>
-            @if (SelectName == null)
-            {
-                <span class="display-title">Select</span>
-            }
-            else
-            {
-                <span class="display-title">
-                    @SelectName
-                </span>
-            }
+           <div class="display-row">
+                    @if (SelectName == null)
+                    {
+                        <span class="display-title">선택</span>
+                    }
+                    else
+                    {
+                        <span class="display-title">
+                            @SelectName
+                        </span>
+                    }
+                    <div class="icon">
+                        <DownTriangleButton />
+                    </div>
+               </div>
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
             @if (SelectData != null && SelectData.Any())
@@ -57,7 +63,7 @@
     [Parameter] public bool? Row { get; set; }
     [Parameter] public bool? Required { get; set; } = false;
 
-    public string SelectName = "Select";
+    public string SelectName = "선택";
     public bool IsActive { get; set; } = false;
 
 
@@ -78,19 +84,19 @@
             }
             else
             {
-                SelectName = "Select";
+                SelectName = "선택";
             }
         }
         else
         {
-            SelectName = "Select";
+            SelectName = "선택";
         }
     }
 
     public async Task Reset()
     {
         Value = 0;
-        SelectName = "Select";
+        SelectName = "선택";
         await ValueChanged.InvokeAsync(Value);
         StateHasChanged();
     }
@@ -100,7 +106,7 @@
         if (row == null)
         {
             Value = 0;
-            SelectName = "Select";
+            SelectName = "선택";
         }
         else
         {

@@ -78,43 +78,6 @@
         CheckedManagerList.Clear();
         checkManager.Clear();
         OnCanceled();
-        // try
-        // {
-        //     if (CheckedManagerList.Count == 0)
-        //     {
-        //         await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
-        //         return;
-        //     }
-
-        //     // 선택된 매니저들을 기존 SelectManagerList에 추가
-        //     foreach (var manager in CheckedManagerList)
-        //     {
-        //         if (!SelectManagerList.Any(m => m.Id == manager.Id))
-        //         {
-        //             SelectManagerList.Add(manager);
-        //         }
-        //     }
-
-        //     AddManager.PlaceId = Id;
-        //     AddManager.PlaceManager = CheckedManagerList;
-        //     ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", AddManager);
-        //     if (resAdd.code != 200)
-        //     {
-        //         await JS.InvokeVoidAsync("alert", resAdd.message);
-        //         OnCanceled();
-        //         return;
-        //     }
-            
-        //     await OnLoadManagerList();
-        //     StateHasChanged();
-        //     OnCanceled();
-        //     return;
-        // }
-        // catch (Exception ex)
-        // {
-        //     await JS.InvokeVoidAsync("alert", ex);
-        //     OnCanceled();
-        // }
     }
 
     //매니저 로드
@@ -147,31 +110,23 @@
         .ToList();  
 
         await InvokeAsync(StateHasChanged);
-    
 
-        // FilterData = String.IsNullOrEmpty(_searchText)
-        //                            ? ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList()
-        //                        : ListManager.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        //                                                    (m.UserId?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        //                                                    (m.Department?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
-        //                                                    ).ToList();
+
     }
 
 
     //체크 매니저
-    private void OnChecked((bool isCheck, ManagerDTO manager)data)
+    private void OnChecked(ManagerDTO manager)
     {
-        //매니저 추가
-        if (data.isCheck)
+        if (checkManager.Contains(manager.Id))
         {
-            checkManager.Add(data.manager.Id);
-            CheckedManagerList.Add(data.manager);
+            checkManager.Remove(manager.Id);
+            CheckedManagerList.RemoveAll(m => m.Id == manager.Id);
         }
-        //매니저 삭제
         else
         {
-            checkManager.Remove(data.manager.Id);
-            CheckedManagerList.Remove(data.manager);
+            checkManager.Add(manager.Id);
+            CheckedManagerList.Add(manager);
         }
     }
 

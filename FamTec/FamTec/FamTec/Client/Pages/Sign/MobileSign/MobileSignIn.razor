@@ -35,6 +35,17 @@
 
     QRLoginDTO user = new QRLoginDTO();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+
+        // 로그인 모드 정보 제거
+        await _localStorageService.RemoveItemAsync("loginMode");
+
+        // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+        (_authStateProvider as CustomAuthProvider).NotifyLogout();
+    }
+
     private async Task OnSignUp()
     {
         try

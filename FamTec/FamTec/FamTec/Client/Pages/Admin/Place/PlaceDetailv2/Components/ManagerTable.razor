@@ -48,23 +48,23 @@
         {
             @foreach (var row in ListData)
             {
-                <tr class="tbody-tr">
-                    <td class="td">
+                <tr class="tbody-tr" @onclick=@(()=>OnCheck(row))>
+                    <td class="td @(EditMode ? "pointer" : "")">
                         <span>
                             @row.UserId
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td @(EditMode ? "pointer" : "")">
                         <span>
                             @row.Name
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td @(EditMode ? "pointer" : "")">
                         <span>
                             @row.Department
                         </span>
                     </td>
-                    <td class="td">
+                    <td class="td @(EditMode ? "pointer" : "")">
                         <span>
                             @row.Type
                         </span>
@@ -73,8 +73,8 @@
                     {
                         <td class="td">
                             <input 
+                                class="pointer"
                                 type="checkbox" 
-                                @onchange="(e) => OnCheck(e, row)" 
                                 checked=@(CheckedItem.Any(c => c.Id == row.Id))
                                 />
                         </td>
@@ -88,16 +88,16 @@
 </table>
 @code {
     [Parameter] public List<ManagerDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool,ManagerDTO)> OnChecked { get; set; }
+    [Parameter] public EventCallback<ManagerDTO> OnChecked { get; set; }
     [Parameter] public List<ManagerDTO> CheckedItem { get; set; }
     [Parameter] public bool EditMode { get; set; }
 
 
 
     //체크 함수
-    private async void OnCheck(ChangeEventArgs e, ManagerDTO manager)
+    private async void OnCheck(ManagerDTO manager)
     {
-        await OnChecked.InvokeAsync(((bool)e.Value, manager));
+        await OnChecked.InvokeAsync(manager);
     }
 
 

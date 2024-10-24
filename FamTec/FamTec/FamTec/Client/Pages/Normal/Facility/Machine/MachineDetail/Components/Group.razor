@@ -12,7 +12,7 @@
         <span class="title">
             @GroupData.Name <EditButton OnClick="OnUpdateGroup" />
         </span>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="options">
                 <Button Name="삭제" Width=true Type="1" OnClick="OnIsDel" />
@@ -23,9 +23,9 @@
     <div class="content">
         @foreach(var item in GroupData.keyListDTO)
         {
-            <SubItem item="item" OnLoad="LoadGroup" />
+            <SubItem item="item" OnLoad="LoadGroup" FacType="@FacType" />
         }
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="add-item" @onclick="OnModal">
                 +
@@ -63,6 +63,7 @@
     [Parameter] public GroupDTO? GroupData { get; set; }
     // [Parameter] public bool EditMode { get; set; } = false;
     [Parameter] public EventCallback LoadGroup { get; set; }
+    [Parameter] public string FacType { get; set; }
     bool IsModal = false;
     // bool EditMode = false;
     bool isDel = false;
@@ -113,5 +114,19 @@
         isGroupEdit = !isGroupEdit;
     }
 
-
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
 }

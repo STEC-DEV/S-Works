@@ -16,6 +16,7 @@
         OnLoadMaintenance="OnLoadMaintenance" 
         OnEditMode="OnEdit" 
         EditMode=_useMaterialEditMode 
+        FacType="@FacType"
         UpdateUseMaterial="@updateMaterial"
         />
 
@@ -260,19 +261,5 @@
         }
     }
 
-    private bool HasEditPermission()
-    {
-        return FacType switch
-        {
-            "machine" => MACHINE,
-            "electronic" => ELEC,
-            "lift" => LIFT,
-            "fire" => FIRE,
-            "construct" => CONSTRUCT,
-            "network" => NETWORK,
-            "beauty" => BEAUTY,
-            "security" => SECURITY,
-            _ => false
-        };
-    }
+   
 }

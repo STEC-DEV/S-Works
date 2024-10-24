@@ -111,3 +111,14 @@
     display: block;
 }
 
+.display{
+    width:100%;
+    display:flex;
+    justify-content : space-between;
+}
+
+
+.icon {
+    width: 0.6rem;
+}
+

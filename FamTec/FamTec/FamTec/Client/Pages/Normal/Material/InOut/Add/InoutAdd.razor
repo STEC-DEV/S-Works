@@ -222,6 +222,7 @@
 
     private void OnSumData()
     {
+        Console.WriteLine(AddInItem.AddStore.RoomName);
         AddInItem.AddStore.InOutDate = DateTime.Now;
         AddInItem.InOut = _tab;
         AddInItem.MaterialID = SelectMaterial.Id;
@@ -237,7 +238,8 @@
                 item.MaterialID == AddInItem.MaterialID &&
                 item.AddStore.InOutDate == AddInItem.AddStore.InOutDate &&
                 item.AddStore.RoomID == AddInItem.AddStore.RoomID &&
-                item.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice
+                item.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice&&
+                item.AddStore.RoomName == AddInItem.AddStore.RoomName
             );
         if (existingItem != null)
         {

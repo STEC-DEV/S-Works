@@ -21,14 +21,14 @@
                 </span>
             }
         </div>
-        @if (USEREDIT)
+        @if (BASIC)
         {
             <EditButton OnClick="@OnItemEdit" />
             <XButton OnClick="OnIsDel" />
         }
 
     </div>
-    @if (USEREDIT&& ItemEdit)
+    @if (BASIC && ItemEdit)
     {
         <ModalBackground>
             <ChildComponent>

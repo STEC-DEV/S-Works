@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="placetable-table">
-        <SignUpPlaceTable ListData="FilterPlaceList" OnCheck="OnSelected"/>
+        <SignUpPlaceTable ListData="FilterPlaceList" OnCheck="OnSelected" CheckItems="DelPlace" />
     </div>
     <div class="placetable-count">
         <span>
@@ -72,15 +72,26 @@
     /*
     * 선택
     */
-    public void OnSelected((bool isCheck, PlaceTableDTO place) selection)
+    // public void OnSelected((bool isCheck, PlaceTableDTO place) selection)
+    // {
+    //     if (selection.isCheck)
+    //     {
+    //         DelPlace.Add(selection.place);
+    //     }
+    //     else
+    //     {
+    //         DelPlace.Remove(selection.place);
+    //     }
+    // }
+    public void OnSelected(PlaceTableDTO place)
     {
-        if (selection.isCheck)
+        if(DelPlace.Any(d => d.Id == place.Id))
         {
-            DelPlace.Add(selection.place);
+            DelPlace.RemoveAll(p => p.Id == place.Id);
         }
         else
         {
-            DelPlace.Remove(selection.place);
+            DelPlace.Add(place);
         }
     }
 

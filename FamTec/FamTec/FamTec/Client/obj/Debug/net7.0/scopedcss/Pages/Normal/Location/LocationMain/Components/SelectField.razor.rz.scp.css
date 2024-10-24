@@ -48,6 +48,7 @@
 .display[b-bjmstyaofj] {
     position : relative;
     display:block;
+    
     width:100%;
     padding: var(--default-pd);
     border :var(--comp-bd);
@@ -78,6 +79,7 @@
 }
 .active[b-bjmstyaofj] {
     display: block
+       
 }
 
 .option-item[b-bjmstyaofj] {
@@ -88,8 +90,16 @@
 }
 
 .option-item:hover[b-bjmstyaofj]{
-   
+   cursor:pointer;
     background-color : var(--main-color);
     color :var(--default-color);
 }
 
+.display-row[b-bjmstyaofj] {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon[b-bjmstyaofj]{
+    width:0.6rem;
+}
