@@ -15,6 +15,12 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto);
 
+        /// <summary>
+        /// Refresh Token
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public Task<string?> RefreshTokenService(int placeid, int useridx, bool isAdmin);
 
         /// <summary>
         /// 일반페이지 로그인 서비스

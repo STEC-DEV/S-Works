@@ -41,5 +41,10 @@
         /// 공간ID
         /// </summary>
         public int? RoomId { get; set; }
+
+        /// <summary>
+        /// 공간명칭
+        /// </summary>
+        public string? RoomName { get; set; }
     }
 }

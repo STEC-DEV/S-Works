@@ -3172,6 +3172,22 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "RefreshTokten",
+    "RelativePath": "api/Login/RefreshToken",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "FamTec.Shared.Server.DTO.Login.RefreshTokenDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
     "Method": "SettingLogin",
     "RelativePath": "api/Login/SettingLogin",
     "HttpMethod": "POST",

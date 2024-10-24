@@ -552,6 +552,7 @@ namespace FamTec.Server.Repository.Material
                         Standard = e.m.Standard,
                         Mfr = e.m.ManufacturingComp,
                         RoomId = e.m.RoomTbId,
+                        RoomName = e.r.Name,
                         BuildingId = e.b.Id // BuildingTb의 Name
                     }).ToList();
 

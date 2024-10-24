@@ -8,6 +8,7 @@ using FamTec.Shared.Server.DTO.Admin;
 using FamTec.Shared.Server.DTO.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace FamTec.Server.Controllers.Login
 {
@@ -71,6 +72,35 @@ namespace FamTec.Server.Controllers.Login
                     return Ok(model);
                 else
                     return Ok(model);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshTokten([FromBody]RefreshTokenDTO token)
+        {
+            try
+            {
+                if(token.placeid is 0)
+                    return NoContent();
+
+                if (token.useridx is 0)
+                    return NoContent();
+
+                string? refreshtoken = await UserService.RefreshTokenService(token.placeid!.Value, token.useridx!.Value, token.isAdmin).ConfigureAwait(false);
+                if (!String.IsNullOrWhiteSpace(refreshtoken))
+                    return Ok(refreshtoken);
+                else
+                    return BadRequest();
             }
             catch(Exception ex)
             {
