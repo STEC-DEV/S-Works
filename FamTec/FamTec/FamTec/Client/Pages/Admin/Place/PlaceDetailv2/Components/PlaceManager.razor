@@ -29,8 +29,8 @@
         <ManagerTable 
             ListData="@SelectList" 
             OnChecked="OnChecked"
-                      EditMode=EditMode
-                      CheckedItem="@_selectDelList"
+            EditMode=EditMode
+            CheckedItem="@_selectDelList"
             />
     </div>
     @if (_isModal && EditMode)
@@ -83,44 +83,18 @@
 
 
     //목록에 담긴애들 중 체크
-    private void OnChecked((bool isCheck, ManagerDTO manager) data)
+    private void OnChecked(ManagerDTO manager)
     {
-
-        //매니저 추가
-        if (data.isCheck)
+        if(_selectDelList.Any(m => m.Id == manager.Id))
         {
-            _selectDelList.Add(data.manager);
+            _selectDelList.RemoveAll(m => m.Id == manager.Id);
         }
-        //매니저 삭제
         else
         {
-            _selectDelList.Remove(data.manager);
+            _selectDelList.Add(manager);
         }
     }
 
-    // private async void OnDelManager()
-    // {
-    //     if(_selectDelList.Count == 0)
-    //     {
-    //         await JS.InvokeVoidAsync("alert", "삭제할 매니저를 선택해주세요.");
-    //         return;
-    //     }
-
-    //     deleteManager.PlaceId = Id;
-    //     deleteManager.PlaceManager = _selectDelList;
-
-    //     ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("AdminPlace/sign/DeletePlaceManager", deleteManager);
-    //     if(resDel.code != 200)
-    //     {
-    //         await JS.InvokeVoidAsync("alert", resDel.message);
-    //         return;
-    //     }
-
-    //     await JS.InvokeVoidAsync("alert", "매니저 수정 완료");
-    //     _selectDelList.Clear();
-    //     await OnLoadManager.InvokeAsync();
-    //     StateHasChanged();
-    // }
     private async void OnDelManager()
     {
         if (_selectDelList.Count == 0)

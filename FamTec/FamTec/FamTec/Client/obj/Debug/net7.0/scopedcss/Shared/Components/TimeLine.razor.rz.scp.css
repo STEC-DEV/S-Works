@@ -2,7 +2,7 @@
 .timeline[b-dyg46wmdyc] {
     position: absolute;
     top: 200%;
-    right: -280px;
+    right: -200px;
     display: flex;
     flex-direction: column;
     /*gap:var(--default-pd);*/

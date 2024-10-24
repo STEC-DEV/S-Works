@@ -33,10 +33,11 @@
     {
         try
         {
-            if(String.IsNullOrEmpty(Place.PlaceCd) || String.IsNullOrEmpty(Place.Name))
+            if (string.IsNullOrEmpty(Place.Name) || string.IsNullOrEmpty(Place.Tel))
             {
-                await JS.InvokeVoidAsync("alert", "사업장 코드 또는 사업장명 공백입니다.");
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
                 return;
+
             }
             ResponseUnit<int?> resPlace = await apiManager.PostAsync<int?>("AdminPlace/sign/AddWorks", Place);
             if (resPlace.code != 200)

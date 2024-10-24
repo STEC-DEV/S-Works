@@ -6,32 +6,40 @@
     <thead class="thead">
         
         <tr class="th-tr">
-            <th class="th" rowspan="2">
+            <th class="th" >
                 <span>
                     품목 코드
                 </span>
             </th>
-            <th class="th" rowspan="2">
+            <th class="th" >
                 <span>
                     품목명
                 </span>
             </th>
                 @if (@ListData.Count != 0)
                 {
-                    <th class="th-subp" colspan="@ListData[0].RoomHistory.Count">
-                        <span>
-                            창고
+                @foreach (var th in ListData[0].RoomHistory)
+                {
+                    <th class="th">
+                        <span class="sub-span">
+                            @th.Name
                         </span>
                     </th>
+                }
                     }else{
-                        <th class="th" rowspan="1">
+                        <th class="th" >
                             <span>
                                 창고
                             </span>
                         </th>
                 }
-            </tr>
-        @if (@ListData.Count != 0)
+            <th class="th" >
+                <span>
+                    총 재고수량
+                </span>
+            </th>
+        </tr>
+@*         @if (@ListData.Count != 0)
         {
         <tr >
                 @foreach (var th in ListData[0].RoomHistory)
@@ -44,7 +52,7 @@
                 }
         </tr>
         }
-     
+      *@
         
     </thead>
     <tbody class="tbody">
@@ -68,6 +76,8 @@
         {
             @foreach (var row in ListData)
             {
+                int sum = 0;
+                
                 <tr class="tr">
                     <td class="td">
                         @row.Code
@@ -77,10 +87,14 @@
                     </td>
                     @foreach (var room in row.RoomHistory)
                     {
+                        sum += room.Num.Value;
                         <td class="td">
                             @room.Num
                         </td>
                     }
+                    <td class="td">
+                        @sum.ToString("N0")
+                    </td>
                 </tr>
             }
         }

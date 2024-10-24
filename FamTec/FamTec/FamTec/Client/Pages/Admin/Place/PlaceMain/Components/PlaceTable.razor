@@ -63,26 +63,27 @@
             @foreach (var row in ListData)
             {
 
-                <tr class="tbody-tr">
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                <tr class="tbody-tr ">
+                    <td class="td pointer" @onclick="() => OnDeatail(row.Id)">
                         @row.Name
                     </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                    <td class="td pointer" @onclick="() => OnDeatail(row.Id)">
                         @row.ContractNum
                     </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                    <td class="td pointer" @onclick="() => OnDeatail(row.Id)">
                         @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                    <td class="td pointer" @onclick="() => OnDeatail(row.Id)">
                         @row.CancelDt?.ToString("yyyy-MM-dd")
                     </td>
-                    <td class="td" @onclick="() => OnDeatail(row.Id)">
+                    <td class="td pointer" @onclick="() => OnDeatail(row.Id)">
                         <StatusCard Status="@(row.Status)" />
                     </td>
                     @if (ADMINEDIT)
                     {
                         <td class="td">
                             <input 
+                                class="pointer"
                                 type="checkbox" 
                                 checked="@CheckItems.Contains(row.Id)" 
                                 @onchange="e=> OnSelect(e, row.Id)" />

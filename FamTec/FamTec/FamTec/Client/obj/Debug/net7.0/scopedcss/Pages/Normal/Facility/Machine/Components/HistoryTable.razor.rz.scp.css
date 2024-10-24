@@ -56,7 +56,11 @@
 
 .table .tr:hover td[b-p5si2pwiyx]{
     background-color:var(--main-light);
-    
+    cursor : pointer
+}
+
+.td input[b-p5si2pwiyx]{
+    cursor:pointer;
 }
 
 .table .td[b-p5si2pwiyx]{

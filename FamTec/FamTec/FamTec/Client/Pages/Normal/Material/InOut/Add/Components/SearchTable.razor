@@ -44,7 +44,7 @@
         {
             @foreach (var row in ListData)
             {
-                <tr class="tr">
+                <tr class="tr" @onclick=@(()=>OnChecked(null,row))>
                     <td class="td">
                         @row.Code
                     </td>
@@ -58,7 +58,8 @@
                         @row.Standard
                     </td>
                     <td class="td">
-                        <input type="checkbox"
+                        <input type="radio"
+                                name="material"
                                checked=@(row.Id==CheckedItem)
                                @onchange="(e)=>OnChecked(e, row)" />
                     </td>
@@ -74,20 +75,20 @@
     [Parameter] public EventCallback<MaterialSearchListDTO> OnCheck { get; set; }
     [Parameter] public int CheckedItem { get; set; }
 
-   
 
-    private void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+
+    private async void OnChecked(ChangeEventArgs? e, MaterialSearchListDTO data)
     {
 
-        if ((bool)e.Value)
+        // e가 null인 경우 row 클릭에서 호출된 경우임
+        if (e == null || e.Value?.ToString() == "on")
         {
-            OnCheck.InvokeAsync(data);
-            
+            await OnCheck.InvokeAsync(data);
         }
         else
         {
-            OnCheck.InvokeAsync(null);
+            await OnCheck.InvokeAsync(null);
         }
-
+        
     }
 }

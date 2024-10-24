@@ -22,6 +22,7 @@
             OnChange="OnBuildingChange" 
             Label="건물"
             Row="true"
+            Required="true"
             EditMode="true" />
         @if (LocationMaterial != null && LocationMaterial.Any() && SelectedBuildingId != 0)
         {
@@ -31,6 +32,7 @@
                 @bind-Value="SelectedRoomId" 
                 Label="위치"
                 Row="true"
+                Required="true"
                 OnChange="OnLocationChange" 
                 EditMode="true" />
         }
@@ -43,6 +45,7 @@
             Label="수량" 
             Placeholder="수량" 
             Row="true" 
+            Required="true"
             Max="_usageMaterialNum"
             Min="1"
             ValueType="number"

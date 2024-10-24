@@ -55,11 +55,8 @@
     {
         try
         {
-            if (Maintenance.WorkDT== null ||
-                MaintenanceStore.Num == 0 ||
-                SelectMaterial.Id == 0 ||
-                MaintenanceStore.RoomID == 0||
-                Maintenance.Type != 0
+            if (Maintenance.Type == 0 && SelectMaterial.Id != 0 
+                && (MaintenanceStore.Num == 0 || MaintenanceStore.RoomID == 0)
             )
             {
                 await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
@@ -106,18 +103,19 @@
         try
         {
             await OnSum();
-            if(
+            if (
                 Maintenance.FacilityId == 0 ||
-                Maintenance.WorkDT == null ||
-                Maintenance.Type == null ||
-                Maintenance.Worker == null ||
-                Maintenance.Name == null
+                Maintenance.WorkDT == null || 
+                string.IsNullOrEmpty(Maintenance.Worker) || 
+                string.IsNullOrEmpty(Maintenance.Name)||
+                Maintenance.Type == null
             )
             {
-                await JS.InvokeVoidAsync("alert", "입력 내용을 확인해주세요.");
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
                 return;
+
             }
-            Console.WriteLine(Maintenance.Inventory.Count);
+
             //유지보수 정보 전송
             ResponseUnit<FailResult> resPost = await apiManager.PostAsync<FailResult>("Maintenance/sign/AddMaintenance", Maintenance);
             if(resPost.code != 200)

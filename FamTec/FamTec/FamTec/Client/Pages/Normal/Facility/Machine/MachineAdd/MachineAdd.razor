@@ -25,7 +25,7 @@
     </div>
     <div class="btns">
         <Button Width=true Type=0 Name="등록" OnClick="@OnAdd" />
-        <Button Width=true Type=1 Name="나가기"/>
+        @* <Button Width=true Type=1 Name="나가기"/> *@
     </div>
 </div>
  @if (IsModal)
@@ -74,9 +74,9 @@
     {
         try
         {
-            if (Facility.RoomId == 0 || Facility.RoomId == null)
+            if (string.IsNullOrEmpty(Facility.Name) || Facility.RoomId == 0 || Facility.RoomId == null)
             {
-                await JS.InvokeVoidAsync("alert", "위치를 선택해주세요");
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
                 return;
             }
             Facility.Category = _facType;

@@ -22,6 +22,7 @@
             OnChange="OnBuildingChange" 
             Label="건물"
             Row="true"
+            Required="true"
             EditMode="true" />
         @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
         {
@@ -31,6 +32,7 @@
                 @bind-Value="SelectedRoomId" 
                 Label="위치"
                 Row="true"
+                Required="true"
                 ReturnName="OnReturnRoomName"
                 OnChange="OnLocationChange" 
                 EditMode="true" />
@@ -42,6 +44,7 @@
             Label="단가" 
             Placeholder="단가" 
             Row="true" 
+            Required="true"
             ValueType="number"
             @bind-Value="@AddItem.AddStore.UnitPrice"
             @bind-Value:after="CalculateTotalPrice"
@@ -52,6 +55,7 @@
             Label="수량" 
             Placeholder="수량" 
             Row="true" 
+            Required="true"
             ValueType="number"
             @bind-Value="@AddItem.AddStore.Num"
             @bind-Value:after="CalculateTotalPrice"
@@ -77,6 +81,7 @@
 
 @code {
     [Parameter] public InOutInventoryDTO AddItem { get; set; }
+    [Parameter] public MaterialSearchListDTO  SelectMaterial{ get; set; }
     [Parameter] public int MaterialId{ get; set; }
     [Parameter] public EventCallback<InOutInventoryDTO> ValueChaged { get; set; }
 
@@ -109,12 +114,13 @@
         CalculateTotalPrice();
         await OnLoadBuilding();
         await OnLoadBuilginRoom();
+        await initialRoom();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        SelectedBuildingId = 0;
-        SelectedRoomId = 0;
+        // SelectedBuildingId = 0;
+        // SelectedRoomId = 0;
         AddItem.AddStore.InOutDate = null;
 
         StateHasChanged(); // UI 업데이트 강제
@@ -239,6 +245,20 @@
         StateHasChanged();
     }
 
- 
+    private async Task initialRoom()
+    {
+        AddItem.AddStore.RoomName = SelectMaterial.RoomName;
+        SelectedBuildingId = SelectMaterial.BuildingId.Value;
+        SelectedRoomId = SelectMaterial.RoomId.Value;
+        PlaceRoom = new List<PlaceRoom>();
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectMaterial.BuildingId).FirstOrDefault();
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+    }
 
 }

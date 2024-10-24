@@ -26,6 +26,7 @@
     width: 100%;
 }
 
+
 .selectbox {
     /*position : relative;*/
     width : 100%;
@@ -108,5 +109,16 @@
 
 .selectbox.active + .options {
     display: block;
+}
+
+.display{
+    width:100%;
+    display:flex;
+    justify-content : space-between;
+}
+
+
+.icon {
+    width: 0.6rem;
 }
 

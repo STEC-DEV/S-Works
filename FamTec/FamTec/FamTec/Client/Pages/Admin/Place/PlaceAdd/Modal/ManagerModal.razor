@@ -104,7 +104,7 @@
         .ToList();  
 
         await InvokeAsync(StateHasChanged);
-    
+
 
         // FilterData = String.IsNullOrEmpty(_searchText)
         //                            ? ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList()
@@ -116,19 +116,17 @@
 
 
     //체크 매니저
-    private void OnChecked((bool isCheck, ManagerDTO manager)data)
+    private void OnChecked(ManagerDTO manager)
     {
-        //매니저 추가
-        if (data.isCheck)
+        if (checkManager.Contains(manager.Id))
         {
-            checkManager.Add(data.manager.Id);
-            CheckedManagerList.Add(data.manager);
+            checkManager.Remove(manager.Id);
+            CheckedManagerList.RemoveAll(m => m.Id == manager.Id);
         }
-        //매니저 삭제
         else
         {
-            checkManager.Remove(data.manager.Id);
-            CheckedManagerList.Remove(data.manager);
+            checkManager.Add(manager.Id);
+            CheckedManagerList.Add(manager);
         }
     }
 

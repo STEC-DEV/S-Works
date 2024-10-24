@@ -1,36 +1,47 @@
-﻿@using FamTec.Shared.Client.Class
+﻿@using FamTec.Client.Pages.CommonComponents.IconButton
+@using FamTec.Shared.Client.Class
 
 
-<div class="multi-select @(Row ? "row" : "")">
+<div class="multi-select @(Row ? "row" : "")" @ref="multiSelectElement" @onclick:stopPropagation="true">
     @if (!String.IsNullOrEmpty(Label))
     {
         <label class="label">
             @Label
         </label>
     }
-    <div class="select-container">
+    <div class="select-container" >
+        
         <div class="selectbox @(IsActive ? "active" : "")" @onclick="ToggleDropdown">
-            <label class="display">
+            <label class="display pointer">
+
                 <span class="display-title @(SelectedNames =="선택" ?"placeholder" : "")">
                     @SelectedNames
                 </span>
+                <div class="icon">
+                    <DownTriangleButton/>
+                </div>
             </label>
         </div>
 
         @if (IsActive)
         {
             <ul class="options">
-                <li class="option-item">
-                    <input type="checkbox"
-                           @onchange="(e)=>OnAllCheckItem(e)"
+                <li class="option-item pointer" @onclick="() => OnAllCheckItem(!OnAllSync())">
+                    <input 
+                        class="pointer"
+                        type="checkbox"
+                           @onchange="@((e) => OnAllCheckItem(e.Value.ToString() == " true"))"
                            checked="@OnAllSync()"
                            />
                     <span>전체</span>
                 </li>
+                @* @onchange="(e)=>OnAllCheckItem(e)" *@
                 @foreach (FilterItem item in SelectItems)
                 {
-                    <li class="option-item">
-                        <input type="checkbox" 
+                    <li class="option-item pointer" @onclick="() => OnCheckChanged(item, null)">
+                        <input 
+                            class="pointer"
+                            type="checkbox" 
                             @onchange="(e) => OnCheckChanged(item, e)" 
                             checked=@(item.IsChecked) />
                         <span>@item.Name</span>
@@ -48,13 +59,63 @@
     [Parameter] public EventCallback<List<FilterItem>> OnSelectionChanged { get; set; }
     [Parameter] public List<FilterItem> CheckItems { get; set; }
 
+    private ElementReference multiSelectElement;
+    private DotNetObjectReference<MultiSelectDrop> objRef;
+
     public bool IsActive { get; set; } = false;
     private string defaultText = "선택";
     // 선택된 항목 이름을 출력하는 속성
     public string SelectedNames =>SelectItems.Any(x=>x.IsChecked) ? string.Join(", ", SelectItems.Where(x => x.IsChecked).Select(x => x.Name)) : "선택";
+    private string componentId;
 
     protected override async Task OnParametersSetAsync()
     {
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                objRef = DotNetObjectReference.Create(this);
+                componentId = await JS.InvokeAsync<string>("initializeClickOutside", objRef, multiSelectElement);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in OnAfterRenderAsync: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (objRef != null)
+            {
+                if (!string.IsNullOrEmpty(componentId))
+                {
+                    await JS.InvokeVoidAsync("removeClickOutside", componentId);
+                }
+                objRef.Dispose();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in DisposeAsync: {ex.Message}");
+        }
+    }
+
+    [JSInvokable]
+    public void HandleClickOutside()
+    {
+        if (IsActive)
+        {
+            IsActive = false;
+            StateHasChanged();
+        }
     }
 
     private bool OnAllSync()
@@ -71,16 +132,24 @@
 
     private async Task OnCheckChanged(FilterItem item, ChangeEventArgs e)
     {
-        item.IsChecked = (bool)e.Value;
-        await OnSelectionChanged.InvokeAsync(SelectItems);
-    }
-
-    private async void OnAllCheckItem(ChangeEventArgs e)
-    {
-        foreach (var item in SelectItems)
+        item.IsChecked = !item.IsChecked; // 체크 상태 토글
+        if(e != null)
         {
             item.IsChecked = (bool)e.Value;
         }
+        await OnSelectionChanged.InvokeAsync(SelectItems);
+    }
+
+    private async void OnAllCheckItem(bool isChecked)
+    {
+        
+        foreach (var item in SelectItems)
+        {
+            item.IsChecked = isChecked;
+        }
+        
+        
         StateHasChanged();
     }
+
 }

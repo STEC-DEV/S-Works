@@ -19,7 +19,7 @@
                     <Button Name="등록" Width=true Type=0 OnClick="@OnMoveAdd" />
                     @if (DelList.Count > 0)
                     {
-                        <Button Name="삭제" Width=true Type=1 OnClick="OnDeleteBuilding" />
+                        <Button Name="삭제" Width=true Type=1 OnClick="OnIsDel" />
                     }
 
                 </div>
@@ -41,12 +41,23 @@
         </div>
     </div>
 </div>
-
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDeleteBuilding" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     List<BuildingListDTO> BuildingList;
     List<int> DelList = new List<int>();
     private BuildingTable buildingTable;
+
+    bool isDel = false;
+
+
     // private bool USEREDIT = false;
     protected override async Task OnInitializedAsync()
     {
@@ -84,7 +95,7 @@
         {
             Console.WriteLine(ex);
         }
-        
+
     }
 
 
@@ -130,5 +141,10 @@
         {
             DelList.Remove(data.buildingId);
         }
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 }

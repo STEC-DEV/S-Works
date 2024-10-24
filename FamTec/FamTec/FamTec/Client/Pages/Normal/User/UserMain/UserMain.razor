@@ -23,7 +23,7 @@
                     <Button Name="등록" Width=true OnClick=AddUser Type=0 />
                     @if(CheckItems.Count > 0)
                     {
-                        <Button Name="삭제" Width=true Type=1 OnClick="OnDelUser" />
+                        <Button Name="삭제" Width=true Type=1 OnClick="OnIsDel" />
                     }
 
                 }
@@ -44,6 +44,14 @@
         </div>
     </div>
 </div>
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelUser" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     private string SearchText = string.Empty;
@@ -53,6 +61,8 @@
     List<ListUser> usersData;
     List<ListUser> FilterData;
     HashSet<int> CheckItems = new HashSet<int>();
+
+    bool isDel = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -143,5 +153,10 @@
         }
     }
 
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
+    }
 
 }

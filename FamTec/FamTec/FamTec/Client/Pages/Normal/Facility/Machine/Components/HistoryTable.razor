@@ -77,7 +77,7 @@
                         @row.Worker
                     </td>
                     <td class="td text-right" @onclick="()=>OnDetail(row.ID)">
-                        @row.TotalPrice
+                        @row.TotalPrice?.ToString("N0")
                     </td>
 
                     @if (EditMode)

@@ -9,7 +9,15 @@
         </span>
     </div>
     <div class="placetoggle-toggle">
-        <UserPermTable2 UserPerm=@UserPerm OnVocActive=@OnVocActive EditMode=EditMode />
+        @if(UserPerm == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <UserPermTable2 UserPerm=@UserPerm OnVocActive=@OnVocActive EditMode=EditMode />
+        }
+        
     </div>
 </div>
 

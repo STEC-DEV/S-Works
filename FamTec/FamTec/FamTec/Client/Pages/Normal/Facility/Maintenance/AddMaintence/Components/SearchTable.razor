@@ -44,21 +44,24 @@
         {
             @foreach (var row in ListData)
             {
-                <tr class="tr">
-                    <td class="td">
+                <tr class="tr" @onclick=@(()=>OnChecked(null,row))>
+                    <td class="td pointer">
                         @row.Code
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.Name
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.Mfr
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.Standard
                     </td>
                     <td class="td">
-                        <input type="checkbox"
+                        <input 
+                            class="pointer"
+                            type="radio"
+                            name="material"
                                checked=@(row.Id==CheckedItem)
                                @onchange="(e)=>OnChecked(e, row)" />
                     </td>
@@ -76,18 +79,17 @@
 
    
 
-    private void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+    private async void OnChecked(ChangeEventArgs? e, MaterialSearchListDTO data)
     {
-
-        if ((bool)e.Value)
+        if (e == null || e.Value?.ToString() == "on")
         {
-            OnCheck.InvokeAsync(data);
-            
+            await OnCheck.InvokeAsync(data);
         }
         else
         {
-            OnCheck.InvokeAsync(null);
+            await OnCheck.InvokeAsync(null);
         }
+
 
     }
 }

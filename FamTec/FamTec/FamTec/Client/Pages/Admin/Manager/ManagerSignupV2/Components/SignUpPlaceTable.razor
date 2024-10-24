@@ -51,21 +51,22 @@
         {
              @foreach(var row in ListData)
             {
-                <tr class="tbody-tr">
-                    <td class="td">
+                <tr class="tbody-tr" @onclick=@(()=>onCheckItem(row))>
+                    <td class="td pointer">
                         @row.Name
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.Note
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.ContractNum
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         @row.ContractDt
                     </td>
-                    <td class="td">
-                        <input type="checkbox" checked="@IsChecked(row)" @onchange=" e => onCheckItem(e, row)" />
+                    <td class="td pointer">
+                        <input type="checkbox" 
+                            checked="@CheckItems.Any(p => p.Id == row.Id)"/>
                     </td>
                 </tr>
             }
@@ -76,7 +77,8 @@
 
 @code {
     [Parameter] public List<PlaceTableDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool,PlaceTableDTO)> OnCheck { get; set; }
+    [Parameter] public EventCallback<PlaceTableDTO> OnCheck { get; set; }
+    [Parameter] public List<PlaceTableDTO> CheckItems { get; set; }
 
     List<PlaceTableDTO> CheckedData = new List<PlaceTableDTO>();
 
@@ -88,18 +90,10 @@
     }
 
 
-    private async void onCheckItem(ChangeEventArgs e,PlaceTableDTO place)
+    private async void onCheckItem(PlaceTableDTO place)
     {
-        //현재 컴포넌트내에서 검색과 체크 동기화
-        if ((bool)e.Value == true)
-        {
-            CheckedData.Add(place);
-        }
-        else
-        {
-            CheckedData.Remove(place);
-        }
 
-        await OnCheck.InvokeAsync(((bool)e.Value, place));
+
+        await OnCheck.InvokeAsync(place);
     }
 }

@@ -2,14 +2,14 @@
 
 
 <div class="dateslider-container">
-    <div class="dateslider-btn" @onclick = "@OnBeforeDate">
+    <div class="dateslider-btn pointer" @onclick="@OnBeforeDate">
         &lt;
     </div>
     <div class="dateslider-display">
         <span class="year">@DisplayYear.</span>
         <span class="month">@DisplayMonth.ToString("00")</span>
     </div>
-    <div class="dateslider-btn" @onclick="@OnAfterDate">
+    <div class="dateslider-btn pointer" @onclick="@OnAfterDate">
         <span class="arrowR">&gt;</span>
     </div>
 </div>

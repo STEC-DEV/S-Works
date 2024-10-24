@@ -48,21 +48,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(ListData.Count);
         await OnSearch(_searchText);
     }
 
-    private void OnCheck((MaterialSearchListDTO material,bool isChecked)data)
+    private void OnCheck(MaterialSearchListDTO material)
     {
-        if (data.isChecked)
+
+        if (checkItem.Contains(material.Id))
         {
-            checkItem.Add(data.material.Id);
-            _selectData.Add(data.material);
+            // 존재하면 삭제
+            checkItem.Remove(material.Id);
+            _selectData.RemoveAll(m => m.Id == material.Id); // 같은 Id를 가진 항목을 삭제
         }
         else
         {
-            checkItem.Remove(data.material.Id);
-            _selectData.Remove(data.material);
+            // 존재하지 않으면 추가
+            checkItem.Add(material.Id);
+            _selectData.Add(material);
         }
 
         

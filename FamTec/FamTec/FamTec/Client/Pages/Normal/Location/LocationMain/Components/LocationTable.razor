@@ -193,7 +193,7 @@
             AddObject.BuildingId <= 0 ||
             AddObject.FloorId <= 0 )
         {
-            JS.InvokeVoidAsync("alert","값이 비어있습니다.");
+            JS.InvokeVoidAsync("alert","모든 값을 입력해주세요.");
             return;
         }
         await AddMode.InvokeAsync();

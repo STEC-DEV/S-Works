@@ -1,12 +1,17 @@
 ﻿using Azure.Core;
+using Blazored.LocalStorage;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using FamTec.Client.Shared.Provider;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
+using Irony.Parsing;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Net;
 
 //using Newtonsoft.Json;
@@ -18,7 +23,6 @@ using System.Text.Json;
 using System.Web;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-
 namespace FamTec.Client.Middleware
 {
     public class ApiManager
@@ -27,15 +31,23 @@ namespace FamTec.Client.Middleware
         //private readonly CustomAuthenticationStateProvider _authStateProvider;
         private readonly AuthenticationStateProvider _authStateProvider;
 
-        public ApiManager(AuthenticationStateProvider authStateProvider)
+        private readonly ILocalStorageService _localStorageService;
+
+
+        public ApiManager(AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService)
         {
             _httpClient = new HttpClient();
+<<<<<<< HEAD
             //_httpClient.BaseAddress = new Uri("http://123.2.159.98:5245/api/");
             _httpClient.BaseAddress = new Uri("http://sws.s-tec.co.kr/api/");
+=======
+            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
+>>>>>>> origin/Front
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
+            _localStorageService = localStorageService;
         }
 
         private async Task AddAuthorizationHeader()
@@ -54,6 +66,47 @@ namespace FamTec.Client.Middleware
             }
         }
 
+
+        private async Task<bool> RefreshTokenAsync()
+        {
+            int placeid = await (_authStateProvider as CustomAuthProvider).GetPlaceIdx();
+            int useridx = await (_authStateProvider as CustomAuthProvider).GetUserId();
+            bool isAdminLogin = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
+            if (placeid == null || useridx == null)
+            {
+                return false;
+            }
+            var requestBody = new
+            {
+                placeid = placeid,
+                useridx = useridx,
+                isAdmin = isAdminLogin,
+
+            };
+            var request = new HttpRequestMessage(HttpMethod.Post, "Login/RefreshToken")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
+            };
+
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonSerializer.Deserialize<string>(responseBody);
+                if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse)) // TokenResponse는 필요한 필드를 포함하는 클래스
+                {
+                    await _localStorageService.SetItemAsync<string>("sworks-jwt-token", tokenResponse);
+                    await (_authStateProvider as CustomAuthProvider).NotifyAuthState();
+                    // 새로운 토큰 처리 로직 추가
+                    return true;
+                }
+                return false;
+            }
+
+            // 실패 시 false 반환
+            return false;
+        }
+
         /*
          get 요청 메서드
          */
@@ -64,6 +117,28 @@ namespace FamTec.Client.Middleware
             var request = new HttpRequestMessage(method, endpoint);
             
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            if(response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                bool tokenRefreshed = await RefreshTokenAsync();
+                if (tokenRefreshed)
+                {
+                    // 토큰 갱신 후, Authorization 헤더를 갱신하고 요청 재시도
+                    await AddAuthorizationHeader();
+                    response = await _httpClient.SendAsync(request);
+                }
+                else
+                {
+                    await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+
+                    // 로그인 모드 정보 제거
+                    await _localStorageService.RemoveItemAsync("loginMode");
+
+                    // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+                    (_authStateProvider as CustomAuthProvider).NotifyLogout();
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             //return await response.Content.ReadFromJsonAsync<T>();
@@ -129,6 +204,29 @@ namespace FamTec.Client.Middleware
             }
             Console.WriteLine($"Final Content-Type: {request.Content.Headers.ContentType}"); // 최종 Content-Type 로깅
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            //토큰만료
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                bool tokenRefreshed = await RefreshTokenAsync();
+                if (tokenRefreshed)
+                {
+                    // 토큰 갱신 후, Authorization 헤더를 갱신하고 요청 재시도
+                    await AddAuthorizationHeader();
+                    response = await _httpClient.SendAsync(request);
+                }
+                else
+                {
+                    await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+
+                    // 로그인 모드 정보 제거
+                    await _localStorageService.RemoveItemAsync("loginMode");
+
+                    // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+                    (_authStateProvider as CustomAuthProvider).NotifyLogout();
+                }
+            }
+
             response.EnsureSuccessStatusCode();
             
             return await response.Content.ReadAsStringAsync();
@@ -206,6 +304,28 @@ namespace FamTec.Client.Middleware
             }
 
             HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            //토큰만료
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                bool tokenRefreshed = await RefreshTokenAsync();
+                if (tokenRefreshed)
+                {
+                    // 토큰 갱신 후, Authorization 헤더를 갱신하고 요청 재시도
+                    await AddAuthorizationHeader();
+                    response = await _httpClient.SendAsync(request);
+                }
+                else
+                {
+                    await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+
+                    // 로그인 모드 정보 제거
+                    await _localStorageService.RemoveItemAsync("loginMode");
+
+                    // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
+                    (_authStateProvider as CustomAuthProvider).NotifyLogout();
+                }
+            }
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();

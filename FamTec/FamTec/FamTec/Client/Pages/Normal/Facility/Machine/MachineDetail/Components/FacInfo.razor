@@ -61,6 +61,7 @@
                     <InputCol Label="설비이름"
                               Placeholder="설비이름"
                               Row="true"
+                              Required=true
                               @bind-Value=@UpdateFacility.Name />
                     <InputCol Label="형식"
                               Placeholder="형식"
@@ -73,7 +74,8 @@
                                  OnChange="OnBuildingChange"
                                  Label="건물"
                                  Row="true"
-                                 EditMode="true" />
+                                 EditMode="true"
+                                 Required=true />
                     @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
                     {
                         <SelectField Key="floor"
@@ -82,7 +84,8 @@
                                      Label="위치"
                                      Row="true"
                                      OnChange="OnLocationChange"
-                                     EditMode="true" />
+                                     EditMode="true"
+                                     Required=true />
                     }
 
                     <InputCol Label="규격용량"
@@ -203,7 +206,11 @@
     {
         try
         {
-
+            if (string.IsNullOrEmpty(Facility.Name) || Facility.RoomId == 0 || Facility.RoomId == null)
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>($"{FacType}Facility/sign/Update{FacType}Facility", UpdateFacility,true);
             if(resUpdate.code != 200)
             {

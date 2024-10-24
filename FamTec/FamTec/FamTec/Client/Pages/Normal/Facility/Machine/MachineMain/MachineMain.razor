@@ -20,7 +20,7 @@
                     <Button Name="등록" Width=true Type=0 OnClick="@onAdd" />
                     @if (DelList.Count > 0)
                     {
-                        <Button Name="삭제" Width=true Type=1 OnClick="@OnDelFac" />
+                        <Button Name="삭제" Width=true Type=1 OnClick="@OnIsDel" />
                     }
 
                 </div>
@@ -39,7 +39,14 @@
     </div>
     
 </div>
-
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelFac" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 @code {
     [Parameter] public string FacType { get; set; }
 
@@ -49,6 +56,8 @@
 
 
     List<int> DelList = new List<int>();
+
+    bool isDel = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -183,5 +192,10 @@
                                 ? ListFacility
                                 : ListFacility.Where(m => (m.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ).ToList();
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void OnIsDel()
+    {
+        isDel = !isDel;
     }
 }

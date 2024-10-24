@@ -4,7 +4,7 @@
 <div class="valid-input @(Row==true?"row":"")">
     @if (!String.IsNullOrEmpty(Label))
     {
-        <label class="label">
+        <label class="label @(Required.Value ? "required" : "")">
             @Label
         </label>
     }
@@ -102,13 +102,14 @@
     [Parameter] public string? Placeholder { get; set; }
     [Parameter] public string? PasswordCheck { get; set; } //비밀번호값
     [Parameter] public string? Type { get; set; }
-
+    [Parameter] public bool? Required { get; set; } = false;
     [Parameter] public string? Value {get;set;}
     [Parameter] public bool? Row{ get; set; }
     [Parameter] public string? ValueType { get; set; } //아이디 비번 이메일 구분
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback<bool> ValidChanged { get; set; }
-
+    [Parameter] public EventCallback<(int,int)> ReturnSuccess { get; set; }
+    [Parameter] public bool? isAdmin { get; set; } = false;
     bool idValide = false;
     bool idDuplication = false;
     bool pw1 = false;
@@ -139,24 +140,28 @@
     }
 
 
-    private void ValidateInput(string? value)
+    private async void ValidateInput(string? value)
     {
         switch (Type)
         {
             case "USERID":
                 idValide = Regex.IsMatch(value ?? "", @"^[A-Za-z0-9]{4,30}$");
+                await ReturnSuccess.InvokeAsync((idValide ? 1 : 0, 0));
                 break;
             case "PW":
                 pw1 = !string.IsNullOrWhiteSpace(value) && value.Length >= 8;
                 pw2 = Regex.IsMatch(value ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
+                await ReturnSuccess.InvokeAsync((pw1 && pw2 ? 1 : 0, 1));
                 break;
             case "PWCHECK":
                 pw1 = !string.IsNullOrWhiteSpace(PasswordCheck) && PasswordCheck.Length >= 8;
                 pw2 = Regex.IsMatch(PasswordCheck ?? "", @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]");
                 pw_check = pw1 && pw2 && !String.IsNullOrEmpty(value) && value == PasswordCheck;
+                await ReturnSuccess.InvokeAsync((pw1 && pw2 && pw_check ? 1 : 0,2));
                 break;
             case "EMAIL":
                 emailValid = Regex.IsMatch(value ?? "", @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                await ReturnSuccess.InvokeAsync((emailValid ? 1 : 0,3));
                 break;
         }
     }
@@ -188,7 +193,7 @@
                 return;
             }
 
-            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"AdminUser/sign/UserIdCheck?userid={Value}");
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>(isAdmin.Value ? $"AdminUser/sign/UserIdCheck?userid={Value}" : $"User/sign/UserIdCheck?userid={Value}");
             if(resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);
@@ -200,9 +205,11 @@
                 return;
             }
             block = false;
+            await ReturnSuccess.InvokeAsync((resGet.data ? 1 : 0,4));
             idDuplication = resGet.data;
         }catch(Exception ex)
         {
+            Console.WriteLine(ex);
             await JS.InvokeVoidAsync("alert", "아이디 중복검사 에러");
         }
     }

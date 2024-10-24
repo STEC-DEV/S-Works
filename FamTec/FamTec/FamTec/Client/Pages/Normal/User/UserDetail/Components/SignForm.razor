@@ -27,97 +27,109 @@
             </div>
         }
     </div>
-    <div class="form-area">
-        <div class="img-wrap">
-            @* <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" /> *@
-            <ImageSlider Label="프로필 사진" Images="@ImageUrl"/>
-            @if (USEREDIT && EditMode)
-            {
-                <div class="img-btn">
-                    <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
-                    @if (UserInfo.Image != null)
-                    {
-                        <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
-                    }
-                </div>
-            }
-            
-        </div>
-        <div class="form-input">
-            @if (EditMode)
-            {
-                @* <ValidationInput ValueType="text"
-                                 Placeholder="아이디"
-                                 @bind-Value="@UserInfo.UserId"
-                                 Label="아이디"/> *@
-                <TextField2 Label="아이디"
-                            Value="@UserInfo.UserId"
-                            Color=true />
-                <ValidationInput ValueType="password"
-                                 Type="PW"
-                                 Placeholder="비밀번호"
-                                 @bind-Value="@UserInfo.Password"
-                                 Label="비밀번호" />
-                <ValidationInput ValueType="password"
-                                 Type="PWCHECK"
-                                 Placeholder="비밀번호 확인"
-                                 PasswordCheck="@UserInfo.Password"
-                                 Label="비밀번호 확인" />
-                <ValidationInput ValueType="text"
-                                 Placeholder="이름"
-                                 @bind-Value="@UserInfo.Name"
-                                 Label="이름" />
-                <ValidationInput ValueType="text"
-                                 Placeholder="전화번호"
-                                 @bind-Value="@UserInfo.Phone"
-                                 Label="전화번호" />
-                <ValidationInput ValueType="text"
-                                 Placeholder="이메일"
-                                 Type="EMAIL"
-                                 @bind-Value="@UserInfo.Email"
-                                 Label="이메일" />
-                <ValidationInput ValueType="text"
-                                 Placeholder="직책"
-                                 @bind-Value="@UserInfo.Job"
-                                 Label="직책" />
-                <SelectField Label="상태"
-                             SelectData="@_userState"
-                             @bind-Value="@UserInfo.Status"
-                             EditMode=true />
+    @if(UserInfo == null)
+    {
+        <Loading/>
+    }
+    else
+    {
+        <div class="form-area">
+            <div class="img-wrap">
+                @* <PreviewBox ImageUrls="@(EditMode ? updateImageUrl :ImageUrl)" /> *@
+                <ImageSlider Label="프로필 사진" Images="@ImageUrl" />
+                @if (USEREDIT && EditMode)
+                {
+                    <div class="img-btn">
+                        <InputImages MaxFilesNum="1" OnChange="OnUploadImage" />
+                        @if (UserInfo.Image != null)
+                        {
+                            <Button Name="삭제" Width=true Type="1" OnClick="OnDelImg" />
+                        }
+                    </div>
+                }
 
-                <Toggle Title="알람 수신"
-                        @bind-Value="@UserInfo.AlarmYN"
-                        IsChecked="@UserInfo.AlarmYN"
-                        EditMode=EditMode />
-            }
-            else
-            {
-                <TextField2 Label="아이디"
-                            Value="@UserInfo.UserId"
-                            Color=true />
-                <TextField2 Label="이름"
-                            Value="@UserInfo.Name"
-                            Color=true />
-                <TextField2 Label="전화번호"
-                            Value="@UserInfo.Phone"
-                            Color=true />
-                <TextField2 Label="이메일"
-                            Value="@UserInfo.Email"
-                            Color=true />
-                <TextField2 Label="직책"
-                            Value="@UserInfo.Job"
-                            Color=true />
-                <TextField2 Label="상태"
-                            Value="@(UserInfo.Status == 1? "휴직" :"재직" )"
-                            Color=true />
-                <Toggle Title="알람 수신"
-                        @bind-Value="@UserInfo.AlarmYN"
-                        IsChecked="@UserInfo.AlarmYN"
-                        EditMode=EditMode />
-            }
+            </div>
+            <div class="form-input">
+                @if (EditMode)
+                {
+                    @* <ValidationInput ValueType="text"
+            Placeholder="아이디"
+            @bind-Value="@UserInfo.UserId"
+            Label="아이디"/> *@
+                    <TextField2 Label="아이디"
+                                Value="@UserInfo.UserId"
+                                Color=true />
+                    <ValidationInput ValueType="password"
+                                     Required="true"
+                                     Type="PW"
+                                     Placeholder="비밀번호"
+                                     @bind-Value="@UserInfo.Password"
+                                     ReturnSuccess="ReturnSuccess"
+                                     Label="비밀번호" />
+                    <ValidationInput ValueType="password"
+                                     Type="PWCHECK"
+                                     Placeholder="비밀번호 확인"
+                                     PasswordCheck="@UserInfo.Password"
+                                     ReturnSuccess="ReturnSuccess"
+                                     Label="비밀번호 확인" />
+                    <ValidationInput ValueType="text"
+                                     Placeholder="이름"
+                                     @bind-Value="@UserInfo.Name"
+                                     Label="이름" />
+                    <ValidationInput ValueType="text"
+                                     Placeholder="전화번호"
+                                     @bind-Value="@UserInfo.Phone"
+                                     Label="전화번호" />
+                    <ValidationInput ValueType="text"
+                                     Placeholder="이메일"
+                                     Type="EMAIL"
+                                     @bind-Value="@UserInfo.Email"
+                                     ReturnSuccess="ReturnSuccess"
+                                     Label="이메일" />
+                    <ValidationInput ValueType="text"
+                                     Placeholder="직책"
+                                     @bind-Value="@UserInfo.Job"
+                                     Label="직책" />
+                    <SelectField Label="상태"
+                                 SelectData="@_userState"
+                                 @bind-Value="@UserInfo.Status"
+                                 EditMode=true />
+
+                    <Toggle Title="알람 수신"
+                            @bind-Value="@UserInfo.AlarmYN"
+                            IsChecked="@UserInfo.AlarmYN"
+                            EditMode=EditMode />
+                }
+                else
+                {
+                    <TextField2 Label="아이디"
+                                Value="@UserInfo.UserId"
+                                Color=true />
+                    <TextField2 Label="이름"
+                                Value="@UserInfo.Name"
+                                Color=true />
+                    <TextField2 Label="전화번호"
+                                Value="@UserInfo.Phone"
+                                Color=true />
+                    <TextField2 Label="이메일"
+                                Value="@UserInfo.Email"
+                                Color=true />
+                    <TextField2 Label="직책"
+                                Value="@UserInfo.Job"
+                                Color=true />
+                    <TextField2 Label="상태"
+                                Value="@(UserInfo.Status == 1? "휴직" :"재직" )"
+                                Color=true />
+                    <Toggle Title="알람 수신"
+                            @bind-Value="@UserInfo.AlarmYN"
+                            IsChecked="@UserInfo.AlarmYN"
+                            EditMode=EditMode />
+                }
+            </div>
+
         </div>
-        
-    </div>
+    }
+    
     
 </div>
 
@@ -126,7 +138,7 @@
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public EventCallback OnEdit{get;set;}
     [Parameter] public EventCallback OnSave{get;set;}
-
+    [Parameter] public EventCallback<(int, int)> ReturnSuccess { get; set; }
 
 
     private byte[] imageData;
@@ -158,7 +170,11 @@
 
     protected override async void OnParametersSet()
     {
-        await ImgConvert();
+        if(UserInfo != null)
+        {
+            await ImgConvert();
+        }
+        
     }
 
     /*

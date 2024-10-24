@@ -53,10 +53,13 @@
     border-bottom : var(--layout-bd);
 }
 
+.tbody-tr:hover .td{
+    background-color : var(--main-light);
+    cursor :pointer;
+}
 
-.table .tbody-tr:hover td{
-    background-color:var(--main-light);
-    
+.td > input {
+    cursor :pointer;
 }
 
 .table .td{
@@ -78,3 +81,4 @@
 .table ::deep .table-td-link {
     color : var(--main-color);
 }
+

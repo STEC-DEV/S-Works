@@ -31,11 +31,13 @@
         <div class="infocard-inputs">
             <DateInput Label="작업년월"
                        Row="true"
+                       Required="true"
                        @bind-Date=@Maintenance.WorkDT
                        Placeholder="YYYYMMDD" />
             <InputCol Label="작업이름"
                       Placeholder="작업이름"
                       Row="true"
+                      Required=true
                       @bind-Value=@Maintenance.Name />
             <SelectField Key="WorkType"
                          SelectData="WorkType"
@@ -43,11 +45,13 @@
                          OnChange="OnWorkTypeChange"
                          Label="작업구분"
                          Row="true"
+                         Required=true
                          EditMode="true" />
 
             <InputCol Label="작업자"
                       Placeholder="작업자"
                       Row="true"
+                      Required=true
                       @bind-Value=@Maintenance.Worker />
             @if(Maintenance.Type == 0)
             {
@@ -63,6 +67,7 @@
                           Placeholder="소요비용"
                           @bind-Value=@Maintenance.TotalPrice
                           ValueType="number"
+                          Required=true
                           Row=true />
             }
             

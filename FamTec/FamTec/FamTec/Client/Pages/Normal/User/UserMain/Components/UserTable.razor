@@ -72,27 +72,27 @@
                 {
 
                 <tr class="tbody-tr">
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.Name
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.UserId
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.Type
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @row.Email
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             @{
                                 DateTime createdDate;
@@ -103,7 +103,7 @@
                             @formattedDate
                         </span>
                     </td>
-                    <td class="td text-center" @onclick="()=>OnDetail(row.Id)">
+                    <td class="td text-center pointer" @onclick="()=>OnDetail(row.Id)">
                         <span class="subtitle">
                             <StatusCard Status=@row.Status.ToString()/>
                            
@@ -112,7 +112,7 @@
                     @if (USER)
                     {
                         <td class="td text-center">
-                            <input type="checkbox" checked="@CheckItems.Contains(row.Id)" @onchange="e=> OnSelect(e, row.Id)" />
+                            <input class="pointer" type="checkbox" checked="@CheckItems.Contains(row.Id)" @onchange="e=> OnSelect(e, row.Id)" />
                         </td>
                     }
                     

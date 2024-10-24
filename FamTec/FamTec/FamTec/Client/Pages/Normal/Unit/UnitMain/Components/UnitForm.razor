@@ -21,6 +21,7 @@
                     placeholder="입력해주세요" 
                     @oninput="(e)=>OnConvert(e)" 
                     @bind-value="_userInput"
+                    @onkeypress="(e)=>OnkeyPress(e)"
                     />
             </div>
             <div class="input-item">
@@ -113,5 +114,13 @@
     {
         await OnLoadUnit.InvokeAsync();
         StateHasChanged();
+    }
+
+    private async void OnkeyPress(KeyboardEventArgs e)
+    {
+        if(e.Key == "Enter") // Enter 키가 눌렸는지 확인
+    {
+            await OnAdd(); // 로그인 메서드 호출
+        }
     }
 }

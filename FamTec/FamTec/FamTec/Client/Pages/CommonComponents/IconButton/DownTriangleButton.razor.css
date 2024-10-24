@@ -1,0 +1,7 @@
+﻿.ibtn{
+    transform :rotate(180deg);
+}
+
+.ibtn :hover {
+    cursor: pointer;
+}

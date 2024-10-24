@@ -17,12 +17,14 @@
             Label="품목코드" 
             Placeholder="품목코드" 
             ValueType="text"
+            Required="true"
             @bind-Value="@AddMaterial.Code" 
             />
         <div class="group">
             <InputCol Label="품목명"
                       Placeholder="품목명" 
                 ValueType="text" 
+                Required="true"
                 @bind-Value="@AddMaterial.Name" 
                 />
             <InputCol 
@@ -59,6 +61,7 @@
                 Value="SelectedBuildingId" 
                 OnChange="OnBuildingChange" 
                 Label="건물"
+                Required="true"
                 EditMode="true" />
             @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
             {
@@ -67,6 +70,7 @@
                     SelectData="PlaceRoom" 
                     Value="SelectedFloorId" 
                     Label="위치"
+                    Required="true"
                     OnChange="OnFloorChange" 
                     EditMode="true" />
             }
@@ -132,7 +136,12 @@
     {
         try
         {
-            Console.WriteLine(AddMaterial.ManufacturingComp);
+            if (String.IsNullOrEmpty(AddMaterial.Code) || String.IsNullOrEmpty(AddMaterial.Name) || AddMaterial.RoomId == null)
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+
+            }
             ResponseUnit<AddMaterialDTO> resPost = await apiManager.PostWithFilesAsync<AddMaterialDTO>("Material/sign/AddMaterial",AddMaterial);
             if(resPost.code != 200)
             {
@@ -179,7 +188,7 @@
     //건물선택
     private async Task OnBuildingChange(int buildingId)
     {
-
+        PlaceRoom = new List<PlaceRoom>();
         if (buildingId == 0)
         {
             Room = null;

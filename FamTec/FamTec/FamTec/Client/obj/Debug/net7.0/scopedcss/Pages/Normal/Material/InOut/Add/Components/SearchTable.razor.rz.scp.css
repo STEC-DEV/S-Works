@@ -55,6 +55,7 @@
 
 
 .table .tr:hover td[b-qav6upcy4f]{
+    cursor:pointer;
     background-color:var(--main-light);
     
 }

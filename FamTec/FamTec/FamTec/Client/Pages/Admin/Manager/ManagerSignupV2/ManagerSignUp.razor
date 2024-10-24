@@ -20,6 +20,7 @@
                 DepartmentList="departmetnList" 
                 EditMode=EditMode
                 ManagerType="@UserType"
+                ReturnSuccess="OnValid"
                 @bind-Valid="@validationCheck"
                 />
         </div>
@@ -29,14 +30,9 @@
 
     </div>
     <div class="btns">
-        @if (!validationCheck)
-        {
-            <Button Name="등록" Width="true" Type=0 Valid=true />
-        }
-        else
-        {
-            <Button Name="등록" Width="true" Type=0 OnClick="Submit" />
-        }
+        
+        <Button Name="등록" Width="true" Type=0 OnClick="Submit" />
+        
     </div>
     
 </div>
@@ -50,6 +46,14 @@
     string? UserType;
 
     bool validationCheck = false;
+
+    //validation check
+    List<int> valid = new List<int> { 0, 0, 0, 0, 0 };
+
+    private async void OnValid((int value, int index) data)
+    {
+        valid[data.index] = data.value;
+    }
 
 
     protected async override Task OnInitializedAsync()
@@ -97,15 +101,26 @@
     {
         try
         {
-            Console.WriteLine("매니저 등록 시작");
-            Console.WriteLine("아이디" +newManager.UserId);
-            Console.WriteLine("비밀번호" +newManager.Password);
-            Console.WriteLine("부서" +newManager.DepartmentId);
-            foreach (var i in managerPlace.PlaceList)
+            int sum = 0;
+            foreach (int v in valid)
             {
-                Console.WriteLine("사업장"+i);
+                sum += v;
             }
-            Console.WriteLine("매니저 등록 끝");
+
+
+            if (sum != 5)
+            {
+                await JS.InvokeVoidAsync("alert", "입력 조건을 확인해주세요.");
+                return;
+            }
+            if (string.IsNullOrEmpty(newManager.UserId) || 
+            string.IsNullOrEmpty(newManager.Password) || 
+            string.IsNullOrEmpty(newManager.Email) ||
+            string.IsNullOrEmpty(newManager.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해주세요.");
+                return;
+            }
             ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
             if(resManager.code != 200)
             {

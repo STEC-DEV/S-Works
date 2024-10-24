@@ -16,27 +16,45 @@
                     Name="삭제"
                     Width=true
                     Type="1"
-                    OnClick="OnDelete" />
+                    OnClick="OnIsDel" />
             }
             
         </div>
         <div class="contents">
+            
             <div class="table-section">
+                @if (SystemData == null)
+                {
+                    <Loading />
+                }
+                else
+                {
+                <UnitTable ListData="@SystemData"/>
+                }
+            </div>
+            <div class="table-section">
+                @if (UserData == null)
+                {
+                    <Loading />
+                }
+                else
+                {
                 <UnitTable ListData="@UserData"
+                            CheckedItems="@DelUnits"
                            OnCheck="OnChecked" />
+                }
             </div>
-            
-            <div class="table-section">
-                <UnitTable 
-                ListData="@SystemData" 
-                OnCheck="OnChecked"
-                />
-            </div>
-            
         </div>
     </div>
 </div>
-
+@if (isDel)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <ConfirmModal OnConfirm="OnDelete" OnCancel="OnIsDel" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public List<UnitDTO> UserData { get; set; }
@@ -44,25 +62,25 @@
     [Parameter] public EventCallback OnLoadUnit { get; set; }
     List<int> DelUnits = new List<int>();
 
-    
+    bool isDel = false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    
+
 
     //체크 선수 목록
-    private void OnChecked((bool isCheck, int id)data)
+    private void OnChecked(int id)
     {
-        if (data.isCheck)
+        if (DelUnits.Contains(id))
         {
-            DelUnits.Add(data.id);
+            DelUnits.Remove(id);
         }
         else
         {
-            DelUnits.Remove(data.id);
+            DelUnits.Add(id);
         }
     }
 
@@ -87,4 +105,8 @@
         }
     }
 
+    private void OnIsDel()
+    {
+        isDel = !isDel;
+    }
 }

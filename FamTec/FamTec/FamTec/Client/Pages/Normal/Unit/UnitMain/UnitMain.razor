@@ -38,8 +38,16 @@
                 await JS.InvokeVoidAsync("alert", "단위 조회 실패");
                 return;
             }
-            UnitList = new List<UnitDTO>();
-            UnitList = resGet.data;
+            if(resGet.data == null)
+            {
+                UnitList = new List<UnitDTO>();
+            }
+            else
+            {
+                UnitList = resGet.data;
+            }
+
+            
             DevideData();
         }
         catch (Exception ex)

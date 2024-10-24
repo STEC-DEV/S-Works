@@ -62,29 +62,30 @@
             @foreach (InOutInventoryDTO row in ListData)
             {
                 <tr class="tr">
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.AddStore.RoomName
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.AddStore.Num
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.AddStore.TotalPrice
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td pointer" @onclick="() => OnRowClick(row)">
                         @row.AddStore.Note
                     </td>
-                    <td class="td">
+                    <td class="td pointer">
                         <input 
+                            class="pointer"
                             type="checkbox" 
                             checked=@(CheckItem.Any(i=>i.MaterialID == row.MaterialID))
                             @onchange="(e)=>OnChecked(e,row)" />

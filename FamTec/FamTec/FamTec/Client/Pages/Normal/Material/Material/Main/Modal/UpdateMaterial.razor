@@ -1,5 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Location
 @using FamTec.Shared.Client.DTO.Normal.Material
 @using FamTec.Shared.Server.DTO
 <div class="modal yappear">
@@ -19,6 +21,7 @@
                 Label="품목명" 
                 Placeholder="품목명" 
                 ValueType="text" 
+                Required="true"
                 @bind-Value="@EditMaterial.Name" 
                 />
             <TextField2
@@ -41,9 +44,32 @@
             <InputCol Label="단위"
                         Placeholder="단위"
                         ValueType="text"
+                        Unit=true
                       @bind-Value="@EditMaterial.Unit" />
         </div>
-        <TextField2 Label="위치" Value="@Material.RoomName" Color=true/>
+        <div class="group">
+            <SelectField 
+                T="PlaceRoomListDTO" 
+                Key="building" 
+                SelectData="PlaceLocation"
+                         Value="SelectedBuildingId"
+                         OnChange="OnBuildingChange" 
+                Label="건물"
+                Required="true"
+                EditMode="true" />
+            @if (PlaceRoom != null && SelectedBuildingId != 0)
+            {
+                <SelectField  
+                    Key="floor" 
+                    SelectData="PlaceRoom"
+                    Value="SelectedFloorId"
+                    Label="위치"
+                    Required="true"
+                    OnChange="OnFloorChange" 
+                    EditMode="true" />
+            }
+        </div>
+        @* <TextField2 Label="위치" Value="@Material.RoomName" Color=true/> *@
         <div class="img-wrap">
             @if (EditMaterial.Image != null)
             {
@@ -80,7 +106,8 @@
     {
         EditMaterial.Id = MaterialId;
         await OnLoadDetailMaterial();
-
+        await OnLoadBuilginRoom();
+        await initialRoom();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -127,6 +154,13 @@
     {
         try
         {
+            Console.WriteLine("공간 수정전" + Material.RoomID);
+            Console.WriteLine("공간 수정전" + EditMaterial.RoomId);
+            if (string.IsNullOrEmpty(EditMaterial.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
             ResponseUnit<bool> resUpdate = await apiManager.PostWithFilesAsync<bool>("Material/sign/UpdateMaterial", EditMaterial);
             if(resUpdate.code != 200)
             {
@@ -188,4 +222,90 @@
     {
         await OnClose.InvokeAsync();
     }
+
+
+
+    //새 건물 룸 데이터
+    List<PlaceRoomListDTO> PlaceLocation = new List<PlaceRoomListDTO>();
+    PlaceRoomListDTO PlaceLocationSelect = new PlaceRoomListDTO();
+    List<PlaceRoom> PlaceRoom = new List<PlaceRoom>();
+
+    //건물 선택 시 할당받을 위치 변수
+    List<BuildingFloor> Room = new List<BuildingFloor>();
+    int SelectedBuildingId;
+    int SelectedRoomId;
+    int SelectedFloorId;
+    //건물 + 위치 + 공간 조회
+    private async Task OnLoadBuilginRoom()
+    {
+        try
+        {
+            ResponseList<PlaceRoomListDTO> resGet = await apiManager.GetListAsync<PlaceRoomListDTO>("Room/sign/GetPlaceRoomGroup");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            PlaceLocation = resGet.data;
+
+            foreach (var i in PlaceLocation)
+            {
+                Console.WriteLine();
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    //건물선택
+    private async Task OnBuildingChange(int buildingId)
+    {
+        PlaceRoom = new List<PlaceRoom>();
+        if (buildingId == 0)
+        {
+            Room = null;
+            SelectedRoomId = 0;
+            StateHasChanged();
+            return;
+        }
+        SelectedBuildingId = buildingId;
+
+        //건물선택
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == SelectedBuildingId).FirstOrDefault();
+        //해당건물에 층전체 반복하여 위치 리스트 추가
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+
+        SelectedRoomId = 0; // Reset floor selection when building changes
+        StateHasChanged();
+    }
+
+    private void OnFloorChange(int floorId)
+    {
+        SelectedFloorId = floorId;
+        EditMaterial.RoomId = floorId;
+    }
+
+    private async Task initialRoom()
+    {
+        SelectedBuildingId = Material.BuildingId.Value;
+        SelectedFloorId = Material.RoomID.Value;
+        PlaceRoom = new List<PlaceRoom>();
+        PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == Material.BuildingId).FirstOrDefault();
+        foreach (var i in PlaceLocationSelect.FloorList)
+        {
+            foreach (PlaceRoom room in i.RoomList)
+            {
+                PlaceRoom.Add(room);
+            }
+        }
+    }
+
 }

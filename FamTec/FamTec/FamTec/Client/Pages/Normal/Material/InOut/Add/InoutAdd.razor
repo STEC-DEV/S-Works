@@ -21,7 +21,7 @@
         }
         else
         {
-            <InForm AddItem="@AddInItem"/>
+            <InForm AddItem="@AddInItem" SelectMaterial="SelectMaterial"/>
         }
 
         <div class="btn">
@@ -84,7 +84,7 @@
                 SelectMaterial.Id == 0
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "출고 내용의 필수값 * 을 확인해 주세요");
                 AddItem = new OutContentDTO();
                 StateHasChanged();
                 return;
@@ -136,11 +136,11 @@
             // AddInItem.AddStore.InOutDate == null ||
             AddInItem.AddStore.Num == 0 || 
             AddInItem.AddStore.RoomID == 0|| 
-            AddInItem.AddStore.TotalPrice == 0 ||
+            AddInItem.AddStore.UnitPrice == 0 ||
             SelectMaterial.Id == 0
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재, 수량, 위치를 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "입고 내용의 필수값 * 을 확인해 주세요");
 
                 StateHasChanged();
                 return;
@@ -222,6 +222,7 @@
 
     private void OnSumData()
     {
+        Console.WriteLine(AddInItem.AddStore.RoomName);
         AddInItem.AddStore.InOutDate = DateTime.Now;
         AddInItem.InOut = _tab;
         AddInItem.MaterialID = SelectMaterial.Id;
@@ -237,7 +238,8 @@
                 item.MaterialID == AddInItem.MaterialID &&
                 item.AddStore.InOutDate == AddInItem.AddStore.InOutDate &&
                 item.AddStore.RoomID == AddInItem.AddStore.RoomID &&
-                item.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice
+                item.AddStore.UnitPrice == AddInItem.AddStore.UnitPrice&&
+                item.AddStore.RoomName == AddInItem.AddStore.RoomName
             );
         if (existingItem != null)
         {

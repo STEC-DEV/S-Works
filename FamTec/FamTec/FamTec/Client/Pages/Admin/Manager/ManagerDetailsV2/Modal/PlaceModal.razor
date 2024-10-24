@@ -22,11 +22,12 @@
             <PlaceTable 
                 ListData="@FilterPlaceList" 
                 OnCheck="OnChecked"
+                CheckItems="@SelectItems"
                 />
         </div>
         <div class="placemodal-count">
             <span class="count">
-                선택 : @SelectCount
+                선택 : @SelectItems.Count
             </span>
         </div>
         <div class="placemodal-btns">
@@ -101,17 +102,15 @@
 
 
 
-    private void OnChecked((bool isCheck, AdminPlaceDTO place)data)
+    private void OnChecked(AdminPlaceDTO place)
     {
-        if (data.isCheck)
+        if(SelectItems.Any(p => p.Id == place.Id))
         {
-            SelectItems.Add(data.place);
-            SelectCount += 1;
+            SelectItems.RemoveAll(p => p.Id == place.Id);
         }
         else
         {
-            SelectItems.Remove(data.place);
-            SelectCount -= 1;
+            SelectItems.Add(place);
         }
     }
 

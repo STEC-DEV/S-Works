@@ -1,6 +1,7 @@
 ﻿using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +10,14 @@ namespace FamTec.Shared.Client.DTO.Normal.Buildings
 {
     public class AddBuildingDTO
     {
+        
         public int Id { get; set; }
         public string Code { get; set; }
+        [Required(ErrorMessage = "해당 필드를 확인해 주세요.")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "해당 필드를 확인해 주세요.")]
         public string Tel {  get; set; }
+        [Required(ErrorMessage = "해당 필드를 확인해 주세요.")]
         public string Address { get; set; }
         public string Usage { get; set; }
         public string ConstCompany { get; set; }

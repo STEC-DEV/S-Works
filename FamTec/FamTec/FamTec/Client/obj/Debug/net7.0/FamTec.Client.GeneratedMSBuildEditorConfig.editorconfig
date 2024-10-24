@@ -290,7 +290,15 @@ build_metadata.AdditionalFiles.CssScope = b-nnxheo5jnq
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xDYW5jbGVNb2RhbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-m8ptrnziqb
 
+<<<<<<< HEAD
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/ConfirmModal.razor]
+=======
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/CloseXButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xDbG9zZVhCdXR0b24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ncwcy3ydco
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/ConfirmModal.razor]
+>>>>>>> origin/Front
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xDb25maXJtTW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-5067739diu
 
@@ -302,7 +310,15 @@ build_metadata.AdditionalFiles.CssScope = b-qvxd8gjmfu
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xEYXRlVGltZUlucHV0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-udo1ckz9yz
 
+<<<<<<< HEAD
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/EditButton.razor]
+=======
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/DetailImage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xEZXRhaWxJbWFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-3a83pisvol
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/EditButton.razor]
+>>>>>>> origin/Front
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xFZGl0QnV0dG9uLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-hbx0v12cwk
 
@@ -314,7 +330,31 @@ build_metadata.AdditionalFiles.CssScope = b-py3x8j29cp
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xFbXB0eUFsYXJtLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-ixdqwbnud2
 
+<<<<<<< HEAD
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/ImageSlider.razor]
+=======
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/IconButton/DownLineButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJY29uQnV0dG9uXERvd25MaW5lQnV0dG9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-qdn3lkfi8w
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/IconButton/DownTriangleButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJY29uQnV0dG9uXERvd25UcmlhbmdsZUJ1dHRvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-5o467ymf1y
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/IconButton/LeftLineButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJY29uQnV0dG9uXExlZnRMaW5lQnV0dG9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-v2zor1jm7b
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/IconButton/LinkButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJY29uQnV0dG9uXExpbmtCdXR0b24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ijf8ad7z4n
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/IconButton/RightLineButton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJY29uQnV0dG9uXFJpZ2h0TGluZUJ1dHRvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-uh1f150cmr
+
+[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/CommonComponents/ImageSlider.razor]
+>>>>>>> origin/Front
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tbW9uQ29tcG9uZW50c1xJbWFnZVNsaWRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-kv6760d2ya
 

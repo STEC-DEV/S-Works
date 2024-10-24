@@ -1,0 +1,59 @@
+﻿@using FamTec.Client.Pages.CommonComponents.IconButton
+
+
+<div class="modal">
+    <div class="btn">
+        <CloseXButton OnClick="OnClosed" />
+    </div>
+    <div class="content">
+        @if(ImageList.Count > 1)
+        {
+            <div class="left-btn">
+                <LeftLineButton OnClick="ShowPreviousImage" />
+            </div>
+        }
+        <div class="img-wrap">
+            <img class="img" src="@ImageList[CurrentImageIndex]" />
+        </div>
+        @if (ImageList.Count > 1)
+        {
+            <div class="right-btn">
+                <RightLineButton OnClick="ShowNextImage" />
+            </div>
+        }
+    </div>
+
+</div>
+
+@code {
+    [Parameter] public List<string> ImageList { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private int CurrentImageIndex = 0;
+
+    private async void ShowPreviousImage()
+    {
+        Console.WriteLine("이전 : " + CurrentImageIndex);
+        if (CurrentImageIndex > 0)
+        {
+            CurrentImageIndex--;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void ShowNextImage()
+    {
+        Console.WriteLine("다음 : " + CurrentImageIndex);
+        if (CurrentImageIndex < ImageList.Count - 1)
+        {
+            CurrentImageIndex++;
+        }
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+}

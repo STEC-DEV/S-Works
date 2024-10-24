@@ -44,7 +44,7 @@
         {
             @foreach (var row in ListData)
             {
-                <tr class="tr">
+                <tr class="tr" @onclick=@(()=>OnChecked(row))>
                     <td class="td">
                         @row.Code
                     </td>
@@ -60,7 +60,7 @@
                     <td class="td">
                         <input type="checkbox"
                                checked=@(CheckedItem.Contains<int>(row.Id))
-                               @onchange="(e)=>OnChecked(e, row)" />
+                               />
                     </td>
                 </tr>
             }
@@ -71,16 +71,19 @@
 
 @code {
     [Parameter] public List<MaterialSearchListDTO>? ListData { get; set; }
-    [Parameter] public EventCallback<(MaterialSearchListDTO,bool)> OnCheck { get; set; }
+    // [Parameter] public EventCallback<(MaterialSearchListDTO,bool)> OnCheck { get; set; }
+    [Parameter] public EventCallback<MaterialSearchListDTO> OnCheck { get; set; }
     [Parameter] public List<int> CheckedItem { get; set; }
 
    
 
-    private async void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+    // private async void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
+    // {
+    //     await OnCheck.InvokeAsync((data, (bool)e.Value));   
+    // }
+
+    private async void OnChecked(MaterialSearchListDTO data)
     {
-
-        await OnCheck.InvokeAsync((data, (bool)e.Value));
-        
-
+        await OnCheck.InvokeAsync(data);
     }
 }

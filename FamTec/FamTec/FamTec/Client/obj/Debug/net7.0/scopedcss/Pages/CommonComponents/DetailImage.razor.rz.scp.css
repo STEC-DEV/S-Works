@@ -1,0 +1,52 @@
+.modal[b-3a83pisvol] {
+    width: 100%;
+    height: 100%;
+    background-color: #4e4e4e61;
+    position: relative;
+    box-shadow: 0 0 10px 2px #4e4e4e;
+}
+
+.content[b-3a83pisvol] {
+    display:flex;
+    justify-content:center;
+    width: 100%;
+    height:100%;
+    /*background-color: var(--default-color);*/
+}
+
+.left-btn[b-3a83pisvol]{
+    position:absolute;
+    top : 50%;
+    left : 2rem;
+    width:2rem;
+}
+
+.right-btn[b-3a83pisvol] {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    width: 2rem;
+}
+
+.btn[b-3a83pisvol] {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    display: flex;
+    width:1.5rem;
+    justify-content: flex-end;
+}
+
+.img-wrap[b-3a83pisvol]{
+    display : flex;
+    align-items:center;
+    justify-content:center;
+    width:80%;
+    height:100%;
+    /*background-color : var(--default-color);*/
+}
+.img[b-3a83pisvol]{
+    object-fit : scale-down;
+    width:100%;
+    height:100%;
+}

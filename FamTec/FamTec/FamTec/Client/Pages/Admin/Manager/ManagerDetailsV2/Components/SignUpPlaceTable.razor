@@ -51,20 +51,20 @@
         {
              @foreach(var row in ListData)
             {
-                <tr class="tbody-tr">
-                    <td class="td">
+                <tr class="tbody-tr" @onclick=@(()=>onCheckItem(row))>
+                    <td class="td @(EditMode ? "pointer" : "")">
                         @row.Name
                     </td>
-                    <td class="td">
+                    <td class="td @(EditMode ? "pointer" : "")">
                         @row.ContractNum
                     </td>
-                    <td class="td">
+                    <td class="td @(EditMode ? "pointer" : "")">
                         @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
                     @if (EditMode)
                     {
                         <td class="td">
-                            <input type="checkbox" checked="@IsChecked(row)" @onchange=" e => onCheckItem(e, row)" />
+                            <input class="pointer" type="checkbox" checked="@CheckItems.Any(p => p.Id == row.Id)" />
                         </td>
                     }
                     
@@ -77,8 +77,10 @@
 
 @code {
     [Parameter] public List<AdminPlaceDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(bool, AdminPlaceDTO)> OnCheck { get; set; }
+    [Parameter] public EventCallback<AdminPlaceDTO> OnCheck { get; set; }
     [Parameter] public bool EditMode{ get; set; }
+    [Parameter] public List<AdminPlaceDTO> CheckItems { get; set; }
+
 
     List<AdminPlaceDTO> CheckedData = new List<AdminPlaceDTO>();
 
@@ -94,18 +96,10 @@
     }
 
 
-    private async void onCheckItem(ChangeEventArgs e, AdminPlaceDTO place)
+    private async void onCheckItem(AdminPlaceDTO place)
     {
-        //현재 컴포넌트내에서 검색과 체크 동기화
-        if ((bool)e.Value == true)
-        {
-            CheckedData.Add(place);
-        }
-        else
-        {
-            CheckedData.Remove(place);
-        }
 
-        await OnCheck.InvokeAsync(((bool)e.Value, place));
+
+        await OnCheck.InvokeAsync(place);
     }
 }

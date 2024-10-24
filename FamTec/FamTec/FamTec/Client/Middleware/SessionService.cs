@@ -12,7 +12,8 @@ namespace FamTec.Client.Middleware
     public class SessionService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _key = "DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4";
+        //private readonly string _key = "DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4";
+        private readonly string _key = "d5b2e5c7a657f134f879f66f0712578416bed6d698a68d01fbde730b64c45e98";
         public SessionService(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -39,7 +40,8 @@ namespace FamTec.Client.Middleware
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4")),
+                //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4")),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("d5b2e5c7a657f134f879f66f0712578416bed6d698a68d01fbde730b64c45e98")),
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)

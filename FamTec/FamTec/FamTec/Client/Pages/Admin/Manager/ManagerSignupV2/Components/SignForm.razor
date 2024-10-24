@@ -27,22 +27,28 @@
                 Placeholder="아이디"
                 ValueType="text"
                 @bind-Value=@NewManager.UserId
+                Required="true"
                 Type="USERID"
+                isAdmin="true"
+                ReturnSuccess="ReturnSuccess"
                 />
             <ValidationInput Label="비밀번호"
                              Placeholder="비밀번호"
                              ValueType="password"
+                             Required="true"
                              @bind-Value=@NewManager.Password
-                             ValidChanged="@(isValid => UpdateValidState("Password", isValid))"
-                             Type="PW" />
-
+                             
+                             Type="PW" 
+                             ReturnSuccess="ReturnSuccess" />
+            @* ValidChanged="@(isValid => UpdateValidState("Password", isValid))" *@
             <ValidationInput Label="비밀번호 확인"
                              Placeholder="비밀번호 확인"
                              ValueType="password"
                              PasswordCheck="@NewManager.Password"
-                             ValidChanged="@(isValid => UpdateValidState("PasswordCheck", isValid))"
+                             
+                             ReturnSuccess="ReturnSuccess"
                              Type="PWCHECK" />
-
+            @* ValidChanged="@(isValid => UpdateValidState("PasswordCheck", isValid))" *@
             <ValidationInput Label="이름"
                              Placeholder="이름"
                              ValueType="text"
@@ -59,14 +65,17 @@
                              Placeholder="이메일"
                              ValueType="text"
                              @bind-Value=@NewManager.Email
-                             ValidChanged="@(isValid => UpdateValidState("Email", isValid))"
+                             Required="true"
+                             
+                             ReturnSuccess="ReturnSuccess"
                              Type="EMAIL" />
-
+            @* ValidChanged="@(isValid => UpdateValidState("Email", isValid))" *@
             <SelectField
                 Label="그룹"
                 SelectData="DepartmentList"
                 @bind-Value=@NewManager.DepartmentId
                 EditMode=true
+                Required="true"
                 />
                 <TextField2
                     Label="계정유형"
@@ -87,6 +96,7 @@
     [Parameter] public string? ManagerType { get; set; }
     [Parameter] public bool? Valid { get; set; }
     [Parameter] public EventCallback<bool> ValidChanged { get; set; }
+    [Parameter] public EventCallback<(int, int)> ReturnSuccess { get; set; }
     //아이디 패스워드 이메일 유효형식 파라미터
 
 

@@ -45,7 +45,7 @@
 </div>
 
 @code {
-    [Parameter] public int Id { get; set; }
+        [Parameter] public int Id { get; set; }
 
     private bool _editMode = false;
     //사업장 정보 + 권한
@@ -103,6 +103,12 @@
     {
         try
         {
+            if(string.IsNullOrEmpty(UpdatePlace.PlaceInfo.Name) || string.IsNullOrEmpty(UpdatePlace.PlaceInfo.Tel)){
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+
+            }
+
             foreach(ManagerDTO m in UpdateManagerList)
             {
                 updateManager.AdminId.Add(m.Id);

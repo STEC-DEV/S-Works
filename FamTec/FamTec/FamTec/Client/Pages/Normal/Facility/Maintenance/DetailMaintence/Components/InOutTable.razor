@@ -72,34 +72,34 @@
             {
 
                 <tr class="tr">
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.RoomName
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.Num
                     </td>
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.Unit
                     </td>
                     @if (!EditMode)
                     {
-                        <td class="td" @onclick="() => OnRowClick(row)">
-                            @row.Price
+                        <td class="td text-right @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
+                            @row.Price?.ToString("N0")
                         </td>
                     }
-                    <td class="td" @onclick="() => OnRowClick(row)">
+                    <td class="td @(EditMode? "pointer":"")" @onclick="() => OnRowClick(row)">
                         @row.Note
                     </td>
                     @if (EditMode)
                     {
                         <td class="td">
-                            <input 
+                            <input class="@(EditMode? "pointer":"")"
                                 type="checkbox" 
                                 @onchange="(e)=>OnChecked(e,row)" 
                                 checked="@(CheckItems?.Any(m => m.MaterialID == row.MaterialID))"

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Irony.Parsing;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
@@ -193,7 +194,11 @@ namespace FamTec.Client.Shared.Provider
         {
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
-            string name = user.FindFirst(c => c.Type == "PlaceName").Value;
+            var claim = user.FindFirst(c => c.Type == "PlaceName");
+            if (claim == null) return null;
+
+            string name = claim.Value;
+            if (string.IsNullOrEmpty(name)) return null;
             return name;
         }
 
@@ -264,6 +269,28 @@ namespace FamTec.Client.Shared.Provider
 
 
             return null;
+        }
+
+
+        /// <summary>
+        /// 설비 사용자 권한
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<int>> GetFacilityUserPemrList()
+        {
+            var user = await ReturnUserClaim();
+
+            // UserPerms를 파싱합니다.
+            var userPermsJson = user.Claims.FirstOrDefault(c => c.Type == "UserPerms")?.Value;
+            if (string.IsNullOrEmpty(userPermsJson))
+            {
+                throw new Exception("UserPerms 정보가 없습니다.");
+            }
+            // JSON 파싱
+            var userPerms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPermsJson);
+            var permList = userPerms.Values.Select(v => int.Parse(v)).ToList();
+            var facList = new List<int>(permList.GetRange(1,8));
+            return facList;
         }
 
 

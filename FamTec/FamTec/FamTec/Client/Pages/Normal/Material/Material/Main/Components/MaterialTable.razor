@@ -68,28 +68,29 @@
             foreach(var row in ListData)
             {
                 <tr class="tbody-tr">
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Code
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Name
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Standard
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.ManufacturingComp
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.Unit
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateModal(row.ID)">
+                    <td class="td pointer" @onclick="()=>OnUpdateModal(row.ID)">
                         @row.SafeNum
                     </td>
                     @if (MATERIAL)
                     {
                         <td class="td">
-                            <input type="checkbox"
+                            <input class="pointer"
+                                type="checkbox"
                                    checked=@(_checkItem.Contains(row.ID))
                                    @onchange="(e)=>OnChecked(e,row)" />
                         </td>

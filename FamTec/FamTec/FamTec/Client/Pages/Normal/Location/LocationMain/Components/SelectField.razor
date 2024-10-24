@@ -1,9 +1,10 @@
-﻿@typeparam T
+﻿@using FamTec.Client.Pages.CommonComponents.IconButton
+@typeparam T
 
 <div class="selectfield @(Row==true ? "row":"")">
     @if (!String.IsNullOrEmpty(Label))
     {
-        <label class="label">
+        <label class="label @(Required.Value ? "requried" : "")">
             @Label
         </label>
     }
@@ -11,21 +12,26 @@
     <ul class="selectbox @(EditMode ? "" : "none")">
         <label class="display @(IsActive ? "active" : "")"
                @onclick=OnActive>
-            @if (SelectName == null)
-            {
-                <span class="display-title">Select</span>
-            }
-            else
-            {
-                <span class="display-title">
-                    @SelectName
-                </span>
-            }
+               <div class="display-row">
+                    @if (SelectName == null)
+                    {
+                        <span class="display-title">선택</span>
+                    }
+                    else
+                    {
+                        <span class="display-title">
+                            @SelectName
+                        </span>
+                    }
+                    <div class="icon">
+                        <DownTriangleButton />
+                    </div>
+               </div>
+            
+            
+            
         </label>
         <ul class="options @(IsActive && SelectData != null? "active" : "")">
-            @* <li class="option-item" @onclick="() => OnSelectRow(null)">
-                Select
-            </li> *@
             @if (SelectData != null && SelectData.Any())
             {
                 @foreach (var selectRow in SelectData)
@@ -58,10 +64,19 @@
     [Parameter] public bool EditMode {get;set;}
     [Parameter] public string? Label { get; set; }
     [Parameter] public bool? Row { get; set; }
+    [Parameter] public bool? Required { get; set; } = false;
 
-    public string SelectName = "Select";
+    public string SelectName = "선택";
     public bool IsActive { get; set; } = false;
+    
+    
+    private DotNetObjectReference<SelectField<T>> _objRef;
 
+    protected override void OnInitialized()
+    {
+        _objRef = DotNetObjectReference.Create(this); // **수정된 부분**
+        base.OnInitialized();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -89,44 +104,32 @@
                 }
                 else
                 {
-                    SelectName = "Select";
+                    SelectName = "선택";
                 }
 
                 
             }
             else
             {
-                SelectName = "Select";
+                SelectName = "선택";
             }
         }
         else
         {
-            SelectName = "Select";
+            SelectName = "선택";
         }
     }
 
     public async Task Reset()
     {
         Value = 0;
-        SelectName = "Select";
+        SelectName = "선택";
         await ValueChanged.InvokeAsync(Value);
         StateHasChanged();
     }
 
     public async Task OnSelectRow(object row)
     {
-        // if (row == null)
-        // {
-        //     Value = 0;
-        //     SelectName = "Select";
-        // }
-        // else
-        // {
-        //     // int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-        //     // Value = id;
-        //     // SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-        //     // OnReturnName(SelectName);
-        // }
         int id = (int)row.GetType().GetProperty("Id").GetValue(row);
         Value = id;
         SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
@@ -142,8 +145,28 @@
     public void OnActive()
     {
         IsActive = !IsActive;
+        if (IsActive)
+        {
+            JS.InvokeVoidAsync("clickHandler.addClickListener", _objRef);
+        }
+        else
+        {
+            JS.InvokeVoidAsync("clickHandler.removeClickListener", _objRef);
+        }
+    }
+    //외부 영역 클릭
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
     }
 
+    [JSInvokable]
+    public void CloseSelectBox()
+    {
+        IsActive = false;
+        StateHasChanged();
+    }
 
     private async void OnReturnName(string name)
     {

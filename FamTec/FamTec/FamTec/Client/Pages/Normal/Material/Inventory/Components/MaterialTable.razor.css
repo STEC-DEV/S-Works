@@ -28,16 +28,10 @@
     border-radius: 0 4px 4px 0;
 }
 
-.table .th-subp{
-    border-radius: 0 4px 0 0;
-}
-.table .th-subc:last-child{
-    border-radius: 0 0 4px 0;
-}
 /* 둥글게 끝*/
 
 .table .th{
-    padding:var(--three-q-pd);
+    padding:0 var(--half-pd);
     font-size:var(--normal-size);
     font-weight:var(--bold-wt);
    
@@ -64,8 +58,13 @@
 }
 
 .table th>span{
-    color:var(--default-color);
-     white-space : nowrap;
+     display : inline-block;
+
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--default-color);
+
+    padding : var(--three-q-pd) var(--half-pd);
 }
 
 .table .tbody{

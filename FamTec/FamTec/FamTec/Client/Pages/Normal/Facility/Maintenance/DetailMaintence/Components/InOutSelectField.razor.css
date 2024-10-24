@@ -11,11 +11,19 @@
     gap : var(--default-pd);
 }
 
-.label{
-    font-weight :var(--bold-wt);
-    font-size : var(--normal-size);
-    color : var(--main-color);
-    white-space : nowrap;
+.label {
+    min-width: 50px;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    color: var(--main-color);
+    white-space: nowrap;
+}
+
+.required::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
 }
 
 .row>.selectbox>.display {
@@ -86,13 +94,21 @@
     /*color : var(--main-color);*/
 }
 
-.option-item:hover{
-   
-    background-color : var(--main-color);
-    color :var(--default-color);
+.option-item:hover {
+    cursor: pointer;
+    background-color: var(--main-color);
+    color: var(--default-color);
 }
 
 .option-item:hover .item-text{
     color:var(--default-color);
 }
 
+.display-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon {
+    width: 0.6rem;
+}

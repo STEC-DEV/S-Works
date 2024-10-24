@@ -12,9 +12,9 @@
     </div>
     
     <div class="groupfield-item">
-        <InputFieldSmall Label="@Sub1" EditMode=EditMode @bind-Value=Data1 />
-        <InputFieldSmall Label="@Sub2" EditMode=EditMode @bind-Value=Data2 />
-        <InputFieldSmall Label="@Sub3" EditMode=EditMode @bind-Value=Data3 />
+        <InputFieldSmall Label="@Sub1" EditMode=EditMode @bind-Value=Data1 InputType="@Type" />
+        <InputFieldSmall Label="@Sub2" EditMode=EditMode @bind-Value=Data2 InputType="@Type" />
+        <InputFieldSmall Label="@Sub3" EditMode=EditMode @bind-Value=Data3 InputType="@Type" />
     </div>
 </div>
 
@@ -24,6 +24,7 @@
     [Parameter] public string Sub2 { get; set; }
     [Parameter] public string Sub3 { get; set; }
     [Parameter] public string Unit { get; set; }
+    [Parameter] public string Type { get; set; }
     private string data1;
     [Parameter]
     public string Data1

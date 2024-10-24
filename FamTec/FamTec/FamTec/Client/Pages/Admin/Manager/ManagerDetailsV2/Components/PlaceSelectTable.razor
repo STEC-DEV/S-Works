@@ -38,7 +38,7 @@
         }
         else
         {
-            <SignUpPlaceTable ListData="FilterPlace" OnCheck="OnSelected" EditMode=EditMode />
+            <SignUpPlaceTable ListData="FilterPlace" OnCheck="OnSelected" EditMode=EditMode CheckItems="@DelPlace"/>
         }
 
     </div>
@@ -146,15 +146,15 @@
     /*
     * 선택 --
     */
-    public void OnSelected((bool isCheck, AdminPlaceDTO place) selection)
+    public void OnSelected(AdminPlaceDTO place)
     {
-        if (selection.isCheck)
+        if (DelPlace.Any(d => d.Id == place.Id))
         {
-            DelPlace.Add(selection.place);
+            DelPlace.RemoveAll(p => p.Id == place.Id);
         }
         else
         {
-            DelPlace.Remove(selection.place);
+            DelPlace.Add(place);
         }
     }
 

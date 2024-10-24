@@ -86,11 +86,11 @@
                 <td class="td">
                     @row.Num
                 </td>
-                <td class="td">
-                    @row.UnitPrice
+                <td class="td text-right">
+                    @row.UnitPrice?.ToString("N0")
                 </td>
-                <td class="td">
-                    @row.ToTalPrice
+                <td class="td text-right">
+                    @row.ToTalPrice?.ToString("N0")
                 </td>
                 <td class="td">
                     @row.Note

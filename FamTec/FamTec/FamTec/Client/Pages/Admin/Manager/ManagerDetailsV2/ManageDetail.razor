@@ -24,16 +24,11 @@
                 Manager="@(EditMode ? UpdateManager : OriginalManager)"
                 DepartmentList="departmetnList" 
                 EditMode=EditMode
+                ReturnSuccess="OnValid"
                 @bind-Valid="@validationCheck"
                 />
         </div>
         <div class="place">
-            @* <PlaceSelectTable 
-                Id="@Id"
-                PlaceList="@UpdatedManager.PlaceList"
-                PlaceListChanged="@HandlePlaceListChanged"
-                EditMode=EditMode
-                /> *@
             <PlaceSelectTable Id="@Id"
                               PlaceList="@(EditMode ?  UpdatePlace : OriginalPlace)"
                               PlaceListChanged="@HandlePlaceListChanged"
@@ -63,7 +58,7 @@
 
 @code {
     [Parameter] public int Id { get; set; }
-
+    [Parameter] public EventCallback<(int, int)> ReturnSuccess { get; set; }
     List<DepartmentDTO> departmetnList = new List<DepartmentDTO>();
 
 
@@ -78,6 +73,14 @@
     UpdateManagerDTO UpdatedManager = new UpdateManagerDTO();
     bool EditMode = false;
     private int _adminId;
+
+    //validation check
+    List<int> valid = new List<int> { 0, 0, 0, 0, 0 };
+    private async void OnValid((int value, int index) data)
+    {
+        valid[data.index] = data.value;
+    }
+
 
     protected async override Task OnInitializedAsync()
     {
@@ -159,13 +162,24 @@
     {
         try
         {
-            foreach (var i in UpdatedManager.PlaceList)
-            {
-                Console.WriteLine("사업장"+i.Name);
-            }
-            Console.WriteLine("매니저 등록 끝");
-
             await Convert();
+
+            if (OriginalManager.Password != UpdatedManager.Password)
+            {
+                if (valid[1] + valid[2] != 2)
+                {
+                    await JS.InvokeVoidAsync("alert", "비밀번호 입력조건을 확인해 주세요,");
+                    return;
+                }
+            }
+            if (OriginalManager.Email != UpdatedManager.Email)
+            {
+                if (valid[3] != 1)
+                {
+                    await JS.InvokeVoidAsync("alert", "이메일 입력조건을 확인해 주세요,");
+                    return;
+                }
+            }
 
             ResponseUnit<bool> resManager = await apiManager.PutAsync<bool>("AdminUser/sign/UpdateManager", UpdatedManager);
             if(resManager.code != 200)

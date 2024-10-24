@@ -8,6 +8,13 @@
     position: relative;
 }
 
+.required::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
 .row{
     flex-direction:row;
     align-items:center;

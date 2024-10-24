@@ -72,35 +72,35 @@
             @foreach (InOutInventoryDTO row in ListData)
             {
                 <tr class="tr">
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.InOutDate?.ToString("yyyy-MM-dd")
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.RoomName
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.MaterialCode
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.MaterialName
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.Unit
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.Num
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
-                        @row.AddStore.UnitPrice
+                    <td class="td text-right pointer" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.UnitPrice.ToString("N0")
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
-                        @row.AddStore.TotalPrice
+                    <td class="td text-right pointer" @onclick="()=>OnUpdateDataSet(row)">
+                        @row.AddStore.TotalPrice.ToString("N0")
                     </td>
-                    <td class="td" @onclick="()=>OnUpdateDataSet(row)">
+                    <td class="td pointer" @onclick="()=>OnUpdateDataSet(row)">
                         @row.AddStore.Note
                     </td>
                     <td class="td">
-                        <input type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
+                        <input class="pointer" type="checkbox" @onchange="(e)=>OnChecked(e,row)" />
                     </td>
                 </tr>
             }

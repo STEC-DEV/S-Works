@@ -9,12 +9,12 @@
     <div class="content">
         @if(ImageDataUrl.Count > 1)
         {
-            <div class="left-btn" @onclick="ShowPreviousImage">
+            <div class="left-btn pointer" @onclick="ShowPreviousImage">
                 &lt;
             </div>
         }
 
-        <div class="img-wrap">
+        <div class="img-wrap pointer" @onclick=OnDetail>
             <div class="img">
                 @if(ImageDataUrl.Count != 0)
                 {
@@ -25,7 +25,7 @@
         </div>
         @if (ImageDataUrl.Count > 1)
         {
-            <div class="right-btn" @onclick="ShowNextImage">
+            <div class="right-btn pointer" @onclick="ShowNextImage">
                 &gt;
             </div>
         }
@@ -33,11 +33,15 @@
     </div>
     
 </div>
-@* <ModalBackground>
-    <ChildComponent>
+@if (isDetail && ImageDataUrl.Count > 0)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <DetailImage ImageList="@ImageDataUrl" OnClose="OnDetail" />
+        </ChildComponent>
+    </ModalBackground>
 
-    </ChildComponent>
-</ModalBackground> *@
+}
 
 @code {
     [Parameter] public List<byte[]> Images { get; set; }
@@ -46,6 +50,7 @@
 
     private List<string> ImageDataUrl = new List<string>();
 
+    private bool isDetail = false;
 
     private int CurrentImageIndex = 0;
 
@@ -88,5 +93,10 @@
             CurrentImageIndex++;
         }
         await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async void OnDetail()
+    {
+        isDetail = !isDetail;
     }
 }

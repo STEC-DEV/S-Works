@@ -13,7 +13,7 @@
         <span>
             유지보수 정보
         </span>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="option">
                 @if (EditMode)
@@ -63,6 +63,7 @@
                                 Value="@UpdateMaintenance.WorkDT" />
                     <InputCol Label="작업명"
                               Placeholder="작업명"
+                              Required="true"
                               Row="true"
                               @bind-Value=@UpdateMaintenance.WorkName />
                     <TextField2 Label="작업구분"
@@ -70,6 +71,7 @@
                                 Value="@(UpdateMaintenance.Type == 0? "자체 작업" : "외주 작업")" />
                     <InputCol Label="작업자"
                               Placeholder="작업자"
+                              Required="true"
                               Row="true"
                               @bind-Value=@UpdateMaintenance.Worker />
                     <TextField2 Label="소요 비용"
@@ -109,6 +111,7 @@
     [Parameter] public EventCallback OnEditMode { get; set; }
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public UpdateMaintancematerialDTO UpdateUseMaterial { get; set; }
+    [Parameter] public string FacType { get; set; }
     // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
     DetailMaintenanceDTO UpdateMaintenance;
@@ -148,7 +151,11 @@
         // {
         //     UpdateMaintenance = Maintenance.DeepCopy();
         // }
-        UpdateMaintenance = new DetailMaintenanceDTO(Maintenance);
+        if (Maintenance != null)
+        {
+            UpdateMaintenance = new DetailMaintenanceDTO(Maintenance);
+        }
+        
     }
 
     protected override async Task OnParametersSetAsync()
@@ -193,9 +200,12 @@
     {
         try
         {
-            Console.WriteLine("설비" + UpdateMaintenance.WorkName);
-            Console.WriteLine("설비" + UpdateMaintenance.MaintanceID);
-            
+            if (string.IsNullOrEmpty(UpdateMaintenance.Worker) || string.IsNullOrEmpty(UpdateMaintenance.WorkName))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+                return;
+            }
+
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("Maintenance/sign/UpdateMaintenance", UpdateMaintenance, true);
             if(resUpdate.code != 200)
             {
@@ -249,6 +259,20 @@
         ImageUrl.Clear();
         StateHasChanged();
     }
-    
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
 
 }

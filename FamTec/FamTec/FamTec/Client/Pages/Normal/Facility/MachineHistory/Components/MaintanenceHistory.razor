@@ -14,7 +14,7 @@
         <div class="option">
             @if (SearchOption == 1)
             {
-                <div class="vochistory-slider @(SearchOption != 1 ? "date-none" : "")">
+                <div class="vochistory-slider  @(SearchOption != 1 ? "date-none" : "")">
                     <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" />
                 </div>
             }

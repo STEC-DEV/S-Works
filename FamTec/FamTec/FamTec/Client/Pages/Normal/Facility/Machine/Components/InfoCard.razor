@@ -31,6 +31,7 @@
                 Placeholder="설비이름"
                 Row="true" 
                 @bind-Value=@Facility.Name
+                Required="true"
                 />
             <InputCol
                 Label="형식"
@@ -45,7 +46,9 @@
                          OnChange="OnBuildingChange"
                          Label="건물"
                          Row="true"
-                         EditMode="true" />
+                         EditMode="true" 
+                         Required="true"
+                         />
             @if (PlaceRoom != null && PlaceRoom.Any() && SelectedBuildingId != 0)
             {
                 <SelectField  
@@ -55,7 +58,9 @@
                     Label="위치"
                     Row="true"
                     OnChange="OnLocationChange" 
-                    EditMode="true" />
+                    EditMode="true" 
+                    Required="true"
+                    />
             }
 
             <InputCol

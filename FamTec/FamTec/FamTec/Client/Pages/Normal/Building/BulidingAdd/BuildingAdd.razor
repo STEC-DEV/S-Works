@@ -12,9 +12,9 @@
 {
     <div class="buildingadd-container yappear">
         <div class="buildingadd-info">
-            <CascadingValue Value="@Building">
+            <CascadingValue Value="@Building"  >
                 <ChildContent>
-                    <BuildingInfo />
+                    <BuildingInfo OnAdd="OnAdd" />
                 </ChildContent>
             </CascadingValue>
 
@@ -34,7 +34,7 @@
         
         <div class="buildingadd-btns">
             <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
-            <Button Name="취소" Width=true Type=1 />
+            @* <Button Name="취소" Width=true Type=1 /> *@
         </div>
     </div>
 }
@@ -63,6 +63,11 @@
     bool IsModal = false;
     private async void OnAdd()
     {
+        if (string.IsNullOrEmpty(Building.Name))
+        {
+            await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
+            return;
+        }
         ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
         if(ResAdd.code != 200)
         {
