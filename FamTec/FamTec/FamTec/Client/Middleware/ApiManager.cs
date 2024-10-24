@@ -30,7 +30,8 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider)
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://123.2.159.98:5245/api/");
+            //_httpClient.BaseAddress = new Uri("http://123.2.159.98:5245/api/");
+            _httpClient.BaseAddress = new Uri("http://sws.s-tec.co.kr/api/");
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

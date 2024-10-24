@@ -794,7 +794,7 @@ namespace FamTec.Server.Services.User
                 if (!di.Exists) di.Create();
 
                 UsersTb model = new UsersTb();
-                model.UserId = dto.USERID!; // 사용자아이디
+                model.UserId = dto.USERID!.ToLower(); // 사용자아이디
                 model.Password = dto.PASSWORD!; // 비밀번호
                 model.Name = dto.NAME; // 이름
                 model.Email = dto.EMAIL; // 이메일
@@ -1041,7 +1041,7 @@ namespace FamTec.Server.Services.User
                 if (model is null)
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                model.UserId = dto.USERID!;
+                model.UserId = dto.USERID!.ToLower()!;
                 model.Password = dto.PASSWORD!;
                 model.Name = dto.NAME;
                 model.Email = dto.EMAIL;

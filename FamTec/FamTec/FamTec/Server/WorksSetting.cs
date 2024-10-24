@@ -97,7 +97,7 @@ namespace FamTec.Server
 
             UsersTb? user = new UsersTb()
             {
-                UserId = "Admin",
+                UserId = "admin",
                 Password = "stecdev1234!",
                 Name = "시스템관리자",
                 Email = "stecdev@s-tec.co.kr",

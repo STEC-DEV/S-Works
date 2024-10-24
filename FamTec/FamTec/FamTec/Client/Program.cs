@@ -49,7 +49,8 @@ builder.Services.AddAuthorizationCore();
 //string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 
 //string HubUrl = "http://123.2.156.148:5245/VocHub";
-string HubUrl = "http://123.2.159.98:5245/VocHub";
+//string HubUrl = "http://123.2.159.98:5245/VocHub";
+string HubUrl = "http://sws.s-tec.co.kr/VocHub";
 
 
 HubObject.hubConnection = new HubConnectionBuilder()

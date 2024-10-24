@@ -263,6 +263,7 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
+Console.WriteLine("DBConnect전");
 #region DB연결 정보
 #if DEBUG
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -274,7 +275,7 @@ if (!String.IsNullOrWhiteSpace(connectionString))
       {
           mySqlOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
           // CommandTimeout을 300초로 설정
-          mySqlOptions.CommandTimeout(300);
+          mySqlOptions.CommandTimeout(60);
           // 다른 성능 및 안정성 옵션 추가
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
@@ -511,6 +512,7 @@ app.MapRazorPages();
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
 
 WorksSetting settings = new();
 await settings.DefaultSetting();

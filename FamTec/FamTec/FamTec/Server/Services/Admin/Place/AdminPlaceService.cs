@@ -711,7 +711,7 @@ namespace FamTec.Server.Services.Admin.Place
         /// <returns></returns>
         public async Task<ResponseUnit<bool?>> UpdatePlaceManagerService(HttpContext context, UpdatePlaceManagerDTO dto)
         {
-            try
+            try 
             {
                 if (context is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
@@ -720,7 +720,7 @@ namespace FamTec.Server.Services.Admin.Place
                 if (String.IsNullOrWhiteSpace(updater))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 
-                PlaceTb? PlaceTB = await PlaceInfoRepository.GetBuildingPlace(dto.PlaceId).ConfigureAwait(false);
+                PlaceTb? PlaceTB = await PlaceInfoRepository.GetByPlaceInfo(dto.PlaceId).ConfigureAwait(false);
                 if (PlaceTB is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 

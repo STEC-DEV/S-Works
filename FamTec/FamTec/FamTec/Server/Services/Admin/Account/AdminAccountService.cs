@@ -101,7 +101,8 @@ namespace FamTec.Server.Services.Admin.Account
                 UsersTb? usertb = await UserInfoRepository.GetUserIndexInfo(admintb.UserTbId).ConfigureAwait(false);
                 if (usertb is null)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
+                
+                dto.UserId = dto.UserId!.ToLower(); // UserID 소문자로 변환
                 bool? UpdateResult = await AdminUserInfoRepository.UpdateAdminInfo(dto, UserIdx, creater).ConfigureAwait(false);
                 return UpdateResult switch
                 {
@@ -236,7 +237,7 @@ namespace FamTec.Server.Services.Admin.Account
                 DateTime ThisTime = DateTime.Now;
 
                 UsersTb model = new UsersTb();
-                model.UserId = !String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.Trim() : dto.UserId!;
+                model.UserId = !String.IsNullOrWhiteSpace(dto.UserId) ? dto.UserId.ToLower().Trim() : dto.UserId!;
                 model.Name = !String.IsNullOrWhiteSpace(dto.Name) ? dto.Name.Trim() : dto.Name;
                 model.Password = !String.IsNullOrWhiteSpace(dto.Password) ? dto.Password.Trim() : dto.Password!;
                 model.Email = !String.IsNullOrWhiteSpace(dto.Email) ? dto.Email.Trim() : dto.Email;
