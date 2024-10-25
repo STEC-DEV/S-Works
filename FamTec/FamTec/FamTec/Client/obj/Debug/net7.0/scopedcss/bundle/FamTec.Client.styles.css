@@ -3267,6 +3267,11 @@
     background-color: #4e4e4e61;
     position: relative;
     box-shadow: 0 0 10px 2px #4e4e4e;
+    /* 하드웨어 가속 활성화 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 필요한 경우 렌더링 레이어 분리 */
+    will-change: transform;
 }
 
 .content[b-3a83pisvol] {
@@ -3313,6 +3318,7 @@
     width:100%;
     height:100%;
 }
+
 /* /Pages/CommonComponents/EditButton.razor.rz.scp.css */
 .editbtn :hover[b-hbx0v12cwk]{
     cursor : pointer;
@@ -3951,13 +3957,17 @@ svg[b-ijf8ad7z4n] {
 }
 /* /Pages/CommonComponents/ModalBackground.razor.rz.scp.css */
 .modal-background[b-ctitcvxjcv] {
-    z-index : 100;
+    z-index: 100;
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
+    top: 0;
+    left: 0;
     inset: 0;
-    background: #a9a9a9b2
+    background: #a9a9a9b2;
+    /*width: 100vw;
+    height: 100vh;*/
 }
 /* /Pages/CommonComponents/MultiSelectDrop.razor.rz.scp.css */
 .multi-select[b-95ao32x48a] {
@@ -4455,6 +4465,10 @@ svg:hover[b-5q32ql2i5a] {
     gap : var(--half-pd);
     cursor : pointer;
     white-space:nowrap;
+}
+
+.toggle-container input:hover[b-dj25yh7jz7]{
+    cursor:pointer;
 }
 
 .col[b-dj25yh7jz7] {
@@ -5575,9 +5589,9 @@ svg:hover[b-5q32ql2i5a] {
     overflow : auto;
 }
 
-.building-table .tbody-tr:hover[b-ytu5hwp48s]{
+/*.building-table .tbody-tr:hover{
     cursor : pointer
-}
+}*/
 
 .building-table .tbody-tr[b-ytu5hwp48s]{
     background-color :var(--content-back-color);
@@ -9971,6 +9985,10 @@ svg:hover[b-5q32ql2i5a] {
     justify-content : space-between;
 }
 
+.li-wrap:hover[b-npwhqnd23z]{
+    cursor:pointer;
+}
+
 .floor-ul .title[b-npwhqnd23z] {
     /*display : block;*/
     display : flex;
@@ -10187,7 +10205,12 @@ svg:hover[b-5q32ql2i5a] {
 
 
 .location-table .input:hover[b-quwuwxajie], .location-table .input:focus[b-quwuwxajie]{
+    
     border : var(--default-bd);
+}
+
+.tbody-tr .td input:hover[b-quwuwxajie] {
+    cursor: pointer;
 }
 /* /Pages/Normal/Location/LocationMain/Components/SelectField.razor.rz.scp.css */
 .selectfield[b-bjmstyaofj] {
@@ -12363,6 +12386,7 @@ modal-table[b-all74yxmu0]{
     padding: var(--default-pd) 0;
     justify-content: space-between;
     border-bottom: var(--default-bd);
+    min-height : 67px;
 }
 
 .unit .title[b-lw769fv04r] {
@@ -12550,6 +12574,11 @@ modal-table[b-all74yxmu0]{
 
 .table .input:hover[b-jnork00id9], .table .input:focus[b-jnork00id9]{
     border : var(--default-bd);
+}
+
+
+.tbody-tr .td input:hover[b-jnork00id9] {
+    cursor: pointer;
 }
 /* /Pages/Normal/Unit/UnitMain/UnitMain.razor.rz.scp.css */
 .unit-container[b-9m67y2xc9c]{
@@ -13548,6 +13577,7 @@ modal-table[b-all74yxmu0]{
 }
 /* /Pages/Normal/Voc/VocDetail/Components/CommentCard.razor.rz.scp.css */
 .comment[b-oumtkkax2b]{
+    width:100%;
     display:flex;
     flex-direction : column;
     gap : var(--default-pd);
@@ -14217,13 +14247,14 @@ modal-table[b-all74yxmu0]{
     color: var(--main-color);
 }
 
-.content[b-y76zd9c9py]{
+.content[b-y76zd9c9py] {
     /*display : flex;
     justify-content : space-between;
     gap : var(--wide-pd);*/
-    display :grid;
-    grid-template-columns : repeat(2, 1fr);
-    gap : var(--default-pd);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-row-gap: var(--wide-pd);
+    grid-column-gap: calc(var(--wide-pd) * 3);
 }
 
 .filter-date[b-y76zd9c9py] {
@@ -14244,9 +14275,10 @@ modal-table[b-all74yxmu0]{
     color : var(--main-color);*/
 }
 
-.filter-date-content[b-y76zd9c9py]{
-    display : flex;
-    gap : var(--default-pd);
+.filter-date-content[b-y76zd9c9py] {
+    display: flex;
+    
+    gap: var(--default-pd);
 }
 
 .filter-date-item[b-y76zd9c9py]{
@@ -14636,6 +14668,7 @@ modal-table[b-all74yxmu0]{
 }
 
 .li:hover[b-vokxs8vq93]{
+    cursor : pointer;
     border:var(--default-bd);
     transform : scale(1.02);
 }
@@ -14808,6 +14841,8 @@ modal-table[b-all74yxmu0]{
     width:100%;
     height:100%;
     display:flex;
+    flex-direction : column;
+
     justify-content:center;
     align-items:center;
     background-color:var(--content-back-color);
@@ -15374,6 +15409,7 @@ modal-table[b-all74yxmu0]{
 }
 
 .comment-wrap[b-vzwdelykpg]{
+    width:100%;
     display:flex;
     flex-direction:column;
     gap:var(--default-pd);

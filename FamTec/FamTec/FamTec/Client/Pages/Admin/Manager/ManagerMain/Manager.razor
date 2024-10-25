@@ -10,21 +10,55 @@
 
 <div class="manager-container yappear">
     <div class="depart">
-        <Department UserType=@(ADMINEDIT) OnSelectedDepartment="HandleDepartmentSelected" />
+        <Department 
+            UserType=@(ADMINEDIT) 
+            OnLoadManager="@OnLoadManagers"
+            OnSelectedDepartment="HandleDepartmentSelected" />
     </div>
     <div class="managerlist">
-        <ManagerList UserType=@(ADMINEDIT) SelectDepartment="@selectDepartment" />
+        <ManagerList 
+            ListData=@managerList
+            OnLoadManager="@OnLoadManagers"
+            UserType=@(ADMINEDIT) SelectDepartment="@selectDepartment" />
     </div>
 </div>
 
 @code {
     public int LoginMode;
     public string selectDepartment { get; set; } = "";
-
+    List<ManagerDTO> managerList;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await OnLoadManagers();
+    }
+
+    private async Task OnLoadManagers()
+    {
+        try
+        {
+            ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
+            if (resManager.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
+                return;
+            }
+            if (resManager.data == null)
+            {
+                managerList = new List<ManagerDTO>();
+            }
+            else
+            {
+                managerList = resManager.data;
+                // filterList = new List<ManagerDTO>(managerList);
+            }
+            return;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
+        }
     }
 
     private void HandleDepartmentSelected(string name)

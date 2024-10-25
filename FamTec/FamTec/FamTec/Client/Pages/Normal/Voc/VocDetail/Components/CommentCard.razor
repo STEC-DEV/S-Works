@@ -13,10 +13,9 @@
     <div class="content">
         <TextField2 Label="처리 일시" Value="@Data.CreateDT" Color=true />
         <TextField2 Label="처리 내용" Value="@Data.Comment" Color=true />
-        @if(images.Count == 0)
+        @if(images.Count > 0)
         {
-            Console.WriteLine("이미지 " + images.Count);
-            @* <ImageSlider Label="이미지" Images="@images" /> *@
+            <ImageSlider Label="첨부 이미지" Images="@images" />
         }
 
     </div>
@@ -31,10 +30,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine("durl");
         await OnIMGConvert();
-        
-
     }
 
     private async Task OnIMGConvert()
@@ -49,8 +45,6 @@
             }
             images.Add(data.value);
         }
-
-        Console.WriteLine("이미지수 " +images);
         StateHasChanged();
     }
 }

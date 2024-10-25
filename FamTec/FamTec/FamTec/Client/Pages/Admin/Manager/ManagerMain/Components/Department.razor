@@ -23,6 +23,7 @@
             {
                 <DepartmentList DataList="departmentList"
                                 OnLoadDepartments="LoadDepartments"
+                                OnLoadManager="OnLoadManager"
                                 Edit=EditMode
                                 OnSelectedDepartment=OnSelectedDepartment />
             }
@@ -49,6 +50,7 @@
 @code {
     [Parameter] public bool UserType{ get; set; }
     [Parameter] public EventCallback<string> OnSelectedDepartment{get;set;}
+    [Parameter] public EventCallback OnLoadManager { get; set; }
 
     List<DepartmentDTO>? departmentList;
     private bool is_openModal = false;

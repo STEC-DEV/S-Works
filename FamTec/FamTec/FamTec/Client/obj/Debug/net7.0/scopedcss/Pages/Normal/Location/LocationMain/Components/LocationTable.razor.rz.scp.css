@@ -89,5 +89,10 @@
 
 
 .location-table .input:hover[b-quwuwxajie], .location-table .input:focus[b-quwuwxajie]{
+    
     border : var(--default-bd);
+}
+
+.tbody-tr .td input:hover[b-quwuwxajie] {
+    cursor: pointer;
 }

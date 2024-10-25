@@ -7,7 +7,7 @@
         </label>
     }
     <div class="content">
-        @if(ImageDataUrl.Count > 1)
+        @if (ImageDataUrl?.Count > 1)
         {
             <div class="left-btn pointer" @onclick="ShowPreviousImage">
                 &lt;
@@ -16,14 +16,14 @@
 
         <div class="img-wrap pointer" @onclick=OnDetail>
             <div class="img">
-                @if(ImageDataUrl.Count != 0)
+                @if (ImageDataUrl?.Count != 0)
                 {
-                    <img src="@ImageDataUrl[CurrentImageIndex]" alt="이미지" />
+                    <img loading="lazy" src="@ImageDataUrl?[CurrentImageIndex]" alt="이미지" />
                 }
 
             </div>
         </div>
-        @if (ImageDataUrl.Count > 1)
+        @if (ImageDataUrl?.Count > 1)
         {
             <div class="right-btn pointer" @onclick="ShowNextImage">
                 &gt;
@@ -49,15 +49,16 @@
 
 
     private List<string> ImageDataUrl = new List<string>();
-
+    private List<string> ImageDataUrls = new();
     private bool isDetail = false;
 
     private int CurrentImageIndex = 0;
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
 
-        if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
+        // if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
+        if (Images != null && Images.Count != ImageDataUrl.Count)
         {
             ImageDataUrl.Clear();
             foreach (var image in Images)
@@ -72,8 +73,10 @@
             }
             CurrentImageIndex = 0;
         }
-        return Task.CompletedTask;
+        // return Task.CompletedTask;
     }
+
+
 
     private async void ShowPreviousImage()
     {
@@ -98,5 +101,7 @@
     private async void OnDetail()
     {
         isDetail = !isDetail;
+        StateHasChanged();
+
     }
 }

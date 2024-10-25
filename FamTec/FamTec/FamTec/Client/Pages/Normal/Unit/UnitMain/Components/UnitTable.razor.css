@@ -90,3 +90,8 @@
 .table .input:hover, .table .input:focus{
     border : var(--default-bd);
 }
+
+
+.tbody-tr .td input:hover {
+    cursor: pointer;
+}

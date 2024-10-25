@@ -32,7 +32,7 @@
                   Height=true />
         @if (image.Count > 0)
         {
-            <ImageSlider Label="처리 이미지" Images="@image" />
+            <ImageSlider Label="첨부 이미지" Images="@image" />
             <ul class="ul">
                 @foreach (string i in _imageName)
                 {
@@ -73,7 +73,7 @@
     string WriterName;
     List<object> status = new List<object>
     {
-        new { Name = "미처리", Id = 0},
+        // new { Name = "미처리", Id = 0},
         new { Name = "처리중", Id = 1},
         new { Name = "처리완료", Id= 2},
     };

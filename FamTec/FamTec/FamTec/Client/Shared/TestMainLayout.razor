@@ -77,7 +77,7 @@
         Console.WriteLine($"User identity name: {user.Identity.Name}");
 
         // 비로그인 시 리턴
-        if (!user.Identity.IsAuthenticated && !Navigation.Uri.Contains("/login"))
+        if (!user.Identity.IsAuthenticated && !Navigation.Uri.Contains("/login") && !Navigation.Uri.Contains("/"))
         {
             await JS.InvokeVoidAsync("alert", "다시 로그인 해주세요.");
             return;

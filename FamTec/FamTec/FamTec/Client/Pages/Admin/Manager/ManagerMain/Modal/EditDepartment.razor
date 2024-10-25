@@ -30,6 +30,7 @@
     [Parameter] public int? DepartmentId { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback OnLoadDepartment{ get; set; }
+    [Parameter] public EventCallback OnLoadManager{ get; set; }
     [Parameter] public DepartmentDTO Data { get; set; }
 
     string _editDep = "";
@@ -62,8 +63,9 @@
                 await OnCanceled();
                 return;
             }
-            
+
             await OnLoadDepartment.InvokeAsync();
+            await OnLoadManager.InvokeAsync();
             await OnCanceled();
             StateHasChanged();
         }

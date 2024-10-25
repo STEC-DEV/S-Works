@@ -3,7 +3,8 @@
         @Label
     </label>
     <p class="text @(Color? "color":"")">
-        @Value
+        @* @(Value ?? "&nbsp;") *@
+        @((MarkupString)(string.IsNullOrWhiteSpace(Value) ? "&nbsp;" : Value))
     </p>
 </div>
 
