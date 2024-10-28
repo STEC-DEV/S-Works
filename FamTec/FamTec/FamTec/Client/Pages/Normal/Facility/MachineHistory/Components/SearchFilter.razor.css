@@ -74,6 +74,7 @@
 .filter-date .label {
     color: var(--main-color);
     white-space: nowrap;
+    font-size: var(--normal-size);
 }
 
 .none{
