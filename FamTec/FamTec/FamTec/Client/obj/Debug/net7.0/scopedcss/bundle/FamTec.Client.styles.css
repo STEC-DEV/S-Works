@@ -3763,12 +3763,17 @@ svg[b-ijf8ad7z4n] {
     white-space: normal;
 }
 
+.inputwrap[b-r6a5c3p3nb] {
+    display:flex;
+    gap : var(--default-pd);
+}
+
 .input[b-r6a5c3p3nb] {
-    border : none;
-    padding : var(--default-pd);
-    border-radius : var(--default-rd);
-    border:var(--comp-bd);
-    transition : all .3s;
+    border: none;
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--comp-bd);
+    transition: all .3s;
 }
 
 .start:focus[b-r6a5c3p3nb], .start:target[b-r6a5c3p3nb] {
@@ -3777,6 +3782,14 @@ svg[b-ijf8ad7z4n] {
 
 .end:focus[b-r6a5c3p3nb] {
     border: var(--default-bd);
+}
+
+.text[b-r6a5c3p3nb]{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color : var(--main-color);
+    font-weight : bold;
 }
 /* /Pages/CommonComponents/InputSelectField.razor.rz.scp.css */
 .selectfield-container[b-iv6h6rvvwi] {
@@ -13592,7 +13605,7 @@ modal-table[b-all74yxmu0]{
 
 .comment:hover[b-oumtkkax2b]{
     border : var(--default-bd);
-    transform:scale(1.02);
+    /*transform:scale(1.02);*/
 }
 
 .header[b-oumtkkax2b]{

@@ -387,6 +387,29 @@ namespace FamTec.Client.Middleware
                                 content.Add(content : streamContent, name : "\"files\"", fileName : manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
                             }
                             break;
+                        case "Images":
+                            if (value is List<byte[]> imageLists)
+                            {
+                                var imageNames = manager.GetType().GetProperty("ImageName")?.GetValue(manager) as List<string>;
+                                for (int i = 0; i < imageLists.Count; i++)
+                                {
+                                    var imageByte1 = imageLists[i];
+                                    if (imageByte1.Length > 0)
+                                    {
+                                        var stream = new MemoryStream(imageByte1);
+                                        var streamContent = new StreamContent(stream);
+                                        streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+                                        content.Add(content: streamContent, name: $"\"files\"", fileName: imageNames[i]);
+                                    }
+                                }
+                            }
+                            if (value is byte[] imageByte && imageByte.Length > 0)
+                            {
+                                var stream = new MemoryStream(imageByte);
+                                var streamContent = new StreamContent(stream);
+                                content.Add(content: streamContent, name: "\"files\"", fileName: manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+                            }
+                            break;
                         case "PlaceList":
                             if (value is List<int> placeList)
                             {
