@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
-
+﻿@using FamTec.Client.Shared.Provider
+@inherits LayoutComponentBase
+@inject ILocalStorageService _localStorageService
 
 
 <div class="page">
@@ -10,5 +11,87 @@
 
 
 @code {
+    private bool isAdminMode;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await OnUserCheck();
+    }
+
+    private async Task OnUserCheck()
+    {
+        var authState = await (_authStateProvider as CustomAuthProvider).GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userPlace = user.Claims.FirstOrDefault(c => c.Type == "PlaceIdx")?.Value;
+
+        Console.WriteLine($"Is user authenticated: {user.Identity.IsAuthenticated}");
+        Console.WriteLine($"User identity name: {user.Identity.Name}");
+
+        // 비로그인 시 리턴
+        if (!user.Identity.IsAuthenticated && !Navigation.Uri.Contains("/login") && !Navigation.Uri.Contains("/"))
+        {
+            await JS.InvokeVoidAsync("alert", "다시 로그인 해주세요.");
+            return;
+        }
+
+        // 도메인만 있는 경우 (루트 경로) 체크
+        var currentUri = Navigation.Uri.TrimEnd('/');
+        var baseUri = Navigation.BaseUri.TrimEnd('/');
+        if (currentUri == baseUri)
+        {
+            await ClearUserSessionAndLogout();
+            return;
+        }
+
+        var isAdmin = user.IsInRole("SystemManager") || user.IsInRole("Master") || user.IsInRole("Manager");
+        isAdminMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
+        if (Navigation.Uri.Contains("/admin"))
+        {
+            if (!isAdmin || !isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+        }
+        else if (Navigation.Uri.Contains("/select"))
+        {
+            if (!isAdmin || isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+        }
+        else if (!Navigation.Uri.Contains("/select") && !Navigation.Uri.Contains("/select"))
+        {
+            if (isAdminMode)
+            {
+                await ClearUserSessionAndLogout();
+                return;
+            }
+            if (isAdmin && string.IsNullOrEmpty(userPlace))
+            {
+                Console.WriteLine("관리자 사업장 미선택");
+                await ShowAlertAndNavigate("사업장을 선택해주세요", "/select");
+                return;
+            }
+        }
+    }
+
+    private async Task ShowAlertAndNavigate(string message, string navigateTo)
+    {
+        await JS.InvokeVoidAsync("alert", message);
+        Navigation.NavigateTo(navigateTo);
+    }
+
+    private async Task ClearUserSessionAndLogout()
+    {
+        await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+        await _localStorageService.RemoveItemAsync("loginMode");
+        await (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        // 인증 상태 변경을 기다린 후에 리디렉션을 처리
+        await Task.Delay(100); // 상태 변경이 반영될 시간을 주기 위함
+
+        // await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");
+        Navigation.NavigateTo("/login");
+    }
 }}

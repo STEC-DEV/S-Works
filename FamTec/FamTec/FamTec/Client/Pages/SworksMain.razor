@@ -1,0 +1,31 @@
+﻿@page "/"
+@using FamTec.Client.Shared.Provider
+@inject ILocalStorageService _localStorageService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        string token = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+        else
+        {
+            await ClearUserSessionAndLogout();
+        }
+
+    }
+
+
+
+    private async Task ClearUserSessionAndLogout()
+    {
+        await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+        await _localStorageService.RemoveItemAsync("loginMode");
+        await (_authStateProvider as CustomAuthProvider).NotifyLogout();
+        await Task.Delay(100); // 상태 변경이 반영될 시간을 주기 위함
+        Navigation.NavigateTo("/login");
+    }
+}
