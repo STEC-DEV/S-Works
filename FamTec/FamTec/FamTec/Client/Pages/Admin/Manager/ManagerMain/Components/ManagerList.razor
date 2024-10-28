@@ -26,7 +26,7 @@
             }
         </div>
         <div class="managerlist-list">
-            @if(@managerList == null)
+            @if(@ListData == null)
             {
                 <Loading/>
             }
@@ -51,13 +51,14 @@
 }
 
 @code {
+    [Parameter] public List<ManagerDTO> ListData { get; set; }
     [Parameter] public bool UserType { get; set; }
     [Parameter] public string SelectDepartment{ get; set; }
+    [Parameter] public EventCallback OnLoadManager { get; set; }
 
     List<ManagerDTO>? managerList;
-    List<int>? deleteManagerList = new List<int>();
     List<ManagerDTO> filterList;
-
+    List<int>? deleteManagerList = new List<int>();
 
     bool isDel = false;
 
@@ -65,50 +66,54 @@
 
     protected async override Task OnInitializedAsync()
     {
-        await OnLoadManagers();
+        // await OnLoadManagers();
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        if(ListData != null)
+        {
+            filterList = new List<ManagerDTO>(ListData);
+        }
         await OnSelectFilterData();
     }
 
-    private async Task OnLoadManagers()
-    {
-        try
-        {
-            ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
-            if(resManager.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
-                return;
-            }
-            if(resManager.data == null)
-            {
-                managerList = new List<ManagerDTO>();
-                filterList = new List<ManagerDTO>();
-            }
-            else
-            {
-                managerList = resManager.data;
-                filterList = new List<ManagerDTO>(managerList);
-            }
-            return;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
-        }
+    // private async Task OnLoadManagers()
+    // {
+    //     try
+    //     {
+    //         ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
+    //         if(resManager.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
+    //             return;
+    //         }
+    //         if(resManager.data == null)
+    //         {
+    //             managerList = new List<ManagerDTO>();
+    //             filterList = new List<ManagerDTO>();
+    //         }
+    //         else
+    //         {
+    //             managerList = resManager.data;
+    //             filterList = new List<ManagerDTO>(managerList);
+    //         }
+    //         return;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
+    //     }
 
-    }
+    // }
 
     private async Task OnSelectFilterData()
     {
-        if (managerList != null)
+        if (ListData != null)
         {
             filterList = String.IsNullOrEmpty(SelectDepartment)
-                    ? managerList
-                    : managerList.Where(m => m.Department == SelectDepartment).ToList();
+                    ? ListData
+                    : ListData.Where(m => m.Department == SelectDepartment).ToList();
         }
         else
         {
@@ -119,10 +124,10 @@
 
 
 
-    private async Task ReloadManagers()
-    {
-        await OnLoadManagers();
-    }
+    // private async Task ReloadManagers()
+    // {
+    //     await OnLoadManagers();
+    // }
 
 
     /*
@@ -159,7 +164,7 @@
                     return;
                 }
                 deleteManagerList.Clear();
-                await OnLoadManagers();
+                await OnLoadManager.InvokeAsync();
             }
 
         }

@@ -1,15 +1,15 @@
 ﻿@using FamTec.Client.Pages.CommonComponents.IconButton
 
 
-<div class="modal">
+<div class="modal" @ref="modalRef" @onkeydown="@HandleKeyPress" tabindex="0">
     <div class="btn">
-        <CloseXButton OnClick="OnClosed" />
+        <CloseXButton OnClick="OnClosed" Color="white" />
     </div>
     <div class="content">
         @if(ImageList.Count > 1)
         {
             <div class="left-btn">
-                <LeftLineButton OnClick="ShowPreviousImage" />
+                <LeftLineButton OnClick="ShowPreviousImage" Color="white" />
             </div>
         }
         <div class="img-wrap">
@@ -18,7 +18,7 @@
         @if (ImageList.Count > 1)
         {
             <div class="right-btn">
-                <RightLineButton OnClick="ShowNextImage" />
+                <RightLineButton OnClick="ShowNextImage" Color="white" />
             </div>
         }
     </div>
@@ -31,7 +31,26 @@
 
     private int CurrentImageIndex = 0;
 
-    private async void ShowPreviousImage()
+    private ElementReference modalRef;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     foreach (var imageUrl in ImageList)
+    //     {
+    //         // 이미지 프리로드 로직 추가
+    //         await JS.InvokeVoidAsync("preloadImage", imageUrl);
+    //     }
+    // }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await modalRef.FocusAsync();
+        }
+    }
+
+    private async Task ShowPreviousImage()
     {
         Console.WriteLine("이전 : " + CurrentImageIndex);
         if (CurrentImageIndex > 0)
@@ -41,19 +60,28 @@
         await InvokeAsync(() => StateHasChanged());
     }
 
-    private async void ShowNextImage()
+    private async Task ShowNextImage()
     {
         Console.WriteLine("다음 : " + CurrentImageIndex);
         if (CurrentImageIndex < ImageList.Count - 1)
         {
             CurrentImageIndex++;
         }
-        await InvokeAsync(() => StateHasChanged());
+        StateHasChanged();
     }
 
-    private async void OnClosed()
+    private async Task OnClosed()
     {
         await OnClose.InvokeAsync();
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        Console.WriteLine("키");
+        if(e.Key == "Escape")
+        {
+            await OnClosed();
+        }
     }
 
 }

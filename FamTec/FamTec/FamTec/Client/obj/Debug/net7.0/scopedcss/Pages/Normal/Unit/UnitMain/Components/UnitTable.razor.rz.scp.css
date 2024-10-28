@@ -90,3 +90,8 @@
 .table .input:hover[b-jnork00id9], .table .input:focus[b-jnork00id9]{
     border : var(--default-bd);
 }
+
+
+.tbody-tr .td input:hover[b-jnork00id9] {
+    cursor: pointer;
+}

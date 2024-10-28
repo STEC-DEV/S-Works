@@ -37,9 +37,13 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService)
         {
             _httpClient = new HttpClient();
+<<<<<<< HEAD
 
             _httpClient.BaseAddress = new Uri("http://sws.s-tec.co.kr/api/");
 
+=======
+            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
+>>>>>>> origin/Front
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -387,6 +391,29 @@ namespace FamTec.Client.Middleware
                                 var stream = new MemoryStream(imageBytes);
                                 var streamContent = new StreamContent(stream);
                                 content.Add(content : streamContent, name : "\"files\"", fileName : manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
+                            }
+                            break;
+                        case "Images":
+                            if (value is List<byte[]> imageLists)
+                            {
+                                var imageNames = manager.GetType().GetProperty("ImageName")?.GetValue(manager) as List<string>;
+                                for (int i = 0; i < imageLists.Count; i++)
+                                {
+                                    var imageByte1 = imageLists[i];
+                                    if (imageByte1.Length > 0)
+                                    {
+                                        var stream = new MemoryStream(imageByte1);
+                                        var streamContent = new StreamContent(stream);
+                                        streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+                                        content.Add(content: streamContent, name: $"\"files\"", fileName: imageNames[i]);
+                                    }
+                                }
+                            }
+                            if (value is byte[] imageByte && imageByte.Length > 0)
+                            {
+                                var stream = new MemoryStream(imageByte);
+                                var streamContent = new StreamContent(stream);
+                                content.Add(content: streamContent, name: "\"files\"", fileName: manager.GetType().GetProperty("ImageName")?.GetValue(manager)?.ToString() ?? "image.jpg");
                             }
                             break;
                         case "PlaceList":

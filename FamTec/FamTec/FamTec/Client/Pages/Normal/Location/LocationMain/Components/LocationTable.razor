@@ -60,7 +60,7 @@
                         
                         />
                 </td>
-                <td class="td text-right">
+                <td class="td">
                     <Button Name="등록" Width=true OnClick="@SaveRow" />
                 </td>
             </tr>
@@ -70,14 +70,9 @@
             var currentLocation = location.value;
             @* bool _isEditing = false; *@
             <tr @key="@currentLocation.RoomID" class="tbody-tr">
-                @* <td class="td text-left" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@(location.idx + 1)</td>
-                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.RoomName</td>
-                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.BuildingName</td>
-                <td class="td" @onclick="() => { _isEditing = !_isEditing; StateHasChanged(); }">@location.value.FloorName</td> *@
-                @* <td class="td text-left" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@(location.idx + 1)</td> *@
-                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.RoomName</td>
-                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.BuildingName</td>
-                <td class="td" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.FloorName</td>
+                <td class="td @(BASIC ? "pointer" :"")" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.RoomName</td>
+                <td class="td @(BASIC ? "pointer" :"")" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.BuildingName</td>
+                <td class="td @(BASIC ? "pointer" :"")" @onclick="()=>OnEditLocation(location.value.RoomName, location.value.RoomID)">@location.value.FloorName</td>
                 @if (BASIC)
                 {
                     <td class="td">

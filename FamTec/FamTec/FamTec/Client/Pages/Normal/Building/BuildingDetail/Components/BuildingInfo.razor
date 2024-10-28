@@ -67,6 +67,7 @@
     {
         try
         {
+            Console.WriteLine(_editBuilding.CompletionDT);
             if (string.IsNullOrEmpty(_editBuilding.Name))
             {
                 await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");

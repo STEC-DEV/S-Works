@@ -38,13 +38,14 @@
     color: var(--main-color);
 }
 
-.content[b-y76zd9c9py]{
+.content[b-y76zd9c9py] {
     /*display : flex;
     justify-content : space-between;
     gap : var(--wide-pd);*/
-    display :grid;
-    grid-template-columns : repeat(2, 1fr);
-    gap : var(--default-pd);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-row-gap: var(--wide-pd);
+    grid-column-gap: calc(var(--wide-pd) * 3);
 }
 
 .filter-date[b-y76zd9c9py] {
@@ -65,9 +66,10 @@
     color : var(--main-color);*/
 }
 
-.filter-date-content[b-y76zd9c9py]{
-    display : flex;
-    gap : var(--default-pd);
+.filter-date-content[b-y76zd9c9py] {
+    display: flex;
+    
+    gap: var(--default-pd);
 }
 
 .filter-date-item[b-y76zd9c9py]{

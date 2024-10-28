@@ -29,8 +29,47 @@
         get => _inputValue;
         set
         {
-            _inputValue = value;
-            ParseDate();
+            // _inputValue = value;
+            // ParseDate();
+            if (_inputValue != value)
+            {
+                // 현재 커서 위치 저장
+                var currentValue = _inputValue;
+                _inputValue = value;
+
+                // 숫자만 추출
+                var newNumeric = new string(value.Where(char.IsDigit).ToArray());
+                var oldNumeric = new string(currentValue?.Where(char.IsDigit).ToArray() ?? Array.Empty<char>());
+
+                // 이전 값이 8자리이고 새 값이 8자리 미만인 경우, 이전 값을 유지하면서 수정
+                if (oldNumeric.Length == 8 && newNumeric.Length < 8)
+                {
+                    var combinedNumeric = oldNumeric[..Math.Min(oldNumeric.Length, 8)];
+
+                    // 새로운 숫자들을 뒤에서부터 적용
+                    for (int i = 0; i < newNumeric.Length; i++)
+                    {
+                        int oldIndex = combinedNumeric.Length - newNumeric.Length + i;
+                        if (oldIndex >= 0)
+                        {
+                            combinedNumeric = combinedNumeric[..oldIndex] +
+                                            newNumeric[i] +
+                                            (oldIndex < combinedNumeric.Length - 1 ? combinedNumeric[(oldIndex + 1)..] : "");
+                        }
+                    }
+
+                    newNumeric = combinedNumeric;
+                }
+
+                if (newNumeric.Length == 8 && long.TryParse(newNumeric, out long numericDate))
+                {
+                    ParseDate(numericDate);
+                }
+                else
+                {
+                    Date = null;
+                }
+            }
         }
     }
     private string _inputValue;
@@ -44,34 +83,58 @@
         }
     }
 
-    private void ParseDate()
+    private void ParseDate(long numericDate)
     {
-        if (string.IsNullOrWhiteSpace(InputValue))
-        {
-            Date = null;
-            return;
-        }
+        // if (string.IsNullOrWhiteSpace(InputValue))
+        // {
+        //     Date = null;
+        //     return;
+        // }
 
-        if (InputValue.Length == 8 && long.TryParse(InputValue, out long numericDate))
-        {
-            int year = (int)(numericDate / 10000);
-            int month = (int)((numericDate % 10000) / 100);
-            int day = (int)(numericDate % 100);
+        // if (InputValue.Length == 8 && long.TryParse(InputValue, out long numericDate))
+        // {
+        //     int year = (int)(numericDate / 10000);
+        //     int month = (int)((numericDate % 10000) / 100);
+        //     int day = (int)(numericDate % 100);
 
-            if (year >= 1900 && year <= 9999 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+        //     if (year >= 1900 && year <= 9999 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+        //     {
+        //         try
+        //         {
+        //             Date = new DateTime(year, month, day);
+        //             DateChanged.InvokeAsync(Date);
+        //         }
+        //         catch
+        //         {
+        //             // Invalid date (e.g., February 30th)
+        //             Date = null;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Date = null;
+        //     }
+        // }
+        // else
+        // {
+        //     Date = null;
+        // }
+        int year = (int)(numericDate / 10000);
+        int month = (int)((numericDate % 10000) / 100);
+        int day = (int)(numericDate % 100);
+
+        if (year >= 1900 && year <= 9999 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+        {
+            try
             {
-                try
+                var newDate = new DateTime(year, month, day);
+                if (Date != newDate)
                 {
-                    Date = new DateTime(year, month, day);
+                    Date = newDate;
                     DateChanged.InvokeAsync(Date);
                 }
-                catch
-                {
-                    // Invalid date (e.g., February 30th)
-                    Date = null;
-                }
             }
-            else
+            catch
             {
                 Date = null;
             }

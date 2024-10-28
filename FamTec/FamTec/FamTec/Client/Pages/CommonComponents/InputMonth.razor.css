@@ -22,12 +22,17 @@
     white-space: normal;
 }
 
+.inputwrap {
+    display:flex;
+    gap : var(--default-pd);
+}
+
 .input {
-    border : none;
-    padding : var(--default-pd);
-    border-radius : var(--default-rd);
-    border:var(--comp-bd);
-    transition : all .3s;
+    border: none;
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--comp-bd);
+    transition: all .3s;
 }
 
 .start:focus, .start:target {
@@ -36,4 +41,12 @@
 
 .end:focus {
     border: var(--default-bd);
+}
+
+.text{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color : var(--main-color);
+    font-weight : bold;
 }

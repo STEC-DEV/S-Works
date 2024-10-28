@@ -1,11 +1,11 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
 
 <div class="check">
-    <div class="header">
-        <span class="title">
+    <div class="header" >
+        <span class="title pointer" @onclick=OnCheck>
             개인정보 수집 및 이용 동의 (필수)
         </span>
-        <input type="checkbox" @onchange="(e)=>OnCheck(e)" />
+        <input class="pointer" type="checkbox" checked="@(isCheck)" @onclick=OnCheck />
     </div>
     
     <div class="content">
@@ -64,11 +64,13 @@
 @code {
     [Parameter] public EventCallback<bool> CheckPerm { get; set; }
 
+    bool isCheck = false;
 
 
 
-    private async void OnCheck(ChangeEventArgs e)
+    private async void OnCheck()
     {
-        await CheckPerm.InvokeAsync((bool)e.Value);
+        await CheckPerm.InvokeAsync(!isCheck);
+        isCheck = !isCheck;
     }
 }

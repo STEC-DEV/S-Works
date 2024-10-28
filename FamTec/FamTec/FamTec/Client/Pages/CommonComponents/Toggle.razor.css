@@ -7,6 +7,10 @@
     white-space:nowrap;
 }
 
+.toggle-container input:hover{
+    cursor:pointer;
+}
+
 .col {
     flex-direction: column;
     align-items : baseline;

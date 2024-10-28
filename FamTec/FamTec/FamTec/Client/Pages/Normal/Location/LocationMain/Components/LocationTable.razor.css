@@ -89,5 +89,10 @@
 
 
 .location-table .input:hover, .location-table .input:focus{
+    
     border : var(--default-bd);
+}
+
+.tbody-tr .td input:hover {
+    cursor: pointer;
 }

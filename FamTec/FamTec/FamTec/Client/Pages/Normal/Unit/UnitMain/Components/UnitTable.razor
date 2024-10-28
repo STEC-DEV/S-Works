@@ -43,10 +43,10 @@
                     @* <td class="td text-left">
             @(unit.idx+1)
             </td> *@
-                    <td class="td">
+                    <td class="td @(!unit.value.SystemCreate ? "pointer" : "")">
                         @(unit.value.SystemCreate ? "시스템" : "사용자 정의")
                     </td>
-                    <td class="td">
+                    <td class="td @(!unit.value.SystemCreate ? "pointer" : "")">
                         @unit.value.Unit
                     </td>
                     @if (BASIC)

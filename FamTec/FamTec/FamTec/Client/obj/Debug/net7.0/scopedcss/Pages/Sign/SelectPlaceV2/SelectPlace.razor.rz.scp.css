@@ -67,6 +67,7 @@
 }
 
 .li:hover[b-vokxs8vq93]{
+    cursor : pointer;
     border:var(--default-bd);
     transform : scale(1.02);
 }

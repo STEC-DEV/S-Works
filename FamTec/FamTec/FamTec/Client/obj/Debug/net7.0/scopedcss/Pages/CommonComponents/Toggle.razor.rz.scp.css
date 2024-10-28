@@ -7,6 +7,10 @@
     white-space:nowrap;
 }
 
+.toggle-container input:hover[b-dj25yh7jz7]{
+    cursor:pointer;
+}
+
 .col[b-dj25yh7jz7] {
     flex-direction: column;
     align-items : baseline;

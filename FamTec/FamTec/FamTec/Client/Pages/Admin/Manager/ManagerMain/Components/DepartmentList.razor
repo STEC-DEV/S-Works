@@ -28,7 +28,7 @@
         {
 
             <li class="depart-item @(Edit ? "" : "hover" ) @(selectedDepartment==item.Name ?"active":"")" @onclick="@(Edit ?  null : (()=>OnSelect(item.Name)))">
-                <span class="item-title" @onclick:stopPropagation>
+                <span class="item-title" >
                     @item.Name
                 </span>
                 @* @onclick=@(() => OnModal(item.Id)) *@
@@ -47,6 +47,7 @@
                         <EditDepartment 
                             DepartmentId="openModalId" 
                             OnCancel="CloseModal" 
+                            OnLoadManager="OnLoadManager"
                             OnLoadDepartment="OnLoadDepartments"
                             Data="item" />
                     </ChildComponent>
@@ -72,6 +73,7 @@
     [Parameter] public bool Edit { get; set; }
     // [Parameter] public EventCallback<(bool ,int)> Select { get; set; }
     [Parameter] public EventCallback OnLoadDepartments { get; set; }
+    [Parameter] public EventCallback OnLoadManager{ get; set; }
     [Parameter] public EventCallback OnListSync { get; set; }
     [Parameter] public bool AddMode {get; set;}
     [Parameter] public List<int> CheckItems { get; set; }
