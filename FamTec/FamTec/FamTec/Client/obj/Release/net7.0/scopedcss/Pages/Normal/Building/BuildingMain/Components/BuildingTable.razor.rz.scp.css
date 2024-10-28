@@ -48,9 +48,9 @@
     overflow : auto;
 }
 
-.building-table .tbody-tr:hover[b-ytu5hwp48s]{
+/*.building-table .tbody-tr:hover{
     cursor : pointer
-}
+}*/
 
 .building-table .tbody-tr[b-ytu5hwp48s]{
     background-color :var(--content-back-color);

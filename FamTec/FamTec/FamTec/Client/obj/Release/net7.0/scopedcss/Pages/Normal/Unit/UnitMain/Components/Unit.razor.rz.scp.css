@@ -26,6 +26,7 @@
     padding: var(--default-pd) 0;
     justify-content: space-between;
     border-bottom: var(--default-bd);
+    min-height : 67px;
 }
 
 .unit .title[b-lw769fv04r] {

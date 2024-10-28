@@ -77,8 +77,10 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 #region Kestrel 서버
 builder.WebHost.UseKestrel((context, options) =>
@@ -94,13 +96,13 @@ builder.WebHost.UseKestrel((context, options) =>
         // HTTP/2는 성능 향상과 효율적인 데이터 전송을 제공한다.
         endpointOptions.Protocols = HttpProtocols.Http1AndHttp2;
     });
-    /*
-    options.Listen(IPAddress.Loopback, 5245, listenOptions =>
-    {
-        // SSL 설정 (경로, 비밀번호)
-        listenOptions.UseHttps("path/to/cert.pfx"", "testPassword");
-    });
-    */
+    
+    //options.Listen(IPAddress.Parse("123.2.156.148"), 5246, listenOptions =>
+    //{
+    //    // SSL 설정 (경로, 비밀번호)
+    //    listenOptions.UseHttps("C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Path\\to\\sws.s-tec.co.kr_pfx.pfx", "#sws.s-tec.co.kr@");
+    //});
+    
 });
 
 #endregion
@@ -366,7 +368,6 @@ builder.Services.AddResponseCompression(opts =>
 });
 
 
-
 // Brotli와 Gzip 압축 제공자 설정
 builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
 {
@@ -516,6 +517,7 @@ foreach (var path in userPaths)
 
 app.UseRouting();
 
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

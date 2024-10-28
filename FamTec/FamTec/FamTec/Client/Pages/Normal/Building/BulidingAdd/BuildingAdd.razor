@@ -68,6 +68,8 @@
             await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
             return;
         }
+        
+
         ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
         if(ResAdd.code != 200)
         {
