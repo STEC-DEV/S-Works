@@ -1,10 +1,6 @@
 {
   "Version": 1,
-<<<<<<< HEAD
-  "Hash": "5JU7kTpnHMrc3JsE/RT7xcnBjUaPcYDeJQPowrL9h8I=",
-=======
-  "Hash": "wD3IQWkpghxeXFIdMPXodphBwXScVoZuv3pLCdc3ae0=",
->>>>>>> origin/Front
+  "Hash": "tKQz2Id2/+H3le95e0kE55J8ixY7ANYa8WW0o7pKfRY=",
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -10927,13 +10923,10 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
-=======
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\areaClick.js",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\areaClick.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
       "BasePath": "/",
       "RelativePath": "js/areaClick.js",
       "AssetKind": "All",
@@ -10949,8 +10942,7 @@
       "OriginalItemSpec": "wwwroot\\js\\areaClick.js"
     },
     {
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
->>>>>>> origin/Front
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
@@ -11026,13 +11018,10 @@
       "OriginalItemSpec": "wwwroot\\js\\mac.js"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
-=======
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\multiSelect.js",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\multiSelect.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
       "BasePath": "/",
       "RelativePath": "js/multiSelect.js",
       "AssetKind": "All",
@@ -11048,8 +11037,7 @@
       "OriginalItemSpec": "wwwroot\\js\\multiSelect.js"
     },
     {
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
->>>>>>> origin/Front
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",

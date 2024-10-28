@@ -43,6 +43,10 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try 
             {
+                if(files is [_, ..])
+                    CreateBuilderLogger.ConsoleText($"요청검사 --> {HttpContext.Request.Path.Value} / {files[0].FileName} / {files[0].Length}");
+
+
                 //List<IFormFile>? files = null;
                 //AddVocDTO dto = new AddVocDTO()
                 //{

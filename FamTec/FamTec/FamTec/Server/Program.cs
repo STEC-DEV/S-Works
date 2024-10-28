@@ -325,14 +325,22 @@ if (CorsArr is [_, ..])
     // 개발용
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy(name: MyAllowSpectificOrigins,
-            policy =>
-            {
-                policy.WithOrigins(CorsArr)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials(); // 필요시 Credentials 허용
-            });
+        options.AddPolicy("AllowLocalAndSpecificIP", policy =>
+        {
+            policy.SetIsOriginAllowed(_ => true) // 모든 Origin 허용 (테스트 목적)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // 자격 증명 허용
+        });
+
+        //options.AddPolicy(name: MyAllowSpectificOrigins,
+        //    policy =>
+        //    {
+        //        policy.WithOrigins(CorsArr)
+        //                .AllowAnyHeader()
+        //                .AllowAnyMethod()
+        //                .AllowCredentials(); // 필요시 Credentials 허용
+        //    });
     });
 }
 else
@@ -412,6 +420,10 @@ FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider
 provider.Mappings[".wasm"] = "application/wasm";
 provider.Mappings[".gz"] = "application/octet-stream";
 provider.Mappings[".br"] = "application/octet-stream";
+provider.Mappings[".jpg"] = "image/jpeg";
+provider.Mappings[".png"] = "image/png";
+provider.Mappings[".gif"] = "image/gif";
+provider.Mappings[".webp"] = "image/webp";
 
 app.UseStaticFiles(new StaticFileOptions
 {

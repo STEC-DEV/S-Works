@@ -80,3 +80,8 @@
 .table[b-gupr4owxf2]  .table-td-link {
     color : var(--main-color);
 }
+
+
+.tr .text-right[b-gupr4owxf2]{
+    text-align:right;
+}

@@ -8,6 +8,13 @@
     position: relative;
 }
 
+.required[b-shu98f9syi]::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
 .row[b-shu98f9syi]{
     flex-direction:row;
     align-items:center;

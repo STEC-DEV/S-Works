@@ -137,15 +137,11 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-<<<<<<< HEAD
-      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
-=======
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\areaClick.js",
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\areaClick.js",
       "PackagePath": "staticwebassets\\js\\areaClick.js"
     },
     {
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
->>>>>>> origin/Front
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\chartInterop.js",
       "PackagePath": "staticwebassets\\js\\chartInterop.js"
     },
     {
@@ -161,15 +157,11 @@
       "PackagePath": "staticwebassets\\js\\mac.js"
     },
     {
-<<<<<<< HEAD
-      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
-=======
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\multiSelect.js",
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\multiSelect.js",
       "PackagePath": "staticwebassets\\js\\multiSelect.js"
     },
     {
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
->>>>>>> origin/Front
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\qr.js",
       "PackagePath": "staticwebassets\\js\\qr.js"
     },
     {

@@ -79,7 +79,7 @@
 
 .table .tr:hover td[b-zhhpdd0a7g]{
     background-color:var(--main-light);
-    
+
 }
 
 .table .td[b-zhhpdd0a7g]{
@@ -88,6 +88,7 @@
     white-space: nowrap;
     word-break:break-all;
 
+    /*padding:0.8rem;*/
     padding:0.8rem;
 
     
@@ -99,6 +100,7 @@
 }
 .table .tbody-tr:hover td[b-zhhpdd0a7g]{
     background-color:var(--main-light);
+    
     
 }
 
@@ -124,7 +126,7 @@
     word-break:break-all;
 
     /*padding:var(--default-pd) 0;*/
-    padding:var(--default-pd) 0;
+    padding:0.8rem ;
 
     
     text-align: center;
@@ -133,4 +135,19 @@
     color : var(--main-color);
     border-bottom : var(--layout-bd);
     background-color :var(--content-back-color);
+}
+
+.link[b-zhhpdd0a7g]{
+
+    width:1rem;
+}
+
+.center[b-zhhpdd0a7g] {
+    text-align:center;
+}
+
+.tr .text-right[b-zhhpdd0a7g],
+.tfoot-tr .text-right[b-zhhpdd0a7g]
+{
+    text-align:right;
 }

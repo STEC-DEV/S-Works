@@ -53,10 +53,13 @@
     border-bottom : var(--layout-bd);
 }
 
+.tbody-tr:hover .td[b-7v3qvh8eth]{
+    background-color : var(--main-light);
+    cursor :pointer;
+}
 
-.table .tbody-tr:hover td[b-7v3qvh8eth]{
-    background-color:var(--main-light);
-    
+.td > input[b-7v3qvh8eth] {
+    cursor :pointer;
 }
 
 .table .td[b-7v3qvh8eth]{
@@ -78,3 +81,4 @@
 .table[b-7v3qvh8eth]  .table-td-link {
     color : var(--main-color);
 }
+

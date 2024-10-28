@@ -43,7 +43,7 @@ namespace FamTec.Server.Controllers.Voc
         [Route("sign/AddVocComment")]
 
         public async Task<IActionResult> AddVocComment([FromForm]AddVocCommentDTO dto, [FromForm] List<IFormFile>? files)
-        {
+       {
             try
             {
                 if (HttpContext is null)
