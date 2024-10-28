@@ -23,6 +23,7 @@
             </label>
         </div>
 
+        @* @onchange="@((e) => OnAllCheckItem(e.Value.ToString() == " true"))" *@
         @if (IsActive)
         {
             <ul class="options">
@@ -30,7 +31,8 @@
                     <input 
                         class="pointer"
                         type="checkbox"
-                           @onchange="@((e) => OnAllCheckItem(e.Value.ToString() == " true"))"
+                           @onclick:stopPropagation="true"
+                           @onclick="() => OnAllCheckItem(!OnAllSync())"
                            checked="@OnAllSync()"
                            />
                     <span>전체</span>
@@ -132,6 +134,7 @@
 
     private async Task OnCheckChanged(FilterItem item, ChangeEventArgs e)
     {
+
         item.IsChecked = !item.IsChecked; // 체크 상태 토글
         if(e != null)
         {
@@ -142,7 +145,7 @@
 
     private async void OnAllCheckItem(bool isChecked)
     {
-        
+        Console.WriteLine("전체");
         foreach (var item in SelectItems)
         {
             item.IsChecked = isChecked;
@@ -150,6 +153,7 @@
         
         
         StateHasChanged();
+        await OnSelectionChanged.InvokeAsync(SelectItems);
     }
 
 }

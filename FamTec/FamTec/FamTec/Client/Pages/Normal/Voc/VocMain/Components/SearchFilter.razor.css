@@ -44,7 +44,7 @@
     gap : var(--wide-pd);*/
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-row-gap: var(--wide-pd);
+    grid-row-gap: var(--default-pd);
     grid-column-gap: calc(var(--wide-pd) * 3);
 }
 

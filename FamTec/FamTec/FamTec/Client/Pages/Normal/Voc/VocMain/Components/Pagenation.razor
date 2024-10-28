@@ -1,27 +1,37 @@
 ﻿
 
 <div class="pagenation">
-    @if (CurrentPage != 1)
+    @* @if (CurrentPage != 1)
     {
         <label class="move" @onclick="()=>OnMove(-1)">
             &lt
         </label>
-    }
+    } *@
+    <label class="move" @onclick="()=>OnMove(-1)">
+        &lt
+    </label>
     <ul class="page-wrap">
-        @for(var i=1; i <= TotalPage; i++)
-        {
-            int pageNumber = i;
-            <li class="page" @onclick="()=>OnMove(pageNumber)">
-                @i
-            </li>
+        @{
+            
+            @for (var i = startPage; i <= endPage; i++)
+            {
+                var pageIndex = i;
+                <li class="page @(i == CurrentPage ? "active" : null)" @onclick="()=>OnMove(pageIndex)">
+                    @i
+                </li>
+            }
         }
+        
     </ul>
-    @if (CurrentPage !=TotalPage )
+    <label class="move" @onclick="()=>OnMove(-2)">
+        &gt
+    </label>
+    @* @if (CurrentPage !=TotalPage )
     {
         <label class="move" @onclick="()=>OnMove(-2)">
             &gt
         </label>
-    }
+    } *@
     
 </div>
 
@@ -30,9 +40,34 @@
     [Parameter] public int CurrentPage { get; set; }
     [Parameter] public EventCallback<int> OnChanged { get; set; }
 
-
-    private async Task OnMove(int num)
+    int curGroup;
+    int startPage;
+    int endPage;
+    protected override void OnParametersSet()
     {
-        await OnChanged.InvokeAsync(num);
+        UpdatePagination();
     }
+
+    private void UpdatePagination()
+    {
+        curGroup = (CurrentPage - 1) / 5;
+        startPage = (curGroup * 5) + 1;
+        endPage = Math.Min(startPage + 4, TotalPage);
+    }
+
+    private async Task OnMove(int direction)
+    {
+        int newPage;
+
+        if (direction == -1) // 이전 그룹으로 이동
+            newPage = Math.Max(CurrentPage - 1, 1);
+        else if (direction == -2) // 다음 그룹으로 이동
+            newPage = Math.Min(CurrentPage + 1, TotalPage);
+        else // 특정 페이지로 이동
+            newPage = Math.Clamp(direction, 1, TotalPage);
+
+        await OnChanged.InvokeAsync(newPage);
+    }
+
+   
 }

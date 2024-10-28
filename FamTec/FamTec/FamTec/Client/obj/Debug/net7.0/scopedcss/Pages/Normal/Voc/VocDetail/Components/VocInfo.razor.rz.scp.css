@@ -1,6 +1,6 @@
 .vocinfo-container[b-exbaw6icmy] {
-    /*display: flex;
-    flex-direction: column;*/
+    display: flex;
+    flex-direction: column;
     height: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
@@ -12,6 +12,7 @@
 .vocinfo-wrap[b-exbaw6icmy] {
     display: flex;
     flex-direction: column;
+    overflow:hidden;
     /*height: 100%;*/
 }
 
@@ -41,13 +42,14 @@
     color:var(--main-color);
 }
 
-.vocinfo-container .vocinfo-content[b-exbaw6icmy]{
+.vocinfo-container .vocinfo-content[b-exbaw6icmy] {
     display: flex;
     flex-direction: column;
     /*justify-content: space-evenly;*/
     gap: var(--default-pd);
     height: 100%;
     padding: var(--default-pd) 0;
+    overflow: auto;
 }
 
 

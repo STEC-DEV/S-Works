@@ -28,3 +28,8 @@
 .move:hover {
     cursor: pointer;
 }
+
+.active{
+    background-color :var(--main-color);
+    color:white;
+}

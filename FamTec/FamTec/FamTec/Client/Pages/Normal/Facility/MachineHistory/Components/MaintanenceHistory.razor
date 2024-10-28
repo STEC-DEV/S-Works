@@ -11,7 +11,7 @@
                 유지보수 이력
             </span>
         </div>
-        <div class="option">
+        <div class="option @(SearchOption !=1 ? "flex-end":null)">
             @if (SearchOption == 1)
             {
                 <div class="vochistory-slider  @(SearchOption != 1 ? "date-none" : "")">
