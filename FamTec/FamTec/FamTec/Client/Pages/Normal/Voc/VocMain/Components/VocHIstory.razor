@@ -8,7 +8,7 @@
                 민원 내역
             </span>
         </div>
-        <div class="option">
+        <div class="option @(FilterOption !=0 ? "flex-end":null)">
             @if (FilterOption ==0)
             {
                 <div class="vochistory-slider @(FilterOption == 1 ? "date-none" : "")">

@@ -50,3 +50,29 @@ window.timelineHandler = {
         };
     }
 };
+
+
+
+
+
+//window.addOutsideClickListener = {
+//    addClickListener: function (dotNetHelper) {
+//        // 이벤트 핸들러 함수를 별도로 저장
+//        this.clickHandler = function (event) {
+//            const viewerElement = document.querySelector('.viewer');
+//            if (viewerElement && !viewerElement.contains(event.target)) {
+//                dotNetHelper.invokeMethodAsync('HideDropdown');
+//            }
+//        };
+
+//        // 이벤트 리스너 등록
+//        document.addEventListener('click', this.clickHandler);
+//    },
+
+//    // 이벤트 리스너 제거를 위한 메서드 추가
+//    removeClickListener: function () {
+//        if (this.clickHandler) {
+//            document.removeEventListener('click', this.clickHandler);
+//        }
+//    }
+//};

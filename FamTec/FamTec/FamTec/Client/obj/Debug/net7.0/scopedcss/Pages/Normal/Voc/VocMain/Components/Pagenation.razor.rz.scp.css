@@ -28,3 +28,8 @@
 .move:hover[b-vebw2pb2rq] {
     cursor: pointer;
 }
+
+.active[b-vebw2pb2rq]{
+    background-color :var(--main-color);
+    color:white;
+}

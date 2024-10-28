@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "sCfuRBQYL72wNrl4+Eo3wmNrwawOQIJrAVt8JP3ATKU=",
+=======
+  "Hash": "FSFyufl9PLdeyqOabnjDDjsE4JcryO5FKHcYjMym5W0=",
+>>>>>>> origin/Front
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -11531,7 +11535,30 @@
       "OriginalItemSpec": "wwwroot\\js\\qrcode.js"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
+=======
+      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\viewerOutsideClickListener.js",
+      "SourceId": "FamTec.Client",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "js/viewerOutsideClickListener.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\viewerOutsideClickListener.js"
+    },
+    {
+      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
+>>>>>>> origin/Front
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",

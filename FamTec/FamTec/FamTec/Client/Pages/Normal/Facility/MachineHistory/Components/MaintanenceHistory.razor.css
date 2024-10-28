@@ -44,6 +44,12 @@
     align-items : center;
 }
 
+
+
+.container .flex-end {
+    justify-content: flex-end;
+}
+
 .option-page{
     display : flex;
     gap : var(--default-pd);
