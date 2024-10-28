@@ -50,15 +50,7 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXE1hdGVyaWFsXERldGFpbFNlYXJjaFxDb21wb25lbnRzXERhdGFUYWJsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-<<<<<<< HEAD
-[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXFZvY01haW4ucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/SignalRExample.razor]
-=======
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/SignalRExample.razor]
->>>>>>> origin/Front
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2lnbmFsUkV4YW1wbGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
@@ -1070,15 +1062,11 @@ build_metadata.AdditionalFiles.CssScope = b-i7u2all02v
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXENvbXBvbmVudHNcVm9jVGFibGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-on0bmwg9js
 
-<<<<<<< HEAD
-[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Sign/MobileSign/MobileSignIn.razor]
-=======
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
+[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Normal/Voc/VocMain/VocMain.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9ybWFsXFZvY1xWb2NNYWluXFZvY01haW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-pbon83xiin
 
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Pages/Sign/MobileSign/MobileSignIn.razor]
->>>>>>> origin/Front
+[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Pages/Sign/MobileSign/MobileSignIn.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2lnblxNb2JpbGVTaWduXE1vYmlsZVNpZ25Jbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-noqk2edbz9
 
@@ -1174,15 +1162,11 @@ build_metadata.AdditionalFiles.CssScope = b-dyg46wmdyc
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXERyYXdlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-rriyx9tl3w
 
-<<<<<<< HEAD
-[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Shared/MainLayout.razor]
-=======
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Shared/ErrLayout.razor]
+[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Shared/ErrLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEVyckxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-3pvxf1p1i7
 
-[C:/Users/stec/Desktop/duke/Dev/2024/S-Works/FamTec/FamTec/FamTec/Client/Shared/MainLayout.razor]
->>>>>>> origin/Front
+[C:/Users/kyw/Documents/S-Works/FamTec/FamTec/FamTec/Client/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-7s48qd2tqg
 

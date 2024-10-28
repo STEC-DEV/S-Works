@@ -1,10 +1,6 @@
 {
   "Version": 1,
-<<<<<<< HEAD
-  "Hash": "sCfuRBQYL72wNrl4+Eo3wmNrwawOQIJrAVt8JP3ATKU=",
-=======
-  "Hash": "FSFyufl9PLdeyqOabnjDDjsE4JcryO5FKHcYjMym5W0=",
->>>>>>> origin/Front
+  "Hash": "vqsB5+XP8YAC2ziouMY+gx8kMwQP4qkfFIhfflfwNPI=",
   "Source": "FamTec.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -11535,13 +11531,10 @@
       "OriginalItemSpec": "wwwroot\\js\\qrcode.js"
     },
     {
-<<<<<<< HEAD
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
-=======
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\viewerOutsideClickListener.js",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\viewerOutsideClickListener.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",
       "BasePath": "/",
       "RelativePath": "js/viewerOutsideClickListener.js",
       "AssetKind": "All",
@@ -11557,8 +11550,7 @@
       "OriginalItemSpec": "wwwroot\\js\\viewerOutsideClickListener.js"
     },
     {
-      "Identity": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
->>>>>>> origin/Front
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
       "SourceId": "FamTec.Client",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\",

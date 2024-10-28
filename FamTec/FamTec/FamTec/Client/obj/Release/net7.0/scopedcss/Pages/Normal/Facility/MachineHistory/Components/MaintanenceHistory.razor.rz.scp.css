@@ -44,6 +44,12 @@
     align-items : center;
 }
 
+
+
+.container .flex-end[b-mjfp83w87d] {
+    justify-content: flex-end;
+}
+
 .option-page[b-mjfp83w87d]{
     display : flex;
     gap : var(--default-pd);

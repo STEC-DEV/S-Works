@@ -165,7 +165,7 @@
         content.Add(jsonContent);
 
         //var response = await httpClient.PostAsync("http://123.2.159.98:5245/api/Hub/Files", content);
-        var response = await httpClient.PostAsync("http://sws.s-tec.co.kr/api/Hub/Files", content);
+        var response = await httpClient.PostAsync("https://sws.s-tec.co.kr/api/Hub/Files", content);
 
         if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {

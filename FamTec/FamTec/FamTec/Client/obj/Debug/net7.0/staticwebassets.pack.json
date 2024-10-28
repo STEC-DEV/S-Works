@@ -169,15 +169,11 @@
       "PackagePath": "staticwebassets\\js\\qrcode.js"
     },
     {
-<<<<<<< HEAD
-      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
-=======
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\viewerOutsideClickListener.js",
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\viewerOutsideClickListener.js",
       "PackagePath": "staticwebassets\\js\\viewerOutsideClickListener.js"
     },
     {
-      "Id": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
->>>>>>> origin/Front
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\voc.js",
       "PackagePath": "staticwebassets\\js\\voc.js"
     },
     {
