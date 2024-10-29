@@ -30,7 +30,7 @@
 }
 
 .input {
-    width: 100%;
+    width: 20%;
     border: none;
     padding: var(--half-pd);
     border-radius: var(--default-rd);

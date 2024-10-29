@@ -78,7 +78,13 @@
     width:100%;
     display : flex;
     align-items :center;
-    gap : var(--one-q-pd);
+    gap : var(--default-pd);
+}
+
+.item-group{
+    display:flex;
+    gap:var(--half-pd);
+    
 }
 
 .width{

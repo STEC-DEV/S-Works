@@ -8,6 +8,11 @@
     position: relative;
 }
 
+.flex{
+    display : flex;
+    
+}
+
 .inputfield-container .inputfield-label{
     
     grid-area:label;
