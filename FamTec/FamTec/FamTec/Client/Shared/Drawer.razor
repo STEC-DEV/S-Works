@@ -70,7 +70,7 @@
     private bool energy = false;
     private bool user = false;
     private bool voc = false;
-
+    private bool isAdmin = false;
 
 
 
@@ -92,8 +92,8 @@
             await OnLoadPlacePerm();
             await OnCheckUserPerm();
         }
-        
-        
+        isAdmin = await (_authStateProvider as CustomAuthProvider).IsAdminAsync();
+
         await LoadCategory();
     }
 
@@ -190,7 +190,7 @@
                     }
             );
             }
-            
+
 
         }
        /*
@@ -249,6 +249,20 @@
                     }
             );
         }
+
+        /*
+        * 설정 (데이터 밀어넣는곳 관리자 전용)
+        */
+        // if (isAdmin)
+        // {
+        //     test.Add(
+        //         new Category
+        //             {
+        //                 Name = "설정",
+        //                 Url = "/settings"
+        //             }
+        //     );
+        // }
 
         return test;
     }

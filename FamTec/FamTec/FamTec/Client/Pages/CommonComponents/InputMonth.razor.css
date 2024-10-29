@@ -1,6 +1,7 @@
 ﻿
 
 .inputmonth {
+    width:100%;
     display : flex ;
     flex-direction : column;
     gap : var(--half-pd);
@@ -23,15 +24,20 @@
 }
 
 .inputwrap {
+    width:100%;
     display:flex;
     gap : var(--default-pd);
 }
 
 .input {
+    width: 100%;
     border: none;
-    padding: var(--default-pd);
+    padding: var(--half-pd);
     border-radius: var(--default-rd);
     border: var(--comp-bd);
+    font-size: var(--normal-size);
+    
+    
     transition: all .3s;
 }
 

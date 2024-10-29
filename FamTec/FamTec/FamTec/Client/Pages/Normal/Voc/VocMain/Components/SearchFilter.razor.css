@@ -4,7 +4,7 @@
     padding: var(--default-pd);
     min-height: 100%;
     height: 100%;
-    
+    width:100%;
     
     /*overflow: hidden;*/
 }
@@ -18,6 +18,7 @@
     padding: var(--default-pd) var(--wide-pd);
     min-height: 100%;
     height: 100%;
+    width: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     box-shadow: var(--shadow-1);
@@ -42,6 +43,7 @@
     /*display : flex;
     justify-content : space-between;
     gap : var(--wide-pd);*/
+    width:100%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-row-gap: var(--default-pd);
@@ -49,6 +51,7 @@
 }
 
 .filter-date {
+    width: 100%;
     display: flex;
     gap: var(--default-pd);
     font-size: inherit;
@@ -68,14 +71,18 @@
 
 .filter-date-content {
     display: flex;
-    
     gap: var(--default-pd);
 }
 
 .filter-date-item{
+    width:100%;
     display : flex;
     align-items :center;
     gap : var(--one-q-pd);
+}
+
+.width{
+    width:100%;
 }
 
 .filter-date .label {

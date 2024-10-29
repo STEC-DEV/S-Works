@@ -34,12 +34,14 @@
     /*display : flex;
     justify-content :space-between;
     gap : var(--wide-pd);*/
+    width:100%;
     display : grid;
     grid-template-columns : repeat(2, 1fr);
     grid-column-gap : var(--wide-pd);
 }
 
 .filter-item[b-w2uu1y7z7h]{
+    height:100%;
     display : flex;
     gap : var(--half-pd);
 }

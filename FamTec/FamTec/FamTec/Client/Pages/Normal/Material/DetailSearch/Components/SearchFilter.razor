@@ -17,7 +17,7 @@
             <InputMonth Label="조회기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
         </div>
         <div class="filter-item">
-            <TextField2 Label="조회품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true />
+            <TextField2 Label="조회품목" Value="@(titles =="" ? "검색어 입력" : titles)" Row=true Padding="half"/>
             <Button Name="검색"Width=true Type="0" OnClick="OnSearch"/>
         </div>
     </div>

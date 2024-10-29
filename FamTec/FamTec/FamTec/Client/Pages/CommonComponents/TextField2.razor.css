@@ -28,6 +28,7 @@
 }
 
 .text {
+    height:100%;
     display:block;
     transition : all .3s;
     border:var(--comp-bd);
@@ -50,4 +51,9 @@
 
 .color{
     background-color : var(--content-back-color);
+}
+
+
+.half{
+    padding : var(--half-pd);
 }

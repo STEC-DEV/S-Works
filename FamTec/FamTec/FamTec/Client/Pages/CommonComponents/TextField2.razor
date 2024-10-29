@@ -2,7 +2,7 @@
     <label class="label">
         @Label
     </label>
-    <p class="text @(Color? "color":"")">
+    <p class="text @(Color? "color":"") @(!string.IsNullOrEmpty(Padding) ? @Padding : "") ">
         @* @(Value ?? "&nbsp;") *@
         @((MarkupString)(string.IsNullOrWhiteSpace(Value) ? "&nbsp;" : Value))
     </p>
@@ -13,5 +13,6 @@
     [Parameter] public string Value { get; set; }
     [Parameter] public bool Color { get; set; }
     [Parameter] public bool Row { get; set; }
+    [Parameter] public string? Padding { get; set; }
 
 }
