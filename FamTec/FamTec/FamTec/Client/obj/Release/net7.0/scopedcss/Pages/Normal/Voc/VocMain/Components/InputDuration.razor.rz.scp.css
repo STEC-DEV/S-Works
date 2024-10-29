@@ -49,10 +49,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .dt[b-ypemx6a8xy]{
     min-width:30%;
     width:100%;
-    padding : var(--half-pd);
+    padding : var(--one-q-pd);
     outline : none;
     border : none;
-    border : var(--default-bd);
+    border : 1px solid var(--main-color);
     border-radius : var(--default-rd);
     color : var(--main-color);
     font-weight:var(--bold-bd);

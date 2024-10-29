@@ -380,13 +380,13 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 #endregion
 
 // GlobalStateService를 싱글톤으로 등록
-builder.Services.AddSingleton<GlobalStateService>();
+//builder.Services.AddSingleton<GlobalStateService>();
 
 // HttpClient 등록
-builder.Services.AddHttpClient<ApiPollingService>();
+//builder.Services.AddHttpClient<ApiPollingService>();
 
 // 백그라운드 서비스 등록
-builder.Services.AddHostedService<ApiPollingService>();
+//builder.Services.AddHostedService<ApiPollingService>();
 
 
 var app = builder.Build();

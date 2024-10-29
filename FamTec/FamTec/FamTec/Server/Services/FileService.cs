@@ -61,6 +61,8 @@ namespace FamTec.Server.Services
                     ".png" => ".png",
                     ".bmp" => ".bmp",
                     ".jpeg" => ".jpeg",
+                    ".jpg" =>".jpg",
+                    ".gif" => ".gif",
                     _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
                 };
                 string All_newFileName = Path.ChangeExtension(newFileName, targetExtension);
@@ -171,6 +173,7 @@ namespace FamTec.Server.Services
                 ".png" => SKEncodedImageFormat.Png,
                 ".bmp" => SKEncodedImageFormat.Bmp,
                 ".jpeg" => SKEncodedImageFormat.Jpeg,
+                ".gif" => SKEncodedImageFormat.Gif,
                 _ => SKEncodedImageFormat.Png // 기본적으로 PNG로 처리
             };
         }

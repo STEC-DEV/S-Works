@@ -14,7 +14,7 @@
         /// <summary>
         /// 사진 확장자
         /// </summary>
-        public static readonly string[] ImageAllowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg" };
+        public static readonly string[] ImageAllowedExtensions = { ".jpg", ".png", ".bmp", ".jpeg", ".gif" };
 
         /// <summary>
         /// 엑셀 확장자
