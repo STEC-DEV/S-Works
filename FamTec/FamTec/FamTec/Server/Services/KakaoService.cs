@@ -46,16 +46,6 @@ namespace FamTec.Server.Services
                     { "limit_day",limit_day.ToString()}
                 });
                 
-                //Content = new FormUrlEncodedContent(new Dictionary<string, string>()
-                //{
-                //    {"key", Common.KakaoAPIKey },
-                //    { "userid", Common.KakaoUserId },
-                //    { "page","1"},
-                //    { "page_size","50"},
-                //    { "start_date","2024915"},
-                //    { "limit_day","100"}
-                //});
-
                 HttpResponse = await Common.HttpClient.PostAsync("https://apis.aligo.in/list/", Content).ConfigureAwait(false);
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -162,6 +152,7 @@ namespace FamTec.Server.Services
 
                 // MID 추가완료
                 //GlobalStateService.AddMID(Convert.ToString(Jobj["info"]["mid"]));
+                //GlobalStateService.AddMID()
 
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
@@ -186,7 +177,7 @@ namespace FamTec.Server.Services
         /// <param name="status">진행상태</param>
         /// <param name="receiver">받는사람 전화번호</param>
         /// <param name="url">링크 URL</param>
-        /// <param name="placetel">상버장 전화번호</param>
+        /// <param name="placetel">사업장 전화번호</param>
         /// <returns></returns>
         public async Task<AddKakaoLogDTO?> UpdateVocAnswer(string receiptnum, string status, string receiver, string url, string placetel)
         {

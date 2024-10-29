@@ -11,5 +11,7 @@
         /// 전송결과 메시지
         /// </summary>
         public string? Message { get; set; }
+
+        
     }
 }

@@ -114,6 +114,7 @@
 .display[b-95ao32x48a]{
     width:100%;
     display:flex;
+    align-items:center;
     justify-content : space-between;
 }
 

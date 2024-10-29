@@ -1,6 +1,5 @@
-﻿using FamTec.Client.Pages.Voc.Select.Components;
+﻿using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
 
 namespace FamTec.Server.Services
 {
@@ -8,19 +7,25 @@ namespace FamTec.Server.Services
     {
         private readonly HttpClient HttpClient;
         private HttpResponseMessage? HttpResponse;
+        
         private readonly GlobalStateService GlobalStateService;
+        private readonly ConsoleLogService<ApiPollingService> CreateBuilderLogger;
 
         public ApiPollingService(HttpClient _httpClient,
-            GlobalStateService _globalstateservice)
+            GlobalStateService _globalstateservice,
+            ConsoleLogService<ApiPollingService> _createbuilderlogger)
         {
             this.HttpClient = _httpClient;
             this.GlobalStateService = _globalstateservice;
+            this.CreateBuilderLogger = _createbuilderlogger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("API Polling Service 시작됨"); ;
 
+#if DEBUG
+            CreateBuilderLogger.ConsoleText("백그라운드 타이머 시작 / 간격 5분");
+#endif
             while (!stoppingToken.IsCancellationRequested)
             {
                 await RequestApi();
@@ -32,14 +37,16 @@ namespace FamTec.Server.Services
         {
             try
             {
-                List<string> TargetMid = GlobalStateService.GetMIDList();
-                foreach(string mid in TargetMid)
+                List<AddKaKaoSendResult> TargetMID = GlobalStateService.GetMIDList();
+                
+
+                foreach (AddKaKaoSendResult AddResult in TargetMID)
                 {
                     var Content = new FormUrlEncodedContent(new Dictionary<string, string>()
                     {
                         {"apikey", Common.KakaoAPIKey },
                         { "userid", Common.KakaoUserId },
-                        { "mid", mid }
+                        { "mid", AddResult.MID }
                     });
 
                     HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/history/detail/", Content).ConfigureAwait(false);
@@ -47,7 +54,7 @@ namespace FamTec.Server.Services
 
                     JObject? Jobj = JObject.Parse(HttpResponseResult);
                     string? code = (string?)Jobj["code"] ?? null;
-                    
+
                     // list 배열에서 첫 번째 객체 추출 (안전하게 접근)
                     var firstListItem = Jobj["list"]?.FirstOrDefault();
 
@@ -56,8 +63,12 @@ namespace FamTec.Server.Services
                     string msgid = (string?)firstListItem?["msgid"] ?? null; // 메시지ID
                     string phone = (string?)firstListItem?["phone"] ?? null; // 수신자
 
+                    // DB INSERT
 
                 }
+             
+
+               
             }
             catch (Exception ex)
             {
