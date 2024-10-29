@@ -23,7 +23,7 @@
 
     private async void OnUploadFiles(InputFileChangeEventArgs e)
     {
-        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" };
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".bmp" };
         if(e.FileCount > MaxFilesNum)
         {
             await JS.InvokeVoidAsync("alert", $"최대 {MaxFilesNum}개까지 가능합니다.");
@@ -36,7 +36,7 @@
             var rawFilesExtension = Path.GetExtension(image.Name).ToLowerInvariant();
             if (!allowedExtensions.Contains(rawFilesExtension))
             {
-                await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, GIF 파일만 업로드 가능합니다.");
+                await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. PNG, JPG, JPEG, BMP 파일만 업로드 가능합니다.");
                 continue;
             }
 
