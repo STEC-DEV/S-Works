@@ -47,6 +47,7 @@
     [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
     private bool isAdminMode;
 
+
     protected override async Task OnInitializedAsync()
     {
         await OnUserCheck();
@@ -69,35 +70,79 @@
 
     private async Task OnUserCheck()
     {
+        //현주소
+        var currentPath = new Uri(Navigation.Uri).AbsolutePath.ToLower();
+
         var authState = await (_authStateProvider as CustomAuthProvider).GetAuthenticationStateAsync();
         var user = authState.User;
         var userPlace = user.Claims.FirstOrDefault(c => c.Type == "PlaceIdx")?.Value;
 
+        //관리자 여부
+        // var isAdmin = await (_authStateProvider as CustomAuthProvider).IsAdminAsync();
+
         Console.WriteLine($"Is user authenticated: {user.Identity.IsAuthenticated}");
         Console.WriteLine($"User identity name: {user.Identity.Name}");
 
-        if (Navigation.Uri.Contains("/"))
+        // 로그인 페이지는 체크 제외
+        if (currentPath.Contains("/login"))
         {
             return;
         }
+
         // 비로그인 시 리턴
-        if (!user.Identity.IsAuthenticated && !Navigation.Uri.Contains("/login"))
+        if (!user.Identity.IsAuthenticated)
         {
             await JS.InvokeVoidAsync("alert", "다시 로그인 해주세요.");
             return;
         }
 
+        // 루트경로 접속시 자동 로그아웃 현재 241029
+        // if (Navigation.Uri.Contains("/"))
+        // {
+        //     return;
+        // }
+
+        //보고 삭제
         // 도메인만 있는 경우 (루트 경로) 체크
         var currentUri = Navigation.Uri.TrimEnd('/');
         var baseUri = Navigation.BaseUri.TrimEnd('/');
         if (currentUri == baseUri)
         {
             await ClearUserSessionAndLogout();
+            
             return;
         }
 
+
         var isAdmin = user.IsInRole("SystemManager") || user.IsInRole("Master") || user.IsInRole("Manager");
         isAdminMode = await (_authStateProvider as CustomAuthProvider).GetLoginMode();
+
+        //관리자 모드 접근
+        if (currentPath.StartsWith("/admin") && !isAdminMode)
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.");
+            await ClearUserSessionAndLogout();
+            return;
+        }
+        
+        //일반모드 접근
+        if (!currentPath.StartsWith("/admin") && isAdminMode)
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.");
+            await ClearUserSessionAndLogout();
+            return;
+        }
+
+        //일반유저 관리자 메뉴 선택화면 접근
+        if (currentPath.StartsWith("/select") && !isAdmin)
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.");
+            await ClearUserSessionAndLogout();
+            return;
+        }
+
+
+
         if (Navigation.Uri.Contains("/admin"))
         {
             if (!isAdmin || !isAdminMode)

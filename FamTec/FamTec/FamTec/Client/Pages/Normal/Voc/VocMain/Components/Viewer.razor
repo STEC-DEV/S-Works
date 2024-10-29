@@ -6,7 +6,7 @@
     <ul class="ul @(IsShow ? "show" : "")">
         @foreach(var i in viewer)
         {
-            <li class="li pointer" @onclick="()=>OnChangedValue(i) ">
+            <li class="li pointer" @onclick="()=>OnChangedValue(i) " @onclick:stopPropagation="true">
                 @i.Name
             </li>
         }
