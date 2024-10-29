@@ -16,11 +16,14 @@ namespace FamTec.Server.Services
 
         private readonly ILogService LogService;
         private readonly ConsoleLogService<KakaoService> CreateBuilderLogger;
+        //private readonly GlobalStateService GlobalStateService;
 
         public KakaoService(ILogService _logservice,
+            //GlobalStateService _globalstateservice,
             ConsoleLogService<KakaoService> _createbuilderlogger)
         {
             this.LogService = _logservice;
+            //this.GlobalStateService = _globalstateservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -152,14 +155,18 @@ namespace FamTec.Server.Services
                 {
                     CharSet = "euc-kr"
                 };
-
+                
 
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 Jobj = JObject.Parse(HttpResponseResult);
-                
+
+                // MID 추가완료
+                //GlobalStateService.AddMID(Convert.ToString(Jobj["info"]["mid"]));
+
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
                 LogDTO.Message = Convert.ToString(Jobj["message"]);
+
                 return LogDTO;
             }
             catch(Exception ex)

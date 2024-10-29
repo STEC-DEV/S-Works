@@ -69,7 +69,7 @@
 .filter-date-content {
     display: flex;
     
-    gap: var(--default-pd);
+   gap: var(--default-pd);
 }
 
 .filter-date-item{

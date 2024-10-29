@@ -80,13 +80,13 @@
         /// <summary>
         /// 카카오톡 알림톡 템플릿 Code [민원접수]
         /// </summary>
-        //public static readonly string KakaoTemplateCode_1 = "TU_6120";
-        public static readonly string KakaoTemplateCode_1 = "TV_1691";
+        public static readonly string KakaoTemplateCode_1 = "TU_6120";
+        //public static readonly string KakaoTemplateCode_1 = "TV_1691";
 
         /// <summary>
         /// 카카오톡 알림톡 템플릿 Code [민원 진행상태 변경]
         /// </summary>
-        //public static readonly string KakaoTemplateCode_2 = "TU_6125";
-        public static readonly string KakaoTemplateCode_2 = "TV_1693";
+        public static readonly string KakaoTemplateCode_2 = "TU_6125";
+        //public static readonly string KakaoTemplateCode_2 = "TV_1693";
     }
 }

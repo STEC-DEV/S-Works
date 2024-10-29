@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Place;
+using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Admin;
@@ -16,6 +17,7 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IAdminPlacesInfoRepository AdminPlaceInfoRepository;
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
+        private readonly IUserInfoRepository UserInfoRepository;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger;
 
@@ -23,6 +25,7 @@ namespace FamTec.Server.Services.Admin.Place
             IPlaceInfoRepository _placeinforepository,
             IAdminUserInfoRepository _adminuserinforepository,
             IBuildingInfoRepository _buildinginforepository,
+            IUserInfoRepository _userinforepository,
             ILogService _logservice,
             ConsoleLogService<AdminPlaceService> _createbuilderlogger)
         {
@@ -30,6 +33,7 @@ namespace FamTec.Server.Services.Admin.Place
             this.PlaceInfoRepository = _placeinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
+            this.UserInfoRepository = _userinforepository;
 
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -590,7 +594,16 @@ namespace FamTec.Server.Services.Admin.Place
                 List<BuildingTb>? buildingtb = await BuildingInfoRepository.SelectPlaceBuildingList(placeidx).ConfigureAwait(false);
                 if(buildingtb is not null && buildingtb.Any())
                     return new ResponseUnit<bool?>() { message = "해당 사업장에 할당되어있는 건물이 있어 삭제가 불가능합니다.", data = false, code = 204 };
+                
+                // 해당 사업장에 사용자가 있는지 검사 삭제조건 [3]
+                foreach(int placeid in placeidx)
+                {
+                    List<UsersTb>? UsersTB = await UserInfoRepository.GetPlaceUserList(placeid).ConfigureAwait(false);
 
+                    if (UsersTB is [_, ..])
+                        return new ResponseUnit<bool?>() { message = "해당 사업장에 할당되어있는 사용자가 있어 삭제가 불가능합니다.", data = false, code = 204 };
+                }
+                
                 bool? DeleteResult = await PlaceInfoRepository.DeletePlaceList(creater, placeidx).ConfigureAwait(false);
                 return DeleteResult switch
                 {
@@ -598,6 +611,7 @@ namespace FamTec.Server.Services.Admin.Place
                     false => new ResponseUnit<bool?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
                     _ => new ResponseUnit<bool?> { message = "잘못된 요청입니다.", data = null, code = 404 }
                 };
+
             }
             catch(Exception ex)
             {

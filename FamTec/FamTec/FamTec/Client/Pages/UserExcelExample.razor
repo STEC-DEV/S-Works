@@ -15,8 +15,33 @@
 
 <input type="button" value="사용자 등록 엑셀양식 다운로드" @onclick="(() =>  btnClick())"/>
 
+<InputFile OnChange="HandleFileSelected" accept=".xlsx" />
 
 @code {
+    private string? excelData;
+    string fileName{ get; set; }
+    string fileContent{ get; set; }
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+
+            using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // 최대 10MB 제한
+
+            // 파일 내용을 비동기적으로 읽기
+            using var reader = new StreamReader(stream);
+            fileContent = await reader.ReadToEndAsync();
+
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+
+
+    }
+
     protected async Task btnClick()
     {
         // 엑셀 파일 만듬

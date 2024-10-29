@@ -262,7 +262,7 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
                 // 성공
                 if (model.code == 200) 
                     return Ok(model);
-                // 이미 해당 코드가 사용한 이력이 있을때
+                // 이미 해당 계약번호가 사용되었을경우
                 else if (model.code == 202) 
                     return Ok(model);
                 // 실패
