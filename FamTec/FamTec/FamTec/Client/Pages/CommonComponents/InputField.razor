@@ -1,8 +1,11 @@
 ﻿
-<div class="inputfield-container">
-    <label class="inputfield-label">
-        @Label
-    </label>
+<div class="inputfield-container @(string.IsNullOrEmpty(@Label) ? "flex" : "")">
+    @if (!string.IsNullOrEmpty(@Label))
+    {
+        <label class="inputfield-label">
+            @Label
+        </label>
+    }
     <input class="inputfield-input @(EditMode ? null : "block")"
         type="@InputType"
         @bind-value="@(Value)"

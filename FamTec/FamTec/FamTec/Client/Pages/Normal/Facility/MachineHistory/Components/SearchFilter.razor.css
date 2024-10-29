@@ -65,10 +65,16 @@
     gap : var(--default-pd);
 }
 
+
 .filter-date-item{
     display : flex;
     align-items :center;
-    gap : var(--half-pd);
+    gap : var(--default-pd);
+}
+
+.item-group {
+    display: flex;
+    gap: var(--half-pd);
 }
 
 .filter-date .label {

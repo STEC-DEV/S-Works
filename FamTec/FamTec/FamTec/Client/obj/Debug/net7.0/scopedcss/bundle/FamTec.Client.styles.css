@@ -3575,6 +3575,11 @@ svg[b-ijf8ad7z4n] {
     position: relative;
 }
 
+.flex[b-uz6flisf9l]{
+    display : flex;
+    
+}
+
 .inputfield-container .inputfield-label[b-uz6flisf9l]{
     
     grid-area:label;
@@ -3771,7 +3776,7 @@ svg[b-ijf8ad7z4n] {
 }
 
 .input[b-r6a5c3p3nb] {
-    width: 100%;
+    width: 20%;
     border: none;
     padding: var(--half-pd);
     border-radius: var(--default-rd);
@@ -6592,10 +6597,16 @@ svg:hover[b-5q32ql2i5a] {
     gap : var(--default-pd);
 }
 
+
 .filter-date-item[b-8ni0pr2h7a]{
     display : flex;
     align-items :center;
-    gap : var(--half-pd);
+    gap : var(--default-pd);
+}
+
+.item-group[b-8ni0pr2h7a] {
+    display: flex;
+    gap: var(--half-pd);
 }
 
 .filter-date .label[b-8ni0pr2h7a] {
@@ -14235,10 +14246,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .dt[b-ypemx6a8xy]{
     min-width:30%;
     width:100%;
-    padding : var(--half-pd);
+    padding : var(--one-q-pd);
     outline : none;
     border : none;
-    border : var(--default-bd);
+    border : 1px solid var(--main-color);
     border-radius : var(--default-rd);
     color : var(--main-color);
     font-weight:var(--bold-bd);
@@ -14367,7 +14378,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width:100%;
     display : flex;
     align-items :center;
-    gap : var(--one-q-pd);
+    gap : var(--default-pd);
+}
+
+.item-group[b-y76zd9c9py]{
+    display:flex;
+    gap:var(--half-pd);
+    
 }
 
 .width[b-y76zd9c9py]{
@@ -14945,25 +14962,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     overflow :hidden
 }
 /* /Pages/Sign/SignIn/SignIn.razor.rz.scp.css */
-.signup-container[b-hbi4667qfr]{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction : column;
-
-    justify-content:center;
-    align-items:center;
-    background-color:var(--content-back-color);
+.signup-container[b-hbi4667qfr] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--default-color);
 }
 
 .signup-container .signup-wrap[b-hbi4667qfr]{
-    width:25%;
+    width:20%;
     display : flex;
     flex-direction:column;
 
-    border : var(--default-bd);
+    border : 1px solid var(--main-color);
     border-radius : var(--default-rd);
-    padding : var(--default-pd);
+    padding : var(--default-pd) var(--wide-pd) ;
     background-color : var(--default-color);
     box-shadow:var(--shadow-1);
 }
@@ -14987,7 +15003,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display:flex;
     flex-direction:column;
     gap : var(--default-pd);
-    padding : var(--default-pd);
+    padding : var(--default-pd) 0;
 }
 
 

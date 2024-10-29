@@ -20,12 +20,16 @@
                 </span>
                 <div class="filter-date-content">
                     <div class="filter-date-item">
-                        <input type="radio" name="date" value=0 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==0)">
-                        <span class="label">월간</span>
+                        <div class="item-group">
+                            <input type="radio" name="date" value=0 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==0)">
+                            <span class="label">월간</span>
+                        </div>
                     </div>
                     <div class="filter-date-item">
-                        <input type="radio" name="date" value=1 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==1)">
-                        <span class="label">기간 설정</span>
+                        <div class="item-group">
+                            <input type="radio" name="date" value=1 @onchange=OnDateOptionChanged checked="@(selectDefaultOption==1)">
+                            <span class="label">기간 설정</span>
+                        </div>
                         <div class="@(selectDefaultOption != 1 ? "none" : "width") ">
                             <InputDuration 
                                 Row="true"
