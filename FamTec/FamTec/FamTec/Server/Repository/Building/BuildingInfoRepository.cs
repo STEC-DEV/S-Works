@@ -37,10 +37,11 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 bool FloorCheck = await context.FloorTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
-                bool KakaoLogCheck = await context.KakaoLogTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
-                bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
+                // 민원에 해당 건물이 포함되어있는지.
+                //bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
 
-                return FloorCheck || KakaoLogCheck || VocCheck;
+                //return FloorCheck || VocCheck;
+                return FloorCheck;
             }
             catch (MySqlException ex)
             {
@@ -477,6 +478,8 @@ namespace FamTec.Server.Repository.Building
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
 
+            bool UpdateResult = false;
+
             DateTime ThisDate = DateTime.Now;
 
             // ExecutionStrategy를 통해 트랜잭션 재시도 가능
@@ -508,13 +511,58 @@ namespace FamTec.Server.Repository.Building
                                 BuildingTB.DelUser = deleter;
 
                                 context.BuildingTbs.Update(BuildingTB);
-                                bool BuildingResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                if (!BuildingResult)
+                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                if (!UpdateResult)
                                 {
                                     // 업데이트 실패시 롤백
                                     await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
                                     return false;
                                 }
+
+                                List<VocTb>? VocList = await context.VocTbs
+                                .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
+                                .ToListAsync()
+                                .ConfigureAwait(false);
+
+                                if(VocList is [_, ..])
+                                {
+                                    foreach(VocTb VocTB in VocList)
+                                    {
+                                        VocTB.DelYn = true;
+                                        VocTB.DelDt = ThisDate;
+                                        VocTB.DelUser = deleter;
+
+                                        context.VocTbs.Update(VocTB);
+
+                                        UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                        if(!UpdateResult)
+                                        {
+                                            await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
+                                            return false;
+                                        }
+
+                                        List<CommentTb>? CommentList = await context.CommentTbs.Where(m => m.DelYn != true && m.VocTbId == VocTB.Id).ToListAsync();
+                                        if(CommentList is [_, ..])
+                                        {
+                                            foreach(CommentTb CommentTB in CommentList)
+                                            {
+                                                CommentTB.DelYn = true;
+                                                CommentTB.DelDt = ThisDate;
+                                                CommentTB.DelUser = deleter;
+
+                                                context.CommentTbs.Update(CommentTB);
+
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if(!UpdateResult)
+                                                {
+                                                    await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
 
                                 List<BuildingItemGroupTb>? GroupList = await context.BuildingItemGroupTbs
                                     .Where(m => m.BuildingTbId == BuildingTB.Id && m.DelYn != true)
@@ -530,8 +578,8 @@ namespace FamTec.Server.Repository.Building
                                         GroupTB.DelUser = deleter;
 
                                         context.BuildingItemGroupTbs.Update(GroupTB);
-                                        bool GroupResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                        if (!GroupResult)
+                                        UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                        if (!UpdateResult)
                                         {
                                             // 업데이트 실패시 롤백
                                             await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
@@ -551,8 +599,8 @@ namespace FamTec.Server.Repository.Building
                                                 KeyTB.DelUser = deleter;
 
                                                 context.BuildingItemKeyTbs.Update(KeyTB);
-                                                bool KeyResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                                if (!KeyResult)
+                                                UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                if (!UpdateResult)
                                                 {
                                                     // 업데이트 실패시 롤백
                                                     await transaction.RollbackAsync().ConfigureAwait(false); // 롤백
@@ -573,8 +621,8 @@ namespace FamTec.Server.Repository.Building
                                                         ValueTB.DelUser = deleter;
 
                                                         context.BuildingItemValueTbs.Update(ValueTB);
-                                                        bool ValueResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
-                                                        if (!ValueResult)
+                                                        UpdateResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
+                                                        if (!UpdateResult)
                                                         {
                                                             // 업데이트 실패시 롤백
                                                             await transaction.RollbackAsync().ConfigureAwait(false); // 롤백

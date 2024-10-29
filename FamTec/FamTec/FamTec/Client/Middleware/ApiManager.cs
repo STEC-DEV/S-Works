@@ -38,8 +38,11 @@ namespace FamTec.Client.Middleware
         {
             _httpClient = new HttpClient();
 
+#if DEBUG
+            _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
+#else
             _httpClient.BaseAddress = new Uri("https://sws.s-tec.co.kr/api/");
-            //_httpClient.BaseAddress = new Uri("https://123.2.156.148:5246/api/");
+#endif
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

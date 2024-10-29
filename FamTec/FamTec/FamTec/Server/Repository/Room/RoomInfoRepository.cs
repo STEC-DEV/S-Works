@@ -41,10 +41,11 @@ namespace FamTec.Server.Repository.Room
                 bool FacilityCheck = await context.FacilityTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool InventoryCheck = await context.InventoryTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool MaterialCheck = await context.MaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
-                bool StoreCheck = await context.StoreTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
+                //bool StoreCheck = await context.StoreTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool UseMaintenenceMartialCheck = await context.UseMaintenenceMaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
 
-                return FacilityCheck || InventoryCheck || MaterialCheck || StoreCheck || UseMaintenenceMartialCheck;
+                return FacilityCheck || InventoryCheck || MaterialCheck || UseMaintenenceMartialCheck;
+                //return FacilityCheck || InventoryCheck || MaterialCheck || StoreCheck || UseMaintenenceMartialCheck;
             }
             catch (MySqlException ex)
             {

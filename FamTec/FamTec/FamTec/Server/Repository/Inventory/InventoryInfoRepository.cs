@@ -181,9 +181,29 @@ namespace FamTec.Server.Repository.Inventory
         {
             try
             {
+                List<BuildingTb>? BuildingList = await context.BuildingTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync().ConfigureAwait(false);
+
+                if (BuildingList is null || !BuildingList.Any())
+                    return null;
+
+                List<int> BuildingIdx = BuildingList.Select(m => m.Id).ToList();
+
+                List<FloorTb>? FloorList = await context.FloorTbs.Where(m => BuildingIdx.Contains(m.BuildingTbId) && m.DelYn != true).ToListAsync();
+                if (FloorList is null || !FloorList.Any())
+                    return null;
+
+                List<int> FloorIdx = FloorList.Select(m => m.Id).ToList();
+
+                List<RoomTb>? RoomList = await context.RoomTbs.Where(m => FloorIdx.Contains(m.FloorTbId) && m.DelYn != true).ToListAsync();
+                if (RoomList is null || !RoomList.Any())
+                    return null;
+
+                List<int> RoomIdx = RoomList.Select(m => m.Id).ToList();
+
                 // 1. StoreTb 리스트를 필터링하고 가져오기
                 List<StoreTb> storeList = await context.StoreTbs
                     .Where(m => materialid.Contains(m.MaterialTbId) &&
+                                RoomIdx.Contains(m.RoomTbId) &&
                                 m.PlaceTbId == placeid &&
                                 m.CreateDt >= startDate &&
                                 m.CreateDt <= endDate)
@@ -251,34 +271,6 @@ namespace FamTec.Server.Repository.Inventory
                      .ToList()
                         }).OrderBy(dto => dto.ID) // PeriodicDTO의 ID는 오름차순 정렬
              .ToList();
-
-                //List<PeriodicDTO> dtoList = materials.Select(material => new PeriodicDTO
-                //{
-                //    ID = material.Id,
-                //    Code = material.Code,
-                //    Name = material.Name,
-                //    InventoryList = storeList
-                //        .Where(s => s.MaterialTbId == material.Id)
-                //        .Select(s => new InventoryRecord
-                //        {
-                //            INOUT_DATE = s.CreateDt,
-                //            Type = s.Inout,
-                //            ID = s.MaterialTbId,
-                //            Code = material.Code,
-                //            Name = material.Name,
-                //            MaterialUnit = material.Unit,
-                //            InOutNum = s.Num,
-                //            InOutUnitPrice = s.UnitPrice,
-                //            InOutTotalPrice = s.TotalPrice,
-                //            CurrentNum = s.CurrentNum,
-                //            Note = s.Note,
-                //            MaintanceId = s.MaintenenceHistoryTbId,
-                //            Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
-                //        })
-                //        .OrderByDescending(r => r.INOUT_DATE)
-                //        .ToList()
-                //}).OrderBy(dto => dto.ID)
-                //.ToList();
 
                 return dtoList.Any() ? dtoList : new List<PeriodicDTO>();
             }

@@ -73,7 +73,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="category"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Task<ResponseList<MaintanceHistoryDTO>?> GetDateHisotryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type);
+        public Task<ResponseList<MaintanceHistoryDTO>?> GetDateHistoryList(HttpContext context, DateTime StartDate, DateTime EndDate, List<string> category, List<int> type);
 
         /// <summary>
         /// 속한 사업장 유지보수 이력 전체

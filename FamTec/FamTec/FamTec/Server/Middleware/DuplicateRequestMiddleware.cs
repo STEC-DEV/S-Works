@@ -36,25 +36,6 @@ namespace FamTec.Server.Middleware
                 "/api/AdminUser/sign/UserIdCheck"
             };
 
-                context.Request.EnableBuffering();
-
-                using (var reader = new StreamReader(
-                    context.Request.Body,
-                    encoding: Encoding.UTF8,
-                    detectEncodingFromByteOrderMarks: false,
-                    bufferSize: 1024,
-                    leaveOpen: true))
-                {
-                    var requestBody = await reader.ReadToEndAsync();
-                    Console.WriteLine(requestBody);
-
-
-                    // Body 스트림 위치를 0으로 리셋하여 다른 미들웨어나 컨트롤러에서 읽을 수 있도록 함
-                    context.Request.Body.Position = 0;
-                }
-
-
-
                 // 현재 요청 경로 확인
                 var currentPath = context.Request.Path.ToString();
 
@@ -104,7 +85,6 @@ namespace FamTec.Server.Middleware
             var path = context.Request.Path.ToString();
             var query = context.Request.QueryString.ToString();
             var method = context.Request.Method;
-            Console.WriteLine(context.Request.Body);
             
 
             // 클라이언트 식별자 추가 (IP 주소 또는 Authorization 헤더 등)

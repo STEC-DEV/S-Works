@@ -638,7 +638,7 @@ namespace FamTec.Server.Controllers.Maintenance
 
                 category.ForEach(s => s = s.Trim());
 
-                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHisotryList(HttpContext, StartDate, EndDate, category, type).ConfigureAwait(false);
+                ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(HttpContext, StartDate, EndDate, category, type).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

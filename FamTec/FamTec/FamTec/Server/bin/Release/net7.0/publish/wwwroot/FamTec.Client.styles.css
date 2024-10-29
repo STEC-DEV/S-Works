@@ -3989,7 +3989,7 @@ svg[b-ijf8ad7z4n] {
     gap : var(--half-pd);
     position: relative;
     width: 100%;
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
 }
 
 .row[b-95ao32x48a] {
@@ -6588,6 +6588,7 @@ svg:hover[b-5q32ql2i5a] {
 .filter-date .label[b-8ni0pr2h7a] {
     color: var(--main-color);
     white-space: nowrap;
+    font-size: var(--normal-size);
 }
 
 .none[b-8ni0pr2h7a]{

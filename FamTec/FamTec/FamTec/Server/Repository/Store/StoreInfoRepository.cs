@@ -73,14 +73,6 @@ namespace FamTec.Server.Repository.Store
         {
             try
             {
-                // 입출고로 사용한 이력만 조회
-                //List<StoreTb>? StoreList = await context.StoreTbs
-                //    .Where(m => m.DelYn != true && 
-                //    m.PlaceTbId == placeid)
-                //    .OrderByDescending(m => m.InoutDate)
-                //    .ToListAsync()
-                //    .ConfigureAwait(false);
-
                 List<StoreTb>? StoreList = await context.StoreTbs
                     .Where(m => m.PlaceTbId == placeid && 
                                 m.MaintenenceHistoryTbId == null)
