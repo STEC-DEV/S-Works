@@ -6,8 +6,10 @@
     display:flex;
     flex-direction:column;
     height:100%;
+    width:100%;
 }
 
-.content-container[b-pbon83xiin]{
-    height:100%;
+.content-container[b-pbon83xiin] {
+    height: 100%;
+    width: 100%;
 }

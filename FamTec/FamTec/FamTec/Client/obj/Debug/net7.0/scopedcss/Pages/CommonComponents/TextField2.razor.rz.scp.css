@@ -28,6 +28,7 @@
 }
 
 .text[b-30vlxjah2w] {
+    height:100%;
     display:block;
     transition : all .3s;
     border:var(--comp-bd);
@@ -50,4 +51,9 @@
 
 .color[b-30vlxjah2w]{
     background-color : var(--content-back-color);
+}
+
+
+.half[b-30vlxjah2w]{
+    padding : var(--half-pd);
 }
