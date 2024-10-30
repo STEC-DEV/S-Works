@@ -38,33 +38,35 @@ namespace FamTec.Server.Services
             try
             {
                 List<AddKaKaoSendResult> TargetMID = GlobalStateService.GetMIDList();
-                
 
-                foreach (AddKaKaoSendResult AddResult in TargetMID)
+                if (TargetMID is [_, ..])
                 {
-                    var Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                    foreach (AddKaKaoSendResult AddResult in TargetMID)
                     {
-                        {"apikey", Common.KakaoAPIKey },
-                        { "userid", Common.KakaoUserId },
-                        { "mid", AddResult.MID }
-                    });
+                        var Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                        {
+                            {"apikey", Common.KakaoAPIKey },
+                            { "userid", Common.KakaoUserId },
+                            { "mid", AddResult.MID }
+                        });
 
-                    HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/history/detail/", Content).ConfigureAwait(false);
-                    string HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/history/detail/", Content).ConfigureAwait(false);
+                        string HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                    JObject? Jobj = JObject.Parse(HttpResponseResult);
-                    string? code = (string?)Jobj["code"] ?? null;
+                        JObject? Jobj = JObject.Parse(HttpResponseResult);
+                        string? code = (string?)Jobj["code"] ?? null;
 
-                    // list 배열에서 첫 번째 객체 추출 (안전하게 접근)
-                    var firstListItem = Jobj["list"]?.FirstOrDefault();
+                        // list 배열에서 첫 번째 객체 추출 (안전하게 접근)
+                        var firstListItem = Jobj["list"]?.FirstOrDefault();
 
-                    // 각 값 추출 (널 체크 포함)
-                    string message = (string?)firstListItem?["rslt_message"] ?? null; // 실패사유
-                    string msgid = (string?)firstListItem?["msgid"] ?? null; // 메시지ID
-                    string phone = (string?)firstListItem?["phone"] ?? null; // 수신자
+                        // 각 값 추출 (널 체크 포함)
+                        string message = (string?)firstListItem?["rslt_message"] ?? null; // 실패사유
+                        string msgid = (string?)firstListItem?["msgid"] ?? null; // 메시지ID
+                        string phone = (string?)firstListItem?["phone"] ?? null; // 수신자
 
-                    // DB INSERT
+                        // DB INSERT
 
+                    }
                 }
              
 

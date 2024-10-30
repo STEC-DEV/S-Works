@@ -137,7 +137,10 @@ namespace FamTec.Server.Services
                     { "receiver_1",receiver},
                     { "subject_1",title},
                     { "message_1",message},
-                    { "button_1",buttonResult.ToString()}
+                    { "button_1",buttonResult.ToString()},
+                    { "failover","Y"},
+                    { "fsubject_1",title},
+                    { "fmessage_1",message}
                 });
 
                 HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content).ConfigureAwait(false);
@@ -223,7 +226,10 @@ namespace FamTec.Server.Services
                     { "receiver_1",receiver},
                     { "subject_1","진행사항 변경"},
                     { "message_1",message},
-                    { "button_1",buttonResult.ToString()}
+                    { "button_1",buttonResult.ToString()},
+                    { "failover","Y"},
+                    { "fsubject_1","진행사항 변경"},
+                    { "fmessage_1",message}
                 });
 
                 HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content).ConfigureAwait(false);

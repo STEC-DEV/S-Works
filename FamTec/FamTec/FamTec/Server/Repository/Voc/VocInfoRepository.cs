@@ -198,7 +198,7 @@ namespace FamTec.Server.Repository.Voc
                                                     CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
                                                     CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
                                                     DurationDT = VocTB.DurationDt // 민원처리 소요시간
-                                                }).OrderBy(m => m.CreateDT)
+                                                }).OrderByDescending(m => m.CreateDT)
                                                 .ToList();
 
                         VocItem.VocList = dto;
@@ -266,7 +266,7 @@ namespace FamTec.Server.Repository.Voc
                                                 Status = VocTB.Status, // 민원상태
                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
                                                 DurationDT = VocTB.DurationDt // 소요시간
-                                            }).OrderBy(m => m.CreateDT)
+                                            }).OrderByDescending(m => m.CreateDT)
                                             .ToList();
 
                     return dto;
