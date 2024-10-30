@@ -68,6 +68,7 @@
     }
 
 
+
     private async Task OnUserCheck()
     {
         //현주소
@@ -90,7 +91,7 @@
         }
 
         // 비로그인 시 리턴
-        if (!user.Identity.IsAuthenticated)
+        if (!user.Identity.IsAuthenticated && !currentPath.Contains("/"))
         {
             await JS.InvokeVoidAsync("alert", "다시 로그인 해주세요.");
             return;
@@ -141,7 +142,7 @@
             return;
         }
 
-
+        ///아래는 안씀
 
         if (Navigation.Uri.Contains("/admin"))
         {

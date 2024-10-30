@@ -57,7 +57,13 @@
     </div>
 
     <div class="btns yappear">
-        @if(permCheck){
+        @if (permCheck && !string.IsNullOrEmpty(Voc.Name)
+        && !string.IsNullOrEmpty(Voc.PhoneNumber)
+        && Voc.PhoneNumber.Length == 11
+        && !string.IsNullOrEmpty(Voc.Title)
+        && !string.IsNullOrEmpty(Voc.Contents)
+        )
+        {
             <Button Name="접수" Type="0" OnClick="@OnAdd" />
         }
         else

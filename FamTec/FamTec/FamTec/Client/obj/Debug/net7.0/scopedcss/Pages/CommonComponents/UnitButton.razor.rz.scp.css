@@ -69,6 +69,7 @@
     font-weight:bold;
 }
 .li:hover[b-hwyi9v9j1j] {
+    border: var(--default-bd);
     cursor: pointer;
 }
 
