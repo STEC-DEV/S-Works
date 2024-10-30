@@ -3,13 +3,13 @@
 @using FamTec.Shared.Client.DTO.Normal.Material.Detail
 
 
-<div class="detailsearch yappear">
+<div class="detailsearch ">
     <SearchFilter ValueChange="@ValueChange" />
-    @if (MaterialList != null)
+    @* @if (MaterialList != null)
     {
-        <MaterialHistory ListData="MaterialList" />
-    }
-
+     
+    } *@
+    <MaterialHistory ListData="MaterialList" />
 </div>
 
 @code {
@@ -25,9 +25,9 @@
         }
         else
         {
-            MaterialList = data;
+            MaterialList = new List<DetailMaterialListDTO>(data);
         }
-
+        Console.WriteLine("데이터 : "+data.Count); ;
         StateHasChanged();
     }
 }

@@ -17,12 +17,12 @@
                 }
                 else
                 {
-                    <NavLink class="drawer-link"
+                    <a class="drawer-link @(ActiveMainLink(category.Url))"
                              href="@(category.SubCategory == null ? category.Url : null)"
                              @onclick="() => ToggleDropdown(category)"
                              >
                         <span class="category-title">@category.Name</span>
-                    </NavLink>
+                    </a>
 
                     @if (category.SubCategory != null)
                     {
@@ -32,9 +32,9 @@
                                 @if (subcategory != null)
                                 {
                                     <li class="drawer-sub-item">
-                                        <NavLink class="drawer-link" href="@(category.Url + subcategory.Url)">
+                                        <a class="drawer-sub-link" href="@(category.Url + subcategory.Url)">
                                             <span class="category-title">@subcategory.Name</span>
-                                        </NavLink>
+                                        </a>
                                     </li>
                                 }
                             }
@@ -56,6 +56,7 @@
 
     PlacePermDTO _placePerm = new PlacePermDTO();
 
+    private string currentUrl;
 
     //사용자 권한
     private bool basic = false;
@@ -84,11 +85,24 @@
         public string? SvgImgUrl { get; set; }
     }
 
-    private async void ActiveLink()
+    private string ActiveMainLink(string url)
     {
-        
+        return Navigation.Uri.Contains(url) ? "spot" : null;
     }
 
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += LocationChanged;
+    }
+    private void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        currentUrl = Navigation.Uri;
+        StateHasChanged();
+    }
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= LocationChanged;
+    }
 
     protected async override Task OnInitializedAsync()
     {
@@ -102,6 +116,8 @@
 
         await LoadCategory();
     }
+
+
 
     private async Task OnLoginMode()
     {
@@ -283,6 +299,7 @@
     {
 
         category.IsDropDown = !category.IsDropDown;
+        StateHasChanged();
     }
 
 

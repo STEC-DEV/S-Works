@@ -5,7 +5,7 @@
 @using FamTec.Shared.Client.DTO.Normal.Material.InOut
 @using FamTec.Shared.Server.DTO
 
-<div class="searchfilter">
+<div class="searchfilter yappear">
     <div class="header">
         <span class="title">
             조회 조건
@@ -44,6 +44,8 @@
 
 
     private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
+    private List<MaterialSearchListDTO> _defaultSelectedMaterialList = new List<MaterialSearchListDTO>();
+
     List<MaterialSearchListDTO> SelectedMaterialList
     {
         get => _selectedMaterialList;
@@ -62,7 +64,10 @@
     protected override async Task OnInitializedAsync()
     {
         await OnLoadMaterial();
+        _selectedMaterialList = _defaultSelectedMaterialList;
+        await OnSelect();
     }
+
 
     //전제 자제 조회
     private async Task OnLoadMaterial()
@@ -77,9 +82,11 @@
             }
             MaterialList = new List<MaterialSearchListDTO>();
             MaterialList = resGet.data;
+            _defaultSelectedMaterialList = new List<MaterialSearchListDTO>(MaterialList);
         }catch(Exception ex)
         {
-
+            Console.WriteLine("[입출고 내역] 자재 조회 에러" + ex);
+            await JS.InvokeVoidAsync("[입출고 내역] 자재 조회 에러");
         }
     }
 
@@ -88,6 +95,7 @@
     {
         try
         {
+            _selectMaterial.Clear();
             //조회 조건
             if (startDt == null || endDt == null || SelectedMaterialList.Count == 0)
             {
@@ -100,7 +108,7 @@
             }
             string materialIdQueryString = string.Join("&materialid=", _selectMaterial);
 
-            List<DetailMaterialListDTO> material;
+            List<DetailMaterialListDTO> material = new List<DetailMaterialListDTO>();
 
             ResponseList<DetailMaterialListDTO> resGet = await apiManager.GetListAsync<DetailMaterialListDTO>($"Store/sign/GetPeriodicRecord?materialid={materialIdQueryString}&StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}");
             if (resGet.code != 200)
@@ -122,6 +130,7 @@
             startDt = new DateTime(curdate.Year, curdate.Month, 1);
             endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
             await ValueChange.InvokeAsync(material);
+            material.Clear();
         }
         catch (Exception ex)
         {

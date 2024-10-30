@@ -42,7 +42,7 @@
                        @row.ContractNum
                     </td>
                     <td class="td pointer">
-                        @row.ContractDt
+                        @row.ContractDt?.ToString("yyyy-MM-dd")
                     </td>
                     <td class="td pointer">
                         <input type="checkbox" checked="@CheckItems.Any(p => p.Id == row.Id)" />

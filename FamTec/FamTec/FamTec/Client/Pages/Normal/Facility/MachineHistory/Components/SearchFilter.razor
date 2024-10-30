@@ -117,6 +117,10 @@
     {
         facPerm = await (_authStateProvider as CustomAuthProvider).GetFacilityUserPemrList();
         await ConvertType(facPerm);
+        selectFacType = 0;
+        selectWorkType = 2;
+        await OnSearch();
+
     }
 
     private async Task ConvertType(List<int> facperm)

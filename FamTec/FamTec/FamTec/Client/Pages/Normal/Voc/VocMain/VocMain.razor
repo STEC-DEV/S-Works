@@ -1,6 +1,7 @@
 ﻿@page "/voc"
 @page "/voc/{SearchParams}"
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @using FamTec.Shared.Server.DTO
 @using System.Web
@@ -18,10 +19,12 @@
             SelectTypes="@types"
             SelectStatus="@states"
             SelectLocation="@locations"
+            Bulildings=@buildings
             />
     </div>
-    @if (IsSearch && SearchParams is not null)
-    {
+    @* @if (IsSearch && SearchParams is not null) *@
+    @* @if (SearchParams is not null) *@
+    @* {
         <div class="content-container">
             <VocHIstory 
                 ListData="VocData" 
@@ -30,7 +33,15 @@
                 IsLoading=@IsLoading
                 />
         </div>
-    }
+    } *@
+    <div class="content-container">
+            <VocHIstory 
+                ListData="VocData" 
+                MonthListData="MonthVocData" 
+                DefaultOption=@DefaultOption 
+                IsLoading=@IsLoading
+                />
+        </div>
 </div>
 
 @code {
@@ -39,7 +50,7 @@
 
 
     List<ListVocDTO> VocData = new List<ListVocDTO>();
-    List<MonthVocListDTO> MonthVocData = new List<MonthVocListDTO>();
+    List<MonthVocListDTO> MonthVocData;
 
     bool IsSearch = false;
     bool IsLoading = false;
@@ -47,14 +58,20 @@
     List<int> types = new List<int>();
     List<int> states = new List<int>();
     List<int> locations = new List<int>();
+    List<int> defaulttypes = new List<int>();
+    List<int> defaultstates = new List<int>();
+    List<FilterItem> buildings = new List<FilterItem>();
+    List<int> defaultbuilding = new List<int>();
     string startDt = null;
     string endDt = null;
     int DefaultOption;
 
     protected override async Task OnInitializedAsync()
     {
+        
         //파라미터가 있는 경우에 민원 데이터 조회
         Console.WriteLine(SearchParams);
+
         if(SearchParams is not null)
         {
             await OnRequestVoc();
@@ -63,6 +80,8 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        await OnLoadBuilding();
+        await OnLoadVoc();
         //파라미터가 있는 경우에 민원 데이터 조회
         Console.WriteLine(SearchParams);
         if (SearchParams is not null)
@@ -114,21 +133,26 @@
             //월별 조회
             if (startDt == null || endDt == null)
             {
-                Console.WriteLine("월별 조회");
                 ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
                 if (resGet.code != 200)
                 {
                     await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
                     return;
                 }
-                MonthVocData = resGet.data;
+                if(resGet.data == null)
+                {
+                    MonthVocData = new List<MonthVocListDTO>();
+                }
+                else
+                {
+                    MonthVocData = resGet.data;
+                }
+                
                 DefaultOption = 0;
             }
             //기간별 조회
             else
             {
-                Console.WriteLine("기간별 조회");
-
                 ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"Voc/sign/GetVocFilterList?StartDate={startDt}&EndDate={endDt}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
                 if (resGet.code != 200)
                 {
@@ -147,6 +171,65 @@
         }
     }
 
+    private async Task OnLoadVoc()
+    {
+        try
+        {
+            defaulttypes = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            defaultstates = new List<int> { 0, 1, 2 };
+            
+
+            
+            string typesQueryString = string.Join("&type=", defaulttypes);
+            string statusQueryString = string.Join("&status=", defaultstates);
+            string locationQueryString = string.Join("&buildingid=", defaultbuilding);
+            //기본 월별 조회
+            ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
+                return;
+            }
+            if (resGet.data == null)
+            {
+                MonthVocData = new List<MonthVocListDTO>();
+            }
+            else
+            {
+                MonthVocData = resGet.data;
+            }
+            DefaultOption = 0;
+            OnSearch();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Error][민원] voc data request error" + ex);
+            await JS.InvokeVoidAsync("alert", "[Error][민원] voc  error");
+        }
+    }
+
+    //건물조회 형태는 id, Name,
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<FilterItem> resGet = await apiManager.GetListAsync<FilterItem>("Building/sign/GetPlaceBuilding");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", "건물 조회실패");
+                return;
+            }
+            buildings = resGet.data;
+            defaultbuilding = buildings.Select(l => l.Id).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+        }
+    }
+
     private void OnParseQueryString()
     {
         var parameters = HttpUtility.ParseQueryString(SearchParams);
@@ -156,6 +239,7 @@
         startDt = parameters["startDate"];
         endDt = parameters["endDate"];
     }
+
 
     //쉼표 구분
     private List<int> ParseIntList(string value)

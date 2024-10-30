@@ -27,7 +27,15 @@
             
         </div>
         <div class="vochistory-content">
-            <VocTable ListData="filterData"/>
+            @if(filterData == null)
+            {
+                <Loading/>
+            }
+            else
+            {
+            <VocTable ListData="filterData" />
+            }
+
         </div>
     </div>
 </div>
@@ -42,7 +50,8 @@
 
     List<ListVocDTO> listvoc = new List<ListVocDTO>();
     List<ListVocDTO> originalData = new List<ListVocDTO>();
-    List<ListVocDTO> filterData = new List<ListVocDTO>();
+    // List<ListVocDTO> filterData = new List<ListVocDTO>();
+    List<ListVocDTO> filterData;
     string curDate;
     int viewNum = 25;
     private int currentPage = 1;
