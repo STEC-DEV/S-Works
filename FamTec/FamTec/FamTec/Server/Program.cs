@@ -383,10 +383,10 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 //builder.Services.AddSingleton<GlobalStateService>();
 
 // HttpClient 등록
-//builder.Services.AddHttpClient<ApiPollingService>();
+builder.Services.AddHttpClient<ApiPollingService>();
 
 // 백그라운드 서비스 등록
-//builder.Services.AddHostedService<ApiPollingService>();
+builder.Services.AddHostedService<ApiPollingService>();
 
 
 var app = builder.Build();

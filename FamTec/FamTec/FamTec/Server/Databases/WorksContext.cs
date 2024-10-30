@@ -79,8 +79,6 @@ public partial class WorksContext : DbContext
     public virtual DbSet<VocTb> VocTbs { get; set; }
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
-
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -112,6 +110,7 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -424,7 +423,9 @@ public partial class WorksContext : DbContext
             entity.ToTable("energy_day_usage_tb", tb => tb.HasComment("에너지 검침 기록 - 일별"));
 
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
-            entity.Property(e => e.Days).HasComment("일");
+            entity.Property(e => e.Days)
+                .HasDefaultValueSql("'0'")
+                .HasComment("일");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.MeterDt).HasComment("검침일자");
             entity.Property(e => e.Month).HasComment("월");
@@ -446,12 +447,8 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
             entity.Property(e => e.MeterItemId).HasComment("검침기 인덱스");
             entity.Property(e => e.Month).HasComment("월");
-            entity.Property(e => e.TotalUsage)
-                .HasDefaultValueSql("'0'")
-                .HasComment("월 총사용량");
-            entity.Property(e => e.UnitPrice)
-                .HasDefaultValueSql("'0'")
-                .HasComment("단가금액");
+            entity.Property(e => e.TotalUsage).HasDefaultValueSql("'0'");
+            entity.Property(e => e.UnitPrice).HasComment("단가금액");
             entity.Property(e => e.Year).HasComment("년도");
 
             entity.HasOne(d => d.MeterItem).WithMany(p => p.EnergyMonthUsageTbs)
@@ -618,8 +615,15 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.BuildingTbId).HasComment("건물ID");
             entity.Property(e => e.Code).HasComment("전송결과 코드");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
-            entity.Property(e => e.Message).HasComment("전송결과 메시지");
+            entity.Property(e => e.Message).HasComment("전송결과 사유");
+            entity.Property(e => e.MsgUpdate)
+                .HasDefaultValueSql("'0'")
+                .HasComment("전송결과업데이트");
+            entity.Property(e => e.Msgid).HasComment("MSGID");
+            entity.Property(e => e.Phone).HasComment("수신자번호");
             entity.Property(e => e.PlaceTbId).HasComment("사업장ID");
+            entity.Property(e => e.Rslt).HasComment("rslt (상태)");
+            entity.Property(e => e.RsltMessage).HasComment("message (사유)");
 
             entity.HasOne(d => d.BuildingTb).WithMany(p => p.KakaoLogTbs)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -922,6 +926,7 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

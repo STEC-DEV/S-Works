@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Hubs;
+﻿using FamTec.Client.Pages.CommonComponents;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -96,8 +97,8 @@ namespace FamTec.Server.Services.Voc.Hub
 
                 if(!String.IsNullOrWhiteSpace(dto.PhoneNumber))
                 {
-                    int? PhoneNumber = Convert.ToInt32(dto.PhoneNumber);
-                    if(PhoneNumber is null)
+                    bool PhoneNumber = long.TryParse(dto.PhoneNumber, out _);
+                    if(!PhoneNumber)
                         return new ResponseUnit<AddVocReturnDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
                 }
 
@@ -206,10 +207,13 @@ namespace FamTec.Server.Services.Voc.Hub
                         AddKakaoLogDTO? LogDTO = await KakaoService.AddVocAnswer(Title, model.Code, DateNow, receiver, url, placetel).ConfigureAwait(false);
                         if (LogDTO is not null)
                         {
-                            // 카카오 메시지 성공
+                            // 카카오 메시지 성공 - 벤더사에 넘어가기만 하면 여기탐
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = LogDTO.Code!;
                             LogTB.Message = LogDTO.Message!;
+                            LogTB.Msgid = LogDTO.MSGID;
+                            LogTB.Phone = LogDTO.Phone; // 받는사람 전화번호
+                            LogTB.MsgUpdate = false;
                             LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = model.CreateUser;
                             LogTB.UpdateDt = ThisDate;
@@ -221,12 +225,15 @@ namespace FamTec.Server.Services.Voc.Hub
                             // 카카오API 로그 테이블에 쌓아야함.
                             await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
                         }
-                        else
+                        else // 404 에러시에 여기가탈듯.
                         {
                             // 카카오 메시지 에러
                             KakaoLogTb LogTB = new KakaoLogTb();
-                            LogTB.Code = "ERROR";
-                            LogTB.Message = "ERROR";
+                            LogTB.Code = null;
+                            LogTB.Message = "500";
+                            LogTB.Msgid = null;
+                            LogTB.Phone = receiver; // 받는사람 전화번호
+                            LogTB.MsgUpdate = true;
                             LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = model.CreateUser;
                             LogTB.UpdateDt = ThisDate;

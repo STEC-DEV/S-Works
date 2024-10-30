@@ -8,12 +8,22 @@ namespace FamTec.Server.Services.KakaoLog
     /// </summary>
     public interface IKakaoLogService
     {
+
+        /// <summary>
+        /// 해당 사업장의 카카오 로그 리스트 기간 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
+        public Task<ResponseList<KakaoLogListDTO>> GetKakaoLogDateListService(HttpContext context, DateTime StartDate, DateTime EndDate, int isSuccess);
+
         /// <summary>
         /// 해당 사업장의 카카오 로그 리스트 조회
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context);
+        public Task<ResponseList<KakaoLogListDTO>> GetKakaoLogListService(HttpContext context, int isSuccess);
 
         /// <summary>
         /// 사업장 카카오 로그 리스트 카운트 반환

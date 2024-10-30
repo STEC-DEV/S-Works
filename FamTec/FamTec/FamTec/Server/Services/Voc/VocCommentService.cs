@@ -198,6 +198,9 @@ namespace FamTec.Server.Services.Voc
                             KakaoLogTb LogTB = new KakaoLogTb();
                             LogTB.Code = LogDTO.Code!;
                             LogTB.Message = LogDTO.Message!;
+                            LogTB.Msgid = LogDTO.MSGID;
+                            LogTB.Phone = LogDTO.Phone; // 받는사람 전화번호
+                            LogTB.MsgUpdate = false;
                             LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = Creater;
                             LogTB.UpdateDt = ThisDate;
@@ -213,8 +216,11 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 카카오 메시지 에러
                             KakaoLogTb LogTB = new KakaoLogTb();
-                            LogTB.Code = "ERROR";
-                            LogTB.Message = "ERROR";
+                            LogTB.Code = null;
+                            LogTB.Message = "500";
+                            LogTB.Msgid = null;
+                            LogTB.Phone = receiver; // 받는사람 전화번호
+                            LogTB.MsgUpdate = true;
                             LogTB.CreateDt = ThisDate;
                             LogTB.CreateUser = Creater;
                             LogTB.UpdateDt = ThisDate;

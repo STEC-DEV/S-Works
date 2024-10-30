@@ -349,11 +349,12 @@ namespace FamTec.Server.Repository.Meter.Energy
                 DTOModel.TotalPrice = MonthChargePrice;
 
 
-                // 그룹 만들 데이터 크로스 조인
+                // 그룹 만들 데이터 크로스 조인 -- 여기 왜안됨
+                /*
                 DTOModel.TotalList =  (from MeterTB in allMeterItems
                                       from date in allDates
-                                      join EnergyDayTB in UseDaysList
-                                      on new { MeterTB.MeterItemId, Day = date.Day } equals new { EnergyDayTB.MeterItemId, Day = EnergyDayTB.Days } into usageGroup
+                                      join EnergyDayUsageTb in UseDaysList
+                                      on new { MeterTB.MeterItemId, Day = date.Day } equals new { EnergyDayUsageTb.MeterItemId, Day = EnergyDayUsageTb.Days } into usageGroup
                                       from usage in usageGroup.DefaultIfEmpty() // Left Join 처리
                                       join contractTB in context.ContractTypeTbs.Where(m => m.PlaceTbId == placeid && m.DelYn != true) // MeterTB와 조인
                                      on MeterTB.ContractTbId equals contractTB.Id // MeterItemId를 기준으로 조인
@@ -369,7 +370,7 @@ namespace FamTec.Server.Repository.Meter.Energy
                                     .OrderBy(x => x.MeterID) // MeterID를 기준으로 오름차순 정렬
                                     .ThenBy(x => x.Date) // Date를 기준으로 오름차순 정렬
                                     .ToList();
-
+                */
                 return DTOModel;
             }
             catch (Exception ex)
@@ -422,8 +423,10 @@ namespace FamTec.Server.Repository.Meter.Energy
                     .ToListAsync()
                     .ConfigureAwait(false);
 
-                
-                // 그룹 만들 데이터 크로스 조인
+
+                // 그룹 만들 데이터 크로스 조인 -- 여기 왜안됨
+                List<DaysTotalContractTypeEnergyDTO> DTOModel = null;
+                /*
                 List<DaysTotalContractTypeEnergyDTO> DTOModel = (from MeterTB in allMeterItems
                               from date in allDates
                               join EnergyDayTB in UseDaysList
@@ -455,7 +458,7 @@ namespace FamTec.Server.Repository.Meter.Energy
               })
               .OrderBy(dto => dto.ContractTypeId) // 계약종별ID 기준 정렬
               .ToList();
-
+                */
                 return DTOModel;
             }
             catch(Exception ex)
@@ -663,7 +666,10 @@ namespace FamTec.Server.Repository.Meter.Energy
                               m.PlaceTbId == placeid)
                   .ToListAsync()
                   .ConfigureAwait(false);
+                List<DayTotalMeterEnergyDTO> result = null;
 
+                // 여기왜안됨
+                /*
                 List<DayTotalMeterEnergyDTO> result = (from MeterTB in allMeterItems
                               from date in allDates
                               join usage in UseDaysList
@@ -699,7 +705,7 @@ namespace FamTec.Server.Repository.Meter.Energy
               .OrderBy(dto => dto.MeterId) // MeterId 기준 정렬
               .ThenBy(dto => dto.DayTotalUseList.First().Date) // 첫 번째 날짜 기준 정렬
               .ToList();
-
+                */
                return result;
             }
             catch(Exception ex)

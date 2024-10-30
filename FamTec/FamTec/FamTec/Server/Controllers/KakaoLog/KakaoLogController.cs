@@ -100,14 +100,14 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetKakaoLogList")]
-        public async Task<IActionResult> GetKakaoLogList()
+        public async Task<IActionResult> GetKakaoLogList([FromQuery]int isSuccess)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(HttpContext).ConfigureAwait(false);
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogListService(HttpContext, isSuccess).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();
@@ -131,6 +131,54 @@ namespace FamTec.Server.Controllers.KakaoLog
                 return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// 카카오 로그 기간별 리스트 반환
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetKakaoDateLogList")]
+        public async Task<IActionResult> GetKakaoDateLogList([FromQuery]DateTime StartDate, [FromQuery]DateTime EndDate, [FromQuery]int isSuccess)
+        {
+            try
+            {
+                //DateTime StartDate = DateTime.Now.AddDays(-10);
+                //DateTime EndDate = DateTime.Now;
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<KakaoLogListDTO>? model = await KakaoLogService.GetKakaoLogDateListService(HttpContext, StartDate, EndDate, isSuccess).ConfigureAwait(false);
+
+                if (model is null)
+                    return BadRequest();
+
+                if (StartDate == DateTime.MinValue)
+                    return NoContent();
+
+                if (EndDate == DateTime.MinValue)
+                    return NoContent();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
 
         /// <summary>
         /// 페이지네이션용 카카오 로그 카운트

@@ -2,22 +2,28 @@
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
+using Newtonsoft.Json.Linq;
 
 namespace FamTec.Server.Repository.KakaoLog
 {
     public class KakaoLogInfoRepository : IKakaoLogInfoRepository
     {
         private readonly WorksContext context;
-        
         private readonly ILogService LogService;
         private readonly ConsoleLogService<KakaoLogInfoRepository> CreateBuilderLogger;
+        
+        //private readonly HttpClient HttpClient;
+        private HttpResponseMessage? HttpResponse;
 
-        public KakaoLogInfoRepository(WorksContext _context, 
+
+        public KakaoLogInfoRepository(WorksContext _context,
             ILogService _logservice,
             ConsoleLogService<KakaoLogInfoRepository> _createbuilderlogger)
         {
             this.context = _context;
+            
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
@@ -69,15 +75,37 @@ namespace FamTec.Server.Repository.KakaoLog
         /// 카카오 알림톡 발송로그 전체 조회
         /// </summary>
         /// <returns></returns>
-        public async Task<List<KakaoLogTb>?> GetKakaoLogList(int placeid)
+        public async Task<List<KakaoLogTb>?> GetKakaoLogList(int placeid, int isSuccess)
         {
             try
             {
-                List<KakaoLogTb>? model = await context.KakaoLogTbs
-                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid)
+                List<KakaoLogTb>? model = null;
+
+                if(isSuccess == 0) // 전체
+                {
+                    model = await context.KakaoLogTbs
+                    .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MsgUpdate == true)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync()
                     .ConfigureAwait(false);
+                }
+                else if(isSuccess == 1) // 성공
+                {
+                    model = await context.KakaoLogTbs
+                  .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MsgUpdate == true && m.Rslt == "0")
+                  .OrderBy(m => m.CreateDt)
+                  .ToListAsync()
+                  .ConfigureAwait(false);
+                }
+                else // 실패
+                {
+                    model = await context.KakaoLogTbs
+                .Where(m => m.DelYn != true && m.PlaceTbId == placeid && m.MsgUpdate == true && m.Rslt != "0")
+                .OrderBy(m => m.CreateDt)
+                .ToListAsync()
+                .ConfigureAwait(false);
+                }
+           
 
                 if (model is [_, ..])
                     return model;
@@ -93,6 +121,77 @@ namespace FamTec.Server.Repository.KakaoLog
                 throw;
             }
             catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 카카오 알림톡 발송로그 기간별 전체 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="startdate"></param>
+        /// <param name="enddate"></param>
+        /// <returns></returns>
+        public async Task<List<KakaoLogTb>?> GetKakaoDateLogList(int placeid, DateTime startdate, DateTime enddate, int isSuccess)
+        {
+            try
+            {
+                // isSuccess : 0 전체 1: 성공 2: 실패
+                List<KakaoLogTb>? model = null;
+
+                if (isSuccess == 0) // 전체
+                {
+                    model = await context.KakaoLogTbs
+                       .Where(m => m.DelYn != true &&
+                       m.PlaceTbId == placeid &&
+                       m.MsgUpdate == true &&
+                       m.CreateDt >= startdate && m.CreateDt <= enddate.AddDays(1))
+                       .ToListAsync()
+                       .ConfigureAwait(false);
+                }
+                else if(isSuccess == 1) // 성공
+                {
+                    model = await context.KakaoLogTbs
+                 .Where(m => m.DelYn != true &&
+                 m.PlaceTbId == placeid &&
+                 m.MsgUpdate == true &&
+                 m.Rslt == "0" &&
+                 m.CreateDt >= startdate && m.CreateDt <= enddate.AddDays(1))
+                 .ToListAsync()
+                 .ConfigureAwait(false);
+                }
+                else
+                {
+                    model = await context.KakaoLogTbs
+                 .Where(m => m.DelYn != true &&
+                 m.PlaceTbId == placeid &&
+                 m.MsgUpdate == true &&
+                 m.Rslt != "0" &&
+                 m.CreateDt >= startdate && m.CreateDt <= enddate.AddDays(1))
+                 .ToListAsync()
+                 .ConfigureAwait(false);
+                }
+
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
+            }
+            catch(MySqlException ex)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생 : {ex}");
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
@@ -218,5 +317,6 @@ namespace FamTec.Server.Repository.KakaoLog
             }
         }
 
+   
     }
 }

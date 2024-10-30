@@ -11,11 +11,6 @@
         public int Id { get; set; }
         
         /// <summary>
-        /// 알림톡 성공여부 Code
-        /// </summary>
-        public string? Code { get; set; }
-
-        /// <summary>
         /// 알림톡 성공여부 Message
         /// </summary>
         public string? Message { get; set; }

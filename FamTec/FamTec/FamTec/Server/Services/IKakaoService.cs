@@ -5,6 +5,8 @@ namespace FamTec.Server.Services
 {
     public interface IKakaoService
     {
+        //public Task<bool> KakaoSendResultUpdate();
+
         /// <summary>
         /// 민원인 전용 VOC 등록 확인메시지
         /// </summary>

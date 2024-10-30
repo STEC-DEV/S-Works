@@ -32,9 +32,6 @@ public partial class EnergyMonthUsageTb
     [Column("MONTH", TypeName = "int(11)")]
     public int Month { get; set; }
 
-    /// <summary>
-    /// 월 총사용량
-    /// </summary>
     [Column("TOTAL_USAGE")]
     public float? TotalUsage { get; set; }
 

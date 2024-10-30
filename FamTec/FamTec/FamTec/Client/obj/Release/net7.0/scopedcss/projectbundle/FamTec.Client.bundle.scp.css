@@ -4474,6 +4474,7 @@ svg:hover[b-5q32ql2i5a] {
     overflow:hidden;
     font-size : var(--normal-size);
     background-color : var(--default-color);
+    line-height: 1.2;
 }
 
 .text:focus[b-30vlxjah2w] {
@@ -4643,6 +4644,7 @@ svg:hover[b-5q32ql2i5a] {
     font-weight:bold;
 }
 .li:hover[b-hwyi9v9j1j] {
+    border: var(--default-bd);
     cursor: pointer;
 }
 
@@ -14962,6 +14964,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 100%;
     display: flex;
     flex-direction: column;
+    gap : var(--wide-pd);
     justify-content: center;
     align-items: center;
     background-color: var(--default-color);
@@ -15006,6 +15009,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .signup-container .signup-wrap[b-hbi4667qfr] {
         width: 80%;
     }
+}
+
+.main-title[b-hbi4667qfr]{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.extrabold[b-hbi4667qfr] {
+    font-family: 'extrabold';
+    font-size : 4rem;
+    color : var(--main-color);
+    line-height:0.8;
+}
+
+.text[b-hbi4667qfr]{
+    font-size : 2rem;
 }
 
 /* /Pages/Voc/Add/Components/CheckItem.razor.rz.scp.css */
@@ -15660,6 +15680,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-weight: bold;
     font-size: 0.8rem;
     padding: var(--default-pd);
+    border-radius: var(--default-rd);
 }
 
 .drawer-container[b-rriyx9tl3w]  .drawer-link  .category-title {
@@ -15679,7 +15700,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .drawer-container[b-rriyx9tl3w]  .drawer-link:hover {
     transition: all ease-in-out 0.2s;
-    border-radius: var(--default-rd);
     background-color: var(--main-color);
 }
 .drawer-container[b-rriyx9tl3w]  .none:hover{
@@ -15740,7 +15760,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     
 }
 
-.drawer-container .drawer-sub-wrap.active[b-rriyx9tl3w] {
+.drawer-container .drawer-sub-wrap.show[b-rriyx9tl3w] {
     display: flex;
     visibility : visible;
     flex-direction: column;
@@ -15750,6 +15770,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 1;
     margin-top : var(--half-pd);
 }
+
+/*
+.drawer-container ::deep .drawer-link.active {
+    
+    background-color : var(--main-color)  !important;
+}
+
+.drawer-container ::deep .drawer-link.active .category-title{
+    color : var(--default-color);
+}*/
 /* /Shared/ErrLayout.razor.rz.scp.css */
 .page[b-3pvxf1p1i7] {
     background-color: var(--content-back-color);

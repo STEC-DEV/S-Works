@@ -18,18 +18,52 @@ public partial class KakaoLogTb
     public int Id { get; set; }
 
     /// <summary>
+    /// MSGID
+    /// </summary>
+    [Column("MSGID")]
+    [StringLength(50)]
+    public string? Msgid { get; set; }
+
+    /// <summary>
     /// 전송결과 코드
     /// </summary>
     [Column("CODE")]
     [StringLength(255)]
-    public string Code { get; set; } = null!;
+    public string? Code { get; set; }
 
     /// <summary>
-    /// 전송결과 메시지
+    /// 전송결과 사유
     /// </summary>
     [Column("MESSAGE")]
     [StringLength(255)]
-    public string Message { get; set; } = null!;
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// 수신자번호
+    /// </summary>
+    [Column("PHONE")]
+    [StringLength(50)]
+    public string? Phone { get; set; }
+
+    /// <summary>
+    /// 전송결과업데이트
+    /// </summary>
+    [Column("MSG_UPDATE")]
+    public bool? MsgUpdate { get; set; }
+
+    /// <summary>
+    /// rslt (상태)
+    /// </summary>
+    [Column("RSLT")]
+    [StringLength(50)]
+    public string? Rslt { get; set; }
+
+    /// <summary>
+    /// message (사유)
+    /// </summary>
+    [Column("RSLT_MESSAGE")]
+    [StringLength(255)]
+    public string? RsltMessage { get; set; }
 
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime CreateDt { get; set; }

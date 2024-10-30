@@ -81,8 +81,8 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                     if(InOutDTO.AddStore!.RoomID is null)
                         return NoContent();
-                    if (InOutDTO.AddStore!.UnitPrice is null)
-                        return NoContent();
+                    //if (InOutDTO.AddStore!.UnitPrice is null)
+                        //return NoContent();
                     if(InOutDTO.AddStore!.Num is null)
                         return NoContent();
                 }

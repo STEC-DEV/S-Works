@@ -1,4 +1,5 @@
-﻿using FamTec.Shared.Server.DTO;
+﻿using FamTec.Server.Repository.KakaoLog;
+using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
@@ -11,21 +12,23 @@ namespace FamTec.Server.Services
     {
         private FormUrlEncodedContent? Content;
         private HttpResponseMessage? HttpResponse;
-
+        private readonly IKakaoLogInfoRepository KakaoLogInfoRepository;
         private string? HttpResponseResult = String.Empty;
 
         private readonly ILogService LogService;
         private readonly ConsoleLogService<KakaoService> CreateBuilderLogger;
-        //private readonly GlobalStateService GlobalStateService;
 
         public KakaoService(ILogService _logservice,
-            //GlobalStateService _globalstateservice,
+            IKakaoLogInfoRepository _kakaologinforepository,
             ConsoleLogService<KakaoService> _createbuilderlogger)
         {
             this.LogService = _logservice;
-            //this.GlobalStateService = _globalstateservice;
+            this.KakaoLogInfoRepository = _kakaologinforepository;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+
+
 
         // 카카오 메시지결과 테스트
         public async Task<ResponseList<KaKaoSenderResult>?> KakaoSenderResult(HttpContext context,int page, int pagesize, DateTime StartDate, int limit_day)
@@ -153,13 +156,14 @@ namespace FamTec.Server.Services
                 HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 Jobj = JObject.Parse(HttpResponseResult);
 
-                // MID 추가완료
-                //GlobalStateService.AddMID(Convert.ToString(Jobj["info"]["mid"]));
-                //GlobalStateService.AddMID()
-
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
                 LogDTO.Message = Convert.ToString(Jobj["message"]);
+                LogDTO.MSGID = Convert.ToString(Jobj["info"]?["mid"]?.ToString()); // 메시지 ID
+                LogDTO.Phone = receiver; // 받는사람 전화번호
+
+                // MID - 두개 채워서 보내야함.
+                // PHONE
 
                 return LogDTO;
             }
@@ -244,6 +248,8 @@ namespace FamTec.Server.Services
                 AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
                 LogDTO.Code = Convert.ToString(Jobj["code"]);
                 LogDTO.Message = Convert.ToString(Jobj["message"]);
+                LogDTO.MSGID = Convert.ToString(Jobj["info"]?["mid"]?.ToString()); // 메시지 ID
+                LogDTO.Phone = receiver; // 받는사람 전화번호
                 return LogDTO;
             }
             catch (Exception ex)

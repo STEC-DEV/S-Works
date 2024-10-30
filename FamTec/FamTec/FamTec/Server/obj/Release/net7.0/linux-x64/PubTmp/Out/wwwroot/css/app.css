@@ -11,6 +11,10 @@
     src : url(../font/Pretendard-Regular.otf)
 }
 
+@font-face {
+    font-family: 'extrabold';
+    src: url(../font/Pretendard-ExtraBold.otf)
+}
 
 /*
     애니메이션
