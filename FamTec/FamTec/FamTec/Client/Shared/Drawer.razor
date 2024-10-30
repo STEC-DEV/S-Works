@@ -19,13 +19,14 @@
                 {
                     <NavLink class="drawer-link"
                              href="@(category.SubCategory == null ? category.Url : null)"
-                             @onclick="() => ToggleDropdown(category)">
+                             @onclick="() => ToggleDropdown(category)"
+                             >
                         <span class="category-title">@category.Name</span>
                     </NavLink>
 
                     @if (category.SubCategory != null)
                     {
-                        <ul class="drawer-sub-wrap @(category.IsDropDown ? "active ": null)">
+                        <ul class="drawer-sub-wrap @(category.IsDropDown ? "show": null)">
                             @foreach (var subcategory in category.SubCategory)
                             {
                                 @if (subcategory != null)
@@ -81,6 +82,11 @@
         public List<Category>? SubCategory { get; set; }
         public bool IsDropDown { get; set; } = false;
         public string? SvgImgUrl { get; set; }
+    }
+
+    private async void ActiveLink()
+    {
+        
     }
 
 
