@@ -45,7 +45,7 @@
             </div>
             <MultiSelectDrop Row=true Label="민원유형" SelectItems="@type" OnSelectionChanged="HandleSelectionChange" />
             <MultiSelectDrop Row=true Label="민원상태" SelectItems="@state" OnSelectionChanged="HandleSelectionChange" />
-            <MultiSelectDrop Row=true Label="민원위치" SelectItems="@locations" OnSelectionChanged="HandleSelectionChange" />
+            <MultiSelectDrop Row=true Label="민원위치" SelectItems="@Bulildings" OnSelectionChanged="HandleSelectionChange" />
             @* <CheckBoxVocType Name="민원 유형" Items="@type" />
             <CheckBoxVocType Name="민원 상태" Items="@state" />
             <CheckBoxVocType Name="민원 위치" Items="@locations" /> *@
@@ -63,7 +63,7 @@
     [Parameter] public List<int>? SelectTypes { get; set; }
     [Parameter] public List<int>? SelectStatus { get; set; }
     [Parameter] public List<int>? SelectLocation { get; set; }
-
+    [Parameter] public List<FilterItem> Bulildings { get; set; }
 
     private int selectDefaultOption = 0;
     private DateTime startDt = DateTime.Now;
@@ -102,28 +102,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await OnLoadBuilding();
+        // await OnLoadBuilding();
     }
 
-    //건물조회 형태는 id, Name,
-    private async Task OnLoadBuilding()
-    {
-        try
-        {
-            ResponseList<FilterItem> resGet = await apiManager.GetListAsync<FilterItem>("Building/sign/GetPlaceBuilding");
-            if(resGet.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "건물 조회실패");
-                return;
-            }
-            locations = resGet.data;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-        }
-    }
+    // //건물조회 형태는 id, Name,
+    // private async Task OnLoadBuilding()
+    // {
+    //     try
+    //     {
+    //         ResponseList<FilterItem> resGet = await apiManager.GetListAsync<FilterItem>("Building/sign/GetPlaceBuilding");
+    //         if(resGet.code != 200)
+    //         {
+    //             await JS.InvokeVoidAsync("alert", "건물 조회실패");
+    //             return;
+    //         }
+    //         locations = resGet.data;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex);
+    //         await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+    //     }
+    // }
 
 
     //조회 기간
@@ -132,7 +132,7 @@
         if (int.TryParse(e.Value?.ToString(), out int value))
         {
             selectDefaultOption = value;
-            
+
         }
     }
 
@@ -146,16 +146,19 @@
         return data;
     }
 
- 
+
     private async Task OnSearch()
     {
         try
         {
             var parameters = HttpUtility.ParseQueryString(string.Empty);
-
+            Console.WriteLine("타입" + types.Count);
+            Console.WriteLine("상태" + status.Count);
+            Console.WriteLine("건물" + location.Count);
             types = CheckDate(type);
             status = CheckDate(state);
-            location = CheckDate(locations);
+            // location = CheckDate(locations);
+            location = CheckDate(Bulildings);
 
             // //조건 선택안한 경우
             if( types.Count == 0 || status.Count == 0 || location.Count == 0)
@@ -173,7 +176,7 @@
             parameters["types"] = string.Join(",", types);
             parameters["status"] = string.Join(",", status);
             parameters["locations"] = string.Join(",", location);
-            
+
 
             Navigation.NavigateTo($"/voc/{parameters}",false);
 
@@ -183,6 +186,8 @@
             Console.WriteLine(ex);
         }
     }
+
+   
 
     private void HandleSelectionChange(List<FilterItem> selectedItems)
     {

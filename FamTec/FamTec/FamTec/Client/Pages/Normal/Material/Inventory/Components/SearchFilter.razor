@@ -56,6 +56,7 @@
     private string titles = "품목을 검색해 주세요.";
     List<MaterialSearchListDTO> MaterialList;
     private List<MaterialSearchListDTO> _selectedMaterialList = new List<MaterialSearchListDTO>();
+    private List<MaterialSearchListDTO> _defaultselectedMaterialList = new List<MaterialSearchListDTO>();
     List<MaterialSearchListDTO> SelectedMaterialList
     {
         get => _selectedMaterialList;
@@ -70,6 +71,8 @@
     protected override async Task OnInitializedAsync()
     {
         await OnLoadMaterial();
+        _selectedMaterialList = _defaultselectedMaterialList;
+        await OnSelect();
     }
 
     //전제 자제 조회
@@ -91,8 +94,7 @@
             {
                 MaterialList = resGet.data;
             }
-
-            
+            _defaultselectedMaterialList = new List<MaterialSearchListDTO>(MaterialList);
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
@@ -109,7 +111,6 @@
                 await JS.InvokeVoidAsync("alert", "조회 품목이 존재하지 않습니다.");
                 return;
             }
-
             foreach (var i in SelectedMaterialList)
             {
                 _selectMaterial.Add(i.Id);

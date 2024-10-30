@@ -5,7 +5,7 @@
 
 <div class="inventory yappear">
     <SearchFilter MaterialHistory=@MaterialHistory OnMaterialHistoryUpdated="@UpdateMaterialHistory" />
-    @if(MaterialHistory.Count != 0 && MaterialHistory != null)
+    @if(MaterialHistory != null)
     {
         <MaterialHistory ListData="@MaterialHistory" />
     }

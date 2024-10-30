@@ -39,20 +39,6 @@
                 </span>
             </th>
         </tr>
-@*         @if (@ListData.Count != 0)
-        {
-        <tr >
-                @foreach (var th in ListData[0].RoomHistory)
-                {
-                    <th class="th-subc">
-                        <span class="sub-span">
-                                @th.Name
-                        </span>
-                    </th>
-                }
-        </tr>
-        }
-      *@
         
     </thead>
     <tbody class="tbody">
@@ -61,14 +47,6 @@
             <tr>
                 <td colspan="100" style="text-align:center;">
                     @* <Empty /> *@
-                </td>
-            </tr>
-        }
-        else if (ListData is null)
-        {
-            <tr>
-                <td colspan="100" style="text-align:center;">
-                    <Loading />
                 </td>
             </tr>
         }

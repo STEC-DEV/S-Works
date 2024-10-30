@@ -1,4 +1,5 @@
-﻿@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Shared.Client.DTO.Normal.Location.Inventory
 
 
 <div class="history yappear">
@@ -8,7 +9,14 @@
         </span>
     </div>
     <div class="content @(ListData.Count == 0 || ListData == null ? "height" : "")">
-        <MaterialTable ListData="@ListData"/>
+        @if(ListData == null)
+        {
+            <Loading/>
+        }
+        else
+        {
+            <MaterialTable ListData="@ListData" />
+        }
     </div>
 </div>
 
