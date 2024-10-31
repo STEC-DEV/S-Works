@@ -8,7 +8,6 @@
         /// <summary>
         /// 파일서버 경로
         /// </summary>
-        //public static readonly string FileServer = String.Format(@"{0}\\FileServer", AppDomain.CurrentDomain.BaseDirectory);
         public static readonly string FileServer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FileServer");
 
         /// <summary>
