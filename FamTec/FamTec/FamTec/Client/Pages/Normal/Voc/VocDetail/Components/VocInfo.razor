@@ -39,12 +39,12 @@
                         SelectData="@Departments" 
                         @bind-Value="SelectedDepartment" 
                         OnChange="OnChangeType" 
-                        Label="건물"
+                        Label="구분"
                         EditMode="true" />
                 }
                 else
                 {
-                    <TextField2 Label="담당 부서" Value=@SelectDepartmentName Color=true />
+                    <TextField2 Label="구분" Value=@SelectDepartmentName Color=true />
                 }
                 <TextField2 Label="작성자" Value=@Data.CreateUser Color=true />
                 <TextField2 Label="전화번호" Value=@Data.Phone Color=true />
@@ -198,7 +198,7 @@
         {
             if(Data.Type == updateType.Type)
             {
-                await JS.InvokeVoidAsync("alert", "동일한 부서입니다.");
+                await JS.InvokeVoidAsync("alert", "동일한 구분입니다.");
                 return;
             }
             updateType.VocId = Data.Id.Value;
@@ -213,7 +213,7 @@
             OnEdit();
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "만원 타입 변경 에러");
+            await JS.InvokeVoidAsync("alert", "민원 구분 변경 에러");
         }
     }
 
