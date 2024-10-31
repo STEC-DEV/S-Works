@@ -3,12 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\alarm\\alarmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\alarm\\alarmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\admin\\manager\\managerdetailsv2\\managedetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\admin\\manager\\managerdetailsv2\\managedetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\middleware\\apimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\middleware\\apimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\temppage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\temppage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\admin\\manager\\managermain\\modal\\modaldepartment.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\admin\\manager\\managermain\\modal\\modaldepartment.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\repository\\alarm\\alarminforepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\alarm\\alarmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\alarm\\alarmcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\workssetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,10 +55,6 @@
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\kakaolog\\kakaologcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\vocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\voc\\voccommentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\voccommentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,16 +63,8 @@
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\services\\voc\\hub\\hubservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\services\\alarm\\ialarmservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -71,10 +87,6 @@
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\middleware\\apimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\middleware\\apimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\common.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\common.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -85,14 +97,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\admin\\manager\\managersignup\\managersignup.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\admin\\manager\\managersignup\\managersignup.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\admin\\manager\\managermain\\modal\\modaldepartment.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\admin\\manager\\managermain\\modal\\modaldepartment.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\admin\\manager\\managerdetailsv2\\managedetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\admin\\manager\\managerdetailsv2\\managedetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\shared\\server\\dto\\alarm\\alarmdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -173,75 +177,125 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "KakaoLogController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T05:34:16.556Z",
+              "DocumentIndex": 2,
+              "Title": "TempPage.razor",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\TempPage.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\TempPage.razor",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\TempPage.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\TempPage.razor",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAqwHEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-31T06:08:21.75Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 5,
               "Title": "VocController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Voc\\VocController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Voc\\VocController.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Voc\\VocController.cs",
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Voc\\VocController.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAOYAAAAAAAAAAAAgwOwAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-31T05:33:05.917Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "IAlarmService.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
-              "RelativeToolTip": "FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
-              "ViewState": "AgIAABsAAAAAgD+KyNH+vwwAAAAsAAAAAAAAAA==",
+              "DocumentIndex": 10,
+              "Title": "ApiPollingService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\ApiPollingService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\ApiPollingService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\ApiPollingService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\ApiPollingService.cs",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAhwHsAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T03:57:03.174Z",
+              "WhenOpened": "2024-10-30T23:22:50.229Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "WorksSetting.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\WorksSetting.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\WorksSetting.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\WorksSetting.cs",
+              "RelativeToolTip": "FamTec\\Server\\WorksSetting.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAIA3wB0AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-31T01:59:57.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Program.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
+              "RelativeToolTip": "FamTec\\Server\\Program.cs",
+              "ViewState": "AgIAAKQBAAAAAAAAAAAAALcBAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-31T00:06:01.218Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
+              "RelativeDocumentMoniker": "FamTec\\Server\\appsettings.json",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
+              "RelativeToolTip": "FamTec\\Server\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-10-30T23:28:21.349Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ModalDepartment.razor",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAqwGEAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-30T23:19:46.404Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ApiManager.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Middleware\\ApiManager.cs",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Middleware\\ApiManager.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Middleware\\ApiManager.cs",
+              "RelativeToolTip": "FamTec\\Client\\Middleware\\ApiManager.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAcwCkAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-31T03:40:50.332Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AlarmController.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
-              "RelativeToolTip": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAewCsAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:08:42.272Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
               "Title": "ManageDetail.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerDetailsV2\\ManageDetail.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerDetailsV2\\ManageDetail.razor",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerDetailsV2\\ManageDetail.razor",
               "RelativeToolTip": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerDetailsV2\\ManageDetail.razor",
-              "ViewState": "AgIAAHoAAAAAAAAAAAAqwI8AAACCAAAAAAAAAA==",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAqwJgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-31T03:40:55.342Z"
+              "WhenOpened": "2024-10-31T03:40:55.342Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "ManagerSignUp.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerSignup\\ManagerSignUp.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerSignup\\ManagerSignUp.razor",
@@ -253,59 +307,43 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ApiPollingService.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\ApiPollingService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\ApiPollingService.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\ApiPollingService.cs",
-              "RelativeToolTip": "FamTec\\Server\\Services\\ApiPollingService.cs",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAhwHsAAAAwAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "AlarmController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\Alarm\\AlarmController.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAewCsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-30T23:22:50.229Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:08:42.272Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "WorksSetting.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\WorksSetting.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\WorksSetting.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\WorksSetting.cs",
-              "RelativeToolTip": "FamTec\\Server\\WorksSetting.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAIA3wB0AAAAIAAAAAAAAAA==",
+              "DocumentIndex": 16,
+              "Title": "IAlarmService.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
+              "RelativeToolTip": "FamTec\\Server\\Services\\Alarm\\IAlarmService.cs",
+              "ViewState": "AgIAABsAAAAAgD+KyNH+vwwAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:59:57.978Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T03:57:03.174Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
-              "RelativeDocumentMoniker": "FamTec\\Server\\Program.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Program.cs",
-              "RelativeToolTip": "FamTec\\Server\\Program.cs",
-              "ViewState": "AgIAAKQBAAAAAAAAAAAAALcBAAAqAAAAAAAAAA==",
+              "DocumentIndex": 12,
+              "Title": "KakaoLogController.cs",
+              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
+              "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
+              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
+              "RelativeToolTip": "FamTec\\Server\\Controllers\\KakaoLog\\KakaoLogController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T00:06:01.218Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T05:34:16.556Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
-              "RelativeDocumentMoniker": "FamTec\\Server\\appsettings.json",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
-              "RelativeToolTip": "FamTec\\Server\\appsettings.json",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAACUAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-30T23:28:21.349Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "Common.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Common.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Common.cs",
@@ -317,7 +355,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "TableINFO.txt",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\TableINFO.txt",
               "RelativeDocumentMoniker": "FamTec\\Shared\\TableINFO.txt",
@@ -329,7 +367,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "LoginController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Login\\LoginController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\Login\\LoginController.cs",
@@ -337,12 +375,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\Login\\LoginController.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAhwKMAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T00:10:54.062Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T00:10:54.062Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 18,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\User\\UserService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\User\\UserService.cs",
@@ -350,12 +387,11 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\User\\UserService.cs",
               "ViewState": "AgIAALoCAAAAAAAAAAAhwMoCAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T00:12:39.066Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T00:12:39.066Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "VocTb.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Model\\VocTb.cs",
               "RelativeDocumentMoniker": "FamTec\\Shared\\Model\\VocTb.cs",
@@ -367,7 +403,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Program.cs",
               "RelativeDocumentMoniker": "FamTec\\Client\\Program.cs",
@@ -375,37 +411,11 @@
               "RelativeToolTip": "FamTec\\Client\\Program.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAgwDgAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T03:40:13.95Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T03:40:13.95Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "ApiManager.cs",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Middleware\\ApiManager.cs",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Middleware\\ApiManager.cs",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Middleware\\ApiManager.cs",
-              "RelativeToolTip": "FamTec\\Client\\Middleware\\ApiManager.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAYwC0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T03:40:50.332Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "ModalDepartment.razor",
-              "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
-              "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Admin\\Manager\\ManagerMain\\Modal\\ModalDepartment.razor",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAqwIwAAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-30T23:19:46.404Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "AlarmTb.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Model\\AlarmTb.cs",
               "RelativeDocumentMoniker": "FamTec\\Shared\\Model\\AlarmTb.cs",
@@ -417,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "StartupTask.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\StartupTask.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\StartupTask.cs",
@@ -429,7 +439,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\User\\UserController.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Controllers\\User\\UserController.cs",
@@ -437,12 +447,11 @@
               "RelativeToolTip": "FamTec\\Server\\Controllers\\User\\UserController.cs",
               "ViewState": "AgIAAO0AAAAAAAAAAAAcwPsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:37:49.155Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:37:49.155Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "InventoryTb.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Model\\InventoryTb.cs",
               "RelativeDocumentMoniker": "FamTec\\Shared\\Model\\InventoryTb.cs",
@@ -454,7 +463,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "IAlarmInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\IAlarmInfoRepository.cs",
@@ -466,7 +475,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "MariaTable.txt",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\MariaTable.txt",
               "RelativeDocumentMoniker": "FamTec\\Shared\\MariaTable.txt",
@@ -478,7 +487,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "BuildingInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
@@ -486,12 +495,11 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Building\\BuildingInfoRepository.cs",
               "ViewState": "AgIAAGsCAAAAAAAAAAAuwIUCAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T00:59:23.112Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T00:59:23.112Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "WorksContext.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Databases\\WorksContext.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Databases\\WorksContext.cs",
@@ -503,7 +511,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "TimeLine.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Shared\\Components\\TimeLine.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Shared\\Components\\TimeLine.razor",
@@ -515,7 +523,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "KakaoService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\KakaoService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\KakaoService.cs",
@@ -523,12 +531,11 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\KakaoService.cs",
               "ViewState": "AgIAAIQAAAAAAAAAAAAhwJsAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:25:50.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:25:50.149Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "UserInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\User\\UserInfoRepository.cs",
@@ -540,7 +547,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "ExecutionStrategy.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\AppData\\Local\\SourceServer\\50cc92562da84e761fbe254bba83412e58ea51052319602edd7b343084c2e0d4\\src\\EFCore\\Storage\\ExecutionStrategy.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Local\\SourceServer\\50cc92562da84e761fbe254bba83412e58ea51052319602edd7b343084c2e0d4\\src\\EFCore\\Storage\\ExecutionStrategy.cs",
@@ -552,7 +559,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "AdminPlaceInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
@@ -560,12 +567,11 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Admin\\AdminPlaces\\AdminPlaceInfoRepository.cs",
               "ViewState": "AgIAABcCAAAAAAAAAAAgwD4AAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-30T23:23:57.567Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-30T23:23:57.567Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "KakaoLogInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
@@ -573,12 +579,11 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\KakaoLog\\KakaoLogInfoRepository.cs",
               "ViewState": "AgIAAB4BAAAAAAAAAAAiwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-30T23:23:47.242Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-30T23:23:47.242Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "MaintanceRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
@@ -586,12 +591,11 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
               "ViewState": "AgIAAGUAAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-30T23:23:23.921Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-30T23:23:23.921Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "QR.razor",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\CommonComponents\\QR.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\CommonComponents\\QR.razor",
@@ -624,7 +628,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 17,
               "Title": "UsersDTO.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
               "RelativeDocumentMoniker": "FamTec\\Shared\\Server\\DTO\\User\\UsersDTO.cs",
@@ -658,7 +662,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 13,
               "Title": "VocCommentService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\VocCommentService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Voc\\VocCommentService.cs",
@@ -666,8 +670,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\VocCommentService.cs",
               "ViewState": "AgIAAMMAAAAAAAAAAAAqwGACAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:07:49.897Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:07:49.897Z"
             },
             {
               "$type": "Document",
@@ -677,14 +680,14 @@
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Voc\\VocService.cs",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\VocService.cs",
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\VocService.cs",
-              "ViewState": "AgIAADgBAAAAAAAAAAAYwOYBAABoAAAAAAAAAA==",
+              "ViewState": "AgIAAEkBAAAAAAAAAADwv2YBAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-31T01:08:53.898Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 14,
               "Title": "HubService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
@@ -692,8 +695,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Voc\\Hub\\HubService.cs",
               "ViewState": "AgIAAOYAAAAAAAAAAAAiwPwAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:07:38.641Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:07:38.641Z"
             }
           ]
         }
@@ -718,7 +720,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "AlarmDTO.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\Server\\DTO\\Alarm\\AlarmDTO.cs",
               "RelativeDocumentMoniker": "FamTec\\Shared\\Server\\DTO\\Alarm\\AlarmDTO.cs",
@@ -726,12 +728,11 @@
               "RelativeToolTip": "FamTec\\Shared\\Server\\DTO\\Alarm\\AlarmDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T02:08:17.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T02:08:17.981Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 7,
               "Title": "AlarmInfoRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Repository\\Alarm\\AlarmInfoRepository.cs",
@@ -744,7 +745,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 11,
               "Title": "AlarmService.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
               "RelativeDocumentMoniker": "FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
@@ -752,8 +753,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Alarm\\AlarmService.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAAAswCQAAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:18:53.014Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-31T01:18:53.014Z"
             }
           ]
         }
