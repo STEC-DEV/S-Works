@@ -15624,6 +15624,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     
     max-height:400px;
     min-height:250px;
+    height:auto;
     box-shadow: var(--shadow-1);
     overflow: hidden;
     z-index : 90;
@@ -15635,6 +15636,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .content[b-dyg46wmdyc] {
+    flex-grow:1;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -15642,8 +15644,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: var(--half-pd) var(--default-pd);
     margin: var(--default-pd) 0;
     overflow: auto;
-    /*min-height: 200px;*/
-    height: 100%;
+    
+    /*height: 100%;*/
 }
 
 .btn[b-dyg46wmdyc]{
