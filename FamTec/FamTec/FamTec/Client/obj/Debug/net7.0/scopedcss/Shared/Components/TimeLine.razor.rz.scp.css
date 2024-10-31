@@ -32,7 +32,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--default-pd);
+    gap: var(--half-pd);
     padding: var(--half-pd) var(--default-pd);
     margin: var(--default-pd) 0;
     overflow: auto;

@@ -24,10 +24,11 @@
             {
                 <Notify 
                     AlarmId ="@alarm.AlarmID.Value"
-                    Title="@(alarm.Type == 0? "민원 발생" : "민원 변경" )"
-                    Context="@ConvertContext(alarm.Type.Value, alarm.BuildingName, alarm.CODE)"
+                    Title="민원 알림"
+                    Context="@ConvertContext(alarm.Type.Value, alarm.BuildingName, alarm.VocType)"
                     Url="@ConvertUrl(alarm.VocID.Value)" 
                     OnLoad=OnLoad
+                    Date="@alarm.CreateDT"
                     />
             }
         }
@@ -42,17 +43,36 @@
 
 
     //알림 내용 변환
-    private string ConvertContext(int type, string name, string code)
+    private string ConvertContext(int type, string name, int? voctype)
     {
         string context = type switch
         {
-            0 => $"{name} 민원이 접수되었습니다.\n코드 : {code}",
-            1 => $"{code} 민원 담당 부서가 변경되었습니다.",
+            0 => $"{name}에 민원이 접수되었습니다.",
+            1 => $"민원유형이 {ConvertContext(voctype)}로 변경되었습니다.",
             _ => "None"
         };
 
         return context;
     }
+
+    private string ConvertContext(int? voctype)
+    {
+        string type;
+        return type = voctype switch
+        {
+            0 => "미분류",
+            1 => "기계",
+            2 => "전기",
+            3 => "승강",
+            4 => "소방",
+            5 => "건축",
+            6 => "통신",
+            7 => "미화",
+            8 => "보안",
+            _ => "Unknown",
+        };
+    }
+
 
     //알림 내용 변환
     private string ConvertUrl(int vocid)
