@@ -16,6 +16,11 @@
         public int? Type { get; set; }
 
         /// <summary>
+        /// 민원의 타입
+        /// </summary>
+        public int? VocType { get; set; }
+
+        /// <summary>
         /// VOC 제목
         /// </summary>
         public string? VocTitle { get; set; }
@@ -39,5 +44,10 @@
         /// 건물명
         /// </summary>
         public string? BuildingName { get; set; }
+
+        /// <summary>
+        /// 알람 발생일
+        /// </summary>
+        public string? CreateDT { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="AlarmType"></param>
         /// <param name="VocTBId"></param>
         /// <returns></returns>
-        Task<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId);
+        Task<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId, int VocType);
 
         /// <summary>
         /// 사용자의 안읽은 알람 전체조회

@@ -6,13 +6,15 @@ namespace FamTec.Server
 {
     public class WorksSetting : DbContext
     {
-        private readonly WorksContext context;
+        private readonly IServiceProvider ServiceProvider;
+        //private readonly WorksContext context;
         private List<string> defaultUnit;
-        
 
-        public WorksSetting()
+
+        public WorksSetting(IServiceProvider _serviceProvider)
         {
-            context = new WorksContext();
+            this.ServiceProvider = _serviceProvider;
+            //context = new WorksContext();
             defaultUnit = new List<string>()
             {
                 "㎀","㎁","㎂","㎃","KB", "MB", "GB", "㎈", "㎉", "㎊", "㎋", "㎌", "㎍", "㎎",
@@ -26,6 +28,9 @@ namespace FamTec.Server
 
         public async Task DefaultSetting()
         {
+            using var scope = ServiceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<WorksContext>();
+
             List<string>? unittb = await context.UnitTbs
                 .Where(m => m.DelYn != true &&
                        m.PlaceTbId == null)

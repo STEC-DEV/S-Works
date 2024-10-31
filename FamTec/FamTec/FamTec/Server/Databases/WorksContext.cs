@@ -79,7 +79,7 @@ public partial class WorksContext : DbContext
     public virtual DbSet<VocTb> VocTbs { get; set; }
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -926,7 +926,6 @@ public partial class WorksContext : DbContext
         base.ConfigureConventions(configurationBuilder);
         configurationBuilder.DefaultTypeMapping<MaterialInventory>();
     }
-
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

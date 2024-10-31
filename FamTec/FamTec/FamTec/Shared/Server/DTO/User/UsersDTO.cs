@@ -165,7 +165,7 @@
         /// <summary>
         /// 기타 처리권한
         /// </summary>
-        public bool? VOC_ETC { get; set; } = false;
+        //public bool? VOC_ETC { get; set; } = false;
 
         /// <summary>
         /// 이미지 파일명

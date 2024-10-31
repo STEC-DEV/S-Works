@@ -271,7 +271,7 @@ namespace FamTec.Server.Services.Voc
                         if (Users is [_, ..])
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 0).ConfigureAwait(false);
 
                             // 소켓전송
 
@@ -299,7 +299,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 1).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -326,7 +326,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 2).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -351,7 +351,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 3).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -377,7 +377,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 4).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -403,7 +403,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 5).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -430,7 +430,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 6).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -457,7 +457,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 7).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
@@ -484,7 +484,7 @@ namespace FamTec.Server.Services.Voc
                         {
                             // 여기에 해당하는 관리자들에다 Alarm 테이블 INSERT
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
-                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value).ConfigureAwait(false);
+                            await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 8).ConfigureAwait(false);
 
                             // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
                             //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");

@@ -25,6 +25,9 @@ public partial class AlarmTb
     [Column("TYPE", TypeName = "int(11)")]
     public int Type { get; set; }
 
+    [Column("VOC_TYPE", TypeName = "int(11)")]
+    public int? VocType { get; set; }
+
     [Column("CREATE_DT", TypeName = "datetime")]
     public DateTime CreateDt { get; set; }
 

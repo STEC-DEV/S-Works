@@ -1046,7 +1046,12 @@ namespace FamTec.Server.Services.User
                 model.VocNetwork = dto.VOC_NETWORK!.Value; // VOC 통신권한
                 model.VocBeauty = dto.VOC_BEAUTY!.Value; // VOC 미화권한
                 model.VocSecurity = dto.VOC_SECURITY!.Value; // VOC 보안권한
-                model.VocEtc = dto.VOC_ETC!.Value; // VOC 기타권한
+                
+                if(dto.PERM_VOC > 0)
+                    model.VocEtc = true; // VOC 미분류권한 있음
+                else
+                    model.VocEtc = false; // VOC 미분류권한 없음
+                
                 model.PlaceTbId = Int32.Parse(PlaceIdx);
                 model.Image = NewFileName;
 
@@ -1140,7 +1145,7 @@ namespace FamTec.Server.Services.User
                     dto.VOC_NETWORK = model.VocNetwork;
                     dto.VOC_BEAUTY = model.VocBeauty;
                     dto.VOC_SECURITY = model.VocSecurity;
-                    dto.VOC_ETC = model.VocEtc;
+                    //dto.VOC_ETC = model.VocEtc;
 
                     //string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
                     string PlaceFileName = Path.Combine(Common.FileServer, placeid.ToString(), "Users");
@@ -1288,7 +1293,13 @@ namespace FamTec.Server.Services.User
                 model.VocNetwork = dto.VOC_NETWORK!.Value;
                 model.VocBeauty = dto.VOC_BEAUTY!.Value;
                 model.VocSecurity = dto.VOC_SECURITY!.Value;
-                model.VocEtc = dto.VOC_ETC!.Value;
+
+                if(dto.PERM_VOC > 0)
+                    model.VocEtc = true;
+                else
+                    model.VocEtc = false;
+                
+                //model.VocEtc = dto.VOC_ETC!.Value;
                 model.AlarmYn = dto.ALRAM_YN!.Value;
                 model.Status = dto.STATUS!.Value;
                 model.UpdateDt = ThisDate;

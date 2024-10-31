@@ -5125,11 +5125,6 @@
         "IsRequired": false
       },
       {
-        "Name": "VOC_ETC",
-        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
         "Name": "ImageName",
         "Type": "System.String",
         "IsRequired": false
@@ -5415,11 +5410,6 @@
       },
       {
         "Name": "VOC_SECURITY",
-        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "VOC_ETC",
         "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },

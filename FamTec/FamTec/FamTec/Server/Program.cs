@@ -193,6 +193,7 @@ builder.Services.AddTransient<ICommService, CommService>();
 
 
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
+builder.Services.AddSingleton<WorksSetting>();
 
 builder.Services.AddMemoryCache(); // 메모리캐쉬
 
@@ -390,7 +391,7 @@ builder.Services.AddHttpClient<ApiPollingService>();
 
 // 백그라운드 서비스 등록
 builder.Services.AddHostedService<ApiPollingService>();
-
+builder.Services.AddHostedService<StartupTask>();
 
 var app = builder.Build();
 
@@ -539,7 +540,4 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-
-//WorksSetting settings = new();
-//await settings.DefaultSetting();
 app.Run();

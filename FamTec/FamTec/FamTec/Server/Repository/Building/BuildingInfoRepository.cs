@@ -643,6 +643,7 @@ namespace FamTec.Server.Repository.Building
                         }
 
                         await transaction.CommitAsync().ConfigureAwait(false); // 커밋
+                        
                         return true;
                     }
                     catch (Exception ex) when (IsDeadlockException(ex))

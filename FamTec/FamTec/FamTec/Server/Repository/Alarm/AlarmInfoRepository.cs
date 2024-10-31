@@ -78,7 +78,7 @@ namespace FamTec.Server.Repository.Alarm
         /// <param name="AlarmType"></param>
         /// <param name="VocTBId"></param>
         /// <returns></returns>
-        public async Task<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId)
+        public async Task<bool?> AddAlarmList(List<UsersTb>? userlist, string Creater, int AlarmType, int VocTBId, int VocType)
         {
             // ExecutionStrategy 생성
             IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
@@ -103,6 +103,7 @@ namespace FamTec.Server.Repository.Alarm
                                 Type = AlarmType,
                                 UsersTbId = UserTB.Id,
                                 VocTbId = VocTBId,
+                                VocType = VocType,
                                 CreateDt = ThisDate,
                                 CreateUser = Creater,
                                 UpdateDt = ThisDate,
@@ -192,10 +193,12 @@ namespace FamTec.Server.Repository.Alarm
                                            AlarmID = Alarm.Id,
                                            Type = Alarm.Type,
                                            VocTitle = VocTB.Title!.Length > 8 ? VocTB.Title.Substring(0, 8) + "..." : VocTB.Title,
+                                           VocType = Alarm.VocType,
                                            UserID = Alarm.UsersTbId,
                                            VocID = Alarm.VocTbId,
                                            BuildingName = BuildingTB.Name,
-                                           CODE = VocTB.Code
+                                           CODE = VocTB.Code,
+                                           CreateDT = Alarm.CreateDt.ToString("yyyy-mm-dd HH:mm:ss")
                                        }).ToList();
 
                 if (dto is [_, ..])

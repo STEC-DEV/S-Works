@@ -118,7 +118,7 @@ namespace FamTec.Server.Controllers.User
                 if(dto.VOC_NETWORK is null) return NoContent(); // VOC 통신권한
                 if(dto.VOC_BEAUTY is null) return NoContent(); // VOC 미화권한
                 if (dto.VOC_SECURITY is null) return NoContent(); // VOC 보안권한
-                if (dto.VOC_ETC is null) return NoContent(); // VOC 기타권한
+                //if (dto.VOC_ETC is null) return NoContent(); // VOC 기타권한
                 
                 if (files is not null)
                 {
@@ -278,7 +278,7 @@ namespace FamTec.Server.Controllers.User
                 if (dto.VOC_NETWORK is null) return NoContent(); // VOC 통신권한
                 if (dto.VOC_BEAUTY is null) return NoContent(); // VOC 미화권한
                 if (dto.VOC_SECURITY is null) return NoContent(); // VOC 보안권한
-                if (dto.VOC_ETC is null) return NoContent(); // VOC 기타권한
+                //if (dto.VOC_ETC is null) return NoContent(); // VOC 기타권한
 
                 if (files is not null)
                 {

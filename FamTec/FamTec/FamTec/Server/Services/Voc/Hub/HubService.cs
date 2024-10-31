@@ -250,7 +250,8 @@ namespace FamTec.Server.Services.Voc.Hub
                     List<UsersTb>? UserList = await UserInfoRepository.GetVocDefaultList(dto.Placeid!.Value).ConfigureAwait(false);
                     if(UserList is [_, ..])
                     {
-                        await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id).ConfigureAwait(false);
+                        // VOCTYPE = 0 >> 미분류
+                        await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id, 0).ConfigureAwait(false);
                     }
                    
                     // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
