@@ -13016,6 +13016,12 @@ modal-table[b-all74yxmu0]{
     color : var(--main-color);
     
 }
+
+.row[b-6njgftecqj]{
+    display:flex;
+    justify-content:center;
+    gap:var(--half-pd);
+}
 /* /Pages/Normal/User/UserAdd/Temp/UserVocPermComponent2.razor.rz.scp.css */
 .placetoggle-container[b-t4nzhfuhky] {
     display: flex;
@@ -13340,6 +13346,12 @@ modal-table[b-all74yxmu0]{
     font-weight:var(--bold-wt);
     color : var(--main-color);
     
+}
+
+.row[b-d96u4ifbiu] {
+    display: flex;
+    justify-content: center;
+    gap: var(--half-pd);
 }
 /* /Pages/Normal/User/UserDetail/Components/UserVocPermComponent.razor.rz.scp.css */
 .placetoggle-container[b-m3ngr3vgsn] {
@@ -15801,18 +15813,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     content: "";
     position: absolute;
     left: 0;
-    top: 0;
+    top: 5%;
     bottom: 0;
-    width: 2px; /* border의 너비 */
+    width: 4px; /* border의 너비 */
     background-color: var(--main-color); /* border의 색상 */
     transform: scaleY(0);
-    transform-origin: top; /* 위에서 아래로 애니메이션 시작 */
-    transition: transform 0.3s ease; /* 애니메이션 속도와 이징 */
+    /*transform-origin: top;*/ /* 위에서 아래로 애니메이션 시작 */
+    /*transition: transform 0.3s ease;*/ /* 애니메이션 속도와 이징 */
 }
 
 .drawer-container .drawer-sub-link:hover[b-rriyx9tl3w]::before {
-    transform: scaleY(1); /* 전체 높이로 확장 */
+    transform: scaleY(0.5); /* 전체 높이로 확장 */
 }
+
+
+.drawer-container .sub-spot[b-rriyx9tl3w]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 5%;
+    bottom: 0;
+    width: 4px; /* border의 너비 */
+    background-color: var(--main-color); /* border의 색상 */
+    transform: scaleY(0.5);
+}
+
+/*.drawer-container .drawer-sub-link:hover{
+    border-left : 4px solid var(--main-color);
+}*/
 /* /Shared/ErrLayout.razor.rz.scp.css */
 .page[b-3pvxf1p1i7] {
     background-color: var(--content-back-color);
