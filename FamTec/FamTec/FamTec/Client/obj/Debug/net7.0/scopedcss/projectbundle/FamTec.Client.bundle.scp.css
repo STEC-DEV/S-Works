@@ -15570,7 +15570,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 {
     display : flex;
     flex-direction : column;
-    gap : var(--default-pd);
+    gap : var(--half-pd);
 
     padding : var(--half-pd);
     
@@ -15584,6 +15584,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .notify:hover[b-xtv5ecru9b]{
     transform : scale(1.05);
     cursor : pointer;
+}
+
+.header[b-xtv5ecru9b]{
+    display : flex;
+    justify-content:space-between;
 }
 
 .label[b-xtv5ecru9b]{
@@ -15605,6 +15610,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color : #f1f1f1;
 }
 
+.date[b-xtv5ecru9b] {
+    font-size: var(--explain-size);
+}
 /* /Shared/Components/TimeLine.razor.rz.scp.css */
 
 .timeline[b-dyg46wmdyc] {
@@ -15640,7 +15648,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--default-pd);
+    gap: var(--half-pd);
     padding: var(--half-pd) var(--default-pd);
     margin: var(--default-pd) 0;
     overflow: auto;

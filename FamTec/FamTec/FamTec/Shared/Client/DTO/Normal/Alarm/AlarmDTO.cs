@@ -42,5 +42,13 @@ namespace FamTec.Shared.Client.DTO.Normal.Alarm
         /// 건물명
         /// </summary>
         public string? BuildingName { get; set; }
+        /// <summary>
+        /// 민원의 타입
+        /// </summary>
+        public int? VocType { get; set; }
+        /// <summary>
+        /// 알람 발생일
+        /// </summary>
+        public string? CreateDT { get; set; }
     }
 }

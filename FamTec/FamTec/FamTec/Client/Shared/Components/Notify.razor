@@ -2,9 +2,14 @@
 
 
 <div class="notify" @onclick=@OnMove>
-    <label class="label">
-        @Title
-    </label>
+    <div class="header">
+        <label class="label">
+            @Title
+        </label>
+        <span class="date">
+            @Date
+        </span>
+    </div>
     <p class="context">
         @Context
     </p>
@@ -14,6 +19,7 @@
     [Parameter] public int AlarmId { get; set; }
     [Parameter] public string Title { get; set; }
     [Parameter] public string Context { get; set; }
+    [Parameter] public string Date { get; set; }
     [Parameter] public string Url { get; set; }
     [Parameter] public EventCallback OnLoad  {get;set;}
 
