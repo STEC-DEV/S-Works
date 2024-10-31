@@ -198,8 +198,8 @@ namespace FamTec.Server.Repository.Alarm
                                            VocID = Alarm.VocTbId,
                                            BuildingName = BuildingTB.Name,
                                            CODE = VocTB.Code,
-                                           CreateDT = Alarm.CreateDt.ToString("yyyy-mm-dd HH:mm:ss")
-                                       }).ToList();
+                                           CreateDT = Alarm.CreateDt.ToString("yyyy-MM-dd HH:mm:ss")
+                                       }).OrderByDescending(m => m.CreateDT).ToList();
 
                 if (dto is [_, ..])
                     return dto;
