@@ -271,6 +271,7 @@ string? connectionString = builder.Configuration.GetConnectionString("DefaultCon
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
     builder.Services.AddDbContext<WorksContext>(options =>
+    //builder.Services.AddDbContextPool<WorksContext>(options =>
       options.UseMySql(connectionString, ServerVersion.Parse("10.11.7-mariadb"),
       mySqlOptions =>
       {
@@ -280,6 +281,8 @@ if (!String.IsNullOrWhiteSpace(connectionString))
           // 다른 성능 및 안정성 옵션 추가
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
+      //poolSize: 128;);
+
 }
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.
@@ -537,6 +540,6 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 
-WorksSetting settings = new();
-await settings.DefaultSetting();
+//WorksSetting settings = new();
+//await settings.DefaultSetting();
 app.Run();

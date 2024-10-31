@@ -1,7 +1,7 @@
 {
   "entryAssembly": "FamTec.Client",
   "resources": {
-    "hash": "sha256-vwz14EQiPTqZWGAw23aYQp7jvHlRi+UbfpHdtpOV9Vk=",
+    "hash": "sha256-QnoRG1uCLjxHK7nqVBTs5EZUns3OxhZiw5wMnlgR9IY=",
     "runtime": {
       "dotnet.7.0.20.ipx5sv2cne.js": "sha256-eaJTmow4t8eE7FZMZR5Ja41JMOefGCbIYDTdpclGsac=",
       "dotnet.timezones.blat": "sha256-gbATD5HDsHYtW8vdPYh9iSBY4O5CjvMeCSF5xXWF1xo=",
@@ -18,8 +18,8 @@
       "ClosedXML.dll": "sha256-89k5fIYzAhyZlGWeIJkKIqsfhIWIQWnS9wFzYnsJe+s=",
       "DocumentFormat.OpenXml.dll": "sha256-WI0HvcDdgox9sH0Er0LEfUiwktks7Lt/9uY/l0G0iXQ=",
       "ExcelNumberFormat.dll": "sha256-18Rbjk4QJ4MeL8jN+UH69R0opm/qz8qqc32nMmLntQc=",
-      "FamTec.Client.dll": "sha256-PqWCK0PfCRgqUKff7G1k3CijW2sTGtZCIz/MP25fjNo=",
-      "FamTec.Shared.dll": "sha256-vn9zYwbFcID7+tKjZha4uihJJwjm8VtURwSYuXyydq0=",
+      "FamTec.Client.dll": "sha256-DplmE0Mz1emkouYyIaIKvqURm+Fu+r5WCEylqWaRBpM=",
+      "FamTec.Shared.dll": "sha256-LeLdU6/rpBdT0bIICWIkJVcL5QhkH75f+O+4frMuxIo=",
       "Irony.dll": "sha256-hDJwSTOExuHtGx+S1jGUSwj16IHDx6IhCCTxiZFSzL0=",
       "Microsoft.AspNetCore.Authentication.Abstractions.dll": "sha256-iw51tdKcETC5QqlJLWett1iPlLZgUrRdZfkV7EoaD4k=",
       "Microsoft.AspNetCore.Authentication.Core.dll": "sha256-NP2svkDxlIVJsMiWAmj552NCYo4j7YnOUr2+jkz5+pc=",

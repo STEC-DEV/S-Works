@@ -79,6 +79,7 @@ public partial class WorksContext : DbContext
     public virtual DbSet<VocTb> VocTbs { get; set; }
 
     public virtual DbSet<MaterialInventory> MaterialInven { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -110,7 +111,6 @@ public partial class WorksContext : DbContext
         //        mySqlOption.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
         //    });
     }
-
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

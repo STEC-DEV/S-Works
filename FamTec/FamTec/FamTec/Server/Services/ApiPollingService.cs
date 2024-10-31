@@ -27,29 +27,64 @@ namespace FamTec.Server.Services
                 this.LogService = _logservice;
             }
 
-      
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
 #if DEBUG
-                CreateBuilderLogger.ConsoleText("백그라운드 타이머 시작 / 간격 30분");
+        CreateBuilderLogger.ConsoleText("백그라운드 타이머 시작 / 간격 30분");
 #endif
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    await RequestApi();
-                    await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken); // 30분 대기
+                    try
+                    {
+                        await RequestApi();
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Task가 취소된 경우 안전하게 종료
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("작업이 취소되었습니다.");
+#endif
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        LogService.LogMessage(ex.ToString());
+                    }
+
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Delay가 취소된 경우 처리
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("대기 작업이 취소되었습니다.");
+#endif
+                    }
                 }
             }
-            catch(Exception ex)
+            catch (TaskCanceledException)
             {
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+        CreateBuilderLogger.ConsoleText("ExecuteAsync가 취소되었습니다.");
+#endif
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+        CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 LogService.LogMessage(ex.ToString());
             }
         }
-        
+
         private async Task RequestApi()
         {
             try
