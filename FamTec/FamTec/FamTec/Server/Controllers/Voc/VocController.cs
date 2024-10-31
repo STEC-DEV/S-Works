@@ -74,15 +74,17 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
+        //public async Task<IActionResult> GetVocList()
         public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
         {
             try
             {
                 //List<int> typesArray = type.Split(',').Select(int.Parse).ToList();
                 //List<int> type = new List<int>() { 0,1, 7 };
-                //List<int> status = new List<int>() { 1, 2 };
+                //List<int> status = new List<int>() { 0,1, 2 };
                 //List<int> buildingid = new List<int>() { 1 };
-                
+                //List<int> division = new List<int>() { 1 };
+
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -122,7 +124,7 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocFilterList")]
-        public async Task<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
+        public async Task<IActionResult> GetVocFilterList([FromQuery] DateTime StartDate, [FromQuery] DateTime EndDate, [FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division)
         {
             try
             {

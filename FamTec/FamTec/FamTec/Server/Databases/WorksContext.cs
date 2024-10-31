@@ -900,6 +900,9 @@ public partial class WorksContext : DbContext
             entity.Property(e => e.Content).HasComment("민원내용");
             entity.Property(e => e.CreateDt).HasDefaultValueSql("current_timestamp()");
             entity.Property(e => e.DelYn).HasDefaultValueSql("'0'");
+            entity.Property(e => e.Division)
+                .HasDefaultValueSql("'0'")
+                .HasComment("모바일:0 / 웹:1");
             entity.Property(e => e.DurationDt).HasComment("소요시간");
             entity.Property(e => e.Image1).HasComment("이미지");
             entity.Property(e => e.Image2).HasComment("이미지");

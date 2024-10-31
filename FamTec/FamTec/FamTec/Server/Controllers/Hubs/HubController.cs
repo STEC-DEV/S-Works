@@ -50,8 +50,10 @@ namespace FamTec.Server.Controllers.Hubs
                 //    Title = "민원등록제목",
                 //    Contents = "민원등록내용",
                 //    Name = "테스트사용자",
-                //    Placeid = 3,
-                //    PhoneNumber = "01091189308"
+                //    Placeid = 1,
+                //    PhoneNumber = "01091189308",
+                //    Division = 1,
+                //    Type = 1
                 //};
 
                 if (String.IsNullOrWhiteSpace(dto.Title)) // 민원 제목 NULL CHECK

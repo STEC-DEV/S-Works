@@ -170,6 +170,7 @@ namespace FamTec.Server.Services.Voc
                 dto.Status = model.Status; // 민원상태
                 dto.BuildingName = building.Name; // 건물명
                 dto.Type = model.Type;
+                dto.Division = model.Division; // 웹 - 모바일 구분
                 dto.Title = model.Title; // 민원제목
                 dto.Contents = model.Content; // 민원내용
                 dto.CreateUser = model.CreateUser; // 민원인
@@ -186,6 +187,7 @@ namespace FamTec.Server.Services.Voc
                     if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
                     {
                         byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image).ConfigureAwait(false);
+
                         if (ImageBytes is not null)
                         {
                             dto.ImageName.Add(image);

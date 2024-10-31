@@ -30,6 +30,11 @@
         public int? Type { get; set; }
 
         /// <summary>
+        /// 모바일 : 웹 구분
+        /// </summary>
+        public int? Division { get; set; }
+
+        /// <summary>
         /// 제목
         /// </summary>
         public string? Title { get; set; }

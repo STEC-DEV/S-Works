@@ -193,6 +193,7 @@ namespace FamTec.Server.Repository.Voc
                                                     Id = VocTB.Id, // VOCID
                                                     BuildingName = BuildingTB.Name, // 건물명
                                                     Type = VocTB.Type, // 유형
+                                                    Division = VocTB.Division,
                                                     Title = VocTB.Title, // 제목
                                                     Status = VocTB.Status, // 처리상태
                                                     CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
@@ -262,6 +263,7 @@ namespace FamTec.Server.Repository.Voc
                                                 Id = VocTB.Id, // VOC ID
                                                 BuildingName = BuildingTB.Name, // 건물명
                                                 Type = VocTB.Type, // 유형
+                                                Division = VocTB.Division, // 모바일 / 웹
                                                 Title = VocTB.Title, // 민원제목
                                                 Status = VocTB.Status, // 민원상태
                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시

@@ -37,6 +37,12 @@ public partial class VocTb
     public string Content { get; set; } = null!;
 
     /// <summary>
+    /// 모바일:0 / 웹:1
+    /// </summary>
+    [Column("DIVISION", TypeName = "int(11)")]
+    public int? Division { get; set; }
+
+    /// <summary>
     /// 0 : 미분류
     /// 1 : 기계
     /// 2 : 전기

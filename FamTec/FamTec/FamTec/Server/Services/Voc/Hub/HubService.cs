@@ -111,9 +111,10 @@ namespace FamTec.Server.Services.Voc.Hub
                 VocTb? model = new VocTb();
                 model.Title = dto.Title;
                 model.Content = dto.Contents;
-                model.Type = 0; // 처음은 미분류
+                model.Type = dto.Type; // 처음은 미분류
                 model.Phone = dto.PhoneNumber; // 전화번호
                 model.Status = 0; // 미처리
+                model.Division = dto.Division;
 
                 if (dto.PhoneNumber is null) // 전화번호 있으면 회신True / 없으면False
                     model.ReplyYn = false;

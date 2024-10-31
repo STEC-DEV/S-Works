@@ -6,6 +6,16 @@
     public class AddVocDTO
     {
         /// <summary>
+        /// 모바일 여부 0 : 모바일 / 1 : 웹
+        /// </summary>
+        public int Division { get; set; }
+
+        /// <summary>
+        /// 미분류 - 기계 , 전기 등...
+        /// </summary>
+        public int Type { get; set; }
+
+        /// <summary>
         /// 민원의 제목
         /// </summary>
         public string? Title { get; set; }

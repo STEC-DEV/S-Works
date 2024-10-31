@@ -33,6 +33,11 @@
         public int? Type { get; set; }
 
         /// <summary>
+        /// 웹 / 모바일 여부
+        /// </summary>
+        public int? Division { get; set; }
+
+        /// <summary>
         /// 민원 제목
         /// </summary>
         public string? Title { get; set; }

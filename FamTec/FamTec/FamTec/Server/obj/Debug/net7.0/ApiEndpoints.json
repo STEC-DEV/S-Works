@@ -2747,6 +2747,16 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "Division",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
         "Name": "Title",
         "Type": "System.String",
         "IsRequired": false
@@ -5502,6 +5512,11 @@
       },
       {
         "Name": "buildingid",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "division",
         "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
