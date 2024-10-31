@@ -3,6 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\controllers\\voc\\voccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -164,6 +165,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\commoncomponents\\qr.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\commoncomponents\\qr.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+=======
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\facility\\mobilemachine\\mahinedetail\\components\\msubitem.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\facility\\mobilemachine\\mahinedetail\\components\\msubitem.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\facility\\mobilemachine\\mahinedetail\\machinedetailm.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\facility\\mobilemachine\\mahinedetail\\machinedetailm.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+>>>>>>> origin/Front
     }
   ],
   "DocumentGroupContainers": [
@@ -172,6 +181,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
+<<<<<<< HEAD
           "DockedWidth": 200,
           "SelectedChildIndex": 1,
           "Children": [
@@ -561,6 +571,22 @@
               "ViewState": "AgIAABcCAAAAAAAAAAAgwD4AAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-30T23:23:57.567Z",
+=======
+          "DockedHeight": 1895,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MSubItem.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\Components\\MSubItem.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\Components\\MSubItem.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\Components\\MSubItem.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\Components\\MSubItem.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-31T06:05:24.593Z",
+>>>>>>> origin/Front
               "EditorCaption": ""
             },
             {
@@ -578,6 +604,7 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 39,
               "Title": "MaintanceRepository.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Repository\\Maintenence\\MaintanceRepository.cs",
@@ -754,6 +781,18 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-31T01:18:53.014Z",
               "EditorCaption": ""
+=======
+              "DocumentIndex": 1,
+              "Title": "MachineDetailM.razor",
+              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\MachineDetailM.razor",
+              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\MachineDetailM.razor",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\MachineDetailM.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Facility\\MobileMachine\\MahineDetail\\MachineDetailM.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAADwvxQAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-31T06:05:02.612Z",
+              "EditorCaption": ""
+>>>>>>> origin/Front
             }
           ]
         }
