@@ -52,8 +52,9 @@
     </thead>
     <tbody class="tbody">
         <tr class="tbody-tr">
-            <td class="td">
+            <td class="td row">
                 <div>읽기</div>
+                <input type="checkbox" @onchange="OnAllReadCheck" checked="@IsAllRead()" disabled="@(!EditMode)" />
             </td>
             @foreach (var prop in typeof(UserPermDTO).GetProperties())
             {
@@ -66,8 +67,9 @@
             }
         </tr>
         <tr class="tbody-tr">
-            <td class="td">
+            <td class="td row">
                 <div>쓰기</div>
+                <input type="checkbox" @onchange="OnAllWriteCheck" checked="@IsAllWrite()" disabled="@(!EditMode)" />
             </td>
             @foreach (var prop in typeof(UserPermDTO).GetProperties())
             {
@@ -92,6 +94,63 @@
     private List<string> EquipmentSubHeaders = new List<string> { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안" };
 
 
+    private bool IsAllRead()
+    {
+        foreach (var prop in typeof(UserPermDTO).GetProperties())
+        {
+            var value = (int)prop.GetValue(UserPerm);
+            if (value == 0) return false;
+        }
+        return true;
+    }
+
+    private bool IsAllWrite()
+    {
+        foreach (var perm in typeof(UserPermDTO).GetProperties())
+        {
+            var value = (int)perm.GetValue(UserPerm);
+
+            if (value != 2) return false;
+        }
+        return true;
+    }
+
+    private void OnAllReadCheck(ChangeEventArgs e)
+    {
+        bool isChecked = (bool)e.Value;
+
+        foreach (var perm in typeof(UserPermDTO).GetProperties())
+        {
+            int curValue = (int)perm.GetValue(UserPerm);
+            if (isChecked)
+            {
+                perm.SetValue(UserPerm, curValue == 2 ? 2 : 1);
+            }
+            else
+            {
+                perm.SetValue(UserPerm, 0);
+            }
+        }
+        StateHasChanged();
+    }
+
+    private void OnAllWriteCheck(ChangeEventArgs e)
+    {
+        bool isChecked = (bool)e.Value;
+        int prevVocPermValue = UserPerm.VocPerm;
+        foreach (var perm in typeof(UserPermDTO).GetProperties())
+        {
+            perm.SetValue(UserPerm, isChecked ? 2 : 1);
+        }
+        // VocPerm 값이 변경되었다면 이벤트 호출
+        if (prevVocPermValue != UserPerm.VocPerm)
+        {
+            OnVocActive.InvokeAsync(UserPerm);
+        }
+
+        StateHasChanged();
+
+    }
 
     private bool IsFirstCheckboxChecked(int value)
     {

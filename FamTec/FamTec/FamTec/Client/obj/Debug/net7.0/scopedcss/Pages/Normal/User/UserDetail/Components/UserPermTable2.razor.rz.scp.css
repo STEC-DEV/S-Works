@@ -80,3 +80,9 @@
     color : var(--main-color);
     
 }
+
+.row[b-d96u4ifbiu] {
+    display: flex;
+    justify-content: center;
+    gap: var(--half-pd);
+}

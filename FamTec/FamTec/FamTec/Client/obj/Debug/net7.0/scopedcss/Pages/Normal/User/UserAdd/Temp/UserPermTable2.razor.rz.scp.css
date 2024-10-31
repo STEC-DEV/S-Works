@@ -77,3 +77,9 @@
     color : var(--main-color);
     
 }
+
+.row[b-6njgftecqj]{
+    display:flex;
+    justify-content:center;
+    gap:var(--half-pd);
+}
