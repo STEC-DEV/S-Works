@@ -3365,6 +3365,27 @@
 .ibtn :hover[b-qdn3lkfi8w] {
     cursor: pointer;
 }
+/* /Pages/CommonComponents/IconButton/DownloadIcon.razor.rz.scp.css */
+.icon[b-vzeqm10g4d]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-vzeqm10g4d]{
+    cursor : pointer;
+
+}
+
+
+.icon:hover > svg[b-vzeqm10g4d]{
+    fill: var(--main-color);
+}
+
+svg[b-vzeqm10g4d] {
+    transition: all .2s;
+}
 /* /Pages/CommonComponents/IconButton/DownTriangleButton.razor.rz.scp.css */
 .ibtn[b-5o467ymf1y]{
     transform :rotate(180deg);
@@ -3372,6 +3393,48 @@
 
 .ibtn :hover[b-5o467ymf1y] {
     cursor: pointer;
+}
+/* /Pages/CommonComponents/IconButton/ExcelIcon.razor.rz.scp.css */
+.icon[b-5tccqw2efa]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-5tccqw2efa]{
+    cursor : pointer;
+
+}
+
+
+.icon:hover > svg[b-5tccqw2efa]{
+    fill: var(--main-color);
+}
+
+svg[b-5tccqw2efa] {
+    transition: all .2s;
+}
+/* /Pages/CommonComponents/IconButton/ExportIcon.razor.rz.scp.css */
+.icon[b-u2a4ogo4b5]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-u2a4ogo4b5]{
+    cursor : pointer;
+
+}
+
+
+.icon:hover > svg[b-u2a4ogo4b5]{
+    fill: var(--main-color);
+}
+
+svg[b-u2a4ogo4b5] {
+    transition: all .2s;
 }
 /* /Pages/CommonComponents/IconButton/LeftLineButton.razor.rz.scp.css */
 .ibtn :hover[b-v2zor1jm7b]{
@@ -11918,6 +11981,17 @@ modal-table[b-0o0wpwo3cd]{
 .table[b-sfcufcjpv9]  .table-td-link {
     color : var(--main-color);
 }
+
+.row[b-sfcufcjpv9]{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap :var(--one-q-pd);
+}
+
+.icon[b-sfcufcjpv9]{
+    width:0.8rem;
+}
 /* /Pages/Normal/Material/Inventory/Components/SearchFilter.razor.rz.scp.css */
 
 .filter[b-vu86acb01j]{
@@ -14490,6 +14564,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
+.options[b-i7u2all02v]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .vochistory-container .vochistory-title[b-i7u2all02v]{
      display : flex;
     justify-content:space-between;
@@ -14528,6 +14607,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display : none;
 }
 
+.icon[b-i7u2all02v]{
+    
+
+    width:1.5rem;
+}
 
 /* /Pages/Normal/Voc/VocMain/Components/VocTable.razor.rz.scp.css */
 .table[b-on0bmwg9js] {
@@ -14611,6 +14695,60 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .table[b-on0bmwg9js]  .table-td-link {
     color : var(--main-color);
+}
+/* /Pages/Normal/Voc/VocMain/Modal/VocAdd.razor.rz.scp.css */
+.modal[b-dh0poht4nx] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    height:80%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.title[b-dh0poht4nx]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+.img-btn[b-dh0poht4nx]{
+    display :flex;
+    gap : var(--half-pd);
+}
+
+
+.content[b-dh0poht4nx] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content :space-around;
+    gap: var(--default-pd);
+    overflow: auto;
+}
+
+.group[b-dh0poht4nx]{
+    width:100%;
+    display : flex;
+    gap : var(--default-pd);
+    transition :all .3s;
+}
+
+
+.btns[b-dh0poht4nx]{
+    display : flex;
+    gap : var(--default-pd);
+}
+
+.row[b-dh0poht4nx]{
+    display:flex;
+    gap : var(--default-pd);
 }
 /* /Pages/Normal/Voc/VocMain/VocMain.razor.rz.scp.css */
 
@@ -15093,6 +15231,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     flex-direction : column;
     gap : var(--half-pd);
     transition : all .3s;
+    position:relative;
+}
+
+.required[b-t973amhyoc]::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
 }
 
 .label[b-t973amhyoc]{
@@ -15100,6 +15246,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-weight : var(--bold-wt);
     color : var(--main-color);
 }
+
+
+
 
 .input[b-t973amhyoc]{
     outline : none;
