@@ -25,6 +25,9 @@
         /// <returns></returns>
         public Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files);
 
+        public Task<byte[]?> AddResizeImageFile_2(IFormFile files);
+
+
         /// <summary>
         /// 이미지 추출
         /// </summary>

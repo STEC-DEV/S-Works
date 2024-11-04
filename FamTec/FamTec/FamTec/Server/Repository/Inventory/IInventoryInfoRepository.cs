@@ -18,6 +18,15 @@ namespace FamTec.Server.Repository.Inventory
         Task<List<InventoryTb>?> GetMaterialCount(int placeid, int roomid, int materialid,int delcount);
 
         /// <summary>
+        /// 이월재고 수량
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="StartDate"></param>
+        /// <returns></returns>
+        Task<int> GetCarryOverNum(int placeid, int materialid, DateTime StartDate);
+
+        /// <summary>
         /// 출고등록
         /// </summary>
         /// <param name="model"></param>

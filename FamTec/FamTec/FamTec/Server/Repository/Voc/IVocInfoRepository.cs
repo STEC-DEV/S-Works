@@ -19,7 +19,9 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid);
+        //Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth);
+        Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division);
+
 
         /// <summary>
         /// 조건별 민원리스트 조회
@@ -27,7 +29,7 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="placeidx"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingID);
+        Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status, List<int> BuildingID, List<int> division);
 
         /// <summary>
         /// ID로 민원 상세조회

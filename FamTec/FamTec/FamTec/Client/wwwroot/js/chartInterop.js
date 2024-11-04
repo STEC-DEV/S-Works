@@ -1,4 +1,7 @@
-﻿window.chartInstance = null;
+﻿
+
+
+window.chartInstance = null;
 
 window.createStackedBarChart = (canvasId, labels, dataset1, dataset2, dataset3, dataset4, dataset5, dataset6, dataset7, dataset8, dataset9) => {
     console.log(dataset1);

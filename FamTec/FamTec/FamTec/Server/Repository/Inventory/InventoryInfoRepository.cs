@@ -267,7 +267,7 @@ namespace FamTec.Server.Repository.Inventory
                          MaintanceId = s.MaintenenceHistoryTbId,
                          Url = GenerateMaintenanceUrl(s.MaintenenceHistoryTbId, maintenanceHistories, facilities)
                      })
-                     .OrderByDescending(r => r.ID)  // storeList의 ID로 내림차순 정렬
+                     .OrderBy(r => r.ID)  // storeList의 ID로 내림차순 정렬
                      .ToList()
                         }).OrderBy(dto => dto.ID) // PeriodicDTO의 ID는 오름차순 정렬
              .ToList();
@@ -1438,6 +1438,64 @@ namespace FamTec.Server.Repository.Inventory
         }
 
         /// <summary>
+        /// 이월 재고 수량
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="materialid"></param>
+        /// <param name="StartDate"></param>
+        /// <returns></returns>
+        public async Task<int> GetCarryOverNum(int placeid, int materialid, DateTime StartDate)
+        {
+            try
+            {
+
+                // startDate 이후의 최소 ID를 구하는 하위 쿼리
+                int minIdAfterDate = await context.StoreTbs
+                    .Where(x => x.PlaceTbId == placeid && x.MaterialTbId == materialid && x.CreateDt > StartDate.Date)
+                    .OrderBy(x => x.Id)
+                    .Select(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                // minIdAfterDate보다 작은 ID 중에서 최대 ID를 구하는 하위 쿼리
+                int maxIdBeforeMinId = await context.StoreTbs
+                    .Where(x => x.PlaceTbId == placeid && x.MaterialTbId == materialid && x.Id < minIdAfterDate)
+                    .OrderByDescending(x => x.Id)
+                    .Select(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (maxIdBeforeMinId == 0)
+                    return 0;
+
+                // 최종 결과 가져오기
+                StoreTb? result = await context.StoreTbs
+                    .Where(x => x.PlaceTbId == placeid && x.MaterialTbId == materialid && x.Id == maxIdBeforeMinId)
+                    .FirstOrDefaultAsync();
+                
+                if (result is null)
+                    return 0;
+
+                return result.CurrentNum;
+
+                //var query = context.StoreTbs
+                //    .Where(s => s.PlaceTbId == placeid && s.MaterialTbId == materialid)
+                //    .Where(s => s.Id == context.StoreTbs
+                //        .Where(sub => sub.PlaceTbId == placeid && sub.MaterialTbId == materialid
+                //            && sub.Id < context.StoreTbs
+                //                .Where(inner => inner.PlaceTbId == placeid && inner.MaterialTbId == materialid && inner.CreateDt > StartDate)
+                //                .Min(inner => (int?)inner.Id) ?? int.MaxValue)
+                //        .Max(sub => (int?)sub.Id) ?? int.MinValue);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
         /// 데드락 감지코드
         /// </summary>
         /// <param name="ex"></param>
@@ -1454,5 +1512,7 @@ namespace FamTec.Server.Repository.Inventory
 
             return false;
         }
+
+       
     }
 }

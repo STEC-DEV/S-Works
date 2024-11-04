@@ -87,5 +87,11 @@
         /// </summary>
         public static readonly string KakaoTemplateCode_2 = "TU_6125";
         //public static readonly string KakaoTemplateCode_2 = "TV_1693";
+
+        /// <summary>
+        /// 민원접수 관리자용 템플릿
+        /// </summary>
+        public static readonly string KakaoTemplateCode_3 = "TV_5934";
+
     }
 }

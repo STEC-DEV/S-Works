@@ -298,11 +298,15 @@ namespace FamTec.Server.Services
                 return lowerCase ? builder.ToString().ToLower() : builder.ToString();
             }
 
+            
+            
+            // 241104 + 숫자5자리(랜덤)
 
             public string RandomPassword()
             {
                 var passwordBuilder = new StringBuilder();
 
+                // ** Version 1
                 // 4글자의 소문자
                 passwordBuilder.Append(RandomString(4));
 

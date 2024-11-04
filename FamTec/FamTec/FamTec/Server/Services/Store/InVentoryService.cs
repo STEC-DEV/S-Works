@@ -2,6 +2,7 @@
 using FamTec.Server.Repository.Store;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Store;
+using Microsoft.JSInterop.Infrastructure;
 using System.Reflection.Metadata.Ecma335;
 
 namespace FamTec.Server.Services.Store
@@ -229,6 +230,43 @@ namespace FamTec.Server.Services.Store
                     return new ResponseList<PeriodicDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 List<PeriodicDTO>? model = await InventoryInfoRepository.GetInventoryRecord(Convert.ToInt32(placeid), materialid, startDate, endDate).ConfigureAwait(false);
+                
+                // ** 주석처리
+                if(model is [_, ..])
+                {
+                    foreach(PeriodicDTO dto in model)
+                    {
+                        // 총 입고 수량
+                        dto.TotalInputNum = dto.InventoryList.Where(m => m.Type == 1 && m.InOutNum.HasValue)
+                                    .Sum(m => m.InOutNum ?? 0);
+
+                        // 총 입고 단가
+                        dto.TotalInputUnitPrice = dto.InventoryList.Where(m => m.Type == 1 && m.InOutUnitPrice.HasValue)
+                            .Sum(m => m.InOutUnitPrice ?? 0);
+
+                        // 총 입고 금액
+                        dto.TotalInputPrice = dto.InventoryList.Where(m => m.Type == 1 && m.InOutTotalPrice.HasValue)
+                            .Sum(m => m.InOutTotalPrice ?? 0);
+
+                        // 총 출고 수량
+                        dto.TotalOutputNum = dto.InventoryList.Where(m => m.Type == 0 && m.InOutNum.HasValue)
+                            .Sum(m => m.InOutNum ?? 0);
+
+                        // 총 출고 단가
+                        dto.TotalOutputUnitPrice = dto.InventoryList.Where(m => m.Type == 0 && m.InOutUnitPrice.HasValue)
+                            .Sum(m => m.InOutUnitPrice ?? 0);
+
+                        // 총 출고 금액
+                        dto.TotalOutputPrice = dto.InventoryList.Where(m => m.Type == 0 && m.InOutTotalPrice.HasValue)
+                            .Sum(m => m.InOutTotalPrice ?? 0);
+
+                        // 총 재고수량
+                        dto.TotalStockNum = dto.InventoryList.Sum(m => m.CurrentNum ?? 0);
+
+                        // 이월재고 수량
+                        dto.LastMonthStock = await InventoryInfoRepository.GetCarryOverNum(Convert.ToInt32(placeid), dto.ID!.Value, startDate);
+                    }
+                }
                 
                 if (model is [_, ..])
                     return new ResponseList<PeriodicDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };

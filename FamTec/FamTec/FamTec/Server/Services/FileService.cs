@@ -65,6 +65,7 @@ namespace FamTec.Server.Services
                     ".gif" => ".gif",
                     _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
                 };
+
                 string All_newFileName = Path.ChangeExtension(newFileName, targetExtension);
 
                 // 파일 경로 매핑
@@ -113,57 +114,84 @@ namespace FamTec.Server.Services
             }
         }
 
-        //public async Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files)
-        //{
-        //    try
-        //    {
+        // TEMP - 테스트용
+        public async Task<byte[]?> AddResizeImageFile_2(IFormFile files)
+        {
+            try
+            {
+                // 파일 확장자 결정
+                string getExtension = Path.GetExtension(files.FileName);
+                string targetExtension = getExtension switch
+                {
+                    ".png" => ".png",
+                    ".bmp" => ".bmp",
+                    ".jpeg" => ".jpeg",
+                    ".jpg" => ".jpg",
+                    ".gif" => ".gif",
+                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
+                };
+                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
 
-        //        string getExtension = Path.GetExtension(newFileName); // <- 파일확장자에 맞게 인코딩하기 위함.
-        //        string targetExtension = getExtension switch
-        //        {
-        //            ".png" => ".png",
-        //            ".bmp" => ".bmp",
-        //            ".jpeg" => ".jpeg",
-        //            _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
-        //        };
-        //        string All_newFileName = Path.ChangeExtension(newFileName, targetExtension);
+                // 파일 경로 매핑
+                //string filePath = Path.Combine(folderpath, All_newFileName);
 
-        //        string filePath = Path.Combine(folderpath, All_newFileName); // 파일경로 매핑
-        //        using (var memoryStream = new MemoryStream())
-        //        {
-        //            await files.CopyToAsync(memoryStream).ConfigureAwait(false);
-        //            memoryStream.Position = 0;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await files.CopyToAsync(memoryStream).ConfigureAwait(false);
+                    memoryStream.Position = 0;
 
+                    using (var originalBitmap = SKBitmap.Decode(memoryStream))
+                    {
+                        if (originalBitmap == null)
+                        {
+                            return null;
+                        }
 
-        //            using (var originalBitmap = SKBitmap.Decode(memoryStream))
-        //            {
-        //                using (var resizedBitmap = originalBitmap.Resize(new SKImageInfo(300,300), SKFilterQuality.High))
-        //                {
-        //                    if (resizedBitmap == null)
-        //                    {
-        //                        return null;
-        //                    }
+                        // 원본 비율 유지하며 크기 조정
+                        //var resizedBitmap = ResizeBitmapWithAspectRatio(originalBitmap, originalBitmap.Width, originalBitmap.Height);
+                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 500, 500); // 비율유지
+                        if (resizedBitmap == null)
+                        {
+                            return null;
+                        }
 
-        //                    // 이미지 인코딩 형식 결정
-        //                    var encodedFormat = GetEncodedFormat(targetExtension);
-        //                    using (var image = SKImage.FromBitmap(resizedBitmap))
-        //                    using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
-        //                    using (var outputStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-        //                    {
-        //                        data.SaveTo(outputStream);
-        //                        return true;
-        //                    }
-        //                }
-        //            }
-        //        }
+                        // 이미지 인코딩 형식 결정
+                        var encodedFormat = GetEncodedFormat(targetExtension);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogService.LogMessage(ex.ToString());
-        //        return null;
-        //    }
-        //}
+                        using (var image = SKImage.FromBitmap(resizedBitmap))
+                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
+                        using (var outputStream = new MemoryStream())
+                        {
+                            data.SaveTo(outputStream);
+                            return outputStream.ToArray(); // byte[]로 변환하여 반환
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return null;
+            }
+        }
+
+        // MIME 타입 결정 메서드
+        private string GetMimeType(string extension)
+        {
+            return extension switch
+            {
+                ".png" => "image/png",
+                ".bmp" => "image/bmp",
+                ".jpeg" => "image/jpeg",
+                ".jpg" => "image/jpeg",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
+        }
+
 
         // 인코딩 형식을 결정
         SKEncodedImageFormat GetEncodedFormat(string extension)
@@ -196,29 +224,11 @@ namespace FamTec.Server.Services
                 // 크기 조정된 새 비트맵 생성
                 return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
 
-                //// 원본 비율 계산
-                //float aspectRatio = (float)originalBitmap.Width / originalBitmap.Height;
-
-                //// 목표 크기에 맞춰 조정된 가로, 세로 계산
-                //int newWidth = maxWidth;
-                //int newHeight = maxHeight;
-
-                //if (aspectRatio > 1)
-                //{
-                //    // 가로가 더 긴 경우, 가로에 맞추고 세로는 비율에 맞게 조정
-                //    newHeight = (int)(maxWidth / aspectRatio);
-                //}
-                //else
-                //{
-                //    // 세로가 더 긴 경우, 세로에 맞추고 가로는 비율에 맞게 조정
-                //    newWidth = (int)(maxHeight * aspectRatio);
-                //}
-
-                //// 크기 조정된 새 비트맵 생성
-                //return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+               
             }
             catch (Exception ex)
             {
+               LogService.LogMessage(ex.ToString());
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
@@ -226,6 +236,40 @@ namespace FamTec.Server.Services
             }
         }
 
+        private SKBitmap ResizeBitmapWithAspectRatio_2(SKBitmap originalBitmap, int maxWidth, int maxHeight)
+        {
+            try
+            {
+                //// 원본 비율 계산
+                float aspectRatio = (float)originalBitmap.Width / originalBitmap.Height;
+
+                // 목표 크기에 맞춰 조정된 가로, 세로 계산
+                int newWidth = maxWidth;
+                int newHeight = maxHeight;
+
+                if (aspectRatio > 1)
+                {
+                    // 가로가 더 긴 경우, 가로에 맞추고 세로는 비율에 맞게 조정
+                    newHeight = (int)(maxWidth / aspectRatio);
+                }
+                else
+                {
+                    // 세로가 더 긴 경우, 세로에 맞추고 가로는 비율에 맞게 조정
+                    newWidth = (int)(maxHeight * aspectRatio);
+                }
+
+                // 크기 조정된 새 비트맵 생성
+                return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
 
         /// <summary>
         /// 새로운 파일명 생성
@@ -394,6 +438,8 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
+
+      
 
         /// <summary>
         /// 파일존재 유무 확인 - 있으면 true 없으면 false

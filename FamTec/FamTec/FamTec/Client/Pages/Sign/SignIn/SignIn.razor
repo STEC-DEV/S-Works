@@ -15,7 +15,6 @@
 @inject ILocalStorageService _localStorageService;
 @* @inject AuthenticationStateProvider _authStateProvider; *@
 
-
 <div class="signup-container">
     <div class="main-title">
         <span class="extrabold">
@@ -55,8 +54,6 @@
 @code {
     LoginDTO user = new LoginDTO();
     bool LoginMode=false;
-
-
 
     protected async override Task OnInitializedAsync()
     {

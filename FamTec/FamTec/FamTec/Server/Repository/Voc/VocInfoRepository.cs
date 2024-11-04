@@ -150,13 +150,18 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid)
+        public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division)
+        //public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth)
         {
             try
             {
                 List<VocTb>? VocList = await context.VocTbs.Where(m => type.Contains(m.Type) &&
                     status.Contains(m.Status) && 
+                    division.Contains(m.Division!.Value) &&
                     buildingid.Contains(m.BuildingTbId))
+                    //&&
+                     //m.CreateDt.Year == searchyear &&
+                     //m.CreateDt.Month == searchmonth)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync()
                     .ConfigureAwait(false);
@@ -197,6 +202,7 @@ namespace FamTec.Server.Repository.Voc
                                                     Title = VocTB.Title, // 제목
                                                     Status = VocTB.Status, // 처리상태
                                                     CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
+                                                    CreateUser = VocTB.CreateUser.ToString(), // 민원작성자
                                                     CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
                                                     DurationDT = VocTB.DurationDt // 민원처리 소요시간
                                                 }).OrderByDescending(m => m.CreateDT)
@@ -240,13 +246,14 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="buildinglist"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status,List<int> BuildingID)
+        public async Task<List<VocListDTO>?> GetVocFilterList(int placeid, DateTime StartDate, DateTime EndDate, List<int> Type, List<int> status,List<int> BuildingID, List<int> division)
         {
             try
             {
                 List<VocTb>? VocList = await context.VocTbs
                     .Where(m => Type.Contains(m.Type) &&
-                    status.Contains(m.Status) && 
+                    status.Contains(m.Status) &&
+                    division.Contains(m.Division!.Value) &&
                     BuildingID.Contains(m.BuildingTbId) &&
                     m.CreateDt >= StartDate && m.CreateDt <= EndDate.AddDays(1))
                     .ToListAsync()
@@ -267,6 +274,7 @@ namespace FamTec.Server.Repository.Voc
                                                 Title = VocTB.Title, // 민원제목
                                                 Status = VocTB.Status, // 민원상태
                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
+                                                CreateUser = VocTB.CreateUser.ToString(), // 작성자
                                                 DurationDT = VocTB.DurationDt // 소요시간
                                             }).OrderByDescending(m => m.CreateDT)
                                             .ToList();

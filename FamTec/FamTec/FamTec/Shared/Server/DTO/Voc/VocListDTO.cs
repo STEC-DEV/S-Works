@@ -58,5 +58,10 @@
         /// 요청일시
         /// </summary>
         public string? CreateDT { get; set; }
+
+        /// <summary>
+        /// 작성자
+        /// </summary>
+        public string? CreateUser { get; set; }
     }
 }

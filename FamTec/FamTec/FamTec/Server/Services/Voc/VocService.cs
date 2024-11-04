@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Hubs;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -72,7 +73,8 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid)
+        //public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchdate)
+        public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division)
         {
             try
             {
@@ -83,8 +85,17 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid).ConfigureAwait(false);
+                /*
+                if (String.IsNullOrWhiteSpace(searchdate))
+                    return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
+                string[] splitDate = searchdate.Split('-');
+                string year = splitDate[0];
+                string month = splitDate[1].PadLeft(2, '0'); // 한 자리 월을 두 자리로 맞추기 위해 앞에 0 추가
+                */
+
+                //List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid, division, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
+                List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid, division).ConfigureAwait(false);
                 if (model is [_, ..])
                     return new ResponseList<AllVocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -106,7 +117,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public async Task<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid)
+        public async Task<ResponseList<VocListDTO>> GetVocFilterList(HttpContext context, DateTime startdate, DateTime enddate, List<int> type, List<int> status,List<int> buildingid, List<int>division)
         {
             try
             {
@@ -118,7 +129,7 @@ namespace FamTec.Server.Services.Voc
                     return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
 
 
-                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid).ConfigureAwait(false);
+                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), startdate, enddate, type, status, buildingid, division).ConfigureAwait(false);
 
                 if (model is [_, ..])
                     return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };

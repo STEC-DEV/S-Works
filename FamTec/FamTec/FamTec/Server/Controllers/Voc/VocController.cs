@@ -21,16 +21,49 @@ namespace FamTec.Server.Controllers.Voc
         private readonly ILogService LogService;
         private readonly ConsoleLogService<VocController> CreateBuilderLogger;
 
+        private readonly IFileService FileService;
+
         public VocController(IVocService _vocservice,
             ILogService _logservice,
             IVocInfoRepository _vocinforepository,
-            ConsoleLogService<VocController> _createbuilderlogger)
+            ConsoleLogService<VocController> _createbuilderlogger,
+            IFileService _fileservice)
         {
             this.VocService = _vocservice;
             this.VocInfoRepository = _vocinforepository;
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+
+            this.FileService = _fileservice;
+        }
+
+        /// <summary>
+        /// 이미지 Get시 사이즈 줄여서 반환하는 로직테스트
+        /// </summary>
+        /// <returns></returns>
+        //[AllowAnonymous]
+        [HttpGet]
+        [Route("temp")]
+        public async Task<IActionResult> Temp()
+        {
+            try
+            {
+                // 이미지파일 랜더링시에 축소
+                string ImagePath = @"C:\Users\kyw\Pictures\Screenshots";
+                byte[]? ImageBytes = await FileService.GetImageFile(ImagePath, "스크린샷 2024-02-28 140716.png").ConfigureAwait(false);
+                IFormFile files = FileService.ConvertFormFiles(ImageBytes, "TempImage");// byte배열, 파일 명칭
+                byte[] ConvertFile = await FileService.AddResizeImageFile_2(files);
+                string str = Convert.ToBase64String(ConvertFile);
+
+                Console.WriteLine(str);
+
+                return Ok(str);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
 
         [AllowAnonymous]
@@ -74,21 +107,24 @@ namespace FamTec.Server.Controllers.Voc
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocList")]
+        // SearchDate = string 값
         //public async Task<IActionResult> GetVocList()
-        public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid)
+        public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery] List<int> division)
+        //public async Task<IActionResult> GetVocList([FromQuery] List<int> type, [FromQuery] List<int> status, [FromQuery] List<int> buildingid, [FromQuery]List<int> division, [FromQuery]string searchdate)
         {
             try
             {
-                //List<int> typesArray = type.Split(',').Select(int.Parse).ToList();
                 //List<int> type = new List<int>() { 0,1, 7 };
                 //List<int> status = new List<int>() { 0,1, 2 };
                 //List<int> buildingid = new List<int>() { 1 };
-                //List<int> division = new List<int>() { 1 };
+                //List<int> division = new List<int>() { 0 };
+                //string? searchdate = "2024-10";
 
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid).ConfigureAwait(false);
+                ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid, division).ConfigureAwait(false);
+                //ResponseList<AllVocListDTO> model = await VocService.GetVocList(HttpContext, type, status, buildingid, division, searchdate).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -152,7 +188,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (buildingid.Count == 0)
                     return NoContent();
 
-                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid).ConfigureAwait(false);
+                ResponseList<VocListDTO>? model = await VocService.GetVocFilterList(HttpContext, StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

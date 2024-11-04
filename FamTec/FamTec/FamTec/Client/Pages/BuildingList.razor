@@ -52,6 +52,7 @@
     </tbody>
 </table>
 
+
 <div id="qrcodes" style="width:100px; height:100px; margin:auto; margin-top:15px; display:none;"/>
 <script src="js/voc.js"></script>
 <script src="js/qrcode.js"></script>
@@ -65,8 +66,10 @@
         ResponseList<BuildinglistDTO> res = await apiManager.GetListAsync<BuildinglistDTO>("Building/sign/MyBuildings");
         buildinglist = res?.data;
 
-       
+
     }
+
+ 
 
     private async Task QRDownload(BuildinglistDTO dto)
     {
