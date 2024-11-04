@@ -19,6 +19,11 @@
 }
 
 
+.options{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .vochistory-container .vochistory-title{
      display : flex;
     justify-content:space-between;
@@ -57,4 +62,9 @@
     display : none;
 }
 
+.icon{
+    
+
+    width:1.5rem;
+}
 

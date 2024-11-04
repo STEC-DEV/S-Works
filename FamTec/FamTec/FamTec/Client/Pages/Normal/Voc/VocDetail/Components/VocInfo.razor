@@ -39,12 +39,12 @@
                         SelectData="@Departments" 
                         @bind-Value="SelectedDepartment" 
                         OnChange="OnChangeType" 
-                        Label="구분"
+                        Label="유형"
                         EditMode="true" />
                 }
                 else
                 {
-                    <TextField2 Label="구분" Value=@SelectDepartmentName Color=true />
+                    <TextField2 Label="유형" Value=@SelectDepartmentName Color=true />
                 }
                 <TextField2 Label="작성자" Value=@Data.CreateUser Color=true />
                 <TextField2 Label="전화번호" Value=@Data.Phone Color=true />

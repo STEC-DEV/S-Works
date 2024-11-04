@@ -105,14 +105,14 @@
 
         //보고 삭제
         // 도메인만 있는 경우 (루트 경로) 체크
-        var currentUri = Navigation.Uri.TrimEnd('/');
-        var baseUri = Navigation.BaseUri.TrimEnd('/');
-        if (currentUri == baseUri)
-        {
-            await ClearUserSessionAndLogout();
+        // var currentUri = Navigation.Uri.TrimEnd('/');
+        // var baseUri = Navigation.BaseUri.TrimEnd('/');
+        // if (currentUri == baseUri)
+        // {
+        //     await ClearUserSessionAndLogout();
             
-            return;
-        }
+        //     return;
+        // }
 
 
         var isAdmin = user.IsInRole("SystemManager") || user.IsInRole("Master") || user.IsInRole("Manager");

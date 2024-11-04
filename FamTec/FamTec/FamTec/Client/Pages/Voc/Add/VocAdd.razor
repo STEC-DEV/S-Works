@@ -152,11 +152,12 @@
             }
             Voc.Placeid = PlaceId;
             Voc.Buildingid = BuildingId;
-            
+            Voc.Division = 0;
             ResponseUnit<AddVocReturnDTO> resAdd = await apiManager.PostWithFilesAsync<AddVocReturnDTO>("Hub/AddVoc", Voc);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "민원 추가 실패");
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                return;
             }
             ResponseData = resAdd.data;
             Navigation.NavigateTo($"/voc/add/result?code={resAdd.code}&Cd={ResponseData.ReceiptCode}&Num={ResponseData.PhoneNumber}&Dt={ResponseData.CreateDT}");

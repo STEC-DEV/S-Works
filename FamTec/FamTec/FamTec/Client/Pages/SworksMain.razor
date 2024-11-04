@@ -5,14 +5,17 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("1");
         string token = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
         if (string.IsNullOrEmpty(token))
         {
+            Console.WriteLine("1");
             Navigation.NavigateTo("/login");
             return;
         }
         else
         {
+            Console.WriteLine("여기2");
             await ClearUserSessionAndLogout();
         }
 

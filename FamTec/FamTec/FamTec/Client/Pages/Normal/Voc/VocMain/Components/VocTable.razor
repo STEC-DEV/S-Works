@@ -9,12 +9,17 @@
         <tr class="thead-tr">
             <th class="th">
                 <span>
+                    구분
+                </span>
+            </th>
+            <th class="th">
+                <span>
                     위치
                 </span>
             </th>
             <th class="th">
                 <span>
-                    구분
+                    유형
                 </span>
             </th>
             <th class="th">
@@ -72,14 +77,14 @@
             
                 <tr class="tbody-tr" @onclick="() => OnDeatail(row.Id)">
                     <td class="td pointer">
+                        @(row.Division == 0 ? "모바일" : "수기입력")
+                    </td>
+                    <td class="td pointer">
                         @row.BuildingName
                     </td>
                     <td class="td pointer">
                         @OnConvertType(row.Type)
                     </td>
-                    @* <td class="td">
-                        @typeof(T).GetProperty("Writer")?.GetValue(row)?.ToString()
-                    </td> *@
                     <td class="td pointer">
                         @row.Title
                     </td>

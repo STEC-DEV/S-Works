@@ -49,7 +49,12 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// </summary>
         public string? CreateDT { get; set; }
 
+        /// <summary>
+        /// 모바일 여부 0 : 모바일 / 1 : 웹
+        /// </summary>
+        public int Division { get; set; }
 
+        public string? CreateUser { get; set; }
 
     }
 }

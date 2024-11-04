@@ -1,0 +1,220 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.Normal.Location.LocationMain.Components
+@using FamTec.Client.Pages.Voc.Add.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.Class
+@using FamTec.Shared.Client.DTO.Normal.Buildings
+@using FamTec.Shared.Client.DTO.Normal.Voc
+@using FamTec.Shared.Server.DTO
+
+<div class="modal">
+    <div class="title">
+        민원 접수
+    </div>
+    <div class="content">
+        <div class="row">
+            <SelectField 
+                T="BuildingNameDTO" 
+                Key="building" 
+                SelectData="Building" 
+                OnChange="OnBuildingChange" 
+                Label="건물"
+                Required="true"
+                EditMode="true" />
+            <SelectField T="FilterItem"
+                         Key="type"
+                         SelectData="type"
+                         OnChange="OnVocTypeChange"
+                         Label="유형"
+                         Required="true"
+                         EditMode="true" />
+        </div>
+        <InputCol Label="성함"
+                  @bind-Value=@Voc.Name
+                  Placeholder="성함" 
+                  Required="true"
+                  />
+        <InputCol Label="휴대폰 번호"
+                  ValueType="number"
+                  MaxLength=11
+                  @bind-Value=@Voc.PhoneNumber
+                  Placeholder="휴대폰번호 11자 ( - 제외)" />
+        <InputCol Label="제목"
+                  @bind-Value=@Voc.Title
+                  Placeholder="제목" 
+                  Required="true" />
+        <VocInput Label="내용"
+                  @bind-Value=@Voc.Contents
+                  Placeholder="내용"
+                  TextArea=true
+                  Height=true 
+                  Required="true"
+                  />
+        @if (image.Count > 0)
+        {
+            <ImageSlider Label="첨부 이미지" Images="@image" />
+            <ul class="ul">
+                @foreach (string i in _imageName)
+                {
+                    <li class="li">
+                        <span class="img-title">
+                            @i
+                        </span>
+                        <svg xmlns="http:www.w3.org/2000/svg" width="16" height="16" fill="red"
+                             class="bi bi-x xicon" viewBox="0 0 16 16"
+                             @onclick="()=>OnDelImg(i)">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    </li>
+                }
+            </ul>
+        }
+        <InputImages MaxFilesNum="3" OnChange="OnUploadImage" />
+    </div>
+    <div class="btns">
+        <Button Name="등록" Type="0" OnClick="OnAddVoc" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnCancel{ get; set; }
+    [Parameter] public EventCallback OnLoadVoc { get; set; }
+
+    AddVoc Voc = new AddVoc();
+    List<byte[]> image = new List<byte[]>();
+    List<string> _imageName = new List<string>();
+
+    List<BuildingNameDTO> Building = new List<BuildingNameDTO>();
+
+
+    //민원 유형 객체
+    List<FilterItem> type = new List<FilterItem>
+    {
+        new FilterItem { Id = 0, Name = "미분류", IsChecked = false },
+        new FilterItem { Id = 1, Name = "기계", IsChecked = false },
+        new FilterItem { Id = 2, Name = "전기", IsChecked = false },
+        new FilterItem { Id = 3, Name = "승강", IsChecked = false },
+        new FilterItem { Id = 4, Name = "소방", IsChecked = false },
+        new FilterItem { Id = 5, Name = "건축", IsChecked = false },
+        new FilterItem { Id = 6, Name = "통신", IsChecked = false },
+        new FilterItem { Id = 7, Name = "미화", IsChecked = false },
+        new FilterItem { Id = 8, Name = "보안", IsChecked = false },
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Voc.Placeid = await (_authStateProvider as CustomAuthProvider).GetPlaceIdx();
+        await OnLoadBuilding();
+    }
+
+
+    private async Task OnAddVoc()
+    {
+        try
+        {
+            if (Voc.Buildingid == 0 || Voc.Type == null 
+                || string.IsNullOrEmpty(Voc.Name) || string.IsNullOrEmpty(Voc.Title) 
+                || string.IsNullOrEmpty(Voc.Contents))
+            {
+                await JS.InvokeVoidAsync("alert", "필수 값을 입력해 주세요.");
+                return;
+            }
+            Voc.Division = 1;
+
+            ResponseUnit<AddVocReturnDTO> resAdd = await apiManager.PostWithFilesAsync<AddVocReturnDTO>("Hub/AddVoc", Voc);
+            if (resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                return;
+            }
+            await OnLoadVoc.InvokeAsync();
+            OnCanceled();
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "민원 등록 에러");
+        }
+    }
+
+
+    //건물 조회
+    private async Task OnLoadBuilding()
+    {
+        try
+        {
+            ResponseList<BuildingNameDTO> resGet = await apiManager.GetListAsync<BuildingNameDTO>("Building/sign/GetPlaceBuilding");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert",resGet.message);
+                return;
+            }
+            Building = resGet.data;
+
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 조회 에러");
+        }
+    }
+
+
+    private async void OnUploadImage(List<ImageFile> images)
+    {
+        if (Voc.Image == null)
+        {
+            Voc.Image = new List<byte[]>();
+            Voc.ImageName = new List<string>();
+        }
+
+        foreach (var newImage in images)
+        {
+            if (Voc.Image.Count < 3)
+            {
+                Voc.Image.Add(newImage.Image);
+                Voc.ImageName.Add(newImage.Name);
+                image.Add(newImage.Image);
+                _imageName.Add(newImage.Name);
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "최대 3개의 이미지만 등록 가능합니다.");
+                break;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+
+    private async void OnDelImg(string name)
+    {
+        int index = _imageName.IndexOf(name);
+        if (index != -1)
+        {
+            image.RemoveAt(index);
+            _imageName.RemoveAt(index);
+            Voc.Image.RemoveAt(index);
+            Voc.ImageName.RemoveAt(index);
+            StateHasChanged();
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "잘못된 이미지입니다.");
+        }
+    }
+
+    private async void OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+
+    private void OnBuildingChange(int buildingid)
+    {
+        Voc.Buildingid = buildingid;
+    }
+    private void OnVocTypeChange(int voctype)
+    {
+        Voc.Type = voctype;
+    }
+}

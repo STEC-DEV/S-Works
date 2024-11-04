@@ -18,7 +18,7 @@
             <div class="img">
                 @if (ImageDataUrl?.Count != 0)
                 {
-                    <img loading="lazy" src="@ImageDataUrl?[CurrentImageIndex]" alt="이미지" />
+                    <img loading="lazy" src="@ImageDataUrl?[CurrentImageIndex]" alt="이미지" fetchpriority="high" decoding="async" />
                 }
 
             </div>

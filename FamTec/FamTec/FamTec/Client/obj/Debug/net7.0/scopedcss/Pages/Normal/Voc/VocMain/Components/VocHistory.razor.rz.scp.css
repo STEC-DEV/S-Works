@@ -19,6 +19,11 @@
 }
 
 
+.options[b-i7u2all02v]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
 .vochistory-container .vochistory-title[b-i7u2all02v]{
      display : flex;
     justify-content:space-between;
@@ -57,4 +62,9 @@
     display : none;
 }
 
+.icon[b-i7u2all02v]{
+    
+
+    width:1.5rem;
+}
 
