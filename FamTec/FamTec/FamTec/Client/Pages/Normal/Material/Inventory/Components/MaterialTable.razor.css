@@ -104,3 +104,14 @@
 .table ::deep .table-td-link {
     color : var(--main-color);
 }
+
+.row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap :var(--one-q-pd);
+}
+
+.icon{
+    width:0.8rem;
+}

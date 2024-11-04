@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Shared.Client.DTO.Normal.Location.Inventory
 
 
@@ -21,9 +22,15 @@
                 @foreach (var th in ListData[0].RoomHistory)
                 {
                     <th class="th">
-                        <span class="sub-span">
-                            @th.Name
-                        </span>
+                        <div class="row">
+                            <div class="icon">
+                                <LocationIcon />
+                            </div>
+                            <span class="sub-span">
+                                @th.Name
+                            </span>
+                        </div>
+                        
                     </th>
                 }
                     }else{

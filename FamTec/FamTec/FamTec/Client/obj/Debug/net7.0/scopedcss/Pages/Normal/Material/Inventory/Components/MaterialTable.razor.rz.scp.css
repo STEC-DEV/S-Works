@@ -104,3 +104,14 @@
 .table[b-sfcufcjpv9]  .table-td-link {
     color : var(--main-color);
 }
+
+.row[b-sfcufcjpv9]{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap :var(--one-q-pd);
+}
+
+.icon[b-sfcufcjpv9]{
+    width:0.8rem;
+}

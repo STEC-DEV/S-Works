@@ -40,6 +40,7 @@
                 MonthListData="MonthVocData" 
                 DefaultOption=@DefaultOption 
                 IsLoading=@IsLoading
+                OnLoadVoc = "OnLoadVoc"
                 />
         </div>
 </div>
@@ -62,13 +63,16 @@
     List<int> defaultstates = new List<int>();
     List<FilterItem> buildings = new List<FilterItem>();
     List<int> defaultbuilding = new List<int>();
+    List<int> defaultdivision = new List<int>();
+    List<int> division = new List<int>();
+
     string startDt = null;
     string endDt = null;
     int DefaultOption;
 
     protected override async Task OnInitializedAsync()
     {
-        
+
         //파라미터가 있는 경우에 민원 데이터 조회
         Console.WriteLine(SearchParams);
 
@@ -130,10 +134,11 @@
             string typesQueryString = string.Join("&type=", types);
             string statusQueryString = string.Join("&status=", states);
             string locationQueryString = string.Join("&buildingid=", locations);
+            string divisionQueryString = string.Join("&division=", division);
             //월별 조회
             if (startDt == null || endDt == null)
             {
-                ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+                ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}&division={divisionQueryString}");
                 if (resGet.code != 200)
                 {
                     await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
@@ -147,7 +152,7 @@
                 {
                     MonthVocData = resGet.data;
                 }
-                
+
                 DefaultOption = 0;
             }
             //기간별 조회
@@ -177,14 +182,16 @@
         {
             defaulttypes = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
             defaultstates = new List<int> { 0, 1, 2 };
-            
+            defaultdivision = new List<int> { 0, 1 };
 
             
             string typesQueryString = string.Join("&type=", defaulttypes);
             string statusQueryString = string.Join("&status=", defaultstates);
             string locationQueryString = string.Join("&buildingid=", defaultbuilding);
+            string divisionQueryString = string.Join("&division=", defaultdivision);
+            Console.WriteLine(divisionQueryString);
             //기본 월별 조회
-            ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
+            ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}&division={divisionQueryString}");
             if (resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
@@ -236,6 +243,8 @@
         types = ParseIntList(parameters["types"]);
         states = ParseIntList(parameters["status"]);
         locations = ParseIntList(parameters["locations"]);
+        division = ParseIntList(parameters["divisions"]);
+
         startDt = parameters["startDate"];
         endDt = parameters["endDate"];
     }

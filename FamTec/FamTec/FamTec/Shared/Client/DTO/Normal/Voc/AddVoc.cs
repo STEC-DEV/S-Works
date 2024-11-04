@@ -37,6 +37,15 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// 사업장인덱스
         /// </summary>
         public int? Placeid { get; set; }
+        /// <summary>
+        /// 모바일 여부 0 : 모바일 / 1 : 웹
+        /// </summary>
+        public int Division { get; set; }
+
+        /// <summary>
+        /// 미분류 - 기계 , 전기 등...
+        /// </summary>
+        public int Type { get; set; }
 
         /// <summary>
         /// 이미지

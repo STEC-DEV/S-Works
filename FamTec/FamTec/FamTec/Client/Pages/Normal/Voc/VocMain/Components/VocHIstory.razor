@@ -1,12 +1,30 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
+@using FamTec.Client.Pages.Normal.Voc.VocMain.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Voc
+@inherits PermissionComponentBase
+
 <div class="vochistory-container yappear">
     <div class="vochistory-wrap">
         <div class="vochistory-title">
             <span class="title">
                 민원 내역
             </span>
+            <div class="options">
+                <Input Placeholder="목록에서 검색"
+                       Type="text"
+                       ValueChanged="OnSearch" />
+                       @* 민원 쓰기권한만 체크 *@
+                @if (VOC)
+                {
+                    <Button Name="등록" Width=true Type="0" OnClick="OnAddVoc" />
+                }
+                <div class="icon" @onclick=ExportMonth>
+                    <ExportIcon />
+                </div>
+            </div>
         </div>
         <div class="option @(FilterOption !=0 ? "flex-end":null)">
             @if (FilterOption ==0)
@@ -40,11 +58,21 @@
     </div>
 </div>
 
+@if (addVoc)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <VocAdd OnCancel="OnAddVoc" OnLoadVoc=OnLoadVoc />
+        </ChildComponent>
+    </ModalBackground>
+}
+
 @code {
     [Parameter] public List<ListVocDTO> ListData { get; set; }
     [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
     [Parameter] public int DefaultOption { get; set; }
     [Parameter] public bool IsLoading { get; set;  }
+    [Parameter] public EventCallback OnLoadVoc { get; set; }
     //사업장 생성일자 필요함
     public DateTime createdate;
 
@@ -58,11 +86,13 @@
     private int totalPage;  //전체 페이지 수
     private int FilterOption;
 
-
+    //전화 민원 등록
+    bool addVoc = false;
 
 
     protected async override Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
         DateTime date = DateTime.Now;
         curDate = date.ToString("yyyy-M");
@@ -86,8 +116,6 @@
             await Paging();
         }
         StateHasChanged();
-
-
     }
 
 
@@ -139,7 +167,7 @@
     private async Task OnSelectDate(DateOnly date)
     {
         Console.WriteLine("현재 선택 년월 : " + date);
-       
+
         curDate = date.ToString("yyyy-M");
         await MonthDecideData();
     }
@@ -169,4 +197,38 @@
         await Paging();
     }
 
+
+    //검색
+    private string _searchText = "";
+    private async Task OnSearch(string text)
+    {
+        _searchText = text;
+        filterData = String.IsNullOrEmpty(_searchText)
+                                ? filterData
+                                : filterData.Where(m => (m.BuildingName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    private async Task ExportMonth()
+    {
+        List<string> colName = new List<string>
+        {
+            "위치",
+            "구분",
+            "제목",
+            "발생일시",
+            "처리일시",
+            "민원처리시간",
+            "상태",
+        };
+        var excel = ExcelService.getInstance(JS);
+        await excel.ExportVocData(MonthListData, colName);
+    }
+
+
+    private void OnAddVoc()
+    {
+        addVoc = !addVoc;
+    }
 }
