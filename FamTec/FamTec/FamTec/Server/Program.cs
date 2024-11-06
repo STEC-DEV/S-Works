@@ -358,8 +358,10 @@ else
 builder.Services.AddResponseCompression(opts =>
 {
     opts.EnableForHttps = true; // HTTPS 요청에서도 응답압축 활성화
+    opts.Providers.Add<BrotliCompressionProvider>();
+    opts.Providers.Add<GzipCompressionProvider>();
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
-        {
+     {
             "application/octet-stream",
             "application/json",
             "application/xml",
@@ -367,8 +369,6 @@ builder.Services.AddResponseCompression(opts =>
             "text/css",
             "text/javascript"
         }).Except(new[] { "text/html" });
-    opts.Providers.Add<BrotliCompressionProvider>();
-    opts.Providers.Add<GzipCompressionProvider>();
 });
 
 
@@ -376,11 +376,13 @@ builder.Services.AddResponseCompression(opts =>
 builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
+    //options.Level = System.IO.Compression.CompressionLevel.SmallestSize;
 });
 
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
+    //options.Level = System.IO.Compression.CompressionLevel.SmallestSize;
 });
 #endregion
 

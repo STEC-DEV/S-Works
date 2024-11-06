@@ -21,6 +21,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Web;
+using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FamTec.Client.Middleware
@@ -47,6 +48,7 @@ namespace FamTec.Client.Middleware
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
             _authStateProvider = authStateProvider;
             _localStorageService = localStorageService;
         }
