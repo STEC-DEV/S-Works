@@ -186,8 +186,9 @@
         _searchText = text;
         filterData = String.IsNullOrEmpty(_searchText)
                                 ? ListData
-                                : ListData.Where(m => (m.BuildingName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)||
-                                (m.CreateUser?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                : ListData.Where(m => (m.Phone?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)||
+                                (m.CreateUser?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (m.Title?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                 ).ToList();
         
         await InvokeAsync(StateHasChanged);
