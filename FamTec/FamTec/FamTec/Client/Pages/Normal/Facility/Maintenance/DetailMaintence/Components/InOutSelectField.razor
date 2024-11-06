@@ -73,30 +73,6 @@
         await base.OnParametersSetAsync();
     }
 
-    // public void Reset()
-    // {
-    //     SelectName = "Select";
-    //     StateHasChanged();
-    // }
-
-    //선택 값id를 리턴해줘야함 나중에 DTO 전체 ID로 변경
-    // public void OnSelectRow(object row)
-    // {
-        
-    //     if(row == null)
-    //     {
-    //         SelectName = "Select";
-    //         OnChange.InvokeAsync(0);
-    //         OnActive();
-    //         return;
-    //     }
-    //     int id = (int)row.GetType().GetProperty("Id").GetValue(row);
-    //     SelectName = row.GetType().GetProperty("Name").GetValue(row).ToString();
-
-    //     OnChange.InvokeAsync(id);
-    //     OnActive();
-    //     StateHasChanged();
-    // }
     private async Task UpdateSelectName()
     {
         if (Value != 0 && SelectData != null)

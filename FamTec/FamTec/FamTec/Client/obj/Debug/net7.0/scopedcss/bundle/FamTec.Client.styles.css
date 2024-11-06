@@ -6570,6 +6570,7 @@ svg:hover[b-5q32ql2i5a] {
 }
 
 .content[b-mjfp83w87d]{
+    overflow:auto;
 }
 
 .option[b-mjfp83w87d]{
@@ -6745,7 +6746,7 @@ svg:hover[b-5q32ql2i5a] {
 
 .table .thead[b-p5si2pwiyx]{
     background-color : var(--main-color);
-    position:sticky;
+    /*position:sticky;*/
     top:0;
     box-shadow: 0 8px 12px -2px #a1a1a1;
 }
@@ -9110,7 +9111,7 @@ svg:hover[b-5q32ql2i5a] {
 
 .table .thead[b-mp3mr0yprm]{
     background-color : var(--main-color);
-    position:sticky;
+    /*position:sticky;*/
     top:0;
     box-shadow: 0 8px 12px -2px #a1a1a1;
 }
@@ -10678,9 +10679,17 @@ svg:hover[b-5q32ql2i5a] {
 
 .content[b-7r18rabuve]{
     display : flex;
+    flex-direction:column;
     justify-content :space-between;
-    gap : var(--wide-pd);
+    align-items:center;
+    /*gap : var(--wide-pd);*/
     
+}
+
+.filter[b-7r18rabuve]{
+    display :flex;
+    justify-content:flex-end;
+    gap:var(--default-pd);
 }
 
 .filter-item[b-7r18rabuve]{
@@ -11797,6 +11806,10 @@ modal-table[b-0o0wpwo3cd]{
 }
 
 
+.option-page[b-j0fs4skodx] {
+    display: flex;
+    justify-content: flex-end;
+}
 /* /Pages/Normal/Material/Inventory/Components/MaterialHistory.razor.rz.scp.css */
 
 .history[b-my0nq2lfue]{
@@ -11873,6 +11886,11 @@ modal-table[b-0o0wpwo3cd]{
 
 .height[b-my0nq2lfue]{
     height:100%;
+}
+
+.option-page[b-my0nq2lfue]{
+    display:flex;
+    justify-content:flex-end;
 }
 /* /Pages/Normal/Material/Inventory/Components/MaterialTable.razor.rz.scp.css */
 .table[b-sfcufcjpv9] {
@@ -12339,6 +12357,11 @@ modal-table[b-all74yxmu0]{
 .content[b-wly28q2jgs]{
     overflow:auto;
     height : 100%;
+}
+
+.option-page[b-wly28q2jgs] {
+    display: flex;
+    justify-content: flex-end;
 }
 /* /Pages/Normal/Material/Material/Main/Modal/MaterialAdd.razor.rz.scp.css */
 .modal[b-8frb8647wj] {

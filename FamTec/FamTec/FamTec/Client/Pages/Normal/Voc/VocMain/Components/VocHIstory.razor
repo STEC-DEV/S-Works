@@ -3,6 +3,7 @@
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Modal
 @using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Voc
 @inherits PermissionComponentBase
 
@@ -17,20 +18,20 @@
                        Type="text"
                        ValueChanged="OnSearch" />
                        @* 민원 쓰기권한만 체크 *@
-                @if (VOC)
+                @if(VOC)
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAddVoc" />
                 }
-                <div class="icon" @onclick=ExportMonth>
+@*                 <div class="icon" @onclick=ExportMonth>
                     <ExportIcon />
-                </div>
+                </div> *@
             </div>
         </div>
-        <div class="option @(FilterOption !=0 ? "flex-end":null)">
-            @if (FilterOption ==0)
+        <div class="option @(DefaultOption !=0 ? "flex-end":null)">
+            @if (DefaultOption == 0)
             {
-                <div class="vochistory-slider @(FilterOption == 1 ? "date-none" : "")">
-                    <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" />
+                <div class="vochistory-slider @(DefaultOption == 1 ? "date-none" : "")">
+                    <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" CurDate="@CurrentDate" />
                 </div>
             }
             
@@ -69,10 +70,14 @@
 
 @code {
     [Parameter] public List<ListVocDTO> ListData { get; set; }
-    [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
+    // [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
     [Parameter] public int DefaultOption { get; set; }
     [Parameter] public bool IsLoading { get; set;  }
     [Parameter] public EventCallback OnLoadVoc { get; set; }
+    [Parameter] public EventCallback<DateOnly> OnDateChange { get; set; }
+    [Parameter] public String CurrentMonth { get; set; }
+    [Parameter] public DateTime CurrentDate { get; set; }
+    [Parameter] public List<FilterItem> Bulildings { get; set; }
     //사업장 생성일자 필요함
     public DateTime createdate;
 
@@ -89,32 +94,29 @@
     //전화 민원 등록
     bool addVoc = false;
 
-
+    DateTime date = DateTime.Now;
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
-        DateTime date = DateTime.Now;
-        curDate = date.ToString("yyyy-M");
-        FilterOption = DefaultOption;
+
+        // FilterOption = DefaultOption;
+        StateHasChanged();
 
     }
 
+
     protected override async Task OnParametersSetAsync()
     {
-        FilterOption = DefaultOption;
-        if (FilterOption == 0)
+        
+
+        if(ListData != null)
         {
-            Console.WriteLine("파라미터셋 월간조회");
-            await MonthDecideData();
-        }
-        else
-        {
-            Console.WriteLine("파라미터셋 기간조회");
-            originalData = ListData;
-            // filterData = ListData;
+            originalData = new List<ListVocDTO>(ListData);
             await Paging();
         }
+
+
         StateHasChanged();
     }
 
@@ -122,63 +124,42 @@
     //페이지 필터링
     private async Task Paging()
     {
+       
+        // Console.WriteLine("============페이징 실행============");
+        // if (filterData == null || string.IsNullOrEmpty(CurrentMonth))
+        // {
+        //     Console.WriteLine("new");
+        //     filterData = new List<ListVocDTO>();
+        //     totalPage = 0;
+        //     currentPage = 1;
+        //     return;
+        // }
 
-        Console.WriteLine("============페이징 실행============");
-        if (filterData == null ||  string.IsNullOrEmpty(curDate))
-        {
-            filterData = new List<ListVocDTO>();
-            totalPage = 0;
-            currentPage = 1;
-            return;
-        }
         totalPage = (int)Math.Ceiling((double)originalData.Count / viewNum);
         currentPage = Math.Min(currentPage, totalPage);
         int skip = (currentPage -1) * viewNum;
         filterData = originalData.Skip(skip).Take(viewNum).ToList();
+        // originalData = originalData.Skip(skip).Take(viewNum).ToList();
 
-        Console.WriteLine($"[페이징] 전체 데이터 수: {originalData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
-        Console.WriteLine("============페이징 끝============");
+        // Console.WriteLine($"[페이징] 전체 데이터 수: {originalData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
+        // Console.WriteLine("============페이징 끝============");
         StateHasChanged();
     }
 
 
-
-
-    //월별 필더링
-    private async Task MonthDecideData()
-    {
-        Console.WriteLine("월 분할 함수 : " +curDate);
-        if (MonthListData == null || string.IsNullOrEmpty(curDate))
-        {
-            originalData = new List<ListVocDTO>();
-            return;
-        }
-        else
-        {
-            // DateTime selectedDate = DateTime.ParseExact(curDate, "yyyy-MM", null);
-            var selectedMonth = MonthListData.FirstOrDefault(m => m.Dates == curDate);
-            originalData = selectedMonth?.VocList ?? new List<ListVocDTO>();
-        }
-        StateHasChanged();
-        await Paging();
-    }
 
     //현재 선택한 년월
     private async Task OnSelectDate(DateOnly date)
     {
-        Console.WriteLine("현재 선택 년월 : " + date);
 
-        curDate = date.ToString("yyyy-M");
-        await MonthDecideData();
+        await OnDateChange.InvokeAsync(date);
     }
 
 
     //viewr
     private async Task OnChangeViewNum(int value)
     {
-        Console.WriteLine($"현재 보기 개수 : {value}");
         viewNum = value;
-        // currentPage = 1;
         await Paging();
     }
 
@@ -204,8 +185,11 @@
     {
         _searchText = text;
         filterData = String.IsNullOrEmpty(_searchText)
-                                ? filterData
-                                : filterData.Where(m => (m.BuildingName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                                ? ListData
+                                : ListData.Where(m => (m.BuildingName?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)||
+                                (m.CreateUser?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
+                                ).ToList();
+        
         await InvokeAsync(StateHasChanged);
     }
 
@@ -223,7 +207,7 @@
             "상태",
         };
         var excel = ExcelService.getInstance(JS);
-        await excel.ExportVocData(MonthListData, colName);
+        // await excel.ExportVocData(MonthListData, colName);
     }
 
 
@@ -232,3 +216,25 @@
         addVoc = !addVoc;
     }
 }
+
+        
+
+@*     //월별 필더링
+    // private async Task MonthDecideData()
+    // {
+    //     Console.WriteLine("월 분할 함수 : " +curDate);
+    //     if (MonthListData == null || string.IsNullOrEmpty(curDate))
+    //     {
+    //         originalData = new List<ListVocDTO>();
+    //         return;
+    //     }
+    //     else
+    //     {
+    //         // DateTime selectedDate = DateTime.ParseExact(curDate, "yyyy-MM", null);
+    //         var selectedMonth = MonthListData.FirstOrDefault(m => m.Dates == curDate);
+    //         originalData = selectedMonth?.VocList ?? new List<ListVocDTO>();
+    //     }
+    //     StateHasChanged();
+    //     await Paging();
+    // }
+ *@

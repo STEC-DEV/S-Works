@@ -46,3 +46,8 @@
     overflow:auto;
     height : 100%;
 }
+
+.option-page {
+    display: flex;
+    justify-content: flex-end;
+}

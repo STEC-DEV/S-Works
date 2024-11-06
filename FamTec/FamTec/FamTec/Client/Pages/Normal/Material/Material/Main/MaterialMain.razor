@@ -2,6 +2,7 @@
 @inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Material.Material.Main.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.Components
 @using FamTec.Shared.Client.DTO.Normal.Material
 @using FamTec.Shared.Server.DTO
 @using FamTec.Client.Pages.Normal.Material.Material.Main.Modal
@@ -36,6 +37,14 @@
                 </div>
             
         </div>
+        <div class="option-page">
+                
+        @if(totalPage > 1)
+        {
+            <Pagenation TotalPage="@totalPage" CurrentPage="@currentPage" OnChanged="OnMovePage" />
+        }
+        <Viewer OnChanged="OnChangeViewNum" />
+    </div>
         <div class="content">
             <MaterialTable 
                 ListData="@FilterData" 
@@ -73,12 +82,21 @@
 
     bool isDel = false;
 
+    int viewNum;
+    private int currentPage;
+    private int totalPage;  //전체 페이지 수
+    private int FilterOption;
+
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await OnLoadMaterial();
         CheckList = new List<int>();
+        viewNum = 25;
+        currentPage = 1;
+        totalPage = 1;
+        await Paging();
     }
 
     private async Task OnLoadMaterial()
@@ -174,5 +192,69 @@
     private void OnIsDel()
     {
         isDel = !isDel;
+    }
+
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     if (ListData != null)
+    //     {
+    //         CopyData = new List<MaterialHistoryDTO>(ListData);
+    //         await Paging();
+    //     }
+    // }
+
+    //페이지 필터링
+    private async Task Paging()
+    {
+
+        // Console.WriteLine("============페이징 실행============");
+        if (Material == null || !Material.Any())
+        {
+            totalPage = 1;
+            currentPage = 1;
+            FilterData = new List<MaterialListDTO>();
+
+            StateHasChanged();
+            return;
+        }
+        // Console.WriteLine("현현패" + currentPage);
+
+        totalPage = (int)Math.Ceiling((double)Material.Count / viewNum);
+
+        // Console.WriteLine("현페" + Math.Min(currentPage, totalPage));
+        // Console.WriteLine("전체" + totalPage);
+
+        currentPage = Math.Min(currentPage, totalPage);
+
+        int skip = (currentPage - 1) * viewNum;
+        FilterData = Material.Skip(skip).Take(viewNum).ToList();
+
+        // Console.WriteLine($"[페이징] 전체 데이터 수: {Material?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
+        // Console.WriteLine("============페이징 끝============");
+        StateHasChanged();
+    }
+
+
+    //viewr
+    private async Task OnChangeViewNum(int value)
+    {
+        viewNum = value;
+        await Paging();
+    }
+
+
+    //페이지 이동 핸들링
+    private async Task OnMovePage(int num)
+    {
+        if (num == -2)
+            currentPage = Math.Min(currentPage + 1, totalPage);
+        else if (num == -1)
+            currentPage = Math.Max(currentPage - 1, 1);
+        else
+            currentPage = Math.Clamp(num, 1, totalPage);
+
+        Console.WriteLine($": {currentPage}");
+        await Paging();
     }
 }

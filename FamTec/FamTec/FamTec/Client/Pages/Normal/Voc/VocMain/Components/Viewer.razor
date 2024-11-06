@@ -62,7 +62,7 @@
 
     private async Task OnChangedValue(ViewItem value)
     {
-        Console.WriteLine("뷰어 선택 개수 : "+ value);
+        Console.WriteLine("뷰어 선택 개수 : "+ value.Value);
         CurrentViewNum = value.Name;
         await OnChanged.InvokeAsync(value.Value);
         IsShow = false; // 리스트 항목 선택 시 닫기

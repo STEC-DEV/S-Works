@@ -27,6 +27,10 @@
             </th>
             <th class="th">
                 <span>
+                    <input type="checkbox"
+                           checked=@(ListData?.Count > 0 && CheckedItem.Count == ListData?.Count)
+                           @onclick:stopPropagation="true"
+                           @onchange="OnSelectAllChanged" />
                 </span>
             </th>
         </tr>
@@ -58,9 +62,13 @@
                         @row.Standard
                     </td>
                     <td class="td">
-                        <input type="checkbox"
+                        @* <input type="checkbox"
                                checked=@(CheckedItem.Contains<int>(row.Id))
-                               />
+                               /> *@
+                        <input type="checkbox"
+                               checked=@(CheckedItem.Contains(row.Id))
+                               @onclick:stopPropagation="true"
+                               @onchange="@(e => OnCheckboxChanged(e, row))" />
                     </td>
                 </tr>
             }
@@ -76,14 +84,37 @@
     [Parameter] public List<int> CheckedItem { get; set; }
 
    
+    private async Task OnSelectAllChanged(ChangeEventArgs e)
+    {
+        if (ListData == null) return;
 
-    // private async void OnChecked(ChangeEventArgs e, MaterialSearchListDTO data)
-    // {
-    //     await OnCheck.InvokeAsync((data, (bool)e.Value));   
-    // }
+        bool isChecked = (bool)e.Value;
+        foreach (var item in ListData)
+        {
+            if (isChecked && !CheckedItem.Contains(item.Id))
+            {
+                await OnCheck.InvokeAsync(item);
+            }
+            else if (!isChecked && CheckedItem.Contains(item.Id))
+            {
+                await OnCheck.InvokeAsync(item);
+            }
+        }
+    }
+
+    private async Task OnCheckboxChanged(ChangeEventArgs e, MaterialSearchListDTO data)
+    {
+        await OnCheck.InvokeAsync(data);
+    }
 
     private async void OnChecked(MaterialSearchListDTO data)
     {
         await OnCheck.InvokeAsync(data);
     }
+
+
+    // private async void OnChecked(MaterialSearchListDTO data)
+    // {
+    //     await OnCheck.InvokeAsync(data);
+    // }
 }

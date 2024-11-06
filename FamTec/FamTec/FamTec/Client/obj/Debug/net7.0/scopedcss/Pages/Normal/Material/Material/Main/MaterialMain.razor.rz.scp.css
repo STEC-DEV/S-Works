@@ -46,3 +46,8 @@
     overflow:auto;
     height : 100%;
 }
+
+.option-page[b-wly28q2jgs] {
+    display: flex;
+    justify-content: flex-end;
+}

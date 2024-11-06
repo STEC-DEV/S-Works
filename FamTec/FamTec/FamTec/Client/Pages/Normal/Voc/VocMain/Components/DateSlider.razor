@@ -16,6 +16,8 @@
 
 @code {
     [Parameter] public DateTime CreateDate { get; set; }
+    [Parameter] public DateTime CurDate { get; set; }
+
     [Parameter] public EventCallback<DateOnly> OnChanged { get; set; }
 
     private DateTime CurrentDate = DateTime.Now;
@@ -31,24 +33,39 @@
     protected override void OnInitialized()
     {
         InitializeDates();
+        
     }
 
     protected override void OnParametersSet()
     {
+        if (CurDate != default)
+        {
+            DisplayYear = CurDate.Year;
+            DisplayMonth = CurDate.Month;
+        }
+        currentDate = DateTime.Now.ToString("yyyyMM");
         createDate = CreateDate.ToString("yyyyMM");
+        
+        
     }
 
     private void InitializeDates()
     {
-        currentDate = CurrentDate.ToString("yyyyMM");
+        // currentDate = DateTime.Now.ToString("yyyyMM");
         
-        DisplayYear = CurrentDate.Year;
-        DisplayMonth = CurrentDate.Month;
+        // DisplayYear = CurrentDate.Year;
+        // Console.WriteLine(DisplayYear);
+        // DisplayMonth = CurrentDate.Month;
+        DisplayYear = CurDate != default ? CurDate.Year : DateTime.Now.Year;
+        DisplayMonth = CurDate != default ? CurDate.Month : DateTime.Now.Month;
+
+
     }
 
     private void OnUpdateDisplayDate()
     {
-
+        CurrentDate = new DateTime(DisplayYear, DisplayMonth, 1);
+        Console.WriteLine(CurrentDate);
         OnChanged.InvokeAsync(new DateOnly(DisplayYear,DisplayMonth, 1));
         StateHasChanged();
     }
