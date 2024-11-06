@@ -136,6 +136,7 @@
     {
         try
         {
+            
             if (String.IsNullOrEmpty(AddMaterial.Code) || String.IsNullOrEmpty(AddMaterial.Name) || AddMaterial.RoomId == null)
             {
                 await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");

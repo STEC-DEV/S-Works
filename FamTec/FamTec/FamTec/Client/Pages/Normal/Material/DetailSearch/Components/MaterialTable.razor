@@ -81,6 +81,49 @@
         }
         else
         {
+            @if (CurrentPage == 1)
+            {
+                <tr>
+
+                    <td class="td">
+                        기준월 이전재고
+                    </td>
+                
+                <td class="td">
+                    @ListData2.Code
+                </td>
+                <td class="td">
+                    @ListData2.Name
+                </td>
+                <td class="td">
+                    @* @ListData2.InventoryList[0].MaterialUnit *@
+                </td>
+                <td class="td">
+                    0
+                </td>
+                <td class="td text-right">
+                    0
+                </td>
+                <td class="td text-right">
+                    0
+                </td>
+                <td class="td">
+                    0
+                </td>
+                <td class="td text-right">
+                    0
+                </td>
+                <td class="td text-right">
+                    0
+                </td>
+                <td class="td">
+                    @ListData2.LastMonthStock
+                </td>
+                <td class="td">
+                        
+                </td>
+            </tr>
+            }
             @foreach (var row in ListData)
             {
                 <tr class="tr">
@@ -135,23 +178,30 @@
         }
         
     </tbody>
-    <tfoot class="tfoot">
-        <tr class="tfoot-tr">
-            <td class="tf-td" colspan="4">소계</td>
-            <td class="tf-td ">@totalInQty</td>
-            <td class="tf-td text-right">@totalInPrice?.ToString("N0")</td>
-            <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
-            <td class="tf-td">@totalOutQty</td>
-            <td class="tf-td text-right">@totalOutPrice?.ToString("N0")</td>
-            <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
-            <td class="tf-td">@totalCurrentNum</td>
-            <td class="tf-td"></td>
-        </tr>
-    </tfoot>
+    @if(TotalPage == CurrentPage)
+    {
+        <tfoot class="tfoot">
+            <tr class="tfoot-tr">
+                <td class="tf-td" colspan="4">소계</td>
+                <td class="tf-td ">@totalInQty</td>
+                <td class="tf-td text-right">@totalInPrice?.ToString("N0")</td>
+                <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
+                <td class="tf-td">@totalOutQty</td>
+                <td class="tf-td text-right">@totalOutPrice?.ToString("N0")</td>
+                <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
+                <td class="tf-td">@totalCurrentNum</td>
+                <td class="tf-td"></td>
+            </tr>
+        </tfoot>
+    }
+    
 </table>
 
 @code {
     [Parameter] public List<InventoryRecordDTO> ListData { get; set; }
+    [Parameter] public DetailMaterialListDTO ListData2 { get; set; }
+    [Parameter] public int TotalPage { get; set; }
+    [Parameter] public int CurrentPage { get; set; }
 
     private int? totalInQty = 0;
     private float? totalInPrice = 0;

@@ -40,7 +40,6 @@
         else
         {
             <div class="infocard-img-area">
-                @* <PreviewBox ImageUrls="@ImageUrl" /> *@
                 <ImageSlider Label="대표 이미지" Images="@ImageUrl"/>
                 @if (EditMode)
                 {
@@ -160,11 +159,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        // if (Maintenance != null)
-        // {
-        //     UpdateMaintenance = Maintenance.DeepCopy();
-        //     await ImgConvert();
-        // }
+        if (Maintenance != null)
+        {
+            UpdateMaintenance = Maintenance.DeepCopy();
+            await ImgConvert();
+        }
     }
 
 

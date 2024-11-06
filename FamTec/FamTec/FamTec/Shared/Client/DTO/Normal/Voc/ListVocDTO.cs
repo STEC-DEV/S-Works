@@ -23,6 +23,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Voc
         /// </summary>
         public int? Type { get; set; }
 
+        public string Phone { get; set; }
         /// <summary>
         /// 제목
         /// </summary>

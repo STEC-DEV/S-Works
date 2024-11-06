@@ -6,41 +6,29 @@
 @using FamTec.Shared.Server.DTO
 @using System.Web
 
-
 <div class="voc-container yappear">
     <div class="condition-container">
+
         <SearchFilter 
-            DefaultOption="@DefaultOption"
-            MonthListData="@MonthVocData"
-            OnDataChanged="OnDataChanged"
-            OnMonthDataChanged="OnMonthDataChanged"
+            DefaultOption="@DefaultOptionv2"
             OnSearchClicked="OnSearch"
-            ListData="@VocData"
-            SelectTypes="@types"
-            SelectStatus="@states"
-            SelectLocation="@locations"
-            Bulildings=@buildings
+            
+            Bulildingsv2="@buildingv2"
+            Statusv2="@statev2"
+            Typev2="@typev2"
+            Divisionv2="@divisionv2"
             />
     </div>
-    @* @if (IsSearch && SearchParams is not null) *@
-    @* @if (SearchParams is not null) *@
-    @* {
-        <div class="content-container">
-            <VocHIstory 
-                ListData="VocData" 
-                MonthListData="MonthVocData" 
-                DefaultOption=@DefaultOption 
-                IsLoading=@IsLoading
-                />
-        </div>
-    } *@
+    @* MonthListData="MonthVocData" *@
     <div class="content-container">
             <VocHIstory 
                 ListData="VocData" 
-                MonthListData="MonthVocData" 
-                DefaultOption=@DefaultOption 
+                CurrentMonth="@curMonth"
+                DefaultOption=@DefaultOptionv2 
                 IsLoading=@IsLoading
-                OnLoadVoc = "OnLoadVoc"
+                CurrentDate="@curDate"
+                OnDateChange=HandleDateChanged
+                OnLoadVoc = "OnRequestVocV2"
                 />
         </div>
 </div>
@@ -50,203 +38,218 @@
     public string SearchParams { get; set; }
 
 
-    List<ListVocDTO> VocData = new List<ListVocDTO>();
-    List<MonthVocListDTO> MonthVocData;
+    List<ListVocDTO> VocData;
 
     bool IsSearch = false;
     bool IsLoading = false;
 
-    List<int> types = new List<int>();
-    List<int> states = new List<int>();
-    List<int> locations = new List<int>();
-    List<int> defaulttypes = new List<int>();
-    List<int> defaultstates = new List<int>();
-    List<FilterItem> buildings = new List<FilterItem>();
-    List<int> defaultbuilding = new List<int>();
-    List<int> defaultdivision = new List<int>();
-    List<int> division = new List<int>();
-
     string startDt = null;
     string endDt = null;
-    int DefaultOption;
+    DateTime curDate = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
 
         //파라미터가 있는 경우에 민원 데이터 조회
-        Console.WriteLine(SearchParams);
-
-        if(SearchParams is not null)
-        {
-            await OnRequestVoc();
-        }
+        await OnLoadBuildingv2();
+        DateTime date = DateTime.Now;
+        curMonth = date.ToString("yyyy-MM");
+        await OnRequestVocV2();
+        StateHasChanged();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await OnLoadBuilding();
-        await OnLoadVoc();
-        //파라미터가 있는 경우에 민원 데이터 조회
-        Console.WriteLine(SearchParams);
-        if (SearchParams is not null)
-        {
-            await OnRequestVoc();
-        }
+
+
+        await OnRequestVocV2();
     }
 
-
-
-    private async Task OnMonthDataChanged((List<MonthVocListDTO> data, int option) changed)
-    {
-        Console.WriteLine("월간 1번");
-        MonthVocData = changed.data;
-        DefaultOption = changed.option;
-        IsLoading = false;
-        StateHasChanged();
-    }
-
-    private async Task OnDataChanged((List<ListVocDTO> data, int option) changed)
-    {
-        Console.WriteLine("기간 1번");
-        VocData = changed.data;
-        DefaultOption = changed.option;
-        IsLoading = false;
-        StateHasChanged();
-    }
 
 
     private async Task OnSearch()
     {
-
-        IsSearch = true;
-
+        curDate = DateTime.Now;
+        curMonth = curDate.ToString("yyyy-MM");
+        await OnRequestVocV2();
         StateHasChanged();
     }
 
-
-    //민원 데이터 GET
-    private async Task OnRequestVoc()
+    //민원 유형 객체
+    List<FilterItem> typev2 = new List<FilterItem>
     {
-        try
-        {
+        new FilterItem { Id = 0, Name = "미분류", IsChecked = true },
+        new FilterItem { Id = 1, Name = "기계", IsChecked = true },
+        new FilterItem { Id = 2, Name = "전기", IsChecked = true },
+        new FilterItem { Id = 3, Name = "승강", IsChecked = true },
+        new FilterItem { Id = 4, Name = "소방", IsChecked = true },
+        new FilterItem { Id = 5, Name = "건축", IsChecked = true },
+        new FilterItem { Id = 6, Name = "통신", IsChecked = true },
+        new FilterItem { Id = 7, Name = "미화", IsChecked = true},
+        new FilterItem { Id = 8, Name = "보안", IsChecked = true },
+    };
 
-            OnParseQueryString();
-            string typesQueryString = string.Join("&type=", types);
-            string statusQueryString = string.Join("&status=", states);
-            string locationQueryString = string.Join("&buildingid=", locations);
-            string divisionQueryString = string.Join("&division=", division);
-            //월별 조회
-            if (startDt == null || endDt == null)
-            {
-                ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}&division={divisionQueryString}");
-                if (resGet.code != 200)
-                {
-                    await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
-                    return;
-                }
-                if(resGet.data == null)
-                {
-                    MonthVocData = new List<MonthVocListDTO>();
-                }
-                else
-                {
-                    MonthVocData = resGet.data;
-                }
-
-                DefaultOption = 0;
-            }
-            //기간별 조회
-            else
-            {
-                ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"Voc/sign/GetVocFilterList?StartDate={startDt}&EndDate={endDt}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}");
-                if (resGet.code != 200)
-                {
-                    await JS.InvokeVoidAsync("alert", "기간조회 실패");
-                    return;
-                }
-                VocData = resGet.data;
-                DefaultOption = 1;
-
-            }
-            OnSearch();
-        }catch(Exception ex)
-        {
-            Console.WriteLine("[Error][민원] voc data request error"+ ex);
-            await JS.InvokeVoidAsync("alert", "[Error][민원] voc data request error");
-        }
-    }
-
-    private async Task OnLoadVoc()
+    //민원 상태 객체
+    List<FilterItem> statev2 = new List<FilterItem>
     {
-        try
-        {
-            defaulttypes = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-            defaultstates = new List<int> { 0, 1, 2 };
-            defaultdivision = new List<int> { 0, 1 };
+        new FilterItem { Id = 0, Name = "미처리", IsChecked = true },
+        new FilterItem { Id = 1, Name = "처리중", IsChecked = true },
+        new FilterItem { Id = 2, Name = "처리완료", IsChecked = true }
+    };
 
-            
-            string typesQueryString = string.Join("&type=", defaulttypes);
-            string statusQueryString = string.Join("&status=", defaultstates);
-            string locationQueryString = string.Join("&buildingid=", defaultbuilding);
-            string divisionQueryString = string.Join("&division=", defaultdivision);
-            Console.WriteLine(divisionQueryString);
-            //기본 월별 조회
-            ResponseList<MonthVocListDTO> resGet = await apiManager.GetListAsync<MonthVocListDTO>($"Voc/sign/GetVocList?type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}&division={divisionQueryString}");
-            if (resGet.code != 200)
-            {
-                await JS.InvokeVoidAsync("alert", "월별 기간조회 실패");
-                return;
-            }
-            if (resGet.data == null)
-            {
-                MonthVocData = new List<MonthVocListDTO>();
-            }
-            else
-            {
-                MonthVocData = resGet.data;
-            }
-            DefaultOption = 0;
-            OnSearch();
+    //민원 상태 객체
+    List<FilterItem> divisionv2 = new List<FilterItem>
+    {
+        new FilterItem { Id = 0, Name = "모바일", IsChecked = true },
+        new FilterItem { Id = 1, Name = "수기입력", IsChecked = true }
+    };
+    //건물 조회
+    List<FilterItem> buildingv2;
 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("[Error][민원] voc data request error" + ex);
-            await JS.InvokeVoidAsync("alert", "[Error][민원] voc  error");
-        }
-    }
+    //res 데이터
+    List<ListVocDTO> vocv2 = new List<ListVocDTO>();
+
+    //기본값 0 / 0 월간 조회 /1 기간조회
+    int DefaultOptionv2 = 0;
+
+
+    List<int> typesparam = new List<int>();
+    List<int> stateparam = new List<int>();
+    List<int> buildingparam = new List<int>();
+    List<int> divisionparam = new List<int>();
+
+
+    private bool buildingDataLoaded = false;
+
+    //초기 년월
+    string curMonth="";
 
     //건물조회 형태는 id, Name,
-    private async Task OnLoadBuilding()
+    private async Task OnLoadBuildingv2()
     {
         try
         {
             ResponseList<FilterItem> resGet = await apiManager.GetListAsync<FilterItem>("Building/sign/GetPlaceBuilding");
             if (resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "건물 조회실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
-            buildings = resGet.data;
-            defaultbuilding = buildings.Select(l => l.Id).ToList();
+            if(resGet.data == null)
+            {
+                buildingv2 = new List<FilterItem>();
+            }
+            else
+            {
+                buildingv2 = new List<FilterItem>(resGet.data);
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+            await JS.InvokeVoidAsync("alert", "건물 조회 실패cc");
         }
     }
 
-    private void OnParseQueryString()
+    //민원 데이터 GET
+    private async Task OnRequestVocV2()
+    {
+        try
+        {
+            Console.WriteLine(SearchParams);
+            if (!string.IsNullOrEmpty(SearchParams))
+            {                
+                OnParseQueryStringv2();
+            }
+            else
+            {
+                typesparam = CheckDate(typev2);
+                stateparam = CheckDate(statev2);
+                buildingparam = CheckDate(buildingv2);
+                divisionparam = CheckDate(divisionv2);
+            }
+
+
+
+            string typesQueryString = string.Join("&type=", typesparam);
+            string statusQueryString = string.Join("&status=", stateparam);
+            string locationQueryString = string.Join("&buildingid=", buildingparam);
+            string divisionQueryString = string.Join("&division=", divisionparam);
+
+            // searchdate = "2024-10";
+            // //월간 조회 시 기간 변수 null
+            if (DefaultOptionv2 == 0)
+            {
+                startDt = "";
+                endDt = "";
+                if (string.IsNullOrEmpty(curMonth))
+                {
+                    curMonth = curDate.ToString("yyyy-MM");
+                }
+            }
+            else
+            {
+                curMonth = "";
+            }
+            //기간 조회 시 month year 변수 null
+
+            ResponseList<ListVocDTO> resGet = await apiManager.GetListAsync<ListVocDTO>($"Voc/sign/GetVocSearchList?searchType={DefaultOptionv2}&StartDate={startDt}&EndDate={endDt}&searchdate={curMonth}&type={typesQueryString}&status={statusQueryString}&buildingid={locationQueryString}&division={divisionQueryString}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if(resGet.data == null)
+            {
+                VocData = new List<ListVocDTO>();
+            }
+            else
+            {
+                VocData = resGet.data;
+            }
+
+            IsSearch = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[Error][민원] voc data request error" + ex);
+            await JS.InvokeVoidAsync("alert", "[Error][민원] voc data request errora");
+        }
+    }
+
+    // private async void HandleDateChanged(string value)
+    // {
+    //     curMonth = value;
+        
+    //     await OnRequestVocV2();
+    // }
+    private async void HandleDateChanged(DateOnly newDate)
+    {
+        curDate = newDate.ToDateTime(TimeOnly.MinValue);
+        curMonth = curDate.ToString("yyyy-MM");
+        await OnRequestVocV2();
+    }
+
+    //체크된 요소 id 리스트 반환
+    private List<int> CheckDate(List<FilterItem> items)
+    {
+        List<int> data = items.Where(i => i.IsChecked == true).Select(i => i.Id).ToList();
+
+        return data;
+    }
+
+    private void OnParseQueryStringv2()
     {
         var parameters = HttpUtility.ParseQueryString(SearchParams);
-        types = ParseIntList(parameters["types"]);
-        states = ParseIntList(parameters["status"]);
-        locations = ParseIntList(parameters["locations"]);
-        division = ParseIntList(parameters["divisions"]);
+        typesparam = ParseIntList(parameters["types"]);
+        stateparam = ParseIntList(parameters["status"]);
+        buildingparam = ParseIntList(parameters["locations"]);
+        divisionparam = ParseIntList(parameters["divisions"]);
 
         startDt = parameters["startDate"];
         endDt = parameters["endDate"];
+        DefaultOptionv2 = int.Parse(parameters["searchType"]);
     }
 
 
@@ -262,4 +265,5 @@
                     .Select(n => n.Value)
                     .ToList();
     }
+
 }

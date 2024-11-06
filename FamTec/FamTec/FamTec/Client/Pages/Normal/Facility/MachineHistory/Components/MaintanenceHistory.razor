@@ -11,11 +11,11 @@
                 유지보수 이력
             </span>
         </div>
-        <div class="option @(SearchOption !=1 ? "flex-end":null)">
-            @if (SearchOption == 1)
+        <div class="option @(SearchOption !=0 ? "flex-end":null)">
+            @if (SearchOption == 0)
             {
-                <div class="vochistory-slider  @(SearchOption != 1 ? "date-none" : "")">
-                    <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" />
+                <div class="vochistory-slider  @(SearchOption == 1 ? "date-none" : "")">
+                    <DateSlider CreateDate="@createdate" OnChanged="OnSelectDate" CurDate="@CurrentDate" />
                 </div>
             }
             
@@ -45,18 +45,14 @@
 </div>
 
 @code {
-    [Parameter] public List<AllMaintanceHistoryDTO> MonthData{ get; set; }
-    [Parameter] public List<MaintanceHistoryDTO> DurationData { get; set; }
+    // [Parameter] public List<AllMaintanceHistoryDTO> MonthData{ get; set; }
+    [Parameter] public List<MaintanceHistoryDTO> Data { get; set; }
     [Parameter] public int SearchOption { get; set; }
+    [Parameter] public DateTime CurrentDate { get; set; }
+    [Parameter] public EventCallback<DateOnly> OnDateChange { get; set; }
 
     List<MaintanceHistoryDTO> FilterData;
     List<MaintanceHistoryDTO> originalData = new List<MaintanceHistoryDTO>();
-
-
-
-
-    //월간 조회 1, 기간조회 2
-    int FilterOption = 0;
 
 
     //사업장 생성일자 필요함
@@ -75,74 +71,30 @@
     protected async override Task OnInitializedAsync()
     {
         createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
-        DateTime date = DateTime.Now;
-        curDate = date.ToString("yyyy-MM");
 
     }
 
 
     protected override async Task OnParametersSetAsync()
     {
-        // createdate = await (_authStateProvider as CustomAuthProvider).GetPlaceCreate();
-        // MonthData != null &&
-        if (SearchOption == 1)
+        Console.WriteLine("옵션" + SearchOption);
+
+        if (Data != null)
         {
-            Console.WriteLine("1");
-            FilterOption = 1;
-            if (string.IsNullOrEmpty(curDate))
-            {
-                curDate = DateTime.Now.ToString("yyyy-MM");
-            }
-            await MonthDecideData();
-        }
-        // DurationData != null &&
-        else if (SearchOption == 2)
-        {
-            Console.WriteLine("2");
-            FilterOption = 2;
-            originalData = DurationData;
+            originalData = new List<MaintanceHistoryDTO>(Data);
+            Console.WriteLine(originalData.Count);
             await Paging();
         }
-    }
-
-
-
-    //월별 필더링
-    private async Task MonthDecideData()
-    {
-
-        if (MonthData == null || string.IsNullOrEmpty(curDate))
-        {
-            Console.WriteLine("필터1");
-            originalData = new List<MaintanceHistoryDTO>();
-            return;
-        }
-        else
-        {
-            Console.WriteLine("필터2");
-            // var selectedMonth = MonthData.FirstOrDefault(m => (m.Years.ToString()+m.Month.ToString()) == curDate);
-            int year = int.Parse(curDate.Substring(0, 4));
-            int month = int.Parse(curDate.Substring(5, 2));
-
-            var selectedMonth = MonthData.FirstOrDefault(m =>
-                m.Years == year && m.Month == month);
-
-            Console.WriteLine(selectedMonth);
-            originalData = selectedMonth?.HistoryList ?? new List<MaintanceHistoryDTO>();
-            Console.WriteLine("개수" + originalData.Count());
-        }
-        await Paging();
         StateHasChanged();
 
     }
 
+
+
     //현재 선택한 년월
     private async Task OnSelectDate(DateOnly date)
     {
-        Console.WriteLine("현재 선택 년월 : " + date);
-
-        curDate = date.ToString("yyyy-MM");
-        await MonthDecideData();
+        await OnDateChange.InvokeAsync(date);
     }
 
 
@@ -150,13 +102,14 @@
     private async Task Paging()
     {
 
-        Console.WriteLine("============페이징 실행============");
-        if (string.IsNullOrEmpty(curDate))
+        // Console.WriteLine("============페이징 실행============");
+        if (originalData == null || !originalData.Any())
         {
-            Console.WriteLine("없음");
-            FilterData = new List<MaintanceHistoryDTO>();
-            totalPage = 0;
+            totalPage = 1;
             currentPage = 1;
+            FilterData = new List<MaintanceHistoryDTO>();
+
+            StateHasChanged();
             return;
         }
         FilterData = new List<MaintanceHistoryDTO>();
@@ -164,9 +117,9 @@
         currentPage = Math.Min(currentPage, totalPage);
         int skip = (currentPage - 1) * viewNum;
         FilterData = originalData.Skip(skip).Take(viewNum).ToList();
-        Console.WriteLine(FilterData.Count());
-        Console.WriteLine($"[페이징] 전체 데이터 수: {originalData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
-        Console.WriteLine("============페이징 끝============");
+        // Console.WriteLine(FilterData.Count());
+        // Console.WriteLine($"[페이징] 전체 데이터 수: {originalData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
+        // Console.WriteLine("============페이징 끝============");
         StateHasChanged();
     }
 
@@ -174,7 +127,6 @@
     //viewr
     private async Task OnChangeViewNum(int value)
     {
-        Console.WriteLine($"현재 보기 개수 : {value}");
         viewNum = value;
         // currentPage = 1;
         await Paging();
@@ -190,7 +142,6 @@
         else
             currentPage = Math.Clamp(num, 1, totalPage);
 
-        Console.WriteLine($": {currentPage}");
         await Paging();
     }
     

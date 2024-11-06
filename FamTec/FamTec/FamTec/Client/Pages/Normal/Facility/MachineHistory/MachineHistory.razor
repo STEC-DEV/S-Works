@@ -1,57 +1,225 @@
 ﻿@page "/facility/history"
+@page "/facility/history/{SearchParams}"
 @using FamTec.Client.Pages.Normal.Facility.MachineHistory.Components
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
+@using FamTec.Shared.Server.DTO
+@using System.Web
 
 <div class="container yappear">
     <SearchFilter 
-        OnSearchMonthData="OnChangeMonthData"
-        OnSearchDurationData="OnChangeDuratopmhData"
+        FacType="@filterFacType"
+        WorkType="@workType"
+        DefaultOption="@FilterOption"
         />
-    @* @if ((MonthData != null) || (DurationData !=null))
-    {
-        <MaintanenceHistory 
-            MonthData=MonthData 
-            DurationData=DurationData 
-        SearchOption="@FilterOption"/>
-    } *@
-    @if (FilterOption != 0)
-    {
-        <MaintanenceHistory MonthData=MonthData
-                            DurationData=DurationData
-                            SearchOption="@FilterOption" />
-    }
+    
+    <MaintanenceHistory OnDateChange="HandleDateChanged"
+                        Data=ListData
+                        SearchOption="@FilterOption"
+                        CurrentDate="curDate"
+                        />
+    
 </div>
 
 @code {
-    List<AllMaintanceHistoryDTO> MonthData;
-    List<MaintanceHistoryDTO> DurationData;
+    [Parameter]
+    public string SearchParams { get; set; }
+
+    List<MaintanceHistoryDTO> ListData;
     int FilterOption = 0;
 
-    private void OnChangeMonthData(List<AllMaintanceHistoryDTO> data)
+    //설비유형 변수
+    int selectFacType = 9;
+    //작업구분 변수
+    int selectWorkType = 9;
+
+    private string startDt = "";
+    private string endDt = "";
+
+    DateTime curDate = DateTime.Now;
+    string curMonth = "";
+
+    //사용자 설비 권한 리스트 \ 기계,전기,승강,소방,건축,통신,미화,보안 순서
+    List<int> facPerm = new List<int>();
+    List<FilterItem> filterFacType = new List<FilterItem>();
+    List<FilterItem> facType = new List<FilterItem>
     {
-        if(data == null)
-        {
-            MonthData = new List<AllMaintanceHistoryDTO>();
-        }
-        else
-        {
-            MonthData = data;
-        }
-        FilterOption = 1;
+        // new FilterItem { Id = 0, Name = "전체", IsChecked=true},
+        new FilterItem { Id = 1, Name = "기계", IsChecked=true },
+        new FilterItem { Id = 2, Name = "전기", IsChecked=true },
+        new FilterItem { Id = 3, Name = "승강", IsChecked=true },
+        new FilterItem { Id = 4, Name = "소방", IsChecked=true },
+        new FilterItem { Id = 5, Name = "건축", IsChecked=true },
+        new FilterItem { Id = 6, Name = "통신", IsChecked=true },
+        new FilterItem { Id = 7, Name = "미화", IsChecked=true },
+        new FilterItem { Id = 8, Name = "보안", IsChecked=true },
+    };
+
+    //작업 구분 데이터
+    List<FilterItem> workType = new List<FilterItem>
+    {
+        // new FilterItem { Id = 2, Name = "전체", IsChecked=true },
+        new FilterItem { Id = 0, Name = "자체", IsChecked=true },
+        new FilterItem { Id = 1, Name = "외주", IsChecked=true },
+
+    };
+
+    List<string> facTypeParams = new List<string>();
+    List<int> workParams = new List<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        facPerm = await (_authStateProvider as CustomAuthProvider).GetFacilityUserPemrList();
+        await ConvertType(facPerm);
+        selectFacType = 0;
+        selectWorkType = 2;
+
+        DateTime date = DateTime.Now;
+        curMonth = date.ToString("yyyy-MM");
+        await OnSearch();
 
     }
 
-    private void OnChangeDuratopmhData(List<MaintanceHistoryDTO> data)
+    protected override async Task OnParametersSetAsync()
     {
-        if(data == null)
+        await OnSearch();
+    }
+
+    private async Task ConvertType(List<int> facperm)
+    {
+        filterFacType.Add(facType[0]);
+        // 권한 값이 1 이상인 항목만 필터링해서 filterType에 추가
+        for (int i = 0; i < facPerm.Count && (i + 1) < facType.Count; i++)
         {
-            DurationData = new List<MaintanceHistoryDTO>();
+            if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
+            {
+                filterFacType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
+            }
         }
-        else
+    }
+
+    private string convertFactype(int facType)
+    {
+        return facType switch
         {
-            DurationData = data;
+            1 => "기계",
+            2 => "전기",
+            3 => "승강",
+            4 => "소방",
+            5 => "건축",
+            6 => "통신",
+            7 => "미화",
+            8 => "보안",
+
+        };
+    }
+
+    private async void HandleDateChanged(DateOnly newDate)
+    {
+        curDate = newDate.ToDateTime(TimeOnly.MinValue);
+        curMonth = curDate.ToString("yyyy-MM");
+        await OnSearch();
+    }
+
+    private async Task OnSearch()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(SearchParams))
+            {
+                OnParseQueryString();
+            }
+            else
+            {
+                facTypeParams = FacTypeCheckData(filterFacType);
+                workParams = WorkCheckData(workType);
+            }
+            List<string> FacType = new List<string>();
+            List<int> WorkType = new List<int>();
+
+
+            if (FilterOption == 0)
+            {
+                startDt = "";
+                endDt = "";
+                if (string.IsNullOrEmpty(curMonth))
+                {
+                    curMonth = curDate.ToString("yyyy-MM");
+                }
+            }
+            else
+            {
+                curMonth = "";
+            }
+            
+            var categoryQuery = string.Join("&category=", facTypeParams);
+            var typeQuery = string.Join("&type=", workParams);
+
+
+            // ResponseList<MaintanceHistoryDTO> resGet = await apiManager.GetListAsync<MaintanceHistoryDTO>($"Maintenance/sign/GetAllHistoryList?StartDate={startDt.ToString("yyyy-MM-dd")}&EndDate={endDt.ToString("yyyy-MM-dd")}&category={categoryQuery}&type={typeQuery}");
+            ResponseList<MaintanceHistoryDTO> resGet = await apiManager.GetListAsync<MaintanceHistoryDTO>($"Maintenance/sign/GetHistorySearchList?searchType={FilterOption}&StartDate={startDt}&EndDate={endDt}&searchdate={curMonth}&category={categoryQuery}&type={typeQuery}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if(resGet.data == null)
+            {
+                ListData = new List<MaintanceHistoryDTO>();
+            }
+            else
+            {
+                ListData = resGet.data;
+            }
+            StateHasChanged();
+
         }
-        FilterOption = 2;
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "유지보수 조회 검색 에러");
+        }
+    }
+
+    //체크된 요소 id 리스트 반환
+    private List<int> WorkCheckData(List<FilterItem> items)
+    {
+        List<int> data = items.Where(i => i.IsChecked == true).Select(i => i.Id).ToList();
+
+        return data;
+    }
+    private List<string> FacTypeCheckData(List<FilterItem> items)
+    {
+        List<string> data = items.Where(i => i.IsChecked == true).Select(i => i.Name).ToList();
+
+        return data;
+    }
+
+    private void OnParseQueryString()
+    {
+        var parameters = HttpUtility.ParseQueryString(SearchParams);
+        string categoryParams = parameters["category"];
+        facTypeParams = categoryParams?.Split(',').ToList() ?? new List<string>();
+        workParams= ParseIntList(parameters["type"]);
         
+
+        startDt = parameters["StartDate"];
+        endDt = parameters["EndDate"];
+        FilterOption = int.Parse(parameters["searchType"]);
+        Console.WriteLine("옵" + FilterOption);
+    }
+
+
+    //쉼표 구분
+    private List<int> ParseIntList(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return new List<int>();
+
+        return value.Split(',')
+                    .Select(s => int.TryParse(s, out int result) ? result : (int?)null)
+                    .Where(n => n.HasValue)
+                    .Select(n => n.Value)
+                    .ToList();
     }
 }

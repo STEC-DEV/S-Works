@@ -74,3 +74,8 @@
 .height[b-my0nq2lfue]{
     height:100%;
 }
+
+.option-page[b-my0nq2lfue]{
+    display:flex;
+    justify-content:flex-end;
+}

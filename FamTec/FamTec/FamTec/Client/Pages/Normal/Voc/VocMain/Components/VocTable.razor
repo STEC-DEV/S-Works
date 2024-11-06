@@ -24,6 +24,16 @@
             </th>
             <th class="th">
                 <span>
+                    작성자
+                </span>
+            </th>
+            <th class="th">
+                <span>
+                    전화번호
+                </span>
+            </th>
+            <th class="th">
+                <span>
                     제목
                 </span>
             </th>
@@ -84,6 +94,12 @@
                     </td>
                     <td class="td pointer">
                         @OnConvertType(row.Type)
+                    </td>
+                    <td class="td pointer">
+                        @row.CreateUser
+                    </td>
+                    <td class="td pointer">
+                        @row.Phone
                     </td>
                     <td class="td pointer">
                         @row.Title

@@ -36,9 +36,17 @@
 
 .content[b-7r18rabuve]{
     display : flex;
+    flex-direction:column;
     justify-content :space-between;
-    gap : var(--wide-pd);
+    align-items:center;
+    /*gap : var(--wide-pd);*/
     
+}
+
+.filter[b-7r18rabuve]{
+    display :flex;
+    justify-content:flex-end;
+    gap:var(--default-pd);
 }
 
 .filter-item[b-7r18rabuve]{

@@ -126,7 +126,7 @@
             }
             //검색 데이터 초기화
             SelectedMaterialList.Clear();
-            titles = "";
+            // titles = "";
             startDt = new DateTime(curdate.Year, curdate.Month, 1);
             endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
             await ValueChange.InvokeAsync(material);

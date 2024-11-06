@@ -297,6 +297,7 @@
     {
         SelectedBuildingId = Material.BuildingId.Value;
         SelectedFloorId = Material.RoomID.Value;
+        EditMaterial.RoomId = SelectedFloorId;
         PlaceRoom = new List<PlaceRoom>();
         PlaceLocationSelect = PlaceLocation?.Where(b => b.Id == Material.BuildingId).FirstOrDefault();
         foreach (var i in PlaceLocationSelect.FloorList)

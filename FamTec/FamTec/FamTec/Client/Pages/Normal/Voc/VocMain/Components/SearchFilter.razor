@@ -43,31 +43,31 @@
                 </div>
                 
             </div>
-            <MultiSelectDrop Row=true Label="민원구분" SelectItems="@division" OnSelectionChanged="HandleSelectionChange" />
-            <MultiSelectDrop Row=true Label="민원위치" SelectItems="@locations" OnSelectionChanged="HandleSelectionChange" />
-            <MultiSelectDrop Row=true Label="민원유형" SelectItems="@type" OnSelectionChanged="HandleSelectionChange" />
-            <MultiSelectDrop Row=true Label="민원상태" SelectItems="@state" OnSelectionChanged="HandleSelectionChange" />
+
+            <MultiSelectDrop Row=true Label="민원구분" SelectItems="@Divisionv2" OnSelectionChanged="HandleSelectionChange" />
+            @if (Bulildingsv2 != null)
+            {
+                <MultiSelectDrop Row=true Label="민원위치" SelectItems="@Bulildingsv2" OnSelectionChanged="HandleSelectionChange" />
+            }
             
-            @* <CheckBoxVocType Name="민원 유형" Items="@type" />
-            <CheckBoxVocType Name="민원 상태" Items="@state" />
-            <CheckBoxVocType Name="민원 위치" Items="@locations" /> *@
+            <MultiSelectDrop Row=true Label="민원유형" SelectItems="@Typev2" OnSelectionChanged="HandleSelectionChange" />
+            <MultiSelectDrop Row=true Label="민원상태" SelectItems="@Statusv2" OnSelectionChanged="HandleSelectionChange" />
+
         </div>
     </div>
 </div>
 
 @code {
     [Parameter] public int DefaultOption { get; set; }
-    [Parameter] public List<MonthVocListDTO> MonthListData { get; set; }
-    [Parameter] public List<ListVocDTO> ListData { get; set; }
-    [Parameter] public EventCallback<(List<MonthVocListDTO>,int)> OnMonthDataChanged { get; set; }
-    [Parameter] public EventCallback<(List<ListVocDTO>,int)> OnDataChanged { get; set; }
     [Parameter] public EventCallback OnSearchClicked { get; set; } // 검색 버튼 이벤트
-    [Parameter] public List<int>? SelectTypes { get; set; }
-    [Parameter] public List<int>? SelectStatus { get; set; }
-    [Parameter] public List<int>? SelectLocation { get; set; }
-    [Parameter] public List<int>? SelectDivision{ get; set; }
-    [Parameter] public List<FilterItem> Bulildings { get; set; }
 
+    // [Parameter] public List<FilterItem> Bulildings { get; set; }
+    //---------------------------------------------------------------
+    [Parameter] public List<FilterItem> Bulildingsv2 { get; set; }
+    [Parameter] public List<FilterItem> Typev2 { get; set; }
+    [Parameter] public List<FilterItem> Statusv2 { get; set; }
+    [Parameter] public List<FilterItem> Divisionv2 { get; set; }
+    
     private int selectDefaultOption = 0;
     private DateTime startDt = DateTime.Now;
     private DateTime endDt = DateTime.Now;
@@ -162,25 +162,22 @@
         try
         {
             var parameters = HttpUtility.ParseQueryString(string.Empty);
-            Console.WriteLine("타입" + types.Count);
-            Console.WriteLine("상태" + status.Count);
-            Console.WriteLine("건물" + location.Count);
-            types = CheckDate(type);
-            status = CheckDate(state);
-            location = CheckDate(locations);
-            divisions = CheckDate(division);
+            types = CheckDate(Typev2);
+            status = CheckDate(Statusv2);
+            location = CheckDate(Bulildingsv2);
+            divisions = CheckDate(Divisionv2);
             // location = CheckDate(Bulildings);
 
             // //조건 선택안한 경우
-            if (types.Count == 0 || status.Count == 0 || location.Count == 0 || divisions.Count == 0)
+            if (Typev2.Count == 0 || Statusv2.Count == 0 || Bulildingsv2.Count == 0 || Divisionv2.Count == 0)
             {
                 await JS.InvokeVoidAsync("alert", "조건을 선택해 주세요");
                 return;
             }
 
+            parameters["searchType"] = selectDefaultOption.ToString();
             if (selectDefaultOption == 1)
             {
-                Console.WriteLine("여기탐");
                 parameters["startDate"] = startDt.ToString("yyyy-MM-dd");
                 parameters["endDate"] = endDt.ToString("yyyy-MM-dd");
             }
