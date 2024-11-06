@@ -63,5 +63,10 @@
         /// 작성자
         /// </summary>
         public string? CreateUser { get; set; }
+
+        /// <summary>
+        /// 전화번호
+        /// </summary>
+        public string? Phone { get; set; }
     }
 }

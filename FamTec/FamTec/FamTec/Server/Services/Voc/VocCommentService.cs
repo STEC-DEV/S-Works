@@ -256,7 +256,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid)
+        public async Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid, bool isMobile)
         {
             try
             {
@@ -281,29 +281,60 @@ namespace FamTec.Server.Services.Voc
                 di = new DirectoryInfo(VocCommentFileFolderPath);
                 if (!di.Exists) di.Create();
 
-
-                List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
-                for (int i = 0; i < model.Count; i++)
+                if (isMobile) // 모바일
                 {
-                    VocCommentListDTO dtoModel = new VocCommentListDTO();
-                    dtoModel.Id = model[i].Id;
-                    dtoModel.status = model[i].Status; // 댓글상태
-                    dtoModel.Comment = model[i].Content; // 내용
-                    dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
-                    dtoModel.CreateUserId = model[i].UserTbId;
-                    dtoModel.CreateUser = model[i].CreateUser;
-                    dtoModel.VocTbId = model[i].VocTbId;
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
 
-                    var imageFiles = new[] { model[i].Image1, model[i].Image2, model[i].Image3 };
-                    foreach(var image in imageFiles)
+                    List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
+
+                    for (int i = 0; i < model.Count; i++)
                     {
-                        if(!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
+                        VocCommentListDTO dtoModel = new VocCommentListDTO();
+                        dtoModel.Id = model[i].Id;
+                        dtoModel.status = model[i].Status; // 댓글상태
+                        dtoModel.Comment = model[i].Content; // 내용
+                        dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
+                        dtoModel.CreateUserId = model[i].UserTbId;
+                        dtoModel.CreateUser = model[i].CreateUser;
+                        dtoModel.VocTbId = model[i].VocTbId;
+
+                        var imageFiles = new[] { model[i].Image1, model[i].Image2, model[i].Image3 };
+                        foreach (var image in imageFiles)
                         {
-                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
-                            if (ImageBytes is not null)
+                            if (!String.IsNullOrWhiteSpace(image))
                             {
-                                dtoModel.ImageName.Add(image);
-                                dtoModel.Images.Add(ImageBytes);
+                                byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
+                                if (ImageBytes is not null)
+                                {
+                                    IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                    if (files is not null)
+                                    {
+                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                        if (ConvertFile is not null)
+                                        {
+                                            dtoModel.ImageName.Add(image);
+                                            dtoModel.Images.Add(ConvertFile);
+                                        }
+                                        else
+                                        {
+                                            dtoModel.ImageName.Add(null);
+                                            dtoModel.Images.Add(null);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        dtoModel.ImageName.Add(null);
+                                        dtoModel.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dtoModel.ImageName.Add(null);
+                                    dtoModel.Images.Add(null);
+                                }
                             }
                             else
                             {
@@ -311,17 +342,75 @@ namespace FamTec.Server.Services.Voc
                                 dtoModel.Images.Add(null);
                             }
                         }
-                        else // 이미지 명칭에 DB에 없으면.
+                        dto.Add(dtoModel);
+                    }
+                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto.OrderByDescending(m => m.CreateDT).ToList(), code = 200 };
+                }
+                else // PC
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    List<VocCommentListDTO> dto = new List<VocCommentListDTO>();
+                    for (int i = 0; i < model.Count; i++)
+                    {
+                        VocCommentListDTO dtoModel = new VocCommentListDTO();
+                        dtoModel.Id = model[i].Id;
+                        dtoModel.status = model[i].Status; // 댓글상태
+                        dtoModel.Comment = model[i].Content; // 내용
+                        dtoModel.CreateDT = model[i].CreateDt.ToString("yyyy-MM-dd HH:mm:ss");
+                        dtoModel.CreateUserId = model[i].UserTbId;
+                        dtoModel.CreateUser = model[i].CreateUser;
+                        dtoModel.VocTbId = model[i].VocTbId;
+
+                        var imageFiles = new[] { model[i].Image1, model[i].Image2, model[i].Image3 };
+                        foreach (var image in imageFiles)
                         {
-                            dtoModel.ImageName.Add(null);
-                            dtoModel.Images.Add(null);
+                            if (!String.IsNullOrWhiteSpace(image))
+                            {
+                                byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
+                                if (ImageBytes is not null)
+                                {
+                                    IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                    if (files is not null)
+                                    {
+                                        byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                        if (ConvertFile is not null)
+                                        {
+                                            dtoModel.ImageName.Add(image);
+                                            dtoModel.Images.Add(ConvertFile);
+                                        }
+                                        else
+                                        {
+                                            dtoModel.ImageName.Add(null);
+                                            dtoModel.Images.Add(null);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        dtoModel.ImageName.Add(null);
+                                        dtoModel.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dtoModel.ImageName.Add(null);
+                                    dtoModel.Images.Add(null);
+                                }
+                            }
+                            else
+                            {
+                                dtoModel.ImageName.Add(null);
+                                dtoModel.Images.Add(null);
+                            }
                         }
+
+                        dto.Add(dtoModel);
                     }
 
-                    dto.Add(dtoModel);
+                    return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto.OrderByDescending(m => m.CreateDT).ToList(), code = 200 };
                 }
-
-                return new ResponseList<VocCommentListDTO>() { message = "요청이 정상 처리되었습니다.", data = dto.OrderByDescending(m => m.CreateDT).ToList(), code = 200 };
             }
             catch(Exception ex)
             {
@@ -339,7 +428,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid)
+        public async Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid, bool isMobile)
         {
             try
             {
@@ -368,16 +457,47 @@ namespace FamTec.Server.Services.Voc
                 //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, placeId, VocTB.Id);
                 VocCommentFileFolderPath = Path.Combine(Common.FileServer, placeId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
-                var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
-                foreach (var image in imageFiles)
+                if (isMobile)
                 {
-                    if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
+                    foreach(var image in imageFiles)
                     {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
-                        if (ImageBytes is not null)
+                        if(!String.IsNullOrWhiteSpace(image))
                         {
-                            dto.ImageName.Add(image);
-                            dto.Images.Add(ImageBytes);
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
+
+                            if(ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                if(files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                    if(ConvertFile is not null)
+                                    {
+                                        dto.ImageName.Add(image);
+                                        dto.Images.Add(ConvertFile);
+                                    }
+                                    else
+                                    {
+                                        dto.ImageName.Add(null);
+                                        dto.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dto.ImageName.Add(null);
+                                    dto.Images.Add(null);
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName.Add(null);
+                                dto.Images.Add(null);
+                            }
                         }
                         else
                         {
@@ -385,14 +505,60 @@ namespace FamTec.Server.Services.Voc
                             dto.Images.Add(null);
                         }
                     }
-                    else // 이미지 명칭에 DB에 없으면.
-                    {
-                        dto.ImageName.Add(null);
-                        dto.Images.Add(null);
-                    }
+                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
+                    foreach (var image in imageFiles)
+                    {
+                        if (!String.IsNullOrWhiteSpace(image))
+                        {
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocCommentFileFolderPath, image).ConfigureAwait(false);
 
-                return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                            if (ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                if (files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                    if (ConvertFile is not null)
+                                    {
+                                        dto.ImageName.Add(image);
+                                        dto.Images.Add(ConvertFile);
+                                    }
+                                    else
+                                    {
+                                        dto.ImageName.Add(null);
+                                        dto.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dto.ImageName.Add(null);
+                                    dto.Images.Add(null);
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName.Add(null);
+                                dto.Images.Add(null);
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName.Add(null);
+                            dto.Images.Add(null);
+                        }
+                    }
+
+                    return new ResponseUnit<VocCommentDetailDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                }
+               
             }
             catch(Exception ex)
             {

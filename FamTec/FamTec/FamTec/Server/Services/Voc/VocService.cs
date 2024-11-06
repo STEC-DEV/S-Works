@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -12,7 +11,6 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
-using System.Text;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -148,6 +146,106 @@ namespace FamTec.Server.Services.Voc
 
 
 
+        /// <summary>
+        /// 월간 사업장 VOC 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="searchDate"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<VocListDTO>> GetMonthVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                  if (String.IsNullOrWhiteSpace(searchDate))
+                      return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                  string[] splitDate = searchDate.Split('-');
+                  string year = splitDate[0];
+                  string month = splitDate[1].PadLeft(2, '0'); // 한 자리 월을 두 자리로 맞추기 위해 앞에 0 추가
+
+                int checkResult;
+
+                // 년도 숫자값 맞는지 검사
+                bool checkDate = int.TryParse(year, out checkResult);
+                if (!checkDate)
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 월 숫자값 맞는지 검사
+                checkDate = int.TryParse(month, out checkResult);
+                if (!checkDate)
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<VocListDTO>? model = await VocInfoRepository.GetVocMonthList(Convert.ToInt32(placeid), type, status, buildingid, division, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
+
+                if (model is [_, ..])
+                    return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<VocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTO>(), code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 기간 사업장 VOC 조회
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+
+        public async Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
+
+                string? PlaceIdx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(PlaceIdx))
+                    return new ResponseList<VocListDTO>() { message = "잘못된 요청입니다.", data = new List<VocListDTO>(), code = 404 };
+
+                List<VocListDTO>? model = await VocInfoRepository.GetVocFilterList(Convert.ToInt32(PlaceIdx), StartDate, EndDate, type, status, buildingid, division).ConfigureAwait(false);
+
+                if (model is [_, ..])
+                    return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<VocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<VocListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<VocListDTO>(), code = 500 };
+            }
+        }
+
+
 
         /// <summary>
         /// VOC 상세보기 - 직원용
@@ -155,7 +253,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid)
+        public async Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid, bool isMobile)
         {
             try
             {
@@ -192,30 +290,102 @@ namespace FamTec.Server.Services.Voc
                 di = new DirectoryInfo(VocFileName);
                 if (!di.Exists) di.Create();
 
-                var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
-                foreach (var image in imageFiles)
+                if(isMobile)
                 {
-                    if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
-                    {
-                        byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image).ConfigureAwait(false);
+                    // 모바일
+                    var ImageFiles = new[] { model.Image1, model.Image2, model.Image3 };
 
-                        if (ImageBytes is not null)
+                    foreach (var image in ImageFiles)
+                    {
+                        if (!String.IsNullOrWhiteSpace(image))
                         {
-                            dto.ImageName.Add(image);
-                            dto.Images.Add(ImageBytes);
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image).ConfigureAwait(false);
+
+                            if(ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                if(files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                    if (ConvertFile is not null)
+                                    {
+                                        dto.ImageName.Add(image);
+                                        dto.Images.Add(ConvertFile);
+                                    }
+                                    else
+                                    {
+                                        dto.ImageName.Add(null);
+                                        dto.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dto.ImageName.Add(null);
+                                    dto.Images.Add(null);
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName.Add(null);
+                                dto.Images.Add(null);
+                            }
                         }
+                        else // 이미지 명칭에 DB에 없음
+                        {
+                            dto.ImageName.Add(null);
+                            dto.Images.Add(null);
+                        }
+                    }
+                }
+                else
+                {
+                    // PC
+                    var imageFiles = new[] { model.Image1, model.Image2, model.Image3 };
+                    foreach (var image in imageFiles)
+                    {
+                        if (!String.IsNullOrWhiteSpace(image)) // 이미지명칭이 DB에 있으면
+                        {
+                            byte[]? ImageBytes = await FileService.GetImageFile(VocFileName, image).ConfigureAwait(false);
+
+                            if (ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, image);
+                                if (files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                    if (ConvertFile is not null)
+                                    {
+                                        dto.ImageName.Add(image);
+                                        dto.Images.Add(ConvertFile);
+                                    }
+                                    else
+                                    {
+                                        dto.ImageName.Add(null);
+                                        dto.Images.Add(null);
+                                    }
+                                }
+                                else
+                                {
+                                    dto.ImageName.Add(null);
+                                    dto.Images.Add(null);
+                                }
+                            }
+                            else 
+                            {
+                                dto.ImageName.Add(null);
+                                dto.Images.Add(null);
+                            }
+                        } // 이미지 명칭에 DB에 없으면.
                         else
                         {
                             dto.ImageName.Add(null);
                             dto.Images.Add(null);
                         }
                     }
-                    else // 이미지 명칭에 DB에 없으면.
-                    {
-                        dto.ImageName.Add(null);
-                        dto.Images.Add(null);
-                    }
                 }
+
 
                 return new ResponseUnit<VocEmployeeDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
@@ -618,5 +788,7 @@ namespace FamTec.Server.Services.Voc
                 return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+      
     }
 }

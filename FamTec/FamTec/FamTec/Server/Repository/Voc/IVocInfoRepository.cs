@@ -22,6 +22,18 @@ namespace FamTec.Server.Repository.Voc
         //Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth);
         Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division);
 
+        /// <summary>
+        /// 월간 사업장 VOC 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="searchyear"></param>
+        /// <param name="searchmonth"></param>
+        /// <returns></returns>
+        Task<List<VocListDTO>?> GetVocMonthList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth);
 
         /// <summary>
         /// 조건별 민원리스트 조회

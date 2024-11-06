@@ -25,7 +25,19 @@
         /// <returns></returns>
         public Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files);
 
+        /// <summary>
+        /// 모바일 Resize
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
         public Task<byte[]?> AddResizeImageFile_2(IFormFile files);
+
+        /// <summary>
+        /// PC Resize
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public Task<byte[]?> AddResizeImageFile_3(IFormFile files);
 
 
         /// <summary>
@@ -35,6 +47,15 @@
         /// <param name="filename">대상 파일명</param>
         /// <returns></returns>
         public Task<byte[]?> GetImageFile(string folderpath, string filename);
+
+        /// <summary>
+        /// 이미지 스트림 반환
+        /// </summary>
+        /// <param name="folderpath"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public Task<Stream?> GetImageFileStreamAsync(string folderpath, string filename);
+
 
         /// <summary>
         /// IFormFile 확장자 추출

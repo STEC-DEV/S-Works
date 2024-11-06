@@ -123,7 +123,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="placeid"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid)
+        public async Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid, bool isMobile)
         {
             try
             {
@@ -137,19 +137,94 @@ namespace FamTec.Server.Repository.Maintenence
                     return null;  // 유지보수 항목이 없으면 null 반환
                 }
 
-                DetailMaintanceDTO maintanceDTO = new DetailMaintanceDTO
+                DetailMaintanceDTO maintanceDTO = new DetailMaintanceDTO();
+                maintanceDTO.MaintanceID = maintenenceTB.Id; // 유지보수 ID
+                maintanceDTO.WorkDT = maintenenceTB.Workdt.ToString("yyyy-MM-dd"); // 작업일자
+                maintanceDTO.WorkName = maintenenceTB.Name; // 작업명칭
+                maintanceDTO.Type = maintenenceTB.Type; // 작업구분
+                maintanceDTO.Worker = maintenenceTB.Worker; // 작업자
+                maintanceDTO.TotalPrice = maintenenceTB.TotalPrice; // 합계
+
+                if(isMobile)
                 {
-                    MaintanceID = maintenenceTB.Id, // 유지보수 ID
-                    WorkDT = maintenenceTB.Workdt.ToString("yyyy-MM-dd"), // 작업일자
-                    WorkName = maintenenceTB.Name, // 작업명칭
-                    Type = maintenenceTB.Type, // 작업구분
-                    Worker = maintenenceTB.Worker, // 작업자
-                    TotalPrice = maintenenceTB.TotalPrice, // 합계
-                    ImageName = !String.IsNullOrWhiteSpace(maintenenceTB.Image) ? maintenenceTB.Image : null,
-                    // 여기다시
-                    Image = !string.IsNullOrWhiteSpace(maintenenceTB.Image) ? await FileService.GetImageFile(Path.Combine(Common.FileServer, placeid.ToString(), "Maintance"), maintenenceTB.Image).ConfigureAwait(false): null
-                    //Image = !string.IsNullOrWhiteSpace(maintenenceTB.Image) ? await FileService.GetImageFile($"{Common.FileServer}\\{placeid}\\Maintance", maintenenceTB.Image).ConfigureAwait(false) : null 
-                };
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("모바일");
+#endif
+                    if (!String.IsNullOrWhiteSpace(maintenenceTB.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(Path.Combine(Common.FileServer, placeid.ToString(), "Maintance"), maintenenceTB.Image).ConfigureAwait(false);
+
+                        if(ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, maintenenceTB.Image);
+                            if(files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                if(ConvertFile is not null)
+                                {
+                                    maintanceDTO.ImageName = maintenenceTB.Image;
+                                    maintanceDTO.Image = ConvertFile;
+                                }
+                            }
+                            else
+                            {
+                                maintanceDTO.ImageName = null;
+                                maintanceDTO.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            maintanceDTO.ImageName = null;
+                            maintanceDTO.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        maintanceDTO.ImageName = null;
+                        maintanceDTO.Image = null;
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("PC");
+#endif
+                    if (!String.IsNullOrWhiteSpace(maintenenceTB.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(Path.Combine(Common.FileServer, placeid.ToString(), "Maintance"), maintenenceTB.Image).ConfigureAwait(false);
+
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, maintenenceTB.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                if (ConvertFile is not null)
+                                {
+                                    maintanceDTO.ImageName = maintenenceTB.Image;
+                                    maintanceDTO.Image = ConvertFile;
+                                }
+                            }
+                            else
+                            {
+                                maintanceDTO.ImageName = null;
+                                maintanceDTO.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            maintanceDTO.ImageName = null;
+                            maintanceDTO.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        maintanceDTO.ImageName = null;
+                        maintanceDTO.Image = null;
+                    }
+                }
 
                 var result = await (from UseMaintenenceTB in context.UseMaintenenceMaterialTbs
                                     where UseMaintenenceTB.DelYn != true && UseMaintenenceTB.MaintenanceTbId == maintenenceTB.Id && UseMaintenenceTB.DelYn != true
@@ -1489,6 +1564,129 @@ namespace FamTec.Server.Repository.Maintenence
             }
         }
 
+
+        /// <summary>
+        /// 유지보수 이력 사업장별 월별 전체
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="Category"></param>
+        /// <param name="type"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public async Task<List<MaintanceHistoryDTO>?> GetMonthHistoryList(int placeid, List<string> Category, List<int> type, int year, int month)
+        {
+            try
+            {
+                List<BuildingTb>? BuildingTB = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (BuildingTB is not [_, ..])
+                    return null;
+
+                List<FloorTb>? FloorTB = await context.FloorTbs
+                    .Where(m => BuildingTB.Select(m => m.Id).Contains(m.BuildingTbId) && m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (FloorTB is not [_, ..])
+                    return null;
+
+                List<RoomTb>? RoomTB = await context.RoomTbs
+                    .Where(m => FloorTB.Select(m => m.Id).Contains(m.FloorTbId) && m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if (RoomTB is not [_, ..])
+                    return null;
+
+                // 설비유형
+                List<FacilityTb>? FacilityList = await context.FacilityTbs
+                    .Where(m => RoomTB.Select(m => m.Id).Contains(m.RoomTbId) && m.DelYn != true &&
+                    Category.Contains(m.Category))
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // 작업구분 - 전체 or 일부
+                List<MaintenenceHistoryTb>? HistoryList = await context.MaintenenceHistoryTbs
+                    .Where(m => FacilityList.Select(m => m.Id).Contains(m.FacilityTbId) &&
+                    m.CreateDt.Year == year &&
+                    m.CreateDt.Month == month &&
+                    type.Contains(m.Type) &&
+                    m.DelYn != true)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                if(HistoryList is [_, ..])
+                {
+                    List<MaintanceHistoryDTO> HistoryDTO = new List<MaintanceHistoryDTO>();
+
+                    // 반복문에서 설비유형 일자 이력 작업구분 작업자 사용자재 소용비용
+                    foreach(MaintenenceHistoryTb HistoryTB in HistoryList)
+                    {
+                        MaintanceHistoryDTO HistoryModel = new MaintanceHistoryDTO();
+
+                        FacilityTb? FacilityModel = await context.FacilityTbs
+                            .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId && m.DelYn != true).ConfigureAwait(false);
+
+                        HistoryModel.Maintenanceid = HistoryTB.Id; // 유지보수 이력 ID
+                        HistoryModel.FacilityId = HistoryTB.FacilityTbId; // 설비 ID
+                        HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
+                        HistoryModel.WorkDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT
+                        HistoryModel.HistoryTitle = HistoryTB.Name; // 작업이력
+                        HistoryModel.Type = HistoryTB.Type; // 작업구분
+                        HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker
+                        HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용
+
+                        List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
+                            .Where(m => m.MaintenanceTbId == HistoryTB.Id && m.DelYn != true)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
+
+                        if(UseList is [_, ..])
+                        {
+                            foreach(UseMaintenenceMaterialTb UseTB in UseList)
+                            {
+                                MaterialTb? MaterialTB = await context.MaterialTbs
+                                    .FirstOrDefaultAsync(m => m.Id == UseTB.MaterialTbId).ConfigureAwait(false);
+
+                                HistoryModel.HistoryMaterialList.Add(new HistoryMaterialDTO
+                                {
+                                    MaterialID = MaterialTB!.Id,
+                                    MaterialName = MaterialTB.Name
+                                });
+                            }
+                        }
+                        HistoryDTO.Add(HistoryModel);
+                    }
+
+                    return HistoryDTO;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
         /// <summary>
         /// 유지보수 이력 사업장별 날짜기간 전체
         /// </summary>
@@ -1558,13 +1756,16 @@ namespace FamTec.Server.Repository.Maintenence
                         FacilityTb? FacilityModel = await context.FacilityTbs
                             .FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId &&
                                                 m.DelYn != true).ConfigureAwait(false);
-
+                        
+                        HistoryModel.Maintenanceid = HistoryTB.Id; // 유지보수 이력 ID
+                        HistoryModel.FacilityId = HistoryTB.FacilityTbId; // 설비 ID
                         HistoryModel.Category = FacilityModel!.Category; // 설비유형 --> FacilityTB 조회
                         HistoryModel.WorkDT = HistoryTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"); // 일자 CreateDT 그냥
                         HistoryModel.HistoryTitle = HistoryTB.Name; // 이력 Name 그냥
                         HistoryModel.Type = HistoryTB.Type; // 작업구분 Type 그냥
                         HistoryModel.Worker = HistoryTB.Worker; // 작업자 Worker 그냥
                         HistoryModel.TotalPrice = HistoryTB.TotalPrice; // 소요비용 - TotalPrice
+
                         List<UseMaintenenceMaterialTb>? UseList = await context.UseMaintenenceMaterialTbs
                             .Where(m => m.MaintenanceTbId == HistoryTB.Id &&
                                         m.DelYn != true)
@@ -2472,6 +2673,6 @@ namespace FamTec.Server.Repository.Maintenence
             return false;
         }
 
-    
+
     }
 }

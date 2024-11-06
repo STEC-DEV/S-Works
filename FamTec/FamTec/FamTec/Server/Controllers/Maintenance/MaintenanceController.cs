@@ -20,12 +20,14 @@ namespace FamTec.Server.Controllers.Maintenance
                 
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
         private readonly ConsoleLogService<MaintenanceController> CreateBuilderLogger;
 
         public MaintenanceController(IMaintanceService _maintanceservice,
             IUseMaintenenceService _usermaintenenceservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<MaintenanceController> _createbuilderlogger)
         {
             this.MaintanceService = _maintanceservice;
@@ -33,6 +35,7 @@ namespace FamTec.Server.Controllers.Maintenance
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -483,7 +486,10 @@ namespace FamTec.Server.Controllers.Maintenance
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<DetailMaintanceDTO?> model = await MaintanceService.GetDetailService(HttpContext, Maintanceid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -712,6 +718,99 @@ namespace FamTec.Server.Controllers.Maintenance
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return Problem("서버에서 처리할 수 없는 작업입니다", statusCode: 500);
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetHistorySearchList")]
+        //public async Task<IActionResult> GetHistorySearchList()
+        public async Task<IActionResult> GetHistorySearchList([FromQuery] int searchType, [FromQuery] List<string> category, [FromQuery] List<int> type, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                //int searchType = 1;
+                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
+                //List<int> type = new List<int>() {  0,1 };
+                
+                //string searchdate = "2024-10";
+                //DateTime? StartDate = DateTime.Now.AddDays(-50);
+                //DateTime? EndDate = DateTime.Now;
+
+                if (searchType == 0) // 월간
+                {
+                    if (String.IsNullOrWhiteSpace(searchdate))
+                        return NoContent();
+                }
+                else // 기간
+                {
+                    if (StartDate is null)
+                        return NoContent();
+                    if (EndDate is null)
+                        return NoContent();
+                }
+
+                if (category.Count == 0)
+                    return NoContent();
+
+                if (type.Count == 0)
+                    return NoContent();
+
+                if(searchType == 0)
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("월간조회");
+#endif
+                    // 월간 Service API 호출
+                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetMonthHistoryList(HttpContext, searchdate, category, type);
+
+                    if (model is null)
+                        return BadRequest();
+
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+                    if (model.code == 200)
+                        return Ok(model);
+                    else if (model.code == 401)
+                        return Ok(model);
+                    else
+                        return BadRequest();
+                }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("기간조회");
+#endif
+
+                    // 기간 Service API 호출
+                    ResponseList<MaintanceHistoryDTO>? model = await MaintanceService.GetDateHistoryList(HttpContext, StartDate!.Value, EndDate!.Value, category, type).ConfigureAwait(false);
+
+                    if (model is null)
+                        return BadRequest();
+
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+                    if (model.code == 200)
+                        return Ok(model);
+                    else if (model.code == 401)
+                        return Ok(model);
+                    else
+                        return BadRequest();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
             }
         }
 

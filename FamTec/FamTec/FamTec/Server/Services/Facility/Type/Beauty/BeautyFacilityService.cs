@@ -170,7 +170,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
             }
         }
 
-        public async Task<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId)
+        public async Task<ResponseUnit<FacilityDetailDTO>> GetBeautyDetailFacilityService(HttpContext context, int facilityId, bool isMobile)
         {
             try
             {
@@ -213,18 +213,105 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 dto.BuildingId = BuildingTB.Id;
                 dto.BuildingName = BuildingTB.Name;
 
-                //BeautyFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Beauty", Common.FileServer, placeid);
                 BeautyFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Beauty");
 
                 di = new DirectoryInfo(BeautyFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                if (!String.IsNullOrWhiteSpace(model.Image))
+                if(isMobile)
                 {
-                    dto.ImageName = model.Image; // 이미지 파일명
-                    dto.Image = await FileService.GetImageFile(BeautyFileFolderPath, model.Image); // 이미지 Byte[]
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    if(!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(BeautyFileFolderPath, model.Image).ConfigureAwait(false);
+
+                        if(ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
+                            if(files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                if(ConvertFile is not null)
+                                {
+                                    dto.ImageName = model.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        dto.ImageName = null;
+                        dto.Image = null;
+                    }
+
+                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
-                return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(BeautyFileFolderPath, model.Image).ConfigureAwait(false);
+
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                if (ConvertFile is not null)
+                                {
+                                    dto.ImageName = model.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        dto.ImageName = null;
+                        dto.Image = null;
+                    }
+
+                    return new ResponseUnit<FacilityDetailDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
+                }
             }
             catch (Exception ex)
             {

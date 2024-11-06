@@ -7,14 +7,12 @@ namespace FamTec.Server
     public class WorksSetting : DbContext
     {
         private readonly IServiceProvider ServiceProvider;
-        //private readonly WorksContext context;
         private List<string> defaultUnit;
 
 
         public WorksSetting(IServiceProvider _serviceProvider)
         {
             this.ServiceProvider = _serviceProvider;
-            //context = new WorksContext();
             defaultUnit = new List<string>()
             {
                 "㎀","㎁","㎂","㎃","KB", "MB", "GB", "㎈", "㎉", "㎊", "㎋", "㎌", "㎍", "㎎",
@@ -35,7 +33,8 @@ namespace FamTec.Server
                 .Where(m => m.DelYn != true &&
                        m.PlaceTbId == null)
                 .Select(m => m.Unit)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             List<string>? compare = defaultUnit.Except(unittb).ToList();
 
@@ -51,8 +50,7 @@ namespace FamTec.Server
 
                 context.UnitTbs.Add(model);
             }
-            await context.SaveChangesAsync();
-
+            await context.SaveChangesAsync().ConfigureAwait(false);
 
             // 파일서버 경로
             DirectoryInfo di = new DirectoryInfo(Common.FileServer);
@@ -76,8 +74,8 @@ namespace FamTec.Server
             if (selectDepartment is null)
             {
                 context.DepartmentsTbs.Add(department);
-                await context.SaveChangesAsync();
-                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
+                await context.SaveChangesAsync().ConfigureAwait(false);
+                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true).ConfigureAwait(false);
             }
             else
             {
@@ -95,9 +93,9 @@ namespace FamTec.Server
                 }
 
                 context.DepartmentsTbs.Update(selectDepartment);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait(false);
 
-                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true);
+                selectDepartment = await context.DepartmentsTbs.FirstOrDefaultAsync(m => m.Name!.Equals("에스텍시스템") && m.DelYn != true).ConfigureAwait(false);
             }
 
             UsersTb? user = new UsersTb()
@@ -140,12 +138,12 @@ namespace FamTec.Server
                 Job = "시스템관리자"
             };
 
-            UsersTb? selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+            UsersTb? selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password)).ConfigureAwait(false);
             if (selectUser is null)
             {
                 context.UsersTbs.Add(user);
-                await context.SaveChangesAsync();
-                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+                await context.SaveChangesAsync().ConfigureAwait(false);
+                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password)).ConfigureAwait(false);
             }
             else
             {
@@ -272,9 +270,9 @@ namespace FamTec.Server
                 }
 
                 context.UsersTbs.Update(selectUser);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait(false);
 
-                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password));
+                selectUser = await context.UsersTbs.FirstOrDefaultAsync(m => m.UserId!.Equals(user.UserId) && m.Password!.Equals(user.Password)).ConfigureAwait(false);
             }
 
             AdminTb? admin = new AdminTb();
@@ -287,12 +285,12 @@ namespace FamTec.Server
 
             admin.DepartmentTbId = selectDepartment!.Id;
 
-            AdminTb? selectAdmin = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(selectUser.Id));
+            AdminTb? selectAdmin = await context.AdminTbs.FirstOrDefaultAsync(m => m.UserTbId.Equals(selectUser.Id)).ConfigureAwait(false);
 
             if (selectAdmin is null)
             {
                 context.AdminTbs.Add(admin);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait(false);
             }
             else
             {
@@ -316,7 +314,7 @@ namespace FamTec.Server
                 }
 
                 context.UsersTbs.Update(selectUser);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait(false);
             }
         }
     }

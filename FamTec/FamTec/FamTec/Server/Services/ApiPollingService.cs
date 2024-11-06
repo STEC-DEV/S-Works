@@ -33,7 +33,7 @@ namespace FamTec.Server.Services
             try
             {
 #if DEBUG
-        CreateBuilderLogger.ConsoleText("백그라운드 타이머 시작 / 간격 30분");
+            CreateBuilderLogger.ConsoleText("백그라운드 타이머 시작 / 간격 30분");
 #endif
                 while (!stoppingToken.IsCancellationRequested)
                 {

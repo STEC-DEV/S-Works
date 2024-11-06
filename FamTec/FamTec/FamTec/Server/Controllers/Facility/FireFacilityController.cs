@@ -16,18 +16,21 @@ namespace FamTec.Server.Controllers.Facility
         private readonly IFireFacilityService FireFacilityService;
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
 
         private readonly ConsoleLogService<FireFacilityController> CreateBuilderLogger;
 
         public FireFacilityController(IFireFacilityService _firefacilityservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<FireFacilityController> _createbuilderlogger)
         {
             this.FireFacilityService = _firefacilityservice;
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -138,7 +141,10 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<FacilityDetailDTO> model = await FireFacilityService.GetFireDetailFacilityService(HttpContext, facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

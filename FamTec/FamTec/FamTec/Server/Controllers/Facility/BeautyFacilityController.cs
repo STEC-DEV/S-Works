@@ -18,17 +18,19 @@ namespace FamTec.Server.Controllers.Facility
         private readonly IFileService FileService;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<BeautyFacilityController> CreateBuilderLogger;
-
+        private readonly ICommService CommService;
 
         public BeautyFacilityController(IBeautyFacilityService _beautyfacilityservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<BeautyFacilityController> _createbuilderlogger)
         {
             this.BeautyFacilityService = _beautyfacilityservice;
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -157,7 +159,10 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<FacilityDetailDTO> model = await BeautyFacilityService.GetBeautyDetailFacilityService(HttpContext, facilityid, isMobile).ConfigureAwait(false);
                 
                 if (model is null)
                     return BadRequest();

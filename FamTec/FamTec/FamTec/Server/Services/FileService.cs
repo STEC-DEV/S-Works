@@ -1,5 +1,4 @@
-﻿
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace FamTec.Server.Services
 {
@@ -85,7 +84,7 @@ namespace FamTec.Server.Services
 
                         // 원본 비율 유지하며 크기 조정
                         var resizedBitmap = ResizeBitmapWithAspectRatio(originalBitmap, originalBitmap.Width, originalBitmap.Height);
-                        //var resizedBitmap = ResizeBitmapWithAspectRatio(originalBitmap, 300, 300); // 비율유지
+                        
                         if (resizedBitmap == null)
                         {
                             return null;
@@ -119,6 +118,45 @@ namespace FamTec.Server.Services
         {
             try
             {
+                // 파일 확장자 결정 및 유효성 검사
+                string extension = Path.GetExtension(files.FileName).ToLower();
+
+                if (!Common.ImageAllowedExtensions.Contains(extension))
+                {
+                    extension = ".png"; // 지원되지 않는 확장자는 PNG로 설정
+                }
+
+                // 파일 이름의 확장자를 타겟 확장자로 변경
+                string newFileName = Path.ChangeExtension(files.FileName, extension);
+
+                // 메모리 스트림을 통해 이미지 변환 및 리사이징
+                await using var memoryStream = new MemoryStream();
+                await files.CopyToAsync(memoryStream).ConfigureAwait(false);
+                memoryStream.Position = 0;
+
+                using var originalBitmap = SKBitmap.Decode(memoryStream);
+                if (originalBitmap == null)
+                {
+                    return null;
+                }
+
+                // 이미지 크기 조정 (비율 유지)
+                using var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 300, 300);
+                if (resizedBitmap == null)
+                {
+                    return null;
+                }
+
+                // 인코딩 형식 결정
+                var encodedFormat = GetEncodedFormat(extension);
+
+                // 이미지를 바이트 배열로 변환
+                using var image = SKImage.FromBitmap(resizedBitmap);
+                using var data = image.Encode(encodedFormat, 100);
+                return data?.ToArray();
+
+                #region 이전방식
+                /*
                 // 파일 확장자 결정
                 string getExtension = Path.GetExtension(files.FileName);
                 string targetExtension = getExtension switch
@@ -130,10 +168,9 @@ namespace FamTec.Server.Services
                     ".gif" => ".gif",
                     _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
                 };
-                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
-
+                
                 // 파일 경로 매핑
-                //string filePath = Path.Combine(folderpath, All_newFileName);
+                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -148,8 +185,7 @@ namespace FamTec.Server.Services
                         }
 
                         // 원본 비율 유지하며 크기 조정
-                        //var resizedBitmap = ResizeBitmapWithAspectRatio(originalBitmap, originalBitmap.Width, originalBitmap.Height);
-                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 500, 500); // 비율유지
+                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 300, 300); // 비율유지
                         if (resizedBitmap == null)
                         {
                             return null;
@@ -167,6 +203,8 @@ namespace FamTec.Server.Services
                         }
                     }
                 }
+                */
+                #endregion
             }
             catch (Exception ex)
             {
@@ -177,6 +215,111 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
+
+        public async Task<byte[]?> AddResizeImageFile_3(IFormFile files)
+        {
+            try
+            {
+
+                // 파일 확장자 결정 및 유효성 검사
+                string extension = Path.GetExtension(files.FileName).ToLower();
+
+                if(!Common.ImageAllowedExtensions.Contains(extension))
+                {
+                    extension = ".png"; // 지원되지 않는 확장자는 PNG로 설정
+                }
+
+                // 파일 이름의 확장자를 타겟 확장자로 변경
+                string newFileName = Path.ChangeExtension(files.FileName, extension);
+
+                // 메모리 스트림을 통해 이미지 변환 및 리사이징
+                await using var memoryStream = new MemoryStream();
+                await files.CopyToAsync(memoryStream).ConfigureAwait(false);
+                memoryStream.Position = 0;
+
+                using var originalBitmap = SKBitmap.Decode(memoryStream);
+                if (originalBitmap == null)
+                {
+                    return null;
+                }
+
+                // 이미지 크기 조정 (비율 유지)
+                using var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 1024, 768);
+                if (resizedBitmap == null)
+                {
+                    return null;
+                }
+
+                // 인코딩 형식 결정
+                var encodedFormat = GetEncodedFormat(extension);
+
+                // 이미지를 바이트 배열로 변환
+                using var image = SKImage.FromBitmap(resizedBitmap);
+                using var data = image.Encode(encodedFormat, 100);
+                return data?.ToArray();
+
+                #region 이전방식
+                // 파일 확장자 결정
+                /*
+                string getExtension = Path.GetExtension(files.FileName);
+                string targetExtension = getExtension switch
+                {
+                    ".png" => ".png",
+                    ".bmp" => ".bmp",
+                    ".jpeg" => ".jpeg",
+                    ".jpg" => ".jpg",
+                    ".gif" => ".gif",
+                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
+                };
+                
+                // 파일 경로 매핑
+                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await files.CopyToAsync(memoryStream).ConfigureAwait(false);
+                    memoryStream.Position = 0;
+
+                    using (var originalBitmap = SKBitmap.Decode(memoryStream))
+                    {
+                        if (originalBitmap == null)
+                        {
+                            return null;
+                        }
+
+                        // 원본 비율 유지하며 크기 조정
+                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 1024, 768); // 비율유지
+
+                        if (resizedBitmap == null)
+                        {
+                            return null;
+                        }
+
+                        // 이미지 인코딩 형식 결정
+                        var encodedFormat = GetEncodedFormat(targetExtension);
+
+                        using (var image = SKImage.FromBitmap(resizedBitmap))
+                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
+                        using (var outputStream = new MemoryStream())
+                        {
+                            data.SaveTo(outputStream);
+                            return outputStream.ToArray(); // byte[]로 변환하여 반환
+                        }
+                    }
+                }
+                */
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return null;
+            }
+        }
+
 
         // MIME 타입 결정 메서드
         private string GetMimeType(string extension)
@@ -223,8 +366,6 @@ namespace FamTec.Server.Services
 
                 // 크기 조정된 새 비트맵 생성
                 return originalBitmap.Resize(new SKImageInfo(newWidth, newHeight), SKFilterQuality.High);
-
-               
             }
             catch (Exception ex)
             {
@@ -288,6 +429,8 @@ namespace FamTec.Server.Services
                     ".png" => ".png",
                     ".bmp" => ".bmp",
                     ".jpeg" => ".jpeg",
+                    ".jpg" => "image/jpeg",
+                    ".gif" => "image/gif",
                     _ => ".png" // 지원되지 않는 확장자는 PNG로 기본 설정
                 };
 
@@ -315,15 +458,60 @@ namespace FamTec.Server.Services
         {
             try
             {
-                // 특정 파일 이름을 가진 파일 검색
-                string[] files = Directory.GetFiles(folderpath, filename);
+                // 파일 검색을 효율적으로 수행하기 위해 EnumerateFiles 사용
+                foreach (string file in Directory.EnumerateFiles(folderpath, filename))
+                {
+                    // 파일 읽기
+                    return await File.ReadAllBytesAsync(file);
+                }
+
+                return null; // 일치하는 파일이 없으면 null 반환
+                
+                #region 이전방식
+                //// 특정 파일 이름을 가진 파일 검색
+                //string[] files = Directory.GetFiles(folderpath, filename);
+
+                //foreach (string file in files)
+                //{
+                //    if (file.Contains(filename))
+                //    {
+                //        byte[] ImageBytes = await File.ReadAllBytesAsync(file);
+                //        return ImageBytes;
+                //    }
+                //}
+
+                //return null;
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 이미지 스트림 반환
+        /// </summary>
+        /// <param name="folderpath"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public async Task<Stream?> GetImageFileStreamAsync(string folderpath, string filename)
+        {
+            try
+            {
+                // 특정 파일 이름을 가진 파일 비동기로 검색
+                string[] files = await Task.Run(() => Directory.GetFiles(folderpath, filename));
 
                 foreach (string file in files)
                 {
                     if (file.Contains(filename))
                     {
-                        byte[] ImageBytes = await File.ReadAllBytesAsync(file);
-                        return ImageBytes;
+                        // 비동기 방식으로 FileStream 생성
+                        return new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
                     }
                 }
 
@@ -338,6 +526,7 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
+
 
         /// <summary>
         /// 이미지 삭제
@@ -466,5 +655,7 @@ namespace FamTec.Server.Services
                 return null;
             }
         }
+
+    
     }
 }

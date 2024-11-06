@@ -25,7 +25,7 @@ namespace FamTec.Server.Services.Facility.Type.Network
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDetailDTO>> GetNetworkDetailFacilityService(HttpContext context, int facilityId);
+        public Task<ResponseUnit<FacilityDetailDTO>> GetNetworkDetailFacilityService(HttpContext context, int facilityId, bool isMobile);
 
         /// <summary>
         /// 설비 정보 수정

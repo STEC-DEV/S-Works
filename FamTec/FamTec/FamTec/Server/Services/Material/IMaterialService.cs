@@ -18,7 +18,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context);
+        public Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context, bool isMobile);
         
         /// <summary>
         /// 사업장에 속해있는 자재 리스트들 출력 - Search용
@@ -49,7 +49,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="materialid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context,int materialid);
+        public Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context,int materialid, bool isMobile);
 
 
 

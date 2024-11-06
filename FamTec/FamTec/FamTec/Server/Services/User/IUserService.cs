@@ -50,7 +50,7 @@ namespace FamTec.Server.Services.User
         /// <param name="context"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id);
+        public Task<ResponseUnit<UsersDTO>> GetUserDetails(HttpContext context, int id, bool isMobile);
 
 
         /// <summary>

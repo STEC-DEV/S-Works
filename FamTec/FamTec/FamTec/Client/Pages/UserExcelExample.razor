@@ -6,6 +6,7 @@
 @using System.Text.Json
 @using System.Drawing
 
+@using System.IO.Compression
 @using Tewr.Blazor.FileReader
 @using Microsoft.Net.Http.Headers
 @using static System.Net.Mime.MediaTypeNames
@@ -29,40 +30,41 @@
     fasd
     </span>
 </div>
-<input type="button" value="PDF 테스트" id="btnPrint" @onclick="(() =>btnClick2())"/>
 
-<InputFile OnChange="HandleFileSelected" accept=".xlsx" />
+<input type="button" value="압축테스트" @onclick="(() => btnClick3())"/>
+
+@if (!string.IsNullOrEmpty(imageUrl))
+{
+    <img src="@imageUrl" alt="Fetched Image" style="width:100px;height:100px"/>
+}
 
 @code {
     private string? excelData;
     string fileName{ get; set; }
     string fileContent{ get; set; }
 
-    protected async Task btnClick2()
-    {
-        Console.WriteLine("클릭은됨?");
-        await JS.InvokeVoidAsync("btnPrint");
-    }
+    string imageUrl { get; set; }
 
-    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    protected async Task btnClick3()
     {
         try
         {
-            var file = e.File;
+            var imageBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/Voc/temp");
+             if (imageBytes == null || imageBytes.Length == 0)
+             {
+                 Console.WriteLine("Failed to fetch the image or received empty data.");
+                 return;
+             }
 
-            using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // 최대 10MB 제한
-
-            // 파일 내용을 비동기적으로 읽기
-            using var reader = new StreamReader(stream);
-            fileContent = await reader.ReadToEndAsync();
-
+             // Base64로 인코딩하여 이미지 URL 생성
+             imageUrl = $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}";
+             StateHasChanged();
+             Console.WriteLine("Image URL generated successfully.");
         }
-        catch(Exception ex)
+        catch (HttpRequestException ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine($"Request error: {ex.Message}");
         }
-
-
     }
 
     protected async Task btnClick()

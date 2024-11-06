@@ -139,7 +139,7 @@ namespace FamTec.Server.Services.Material
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context)
+        public async Task<ResponseList<MaterialListDTO>> GetPlaceMaterialListService(HttpContext context, bool isMobile)
         {
             try
             {
@@ -157,25 +157,119 @@ namespace FamTec.Server.Services.Material
                 List<MaterialTb>? model = await MaterialInfoRepository.GetPlaceAllMaterialList(Int32.Parse(placeid)).ConfigureAwait(false);
                 if(model is null || !model.Any())
                     return new ResponseList<MaterialListDTO>() { message = "데이터가 존재하지 않습니다.", data = new List<MaterialListDTO>(), code = 200 };
-            
-                List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
-                foreach (MaterialTb MaterialTB in model)
+                
+                if(isMobile)
                 {
-                    MaterialListDTO DTO = new MaterialListDTO()
-                    {
-                        ID = MaterialTB.Id, // 품목 인덱스
-                        Code = MaterialTB.Code, // 품목 코드
-                        Name = MaterialTB.Name, // 품목명
-                        Unit = MaterialTB.Unit, // 단위
-                        Standard = MaterialTB.Standard, // 규격
-                        ManufacturingComp = MaterialTB.ManufacturingComp, // 제조사
-                        SafeNum = MaterialTB.SafeNum, // 안전재고수량
-                        Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image) : null
-                    };
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
 
-                    ListDTO.Add(DTO);
+                    foreach (MaterialTb MaterialTB in model)
+                    {
+                        MaterialListDTO DTO = new MaterialListDTO();
+                        DTO.ID = MaterialTB.Id; // 품목 인덱스
+                        DTO.Code = MaterialTB.Code; // 품목 코드
+                        DTO.Name = MaterialTB.Name; // 품목명
+                        DTO.Unit = MaterialTB.Unit; // 단위
+                        DTO.Standard = MaterialTB.Standard; // 규격
+                        DTO.ManufacturingComp = MaterialTB.ManufacturingComp; // 제조사
+                        DTO.SafeNum = MaterialTB.SafeNum; // 안전재고수량
+
+                        if (!String.IsNullOrWhiteSpace(MaterialTB.Image))
+                        {
+                            byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false);
+                            if (ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, MaterialTB.Image);
+                                if (files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                    if (ConvertFile is not null)
+                                    {
+                                        DTO.Image = ConvertFile;
+                                    }
+                                    else
+                                    {
+                                        DTO.Image = null;
+                                    }
+                                }
+                                else
+                                {
+                                    DTO.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                DTO.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            DTO.Image = null;
+                        }
+
+                        ListDTO.Add(DTO);
+                    }
+                    return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
                 }
-                return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    List<MaterialListDTO> ListDTO = new List<MaterialListDTO>();
+                    
+                    foreach (MaterialTb MaterialTB in model)
+                    {
+                        MaterialListDTO DTO = new MaterialListDTO();
+                        DTO.ID = MaterialTB.Id; // 품목 인덱스
+                        DTO.Code = MaterialTB.Code; // 품목 코드
+                        DTO.Name = MaterialTB.Name; // 품목명
+                        DTO.Unit = MaterialTB.Unit; // 단위
+                        DTO.Standard = MaterialTB.Standard; // 규격
+                        DTO.ManufacturingComp = MaterialTB.ManufacturingComp; // 제조사
+                        DTO.SafeNum = MaterialTB.SafeNum; // 안전재고수량
+
+                        if (!String.IsNullOrWhiteSpace(MaterialTB.Image))
+                        {
+                            byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false);
+                            if(ImageBytes is not null)
+                            {
+                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, MaterialTB.Image);
+                                if(files is not null)
+                                {
+                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                    if(ConvertFile is not null)
+                                    {
+                                        DTO.Image = ConvertFile;
+                                    }
+                                    else
+                                    {
+                                        DTO.Image = null;
+                                    }
+                                }
+                                else
+                                {
+                                    DTO.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                DTO.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            DTO.Image = null;
+                        }
+
+                        ListDTO.Add(DTO);
+                    }
+                    return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
+                }
             }
             catch (Exception ex)
             {
@@ -319,7 +413,7 @@ namespace FamTec.Server.Services.Material
         /// <param name="materialid"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid)
+        public async Task<ResponseUnit<DetailMaterialDTO>> GetDetailMaterialService(HttpContext context, int materialid, bool isMobile)
         {
             try
             {
@@ -365,10 +459,95 @@ namespace FamTec.Server.Services.Material
                 di = new DirectoryInfo(MaterialFileFolderPath);
                 if (!di.Exists) di.Create();
 
-                if(!String.IsNullOrWhiteSpace(materialTB.Image))
+                if(isMobile)
                 {
-                    dto.ImageName = materialTB.Image; // 이미지 파일명
-                    dto.Image = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image).ConfigureAwait(false); // 이미지 Byte[]
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(materialTB.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image).ConfigureAwait(false);
+
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, materialTB.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                if (ConvertFile is not null)
+                                {
+                                    dto.ImageName = materialTB.Name;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        dto.ImageName = null;
+                        dto.Image = null;
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(materialTB.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, materialTB.Image).ConfigureAwait(false);
+
+                        if(ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, materialTB.Image);
+                            if(files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                
+                                if(ConvertFile is not null)
+                                {
+                                    dto.ImageName = materialTB.Name;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                    else
+                    {
+                        dto.ImageName = null;
+                        dto.Image = null;
+                    }
                 }
 
                 return new ResponseUnit<DetailMaterialDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };

@@ -15,17 +15,20 @@ namespace FamTec.Server.Controllers.Hubs
         private readonly IHubService HubService;
         
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
         private readonly ConsoleLogService<HubController> CreateBuilderLogger;
         
 
         public HubController(
             IHubService _hubservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<HubController> _createbuilderlogger)
         {
             this.HubService = _hubservice;
             
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -35,27 +38,12 @@ namespace FamTec.Server.Controllers.Hubs
         /// <param name="obj"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        //[HttpGet]
         [HttpPost]
         [Route("AddVoc")]
-        //public async Task<IActionResult> AddVoc()
         public async Task<IActionResult> AddVoc([FromForm] AddVocDTO dto, [FromForm] List<IFormFile>? files)
         {
             try 
             {
-                //List<IFormFile>? files = null;
-                //AddVocDTO dto = new AddVocDTO()
-                //{
-                //    Buildingid = 1,
-                //    Title = "민원등록제목",
-                //    Contents = "민원등록내용",
-                //    Name = "테스트사용자",
-                //    Placeid = 1,
-                //    PhoneNumber = "01091189308",
-                //    Division = 1,
-                //    Type = 1
-                //};
-
                 if (String.IsNullOrWhiteSpace(dto.Title)) // 민원 제목 NULL CHECK
                     return NoContent();
 
@@ -126,10 +114,16 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
+                if (HttpContext is null)
+                    return BadRequest();
+
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
-                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<VocUserDetailDTO?> model = await HubService.GetVocRecord(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -167,7 +161,13 @@ namespace FamTec.Server.Controllers.Hubs
                 if (String.IsNullOrWhiteSpace(voccode))
                     return NoContent();
 
-                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode).ConfigureAwait(false);
+                if (HttpContext is null)
+                    return BadRequest();
+
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseList<VocCommentListDTO>? model = await HubService.GetVocCommentList(voccode, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -201,7 +201,16 @@ namespace FamTec.Server.Controllers.Hubs
         {
             try
             {
-                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid).ConfigureAwait(false);
+                if(commentid is 0)
+                    return NoContent();
+
+                if (HttpContext is null)
+                    return BadRequest();
+
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<VocCommentDetailDTO?> model = await HubService.GetVocCommentDetail(commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

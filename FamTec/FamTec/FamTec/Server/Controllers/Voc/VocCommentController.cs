@@ -17,17 +17,20 @@ namespace FamTec.Server.Controllers.Voc
         
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
 
         private readonly ConsoleLogService<VocCommentController> CreateBuilderLogger;
 
         public VocCommentController(IVocCommentService _voccommentservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<VocCommentController> _createbuilderlogger)
         {
             this.VocCommentService = _voccommentservice;
             this.FileService = _fileservice;
-            
+
+            this.CommService = _commservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
@@ -120,7 +123,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseList<VocCommentListDTO>? model = await VocCommentService.GetVocCommentList(HttpContext, vocid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -158,7 +164,10 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<VocCommentDetailDTO?> model = await VocCommentService.GetVocCommentDetail(HttpContext, commentid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

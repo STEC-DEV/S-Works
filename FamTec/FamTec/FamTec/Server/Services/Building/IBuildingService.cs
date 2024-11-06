@@ -53,7 +53,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId);
+        public Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId, bool isMobile);
 
         /// <summary>
         /// 건물 정보 수정

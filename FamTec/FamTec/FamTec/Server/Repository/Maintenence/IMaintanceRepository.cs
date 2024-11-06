@@ -62,6 +62,18 @@ namespace FamTec.Server.Repository.Maintenence
         /// <returns></returns>
         Task<List<MaintanceListDTO>?> GetFacilityHistoryList(int facilityid, int placeid);
 
+
+        /// <summary>
+        /// 유지보수 이력 사업장별 월별 전체
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="Category"></param>
+        /// <param name="type"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        Task<List<MaintanceHistoryDTO>?> GetMonthHistoryList(int placeid, List<string> Category, List<int> type, int year, int month);
+
         /// <summary>
         /// 유지보수 이력 사업장별 날짜기간 전체
         /// </summary>
@@ -85,7 +97,7 @@ namespace FamTec.Server.Repository.Maintenence
         /// <param name="MaintanceID"></param>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid);
+        Task<DetailMaintanceDTO?> DetailMaintanceList(int MaintanceID, int placeid, bool isMobile);
 
        
 

@@ -915,7 +915,10 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\sc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\Empty.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\EmptyAlarm.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownLineButton.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownloadIcon.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownTriangleButton.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\ExcelIcon.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\ExportIcon.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\LeftLineButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\LinkButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\RightLineButton.razor.rz.scp.css
@@ -1100,6 +1103,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\sc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\Components\Viewer.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\Components\VocHistory.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\Components\VocTable.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\Modal\VocAdd.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\VocMain.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Sign\MobileSign\MobileSignIn.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Sign\SelectPlaceV2\Components\CircleButton.razor.rz.scp.css
@@ -1419,7 +1423,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\Fa
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\ref\FamTec.Client.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownloadIcon.razor.rz.scp.css
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\ExcelIcon.razor.rz.scp.css
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\ExportIcon.razor.rz.scp.css
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Voc\VocMain\Modal\VocAdd.razor.rz.scp.css

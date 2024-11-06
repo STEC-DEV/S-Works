@@ -374,7 +374,7 @@ namespace FamTec.Server.Services.Building
         /// </summary>
         /// <param name="buildingId"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId)
+        public async Task<ResponseUnit<DetailBuildingDTO>> GetDetailBuildingService(HttpContext context, int buildingId, bool isMobile)
         {
             try
             {
@@ -444,14 +444,85 @@ namespace FamTec.Server.Services.Building
                 di = new DirectoryInfo(PlaceFileName);
                 if (!di.Exists) di.Create();
 
-                if(!String.IsNullOrWhiteSpace(model.Image))
+                if(isMobile)
                 {
-                    byte[]? Images = await FileService.GetImageFile(PlaceFileName, model.Image);
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(PlaceFileName, model.Image).ConfigureAwait(false);
 
-                    dto.ImageName = model.Image;
-                    dto.Image = Images;
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+                                if (ConvertFile is not null)
+                                {
+                                    dto.ImageName = model.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
                 }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(model.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(PlaceFileName, model.Image).ConfigureAwait(false);
 
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, model.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                                if (ConvertFile is not null)
+                                {
+                                    dto.ImageName = model.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                }
+              
                 return new ResponseUnit<DetailBuildingDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
             }
             catch (Exception ex)

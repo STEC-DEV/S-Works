@@ -35,7 +35,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx);
+        public Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx, bool isMobile);
 
         /// <summary>
         /// 매니저 정보 수정

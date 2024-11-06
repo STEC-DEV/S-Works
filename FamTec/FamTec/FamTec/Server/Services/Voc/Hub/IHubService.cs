@@ -23,21 +23,21 @@ namespace FamTec.Server.Services.Voc.Hub
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode);
+        public Task<ResponseUnit<VocUserDetailDTO?>> GetVocRecord(string? voccode, bool isMobile);
 
         /// <summary>
         /// 민원 댓글조회 - 민원인 전용
         /// </summary>
         /// <param name="voccode"></param>
         /// <returns></returns>
-        public Task<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode);
+        public Task<ResponseList<VocCommentListDTO>?> GetVocCommentList(string? voccode, bool isMobile);
 
         /// <summary>
         /// 민원 댓글상세조회 - 민원인 전용
         /// </summary>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid);
+        public Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(int? commentid, bool isMobile);
 
     }
 }

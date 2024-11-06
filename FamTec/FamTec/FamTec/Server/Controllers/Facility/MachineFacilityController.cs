@@ -16,18 +16,21 @@ namespace FamTec.Server.Controllers.Facility
         private readonly IMachineFacilityService MachineFacilityService;
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
 
         private readonly ConsoleLogService<MachineFacilityController> CreateBuilderLogger;
 
         public MachineFacilityController(IMachineFacilityService _machinefacilityservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<MachineFacilityController> _createbuilderlogger)
         {
             this.MachineFacilityService = _machinefacilityservice;
             
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -146,7 +149,10 @@ namespace FamTec.Server.Controllers.Facility
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<FacilityDetailDTO> model = await MachineFacilityService.GetMachineDetailFacilityService(HttpContext, facilityid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

@@ -349,6 +349,90 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
+
+        /// <summary>
+        /// 속한 사업장 유지보수 월별 전체
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="searchdate"></param>
+        /// <param name="category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<MaintanceHistoryDTO>?> GetMonthHistoryList(HttpContext context, string searchdate, List<string> category, List<int> type)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? UserId = Convert.ToString(context.Items["UserIdx"]);
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+
+                if (String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserId))
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                UsersTb? UserTB = await UserInfoRepository.GetUserIndexInfo(Convert.ToInt32(UserId));
+                if (UserTB is null)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // -- USER 권한검사
+                // 권한과 명칭을 쌍으로 매핑
+                var permMapping = new Dictionary<Func<bool>, string>
+                {
+                    { () => UserTB.PermBasic > 0, "기타" },
+                    { () => UserTB.PermMachine > 0, "기계" },
+                    { () => UserTB.PermElec > 0, "전기" },
+                    { () => UserTB.PermLift > 0, "승강" },
+                    { () => UserTB.PermFire > 0, "소방" },
+                    { () => UserTB.PermConstruct > 0, "건축" },
+                    { () => UserTB.PermNetwork > 0, "통신" },
+                    { () => UserTB.PermBeauty > 0, "미화" },
+                    { () => UserTB.PermSecurity > 0, "보안" }
+                };
+
+                // 권한이 있는 항목만 리스트에 추가
+                List<string> UserPerm = permMapping.Where(p => p.Key()).Select(p => p.Value).ToList();
+
+                // category와 비교하여 없는 항목 찾기
+                List<string> PermCheck = category.Except(UserPerm).ToList();
+
+                if (PermCheck.Count() > 0)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "권한이 일치하지 않습니다.", data = null, code = 401 };
+
+
+                string[] splitDate = searchdate.Split('-');
+                string year = splitDate[0];
+                string month = splitDate[1].PadLeft(2, '0'); // 한 자리 월을 두 자리로 맞추기 위해 앞에 0 추가
+
+                int checkResult;
+
+                // 년도 숫자값 맞는지 검사
+                bool checkDate = int.TryParse(year, out checkResult);
+                if (!checkDate)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                // 월 숫자값 맞는지 검사
+                checkDate = int.TryParse(month, out checkResult);
+                if(!checkDate)
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<MaintanceHistoryDTO>? model = await MaintanceRepository.GetMonthHistoryList(Convert.ToInt32(placeid), category, type, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
+
+                if (model is not null && model.Any())
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<MaintanceHistoryDTO>() { message = "데이터가 존재하지 않습니다.", data = model, code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaintanceHistoryDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         /// <summary>
         /// 속한 사업장 유지보수 이력 전체
         /// </summary>
@@ -422,7 +506,7 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="MaintanceID"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID)
+        public async Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID, bool isMobile)
         {
             try
             {
@@ -433,9 +517,9 @@ namespace FamTec.Server.Services.Maintenance
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-             
                 // 수정임
-                DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid)).ConfigureAwait(false);
+                DetailMaintanceDTO? model = await MaintanceRepository.DetailMaintanceList(MaintanceID, Int32.Parse(placeid), isMobile).ConfigureAwait(false);
+
                 if (model is not null)
                     return new ResponseUnit<DetailMaintanceDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
                 else
@@ -611,6 +695,6 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
-   
+      
     }
 }

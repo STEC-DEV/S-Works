@@ -25,7 +25,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<FacilityDetailDTO>> GetConstructDetailFacilityService(HttpContext context, int facilityId);
+        public Task<ResponseUnit<FacilityDetailDTO>> GetConstructDetailFacilityService(HttpContext context, int facilityId, bool isMobile);
 
         /// <summary>
         /// 설비 정보 수정

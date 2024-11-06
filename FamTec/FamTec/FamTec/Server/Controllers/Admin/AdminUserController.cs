@@ -131,7 +131,9 @@ namespace FamTec.Server.Controllers.Admin
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid).ConfigureAwait(false);
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<DManagerDTO>? model = await AdminAccountService.DetailAdminService(adminid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest(model);

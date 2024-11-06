@@ -203,6 +203,7 @@ namespace FamTec.Server.Repository.Voc
                                                     Status = VocTB.Status, // 처리상태
                                                     CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 민원 요청시간
                                                     CreateUser = VocTB.CreateUser.ToString(), // 민원작성자
+                                                    Phone = VocTB.Phone,
                                                     CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 민원처리 완료시간 -- .ToString() 에러
                                                     DurationDT = VocTB.DurationDt // 민원처리 소요시간
                                                 }).OrderByDescending(m => m.CreateDT)
@@ -231,6 +232,70 @@ namespace FamTec.Server.Repository.Voc
                 throw;
             }
             catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 월간 사업장별 VOC 조회
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="searchyear"></param>
+        /// <param name="searchmonth"></param>
+        /// <returns></returns>
+        public async Task<List<VocListDTO>?> GetVocMonthList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth)
+        {
+            try
+            {
+                List<VocTb>? VocList = await context.VocTbs
+                    .Where(m => type.Contains(m.Type) &&
+                    status.Contains(m.Status) &&
+                    division.Contains(m.Division!.Value) &&
+                    buildingid.Contains(m.BuildingTbId) &&
+                    m.CreateDt.Year == searchyear &&
+                    m.CreateDt.Month == searchmonth)
+                    .OrderBy(m => m.CreateDt)
+                    .ToListAsync().ConfigureAwait(false);
+
+                if(VocList is [_, ..])
+                {
+                    List<VocListDTO>? dto = (from VocTB in VocList
+                                             join BuildingTB in context.BuildingTbs.Where(m => m.DelYn != true).ToList()
+                                             on VocTB.BuildingTbId equals BuildingTB.Id
+                                             select new VocListDTO
+                                             {
+                                                 CreateDT = VocTB.CreateDt.ToString("yyyy-MM-dd HH:mm:ss"), // 요청일시
+                                                 Id = VocTB.Id, // VOC ID
+                                                 BuildingName = BuildingTB.Name, // 건물명
+                                                 Type = VocTB.Type, // 유형
+                                                 Division = VocTB.Division, // 모바일 / 웹
+                                                 Title = VocTB.Title, // 민원제목
+                                                 Status = VocTB.Status, // 민원상태
+                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
+                                                 CreateUser = VocTB.CreateUser.ToString(), // 작성자
+                                                 Phone = VocTB.Phone,
+                                                 DurationDT = VocTB.DurationDt // 소요시간
+                                             }).OrderByDescending(m => m.CreateDT)
+                        .ToList();
+
+                    return dto;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch(Exception ex)
             {
                 LogService.LogMessage(ex.ToString());
 #if DEBUG
@@ -275,6 +340,7 @@ namespace FamTec.Server.Repository.Voc
                                                 Status = VocTB.Status, // 민원상태
                                                 CompleteDT = VocTB.CompleteDt?.ToString("yyyy-MM-dd HH:mm:ss"), // 처리일시
                                                 CreateUser = VocTB.CreateUser.ToString(), // 작성자
+                                                Phone = VocTB.Phone,
                                                 DurationDT = VocTB.DurationDt // 소요시간
                                             }).OrderByDescending(m => m.CreateDT)
                                             .ToList();

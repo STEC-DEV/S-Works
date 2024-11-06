@@ -17,16 +17,19 @@ namespace FamTec.Server.Controllers.Material
         private readonly IFileService FileService;
         
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
         private readonly ConsoleLogService<MaterialController> CreateBuilderLogger;
 
         public MaterialController(IMaterialService _materialservice,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<MaterialController> _createbuilderlogger)
         {
             this.MaterialService = _materialservice;
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -115,7 +118,10 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(HttpContext).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseList<MaterialListDTO> model = await MaterialService.GetPlaceMaterialListService(HttpContext, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 
@@ -297,7 +303,10 @@ namespace FamTec.Server.Controllers.Material
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(HttpContext, materialid).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<DetailMaterialDTO> model = await MaterialService.GetDetailMaterialService(HttpContext, materialid, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

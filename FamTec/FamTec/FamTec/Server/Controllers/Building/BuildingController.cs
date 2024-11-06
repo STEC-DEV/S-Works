@@ -18,12 +18,14 @@ namespace FamTec.Server.Controllers.Building
         
         private readonly IFileService FileService;
         private readonly ILogService LogService;
+        private readonly ICommService CommService;
         private readonly ConsoleLogService<BuildingController> CreateBuilderLogger;
 
         public BuildingController(IBuildingService _buildingservice,
             IBuildingInfoRepository _buildinginforepository,
             IFileService _fileservice,
             ILogService _logservice,
+            ICommService _commservice,
             ConsoleLogService<BuildingController> _createbuilderlogger
         )
         {
@@ -31,6 +33,7 @@ namespace FamTec.Server.Controllers.Building
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -339,7 +342,9 @@ namespace FamTec.Server.Controllers.Building
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid).ConfigureAwait(false);
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<DetailBuildingDTO> model = await BuildingService.GetDetailBuildingService(HttpContext, buildingid, isMobile).ConfigureAwait(false);
 
                 if (model is null)
                     return BadRequest();

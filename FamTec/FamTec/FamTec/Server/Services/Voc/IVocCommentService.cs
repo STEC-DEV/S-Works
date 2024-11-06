@@ -19,7 +19,7 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid);
+        public Task<ResponseList<VocCommentListDTO>> GetVocCommentList(HttpContext context, int vocid, bool isMobile);
 
         /// <summary>
         /// 해당 민원에 대한 댓글 상세보기
@@ -27,7 +27,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="commentid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid);
+        public Task<ResponseUnit<VocCommentDetailDTO?>> GetVocCommentDetail(HttpContext context, int commentid, bool isMobile);
 
         /// <summary>
         /// VOC 댓글 자기것만 수정

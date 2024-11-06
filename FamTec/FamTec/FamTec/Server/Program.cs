@@ -88,7 +88,8 @@ builder.WebHost.UseKestrel((context, options) =>
     // Keep-Alive TimeOut 3분설정 Keep-Alive 타임아웃: 일반적으로 2~5분. 너무 짧으면 연결이 자주 끊어질 수 있고, 너무 길면 리소스가 낭비될 수 있음.
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(3);
     // 최대 동시 업그레이드 연결 수:  일반적으로 1000 ~ 5000 사이로 설정하는 것이 좋음
-    options.Limits.MaxConcurrentUpgradedConnections = 3000; 
+    options.Limits.MaxConcurrentUpgradedConnections = 3000;
+    options.Limits.MaxResponseBufferSize = null; // 응답 크기 제한 해제
     options.ConfigureEndpointDefaults(endpointOptions =>
     {
         // 프로토콜 설정: HTTP/1.1과 HTTP/2를 모두 지원하는 것을 권장.

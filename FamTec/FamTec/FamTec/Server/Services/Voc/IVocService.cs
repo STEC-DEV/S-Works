@@ -7,6 +7,31 @@ namespace FamTec.Server.Services.Voc
 {
     public interface IVocService
     {
+        /// <summary>
+        /// 사업장별 VOC 월간 전체보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="searchDate"></param>
+        /// <returns></returns>
+        public Task<ResponseList<VocListDTO>> GetMonthVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchDate);
+
+        /// <summary>
+        /// 사업장별 VOC 기간 전체보기
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="type"></param>
+        /// <param name="status"></param>
+        /// <param name="buildingid"></param>
+        /// <param name="division"></param>
+        /// <param name="StartDate"></param>
+        /// <param name="EndDate"></param>
+        /// <returns></returns>
+        public Task<ResponseList<VocListDTO>> GetDateVocSearchList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, DateTime StartDate, DateTime EndDate);
+
 
         /// <summary>
         /// 사업장별 VOC 리스트 조회
@@ -31,7 +56,7 @@ namespace FamTec.Server.Services.Voc
         /// <param name="context"></param>
         /// <param name="vocid"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid);
+        public Task<ResponseUnit<VocEmployeeDetailDTO>> GetVocDetail(HttpContext context, int vocid, bool isMobile);
 
         /// <summary>
         /// VOC 유형 변경

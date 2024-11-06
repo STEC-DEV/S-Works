@@ -64,6 +64,17 @@ namespace FamTec.Server.Services.Maintenance
         /// <returns></returns>
         public Task<ResponseUnit<bool?>> UpdateMaintenanceService(HttpContext context, UpdateMaintenanceDTO dto, IFormFile? files);
 
+
+        /// <summary>
+        /// 속한 사업장 유지보수 월별 전체
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="searchdate"></param>
+        /// <param name="category"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaintanceHistoryDTO>?> GetMonthHistoryList(HttpContext context, string searchdate, List<string> category, List<int> type);
+
         /// <summary>
         /// 속한 사업장 유지보수 이력 날짜기간 전체
         /// </summary>
@@ -90,6 +101,6 @@ namespace FamTec.Server.Services.Maintenance
         /// <param name="context"></param>
         /// <param name="MaintanceID"></param>
         /// <returns></returns>
-        public Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID);
+        public Task<ResponseUnit<DetailMaintanceDTO?>> GetDetailService(HttpContext context, int MaintanceID, bool isMobile);
     }
 }

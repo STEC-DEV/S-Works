@@ -179,7 +179,10 @@ namespace FamTec.Server.Controllers.User
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id).ConfigureAwait(false);
+                // 모바일 여부
+                bool isMobile = CommService.MobileConnectCheck(HttpContext);
+
+                ResponseUnit<UsersDTO> model = await UserService.GetUserDetails(HttpContext, id, isMobile).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

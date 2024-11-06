@@ -387,7 +387,7 @@ namespace FamTec.Server.Services.Admin.Account
         /// </summary>
         /// <param name="adminidx"></param>
         /// <returns></returns>
-        public async Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx)
+        public async Task<ResponseUnit<DManagerDTO>> DetailAdminService(int adminidx, bool isMobile)
         {
             try
             {
@@ -430,10 +430,85 @@ namespace FamTec.Server.Services.Admin.Account
                 di = new DirectoryInfo(AdminFileName);
                 if (!di.Exists) di.Create();
 
-                if(!String.IsNullOrWhiteSpace(usertb.Image))
+                if(isMobile)
                 {
-                    dto.ImageName = usertb.Image; // 이미지명
-                    dto.Image = await FileService.GetImageFile(AdminFileName, usertb.Image); // 이미지 Byte[]
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== 모바일 ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(usertb.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(AdminFileName, usertb.Image).ConfigureAwait(false);
+
+                        if (ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, usertb.Image);
+                            if (files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_2(files);
+
+                                if (ConvertFile is not null)
+                                {
+                                    dto.ImageName = usertb.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    CreateBuilderLogger.ConsoleText("==== PC ====");
+#endif
+                    if (!String.IsNullOrWhiteSpace(usertb.Image))
+                    {
+                        byte[]? ImageBytes = await FileService.GetImageFile(AdminFileName, usertb.Image).ConfigureAwait(false);
+
+                        if(ImageBytes is not null)
+                        {
+                            IFormFile? files = FileService.ConvertFormFiles(ImageBytes, usertb.Image);
+                            if(files is not null)
+                            {
+                                byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+
+                                if(ConvertFile is not null)
+                                {
+                                    dto.ImageName = usertb.Image;
+                                    dto.Image = ConvertFile;
+                                }
+                                else
+                                {
+                                    dto.ImageName = null;
+                                    dto.Image = null;
+                                }
+                            }
+                            else
+                            {
+                                dto.ImageName = null;
+                                dto.Image = null;
+                            }
+                        }
+                        else
+                        {
+                            dto.ImageName = null;
+                            dto.Image = null;
+                        }
+                    }
                 }
                 
                 return new ResponseUnit<DManagerDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
