@@ -45,7 +45,6 @@
     List<FilterItem> filterFacType = new List<FilterItem>();
     List<FilterItem> facType = new List<FilterItem>
     {
-        // new FilterItem { Id = 0, Name = "전체", IsChecked=true},
         new FilterItem { Id = 1, Name = "기계", IsChecked=true },
         new FilterItem { Id = 2, Name = "전기", IsChecked=true },
         new FilterItem { Id = 3, Name = "승강", IsChecked=true },
@@ -59,7 +58,6 @@
     //작업 구분 데이터
     List<FilterItem> workType = new List<FilterItem>
     {
-        // new FilterItem { Id = 2, Name = "전체", IsChecked=true },
         new FilterItem { Id = 0, Name = "자체", IsChecked=true },
         new FilterItem { Id = 1, Name = "외주", IsChecked=true },
 
@@ -88,13 +86,23 @@
 
     private async Task ConvertType(List<int> facperm)
     {
-        filterFacType.Add(facType[0]);
+        filterFacType.Clear(); // 기존 리스트를 초기화
+
         // 권한 값이 1 이상인 항목만 필터링해서 filterType에 추가
-        for (int i = 0; i < facPerm.Count && (i + 1) < facType.Count; i++)
+        // for (int i = 0; i < facPerm.Count && (i + 1) < facType.Count; i++)
+        // {
+        //     if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
+        //     {
+        //         filterFacType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
+        //     }
+        // }
+
+        for (int i = 0; i < facPerm.Count; i++)
         {
-            if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
+            if (facPerm[i] >= 1) // 권한이 1 이상인 경우
             {
-                filterFacType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
+                // i+1을 하지 않고 직접 i와 매칭되는 facType 항목을 추가
+                filterFacType.Add(facType[i]);
             }
         }
     }

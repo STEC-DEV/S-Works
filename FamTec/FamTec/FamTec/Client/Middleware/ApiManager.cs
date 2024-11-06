@@ -38,6 +38,7 @@ namespace FamTec.Client.Middleware
         public ApiManager(AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService)
         {
             _httpClient = new HttpClient();
+<<<<<<< HEAD
 
 #if DEBUG
             _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
@@ -45,6 +46,9 @@ namespace FamTec.Client.Middleware
             _httpClient.BaseAddress = new Uri("https://sws.s-tec.co.kr/api/");
 #endif
 
+=======
+            _httpClient.BaseAddress = new Uri("http://123.2.156.28:5245/api/");
+>>>>>>> origin/Front
 
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

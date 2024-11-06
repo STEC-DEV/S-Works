@@ -10,7 +10,8 @@
 }
 
 .signup-container .signup-wrap[b-hbi4667qfr]{
-    width:20%;
+    /*width:20%;*/
+    width:380px;
     display : flex;
     flex-direction:column;
 
