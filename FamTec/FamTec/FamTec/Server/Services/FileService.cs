@@ -244,7 +244,7 @@ namespace FamTec.Server.Services
                 }
 
                 // 이미지 크기 조정 (비율 유지)
-                using var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 1024, 768);
+                using var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 700, 700);
                 if (resizedBitmap == null)
                 {
                     return null;
