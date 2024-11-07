@@ -145,7 +145,7 @@
 
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "자재 상세 조회 실패");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -154,8 +154,6 @@
     {
         try
         {
-            Console.WriteLine("공간 수정전" + Material.RoomID);
-            Console.WriteLine("공간 수정전" + EditMaterial.RoomId);
             if (string.IsNullOrEmpty(EditMaterial.Name))
             {
                 await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
@@ -175,8 +173,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "[자재] 자재 수정 에러");
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
     }
 
@@ -255,7 +252,7 @@
         }
         catch (Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 

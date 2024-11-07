@@ -99,7 +99,7 @@
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "전체 자재 조회 에러");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -122,7 +122,7 @@
             ResponseList<MaterialHistoryDTO> resGet = await apiManager.GetListAsync<MaterialHistoryDTO>($"Store/sign/GetPlaceInventoryStatus?materialid={materialIdQueryString}&type={_selectType}");
             if (resGet.code !=200)
             {
-                await JS.InvokeVoidAsync("[조회 현황]"+resGet.message);
+                await JS.InvokeVoidAsync(resGet.message);
                 return;
             }
             if(resGet.data == null)
@@ -138,8 +138,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[조회 현황]조회 에러"+ex);
-            await JS.InvokeVoidAsync("[조회 현황]조회 에러");
+            await JS.InvokeVoidAsync("조회 실패");
         }
     }
 

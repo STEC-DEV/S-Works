@@ -30,7 +30,7 @@
             ResponseList<BuildingFloorListDTO> resGet = await apiManager.GetListAsync<BuildingFloorListDTO>("Building/sign/PlaceBuildingList");
             if (resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "건물 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
             BuildingList = resGet.data;
@@ -38,8 +38,8 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "건물 조회 실패");
-            Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
+            // Console.WriteLine("[Basic][Location] 건물 조회 에러!" + ex);
         }
 
     }

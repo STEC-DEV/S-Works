@@ -59,7 +59,7 @@
                 && (MaintenanceStore.Num == 0 || MaintenanceStore.RoomID == 0)
             )
             {
-                await JS.InvokeVoidAsync("alert", "자재 및 출고 내용을 확인해 주세요.");
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
                 MaintenanceStore = new AddStoreDTO();
                 StateHasChanged();
                 return;
@@ -84,7 +84,6 @@
             _totalPrice += (resGet.data.AddStore.Num * resGet.data.AddStore.UnitPrice);
             Maintenance.TotalPrice += _totalPrice;
             Maintenance.Inventory.Add(resGet.data);
-            Console.WriteLine("인벤토리 카운트 복사"+Maintenance.Inventory.Count);
             MaintenanceStore = new AddStoreDTO();
             SelectMaterial = new MaterialSearchListDTO();
             StateHasChanged();
@@ -92,7 +91,7 @@
         }
         catch (Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "추가 실패");
         }
     }
 
@@ -141,8 +140,7 @@
             StateHasChanged();
         }catch(Exception ex)
         {
-            Console.WriteLine("[유지보수 등록 에러]"+ex);
-            await JS.InvokeVoidAsync("alert", "유지보수 작업에러");
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
     }
 

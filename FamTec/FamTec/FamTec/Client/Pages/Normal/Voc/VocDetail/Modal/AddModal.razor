@@ -100,15 +100,15 @@
             ResponseUnit<AddCommentDTO> resAdd = await apiManager.PostWithFilesAsync<AddCommentDTO>("VocComment/sign/AddVocComment", Comment);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "민원 코멘트 등록 실패");
+                await JS.InvokeVoidAsync("alert", resAdd.message);
             }
             await OnChanged.InvokeAsync();
             OnCloseModal();
             
         }catch(Exception ex)
         {
-            Console.WriteLine("민원 답변 등록 실패"+ex);
-            await JS.InvokeVoidAsync("alert", "민원 답변 등록 실패");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
     }
 
@@ -159,7 +159,7 @@
         }
         else
         {
-            await JS.InvokeVoidAsync("alert", "잘못된 이미지입니다.");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
     

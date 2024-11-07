@@ -323,6 +323,7 @@
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
 
     }

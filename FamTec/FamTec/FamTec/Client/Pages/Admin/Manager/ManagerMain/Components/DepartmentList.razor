@@ -106,14 +106,13 @@
             Console.WriteLine(newDepartment.Name == null);
             if (string.IsNullOrEmpty(newDepartment.Name))
             {
-                await JS.InvokeVoidAsync("alert", "그룹명을 입력해 주세요.");
-                Console.WriteLine("입력된 값이 없습니다.");
+                await JS.InvokeVoidAsync("alert", "내용을 입력해주세요.");
                 return;
             }
             ResponseUnit<AddDepartmentDTO> resDepartment = await apiManager.PostAsync<AddDepartmentDTO>("Department/sign/AddDepartment", newDepartment);
             if (resDepartment.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "그룹 추가 실패.");
+                await JS.InvokeVoidAsync("alert", resDepartment.message);
                 newDepartment = new AddDepartmentDTO();
                 return;
             }
@@ -125,7 +124,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][ModalDepartment] 그룹 추가 에러 : {ex.Message}");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "추가 실패");
         }
     }
 
@@ -136,7 +136,7 @@
         {
             if (DelList.Count == 0)
             {
-                await JS.InvokeVoidAsync("alert", "삭제할 부서를 선택해주세요.");
+                await JS.InvokeVoidAsync("alert", "삭제할 항목이 존재하지 않습니다.");
                 return;
             }
             ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Department/sign/DeleteDepartment", DelList);
@@ -152,7 +152,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][Department] 클라이언트 부서 삭제 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 

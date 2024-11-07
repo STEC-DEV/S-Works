@@ -93,30 +93,37 @@
         StateHasChanged();
     }
 
-    //여기도 타입에 따라 데이터 수정
+    
     private async Task OnLoadMahine()
     {
-        ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>($"{FacType}Facility/sign/GetAll{FacType}Facility");
-        foreach(var i in resGetData.data)
+        try
         {
-            Console.WriteLine(i.Name);
-        }
-        if(resGetData.code != 200)
+            ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>($"{FacType}Facility/sign/GetAll{FacType}Facility");
+            foreach (var i in resGetData.data)
+            {
+                Console.WriteLine(i.Name);
+            }
+            if (resGetData.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGetData.message);
+                return;
+            }
+
+            if (resGetData.data == null)
+            {
+                ListFacility = new List<FacilityListDTO>();
+                FilterData = new List<FacilityListDTO>();
+            }
+            else
+            {
+                ListFacility = resGetData.data;
+                FilterData = ListFacility;
+            }
+        }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "전기 설비 리스트 조회 실패");
-            return;
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
 
-        if (resGetData.data == null)
-        {
-            ListFacility = new List<FacilityListDTO>();
-            FilterData = new List<FacilityListDTO>();
-        }
-        else
-        {
-            ListFacility = resGetData.data;
-            FilterData = ListFacility;
-        }
 
 
     }
@@ -141,8 +148,7 @@
             await OnLoadMahine();
         }catch(Exception ex)
         {
-            Console.WriteLine("설비 삭제 에러" + ex);
-            await JS.InvokeVoidAsync("alert", "설비 삭제 에러");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 

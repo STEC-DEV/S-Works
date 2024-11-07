@@ -102,11 +102,10 @@
     {
         try
         {
-            Console.WriteLine("[관리자 모드][사업장 조회]");
             ResponseList<PlaceTableDTO> res = await apiManager.GetListAsync<PlaceTableDTO>("AdminPlace/sign/GetAllWorksList");
             if(res.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+                await JS.InvokeVoidAsync("alert", res.message);
                 return;
             }
             PlaceList = res.data ?? new List<PlaceTableDTO>();
@@ -117,8 +116,8 @@
         }
         catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "[관리자 모드][사업장 조회] 실패\n"+ex);
-            Console.WriteLine("[관리자 모드][사업장 조회] 실패");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
+            Console.WriteLine(ex);
             throw ex;
 
         }
@@ -172,8 +171,7 @@
         {
             if (CheckedItems == null)
             {
-                Console.WriteLine("삭제 데이터 없음");
-                await JS.InvokeVoidAsync("alert", "삭데 데이터가 존재하지 않습니다.");
+                await JS.InvokeVoidAsync("alert", "삭제할 항목이 존재하지 않습니다.");
             }
             else
             {
@@ -198,7 +196,7 @@
         }
         catch(Exception ex)
         {
-            Console.WriteLine("삭제 에러");
+            Console.WriteLine("삭제 실패");
         }
     }
 

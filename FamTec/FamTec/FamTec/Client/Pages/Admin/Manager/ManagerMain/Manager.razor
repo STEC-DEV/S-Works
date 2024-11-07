@@ -41,7 +41,7 @@
             ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
             if (resManager.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
+                await JS.InvokeVoidAsync("alert", resManager.message);
                 return;
             }
             if (resManager.data == null)
@@ -57,7 +57,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 

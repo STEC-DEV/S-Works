@@ -86,8 +86,8 @@
             _defaultSelectedMaterialList = new List<MaterialSearchListDTO>(MaterialList);
         }catch(Exception ex)
         {
-            Console.WriteLine("[입출고 내역] 자재 조회 에러" + ex);
-            await JS.InvokeVoidAsync("[입출고 내역] 자재 조회 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("조회 실패");
         }
     }
 
@@ -135,8 +135,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[조회 현황]조회 에러"+ex);
-            await JS.InvokeVoidAsync("[조회 현황]조회 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("조회 실패");
         }
     }
 
@@ -149,7 +149,6 @@
 
     private void UpdateTitles()
     {
-        Console.WriteLine("실행");
         List<string> temp = new List<string>();
         temp.Clear();
         foreach (var material in _selectedMaterialList)

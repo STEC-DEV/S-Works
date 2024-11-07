@@ -65,7 +65,7 @@
     private void HandleFormValidityChanged(bool isValid)
     {
         // Do something with the form validity state
-        Console.WriteLine($"Form is valid: {isValid}");
+        // Console.WriteLine($"Form is valid: {isValid}");
     }
 
 
@@ -79,7 +79,7 @@
             ResponseList<DepartmentDTO> resDepartment = await apiManager.GetListAsync<DepartmentDTO>("Department/sign/GetDepartmentList");
             if(resDepartment.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "부서 조회 실패");
+                await JS.InvokeVoidAsync("alert", resDepartment.message);
                 return;
             }
             // ResponseList<DepartmentDTO> resDepartment = await HttpClient.GetFromJsonAsync<ResponseList<DepartmentDTO>>("http://123.2.156.148:5245/api/DePartment/GetDepartmentList");
@@ -87,7 +87,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][ManagerSignUp] 부서 조회 에러" + ex);
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert","조회 실패");
         }
 
     }
@@ -124,7 +125,7 @@
             ResponseUnit<int> resManager = await apiManager.PostWithFilesAsync<int>("AdminUser/sign/AddManager", newManager);
             if(resManager.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "관리자 정보 등록 실패");
+                await JS.InvokeVoidAsync("alert", resManager.message);
                 //롤백 코드 추가 예정
                 return;
             }
@@ -133,7 +134,7 @@
             ResponseUnit<bool> resManagerPlace = await apiManager.PostAsync<bool>("AdminUser/sign/AddManagerWorks", managerPlace);
             if (resManagerPlace.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "관리자 사업장 등록 실패");
+                await JS.InvokeVoidAsync("alert", resManager.message);
                 //롤백 코드 추가 예정
                 return;
             }
@@ -143,8 +144,8 @@
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"[Admin][Manager] 매니저 등록 에러" + ex);
-            await JS.InvokeVoidAsync("alert", "[Admin][Manager] 매니저 등록 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
 
        

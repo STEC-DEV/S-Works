@@ -130,7 +130,6 @@
     {
         try
         {
-            Console.WriteLine(DelList[0]);
             ResponseUnit<bool?> resDel = await apiManager.PostAsync<bool?>("Floor/sign/DeleteFloor", DelList);
             if (resDel.code != 200)
             {
@@ -143,7 +142,7 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "[위치][층] 삭제 에러!");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 

@@ -90,22 +90,22 @@
             ResponseList<RoomListDTO> resGet = await apiManager.GetListAsync<RoomListDTO>("Room/sign/GetAllRoomList");
             if(resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "위치 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
                 return;
             }
             RoomList = resGet.data;
 
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "위치 조회 실패");
-            Console.WriteLine("[Basic][Location] 위치 조회 에러!" + ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
+            // Console.WriteLine("[Basic][Location] 위치 조회 에러!" + ex);
         }
     }
 
 
 
 
-    //추가
+    //추가 / 등록
     private async Task OnAdd()
     {
         try
@@ -113,14 +113,15 @@
             ResponseUnit<AddLoactionDTO> resAdd = await apiManager.PostAsync<AddLoactionDTO>("Room/sign/AddRoom", AddLocation);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "위치 추가 실패");
+                await JS.InvokeVoidAsync("alert", resAdd.message);
             }
             AddLocation = new AddLoactionDTO();
             await OnLoadLaction();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[Location][Add] 위치 추가 에러!" +ex);
+            await JS.InvokeVoidAsync("alert", "등록 실패");
+            
         }
     }
 
@@ -131,7 +132,7 @@
         {
             if(DelList.Count == 0)
             {
-                await JS.InvokeVoidAsync("alert", "선택된 공간이 없습니다.");
+                await JS.InvokeVoidAsync("alert", "위치를 선택해주세요.");
                 return;
             }
             ResponseUnit<bool> resDel = await apiManager.PutAsync<bool>("Room/sign/DeleteRoom",DelList);
@@ -144,8 +145,7 @@
 
         }catch(Exception ex)
         {
-            Console.WriteLine("[Normal][Location] 삭제 에러" + ex);
-            await JS.InvokeVoidAsync("alert", "공간 삭제 에러");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 
