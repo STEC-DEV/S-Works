@@ -38,12 +38,48 @@
     <img src="@imageUrl" alt="Fetched Image" style="width:100px;height:100px"/>
 }
 
+<InputFile OnChange="OnInputFileChange" />
+<input type="button" value="업로드 테스트" @onclick="(() => btnUpload())"/>
+
+
+
 @code {
     private string? excelData;
     string fileName{ get; set; }
     string fileContent{ get; set; }
 
     string imageUrl { get; set; }
+
+    private IBrowserFile selectedFile;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task btnUpload()
+    {
+        if (selectedFile == null)
+        {
+            Console.WriteLine("파일을 선택하세요.");
+            return;
+        }
+
+        using var memoryStream = new MemoryStream();
+        // selectedFile의 스트림을 MemoryStream에 복사
+        await selectedFile.OpenReadStream().CopyToAsync(memoryStream);
+        memoryStream.Position = 0; // MemoryStream의 위치를 처음으로 설정
+
+        using var content = new MultipartFormDataContent();
+        // MemoryStream을 StreamContent로 감싸고 파일 정보 추가
+        var fileContent = new StreamContent(memoryStream);
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+        content.Add(fileContent, "file", selectedFile.Name);
+        
+
+    }
+
+
 
     protected async Task btnClick3()
     {
