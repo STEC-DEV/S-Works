@@ -74,5 +74,5 @@
     position :absolute;
     bottom : 20px;
     right : 20px;
-    color : var(--main-color);
+    color : gray; 
 }
