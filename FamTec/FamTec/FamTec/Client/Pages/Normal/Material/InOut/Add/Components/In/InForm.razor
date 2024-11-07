@@ -245,8 +245,10 @@
         StateHasChanged();
     }
 
+    //default room 설정
     private async Task initialRoom()
     {
+        AddItem.AddStore.RoomID = SelectMaterial.RoomId;
         AddItem.AddStore.RoomName = SelectMaterial.RoomName;
         SelectedBuildingId = SelectMaterial.BuildingId.Value;
         SelectedRoomId = SelectMaterial.RoomId.Value;
