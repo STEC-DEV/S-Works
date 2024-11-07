@@ -48,7 +48,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        OnAsync();
         await OnSearch(_searchText);
+    }
+    
+    private void OnAsync()
+    {
+        checkItem = SelectData.Select(s => s.Id).ToList();
+        _selectData = SelectData;
     }
 
     private void OnCheck(MaterialSearchListDTO material)

@@ -65,6 +65,7 @@
     {
         await OnLoadMaterial();
         _selectedMaterialList = _defaultSelectedMaterialList;
+        UpdateTitles();
         await OnSelect();
     }
 
@@ -125,12 +126,12 @@
                 material = resGet.data;
             }
             //검색 데이터 초기화
-            SelectedMaterialList.Clear();
+            // SelectedMaterialList.Clear();
             // titles = "";
-            startDt = new DateTime(curdate.Year, curdate.Month, 1);
-            endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
+            // startDt = new DateTime(curdate.Year, curdate.Month, 1);
+            // endDt = new DateTime(curdate.Year, curdate.Month, 1).AddMonths(1).AddDays(-1);
             await ValueChange.InvokeAsync(material);
-            material.Clear();
+            // material.Clear();
         }
         catch (Exception ex)
         {
@@ -148,6 +149,7 @@
 
     private void UpdateTitles()
     {
+        Console.WriteLine("실행");
         List<string> temp = new List<string>();
         temp.Clear();
         foreach (var material in _selectedMaterialList)
