@@ -96,29 +96,11 @@ builder.WebHost.UseKestrel((context, options) =>
         // HTTP/2는 성능 향상과 효율적인 데이터 전송을 제공한다.
         endpointOptions.Protocols = HttpProtocols.Http1AndHttp2;
     });
-    
-    //options.Listen(IPAddress.Parse("123.2.156.148"), 5246, listenOptions =>
-    //{
-    //    // SSL 설정 (경로, 비밀번호)
-    //    listenOptions.UseHttps("C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Path\\to\\sws.s-tec.co.kr_pfx.pfx", "#sws.s-tec.co.kr@");
-    //});
-    
 });
 
 #endregion
-/*
- 분산 메모리 캐시를 설정.
- IDistributedCache 인터페이스의 기본 구현을 메모리에 저장하도록 추가함.
- 이를 통해 애플리케이션은 캐시 데이터를 서버 메모리에 저장하고, 이를 여러 요청 간에 공유할 수 있습니다
- 실제 분산 캐시는 아니지만 개발단계에서 유용하게 사용할 수 있음. - 실제사용시 IDistributedCache _cache; 를 구현해서 사용함.
-*/
-//builder.Services.AddDistributedMemoryCache();
-
-/* HttpClientFactory 유용하게 사용하기 위함. */
-//builder.Services.AddHttpClient();
 
 // Add services to the container. - Repository
-
 builder.Services.AddTransient<IPlaceInfoRepository, PlaceInfoRepository>();
 builder.Services.AddTransient<IBuildingInfoRepository, BuildingInfoRepository>();
 builder.Services.AddTransient<IBuildingGroupItemInfoRepository, BuildingGroupItemInfoRepository>();
@@ -191,7 +173,6 @@ builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 builder.Services.AddTransient<ICommService, CommService>();
-
 
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
 builder.Services.AddSingleton<WorksSetting>();
@@ -328,25 +309,16 @@ string[]? CorsArr = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<
 
 if (CorsArr is [_, ..])
 {
-    // 개발용
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowLocalAndSpecificIP", policy =>
-        {
-            policy.SetIsOriginAllowed(_ => true) // 모든 Origin 허용 (테스트 목적)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials(); // 자격 증명 허용
-        });
-
-        //options.AddPolicy(name: MyAllowSpectificOrigins,
-        //    policy =>
-        //    {
-        //        policy.WithOrigins(CorsArr)
-        //                .AllowAnyHeader()
-        //                .AllowAnyMethod()
-        //                .AllowCredentials(); // 필요시 Credentials 허용
-        //    });
+        options.AddPolicy(name: MyAllowSpectificOrigins,
+            policy =>
+            {
+                policy.WithOrigins(CorsArr)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // 필요시 Credentials 허용
+            });
     });
 }
 else
@@ -461,7 +433,8 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 #region CORS 사용
-app.UseCors("AllowLocalAndSpecificIP");
+//app.UseCors("AllowLocalAndSpecificIP");
+app.UseCors(MyAllowSpectificOrigins);
 #endregion
 
 
