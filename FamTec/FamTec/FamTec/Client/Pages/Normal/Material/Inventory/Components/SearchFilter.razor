@@ -72,6 +72,7 @@
     {
         await OnLoadMaterial();
         _selectedMaterialList = _defaultselectedMaterialList;
+        UpdateTitles();
         await OnSelect();
     }
 
@@ -132,11 +133,7 @@
             // 상위 컴포넌트에 데이터 변경을 알립니다.
             await OnMaterialHistoryUpdated.InvokeAsync(resGet.data);
 
-            foreach(var row in MaterialHistory)
-            {
-                Console.WriteLine(row.Name);
-            }
-            _selectMaterial = new List<int>();
+            // _selectMaterial = new List<int>();
             StateHasChanged();
         }
         catch (Exception ex)

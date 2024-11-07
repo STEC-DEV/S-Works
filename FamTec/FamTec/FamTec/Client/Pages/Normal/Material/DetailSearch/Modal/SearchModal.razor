@@ -20,7 +20,6 @@
             <div class="modal-table">
                 <SearchTable 
                     OnCheck="OnCheck" 
-                    
                     ListData="@FilterData" 
                     CheckedItem="@checkItem" />
             </div>
@@ -49,27 +48,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        SelectData.Clear();
-        _selectData.Clear();
-        Console.WriteLine(ListData.Count);
+        // SelectData.Clear();
+        // _selectData.Clear();
+        OnAsync();
+
         await OnSearch(_searchText);
     }
 
-    // private void OnCheck((MaterialSearchListDTO material,bool isChecked)data)
-    // {
-    //     if (data.isChecked)
-    //     {
-    //         checkItem.Add(data.material.Id);
-    //         _selectData.Add(data.material);
-    //     }
-    //     else
-    //     {
-    //         checkItem.Remove(data.material.Id);
-    //         _selectData.Remove(data.material);
-    //     }
-
-        
-    // }
+    private void OnAsync()
+    {
+        checkItem = SelectData.Select(s => s.Id).ToList();
+        _selectData = SelectData;
+    }
 
     private void OnCheck(MaterialSearchListDTO material)
     {
