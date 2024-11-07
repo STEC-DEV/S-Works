@@ -73,6 +73,12 @@
         using var content = new MultipartFormDataContent();
         // MemoryStream을 StreamContent로 감싸고 파일 정보 추가
         var fileContent = new StreamContent(memoryStream);
+
+
+
+
+
+
         fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
         content.Add(fileContent, "file", selectedFile.Name);
         
