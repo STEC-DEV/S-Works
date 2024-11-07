@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using DocumentFormat.OpenXml.InkML;
+using FamTec.Server.Middleware;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Building;
@@ -128,7 +129,7 @@ namespace FamTec.Server.Controllers.Building
             {
                 if (HttpContext is null)
                     return BadRequest();
-
+                
                 ResponseList<BuildinglistDTO> model = await BuildingService.GetBuilidngListService(HttpContext).ConfigureAwait(false);
 
                 if (model is null)

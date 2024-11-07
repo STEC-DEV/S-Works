@@ -1,0 +1,103 @@
+.modal[b-notm9e8hij]{
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.header[b-notm9e8hij] {
+    
+}
+
+.title[b-notm9e8hij] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input[b-notm9e8hij]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>label[b-notm9e8hij]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input[b-notm9e8hij]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus[b-notm9e8hij]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+
+.content[b-notm9e8hij]{
+    display : fle
+}
+
+.item-header[b-notm9e8hij]{
+    display : flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.item-header >span[b-notm9e8hij]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+}
+
+
+.value-ul[b-notm9e8hij]{
+    display : flex;
+    flex-direction:column;
+    gap :var(--half-pd);
+}
+
+.value-li[b-notm9e8hij]{
+    display:flex;
+    gap: var(--default-pd)
+}
+
+.value-input[b-notm9e8hij]{
+    width:100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.value-input:focus[b-notm9e8hij]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns[b-notm9e8hij]{
+    display :flex;
+    gap:var(--default-pd);
+}

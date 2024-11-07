@@ -1,0 +1,20 @@
+.location-container[b-v00ot3xtdx]{
+    padding : var(--default-pd);
+    width : 100%;
+    height : 100%;
+    overflow:hidden;
+
+    display :flex;
+    gap : var(--wide-pd);
+}
+
+
+.location-container .location-floor[b-v00ot3xtdx]{
+    flex : 1;
+    
+}
+
+.location-container .location-location[b-v00ot3xtdx]{
+    flex : 4;
+    
+}

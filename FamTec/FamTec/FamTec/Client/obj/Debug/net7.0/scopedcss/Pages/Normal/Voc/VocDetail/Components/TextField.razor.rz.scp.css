@@ -1,0 +1,56 @@
+.textfield[b-e5d0ioy9t2]{
+    width : 100%;
+    display : flex;
+    gap : var(--half-pd);
+    flex-direction : column;
+    
+    background-color : var(--default-color);
+}
+
+.row[b-e5d0ioy9t2]{
+    flex-direction :row;
+    align-items:center;
+}
+
+.label[b-e5d0ioy9t2]{
+    font-size : var(--normal-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+
+    white-space : nowrap;
+}
+
+.content[b-e5d0ioy9t2]{
+    width : 100%;
+    min-height :35px;
+    height : 100%;
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+
+    background-color : var(--content-back-color);
+    /*padding : var(--half-pd);*/
+    padding : var(--default-pd);
+}
+
+
+.text[b-e5d0ioy9t2]{
+    width : 100%;
+    font-size : var(--normal-size);
+    font-weight : var(--normal-wt);
+    color : #333;
+
+}
+
+.height[b-e5d0ioy9t2]{
+    height : 100%;
+    /*min-height : 3rem;*/
+    max-height: calc(var(--wide-pd) * 6);
+}
+
+ [b-e5d0ioy9t2] textarea {
+    outline : none;
+    border : none;
+    resize : none;
+    width : 100%;
+    background-color :transparent;
+}

@@ -1,0 +1,37 @@
+.page[b-epzcebx71e]{
+    display : flex;
+    flex-direction : column;
+    min-height : 100vh;
+    
+}
+
+.inner[b-epzcebx71e]{
+    flex : 1 1;
+    inline-size: min(100%, 1920px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    overflow:hidden;
+
+}
+
+main[b-epzcebx71e] {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+
+
+.content[b-epzcebx71e] {
+    background-color: var(--content-back-color);
+    flex:1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.wrap[b-epzcebx71e] {
+    flex: 1;
+    overflow: auto;
+    
+}
