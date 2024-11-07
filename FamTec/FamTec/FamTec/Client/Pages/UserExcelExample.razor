@@ -65,22 +65,32 @@
             return;
         }
 
-        using var memoryStream = new MemoryStream();
-        // selectedFile의 스트림을 MemoryStream에 복사
-        await selectedFile.OpenReadStream().CopyToAsync(memoryStream);
-        memoryStream.Position = 0; // MemoryStream의 위치를 처음으로 설정
+        using (var memoryStream = new MemoryStream())
+        {
+            // selectedFile의 스트림을 MemoryStream에 복사
+            await selectedFile.OpenReadStream().CopyToAsync(memoryStream);
+            using (var workbook = new XLWorkbook(memoryStream))
+            {
+                var worksheet = workbook.Worksheet(1);
 
-        using var content = new MultipartFormDataContent();
+                Console.WriteLine("asdgfasdf");
+            }
+        }
+
+        Console.WriteLine("dsafsdag");
+
+        //memoryStream.Position = 0; // MemoryStream의 위치를 처음으로 설정
+
+
+
+
+
+        //using var content = new MultipartFormDataContent();
         // MemoryStream을 StreamContent로 감싸고 파일 정보 추가
-        var fileContent = new StreamContent(memoryStream);
+        //var fileContent = new StreamContent(memoryStream);
 
-
-
-
-
-
-        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
-        content.Add(fileContent, "file", selectedFile.Name);
+        //fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+        //content.Add(fileContent, "file", selectedFile.Name);
         
 
     }

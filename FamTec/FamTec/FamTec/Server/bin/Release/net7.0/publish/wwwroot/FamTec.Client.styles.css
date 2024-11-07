@@ -15141,6 +15141,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     justify-content: center;
     align-items: center;
     background-color: var(--default-color);
+    position : relative;
 }
 
 .signup-container .signup-wrap[b-hbi4667qfr]{
@@ -15202,6 +15203,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size : 2rem;
 }
 
+
+.version[b-hbi4667qfr]{
+    position :absolute;
+    bottom : 20px;
+    right : 20px;
+    color : var(--main-color);
+}
 /* /Pages/Voc/Add/Components/CheckItem.razor.rz.scp.css */
 
 .check[b-0cxp5qukkw]{
