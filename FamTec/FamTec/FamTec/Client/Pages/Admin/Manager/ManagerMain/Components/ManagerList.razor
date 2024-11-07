@@ -78,34 +78,6 @@
         await OnSelectFilterData();
     }
 
-    // private async Task OnLoadManagers()
-    // {
-    //     try
-    //     {
-    //         ResponseList<ManagerDTO>? resManager = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
-    //         if(resManager.code != 200)
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "매니저 조회 실패");
-    //             return;
-    //         }
-    //         if(resManager.data == null)
-    //         {
-    //             managerList = new List<ManagerDTO>();
-    //             filterList = new List<ManagerDTO>();
-    //         }
-    //         else
-    //         {
-    //             managerList = resManager.data;
-    //             filterList = new List<ManagerDTO>(managerList);
-    //         }
-    //         return;
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"[Admin][Department] 매니저 조회 에러\n{ex.Message}");
-    //     }
-
-    // }
 
     private async Task OnSelectFilterData()
     {
@@ -121,13 +93,6 @@
         }
 
     }
-
-
-
-    // private async Task ReloadManagers()
-    // {
-    //     await OnLoadManagers();
-    // }
 
 
     /*
@@ -153,7 +118,7 @@
         {
             if(deleteManagerList.Count == 0)
             {
-                Console.WriteLine("선택 매니저 없음");
+                await JS.InvokeVoidAsync("alert", "삭제할 항목이 존재하지 않습니다.");
             }
             else
             {
@@ -170,7 +135,8 @@
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"[Admin][Department] 클라이언트  매니저 삭제 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 

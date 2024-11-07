@@ -57,15 +57,22 @@
 
     private async Task OnLoadDetail()
     {
-        ResponseUnit<UserTbDTO> resDetail = await apiManager.GetUnitAsync<UserTbDTO>($"User/sign/DetailUser?id={Id}");
-        if(resDetail.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "사용자 조회 실패");
-            return;
+            ResponseUnit<UserTbDTO> resDetail = await apiManager.GetUnitAsync<UserTbDTO>($"User/sign/DetailUser?id={Id}");
+            if (resDetail.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resDetail.message);
+                return;
+            }
+            userTb = resDetail.data ?? new UserTbDTO(); // resDetail.data가 null일 경우 초기화
+
+            OnUserConvert();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
-        userTb = resDetail.data ?? new UserTbDTO(); // resDetail.data가 null일 경우 초기화
-        
-        OnUserConvert();
+
     }
 
     private async Task OnUpdate()
@@ -105,8 +112,8 @@
 
         }catch(Exception ex)
         {
-            Console.WriteLine($"[User][Detail][{User.UserInfo.UserId}] 정보 수정 에러 "+ex);
-            await JS.InvokeVoidAsync("alert", $"[User][Detail][{User.UserInfo.UserId}] 정보 수정 에러 ");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
     }
 

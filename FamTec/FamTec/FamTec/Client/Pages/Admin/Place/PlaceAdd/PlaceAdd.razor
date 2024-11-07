@@ -59,13 +59,13 @@
                 }
             }
 
-            await JS.InvokeVoidAsync("alert", "사업장 등록 성공");
+            // await JS.InvokeVoidAsync("alert", "사업장 등록 성공");
             Navigation.NavigateTo("/admin/place");
 
             return;
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "사업장 등록 에러");
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
     }
 }

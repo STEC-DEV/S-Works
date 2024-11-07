@@ -54,14 +54,21 @@
 
     private async Task OnLoadVocDetail()
     {
-        ResponseUnit<DetailVocDTO> resGet = await apiManager.GetUnitAsync<DetailVocDTO>($"Voc/sign/VocInfo?VocId={Id}");
-        if(resGet.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "민원 상세조회 실패");
-            return;
+            ResponseUnit<DetailVocDTO> resGet = await apiManager.GetUnitAsync<DetailVocDTO>($"Voc/sign/VocInfo?VocId={Id}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            VocData = resGet.data;
+            await OnUserPermCheck();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
-        VocData = resGet.data;
-        await OnUserPermCheck();
+
     }
 
 
@@ -72,14 +79,14 @@
             ResponseList<VocCommentListDTO> resGet = await apiManager.GetListAsync<VocCommentListDTO>($"VocComment/sign/GetVocCommentList?VOCID={Id}");
             if(resGet.code != 200)
             {
-                await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGet.message);
             }
             VocCommentData = resGet.data;
             await OnUserPermCheck();
 
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("민원 처리내역 조회 실패");
+            await JS.InvokeVoidAsync("조회 실패");
         }
     }
 

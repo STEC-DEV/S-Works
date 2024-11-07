@@ -76,7 +76,7 @@
         }
         catch (Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -93,7 +93,7 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "로그아웃 에러");
+            await JS.InvokeVoidAsync("alert", "로그아웃 실패");
         }
     }
 

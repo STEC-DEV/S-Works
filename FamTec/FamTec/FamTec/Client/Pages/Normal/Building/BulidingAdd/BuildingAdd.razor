@@ -63,31 +63,38 @@
     bool IsModal = false;
     private async void OnAdd()
     {
-        if (string.IsNullOrEmpty(Building.Name))
+        try
         {
-            await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
-            return;
-        }
-        ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
-        if(ResAdd.code != 200)
-        {
-            await JS.InvokeVoidAsync("alert", ResAdd.message);
+            if (string.IsNullOrEmpty(Building.Name))
+            {
+                await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요.");
+                return;
+            }
+            ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
+            if (ResAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", ResAdd.message);
+                Navigation.NavigateTo("/basic/buildings");
+                return;
+            }
+
+            foreach (AddGroupListDTO g in GroupList)
+            {
+                g.BuildingIdx = ResAdd.data.Id;
+            }
+
+            ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("BuildingGroup/sign/AddBuildingGroup", GroupList);
+            if (resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+            }
             Navigation.NavigateTo("/basic/buildings");
             return;
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "등록 에러");
         }
 
-        foreach(AddGroupListDTO g in GroupList)
-        {
-            g.BuildingIdx = ResAdd.data.Id;
-        }
-
-        ResponseUnit<bool> resAdd = await apiManager.PostAsync<bool>("BuildingGroup/sign/AddBuildingGroup", GroupList);
-        if (resAdd.code != 200)
-        {
-            await JS.InvokeVoidAsync("alert", resAdd.message);
-        }
-        Navigation.NavigateTo("/basic/buildings");
-        return;
     }
 
     private async Task OnCheckPerm()

@@ -87,7 +87,7 @@
             await ConvertImage();
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "처리내역 상세 조회 실패");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -138,8 +138,6 @@
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
 
-        Console.WriteLine("empty" + emptyIdx.Count);
-        Console.WriteLine("이미지 수" + images.Count);
         if (emptyIdx.Count < images.Count)
         {
             await JS.InvokeVoidAsync("alert", "최대 3개의 이미지만 등록 가능합니다.");
@@ -181,12 +179,6 @@
     {
         try
         {
-            foreach (var i in comment.Images.Select((value,idx)=>(value, idx)))
-            {
-                Console.WriteLine("이미지 이름" + comment.ImageName[i.idx]);
-                Console.WriteLine("이미지 타입" + i.value);
-
-            }
             ResponseUnit<bool> resUpdate = await apiManager.PutAsync<bool>("VocComment/sign/VocCommentUpdate", comment, true);
             if(resUpdate.code != 200)
             {
@@ -199,7 +191,7 @@
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "민원 수정 에러");
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
 
     }
@@ -207,14 +199,14 @@
 
     private async void OnDelImg(string name)
     {
-        Console.WriteLine("=======이미지 삭제========");
+        
         int slideridx = _imageName.IndexOf(name);
-        Console.WriteLine("슬라이드 이미지" + slideridx);
+        
         int originalidx = comment.ImageName.IndexOf(name);
-        Console.WriteLine("오리지날 이미지" + originalidx);
+        
         if(slideridx == -1 || originalidx == -1)
         {
-            await JS.InvokeVoidAsync("alert", "잘못된 이미지 입니다.");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
             return;
         }
         //슬라이더 삭제
@@ -228,13 +220,6 @@
 
         emptyIdx.Add(originalidx);
 
-        foreach(var i in emptyIdx)
-        {
-            Console.WriteLine("남은 empty" + i);
-        }
-
-
-        Console.WriteLine("=======이미지 삭제 끝========");
         StateHasChanged();
     }
 

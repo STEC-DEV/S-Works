@@ -41,8 +41,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("[메인 레이아웃]");
-        Console.WriteLine("[이니셜]");
         // 비동기로 인증 상태를 가져오기 위해 AuthenticationStateProvider를 사용합니다.
 
         authenticationState = await customStateProvider.GetAuthenticationStateAsync();

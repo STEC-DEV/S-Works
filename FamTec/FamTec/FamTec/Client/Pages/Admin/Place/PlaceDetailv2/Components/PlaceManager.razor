@@ -99,7 +99,7 @@
     {
         if (_selectDelList.Count == 0)
         {
-            await JS.InvokeVoidAsync("alert", "삭제할 매니저를 선택해주세요.");
+            await JS.InvokeVoidAsync("alert", "삭제할 항목이 존재하지 않습니다.");
             return;
         }
         foreach(ManagerDTO m in _selectDelList)

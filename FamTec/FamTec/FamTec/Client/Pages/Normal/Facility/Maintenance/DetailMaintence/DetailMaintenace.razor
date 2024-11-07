@@ -117,7 +117,7 @@
             // await OnConverDTO();
         }catch(Exception ex)
         {
-
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -223,8 +223,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[유지보수][사용자재] 추가 에러");
-            await JS.InvokeVoidAsync("alert", "[유지보수][사용자재] 추가 에러");
+            await JS.InvokeVoidAsync("alert", "추가 실패");
         }
     }
 

@@ -70,7 +70,6 @@
 
     private async void OnAdd()
     {
-
         int sum = 0;
         foreach(int v in valid)
         {
@@ -90,18 +89,25 @@
             await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해주세요.");
             return;
         }
-        
-        ResponseUnit<UserDTO> resAdd = await apiManager.PostWithFilesAsync<UserDTO>("User/sign/AddUser", Users);
-        if(resAdd.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "사용자 생성 실패");
+            ResponseUnit<UserDTO> resAdd = await apiManager.PostWithFilesAsync<UserDTO>("User/sign/AddUser", Users);
+            if (resAdd.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resAdd.message);
+                User = new UserDTO();
+                return;
+            }
+
+
             User = new UserDTO();
-            return;
+            Navigation.NavigateTo("/users");
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
 
-
-        User = new UserDTO();
-        Navigation.NavigateTo("/users");
     }
 
     private async void OnCancle()

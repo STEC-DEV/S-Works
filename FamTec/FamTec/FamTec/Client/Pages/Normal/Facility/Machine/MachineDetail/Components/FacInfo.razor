@@ -12,7 +12,7 @@
         <span>
             설비 제원
         </span>
-        @if (USEREDIT)
+        @if (HasEditPermission())
         {
             <div class="option">
                 @if (EditMode)
@@ -347,4 +347,20 @@
         StateHasChanged();
     }
 
+
+    private bool HasEditPermission()
+    {
+        return FacType switch
+        {
+            "machine" => MACHINE,
+            "electronic" => ELEC,
+            "lift" => LIFT,
+            "fire" => FIRE,
+            "construct" => CONSTRUCT,
+            "network" => NETWORK,
+            "beauty" => BEAUTY,
+            "security" => SECURITY,
+            _ => false
+        };
+    }
 }

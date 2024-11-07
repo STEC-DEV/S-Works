@@ -65,17 +65,25 @@
 
     }
 
+    //조회
     private async Task OnLoadFacility()
     {
-        ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"{FacType}Facility/sign/Detail{FacType}Facility?facilityid={Id}");
-        if(resFacInfo.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");
-            return;
+            ResponseUnit<FacilityDetailDTO> resFacInfo = await apiManager.GetUnitAsync<FacilityDetailDTO>($"{FacType}Facility/sign/Detail{FacType}Facility?facilityid={Id}");
+            if (resFacInfo.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resFacInfo.message);
+                return;
+            }
+            facilityDetailDTO = new FacilityDetailDTO(resFacInfo.data);
+            OriginalFacility = facilityDetailDTO.DeepCopy();
+            UpdateFacility = facilityDetailDTO.DeepCopy();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
-        facilityDetailDTO = new FacilityDetailDTO(resFacInfo.data);
-        OriginalFacility = facilityDetailDTO.DeepCopy();
-        UpdateFacility = facilityDetailDTO.DeepCopy();
+
     }
 
     //그룹조회
@@ -86,14 +94,14 @@
             ResponseList<GroupDTO> resGroup = await apiManager.GetListAsync<GroupDTO>($"FacilityGroup/sign/GetFacilityGroup?facilityid={Id}");
             if (resGroup.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "그룹 조회 실패");
+                await JS.InvokeVoidAsync("alert", resGroup.message);
                 return;
             }
             Group = resGroup.data;
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[Facility][Detail] 그룹 조회 실패" + ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 

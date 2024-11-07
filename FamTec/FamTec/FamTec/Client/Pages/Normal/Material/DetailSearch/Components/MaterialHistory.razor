@@ -89,30 +89,29 @@
     private async Task Paging()
     {
 
-        Console.WriteLine("============페이징 실행============");
+        // Console.WriteLine("============페이징 실행============");
         if (FilterList == null || !FilterList.Any())
         {
             totalPage = 1;
             currentPage = 1;
             pageList3 = new List<InventoryRecordDTO>();
-            Console.WriteLine("데이터가 없습니다.");
             StateHasChanged();
             return;
         }
-        Console.WriteLine("현현패" + currentPage);
+        // Console.WriteLine("현현패" + currentPage);
 
         totalPage = (int)Math.Ceiling((double)FilterList.Count / viewNum);
        
-        Console.WriteLine("현페" + Math.Min(currentPage, totalPage));
-        Console.WriteLine("전체" + totalPage);
+        // Console.WriteLine("현페" + Math.Min(currentPage, totalPage));
+        // Console.WriteLine("전체" + totalPage);
         
         currentPage = Math.Min(currentPage, totalPage);
         
         int skip = (currentPage - 1) * viewNum;
         pageList3 = FilterList.Skip(skip).Take(viewNum).ToList();
         
-        Console.WriteLine($"[페이징] 전체 데이터 수: {FilterList?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
-        Console.WriteLine("============페이징 끝============");
+        // Console.WriteLine($"[페이징] 전체 데이터 수: {FilterList?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
+        // Console.WriteLine("============페이징 끝============");
         StateHasChanged();
     }
 

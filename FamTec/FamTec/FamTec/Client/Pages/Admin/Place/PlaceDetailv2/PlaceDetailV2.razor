@@ -74,7 +74,6 @@
     //사업장 정보 조회
     private async Task LoadPlaceDetailInfo()
     {
-        Console.WriteLine("샐행됨");
         ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
 
 
@@ -136,7 +135,7 @@
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
-            await JS.InvokeVoidAsync("alert", "사업장 수정 에러");
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
     }
 }

@@ -80,7 +80,6 @@
                 return;
             }
             Facility.Category = _facType;
-            Facility.Unit = "개";
             ResponseUnit<FacilityDetailDTO> resPost = await apiManager.PostWithFilesAsync<FacilityDetailDTO>($"{FacType}Facility/sign/Add{FacType}Facility", Facility);
             if (resPost.code != 200)
             {
@@ -101,7 +100,7 @@
             Navigation.NavigateTo($"/facility/{FacType}");
         }catch(Exception ex)
         {
-            
+            await JS.InvokeVoidAsync("alert", "등록 실패");
         }
 
     }

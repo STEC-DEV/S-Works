@@ -52,7 +52,7 @@
         {
             if (Data.Name.ToLower() == _edit.Name.ToLower())
             {
-                await JS.InvokeVoidAsync("alert", "변경된 내용이 없습니다.");
+                await JS.InvokeVoidAsync("alert", "변경 사항이 존재하지 않습니다.");
                 return;
             }
 
@@ -71,7 +71,8 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "그룹 수정 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
         
  

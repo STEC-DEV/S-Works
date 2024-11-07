@@ -66,7 +66,7 @@
 
         if (Item.ItemValues.Count - Checked.Count < 1)
         {
-            await JS.InvokeVoidAsync("alert", "최소 1개의 값은 필요합니다.");
+            await JS.InvokeVoidAsync("alert", "최소 1개의 값이 필요합니다.");
             return;
         }
 
@@ -124,7 +124,7 @@
             ResponseUnit<AddItemDTO> resAdd = await apiManager.PostAsync<AddItemDTO>("FacilityGroupKey/sign/AddKey", Item);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "항목 추가 실패");
+                await JS.InvokeVoidAsync("alert", resAdd);
                 return;
             }
             await LoadGroup.InvokeAsync();
@@ -133,7 +133,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("오류");
+            Console.WriteLine("추가 실패");
         }
     }
 

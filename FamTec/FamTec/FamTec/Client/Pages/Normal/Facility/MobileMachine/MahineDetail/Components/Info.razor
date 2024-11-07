@@ -77,17 +77,24 @@
     //설비 조회
     private async Task OnLoadFacility()
     {
-        ResponseUnit<FacilityDetailDTO> resGet = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={FacId}");
-        if (resGet.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", "설비 정보 조회 실패");
-            return;
-        }
-        if (resGet.data == null)
+            ResponseUnit<FacilityDetailDTO> resGet = await apiManager.GetUnitAsync<FacilityDetailDTO>($"MachineFacility/sign/DetailMachineFacility?facilityid={FacId}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            if (resGet.data == null)
+            {
+                Facility = new FacilityDetailDTO();
+            }
+            Facility = resGet.data;
+        }catch(Exception ex)
         {
-            Facility = new FacilityDetailDTO();
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
-        Facility = resGet.data;
+
     }
 
 

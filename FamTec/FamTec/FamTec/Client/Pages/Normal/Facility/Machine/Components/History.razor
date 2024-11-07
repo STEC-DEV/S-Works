@@ -95,8 +95,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("유지보수 이력조회 실패");
-            await JS.InvokeVoidAsync("alert", "유지보수 이력 조회 에러");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -125,8 +124,7 @@
 
         }catch(Exception ex)
         {
-            Console.WriteLine("[설비][유지보수] 삭제 에러 " + ex);
-            await JS.InvokeVoidAsync("alert", "[설비][유지보수] 삭제 에러");
+            await JS.InvokeVoidAsync("alert", "삭제 실패");
         }
     }
 

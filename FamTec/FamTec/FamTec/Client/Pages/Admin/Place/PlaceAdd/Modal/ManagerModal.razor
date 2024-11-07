@@ -58,7 +58,7 @@
     {
         if (CheckedManagerList.Count == 0)
         {
-            await JS.InvokeVoidAsync("alert", "선택된 매니저가 존재하지않습니다.");
+            await JS.InvokeVoidAsync("alert", "추가 항목이 존재하지 않습니다.");
             return;
         }
 
@@ -81,14 +81,21 @@
     //매니저 로드
     private async Task OnLoadManagerList()
     {
-        ResponseList<ManagerDTO> res = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
-        if (res.code != 200)
+        try
         {
-            await JS.InvokeVoidAsync("alert", res.message);
-            return;
+            ResponseList<ManagerDTO> res = await apiManager.GetListAsync<ManagerDTO>("AdminPlace/sign/GetAllManagerList");
+            if (res.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", res.message);
+                return;
+            }
+            ListManager = res.data;
+            FilterData = ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList();
+        }catch(Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
-        ListManager = res.data;
-        FilterData = ListManager.Where(m => !SelectManagerList.Any(s => s.Id == m.Id)).ToList();
+
     }
 
     //매니저 필터링
