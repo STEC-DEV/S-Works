@@ -17,11 +17,53 @@
         <InputCol Label="성함"
                   @bind-Value=@Voc.Name
                   Placeholder="성함" />
-        <InputCol Label="휴대폰 번호"
-                  ValueType="number"
-                  MaxLength=11
-                  @bind-Value=@Voc.PhoneNumber
-                  Placeholder="휴대폰번호 11자 ( - 제외)" />
+        <div class="row">
+            <div class="flex3">
+                <InputCol Label="휴대폰 번호"
+                          ValueType="number"
+                          MaxLength=11
+                          @bind-Value=@Voc.PhoneNumber
+                          Placeholder="휴대폰번호 11자 ( - 제외)" 
+                          ReadOnly=@(authCheck ? true : false)
+                          />
+            </div>
+            @if (isRunning)
+            {
+                <div class="flex2">
+                    <InputCol Label="인증번호"
+                              ValueType="number"
+                              MaxLength=4
+                              @bind-Value=@Code
+                              Placeholder="인증번호" />
+                </div>
+            }
+            <div class="flex1">
+                <span class="text @(isRunning ?  null : "none")">
+                    @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
+                </span>
+                @if (Voc.PhoneNumber?.Length != 11 || authCheck)
+                {
+                    
+                    <button class="blockbtn">인증번호 요청</button>
+                }
+                else
+                {
+                    if (isRunning)
+                    {
+                        <Button Name="인증번호 확인" OnClick="OnVerifyCode" />
+                    }
+                    else
+                    {
+                        <Button Name="인증번호 요청" OnClick="OnRequestCode" />
+                    }
+
+                }
+            </div>
+            
+            
+        </div>
+        
+        
         <InputCol Label="제목"
                   @bind-Value=@Voc.Title
                   Placeholder="제목" />
@@ -59,7 +101,7 @@
     <div class="btns yappear">
         @if (permCheck && !string.IsNullOrEmpty(Voc.Name)
         && !string.IsNullOrEmpty(Voc.PhoneNumber)
-        && Voc.PhoneNumber.Length == 11
+        && authCheck
         && !string.IsNullOrEmpty(Voc.Title)
         && !string.IsNullOrEmpty(Voc.Contents)
         )
@@ -88,6 +130,14 @@
     private bool permCheck = false;
 
 
+    //인증번호
+    private Timer? timer;
+    private int timeLeft = 0;
+    private bool isRunning = false;
+    private int tryCount = 3;
+    private string Code="";
+    private bool authCheck = false;
+
     List<byte[]> image = new List<byte[]>();
     List<string> _imageName = new List<string>();
 
@@ -96,6 +146,89 @@
         await OnLoadBuildingName();
         await OnLoadPlaceName();
     }
+
+    /*==========================*/
+    private void StartTimer()
+    {
+        timeLeft = 180; // 3분을 초로 설정
+        isRunning = true;
+
+        // 타이머 시작
+        timer = new Timer(OnTimerElapsed, null, 1000, 1000); // 1초 간격
+    }
+
+    private void OnTimerElapsed(object? state)
+    {
+        if (timeLeft > 0)
+        {
+            timeLeft--;
+            InvokeAsync(StateHasChanged); // UI 업데이트
+        }
+        else
+        {
+            timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
+            isRunning = false;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+    //인증번호 요청
+    private async Task OnRequestCode()
+    {
+        try
+        {
+            if(Voc.PhoneNumber?.Length != 11)
+            {
+                await JS.InvokeVoidAsync("alert","휴대폰 번호가 유효하지 않습니다.");
+                return;
+            }
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"Hub/AddAuthCode?PlaceId={PlaceId}&BuildingId={BuildingId}&PhoneNumber={Voc.PhoneNumber}");
+            if(resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert",resGet.message);
+                return;
+            }
+            StartTimer();
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "요청 실패");
+        }
+    }
+    //인증번호 확인
+    private async Task OnVerifyCode()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(Code))
+            {
+                await JS.InvokeVoidAsync("인증번호를 입력해주세요.");
+                return;
+            }
+            ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"Hub/GetVerifyAuthCode?PhoneNumber={Voc.PhoneNumber}&AuthCode={Code}");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            await JS.InvokeVoidAsync("alert", "인증 성공");
+            timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
+            authCheck = true;
+
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert","인증 실패");
+        }
+    }
+
+    /*=================================================*/
 
     private async Task OnLoadBuildingName()
     {
