@@ -2,8 +2,8 @@
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace FamTec.Server.Services
@@ -273,6 +273,96 @@ namespace FamTec.Server.Services
             return randomPassword;
         }
 
+        /// <summary>
+        /// 랜덤 인증코드 생성
+        /// </summary>
+        /// <returns></returns>
+        public string RandomVerifyAuthCode()
+        {
+            RandomGenerator generator = new RandomGenerator();
+            string randomPassword = generator.RandomVerifyCode();
+            return randomPassword;
+        }
+
+        /// <summary>
+        /// 인증코드 발급
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <param name="authcode"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> AddVerifyAuthCodeAnser(string buildingname,string phonenumber, string authcode)
+        {
+            try
+            {
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    { "apikey", Common.KakaoAPIKey},
+                    { "userid", Common.KakaoUserId}
+                });
+
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/token/create/30/s", Content).ConfigureAwait(false);
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                JObject? Jobj = JObject.Parse(HttpResponseResult);
+                string? token = Convert.ToString(Jobj["token"]);
+                if (String.IsNullOrWhiteSpace(token))
+                    return false;
+
+                string message = $"[{buildingname}]\n인증번호는 {authcode} 입니다.";
+
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    { "apikey", Common.KakaoAPIKey},
+                    { "userid", Common.KakaoUserId},
+                    { "token", token},
+                    { "senderkey", Common.KakaoSenderKey},
+                    { "tpl_code", Common.KakaoTemplateCode_4},
+                    { "sender", Common.KakaoSenders},
+                    { "receiver_1",phonenumber},
+                    { "subject_1","인증코드 발급"},
+                    { "message_1", message},
+                    { "failover","Y"},
+                    { "fsubject_1","인증코드 발급"},
+                    { "fmessage_1",message}
+                });
+
+                HttpResponse = await Common.HttpClient.PostAsync("https://kakaoapi.aligo.in/akv10/alimtalk/send/", Content).ConfigureAwait(false);
+                Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
+                {
+                    CharSet = "euc-kr"
+                };
+
+                HttpResponseResult = await HttpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Jobj = JObject.Parse(HttpResponseResult);
+
+                //AddKakaoLogDTO LogDTO = new AddKakaoLogDTO();
+                //LogDTO.Code = Convert.ToString(Jobj["code"]);
+                //LogDTO.Message = Convert.ToString(Jobj["message"]);
+                //LogDTO.MSGID = Convert.ToString(Jobj["info"]?["mid"]?.ToString()); // 메시지ID
+                //LogDTO.Phone = phonenumber;
+
+                //return LogDTO;
+
+                if (Jobj is not null)
+                    return true;
+                else
+                    return false;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+
+
+
+
         private class RandomGenerator
         {
             private readonly Random _random = new Random();
@@ -281,6 +371,7 @@ namespace FamTec.Server.Services
             {
                 return _random.Next(min, max);
             }
+
 
             private string RandomString(int size, bool lowerCase = false)
             {
@@ -298,9 +389,21 @@ namespace FamTec.Server.Services
                 return lowerCase ? builder.ToString().ToLower() : builder.ToString();
             }
 
-            
-            
-            // 241104 + 숫자5자리(랜덤)
+            /// <summary>
+            /// 랜덤코드 생성
+            /// </summary>
+            /// <returns></returns>
+            public string RandomVerifyCode()
+            {
+                var VertifyBuilder = new StringBuilder();
+
+                // 1000 에서 9999 사이의 4자리 숫자
+                int number = RandomNumber(0, 9999);       // 0부터 9999까지 숫자 생성
+                VertifyBuilder.Append(number.ToString("D4"));
+
+                return VertifyBuilder.ToString();
+            }
+                        
 
             public string RandomPassword()
             {

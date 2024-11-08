@@ -177,10 +177,14 @@ builder.Services.AddTransient<ICommService, CommService>();
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
 builder.Services.AddSingleton<WorksSetting>();
 
-builder.Services.AddMemoryCache(); // 메모리캐쉬
+//메모리 캐시 사용
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<AuthCodeService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+
 
 #region 속도제한 LIMIT 
 

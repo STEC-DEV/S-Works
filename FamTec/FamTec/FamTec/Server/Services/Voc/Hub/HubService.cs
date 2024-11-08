@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using FamTec.Client.Pages.CommonComponents;
+﻿using DocumentFormat.OpenXml.EMMA;
 using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
@@ -13,7 +12,6 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.SignalR;
-using System.Text;
 
 namespace FamTec.Server.Services.Voc.Hub
 {
@@ -34,6 +32,8 @@ namespace FamTec.Server.Services.Voc.Hub
         private readonly ILogService LogService;
         private readonly ConsoleLogService<HubService> CreateBuilderLogger;
 
+        private readonly AuthCodeService AuthCodeService;
+
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocFileFolderPath;
@@ -51,7 +51,8 @@ namespace FamTec.Server.Services.Voc.Hub
             IKakaoService _kakaoservice,
             IFileService _fileservice,
             ILogService _logservice,
-            ConsoleLogService<HubService> _createbuilderlogger)
+            ConsoleLogService<HubService> _createbuilderlogger,
+            AuthCodeService _authcodeservice)
         {
             this.VocInfoRepository = _vocinforepository;
             this.VocCommentRepository = _voccommentrepository;
@@ -68,6 +69,141 @@ namespace FamTec.Server.Services.Voc.Hub
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+            this.AuthCodeService = _authcodeservice;
+        }
+
+        /// <summary>
+        /// 인증코드 발급
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool>> AddAuthCodeService(int PlaceId, int BuildingId, string PhoneNumber)
+        {
+            try
+            {
+                //if(String.IsNullOrWhiteSpace(dto.UserName) || String.IsNullOrWhiteSpace(dto.PhoneNumber))
+                //    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if(String.IsNullOrWhiteSpace(PhoneNumber))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if (!String.IsNullOrWhiteSpace(PhoneNumber))
+                {
+                    bool PhoneResult = long.TryParse(PhoneNumber, out _);
+                    if (!PhoneResult)
+                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                }
+
+                BuildingTb? buildingtb = await BuildingInfoRepository.GetBuildingInfo(BuildingId).ConfigureAwait(false);
+                if (buildingtb is null)
+                    return new ResponseUnit<bool>() { message = "존재하지 않는 건물입니다.", data = false, code = 404 };
+
+                DateTime ThisDate = DateTime.Now;
+
+                // 랜덬코드 발급
+                string randomCode = KakaoService.RandomVerifyAuthCode();
+
+                // 카카도 API 전송
+                //AddKakaoLogDTO? LogDTO = await KakaoService.AddVerifyAuthCodeAnser(buildingtb.Name, dto.PhoneNumber, randomCode);
+                bool SendResult = await KakaoService.AddVerifyAuthCodeAnser(buildingtb.Name, PhoneNumber, randomCode);
+
+                //if (LogDTO is not null) // 메시지 성공
+                //{
+                //    KakaoLogTb LogTB = new KakaoLogTb();
+                //    LogTB.Code = LogDTO.Code!;
+                //    LogTB.Message = LogDTO.Message;
+                //    LogTB.Msgid = LogDTO.MSGID;
+                //    LogTB.Phone = LogDTO.Phone; // 받는사람 전화번호
+                //    LogTB.MsgUpdate = false;
+                //    LogTB.CreateDt = ThisDate;
+                //    LogTB.CreateUser = dto.UserName;
+                //    LogTB.UpdateDt = ThisDate;
+                //    LogTB.UpdateUser = dto.UserName;
+                //    LogTB.VocTbId = 0;
+                //    LogTB.PlaceTbId = dto.PlaceId; // 사업장ID
+                //    LogTB.PlaceTbId = dto.BuildingId; // 건물ID
+
+                //    await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                //}
+                //else // 404 에러
+                //{
+                //    KakaoLogTb LogTB = new KakaoLogTb();
+                //    LogTB.Code = null;
+                //    LogTB.Message = "500";
+                //    LogTB.Msgid = null;
+                //    LogTB.Phone = dto.PhoneNumber; // 받는사람 전화번호
+                //    LogTB.MsgUpdate = true;
+                //    LogTB.CreateDt = ThisDate;
+                //    LogTB.CreateUser = dto.UserName;
+                //    LogTB.UpdateDt = ThisDate;
+                //    LogTB.UpdateUser = dto.UserName;
+                //    LogTB.VocTbId = 0;
+                //    LogTB.PlaceTbId = 0; // 사업장ID
+                //    LogTB.PlaceTbId = dto.BuildingId; // 건물ID
+
+                //    await KakaoLogInfoRepository.AddAsync(LogTB).ConfigureAwait(false);
+                //}
+
+                // 인증코드 메모리 저장
+                if (SendResult)
+                {
+                    bool result = await AuthCodeService.SaveOrUpdateAuthCode(PhoneNumber, randomCode);
+                    return new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = result, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// 인증코드 검사
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <param name="authcode"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ResponseUnit<bool>> GetVerifyAuthCodeService(string PhoneNumber, string AuthCode)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(PhoneNumber) || String.IsNullOrWhiteSpace(AuthCode))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                if (!String.IsNullOrWhiteSpace(PhoneNumber))
+                {
+                    bool PhoneResult = long.TryParse(PhoneNumber, out _);
+                    if (!PhoneResult)
+                        return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+                }
+
+                bool result = await AuthCodeService.CheckVerifyAuthCode(PhoneNumber, AuthCode);
+                if(result)
+                {
+                    return new ResponseUnit<bool>() { message = "인증 성공하였습니다.", data = true, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool>() { message = "인증 실패하였습니다.", data = false, code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
         }
 
         /// <summary>
@@ -773,5 +909,6 @@ namespace FamTec.Server.Services.Voc.Hub
             }
         }
 
+     
     }
 }

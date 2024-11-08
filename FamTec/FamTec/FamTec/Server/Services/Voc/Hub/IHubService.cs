@@ -1,5 +1,6 @@
 ﻿using FamTec.Shared.Server.DTO.Voc;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 
 namespace FamTec.Server.Services.Voc.Hub
 {
@@ -8,7 +9,23 @@ namespace FamTec.Server.Services.Voc.Hub
     /// </summary>
     public interface IHubService
     {
-        
+
+        /// <summary>
+        /// 인증코드 발급
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> AddAuthCodeService(int PlaceId, int BuildingId, string PhoneNumber);
+
+        /// <summary>
+        /// 인증코드 검사
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <param name="authcode"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> GetVerifyAuthCodeService(string PhoneNumber, string AuthCode);
+
+
         /// <summary>
         /// 민원추가 - 민원인 전용
         /// </summary>

@@ -1,3 +1,10 @@
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.AssemblyReference.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfoInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfo.cs
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.CoreCompileInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Azure.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Azure.Identity.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\blazor.boot.json
@@ -840,13 +847,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ic
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\icudt_no_CJK.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\FamTec.Shared.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\FamTec.Shared.pdb
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.AssemblyReference.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfoInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfo.cs
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.CoreCompileInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\blazor.build.boot-extension.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\blazor.boot.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.json

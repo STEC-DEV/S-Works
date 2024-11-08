@@ -12,7 +12,7 @@
 {
     <div class="buildingadd-container yappear">
         <div class="buildingadd-info">
-            <CascadingValue Value="@Building"  >
+            <CascadingValue Value="@Building">
                 <ChildContent>
                     <BuildingInfo OnAdd="OnAdd" />
                 </ChildContent>
@@ -23,15 +23,15 @@
             +
         </label>
         <div class="group yappear">
-        @if(GroupList.Count > 0)
-        {
-            foreach (AddGroupListDTO group in GroupList)
+            @if (GroupList.Count > 0)
             {
-                <Group GroupData="group" OnDelGroup="OnDeleteGroup"/>
+                foreach (AddGroupListDTO group in GroupList)
+                {
+                    <Group GroupData="group" OnDelGroup="OnDeleteGroup" />
+                }
             }
-        }
         </div>
-        
+
         <div class="buildingadd-btns">
             <Button Name="등록" Width=true Type=0 OnClick="@OnAdd" />
             @* <Button Name="취소" Width=true Type=1 /> *@
@@ -39,14 +39,14 @@
     </div>
 }
 
- @if (IsModal)
-    {
-        <ModalBackground>
-            <ChildComponent>
-                <SubGroupModal CloseModal="OnModal"  OnAdd="OnAddGroup"/>
-            </ChildComponent>
-        </ModalBackground>
-    }
+@if (IsModal)
+{
+    <ModalBackground>
+        <ChildComponent>
+            <SubGroupModal CloseModal="OnModal" OnAdd="OnAddGroup" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     AddBuildingDTO Building;
@@ -65,17 +65,6 @@
     {
         try
         {
-<<<<<<< HEAD
-            await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
-            return;
-        }
-        
-
-        ResponseUnit<AddBuildingDTO> ResAdd = await apiManager.PostWithFilesAsync<AddBuildingDTO>("building/sign/addbuilding", Building);
-        if(ResAdd.code != 200)
-        {
-            await JS.InvokeVoidAsync("alert", ResAdd.message);
-=======
             if (string.IsNullOrEmpty(Building.Name))
             {
                 await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요.");
@@ -99,10 +88,10 @@
             {
                 await JS.InvokeVoidAsync("alert", resAdd.message);
             }
->>>>>>> origin/Front
             Navigation.NavigateTo("/basic/buildings");
             return;
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             await JS.InvokeVoidAsync("alert", "등록 에러");
         }

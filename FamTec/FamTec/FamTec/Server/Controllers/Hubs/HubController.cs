@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Server.Services.Voc.Hub;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +19,14 @@ namespace FamTec.Server.Controllers.Hubs
         private readonly ICommService CommService;
         private readonly ConsoleLogService<HubController> CreateBuilderLogger;
         
+        // 임시
+        //private readonly AuthCodeService AuthCodeService;
 
         public HubController(
             IHubService _hubservice,
             ILogService _logservice,
             ICommService _commservice,
+            //AuthCodeService _authcodeservice,
             ConsoleLogService<HubController> _createbuilderlogger)
         {
             this.HubService = _hubservice;
@@ -30,7 +34,97 @@ namespace FamTec.Server.Controllers.Hubs
             this.LogService = _logservice;
             this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+
+            //this.AuthCodeService = _authcodeservice;
         }
+
+        /*
+        [HttpGet]
+        [Route("temp")]
+        public async Task<IActionResult> Temp()
+        {
+            var temp = await AuthCodeService.MemoryChacheCount();
+
+            return Ok(temp);
+        }
+        */
+
+        /// <summary>
+        /// 인증코드 발급
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("AddAuthCode")]
+        public async Task<IActionResult> AddAuthCode([FromQuery]int PlaceId, [FromQuery]int BuildingId, [FromQuery]string PhoneNumber)
+        {
+            try
+            {
+                if (PlaceId is 0)
+                    return NoContent();
+
+                if(BuildingId is 0)
+                    return NoContent();
+
+                if (String.IsNullOrWhiteSpace(PhoneNumber))
+                    return NoContent();
+
+                //if(String.IsNullOrWhiteSpace(dto.UserName) || String.IsNullOrWhiteSpace(dto.PhoneNumber))
+                //    return NoContent();
+
+                ResponseUnit<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// 인증코드 검사
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <param name="authcode"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetVerifyAuthCode")]
+        public async Task<IActionResult> GetVerifyAuthCode([FromQuery] string PhoneNumber, [FromQuery]string AuthCode)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(PhoneNumber) || String.IsNullOrWhiteSpace(AuthCode))
+                    return NoContent();
+
+                ResponseUnit<bool> model = await HubService.GetVerifyAuthCodeService(PhoneNumber, AuthCode);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리하지 못함", statusCode: 500);
+            }
+        }
+        
 
         /// <summary>
         /// 민원접수 [일반사용자]

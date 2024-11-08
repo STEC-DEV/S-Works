@@ -37,6 +37,21 @@ namespace FamTec.Server.Services
         public string RandomCode();
 
         /// <summary>
+        /// 인증코드 발급
+        /// </summary>
+        /// <returns></returns>
+        public string RandomVerifyAuthCode();
+
+        /// <summary>
+        /// 인증코드 전송
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <param name="authcode"></param>
+        /// <returns></returns>
+        public Task<bool> AddVerifyAuthCodeAnser(string buildingname, string phonenumber, string authcode);
+
+
+        /// <summary>
         /// 카카오 전송결과 보기
         /// </summary>
         /// <param name="context"></param>

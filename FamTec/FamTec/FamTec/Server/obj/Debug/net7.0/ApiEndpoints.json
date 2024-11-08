@@ -2740,6 +2740,32 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "AddAuthCode",
+    "RelativePath": "api/Hub/AddAuthCode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PlaceId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "BuildingId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PhoneNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "AddVoc",
     "RelativePath": "api/Hub/AddVoc",
     "HttpMethod": "POST",
@@ -2796,6 +2822,27 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "GetVerifyAuthCode",
+    "RelativePath": "api/Hub/GetVerifyAuthCode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PhoneNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AuthCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "GetVocComment",
     "RelativePath": "api/Hub/GetVocCommentList",
     "HttpMethod": "GET",
@@ -2808,6 +2855,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
+    "Method": "Temp",
+    "RelativePath": "api/Hub/temp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

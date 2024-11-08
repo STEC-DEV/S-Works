@@ -119,6 +119,7 @@ namespace FamTec.Server.Services
             await strategy.ExecuteAsync(async () =>
             {
 #if DEBUG
+                
                 Debugger.Break();
 #endif
                 using (IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
