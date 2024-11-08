@@ -2859,16 +2859,6 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
-    "Method": "Temp",
-    "RelativePath": "api/Hub/temp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "FamTec.Server.Controllers.Hubs.HubController",
     "Method": "GetVocCommentDetail",
     "RelativePath": "api/Hub/VocCommentDetail",
     "HttpMethod": "GET",

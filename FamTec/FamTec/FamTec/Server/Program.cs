@@ -362,9 +362,6 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 #endregion
 
-// GlobalStateService를 싱글톤으로 등록
-//builder.Services.AddSingleton<GlobalStateService>();
-
 // HttpClient 등록
 builder.Services.AddHttpClient<ApiPollingService>();
 
@@ -437,7 +434,6 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 #region CORS 사용
-//app.UseCors("AllowLocalAndSpecificIP");
 app.UseCors(MyAllowSpectificOrigins);
 #endregion
 
@@ -509,8 +505,6 @@ foreach (var path in userPaths)
 #endregion
 
 app.UseRouting();
-
-//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

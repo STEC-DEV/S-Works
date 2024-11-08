@@ -57,7 +57,6 @@
                 DateTime thisday = DateTime.Now;
 
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SystemLog", thisday.Year.ToString());
-                //string path = string.Format(@"{0}\\SystemLog/{1}", AppDomain.CurrentDomain.BaseDirectory, thisday.Year);
 
                 DirectoryInfo di = new DirectoryInfo(path);
 
@@ -78,7 +77,6 @@
                 }
 
                 // 일
-                //string filepath = Path.Combine(path, String.Format("{0}_{1}_{2}.txt", thisday.Year, thisday.Month, thisday.Day));
                 string filepath = Path.Combine(path, $"{thisday.Year}_{thisday.Month}_{thisday.Day}.txt");
 
                 // 일.txt + 로그내용

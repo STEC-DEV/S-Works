@@ -7,6 +7,7 @@ namespace FamTec.Server
     {
         private readonly IMemoryCache MemoryCache;
         private readonly TimeSpan ExpirationTime = TimeSpan.FromMinutes(3);
+
         private readonly ILogService LogService;
         private readonly ConsoleLogService<AuthCodeService> CreateBuilderLogger;
 
