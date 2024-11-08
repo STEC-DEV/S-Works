@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FamTec.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef812ba35d3461ec20a03137262869bd8aa817aa")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b6569efa3b57e2558ca37a41604685c5eb1ea091")]
->>>>>>> origin/Front
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff00eeaa344eb7a42d301f76a1e9781c54461fd8")]
 [assembly: System.Reflection.AssemblyProductAttribute("FamTec.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FamTec.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
