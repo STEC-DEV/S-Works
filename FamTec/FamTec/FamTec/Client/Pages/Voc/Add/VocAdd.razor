@@ -27,10 +27,10 @@
                           ReadOnly=@(authCheck ? true : false)
                           />
             </div>
-            @if (isRunning)
+            @if (isRunning && tryCount >= 0)
             {
                 <div class="flex2">
-                    <InputCol Label="인증번호"
+                    <InputCol Label=@($"인증번호 / 남은 횟수 : {tryCount}")
                               ValueType="number"
                               MaxLength=4
                               @bind-Value=@Code
@@ -41,7 +41,7 @@
                 <span class="text @(isRunning ?  null : "none")">
                     @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
                 </span>
-                @if (Voc.PhoneNumber?.Length != 11 || authCheck)
+                @if (Voc.PhoneNumber?.Length != 11 || authCheck || tryCount == 0)
                 {
                     
                     <button class="blockbtn">인증번호 요청</button>
@@ -58,12 +58,9 @@
                     }
 
                 }
-            </div>
-            
-            
+            </div>            
         </div>
-        
-        
+
         <InputCol Label="제목"
                   @bind-Value=@Voc.Title
                   Placeholder="제목" />
@@ -150,6 +147,7 @@
     /*==========================*/
     private void StartTimer()
     {
+        
         timeLeft = 180; // 3분을 초로 설정
         isRunning = true;
 
@@ -157,7 +155,7 @@
         timer = new Timer(OnTimerElapsed, null, 1000, 1000); // 1초 간격
     }
 
-    private void OnTimerElapsed(object? state)
+    private async void OnTimerElapsed(object? state)
     {
         if (timeLeft > 0)
         {
@@ -168,6 +166,9 @@
         {
             timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
             isRunning = false;
+            await JS.InvokeVoidAsync("alert", "시간 초과");
+            Code = "";
+            tryCount--;
             InvokeAsync(StateHasChanged);
         }
     }
@@ -208,23 +209,41 @@
         {
             if (string.IsNullOrEmpty(Code))
             {
-                await JS.InvokeVoidAsync("인증번호를 입력해주세요.");
+                await JS.InvokeVoidAsync("alert","인증번호를 입력해주세요.");
                 return;
             }
             ResponseUnit<bool> resGet = await apiManager.GetUnitAsync<bool>($"Hub/GetVerifyAuthCode?PhoneNumber={Voc.PhoneNumber}&AuthCode={Code}");
             if (resGet.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGet.message);
+                timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
+                isRunning = false;
+                Code = "";
+                tryCount--;
+                return;
+            }
+            if (!resGet.data)
+            {
+                await JS.InvokeVoidAsync("alert", "인증 실패");
+                timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
+                isRunning = false;
+                Code = "";
+                tryCount--;
                 return;
             }
             await JS.InvokeVoidAsync("alert", "인증 성공");
             timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
             authCheck = true;
+            tryCount--;
 
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
             await JS.InvokeVoidAsync("alert","인증 실패");
+            timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
+            isRunning = false;
+            Code = "";
+            tryCount--;
         }
     }
 
