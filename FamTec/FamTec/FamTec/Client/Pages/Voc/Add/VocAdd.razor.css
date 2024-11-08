@@ -47,4 +47,31 @@
     font-size : var(--normal-size);
     font-weight:var(--bold-wt);
     color : darkgray;
+    height:100%;
+}
+
+.row {
+    display :flex;
+    gap : var(--default-pd);
+    height:100%;
+}
+
+.flex3{
+    flex:4;
+}
+
+.flex1 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+}
+
+.text{
+    font-size:var(--normal-size);
+    color : var(--main-color);
+}
+
+.none{
+    opacity:0
 }
