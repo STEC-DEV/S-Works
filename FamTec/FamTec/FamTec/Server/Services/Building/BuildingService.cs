@@ -1,8 +1,10 @@
-﻿using FamTec.Server.Repository.Building;
+﻿using ClosedXML.Excel;
+using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
+using FamTec.Shared.Server.DTO.Excel;
 
 namespace FamTec.Server.Services.Building
 {
@@ -20,12 +22,15 @@ namespace FamTec.Server.Services.Building
 
         private readonly ConsoleLogService<BuildingService> CreateBuilderLogger;
 
+        private readonly IWebHostEnvironment WebHostEnvironment;
+
         public BuildingService(
             IBuildingInfoRepository _buildinginforepository,
             IFloorInfoRepository _floorinforepository,
             IFileService _fileservice,
             ILogService _logservice,
-            ConsoleLogService<BuildingService> _createbuilderlogger)
+            ConsoleLogService<BuildingService> _createbuilderlogger,
+            IWebHostEnvironment _webhostenvironment)
         {
             this.BuildingInfoRepository = _buildinginforepository;
             this.FloorInfoRepository = _floorinforepository;
@@ -33,6 +38,225 @@ namespace FamTec.Server.Services.Building
             this.FileService = _fileservice;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+            this.WebHostEnvironment = _webhostenvironment;
+        }
+
+        /// <summary>
+        /// 건물 엑셀양식 다운로드
+        /// </summary>
+        /// <returns></returns>
+        public async Task<byte[]?> DownloadBuildingForm(HttpContext context)
+        {
+            try
+            {
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "ExcelForm", "건물정보(양식).xlsx");
+                if (String.IsNullOrWhiteSpace(filePath))
+                    return null;
+
+                byte[]? filesBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                if (filesBytes is not null)
+                    return filesBytes;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 건물 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ResponseUnit<bool>> ImportBuildingService(HttpContext context, IFormFile files)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+
+                DateTime ThisDate = DateTime.Now;
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                List<ExcelBuildingInfo> BuildingList = new List<ExcelBuildingInfo>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await files!.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+
+                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
+
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*건물이름")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("B2").GetValue<string>().Trim() != "건물주소")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("C2").GetValue<string>().Trim() != "대표전화")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("D2").GetValue<string>().Trim() != "준공년월")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("E2").GetValue<string>().Trim() != "건물구조")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("F2").GetValue<string>().Trim() != "건물용도")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("G2").GetValue<string>().Trim() != "시공업체")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("H2").GetValue<string>().Trim() != "지붕구조")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("I2").GetValue<string>().Trim() != "소방등급")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("J2").GetValue<string>().Trim() != "정화조용량")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        
+
+                        for (int i = 3; i <= total; i++)
+                        {
+                            var Data = new ExcelBuildingInfo();
+
+                            // 건물이름
+                            Data.BuildingName = Convert.ToString(worksheet.Cell("A" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.BuildingName))
+                            {
+                                return new ResponseUnit<bool>() { message = "시트의 건물명은 공백이 될 수 없습니다.", data = false, code = 204 };
+                            }
+
+                            // 건물주소
+                            Data.Address = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Address))
+                            {
+                                Data.Address = null;
+                            }
+
+                            // 대표전화
+                            Data.Tel = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
+                            if(String.IsNullOrWhiteSpace(Data.Tel))
+                            {
+                                Data.Tel = null;
+                            }
+
+                            // 준공년월
+                            string? DateCheck = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
+
+                            if(!String.IsNullOrWhiteSpace(DateCheck))
+                            {
+                                DateTime? ConvertDate = DateTime.TryParse(DateCheck, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+                                if(ConvertDate is null)
+                                {
+                                    return new ResponseUnit<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
+                                }
+                                else
+                                {
+                                    Data.CompletionDT = null;
+                                }
+                            }
+                            else
+                            {
+                                Data.CompletionDT = null;
+                            }
+
+                            // 건물구조
+                            Data.BuildingStruct = Convert.ToString(worksheet.Cell("E" + i).GetValue<string>().Trim());
+                            if(Data.BuildingStruct is null)
+                            {
+                                Data.BuildingStruct = null;
+                            }
+
+                            // 건물용도
+                            Data.Usage = Convert.ToString(worksheet.Cell("F" + i).GetValue<string>().Trim());
+                            if(Data.Usage is null)
+                            {
+                                Data.Usage = null;
+                            }
+
+                            // 시공업체
+                            Data.ConstComp = Convert.ToString(worksheet.Cell("G" + i).GetValue<string>().Trim());
+                            if(Data.ConstComp is null)
+                            {
+                                Data.ConstComp = null;
+                            }
+
+                            // 지붕구조
+                            Data.RoofStruct = Convert.ToString(worksheet.Cell("H" + i).GetValue<string>().Trim());
+                            if(Data.RoofStruct is null)
+                            {
+                                Data.RoofStruct = null;
+                            }
+
+                            // 소방등급
+                            Data.FireRatingNum = Convert.ToString(worksheet.Cell("I" + i).GetValue<string>().Trim());
+                            if(Data.FireRatingNum is null)
+                            {
+                                Data.FireRatingNum = null;
+                            }
+
+                            // 정화조 용량
+                            Data.SepticTankCapacity = Convert.ToString(worksheet.Cell("J" + i).GetValue<string>().Trim());
+                            if(Data.SepticTankCapacity is null)
+                            {
+                                Data.SepticTankCapacity = null;
+                            }
+
+                            BuildingList.Add(Data);
+                        }
+
+                        if (BuildingList is not [_, ..])
+                            return new ResponseUnit<bool>() { message = "등록할 건물 정보가 없습니다.", data = false, code = 204 };
+
+                        // 건물은 중복검사 안함.
+
+                        List<BuildingTb> model = BuildingList.Select(m => new BuildingTb
+                        {
+                            Name = m.BuildingName!,
+                            Address = m.Address,
+                            Tel = m.Tel,
+                            CompletionDt = m.CompletionDT,
+                            BuildingStruct = m.BuildingStruct,
+                            Usage = m.Usage,
+                            ConstComp = m.ConstComp,
+                            RoofStruct = m.RoofStruct,
+                            FireRating = m.FireRatingNum,
+                            SepticTankCapacity = m.SepticTankCapacity,
+                            CreateDt = ThisDate, // 생성일자
+                            CreateUser = creater, // 생성자
+                            UpdateDt = ThisDate, // 생성일자
+                            UpdateUser = creater, // 수정자
+                            PlaceTbId = Int32.Parse(placeidx)
+                        }).ToList();
+
+                        bool? AddResult = await BuildingInfoRepository.AddBuildingList(model).ConfigureAwait(false);
+
+                        return AddResult switch
+                        {
+                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                            _ => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
+                        };
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
         }
 
         /// <summary>
@@ -908,5 +1132,6 @@ namespace FamTec.Server.Services.Building
             }
         }
 
+      
     }
 }

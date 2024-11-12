@@ -552,12 +552,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.BeautyFacilityController",
+    "Method": "DownloadBeautyFacilityForm",
+    "RelativePath": "api/BeautyFacility/sign/DownloadBeautyFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.BeautyFacilityController",
     "Method": "GetAllBeautyFacility",
     "RelativePath": "api/BeautyFacility/sign/GetAllBeautyFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.BeautyFacilityController",
+    "Method": "ImportBeautyFacilityForm",
+    "RelativePath": "api/BeautyFacility/sign/ImportBeautyFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -743,6 +794,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "DownloadBuildingForm",
+    "RelativePath": "api/Building/DownloadBuildingForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -1083,6 +1144,47 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Building.BuildingController",
+    "Method": "ImportBuildingData",
+    "RelativePath": "api/Building/sign/ImportBuilding",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -1734,12 +1836,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.ConstructFacilityController",
+    "Method": "DownloadConstructFacilityForm",
+    "RelativePath": "api/ConstructFacility/sign/DownloadConstructFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.ConstructFacilityController",
     "Method": "GetAllConstructFacility",
     "RelativePath": "api/ConstructFacility/sign/GetAllConstructFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.ConstructFacilityController",
+    "Method": "ImportConstructFacilityForm",
+    "RelativePath": "api/ConstructFacility/sign/ImportConstructFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -2062,12 +2215,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.ElectronicFacilityController",
+    "Method": "DownloadElectronicFacilityForm",
+    "RelativePath": "api/ElectronicFacility/sign/DownloadElectronicFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.ElectronicFacilityController",
     "Method": "GetAllElecFacility",
     "RelativePath": "api/ElectronicFacility/sign/GetAllElectronicFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.ElectronicFacilityController",
+    "Method": "ImportElectronicFacilityForm",
+    "RelativePath": "api/ElectronicFacility/sign/ImportElectronicFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -2570,12 +2774,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.FireFacilityController",
+    "Method": "DownloadFireFacilityForm",
+    "RelativePath": "api/FireFacility/sign/DownloadFireFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.FireFacilityController",
     "Method": "GetAllFireFacility",
     "RelativePath": "api/FireFacility/sign/GetAllFireFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.FireFacilityController",
+    "Method": "ImportFireFacilityForm",
+    "RelativePath": "api/FireFacility/sign/ImportFireFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3123,12 +3378,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.LiftFacilityController",
+    "Method": "DownloadLiftFacilityForm",
+    "RelativePath": "api/LiftFacility/sign/DownloadLiftFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.LiftFacilityController",
     "Method": "GetAllLiftFacility",
     "RelativePath": "api/LiftFacility/sign/GetAllLiftFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.LiftFacilityController",
+    "Method": "ImportLiftFacilityForm",
+    "RelativePath": "api/LiftFacility/sign/ImportLiftFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3447,12 +3753,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
+    "Method": "DownloadMachineFacilityForm",
+    "RelativePath": "api/MachineFacility/sign/DownloadMachineFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
     "Method": "GetAllMachineFacility",
     "RelativePath": "api/MachineFacility/sign/GetAllMachineFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
+    "Method": "ImportMachineFacilityForm",
+    "RelativePath": "api/MachineFacility/sign/ImportMachineFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -3968,6 +4325,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
+    "Method": "DownloadMaterialForm",
+    "RelativePath": "api/Material/sign/DownloadMaterialForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
     "Method": "GetAllCursorPageNationMaterial",
     "RelativePath": "api/Material/sign/GetAllCursorPageNationMaterial",
     "HttpMethod": "GET",
@@ -4040,7 +4407,7 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Material.MaterialController",
-    "Method": "UploadFile",
+    "Method": "ImportMaterialForm",
     "RelativePath": "api/Material/sign/ImportMaterial",
     "HttpMethod": "POST",
     "IsController": true,
@@ -4307,12 +4674,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.NetworkFacilityController",
+    "Method": "DownloadNetworkFacilityForm",
+    "RelativePath": "api/NetworkFacility/sign/DownloadNetworkFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.NetworkFacilityController",
     "Method": "GetAllNetworkFacility",
     "RelativePath": "api/NetworkFacility/sign/GetAllNetworkFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.NetworkFacilityController",
+    "Method": "ImportNetworkFacilityForm",
+    "RelativePath": "api/NetworkFacility/sign/ImportNetworkFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -4651,12 +5069,63 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Facility.SecurityFacilityController",
+    "Method": "DownloadSecurityFacilityForm",
+    "RelativePath": "api/SecurityFacility/sign/DownloadSecurityFacilityForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.SecurityFacilityController",
     "Method": "GetAllSecurityFacility",
     "RelativePath": "api/SecurityFacility/sign/GetAllSecurityFacility",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Facility.SecurityFacilityController",
+    "Method": "ImportSecurityFacilityForm",
+    "RelativePath": "api/SecurityFacility/sign/ImportSecurityFacility",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -4887,23 +5356,7 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "materialid",
-        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "Startdate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      },
-      {
-        "Name": "EndDate",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -5057,6 +5510,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.User.UserController",
+    "Method": "DownloadUserForm",
+    "RelativePath": "api/User/DownloadUserForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -5309,7 +5772,7 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.User.UserController",
-    "Method": "UploadFile",
+    "Method": "ImportUserData",
     "RelativePath": "api/User/sign/ImportUser",
     "HttpMethod": "POST",
     "IsController": true,

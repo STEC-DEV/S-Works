@@ -138,6 +138,69 @@ namespace FamTec.Server.Repository.Building
             }
         }
 
+        /// <summary>
+        /// 건물 여러개 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<bool> AddBuildingList(List<BuildingTb> model)
+        {
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅포인트 잡음.
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        await context.BuildingTbs.AddRangeAsync(model).ConfigureAwait(false);
+
+                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(AddResult)
+                        {
+                            await transaction.CommitAsync().ConfigureAwait(false);
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync().ConfigureAwait(false);
+                            return false;
+                        }
+                    }
+                    catch(Exception ex) when(IsDeadlockException(ex))
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw; // ExecutionStrategy가 자동으로 재시도 처리
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                    catch(MySqlException ex)
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                }
+            });
+        }
 
         /// <summary>
         /// 해당사업장 건물 전체조회
@@ -754,6 +817,6 @@ namespace FamTec.Server.Repository.Building
             return false;
         }
 
-        
+      
     }
 }

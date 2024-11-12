@@ -7,6 +7,10 @@
 @using System.Drawing
 
 @using System.IO.Compression
+@using FamTec.Shared.Client.DTO.Normal.Material
+@using FamTec.Shared.Client.DTO.Normal.Users
+@using FamTec.Shared.Server.DTO
+@using System.Net.Http.Headers
 @using Tewr.Blazor.FileReader
 @using Microsoft.Net.Http.Headers
 @using static System.Net.Mime.MediaTypeNames
@@ -18,112 +22,223 @@
 <h3>사용자 엑셀 예시</h3>
 
 <input type="button" value="사용자 등록 엑셀양식 다운로드" @onclick="(() =>  btnClick())"/>
-
-<div id="text">
-    <span>
-    asdfasdf
-    asdfasdf
-    asdf
-    asdf
-    asd
-    fasd
-    fasd
-    </span>
-</div>
-
-<input type="button" value="압축테스트" @onclick="(() => btnClick3())"/>
-
-@if (!string.IsNullOrEmpty(imageUrl))
-{
-    <img src="@imageUrl" alt="Fetched Image" style="width:100px;height:100px"/>
-}
-
-<InputFile OnChange="OnInputFileChange" />
-<input type="button" value="업로드 테스트" @onclick="(() => btnUpload())"/>
-
-
+<input type="button" value="사용자 EXPORT" @onclick="(() => btnExport())" />
+<input type="button" value="품목 EXPORT" @onclick="(() => btnExport2())"/>
+<input type="button" value="사용자양식다운로드" @onclick="(() => btnDownloadForm())"/>
+<input type="button" value="건물양식다운로드" @onclick="(() => btnDownloadBuildingForm())"/>
+<input type="button" value="설비양식다운로드" @onclick="(() => btnDownloadFaciliyForm())"/>
+<input type="button" value="미화설비양식다운로드" @onclick="(() => btnDownloadbeautyFacilityForm())"/>
+<input type="button" value="품목다운로드" @onclick="(() => btnDownloadMaterialForm())"/>
 
 @code {
-    private string? excelData;
-    string fileName{ get; set; }
-    string fileContent{ get; set; }
 
-    string imageUrl { get; set; }
 
-    private IBrowserFile selectedFile;
-
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+    protected async Task btnDownloadBuildingForm()
     {
-        selectedFile = e.File;
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/Building/DownloadBuildingForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        //await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보.xlsx");
+        //await JS.InvokeAsync<object>("saveAsFile", "사용자정보", fileUrl); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "건물정보(양식).xlsx");
     }
 
-    private async Task btnUpload()
+    protected async Task btnDownloadMaterialForm()
     {
-        if (selectedFile == null)
-        {
-            Console.WriteLine("파일을 선택하세요.");
-            return;
-        }
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
-        using (var memoryStream = new MemoryStream())
-        {
-            // selectedFile의 스트림을 MemoryStream에 복사
-            await selectedFile.OpenReadStream().CopyToAsync(memoryStream);
-            using (var workbook = new XLWorkbook(memoryStream))
-            {
-                var worksheet = workbook.Worksheet(1);
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiI4Y2RlY2Y5NS0zOTRmLTQzNmQtOGZiNS05YTRlOWFiM2UzYTAiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxNDU1OTQ5LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.u3dWB77zOaiLALo18QsA5h-yN3oACbWZ_4cP0AUDzUU";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
-                Console.WriteLine("asdgfasdf");
-            }
-        }
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/Material/sign/DownloadMaterialForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
 
-        Console.WriteLine("dsafsdag");
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "품목정보.xlsx");
+    }
 
-        //memoryStream.Position = 0; // MemoryStream의 위치를 처음으로 설정
+    protected async Task btnDownloadbeautyFacilityForm()
+    {
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiI4Y2RlY2Y5NS0zOTRmLTQzNmQtOGZiNS05YTRlOWFiM2UzYTAiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxNDU1OTQ5LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.u3dWB77zOaiLALo18QsA5h-yN3oACbWZ_4cP0AUDzUU";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/BeautyFacility/sign/DownloadBeautyFacilityForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
 
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "미화설비정보.xlsx");
+    }
 
+    protected async Task btnDownloadFaciliyForm()
+    {
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
-        //using var content = new MultipartFormDataContent();
-        // MemoryStream을 StreamContent로 감싸고 파일 정보 추가
-        //var fileContent = new StreamContent(memoryStream);
-
-        //fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
-        //content.Add(fileContent, "file", selectedFile.Name);
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiI4Y2RlY2Y5NS0zOTRmLTQzNmQtOGZiNS05YTRlOWFiM2UzYTAiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxNDU1OTQ5LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.u3dWB77zOaiLALo18QsA5h-yN3oACbWZ_4cP0AUDzUU";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
         
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/MachineFacility/sign/DownloadMachineFacilityForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
 
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "설비내용.xlsx");
+        //await JS.InvokeAsync<object>("saveAsFile", "설비내용", System.Convert.ToBase64String(fileBytes)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
     }
 
-
-
-    protected async Task btnClick3()
+    protected async Task btnDownloadForm()
     {
-        try
-        {
-            var imageBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/Voc/temp");
-             if (imageBytes == null || imageBytes.Length == 0)
-             {
-                 Console.WriteLine("Failed to fetch the image or received empty data.");
-                 return;
-             }
+        //string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiJlYzgzNDhiMi1jM2VhLTRlYTItODFkOC0xZjY1YWQ3ZmRmOGMiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxMzc1NDE3LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.oPlbCOzkIu4D-c4131TLfGQMJEuAOh7ivlJ4SgN2Ngw";
+        //HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
-             // Base64로 인코딩하여 이미지 URL 생성
-             imageUrl = $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}";
-             StateHasChanged();
-             Console.WriteLine("Image URL generated successfully.");
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine($"Request error: {ex.Message}");
-        }
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/User/DownloadUserForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        //await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보.xlsx");        
+        //await JS.InvokeAsync<object>("saveAsFile", "사용자정보", fileUrl); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "사용자정보(양식).xlsx");
     }
 
+    // 품목정보 EXPORT
+    protected async Task btnExport2()
+    {
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiI0ZGNhZGZjNy04MTY4LTRlZDAtOGQ4MC0wMDQ2MjkwOWJlNDIiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxMTM0MDM0LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.lilQaW4WtwQozsBvv5ZmH2NCs_cpkrRQfAGq9qln508";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        ResponseList<MaterialListDTO>? Material = await HttpClient.GetFromJsonAsync<ResponseList<MaterialListDTO>>("api/Material/sign/GetPlaceMaterial");
+
+        // 엑셀 파일 만듬
+        var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("품목리스트출력");
+
+        List<string> Title = new List<string>()
+        {
+            "품목코드",
+            "품목명",
+            "규격",
+            "제조사",
+            "단위",
+            "안전재고"
+        };
+        worksheet = CreateCell_2(worksheet, Title, Material.data);
+
+        MemoryStream XLSStream = new();
+        workbook.SaveAs(XLSStream, false);
+        byte[] byteData = XLSStream.ToArray();
+
+        await JS.InvokeAsync<object>("saveAsFile", "품목내용.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+
+    }
+
+    private IXLWorksheet CreateCell_2(IXLWorksheet sheet, List<string> title, List<MaterialListDTO> Data)
+    {
+        // 타이틀 작업
+        for (int i = 0; i < title.Count; i++)
+        {
+            sheet.Cell(1, i+1).Value = title[i].ToString();
+            sheet.Column(i +1).Width = 15; // 너비
+            sheet.Row(1).Height = 15; // 높이
+
+            var cell = sheet.Cell(1, i + 1); // A1, A2, A3... 셀선택
+
+
+        }
+
+        return null;
+    }
+
+    #region 사용자 출력
+    // 사용자 엑셀 EXPORT
+    protected async Task btnExport()
+    {
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiI0ZGNhZGZjNy04MTY4LTRlZDAtOGQ4MC0wMDQ2MjkwOWJlNDIiLCJBbGFybVlOIjoiVHJ1ZSIsIkFkbWluWU4iOiJUcnVlIiwiVXNlclR5cGUiOiJBRE1JTiIsIkFkbWluSWR4IjoiMyIsIlBsYWNlSWR4IjoiMSIsIlBsYWNlTmFtZSI6IuqwleuCqOyasOyytOq1rSIsIlBsYWNlQ3JlYXRlRFQiOiIyMDI0LTEwLTMwIiwiUm9sZSI6Ik1hc3RlciIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsIlVzZXJQZXJtcyI6IntcIlVzZXJQZXJtX0Jhc2ljXCI6XCIyXCIsXCJVc2VyUGVybV9NYWNoaW5lXCI6XCIyXCIsXCJVc2VyUGVybV9FbGVjXCI6XCIyXCIsXCJVc2VyUGVybV9MaWZ0XCI6XCIyXCIsXCJVc2VyUGVybV9GaXJlXCI6XCIyXCIsXCJVc2VyUGVybV9Db25zdHJ1Y3RcIjpcIjJcIixcIlVzZXJQZXJtX05ldHdvcmtcIjpcIjJcIixcIlVzZXJQZXJtX0JlYXV0eVwiOlwiMlwiLFwiVXNlclBlcm1fU2VjdXJpdHlcIjpcIjJcIixcIlVzZXJQZXJtX01hdGVyaWFsXCI6XCIyXCIsXCJVc2VyUGVybV9FbmVyZ3lcIjpcIjJcIixcIlVzZXJQZXJtX1VzZXJcIjpcIjJcIixcIlVzZXJQZXJtX1ZvY1wiOlwiMlwifSIsIlZvY1Blcm1zIjoie1wiVm9jTWFjaGluZVwiOlwiVHJ1ZVwiLFwiVm9jRWxlY1wiOlwiVHJ1ZVwiLFwiVm9jTGlmdFwiOlwiVHJ1ZVwiLFwiVm9jRmlyZVwiOlwiRmFsc2VcIixcIlZvY0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiVm9jTmV0d29ya1wiOlwiVHJ1ZVwiLFwiVm9jQmVhdXR5XCI6XCJUcnVlXCIsXCJWb2NTZWN1cml0eVwiOlwiVHJ1ZVwiLFwiVm9jRGVmYXVsdFwiOlwiVHJ1ZVwifSIsIlBsYWNlUGVybXMiOiJ7XCJQbGFjZVBlcm1fTWFjaGluZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0VsZWNcIjpcIlRydWVcIixcIlBsYWNlUGVybV9MaWZ0XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRmlyZVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX0NvbnN0cnVjdFwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX05ldHdvcmtcIjpcIlRydWVcIixcIlBsYWNlUGVybV9CZWF1dHlcIjpcIlRydWVcIixcIlBsYWNlUGVybV9TZWN1cml0eVwiOlwiVHJ1ZVwiLFwiUGxhY2VQZXJtX01hdGVyaWFsXCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fRW5lcmd5XCI6XCJUcnVlXCIsXCJQbGFjZVBlcm1fVm9jXCI6XCJUcnVlXCJ9IiwiZXhwIjoxNzMxMTM0MDM0LCJpc3MiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8iLCJhdWQiOiJodHRwczovL3N3cy5zLXRlYy5jby5rci8ifQ.lilQaW4WtwQozsBvv5ZmH2NCs_cpkrRQfAGq9qln508";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        ResponseList<ListUser>? Users = await HttpClient.GetFromJsonAsync<ResponseList<ListUser>>("api/User/sign/GetPlaceUsers");
+
+        // 엑셀 파일 만듬
+        var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("사용자리스트출력");
+
+        List<string> Title = new List<string>()
+        {
+            "이름",
+            "아이디",
+            "직책",
+            "이메일",
+            "상태"
+        };
+
+        worksheet = CreateCell_1(worksheet, Title, Users.data);
+
+        MemoryStream XLSStream = new();
+        workbook.SaveAs(XLSStream, false);
+        byte[] byteData = XLSStream.ToArray();
+
+        await JS.InvokeAsync<object>("saveAsFile", "사용자내용.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
+    }
+
+    private IXLWorksheet CreateCell_1(IXLWorksheet sheet, List<string> title, List<ListUser> Data)
+    {
+        // 타이틀 작업
+        for (int i = 0; i < title.Count; i++)
+        {
+            sheet.Cell(1, i + 1).Value = title[i].ToString();
+            sheet.Column(i +1).Width = 15; // 너비
+            sheet.Row(1).Height = 15; // 높이
+
+            var cell = sheet.Cell(1, i + 1); // A1, A2, A3... 셀선택
+            cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Double;
+            cell.Style.Border.OutsideBorderColor = XLColor.White;
+        }
+
+        var range = sheet.Range(sheet.Cell("A1"), sheet.Cell("E1"));
+
+        // 범위 내의 모든 셀의 배경색을 에스텍색으로 설정
+        Color color = Color.FromArgb(2241348);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.White;
+
+        // 내용집어넣기
+        for (int i = 0; i < Data.Count; i++)
+        {
+            sheet.Cell(i + 2, 1).Value = Data[i].Name ?? null;
+            sheet.Cell(i + 2, 2).Value = Data[i].UserId ?? null;
+            sheet.Cell(i + 2, 3).Value = Data[i].Type ?? null;
+            sheet.Cell(i + 2, 4).Value = Data[i].Email ?? null;
+            string? statusText = Data[i].Status switch
+            {
+                0 => "퇴직",
+                1 => "휴직",
+                2 => "재직",
+                _ => null
+            };
+            sheet.Cell(i + 2, 5).Value = statusText;
+        }
+
+        return sheet;
+    }
+    #endregion
+
+    // ======================
+
+    // 사용자 IMPORT 엑셀양식 다운로드
     protected async Task btnClick()
     {
         // 엑셀 파일 만듬
         var workbook = new XLWorkbook();
-
         var worksheet = workbook.Worksheets.Add("사용자등록");
 
         List<string> Title = new List<string>()
@@ -132,7 +247,30 @@
             "비밀번호",
             "이름",
             "이메일",
-            "전화번호"
+            "전화번호",
+            "재직여부",
+            "직책",
+            "기본정보권한",
+            "기계설비 유지관리 권한",
+            "전기설비 유지관리 권한",
+            "승강설비 유지관리 권한",
+            "소방설비 유지관리 권한",
+            "건축설비 유지관리 권한",
+            "통신설비 유지관리 권한",
+            "미화설비 유지관리 권한",
+            "보안설비 유지관리 권한",
+            "자재관리 권한",
+            "에너지관리 권한",
+            "사용자관리 권한",
+            "민원관리 권한",
+            "기계민원 권한",
+            "전기민원 권한",
+            "승강민원 권한",
+            "소방민원 권한",
+            "건축민원 권한",
+            "통신민원 권한",
+            "미화민원 권한",
+            "보안민원 권한"
         };
 
         worksheet = CreateCell(worksheet, Title.Count(), Title);
@@ -144,37 +282,84 @@
         await JS.InvokeAsync<object>("saveAsFile", "사용자정보.xlsx", System.Convert.ToBase64String(byteData)); // 파일명은 토큰에서 따서 사업장명 쓰면됨.
     }
 
+    // I ~  P : 설비
+    // T ~ AB : 민원 권한
     private IXLWorksheet CreateCell(IXLWorksheet sheet, int colNum, List<string>title)
     {
         for (int i = 0; i < colNum; i++)
         {
-            sheet.Cell(1, i + 1).Value = title[i].ToString();
-            sheet.Column(i + 1).Width = 15; // 너비
-            sheet.Row(1).Height = 15; // 높이
+            sheet.Cell(2, i + 1).Value = title[i].ToString();
+            sheet.Column(i + 1).Width = 25; // 너비
+            sheet.Row(1).Height = 20; // 높이
 
-            var cell = sheet.Cell(1, i + 1); // A1,A2,A3 .. 셀 선택
+            var cell = sheet.Cell(2, i + 1); // A1,A2,A3 .. 셀 선택
             cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
             cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
             cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // Vertial 중앙정렬
-            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Double;
-            cell.Style.Border.OutsideBorderColor = XLColor.White;
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+            cell.Style.Border.OutsideBorderColor = XLColor.Black;
         }
 
-        var range = sheet.Range(sheet.Cell("A1"), sheet.Cell("E1"));
-        
+        IXLRange range = sheet.Range(sheet.Cell("A2"), sheet.Cell("AB2"));
+
         // 범위 내의 모든 셀의 배경색을 에스텍색으로 설정
-        Color color = Color.FromArgb(2241348);
+        Color color = Color.FromArgb(217,217,217);
         range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
         range.Style.Font.Bold = true;
-        range.Style.Font.FontColor = XLColor.White;
+        range.Style.Font.FontColor = XLColor.Black;
 
-        var mergerange = sheet.Range(sheet.Cell("H1"), sheet.Cell("N7"));
+        // # 1
+        IXLRange mergerange = sheet.Range(sheet.Cell("I1"), sheet.Cell("P1"));
         mergerange.Merge(); // Merge ()에서 범위의 셀을 결합하는
 
-        mergerange.Value = $"*[해당내용은 참고사항입니다]\r\n업로드 후 생성된 아이디로 로그인하셔서 정보수정 바랍니다.";
+        mergerange.Value = "설비권한";
+        mergerange.Style.Font.FontName = "맑은 고딕";
+        mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        mergerange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+        mergerange.Style.Border.OutsideBorderColor = XLColor.Black;
+
+        range = sheet.Range(sheet.Cell("I1"), sheet.Cell("P1"));
+        color = Color.FromArgb(166, 166, 166);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.Black;
+
+
+        // # 2
+        mergerange = sheet.Range(sheet.Cell("T1"), sheet.Cell("AB1"));
+        mergerange.Merge();
+
+        mergerange.Value = "민원권한";
+        mergerange.Style.Font.FontName = "맑은 고딕";
+        mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        mergerange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+        mergerange.Style.Border.OutsideBorderColor = XLColor.Black;
+
+
+        range = sheet.Range(sheet.Cell("T1"), sheet.Cell("AB1"));
+        color = Color.FromArgb(166, 166, 166);
+        range.Style.Fill.BackgroundColor = XLColor.FromColor(color);
+        range.Style.Font.Bold = true;
+        range.Style.Font.FontColor = XLColor.Black;
+
+        // # 참고
+        mergerange = sheet.Range(sheet.Cell("AG1"), sheet.Cell("AN7"));
+        mergerange.Merge(); // 병합
+
+        mergerange.Value = @"*[해당내용은 참고사항입니다]\n\n
+                              
+                              설비권한항목은 아래와 같습니다.\n
+                              권한없음:0  읽기권한:1  쓰기권한:2\n\n
+                              민원항목은 아래와 같습니다.\n
+                              권한있음:0  없음:1";
         mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
         mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+        
 
         return sheet;
     }
+
+
 }

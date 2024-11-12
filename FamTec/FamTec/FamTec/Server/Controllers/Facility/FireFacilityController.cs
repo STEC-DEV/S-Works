@@ -34,6 +34,84 @@ namespace FamTec.Server.Controllers.Facility
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        [HttpGet]
+        [Route("sign/DownloadFireFacilityForm")]
+        public async Task<IActionResult> DownloadFireFacilityForm()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                byte[]? ExcelForm = await FireFacilityService.DownloadFireFacilityForm(HttpContext);
+
+                if (ExcelForm is not null)
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "소방설비정보.xlsx");
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportFireFacility")]
+        public async Task<IActionResult> ImportFireFacilityForm([FromForm] IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extenstion = FileService.GetExtension(files);
+                if (String.IsNullOrWhiteSpace(extenstion))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extenstion);
+                    if (!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                    }
+                }
+
+                ResponseUnit<bool> model = await FireFacilityService.ImportFireFacilityService(HttpContext, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/AddFireFacility")]

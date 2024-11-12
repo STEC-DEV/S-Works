@@ -33,6 +33,83 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        [HttpGet]
+        [Route("sign/DownloadMaterialForm")]
+        public async Task<IActionResult> DownloadMaterialForm()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                byte[]? ExcelForm = await MaterialService.DownloadMaterialForm(HttpContext);
+
+                if(ExcelForm is not null)
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "품목정보.xlsx");
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportMaterial")]
+        public async Task<IActionResult> ImportMaterialForm([FromForm] IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files);
+                if (String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension);
+                    if (!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                    }
+                }
+
+                ResponseUnit<bool> model = await MaterialService.ImportMaterialService(HttpContext, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 자재 등록
         /// </summary>
@@ -419,59 +496,6 @@ namespace FamTec.Server.Controllers.Material
                     return NoContent();
 
                 ResponseUnit<bool?> model = await MaterialService.DeleteMaterialService(HttpContext, delIdx).ConfigureAwait(false);
-                if (model is null)
-                    return BadRequest();
-
-#if DEBUG
-                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
-#endif
-
-                if (model.code == 200)
-                    return Ok(model);
-                else
-                    return BadRequest();
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.Message);
-#if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
-#endif
-                return Problem("서버에서 처리할 수 없는 작업입니다.", statusCode: 500);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("sign/ImportMaterial")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile files)
-        {
-            try
-            {
-                if (HttpContext is null)
-                    return BadRequest();
-
-                if (files is null)
-                    return NoContent();
-
-                if (files.Length == 0)
-                    return NoContent();
-
-                string? extension = FileService.GetExtension(files); // 파일 확장자 추출
-                if(String.IsNullOrWhiteSpace(extension))
-                {
-                    return BadRequest();
-                }
-                else
-                {
-                    bool extensionCheck = Common.XlsxAllowedExtensions.Contains(extension); // 파일 확장자 검사 xlsx or xlx 만 허용
-                    if(!extensionCheck)
-                    {
-                        return Ok(new ResponseUnit<string?>() { message = "지원하지 않는 파일형식입니다.", data = null, code = 200 });
-                    }
-                }
-
-                ResponseUnit<string?> model = await MaterialService.ImportMaterialService(HttpContext, files).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

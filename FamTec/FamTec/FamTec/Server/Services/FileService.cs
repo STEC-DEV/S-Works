@@ -94,7 +94,7 @@ namespace FamTec.Server.Services
                         var encodedFormat = GetEncodedFormat(targetExtension);
 
                         using (var image = SKImage.FromBitmap(resizedBitmap))
-                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
+                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시 <-- 여기랑
                         using (var outputStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                         {
                             data.SaveTo(outputStream);
@@ -320,22 +320,6 @@ namespace FamTec.Server.Services
             }
         }
 
-
-        // MIME 타입 결정 메서드
-        private string GetMimeType(string extension)
-        {
-            return extension switch
-            {
-                ".png" => "image/png",
-                ".bmp" => "image/bmp",
-                ".jpeg" => "image/jpeg",
-                ".jpg" => "image/jpeg",
-                ".gif" => "image/gif",
-                _ => "application/octet-stream"
-            };
-        }
-
-
         // 인코딩 형식을 결정
         SKEncodedImageFormat GetEncodedFormat(string extension)
         {
@@ -429,8 +413,8 @@ namespace FamTec.Server.Services
                     ".png" => ".png",
                     ".bmp" => ".bmp",
                     ".jpeg" => ".jpeg",
-                    ".jpg" => "image/jpeg",
-                    ".gif" => "image/gif",
+                    ".jpg" => ".jpg",
+                    ".gif" => ".gif",
                     _ => ".png" // 지원되지 않는 확장자는 PNG로 기본 설정
                 };
 
@@ -462,7 +446,7 @@ namespace FamTec.Server.Services
                 foreach (string file in Directory.EnumerateFiles(folderpath, filename))
                 {
                     // 파일 읽기
-                    return await File.ReadAllBytesAsync(file);
+                    return await File.ReadAllBytesAsync(file); // 여긴데
                 }
 
                 return null; // 일치하는 파일이 없으면 null 반환

@@ -33,11 +33,11 @@
         /// <summary>
         /// 안전재고 수량
         /// </summary>
-        public string? SafeNum { get; set; }
+        public int? SafeNum { get; set; }
 
         /// <summary>
         /// 위치
         /// </summary>
-        public string? Location { get; set; }
+        public int? RoomId { get; set; }
     }
 }

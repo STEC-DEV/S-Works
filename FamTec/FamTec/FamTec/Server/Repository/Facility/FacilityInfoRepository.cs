@@ -106,6 +106,80 @@ namespace FamTec.Server.Repository.Facility
         }
 
         /// <summary>
+        /// 설비 리스트 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<bool> AddFacilityList(List<FacilityTb> model)
+        {
+            // ExecutionStrategy 생성
+            IExecutionStrategy strategy = context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+#if DEBUG
+                // 강제로 디버깅포인트 잡음
+                Debugger.Break();
+#endif
+                using (IDbContextTransaction transaction = await context.Database.BeginTransactionAsync().ConfigureAwait(false))
+                {
+                    try
+                    {
+                        await context.FacilityTbs.AddRangeAsync(model).ConfigureAwait(false);
+
+                        bool AddResult = await context.SaveChangesAsync() > 0 ? true : false;
+                        if(AddResult)
+                        {
+                            await transaction.CommitAsync().ConfigureAwait(false);
+                            return true;
+                        }
+                        else
+                        {
+                            await transaction.RollbackAsync().ConfigureAwait(false);
+                            return false;
+                        }
+                    }
+                    catch(Exception ex) when (IsDeadlockException(ex))
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데드락이 발생했습니다. 재시도 중: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"데이터베이스 업데이트 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                    catch(MySqlException ex)
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage($"MariaDB 오류 발생: {ex}");
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                    catch(Exception ex)
+                    {
+                        await transaction.RollbackAsync().ConfigureAwait(false);
+                        LogService.LogMessage(ex.ToString());
+#if DEBUG
+                        CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                        throw;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
         /// 공간ID에 포함되어있는 전체 설비LIST 조회
         /// </summary>
         /// <param name="roomid"></param>
@@ -874,5 +948,7 @@ namespace FamTec.Server.Repository.Facility
 
             return false;
         }
+
+      
     }
 }

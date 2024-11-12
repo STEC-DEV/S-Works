@@ -9,6 +9,22 @@ namespace FamTec.Server.Services.User
     public interface IUserService
     {
         /// <summary>
+        /// 사용자 엑셀양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadUserForm(HttpContext context);
+
+        /// <summary>
+        /// 사용자 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportUserService(HttpContext context, IFormFile? file);
+
+
+        /// <summary>
         /// QR로그인
         /// </summary>
         /// <param name="dto"></param>
@@ -76,13 +92,7 @@ namespace FamTec.Server.Services.User
         /// <returns></returns>
         public Task<ResponseUnit<UsersDTO>> UpdateUserService(HttpContext context, UsersDTO dto, IFormFile? files);
 
-        /// <summary>
-        /// 사용자 엑셀 IMPORT
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public Task<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file);
+  
 
         /// <summary>
         /// 사업장 메뉴권한 리턴

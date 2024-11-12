@@ -1,10 +1,26 @@
 ﻿using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Server.DTO;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace FamTec.Server.Services.Facility.Type.Network
 {
     public interface INetworkFacilityService
     {
+        /// <summary>
+        /// 통신설비 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadNetworkFacilityForm(HttpContext context);
+
+        /// <summary>
+        /// 기게설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportNetworkFacilityService(HttpContext context, IFormFile? file);
+
         /// <summary>
         /// 설비 추가
         /// </summary>

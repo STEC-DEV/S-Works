@@ -261,7 +261,9 @@ namespace FamTec.Server.Services.Store
                             .Sum(m => m.InOutTotalPrice ?? 0);
 
                         // 총 재고수량
-                        dto.TotalStockNum = dto.InventoryList.Sum(m => m.CurrentNum ?? 0);
+                        //dto.TotalStockNum = dto.InventoryList.Sum(m => m.CurrentNum ?? 0);
+                        // 마지막 재고수량으로 변경됨
+                        dto.TotalStockNum = dto.InventoryList.OrderBy(m => m.INOUT_DATE).LastOrDefault()?.CurrentNum ?? 0;
 
                         // 이월재고 수량
                         dto.LastMonthStock = await InventoryInfoRepository.GetCarryOverNum(Convert.ToInt32(placeid), dto.ID!.Value, startDate);

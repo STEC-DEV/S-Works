@@ -343,7 +343,8 @@ builder.Services.AddResponseCompression(opts =>
             "application/xml",
             "text/plain",
             "text/css",
-            "text/javascript"
+            "text/javascript",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         }).Except(new[] { "text/html" });
 });
 
@@ -414,6 +415,7 @@ provider.Mappings[".jpg"] = "image/jpeg";
 provider.Mappings[".png"] = "image/png";
 provider.Mappings[".gif"] = "image/gif";
 provider.Mappings[".webp"] = "image/webp";
+provider.Mappings[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 app.UseStaticFiles(new StaticFileOptions
 {

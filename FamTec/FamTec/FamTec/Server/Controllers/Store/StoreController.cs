@@ -374,14 +374,14 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        //public async Task<IActionResult> PeriodicRecord()
-        public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
+        public async Task<IActionResult> PeriodicRecord()
+        //public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
-                //List<int> materialid = new List<int>() { 1};
-                //DateTime Startdate = DateTime.Now.AddDays(-22);
-                //DateTime EndDate = DateTime.Now;
+                List<int> materialid = new List<int>() { 1};
+                DateTime Startdate = DateTime.Now.AddDays(-13);
+                DateTime EndDate = DateTime.Now;
 
                 if (HttpContext is null)
                     return BadRequest();

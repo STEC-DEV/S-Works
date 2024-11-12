@@ -309,7 +309,7 @@ namespace FamTec.Server.Services
                 if (String.IsNullOrWhiteSpace(token))
                     return false;
 
-                string message = $"[{buildingname}]\n인증번호는 {authcode} 입니다.";
+                string message = $"인증번호는 {authcode} 입니다.";
 
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {

@@ -76,5 +76,12 @@ namespace FamTec.Server.Repository.Room
         /// <param name="placeid"></param>
         /// <returns></returns>
         Task<List<PlaceRoomListDTO>?> GetPlaceAllGroupRoomInfo(int placeid);
+
+        /// <summary>
+        /// 사업장에 해당하는 전체 공간List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<List<RoomTb>?> GetPlaceAllRoomList(int placeid);
     }
 }

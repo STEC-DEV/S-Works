@@ -6,6 +6,21 @@ namespace FamTec.Server.Services.Material
     public interface IMaterialService
     {
         /// <summary>
+        /// 품목 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadMaterialForm(HttpContext context);
+
+        /// <summary>
+        /// 품목 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportMaterialService(HttpContext context, IFormFile? file);
+
+        /// <summary>
         /// 자재 추가
         /// </summary>
         /// <param name="context"></param>
@@ -66,14 +81,6 @@ namespace FamTec.Server.Services.Material
         /// <param name="delIdx"></param>
         /// <returns></returns>
         public Task<ResponseUnit<bool?>> DeleteMaterialService(HttpContext context, List<int> delIdx);
-
-        /// <summary>
-        /// 자재정보 엑셀 IMPORT
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        public Task<ResponseUnit<string?>> ImportMaterialService(HttpContext context, IFormFile files);
 
         /// <summary>
         /// 품목검색

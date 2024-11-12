@@ -3,6 +3,7 @@ using FamTec.Server.Services;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO.Room;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
 using System.Diagnostics;
@@ -547,6 +548,40 @@ namespace FamTec.Server.Repository.Room
             }
         }
 
+
+        /// <summary>
+        /// 사업장에 해당하는 전체 공간 List 반환
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<RoomTb>?> GetPlaceAllRoomList(int placeid)
+        {
+            try
+            {
+                List<RoomTb>? RoomTB = await (from PlaceInfo in context.PlaceTbs.Where(m => m.Id == placeid && m.DelYn != true)
+                            join BuildingInfo in context.BuildingTbs.Where(m => m.DelYn != true)
+                            on PlaceInfo.Id equals BuildingInfo.PlaceTbId
+                            join FloorInfo in context.FloorTbs.Where(m => m.DelYn != true)
+                            on BuildingInfo.Id equals FloorInfo.BuildingTbId
+                            join RoomInfo in context.RoomTbs.Where(m => m.DelYn != true)
+                            on FloorInfo.Id equals RoomInfo.FloorTbId
+                            select RoomInfo).ToListAsync();
+
+                if (RoomTB is [_, ..])
+                    return RoomTB;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return null;
+            }
+        }
+
         /// <summary>
         /// 데드락 감지코드
         /// </summary>
@@ -564,5 +599,8 @@ namespace FamTec.Server.Repository.Room
 
             return false;
         }
+
+
+
     }
 }

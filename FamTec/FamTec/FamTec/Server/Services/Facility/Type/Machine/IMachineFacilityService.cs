@@ -6,6 +6,20 @@ namespace FamTec.Server.Services.Facility.Type.Machine
     public interface IMachineFacilityService
     {
         /// <summary>
+        /// 기계설비 엑셀 양식 다운로드
+        /// </summary>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadMachineFacilityForm(HttpContext context);
+
+        /// <summary>
+        /// 기계설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportMachineFacilityService(HttpContext context, IFormFile? file);
+
+        /// <summary>
         /// 설비 추가
         /// </summary>
         /// <param name="context"></param>

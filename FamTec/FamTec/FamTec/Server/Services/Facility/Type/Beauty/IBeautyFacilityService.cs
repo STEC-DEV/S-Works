@@ -6,6 +6,21 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
     public interface IBeautyFacilityService
     {
         /// <summary>
+        /// 미화설비 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadBeautyFacilityForm(HttpContext context);
+
+        /// <summary>
+        /// 미화설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportBeautyFacilityService(HttpContext context, IFormFile? file);
+
+        /// <summary>
         /// 설비 추가
         /// </summary>
         /// <param name="context"></param>

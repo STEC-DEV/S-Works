@@ -6,6 +6,21 @@ namespace FamTec.Server.Services.Facility.Type.Lift
     public interface ILiftFacilityService
     {
         /// <summary>
+        /// 승강설비 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadLiftFacilityForm(HttpContext context);
+
+        /// <summary>
+        /// 승강설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportLiftFacilityService(HttpContext context, IFormFile? file);
+
+        /// <summary>
         /// 설비 추가
         /// </summary>
         /// <param name="context"></param>

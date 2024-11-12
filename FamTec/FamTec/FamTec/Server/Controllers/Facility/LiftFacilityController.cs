@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Facility.Type.Lift;
+using FamTec.Server.Services.Facility.Type.Machine;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Facility;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,82 @@ namespace FamTec.Server.Controllers.Facility
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-     
+        [HttpGet]
+        [Route("sign/DownloadLiftFacilityForm")]
+        public async Task<IActionResult> DownloadLiftFacilityForm()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                byte[]? ExcelForm = await LiftFacilityService.DownloadLiftFacilityForm(HttpContext);
+
+                if (ExcelForm is not null)
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "기계설비정보.xlsx");
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportLiftFacility")]
+        public async Task<IActionResult> ImportLiftFacilityForm([FromForm] IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files);
+                if (String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension);
+                    if (!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                    }
+                }
+
+                ResponseUnit<bool> model = await LiftFacilityService.ImportLiftFacilityService(HttpContext, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
         [AllowAnonymous]
         [HttpPost]

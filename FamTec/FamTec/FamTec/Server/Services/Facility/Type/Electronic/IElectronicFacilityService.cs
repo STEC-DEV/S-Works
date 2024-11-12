@@ -6,6 +6,21 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
     public interface IElectronicFacilityService
     {
         /// <summary>
+        /// 전기설비 엑셀 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadElectronicFacilityForm(HttpContext context);
+
+        /// <summary>
+        /// 기계설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportElectronicFacilityService(HttpContext context, IFormFile? file);
+
+        /// <summary>
         /// 설비 추가
         /// </summary>
         /// <param name="context"></param>

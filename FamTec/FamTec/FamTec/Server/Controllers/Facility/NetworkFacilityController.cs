@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FamTec.Server.Services;
 using FamTec.Server.Middleware;
+using FamTec.Server.Services.Facility.Type.Machine;
 
 namespace FamTec.Server.Controllers.Facility
 {
@@ -32,6 +33,83 @@ namespace FamTec.Server.Controllers.Facility
             this.CommService = _commservice;
 
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        [HttpGet]
+        [Route("sign/DownloadNetworkFacilityForm")]
+        public async Task<IActionResult> DownloadNetworkFacilityForm()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                byte[]? ExcelForm = await NetworkFacilityService.DownloadNetworkFacilityForm(HttpContext);
+
+                if (ExcelForm is not null)
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "통신설비정보.xlsx");
+                else
+                    return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportNetworkFacility")]
+        public async Task<IActionResult> ImportNetworkFacilityForm([FromForm]IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files);
+                if (String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension);
+                    if (!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일형식입니다.", data = false, code = 204 });
+                    }
+                }
+
+                ResponseUnit<bool> model = await NetworkFacilityService.ImportNetworkFacilityService(HttpContext, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         [AllowAnonymous]

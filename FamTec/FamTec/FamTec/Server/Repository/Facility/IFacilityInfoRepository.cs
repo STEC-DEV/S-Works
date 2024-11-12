@@ -23,6 +23,13 @@ namespace FamTec.Server.Repository.Facility
         Task<FacilityTb?> AddAsync(FacilityTb model);
 
         /// <summary>
+        /// 설비 리스트 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> AddFacilityList(List<FacilityTb> model);
+
+        /// <summary>
         /// 사업장에 속한 기계설비 List 반환
         /// </summary>
         /// <param name="placeid"></param>

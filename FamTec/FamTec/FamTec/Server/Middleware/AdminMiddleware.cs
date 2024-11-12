@@ -41,7 +41,7 @@ namespace FamTec.Server.Middleware
                 return;
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
+      
             var authSigningKey = Encoding.UTF8.GetBytes(_authSigningkey);
 
             try
@@ -56,17 +56,26 @@ namespace FamTec.Server.Middleware
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
           
-
-            
-
                 var jwtToken = (JwtSecurityToken)validatedToken;
-
 
                 // 토큰분해
                 JObject? jobj = TokenComm.TokenConvert(context.Request);
 
                 if (jobj is null)
                     return;
+
+                if (jobj["UserIdx"] == null ||
+                    jobj["Name"] == null ||
+                    jobj["jti"] == null ||
+                    jobj["UserType"] == null ||
+                    jobj["AdminIdx"] == null ||
+                    jobj["DepartIdx"] == null ||
+                    jobj["DepartmentName"] == null ||
+                    jobj["Role"] == null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return;
+                }
 
                 context.Items.Add("UserIdx", jobj["UserIdx"]!.ToString());
                 context.Items.Add("Name", jobj["Name"]!.ToString());
@@ -84,7 +93,6 @@ namespace FamTec.Server.Middleware
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return;
-                //Console.WriteLine(ex);
             }
         }
 

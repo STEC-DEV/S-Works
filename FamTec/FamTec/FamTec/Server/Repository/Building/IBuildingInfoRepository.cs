@@ -19,6 +19,13 @@ namespace FamTec.Server.Repository.Building
         Task<BuildingTb?> AddAsync(BuildingTb model);
 
         /// <summary>
+        /// 건물 여러개 추가
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> AddBuildingList(List<BuildingTb> model);
+
+        /// <summary>
         /// 사업장에 속한 건물 총 개수 반환
         /// </summary>
         /// <returns></returns>

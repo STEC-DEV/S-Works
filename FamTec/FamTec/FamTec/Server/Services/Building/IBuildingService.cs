@@ -6,6 +6,20 @@ namespace FamTec.Server.Services.Building
     public interface IBuildingService
     {
         /// <summary>
+        /// 건물 엑셀양식 다운로드
+        /// </summary>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadBuildingForm(HttpContext context);
+
+        /// <summary>
+        /// 건물 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<bool>> ImportBuildingService(HttpContext context, IFormFile files);
+
+        /// <summary>
         /// 사업장에 속한 건물 총 개수 반환
         /// </summary>
         /// <param name="context"></param>

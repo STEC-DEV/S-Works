@@ -1,13 +1,14 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.Place;
+using FamTec.Server.Repository.Room;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Excel;
 using FamTec.Shared.Server.DTO.Login;
 using FamTec.Shared.Server.DTO.Place;
 using FamTec.Shared.Server.DTO.User;
@@ -33,6 +34,8 @@ namespace FamTec.Server.Services.User
         private readonly ILogService LogService;
         private readonly ConsoleLogService<UserService> CreateBuilderLogger;
 
+        private readonly IWebHostEnvironment WebHostEnvironment;
+
         DirectoryInfo? di;
         string? PlaceFileFolderPath = String.Empty;
 
@@ -44,7 +47,8 @@ namespace FamTec.Server.Services.User
             IFileService _fileservice,
             ILogService _logservice,
             IDepartmentInfoRepository _departmentinforepository,
-            ConsoleLogService<UserService> _createbuilderlogger)
+            ConsoleLogService<UserService> _createbuilderlogger,
+            IWebHostEnvironment _webhostenvironment)
         {
             this.UserInfoRepository = _userinforepository;
             this.AdminUserInfoRepository = _adminuserinforepository;
@@ -56,7 +60,222 @@ namespace FamTec.Server.Services.User
             this.Configuration = _configuration;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+
+            this.WebHostEnvironment = _webhostenvironment;
         }
+
+        /// <summary>
+        /// 사용자 엑셀 양식다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<byte[]?> DownloadUserForm(HttpContext context)
+        {
+            try
+            {
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "ExcelForm", "사용자정보(양식).xlsx");
+                if (String.IsNullOrWhiteSpace(filePath))
+                    return null;
+
+                byte[]? fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                if (fileBytes is not null)
+                    return fileBytes;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 사용자 엑셀 IMPORT - USERID는 중복불가
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool>> ImportUserService(HttpContext context, IFormFile? file)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+
+                DateTime ThisDate = DateTime.Now;
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                List<ExcelUserInfo> userlist = new List<ExcelUserInfo>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await file!.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        var worksheet = workbook.Worksheet(1);
+
+                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
+
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*아이디")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("B2").GetValue<string>().Trim() != "이름")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("C2").GetValue<string>().Trim() != "이메일")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("D2").GetValue<string>().Trim() != "전화번호")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("E2").GetValue<string>().Trim() != "직책")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+
+                        for (int i = 3; i <= total; i++)
+                        {
+                            var Data = new ExcelUserInfo();
+
+                            Data.UserID = Convert.ToString(worksheet.Cell("A" + i).GetValue<string>().Trim());
+
+                            if (String.IsNullOrWhiteSpace(Data.UserID))
+                            {
+                                return new ResponseUnit<bool>() { message = "시트의 아이디는 공백이 될 수 없습니다.", data = false, code = 204 };
+                                //Data.UserID = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
+                            }
+
+                            
+                            Data.Name = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Name)) 
+                            {
+                                Data.Name = null;
+                                //return new ResponseUnit<bool>() { message = "시트의 이름은 공백이 될 수 없습니다.", data = false, code = 204 };
+                                // Data.PassWord = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
+                            }
+
+                            Data.Email = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Email)) 
+                            {
+                                Data.Email = null;
+                                //return new ResponseUnit<bool>() { message = "시트의 이메일은 공백이 될 수 없습니다.", data = false, code = 204 };
+                                //Data.Name = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
+                            }
+
+                            Data.PhoneNumber = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.PhoneNumber))
+                            {
+                                Data.PhoneNumber = null;
+                                //return new ResponseUnit<bool>() { message = "시트의 전화번호는 공백이 될 수 없습니다.", data = false, code = 204 };
+                                //Data.Email = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
+                            }
+
+                            Data.Job = Convert.ToString(worksheet.Cell("E" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Job))
+                            {
+                                Data.Job = null;
+                                //return new ResponseUnit<bool>() { message = "시트의 직책은 공백이 될 수 없습니다.", data = false, code = 204 };
+                                //Data.PhoneNumber = Guid.NewGuid().ToString(); // 공백 또는 Null이면 대체값이라도 들어가게
+                            }
+                            userlist.Add(Data);
+                        }
+
+                        if (userlist is not [_, ..])
+                            return new ResponseUnit<bool>() { message = "등록할 사용자 정보가 없습니다.", data = false, code = 204 };
+
+                        // 엑셀에 중복된 데이터를 기입했는지 검사
+                        var excelCheck = userlist.GroupBy(x => x.UserID).Where(p => p.Count() > 1).ToList();
+                        if (excelCheck.Count() > 0)
+                        {
+                            return new ResponseUnit<bool>
+                            {
+                                message = $"사용자 ID는 중복이 될 수 없습니다. {excelCheck.Count}개의 중복이 있습니다. 중복 제거후 다시 시도하세요.",
+                                data = false,
+                                code = 204
+                            };
+                        }
+
+                        // DB에서 사용자데이터 전체조회 - 공백일시 DB 중복검사 안함.
+                        List<UsersTb>? placeusers = await UserInfoRepository.GetAllUserList().ConfigureAwait(false);
+                        if (placeusers is [_, ..])
+                        {
+                            // 엑셀에 중복된 데이터를 기입했는지 검사
+                            List<UsersTb> dbCheck = placeusers.IntersectBy
+                                (userlist.Select(x => x.UserID), x => x.UserId).ToList();
+
+                            if (dbCheck.Count() > 0)
+                            {
+                                // DB에 중복된 데이터가 하나 이상 있음.
+                                return new ResponseUnit<bool>() { message = $"이미 사용중인 아이디가 {dbCheck.Count()}개 있습니다 중복 제거후 다시 시도하세요.", data = false, code = 200 };
+                            }
+                        }
+
+                        // DB에 넣을 데이터 생성
+                        List<UsersTb> model = userlist.Select(m => new UsersTb
+                        {
+                            UserId = m.UserID!, // 엑셀에 입력받은 사용자 ID
+                            Password = m.UserID!, // 엑셀에 입력받은 사용자 비밀번호
+                            Name = m.Name, // 엑셀에 입력받은 사용자 이름
+                            Email = m.Email, // 엑셀에 입력받은 사용자 이메일
+                            Phone = m.PhoneNumber, // 엑셀에 입력받은 사용자 전화번호
+                            PermBasic = 2, // 기본정보관리 메뉴 권한 (필수사용)
+                            PermMachine = 0, // 기계관리 메뉴 권한
+                            PermElec = 0, // 전기관리 메뉴 권한
+                            PermLift = 0, // 승강관리 메뉴 권한
+                            PermFire = 0, // 소방관리 메뉴 권한
+                            PermConstruct = 0, // 건축관리 메뉴 권한
+                            PermNetwork = 0, // 통신관리 메뉴 권한
+                            PermBeauty = 0, // 미화관리 메뉴 권한
+                            PermSecurity = 0, // 보안 메뉴 권한
+                            PermMaterial = 0, // 자재관리 메뉴 권한
+                            PermEnergy = 0, // 에너지관리 메뉴 권한
+                            PermUser = 0, // 사용자관리 메뉴 권한
+                            PermVoc = 0, // VOC관리 메뉴 권한
+                            VocMachine = false, // 기계 VOC 권한
+                            VocElec = false, // 전기 VOC 권한
+                            VocLift = false, // 승강 VOC 권한
+                            VocFire = false, // 소방 VOC 권한
+                            VocConstruct = false, // 건축 VOC 권한
+                            VocNetwork = false, // 통신 VOC 권한
+                            VocBeauty = false, // 미화 VOC 권한
+                            VocSecurity = false, // 보안 VOC 권한
+                            VocEtc = false, // 기타 VOC 권한
+                            AdminYn = false, // 관리자 여부
+                            AlarmYn = false, // 알람여부
+                            Status = 2, // 재직여부 (재직)
+                            CreateDt = ThisDate, // 생성일자
+                            CreateUser = creater, // 생성자
+                            UpdateDt = ThisDate, // 수정일자
+                            UpdateUser = creater, // 수정자
+                            Job = null,
+                            PlaceTbId = Int32.Parse(placeidx)
+                        }).ToList();
+
+                        bool? AddResult = await UserInfoRepository.AddUserList(model).ConfigureAwait(false);
+
+                        return AddResult switch
+                        {
+                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 },
+                            _ => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<bool>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = false, code = 500 };
+            }
+        }
+
 
         public async Task<ResponseUnit<string?>> GetQRLogin(QRLoginDTO dto)
         {
@@ -1495,168 +1714,7 @@ namespace FamTec.Server.Services.User
             }
         }
 
-        /// <summary>
-        /// 사용자 엑셀 IMPORT - USERID는 중복불가
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public async Task<ResponseUnit<string?>> ImportUserService(HttpContext context, IFormFile? file)
-        {
-            try
-            {
-                if (context is null)
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string? creater = Convert.ToString(context.Items["Name"]);
-                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
-
-                DateTime ThisDate = DateTime.Now;
-
-                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                List<ExcelUserInfo> userlist = new List<ExcelUserInfo>();
-
-                using (var stream = new MemoryStream())
-                {
-                    await file!.CopyToAsync(stream);
-                    using (var workbook = new XLWorkbook(stream))
-                    {
-                        var worksheet = workbook.Worksheet(1);
-
-                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
-                       
-
-                        for (int i = 2; i <= total; i++)
-                        {
-                            var Data = new ExcelUserInfo();
-
-                            Data.UserID = Convert.ToString(worksheet.Cell("A" + i).GetValue<string>().Trim());
-                            
-                            if(String.IsNullOrWhiteSpace(Data.UserID))// 공백 또는 Null이면 대체값이라도 들어가게
-                            {
-                                Data.UserID = Guid.NewGuid().ToString();
-                            }
-
-                            Data.PassWord = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
-                            if (String.IsNullOrWhiteSpace(Data.PassWord)) // 공백 또는 Null이면 대체값이라도 들어가게
-                            {
-                                Data.PassWord = Guid.NewGuid().ToString();
-                            }
-
-                            Data.Name = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
-                            if(String.IsNullOrWhiteSpace(Data.Name)) // 공백 또는 Null이면 대체값이라도 들어가게
-                            {
-                                Data.Name = Guid.NewGuid().ToString();
-                            }
-
-                            Data.Email = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
-                            if(String.IsNullOrWhiteSpace(Data.Email))
-                            {
-                                Data.Email = Guid.NewGuid().ToString();
-                            }
-
-                            Data.PhoneNumber = Convert.ToString(worksheet.Cell("E" + i).GetValue<string>().Trim());
-                            if(String.IsNullOrWhiteSpace(Data.PhoneNumber))
-                            {
-                                Data.PhoneNumber = Guid.NewGuid().ToString();
-                            }
-
-                            userlist.Add(Data);
-                        }
-
-                        if (userlist is not [_, ..])
-                            return new ResponseUnit<string?>() { message = "등록할 사용자 정보가 없습니다.", data = null, code = 200 };
-
-                        // 엑셀에 중복된 데이터를 기입했는지 검사
-                        var excelCheck = userlist.GroupBy(x => x.UserID).Where(p => p.Count() > 1).ToList();
-                        if (excelCheck.Count() > 0) 
-                        {
-                            return new ResponseUnit<string?>
-                            {
-                                message = $"시트에 {excelCheck.Count}개의 중복이 있습니다. 중복 제거후 다시 시도하세요.",
-                                data = excelCheck.Count.ToString(),
-                                code = 200
-                            };
-                        }
-
-                        // DB에서 사용자데이터 전체조회 - 공백일시 DB 중복검사 안함.
-                        List<UsersTb>? placeusers = await UserInfoRepository.GetAllUserList().ConfigureAwait(false);
-                        if (placeusers is [_, ..])
-                        {
-                            // 엑셀에 중복된 데이터를 기입했는지 검사
-                            List<UsersTb> dbCheck = placeusers.IntersectBy
-                                (userlist.Select(x => x.UserID), x => x.UserId).ToList();
-
-                            if (dbCheck.Count() > 0)
-                            {
-                                // DB에 중복된 데이터가 하나 이상 있음.
-                                return new ResponseUnit<string?>() { message = $"이미 사용중인 아이디가 {dbCheck.Count()}개 있습니다 중복 제거후 다시 시도하세요.", data = dbCheck.Count().ToString(), code = 200 };
-                            }
-                        }
-
-                        // DB에 넣을 데이터 생성
-                        List<UsersTb> model = userlist.Select(m => new UsersTb
-                        {
-                            UserId = m.UserID!, // 엑셀에 입력받은 사용자 ID
-                            Password = m.PassWord!, // 엑셀에 입력받은 사용자 비밀번호
-                            Name = m.Name!, // 엑셀에 입력받은 사용자 이름
-                            Email = m.Email!, // 엑셀에 입력받은 사용자 이메일
-                            Phone = m.PhoneNumber!, // 엑셀에 입력받은 사용자 전화번호
-                            PermBasic = 2, // 기본정보관리 메뉴 권한 (필수사용)
-                            PermMachine = 0, // 기계관리 메뉴 권한
-                            PermElec = 0, // 전기관리 메뉴 권한
-                            PermLift = 0, // 승강관리 메뉴 권한
-                            PermFire = 0, // 소방관리 메뉴 권한
-                            PermConstruct = 0, // 건축관리 메뉴 권한
-                            PermNetwork = 0, // 통신관리 메뉴 권한
-                            PermBeauty = 0, // 미화관리 메뉴 권한
-                            PermSecurity = 0, // 보안 메뉴 권한
-                            PermMaterial = 0, // 자재관리 메뉴 권한
-                            PermEnergy = 0, // 에너지관리 메뉴 권한
-                            PermUser = 0, // 사용자관리 메뉴 권한
-                            PermVoc = 0, // VOC관리 메뉴 권한
-                            VocMachine = false, // 기계 VOC 권한
-                            VocElec = false, // 전기 VOC 권한
-                            VocLift = false, // 승강 VOC 권한
-                            VocFire = false, // 소방 VOC 권한
-                            VocConstruct = false, // 건축 VOC 권한
-                            VocNetwork = false, // 통신 VOC 권한
-                            VocBeauty = false, // 미화 VOC 권한
-                            VocSecurity = false, // 보안 VOC 권한
-                            VocEtc = false, // 기타 VOC 권한
-                            AdminYn = false, // 관리자 여부
-                            AlarmYn = false, // 알람여부
-                            Status = 2, // 재직여부 (재직)
-                            CreateDt = ThisDate, // 생성일자
-                            CreateUser = creater, // 생성자
-                            UpdateDt = ThisDate, // 수정일자
-                            UpdateUser = creater, // 수정자
-                            Job = null,
-                            PlaceTbId = Int32.Parse(placeidx)
-                        }).ToList();
-
-                        bool? AddResult = await UserInfoRepository.AddUserList(model).ConfigureAwait(false);
-
-                        return AddResult switch
-                        {
-                            true => new ResponseUnit<string?>() { message = "요청이 정상 처리되었습니다.", data = model.Count.ToString(), code = 200 },
-                            false => new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 },
-                            _ => new ResponseUnit<string?>() { message = "잘못된 요청입니다.", data = null, code = 404 }
-                        };
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                LogService.LogMessage(ex.ToString());
-#if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
-#endif
-                return new ResponseUnit<string?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
-            }
-        }
+     
 
         /// <summary>
         /// 사업장 메뉴권한 리턴
@@ -1706,5 +1764,7 @@ namespace FamTec.Server.Services.User
                 return new ResponseUnit<PlacePermissionDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+
     }
 }

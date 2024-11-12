@@ -6,6 +6,7 @@ using FamTec.Server.Services.Building;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Building.Building;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamTec.Server.Controllers.Building
@@ -37,6 +38,86 @@ namespace FamTec.Server.Controllers.Building
             this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        /// <summary>
+        /// 건물 엑셀 양식 다운로드
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("DownloadBuildingForm")]
+        public async Task<IActionResult> DownloadBuildingForm()
+        {
+            try
+            {
+                
+                byte[]? fileBytes = await BuildingService.DownloadBuildingForm(HttpContext);
+
+                if (fileBytes is not null)
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "건물정보(양식).xlsx");
+                else
+                    return Ok();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("sign/ImportBuilding")]
+        public async Task<IActionResult> ImportBuildingData([FromForm] IFormFile files)
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                if (files is null)
+                    return NoContent();
+
+                if (files.Length == 0)
+                    return NoContent();
+
+                string? extension = FileService.GetExtension(files); // 파일 확장자 추출
+                if(String.IsNullOrWhiteSpace(extension))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    bool extensioncheck = Common.XlsxAllowedExtensions.Contains(extension); // 파일 확장자 검사
+                    if(!extensioncheck)
+                    {
+                        return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일 형식입니다.", data = false, code = 204 });
+                    }
+                }
+
+                ResponseUnit<bool> model = await BuildingService.ImportBuildingService(HttpContext, files);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
 
         /// <summary>
         /// 해당 자재가 존재하는 건물들 반환

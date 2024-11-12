@@ -5,6 +5,8 @@ using FamTec.Shared.Server.DTO.Facility;
 using FamTec.Shared.Model;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
+using ClosedXML.Excel;
+using FamTec.Shared.Server.DTO.Excel;
 
 namespace FamTec.Server.Services.Facility.Type.Electronic
 {
@@ -39,6 +41,349 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
             this.FileService = _fileservice;
             this.LogService = _logService;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        private IXLWorksheet CreateCell(IXLWorksheet sheet, List<string> title, List<RoomTb> RoomList)
+        {
+            try
+            {
+                IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("B1"));
+                mergerange.Merge(); // Merge() 에서 범위의 셀의 결합
+
+                mergerange.Value = "공간정보";
+                mergerange.Style.Font.FontName = "맑은 고딕";
+                mergerange.Style.Font.Bold = true;
+                mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                mergerange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                mergerange.Style.Border.OutsideBorderColor = XLColor.Black;
+                mergerange.Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+
+                // 타이틀 작업
+                for (int i = 0; i < title.Count; i++)
+                {
+                    sheet.Cell(2, i + 1).Value = title[i].ToString();
+                    sheet.Column(i + 1).Width = 25; // 너비
+                    sheet.Row(2).Height = 15; // 높이
+
+                    IXLCell cell = sheet.Cell(2, i + 1); // A1, A2, A3 .. 셀선택
+                    cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+                    cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromArgb(217, 217, 217);
+                }
+
+                // 내용작업
+                for (int i = 0; i < RoomList.Count; i++)
+                {
+                    sheet.Cell(i + 3, 1).Value = RoomList[i].Id;
+                    IXLCell cell = sheet.Cell(i + 3, 1);
+                    cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+
+                    sheet.Cell(i + 3, 2).Value = RoomList[i].Name ?? null;
+                    cell = sheet.Cell(i + 3, 2);
+                    cell.Style.Font.FontName = "맑은 고딕"; // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // Horizontal 중앙정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+                }
+                return sheet;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        private IXLWorksheet CreateCell_2(IXLWorksheet sheet, List<string> title)
+        {
+            try
+            {
+                IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("H1"));
+                mergerange.Merge(); // Merge
+
+                mergerange.Value = "설비정보";
+                mergerange.Style.Font.FontName = "맑은 고딕";
+                mergerange.Style.Font.Bold = true;
+                mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                mergerange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                mergerange.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                mergerange.Style.Border.OutsideBorderColor = XLColor.Black;
+                mergerange.Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+
+                // 타이틀 작업
+                for (int i = 0; i < title.Count; i++)
+                {
+                    sheet.Cell(2, i + 1).Value = title[i].ToString();
+                    sheet.Column(i + 1).Width = 25; // 너비
+                    sheet.Row(2).Height = 15; // 높이
+
+                    IXLCell cell = sheet.Cell(2, i + 1); // A1, A2, A3 .. 셀선택
+                    cell.Style.Font.FontName = "맑은 고딕";  // 셀의 문자의 글꼴을 설정
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center; // 중앙정렬
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center; // 중앙정렬
+                    cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromArgb(217, 217, 217);
+                }
+
+                return sheet;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 전기설비 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> DownloadElectronicFacilityForm(HttpContext context)
+        {
+            try
+            {
+                string? PlaceId = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(PlaceId))
+                    return null;
+
+                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(PlaceId));
+                if (RoomList is null || !RoomList.Any())
+                    return null;
+
+                var workbook = new XLWorkbook();
+
+                // 첫번째 시트 생성
+                var worksheet1 = workbook.Worksheets.Add("공간정보");
+                List<string> title1 = new List<string>
+                {
+                    "아이디",
+                    "공간명칭"
+                };
+                worksheet1 = CreateCell(worksheet1, title1, RoomList);
+                // == 여기서 첫번째 시트는 만들어졌음.
+
+                // 두 번째 시트 생성
+                var worksheet2 = workbook.Worksheets.Add("전기설비정보");
+                List<string> title2 = new List<string>
+                {
+                    "*공간아이디",
+                    "*설비이름",
+                    "형식",
+                    "규격용량",
+                    "수량",
+                    "내용년수",
+                    "설치년월",
+                    "교체년월"
+                };
+
+                worksheet2 = CreateCell_2(worksheet2, title2);
+
+                using MemoryStream xlsStream = new();
+                workbook.SaveAs(xlsStream, false);
+                return xlsStream.ToArray();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 기계설비 엑셀 IMPORT
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<bool>> ImportElectronicFacilityService(HttpContext context, IFormFile? file)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                string? creater = Convert.ToString(context.Items["Name"]);
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+
+                DateTime ThisDate = DateTime.Now;
+
+                if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
+
+                List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx));
+                if (RoomList is null || !RoomList.Any())
+                    return new ResponseUnit<bool>() { message = "공간정보가 존재하지 않습니다.", data = false, code = 204 };
+
+                List<ExcelFacilityInfo> Facilitylist = new List<ExcelFacilityInfo>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await file!.CopyToAsync(stream);
+                    using (var workbook = new XLWorkbook(stream))
+                    {
+                        // 두번째 시트 읽음
+                        var worksheet = workbook.Worksheet(2);
+
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*공간아이디")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("B2").GetValue<string>().Trim() != "*설비이름")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("C2").GetValue<string>().Trim() != "형식")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("D2").GetValue<string>().Trim() != "규격용량")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("E2").GetValue<string>().Trim() != "수량")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("F2").GetValue<string>().Trim() != "내용년수")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("G2").GetValue<string>().Trim() != "설치년월")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+                        if (worksheet.Cell("H2").GetValue<string>().Trim() != "교체년월")
+                            return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
+
+                        int total = worksheet.LastRowUsed().RowNumber(); // Row 개수 반환
+
+                        for (int i = 3; i <= total; i++)
+                        {
+                            var Data = new ExcelFacilityInfo();
+
+                            // 공간인덱스
+                            string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
+                            if (String.IsNullOrWhiteSpace(DataTypeCheck))
+                                return new ResponseUnit<bool>() { message = "설비의 공간인덱스가 유효하지 않습니다.", data = false, code = 204 };
+
+                            Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
+                            if (Data.RoomId is null)
+                                return new ResponseUnit<bool>() { message = "데이터의 형식이 올바르지 않습니다.", data = false, code = 204 };
+
+                            // 설비이름
+                            Data.Name = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Name))
+                            {
+                                return new ResponseUnit<bool>() { message = "설비의 이름은 공백이 될 수 없습니다.", data = false, code = 204 };
+                            }
+
+                            // 형식
+                            Data.Type = Convert.ToString(worksheet.Cell("C" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.Type))
+                            {
+                                Data.Type = null;
+                            }
+
+                            // 규격용량
+                            Data.StandardCapacity = Convert.ToString(worksheet.Cell("D" + i).GetValue<string>().Trim());
+                            if (String.IsNullOrWhiteSpace(Data.StandardCapacity))
+                            {
+                                Data.StandardCapacity = null;
+                            }
+
+                            // 수량
+                            DataTypeCheck = worksheet.Cell("E" + i).GetValue<string>().Trim();
+                            Data.Num = int.TryParse(DataTypeCheck, out int ParsedValue) ? ParsedValue : (int?)null;
+
+                            // 내용연수
+                            Data.LifeSpan = Convert.ToString(worksheet.Cell("F" + i).GetValue<string>().Trim());
+                            if (Data.LifeSpan is null)
+                            {
+                                Data.LifeSpan = null;
+                            }
+
+                            // 설치년월
+                            string? DateCheck = Convert.ToString(worksheet.Cell("G" + i).GetValue<string>().Trim());
+                            if (!String.IsNullOrWhiteSpace(DateCheck))
+                            {
+                                DateTime? ConvertDate = DateTime.TryParse(DateCheck, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+                                if (ConvertDate is null)
+                                {
+                                    return new ResponseUnit<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
+                                }
+                                else
+                                {
+                                    Data.EquipDT = ConvertDate;
+                                }
+                            }
+                            else
+                            {
+                                Data.EquipDT = null;
+                            }
+
+                            // 교체년월
+                            DateCheck = Convert.ToString(worksheet.Cell("H" + i).GetValue<string>().Trim());
+
+                            if (!String.IsNullOrWhiteSpace(DateCheck))
+                            {
+                                DateTime? ConvertDate = DateTime.TryParse(DateCheck, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+                                if (ConvertDate is null)
+                                {
+                                    return new ResponseUnit<bool>() { message = "yyyy-MM-dd 타입의 날짜만 입력가능합니다.", data = false, code = 204 };
+                                }
+                                else
+                                {
+                                    Data.ChangeDT = ConvertDate;
+                                }
+                            }
+                            else
+                            {
+                                Data.ChangeDT = null;
+                            }
+
+                            Facilitylist.Add(Data);
+                        }
+
+                        List<FacilityTb> model = Facilitylist.Select(m => new FacilityTb
+                        {
+                            Category = "전기",
+                            Name = m.Name!, // 설비명칭
+                            Type = m.Type, // 형식
+                            Num = m.Num,
+                            EquipDt = m.EquipDT,
+                            Lifespan = m.LifeSpan,
+                            StandardCapacity = m.StandardCapacity,
+                            ChangeDt = m.ChangeDT,
+                            CreateDt = ThisDate,
+                            CreateUser = creater,
+                            UpdateDt = ThisDate,
+                            UpdateUser = creater,
+                            RoomTbId = m.RoomId!.Value
+                        }).ToList();
+
+                        bool AddResult = await FacilityInfoRepository.AddFacilityList(model).ConfigureAwait(false);
+                        return AddResult switch
+                        {
+                            true => new ResponseUnit<bool>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
+                            false => new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 }
+                        };
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
         /// <summary>
@@ -541,8 +886,6 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
             }
         }
 
-     
 
-     
     }
 }

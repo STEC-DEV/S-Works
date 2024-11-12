@@ -96,7 +96,7 @@
         /// <summary>
         /// 인증코드 발급코드
         /// </summary>
-        public static readonly string KakaoTemplateCode_4 = "TV_6990";
-
+        //public static readonly string KakaoTemplateCode_4 = "TV_6990";
+        public static readonly string KakaoTemplateCode_4 = "TV_7705";
     }
 }
