@@ -4,6 +4,7 @@
 @using FamTec.Client.Pages.Normal.Facility.Machine.Components
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Components
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Facility.Group
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
@@ -13,6 +14,7 @@
         Facility=@(OriginalFacility) 
         FacType=@FacType
         OnLoad="OnLoadFacility"
+        OnExport="@Export"
         />
     @if (HasEditPermission())
     {
@@ -28,7 +30,7 @@
         }
     </div>
     <div class="history yappear">
-        <History Id="@Id" FacType="@FacType"/>
+        <History Id="@Id" FacType="@FacType" FacName="@OriginalFacility.Name" />
     </div>
     
     @if (IsModal && HasEditPermission())
@@ -125,5 +127,20 @@
             _ => false
         };
     }
-    
+
+    /// <summary>
+    /// 엑셀 내보내기
+    /// </summary>
+    /// <returns></returns>
+    private async Task Export()
+    {
+        if (facilityDetailDTO == null)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        var excel = ExcelService.getInstance(JS);
+        string title = $"{facilityDetailDTO.Name} 설비";
+        await excel.ExportFacility(facilityDetailDTO, Group, title);
+    }
 }

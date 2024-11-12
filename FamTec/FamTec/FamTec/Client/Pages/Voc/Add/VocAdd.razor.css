@@ -48,6 +48,7 @@
     font-weight:var(--bold-wt);
     color : darkgray;
     height:100%;
+    white-space:nowrap;
 }
 
 .row {

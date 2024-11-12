@@ -77,3 +77,12 @@
     display :flex;
     gap : var(--half-pd);
 }
+
+.option[b-8axar4r2so]{
+    display:flex;
+    gap:var(--half-pd);
+}
+
+.icon[b-8axar4r2so] {
+    width: 1.5rem;
+}

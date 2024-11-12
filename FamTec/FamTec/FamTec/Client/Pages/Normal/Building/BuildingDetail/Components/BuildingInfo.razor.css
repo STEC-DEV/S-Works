@@ -80,3 +80,7 @@
     grid-row-gap : var(--wide-pd);
     grid-column-gap : calc(var(--default-pd) + var(--half-pd));
 }
+
+.icon {
+    width: 1.5rem;
+}

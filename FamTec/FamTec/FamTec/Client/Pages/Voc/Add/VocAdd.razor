@@ -26,31 +26,22 @@
                           Placeholder="휴대폰번호 11자 ( - 제외)" 
                           ReadOnly=@(authCheck ? true : false)
                           />
+               
             </div>
-            @if (isRunning && tryCount >= 0)
-            {
-                <div class="flex2">
-                    <InputCol Label=@($"인증번호 / 남은 횟수 : {tryCount}")
-                              ValueType="number"
-                              MaxLength=4
-                              @bind-Value=@Code
-                              Placeholder="인증번호" />
-                </div>
-            }
             <div class="flex1">
                 <span class="text @(isRunning ?  null : "none")">
-                    @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
+                    @($"남은 횟수 : {tryCount}")
                 </span>
-                @if (Voc.PhoneNumber?.Length != 11 || authCheck || tryCount == 0)
+                @if (Voc.PhoneNumber?.Length != 11 || authCheck || tryCount==0)
                 {
-                    
+
                     <button class="blockbtn">인증번호 요청</button>
                 }
                 else
                 {
                     if (isRunning)
                     {
-                        <Button Name="인증번호 확인" OnClick="OnVerifyCode" />
+                        <Button Name="인증번호 재요청" OnClick="OnRequestCode" />
                     }
                     else
                     {
@@ -58,8 +49,26 @@
                     }
 
                 }
-            </div>            
+            </div>
         </div>
+        @if (isRunning || tryCount > -1)
+        {
+            <div class="row">
+                <div class="flex3">
+                    <InputCol Label=@($"인증번호")
+                              ValueType="number"
+                              MaxLength=4
+                              @bind-Value=@Code
+                              Placeholder="인증번호" />
+                </div> 
+                <div class="flex1">
+                    <span class="text @(isRunning ?  null : "none")">
+                        @($"{timeLeft / 60:D2}:{timeLeft % 60:D2}")
+                    </span>
+                    <Button Name="인증번호 확인" OnClick="OnVerifyCode" />
+                </div>
+            </div>
+        }
 
         <InputCol Label="제목"
                   @bind-Value=@Voc.Title
@@ -147,7 +156,7 @@
     /*==========================*/
     private void StartTimer()
     {
-        
+
         timeLeft = 180; // 3분을 초로 설정
         isRunning = true;
 
@@ -168,7 +177,6 @@
             isRunning = false;
             await JS.InvokeVoidAsync("alert", "시간 초과");
             Code = "";
-            tryCount--;
             InvokeAsync(StateHasChanged);
         }
     }
@@ -195,7 +203,7 @@
                 return;
             }
             StartTimer();
-
+            tryCount--;
         }catch(Exception ex)
         {
             Console.WriteLine(ex);
@@ -219,7 +227,6 @@
                 timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
                 isRunning = false;
                 Code = "";
-                tryCount--;
                 return;
             }
             if (!resGet.data)
@@ -228,7 +235,6 @@
                 timer?.Change(Timeout.Infinite, Timeout.Infinite); // 타이머 멈춤
                 isRunning = false;
                 Code = "";
-                tryCount--;
                 return;
             }
             await JS.InvokeVoidAsync("alert", "인증 성공");

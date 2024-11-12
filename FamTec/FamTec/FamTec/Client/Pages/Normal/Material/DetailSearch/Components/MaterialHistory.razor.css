@@ -31,7 +31,8 @@
 }
 
 .options{
-    
+    display : flex;
+    gap:var(--half-pd);
 }
 
 .content{
@@ -81,4 +82,8 @@
     display : flex;
     align-items :center;
     gap : var(--half-pd);
+}
+
+.icon {
+    width: 1.5rem;
 }

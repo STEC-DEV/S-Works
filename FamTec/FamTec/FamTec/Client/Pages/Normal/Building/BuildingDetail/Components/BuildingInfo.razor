@@ -1,5 +1,6 @@
 ﻿@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Buildings
 @using System.Reflection
@@ -22,7 +23,9 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEditMode" />
                 }
-
+                <div class="icon" @onclick=Export>
+                    <ExportIcon />
+                </div>
             </div>
         }
 
@@ -38,6 +41,7 @@
     // [CascadingParameter] public BuildingDTO? Building { get; set; }
     [Parameter] public BuildingDTO? Building { get; set; }
     [Parameter] public EventCallback OnLoad { get; set; }
+    [Parameter] public EventCallback OnExport { get; set; }
 
     private BuildingDTO _editBuilding;
 
@@ -89,5 +93,10 @@
             Console.WriteLine("[건물][수정] 기본정보 수정"+ ex);
             await JS.InvokeVoidAsync("alert", "저장 실패");
         }
+    }
+
+    private async void Export()
+    {
+        await OnExport.InvokeAsync();
     }
 }

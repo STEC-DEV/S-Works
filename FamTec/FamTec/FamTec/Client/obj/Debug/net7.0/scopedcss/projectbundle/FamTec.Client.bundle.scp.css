@@ -4937,6 +4937,10 @@ svg:hover[b-5q32ql2i5a] {
     grid-row-gap : var(--wide-pd);
     grid-column-gap : calc(var(--default-pd) + var(--half-pd));
 }
+
+.icon[b-h1ts9omwnh] {
+    width: 1.5rem;
+}
 /* /Pages/Normal/Building/BuildingDetail/Components/Form.razor.rz.scp.css */
 .form[b-y1t13l8wvx]{
     display : flex;
@@ -5633,6 +5637,10 @@ svg:hover[b-5q32ql2i5a] {
 .building-container .btns[b-ogpbl2cl2v]{
     display : flex;
     gap : var(--half-pd);
+}
+
+.icon[b-ogpbl2cl2v] {
+    width: 1.5rem;
 }
 /* /Pages/Normal/Building/BuildingMain/Components/BuildingTable.razor.rz.scp.css */
 .building-table[b-ytu5hwp48s]{
@@ -6595,6 +6603,9 @@ svg:hover[b-5q32ql2i5a] {
 }
 
 
+.icon[b-mjfp83w87d] {
+    width: 1.5rem;
+}
 /* /Pages/Normal/Facility/MachineHistory/Components/SearchFilter.razor.rz.scp.css */
 
 
@@ -6735,6 +6746,10 @@ svg:hover[b-5q32ql2i5a] {
     justify-content :space-between;
     gap : var(--wide-pd);
     
+}
+
+.icon[b-d5jvqwwglv] {
+    width: 1.5rem;
 }
 /* /Pages/Normal/Facility/Machine/Components/HistoryTable.razor.rz.scp.css */
 .table[b-p5si2pwiyx] {
@@ -7544,6 +7559,15 @@ svg:hover[b-5q32ql2i5a] {
 .btns[b-8axar4r2so]{
     display :flex;
     gap : var(--half-pd);
+}
+
+.option[b-8axar4r2so]{
+    display:flex;
+    gap:var(--half-pd);
+}
+
+.icon[b-8axar4r2so] {
+    width: 1.5rem;
 }
 /* /Pages/Normal/Facility/Machine/MachineDetail/Components/Group.razor.rz.scp.css */
 .group[b-eqaj6je53p] {
@@ -8945,6 +8969,15 @@ svg:hover[b-5q32ql2i5a] {
     display:flex;
     gap : var(--half-pd);
 }
+
+.option[b-f9mpss541t] {
+    display: flex;
+    gap: var(--half-pd);
+}
+
+.icon[b-f9mpss541t] {
+    width: 1.5rem;
+}
 /* /Pages/Normal/Facility/Maintenance/DetailMaintence/Components/InOutList.razor.rz.scp.css */
 
 .list[b-3v5w77a3w0] {
@@ -9693,6 +9726,7 @@ svg:hover[b-5q32ql2i5a] {
     display : flex;
     flex-direction : column;
     gap : var(--half-pd);
+    overflow:auto;
 }
 
 .img[b-cpkjxj8ll4]{
@@ -9922,6 +9956,7 @@ svg:hover[b-5q32ql2i5a] {
     display : flex;
     flex-direction : column;
     gap : var(--half-pd);
+    overflow:auto;
 }
 
 .img[b-fp076vg4en]{
@@ -10674,7 +10709,8 @@ svg:hover[b-5q32ql2i5a] {
 }
 
 .options[b-7r18rabuve]{
-    
+    display : flex;
+    gap:var(--half-pd);
 }
 
 .content[b-7r18rabuve]{
@@ -10724,6 +10760,10 @@ svg:hover[b-5q32ql2i5a] {
     display : flex;
     align-items :center;
     gap : var(--half-pd);
+}
+
+.icon[b-7r18rabuve] {
+    width: 1.5rem;
 }
 /* /Pages/Normal/Material/DetailSearch/Components/MaterialTable.razor.rz.scp.css */
 .table[b-zhhpdd0a7g] {
@@ -11892,6 +11932,16 @@ modal-table[b-0o0wpwo3cd]{
     display:flex;
     justify-content:flex-end;
 }
+
+
+.option[b-my0nq2lfue] {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon[b-my0nq2lfue] {
+    width: 1.5rem;
+}
 /* /Pages/Normal/Material/Inventory/Components/MaterialTable.razor.rz.scp.css */
 .table[b-sfcufcjpv9] {
     border-collapse: separate;
@@ -12185,6 +12235,7 @@ modal-table[b-0o0wpwo3cd]{
 
     height : 100%;
 }
+
 /* /Pages/Normal/Material/Inventory/Modal/SearchModal.razor.rz.scp.css */
 .modal[b-all74yxmu0] {
     display: flex;
@@ -13713,6 +13764,10 @@ modal-table[b-all74yxmu0]{
     height:100%;
     max-height : 100%;
     overflow: auto;
+}
+
+.icon[b-d1uo8hyl0z] {
+    width: 1.5rem;
 }
 /* /Pages/Normal/Voc/Components/StatusCard.razor.rz.scp.css */
 .status[b-4ev7zgnq6u] {
@@ -15400,6 +15455,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-weight:var(--bold-wt);
     color : darkgray;
     height:100%;
+    white-space:nowrap;
 }
 
 .row[b-ctwc34a2zh] {

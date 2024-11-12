@@ -1,5 +1,6 @@
 ﻿@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
@@ -27,6 +28,9 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
                 }
+                <div class="icon" @onclick=Export>
+                    <ExportIcon />
+                </div>
             </div>
         }
         
@@ -165,6 +169,7 @@
     }
     [Parameter] public EventCallback<FacilityDetailDTO> FacilityChanged { get; set; }
     [Parameter] public EventCallback OnLoad{ get; set; }
+    [Parameter] public EventCallback OnExport { get; set; }
 
     //원본 데이터
     FacilityDetailDTO OriginalFacility;
@@ -336,7 +341,7 @@
         UpdateFacility = OriginalFacility.DeepCopy();
         await ImgConvert();
         EditMode = !EditMode;
-        
+
     }
 
     private void OnDelImg()
@@ -362,5 +367,10 @@
             "security" => SECURITY,
             _ => false
         };
+    }
+
+    private async void Export()
+    {
+        await OnExport.InvokeAsync();
     }
 }

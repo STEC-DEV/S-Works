@@ -14,9 +14,9 @@
     </div>
     <div class="content">
         <div class="img">
-            @if (FacilityImages.Count != 0)
+            @if (ImageUrl.Count != 0)
             {
-                <ImageSlider Label="이미지" Images="@FacilityImages" />
+                <ImageSlider Label="이미지" Images="@ImageUrl" />
             }
         </div>
         <div class="grid">
@@ -68,10 +68,15 @@
     //설비 정보
     FacilityDetailDTO Facility = new FacilityDetailDTO();
 
-
+    private List<byte[]> ImageUrl = new List<byte[]>();//이미지 프리뷰
     protected override async Task OnInitializedAsync()
     {
         await OnLoadFacility();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ImgConvert();
     }
 
     //설비 조회
@@ -99,15 +104,29 @@
 
 
 
-    //이미지 배열변환
-    private async Task OnImageConvert()
+    // //이미지 배열변환
+    // private async Task OnImageConvert()
+    // {
+    //     if (Facility.Image == null)
+    //     {
+    //         return;
+    //     }
+    //     FacilityImages = new List<byte[]>();
+    //     FacilityImages.Add(Facility.Image);
+    // }
+    /*
+       * 이미지 변환
+       */
+    private async Task ImgConvert()
     {
-        if (Facility.Image == null)
+        
+        ImageUrl.Clear();
+        if (Facility.Image != null &&
+            !string.IsNullOrEmpty(Facility.ImageName)
+            && !ImageUrl.Any(i => i.SequenceEqual(Facility.Image))
+        )
         {
-            return;
+            ImageUrl.Add(Facility.Image);
         }
-        FacilityImages = new List<byte[]>();
-        FacilityImages.Add(Facility.Image);
     }
-
 }

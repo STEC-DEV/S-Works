@@ -1,5 +1,6 @@
 ﻿@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
@@ -28,6 +29,9 @@
                 {
                     <Button Name="편집" Width=true Type="0" OnClick="OnEdit" />
                 }
+                 <div class="icon" @onclick=Export>
+                    <ExportIcon />
+                </div>
             </div>
         }
     </div>
@@ -111,6 +115,7 @@
     [Parameter] public bool EditMode { get; set; }
     [Parameter] public UpdateMaintancematerialDTO UpdateUseMaterial { get; set; }
     [Parameter] public string FacType { get; set; }
+    [Parameter] public EventCallback OnExport { get; set; }
     // [Parameter] public EventCallback<DetailMaintenanceDTO> MaintenanceChanged { get; set; }
 
     DetailMaintenanceDTO UpdateMaintenance;
@@ -273,5 +278,8 @@
             _ => false
         };
     }
-
+    private async void Export()
+    {
+        await OnExport.InvokeAsync();
+    }
 }

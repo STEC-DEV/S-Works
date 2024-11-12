@@ -1,6 +1,8 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Location.LocationMain.Components
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Location.Inventory
 @using FamTec.Shared.Client.DTO.Normal.Material.Detail
 
@@ -18,6 +20,9 @@
                              SelectData="@ListData"
                              @bind-Value=@MaterialId
                              EditMode="true" />
+                    <div class="icon" @onclick=Export>
+                        <ExportIcon />
+                    </div>
             </div>
         }
         
@@ -156,4 +161,31 @@
         }
     }
 
+
+    private async Task Export()
+    {
+        if (ListData.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>
+        {
+            "입출고일시",
+            "품목코드",
+            "품목명",
+            "단위",
+            "입고수량",
+            "입고단가",
+            "입고금액",
+            "출고수량",
+            "출고단가",
+            "출고금액",
+            "재고수량",
+            "비고",
+        };
+        var excel = ExcelService.getInstance(JS);
+        string title = $"입출고 내역";
+        await excel.ExportInOutDetail(ListData, colName, title);
+    }
 }

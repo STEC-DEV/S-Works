@@ -1,6 +1,8 @@
 ﻿@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
 
@@ -27,6 +29,9 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
                 }
+                <div class="icon" @onclick=Export>
+                    <ExportIcon />
+                </div>
             </div>
         }
 
@@ -56,6 +61,8 @@
 @code {
     [Parameter] public int Id{ get; set; }
     [Parameter] public string FacType{ get; set; }
+    [Parameter] public string FacName{ get; set; }
+
 
     List<MaintenanceListDTO> ListData;
     private bool _editMode = false;
@@ -171,5 +178,30 @@
             "security" => SECURITY,
             _ => false
         };
+    }
+
+    /// <summary>
+    /// 엑셀 내보내기
+    /// </summary>
+    /// <returns></returns>
+    private async Task Export()
+    {
+        if (ListData == null)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>()
+            {
+                "작업년월",
+                "수리 및 보수 이력",
+                "작업구분",
+                "작업자",
+                "소요비용",
+            };
+
+        var excel = ExcelService.getInstance(JS);
+        string title = $"{FacName} 유지보수 이력";
+        await excel.ExportFacMaintenanace(ListData, colName, title);
     }
 }

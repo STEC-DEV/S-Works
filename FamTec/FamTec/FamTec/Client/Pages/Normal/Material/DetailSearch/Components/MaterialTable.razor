@@ -128,7 +128,7 @@
             {
                 <tr class="tr">
                     <td class="td">
-                        @row.INOUT_DATE
+                        @row.INOUT_DATE?.ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td class="td">
                         @row.Code
@@ -184,10 +184,10 @@
             <tr class="tfoot-tr">
                 <td class="tf-td" colspan="4">소계</td>
                 <td class="tf-td ">@totalInQty</td>
-                <td class="tf-td text-right">@totalInPrice?.ToString("N0")</td>
+                <td class="tf-td text-right">@((totalInPrice/ListData?.Count)?.ToString("N0"))</td>
                 <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
                 <td class="tf-td">@totalOutQty</td>
-                <td class="tf-td text-right">@totalOutPrice?.ToString("N0")</td>
+                <td class="tf-td text-right">@((totalOutPrice / ListData?.Count)?.ToString("N0"))</td>
                 <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
                 <td class="tf-td">@totalCurrentNum</td>
                 <td class="tf-td"></td>

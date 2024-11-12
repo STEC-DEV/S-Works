@@ -5,6 +5,7 @@
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Voc
+@using System.Web
 @inherits PermissionComponentBase
 
 <div class="vochistory-container yappear">
@@ -22,9 +23,9 @@
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAddVoc" />
                 }
-@*                 <div class="icon" @onclick=ExportMonth>
+                <div class="icon" @onclick=Export>
                     <ExportIcon />
-                </div> *@
+                </div>
             </div>
         </div>
         <div class="option @(DefaultOption !=0 ? "flex-end":null)">
@@ -78,6 +79,7 @@
     [Parameter] public String CurrentMonth { get; set; }
     [Parameter] public DateTime CurrentDate { get; set; }
     [Parameter] public List<FilterItem> Bulildings { get; set; }
+    [Parameter] public string SearchParam{ get; set; }
     //사업장 생성일자 필요함
     public DateTime createdate;
 
@@ -108,7 +110,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        
+
 
         if(ListData != null)
         {
@@ -124,7 +126,7 @@
     //페이지 필터링
     private async Task Paging()
     {
-       
+
         // Console.WriteLine("============페이징 실행============");
         // if (filterData == null || string.IsNullOrEmpty(CurrentMonth))
         // {
@@ -190,17 +192,25 @@
                                 (m.CreateUser?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                                 (m.Title?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false)
                                 ).ToList();
-        
+
         await InvokeAsync(StateHasChanged);
     }
 
 
-    private async Task ExportMonth()
+    private async Task Export()
     {
+        if (ListData.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert","데이터가 존재하지 않습니다.");
+            return;
+        }
         List<string> colName = new List<string>
         {
-            "위치",
             "구분",
+            "위치",
+            "유형",
+            "작성자",
+            "전화번호",
             "제목",
             "발생일시",
             "처리일시",
@@ -208,7 +218,23 @@
             "상태",
         };
         var excel = ExcelService.getInstance(JS);
-        // await excel.ExportVocData(MonthListData, colName);
+        string title = $"{CurrentDate.ToString("yyyy-MM")} 민원";
+        if(DefaultOption == 1)
+        {
+            await OnParseQueryStringv2();
+            title = $"{startDt}_{endDt} 민원";
+        }
+        await excel.ExportVocData(ListData, colName, CurrentDate.ToString("yyyy-MM"), title);
+    }
+
+    string startDt;
+    string endDt;
+    private async Task OnParseQueryStringv2()
+    {
+        
+        var parameters = HttpUtility.ParseQueryString(SearchParam);
+        startDt = parameters["startDate"];
+        endDt = parameters["endDate"];
     }
 
 

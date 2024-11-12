@@ -79,3 +79,13 @@
     display:flex;
     justify-content:flex-end;
 }
+
+
+.option {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon {
+    width: 1.5rem;
+}
