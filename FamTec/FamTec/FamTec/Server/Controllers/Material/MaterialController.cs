@@ -45,7 +45,7 @@ namespace FamTec.Server.Controllers.Material
                 byte[]? ExcelForm = await MaterialService.DownloadMaterialForm(HttpContext);
 
                 if(ExcelForm is not null)
-                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "품목정보.xlsx");
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "품목정보(양식).xlsx");
                 else
                     return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
             }

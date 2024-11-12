@@ -50,7 +50,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("B1"));
                 mergerange.Merge(); // Merge() 에서 범위의 셀의 결합
 
-                mergerange.Value = "공간정보";
+                mergerange.Value = "위치정보";
                 mergerange.Style.Font.FontName = "맑은 고딕";
                 mergerange.Style.Font.Bold = true;
                 mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -170,18 +170,18 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                 var workbook = new XLWorkbook();
 
                 // 첫번째 시트 생성
-                var worksheet1 = workbook.Worksheets.Add("공간정보");
+                var worksheet1 = workbook.Worksheets.Add("위치정보");
                 List<string> title1 = new List<string>
                 {
                     "아이디",
-                    "공간명칭"
+                    "위치명칭"
                 };
                 worksheet1 = CreateCell(worksheet1, title1, RoomList);
 
                 var worksheet2 = workbook.Worksheets.Add("미화설비정보");
                 List<string> title2 = new List<string>
                 {
-                    "*공간아이디",
+                    "*위치아이디",
                     "*설비이름",
                     "형식",
                     "규격용량",
@@ -230,7 +230,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
 
                 List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx));
                 if (RoomList is null || !RoomList.Any())
-                    return new ResponseUnit<bool>() { message = "공간정보가 존재하지 않습니다.", data = false, code = 204 };
+                    return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
                 List<ExcelFacilityInfo> Facilitylist = new List<ExcelFacilityInfo>();
 
@@ -242,7 +242,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                         // 두번째 시트 읽음.
                         var worksheet = workbook.Worksheet(2);
 
-                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*공간아이디")
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치아이디")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*설비이름")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };

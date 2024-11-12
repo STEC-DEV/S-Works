@@ -50,7 +50,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("B1"));
                 mergerange.Merge(); // Merge() 에서 범위의 셀의 결합
 
-                mergerange.Value = "공간정보";
+                mergerange.Value = "위치정보";
                 mergerange.Style.Font.FontName = "맑은 고딕";
                 mergerange.Style.Font.Bold = true;
                 mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -167,11 +167,11 @@ namespace FamTec.Server.Services.Facility.Type.Security
 
                 var workbook = new XLWorkbook();
                 // 첫 번째 시트 생성
-                var worksheet1 = workbook.Worksheets.Add("공간정보");
+                var worksheet1 = workbook.Worksheets.Add("위치정보");
                 List<string> title1 = new List<string>
                 {
                     "아이디",
-                    "공간명칭"
+                    "위치명칭"
                 };
                 worksheet1 = CreateCell(worksheet1, title1, RoomList);
                 // == 여기서 첫번째 시트는 만들어졌음.
@@ -181,7 +181,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 var worksheet2 = workbook.Worksheets.Add("보안설비정보");
                 List<string> title2 = new List<string>
                 {
-                    "*공간아이디",
+                    "*위치아이디",
                     "*설비이름",
                     "형식",
                     "규격용량",
@@ -229,7 +229,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
 
                 List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx));
                 if (RoomList is null || !RoomList.Any())
-                    return new ResponseUnit<bool>() { message = "공간정보가 존재하지 않습니다.", data = false, code = 204 };
+                    return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
                 List<ExcelFacilityInfo> Facilitylist = new List<ExcelFacilityInfo>();
 
@@ -241,7 +241,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                         // 두번째 시트 읽음.
                         var worksheet = workbook.Worksheet(2);
 
-                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*공간아이디")
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치아이디")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*설비이름")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
@@ -267,7 +267,7 @@ namespace FamTec.Server.Services.Facility.Type.Security
                             // 공간인덱스
                             string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
                             if (String.IsNullOrWhiteSpace(DataTypeCheck))
-                                return new ResponseUnit<bool>() { message = "설비의 공간인덱스가 유효하지 않습니다.", data = false, code = 204 };
+                                return new ResponseUnit<bool>() { message = "설비의 위치인덱스가 유효하지 않습니다.", data = false, code = 204 };
 
                             Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
                             if (Data.RoomId is null)

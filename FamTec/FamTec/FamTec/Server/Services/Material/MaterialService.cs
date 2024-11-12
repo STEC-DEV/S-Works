@@ -52,7 +52,7 @@ namespace FamTec.Server.Services.Material
                 IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("B1"));
                 mergerange.Merge(); // Merge() 에서 범위의 셀의 결합
 
-                mergerange.Value = "공간정보";
+                mergerange.Value = "위치정보";
                 mergerange.Style.Font.FontName = "맑은 고딕";
                 mergerange.Style.Font.Bold = true;
                 mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -110,7 +110,7 @@ namespace FamTec.Server.Services.Material
         {
             try
             {
-                IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("H1"));
+                IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("G1"));
                 mergerange.Merge(); // Merge
 
                 mergerange.Value = "품목정보";
@@ -170,11 +170,11 @@ namespace FamTec.Server.Services.Material
                 var workbook = new XLWorkbook();
 
                 // 첫번째 시트작성
-                var worksheet1 = workbook.Worksheets.Add("공간정보");
+                var worksheet1 = workbook.Worksheets.Add("위치정보");
                 List<string> title1 = new List<string>
                 {
                     "아이디",
-                    "공간명칭"
+                    "위치명칭"
                 };
                 worksheet1 = CreateCell(worksheet1, title1, RoomList);
 
@@ -182,7 +182,7 @@ namespace FamTec.Server.Services.Material
                 var worksheet2 = workbook.Worksheets.Add("품목정보");
                 List<string> title2 = new List<string>
                 {
-                    "*공간아이디",
+                    "*위치아이디",
                     "*품목코드",
                     "*품목명",
                     "제조사",
@@ -229,7 +229,7 @@ namespace FamTec.Server.Services.Material
 
                 List<RoomTb>? RoomList = await RoomInfoRepository.GetPlaceAllRoomList(Convert.ToInt32(placeidx));
                 if (RoomList is null || !RoomList.Any())
-                    return new ResponseUnit<bool>() { message = "공간정보가 존재하지 않습니다.", data = false, code = 204 };
+                    return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
                 List<ExcelMaterialInfo> Materiallist = new List<ExcelMaterialInfo>();
 
@@ -241,7 +241,7 @@ namespace FamTec.Server.Services.Material
                         // 두번째 시트 읽음
                         var worksheet = workbook.Worksheet(2);
 
-                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*공간아이디")
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치아이디")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*품목코드")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
@@ -265,7 +265,7 @@ namespace FamTec.Server.Services.Material
                             // 공간인덱스
                             string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
                             if (String.IsNullOrWhiteSpace(DataTypeCheck))
-                                return new ResponseUnit<bool>() { message = "품목의 공간인덱스가 유효하지 않습니다.", data = false, code = 204 };
+                                return new ResponseUnit<bool>() { message = "품목의 위치인덱스가 유효하지 않습니다.", data = false, code = 204 };
 
                             Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
                             if (Data.RoomId is null)

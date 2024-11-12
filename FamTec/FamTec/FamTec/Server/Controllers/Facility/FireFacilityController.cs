@@ -46,7 +46,7 @@ namespace FamTec.Server.Controllers.Facility
                 byte[]? ExcelForm = await FireFacilityService.DownloadFireFacilityForm(HttpContext);
 
                 if (ExcelForm is not null)
-                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "소방설비정보.xlsx");
+                    return File(ExcelForm, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "소방설비정보(양식).xlsx");
                 else
                     return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
 
