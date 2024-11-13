@@ -231,6 +231,8 @@ namespace FamTec.Server.Services.Material
                 if (RoomList is null || !RoomList.Any())
                     return new ResponseUnit<bool>() { message = "위치정보가 존재하지 않습니다.", data = false, code = 204 };
 
+                List<MaterialTb>? MaterialList = await MaterialInfoRepository.GetPlaceAllMaterialList(Convert.ToInt32(placeidx));
+
                 List<ExcelMaterialInfo> Materiallist = new List<ExcelMaterialInfo>();
 
                 using (var stream = new MemoryStream())
@@ -271,11 +273,24 @@ namespace FamTec.Server.Services.Material
                             if (Data.RoomId is null)
                                 return new ResponseUnit<bool>() { message = "데이터의 형식이 올바르지 않습니다.", data = false, code = 204 };
 
+                            // 사업장에 없는 RoomID가 있는지 검사
+                            bool containsRoomId = RoomList?.Any(room => room.Id == Data.RoomId) ?? false;
+                            if (!containsRoomId)
+                                return new ResponseUnit<bool>() { message = "해당사업장에 없는 위치번호가 존재합니다.", data = false, code = 204 };
+
                             // 품목코드
                             Data.Code = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
                             if(String.IsNullOrWhiteSpace(Data.Code))
                             {
                                 return new ResponseUnit<bool>() { message = "품목의 코드는 공백이 될 수 없습니다.", data = false, code = 204 };
+                            }
+
+                            // DB에 이미 있는지 검사
+                            if (MaterialList is [_, ..])
+                            {
+                                bool containsCheck = MaterialList?.Any(m => m.Code == Data.Code) ?? false;
+                                if (containsCheck)
+                                    return new ResponseUnit<bool>() { message = "입력하신 코드 중 동일한 코드가 이미 존재합니다.", data = false, code = 204 };
                             }
 
                             // 품목명
@@ -350,7 +365,6 @@ namespace FamTec.Server.Services.Material
                         };
                     }
                 }
-
             }
             catch(Exception ex)
             {
@@ -361,7 +375,6 @@ namespace FamTec.Server.Services.Material
                 throw;
             }
         }
-
 
         /// <summary>
         /// 자재추가
@@ -1100,9 +1113,6 @@ namespace FamTec.Server.Services.Material
             }
         }
 
-    
-     
-
         /// <summary>
         /// 품목검색
         /// </summary>
@@ -1135,7 +1145,5 @@ namespace FamTec.Server.Services.Material
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-     
     }
 }

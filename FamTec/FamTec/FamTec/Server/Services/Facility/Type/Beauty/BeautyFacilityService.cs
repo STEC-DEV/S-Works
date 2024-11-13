@@ -274,6 +274,11 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                             if (Data.RoomId is null)
                                 return new ResponseUnit<bool>() { message = "데이터의 형식이 올바르지 않습니다.", data = false, code = 204 };
 
+                            // 사업장에 없는 RoomID가 있는지 검사
+                            bool containsRoomId = RoomList?.Any(room => room.Id == Data.RoomId) ?? false;
+                            if (!containsRoomId)
+                                return new ResponseUnit<bool>() { message = "해당사업장에 없는 위치번호가 존재합니다.", data = false, code = 204 };
+
                             // 설비이름
                             Data.Name = Convert.ToString(worksheet.Cell("B" + i).GetValue<string>().Trim());
                             if(String.IsNullOrWhiteSpace(Data.Name))
