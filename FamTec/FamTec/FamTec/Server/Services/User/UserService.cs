@@ -913,6 +913,7 @@ namespace FamTec.Server.Services.User
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
                 string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
                 return new ResponseUnit<string?>() { message = "로그인 성공(관리자).", data = accessToken, code = 200 };
             }
             catch (Exception ex)

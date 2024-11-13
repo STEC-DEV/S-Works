@@ -173,7 +173,7 @@ namespace FamTec.Server.Services.Material
                 var worksheet1 = workbook.Worksheets.Add("위치정보");
                 List<string> title1 = new List<string>
                 {
-                    "아이디",
+                    "번호",
                     "위치명칭"
                 };
                 worksheet1 = CreateCell(worksheet1, title1, RoomList);
@@ -182,7 +182,7 @@ namespace FamTec.Server.Services.Material
                 var worksheet2 = workbook.Worksheets.Add("품목정보");
                 List<string> title2 = new List<string>
                 {
-                    "*위치아이디",
+                    "*위치번호",
                     "*품목코드",
                     "*품목명",
                     "제조사",
@@ -241,7 +241,7 @@ namespace FamTec.Server.Services.Material
                         // 두번째 시트 읽음
                         var worksheet = workbook.Worksheet(2);
 
-                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치아이디")
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치번호")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*품목코드")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
@@ -265,7 +265,7 @@ namespace FamTec.Server.Services.Material
                             // 공간인덱스
                             string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
                             if (String.IsNullOrWhiteSpace(DataTypeCheck))
-                                return new ResponseUnit<bool>() { message = "품목의 위치인덱스가 유효하지 않습니다.", data = false, code = 204 };
+                                return new ResponseUnit<bool>() { message = "품목의 위치번호가 유효하지 않습니다.", data = false, code = 204 };
 
                             Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
                             if (Data.RoomId is null)

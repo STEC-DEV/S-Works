@@ -111,7 +111,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 IXLRange mergerange = sheet.Range(sheet.Cell("A1"), sheet.Cell("H1"));
                 mergerange.Merge(); // Merge
 
-                mergerange.Value = "설비정보";
+                mergerange.Value = "승강설비정보";
                 mergerange.Style.Font.FontName = "맑은 고딕";
                 mergerange.Style.Font.Bold = true;
                 mergerange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -170,7 +170,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 var worksheet1 = workbook.Worksheets.Add("위치정보");
                 List<string> title1 = new List<string>
                 {
-                    "아이디",
+                    "번호",
                     "위치명칭"
                 };
                 worksheet1 = CreateCell(worksheet1, title1, RoomList);
@@ -181,7 +181,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 var worksheet2 = workbook.Worksheets.Add("기계설비정보");
                 List<string> title2 = new List<string>
                 {
-                    "*위치아이디",
+                    "*위치번호",
                     "*설비이름",
                     "형식",
                     "규격용량",
@@ -242,7 +242,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                         // 두번째 시트 읽음.
                         var worksheet = workbook.Worksheet(2);
 
-                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치아이디")
+                        if (worksheet.Cell("A2").GetValue<string>().Trim() != "*위치번호")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
                         if (worksheet.Cell("B2").GetValue<string>().Trim() != "*설비이름")
                             return new ResponseUnit<bool>() { message = "잘못된 양식입니다.", data = false, code = 204 };
@@ -268,7 +268,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                             // 공간인덱스
                             string? DataTypeCheck = worksheet.Cell("A" + i).GetValue<string>().Trim();
                             if (String.IsNullOrWhiteSpace(DataTypeCheck))
-                                return new ResponseUnit<bool>() { message = "설비의 공간인덱스가 유효하지 않습니다.", data = false, code = 204 };
+                                return new ResponseUnit<bool>() { message = "설비의 위치번호가 유효하지 않습니다.", data = false, code = 204 };
 
                             Data.RoomId = int.TryParse(DataTypeCheck, out int parsedValue) ? parsedValue : (int?)null;
                             if (Data.RoomId is null)

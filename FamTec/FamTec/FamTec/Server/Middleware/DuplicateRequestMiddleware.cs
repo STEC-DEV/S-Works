@@ -28,13 +28,13 @@ namespace FamTec.Server.Middleware
             {
                 // 제외할 API 경로 목록
                 var excludedPaths = new List<string>
-            {
-                "/api/Alarm/sign/GetAlarmList",
-                "/api/Alarm/sign/GetAlarmDateList",
-                "/api/Alarm/sign/AllAlarmDelete",
-                "/api/Alarm/sign/AlarmDelete",
-                "/api/AdminUser/sign/UserIdCheck"
-            };
+                {
+                    "/api/Alarm/sign/GetAlarmList",
+                    "/api/Alarm/sign/GetAlarmDateList",
+                    "/api/Alarm/sign/AllAlarmDelete",
+                    "/api/Alarm/sign/AlarmDelete",
+                    "/api/AdminUser/sign/UserIdCheck"
+                };
 
                 // 현재 요청 경로 확인
                 var currentPath = context.Request.Path.ToString();

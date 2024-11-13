@@ -476,14 +476,14 @@ string[]? userPaths = new string[]
     "/api/FacilityGroupValue/sign", // 설비그룹 Value 컨트롤러 미들웨어 추가
     "/api/Store/sign",
     "/api/Maintenance/sign",
-    "/api/Alarm/sign",
+    "/api/Alarm/sign", // 알람 컨트롤러 미들웨어 추가
     "/api/BlackList/sign",
     "/api/KakaoLog/sign",
     "/api/Meter/sign",
     "/api/Contract/sign",
     "/api/Energy/sign",
     "/api/UseMaintenence/sign",
-    "/api/Place/sign"
+    "/api/Place/sign" // 사업장 컨트롤러 미들웨어 추가
 };
 
 foreach (var path in adminPaths)

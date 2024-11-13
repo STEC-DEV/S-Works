@@ -9,6 +9,15 @@ function saveAsFile(filename, bytesBase64) {
     document.body.removeChild(link);
 }
 
+function downloadFile(url, fileName) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 
 
 function downloadFileFromStream(fileName, contentBase64) {
