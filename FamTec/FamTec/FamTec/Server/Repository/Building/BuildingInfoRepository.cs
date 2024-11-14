@@ -568,7 +568,7 @@ namespace FamTec.Server.Repository.Building
                             if (BuildingTB is not null)
                             {
                                 // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                BuildingTB.BuildingCd = $"{BuildingTB.BuildingCd}_{BuildingTB.Id}";
+                                //BuildingTB.BuildingCd = $"{BuildingTB.BuildingCd}_{BuildingTB.Id}"; // 코드안씀
                                 BuildingTB.DelYn = true;
                                 BuildingTB.DelDt = ThisDate;
                                 BuildingTB.DelUser = deleter;

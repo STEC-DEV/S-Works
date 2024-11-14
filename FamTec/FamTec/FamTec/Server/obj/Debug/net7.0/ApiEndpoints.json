@@ -6199,16 +6199,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.Voc.VocController",
-    "Method": "Temp",
-    "RelativePath": "api/Voc/temp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Voc.VocCommentController",
     "Method": "AddVocComment",
     "RelativePath": "api/VocComment/sign/AddVocComment",

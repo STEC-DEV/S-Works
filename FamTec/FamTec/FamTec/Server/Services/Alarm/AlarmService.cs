@@ -9,6 +9,7 @@ namespace FamTec.Server.Services.Alarm
         private readonly IAlarmInfoRepository AlarmInfoRepository;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<AlarmService> CreateBuilderLogger;
+
         public AlarmService(IAlarmInfoRepository _alarminforepository,
             ILogService _logservice,
             ConsoleLogService<AlarmService> _createbuilderlogger)

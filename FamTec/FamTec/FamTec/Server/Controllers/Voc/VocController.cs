@@ -41,6 +41,7 @@ namespace FamTec.Server.Controllers.Voc
         /// </summary>
         /// <returns></returns>
         //[AllowAnonymous]
+        /*
         [HttpGet]
         [Route("temp")]
         public async Task<IActionResult> Temp()
@@ -101,6 +102,7 @@ namespace FamTec.Server.Controllers.Voc
                 throw;
             }
         }
+        */
 
         [AllowAnonymous]
         [HttpGet]

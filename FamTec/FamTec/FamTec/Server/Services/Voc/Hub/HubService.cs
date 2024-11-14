@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using FamTec.Server.Hubs;
+﻿using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -81,9 +80,6 @@ namespace FamTec.Server.Services.Voc.Hub
         {
             try
             {
-                //if(String.IsNullOrWhiteSpace(dto.UserName) || String.IsNullOrWhiteSpace(dto.PhoneNumber))
-                //    return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
-
                 if(String.IsNullOrWhiteSpace(PhoneNumber))
                     return new ResponseUnit<bool>() { message = "잘못된 요청입니다.", data = false, code = 404 };
 

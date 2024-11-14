@@ -90,6 +90,9 @@ namespace FamTec.Server.Controllers.Facility
                     }
                 }
 
+                if (files.Length > Common.MEGABYTE_10)
+                    return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
+
                 ResponseUnit<bool> model = await ConstructFacilityService.ImportConstructFacilityService(HttpContext, files);
                 if (model is null)
                     return BadRequest();

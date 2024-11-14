@@ -30,8 +30,13 @@
 <input type="button" value="미화설비양식다운로드" @onclick="(() => btnDownloadbeautyFacilityForm())"/>
 <input type="button" value="품목다운로드" @onclick="(() => btnDownloadMaterialForm())"/>
 
-@code {
 
+
+@code {
+    private IBrowserFile? selectedFile;
+    private bool isFileSelected = false;
+
+    
 
     protected async Task btnDownloadBuildingForm()
     {

@@ -91,7 +91,8 @@ namespace FamTec.Client.Middleware
         protected virtual async Task LoadAdminModePermissions()
         {
             string _role = await PermissionService.HasAdminModeEditPerm();
-            if (_role == "Master" || _role == "SystemManager")
+          
+            if ( _role == "SystemManager" || _role == "Master")
             {
                 ADMINEDIT = true;
                 return;

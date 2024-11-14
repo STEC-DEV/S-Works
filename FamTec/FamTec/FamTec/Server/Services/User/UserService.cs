@@ -903,6 +903,7 @@ namespace FamTec.Server.Services.User
 
                 // JWT 인증 페이로드 사인 비밀키
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
+                //var authSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!))));
 
                 JwtSecurityToken token = new JwtSecurityToken(
                     issuer: Configuration["JWT:Issuer"],
@@ -1086,7 +1087,6 @@ namespace FamTec.Server.Services.User
                         { "UserPerm_User", usertb.PermUser.ToString()},
                         { "UserPerm_Voc", usertb.PermVoc.ToString()}
                     };
-
                         
                     authClaims.Add(new Claim("UserPerms", JsonConvert.SerializeObject(UserPermissions)));
 

@@ -28,8 +28,7 @@ namespace FamTec.Server.Controllers.Building
             IFileService _fileservice,
             ILogService _logservice,
             ICommService _commservice,
-            ConsoleLogService<BuildingController> _createbuilderlogger
-        )
+            ConsoleLogService<BuildingController> _createbuilderlogger)
         {
             this.BuildingService = _buildingservice;
 
@@ -96,6 +95,9 @@ namespace FamTec.Server.Controllers.Building
                         return Ok(new ResponseUnit<bool>() { message = "지원하지 않는 파일 형식입니다.", data = false, code = 204 });
                     }
                 }
+
+                if (files.Length > Common.MEGABYTE_10)
+                    return Ok(new ResponseUnit<bool>() { message = "파일의 용량은 10MB까지 가능합니다.", data = false, code = 204 });
 
                 ResponseUnit<bool> model = await BuildingService.ImportBuildingService(HttpContext, files);
                 if (model is null)

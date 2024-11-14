@@ -48,10 +48,12 @@ namespace FamTec.Client.Middleware
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
+            
             int split = validatedToken.ToString()!.IndexOf('.') + 1;
 
             string payload = validatedToken.ToString()!.Substring(split, validatedToken.ToString()!.Length - split);
             JObject jobj = JObject.Parse(payload.ToString());
+            
 
             return jobj;
         }
