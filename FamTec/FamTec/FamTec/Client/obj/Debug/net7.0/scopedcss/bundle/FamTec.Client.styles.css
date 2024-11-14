@@ -12121,6 +12121,7 @@ modal-table[b-0o0wpwo3cd]{
     border-radius : var(--default-rd);
     box-shadow:var(--shadow-1);
     background-color : var(--default-color);
+    overflow:hidden
 }
 
 .header[b-my0nq2lfue]{
@@ -12143,6 +12144,7 @@ modal-table[b-0o0wpwo3cd]{
     display : flex;
     justify-content :space-between;
     gap : var(--wide-pd);
+    overflow:auto;
     
 }
 
