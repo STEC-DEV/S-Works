@@ -1,6 +1,8 @@
 ﻿@page "/users"
 @inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Users
 @using FamTec.Client.Pages.Normal.User.UserMain.Components
 @using FamTec.Shared.Server.DTO
@@ -26,6 +28,10 @@
                         <Button Name="삭제" Width=true Type=1 OnClick="OnIsDel" />
                     }
 
+                }
+                @if (usersData.Count > 0)
+                {
+                    <ExportButton OnClick="Export" />
                 }
             </div>
             
@@ -160,4 +166,27 @@
         isDel = !isDel;
     }
 
+
+
+    private async Task Export()
+    {
+        if (usersData.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>
+        {
+            "이름",
+            "아이디",
+            "직책",
+            "이메일",
+            "생성일자",
+            "상태",
+        };
+        var excel = ExcelService.getInstance(JS);
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        string title = $"사용자목록_{date}";
+        await excel.ExportUser(usersData, colName, title);
+    }
 }

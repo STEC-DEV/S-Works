@@ -62,10 +62,16 @@
 
 
 .valid[b-nnxheo5jnq]{
-    background-color:var(--status-0)
+    background-color:var(--status-0)`
 }
 
 .valid:hover[b-nnxheo5jnq]{
     cursor : not-allowed;
     background-color:var(--status-0);
+}
+
+.type4[b-nnxheo5jnq] {
+    background-color: #F0F0F0;
+    color :darkgray;
+    cursor: not-allowed;
 }

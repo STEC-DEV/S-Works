@@ -61,20 +61,8 @@
         </tr>
     </thead>
     <tbody class="tbody">
-        @if(ListData == null)
-        {
-            
-                <tr>
-                    <div class="height">
-                        <td colspan="100" style="text-align:center">
-                            <Loading />
-                        </td>
-                    </div>
-                </tr>
-            
-            
-        }
-        else if(ListData.Count == 0)
+
+        @if(ListData.Count == 0)
         {
             <tr>
                 <td colspan="100" style="text-align:center">

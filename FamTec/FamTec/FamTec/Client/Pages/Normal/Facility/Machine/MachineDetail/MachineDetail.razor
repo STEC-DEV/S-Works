@@ -4,31 +4,46 @@
 @using FamTec.Client.Pages.Normal.Facility.Machine.Components
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Components
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Facility.Group
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Server.DTO
 
 <div class="detail-container">
-    <FacInfo 
+    @if (OriginalFacility != null)
+    {
+        <FacInfo 
         Facility=@(OriginalFacility) 
         FacType=@FacType
         OnLoad="OnLoadFacility"
+        OnExport="@Export"
         />
+        }
     @if (HasEditPermission())
     {
         <label class="sub-btn yappear" @onclick=@OnModal title="그룹 추가">
             +
         </label>
     }
-    <div class="group yappear">
-        @foreach (var group in Group)
-        {
-            <Group GroupData="@group" LoadGroup="OnLoadGroup" FacType="@FacType" />
+    @if (Group != null)
+    {
+        <div class="group yappear">
+            @foreach (var group in Group)
+            {
+                @if (group != null)
+                {
+                    <Group GroupData="@group" LoadGroup="OnLoadGroup" FacType="@FacType" />
 
-        }
-    </div>
+                }
+            }
+        </div>
+    }
+    
     <div class="history yappear">
-        <History Id="@Id" FacType="@FacType"/>
+        @if (OriginalFacility != null)
+        {
+            <History Id="@Id" FacType="@FacType" FacName="@OriginalFacility.Name" />
+        }
     </div>
     
     @if (IsModal && HasEditPermission())
@@ -58,7 +73,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        facilityDetailDTO = new FacilityDetailDTO();
         await OnLoadFacility();
         await OnLoadGroup();
 
@@ -76,9 +90,19 @@
                 await JS.InvokeVoidAsync("alert", resFacInfo.message);
                 return;
             }
-            facilityDetailDTO = new FacilityDetailDTO(resFacInfo.data);
-            OriginalFacility = facilityDetailDTO.DeepCopy();
-            UpdateFacility = facilityDetailDTO.DeepCopy();
+            if(resFacInfo.data == null)
+            {
+                facilityDetailDTO = new FacilityDetailDTO();
+                OriginalFacility = new FacilityDetailDTO();
+                UpdateFacility = new FacilityDetailDTO();
+            }
+            else
+            {
+                facilityDetailDTO = new FacilityDetailDTO(resFacInfo.data);
+                OriginalFacility = facilityDetailDTO.DeepCopy();
+                UpdateFacility = facilityDetailDTO.DeepCopy();
+            }
+            
         }catch(Exception ex)
         {
             await JS.InvokeVoidAsync("alert", "조회 실패");
@@ -125,5 +149,21 @@
             _ => false
         };
     }
-    
+
+    /// <summary>
+    /// 엑셀 내보내기
+    /// </summary>
+    /// <returns></returns>
+    private async Task Export()
+    {
+        if (facilityDetailDTO == null)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        var excel = ExcelService.getInstance(JS);
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        string title = $"{facilityDetailDTO.Name}제원_{date}";
+        await excel.ExportFacility(facilityDetailDTO, Group, title);
+    }
 }

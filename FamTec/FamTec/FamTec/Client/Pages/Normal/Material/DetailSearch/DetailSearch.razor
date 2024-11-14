@@ -4,18 +4,19 @@
 
 
 <div class="detailsearch ">
-    <SearchFilter ValueChange="@ValueChange" />
+    <SearchFilter ValueChange="@ValueChange" DateChange=DateChange />
     @* @if (MaterialList != null)
     {
      
     } *@
-    <MaterialHistory ListData="MaterialList" />
+    <MaterialHistory ListData="MaterialList" StartDt="@startDt" EndDt="@endDt"/>
 </div>
 
 @code {
     // public List<DetailMaterialListDTO> MaterialList = new List<DetailMaterialListDTO>();
     public List<DetailMaterialListDTO> MaterialList;
-
+    string startDt;
+    string endDt;
 
     private void ValueChange(List<DetailMaterialListDTO> data)
     {
@@ -29,5 +30,13 @@
         }
         Console.WriteLine("데이터 : "+data.Count); ;
         StateHasChanged();
+    }
+
+    private void DateChange((string start, string end)date)
+    {
+        Console.WriteLine("시작"+date.start);
+        Console.WriteLine("RMx"+date.end);
+        startDt = date.start;
+        endDt = date.end;
     }
 }

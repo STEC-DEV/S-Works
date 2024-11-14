@@ -41,3 +41,7 @@
     gap : var(--wide-pd);
     
 }
+
+.icon {
+    width: 1.5rem;
+}

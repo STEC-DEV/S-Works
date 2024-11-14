@@ -45,3 +45,7 @@
     display : flex;
     gap : var(--half-pd);
 }
+
+.icon[b-ogpbl2cl2v] {
+    width: 1.5rem;
+}

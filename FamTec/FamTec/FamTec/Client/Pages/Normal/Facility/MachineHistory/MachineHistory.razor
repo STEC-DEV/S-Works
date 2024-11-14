@@ -18,7 +18,7 @@
                         Data=ListData
                         SearchOption="@FilterOption"
                         CurrentDate="curDate"
-                        />
+                        SearchParam="@SearchParams" />
     
 </div>
 
@@ -39,6 +39,16 @@
 
     DateTime curDate = DateTime.Now;
     string curMonth = "";
+
+    // 사업장 권한
+    bool placeMachine;
+    bool placeElect;
+    bool placeLift;
+    bool placeFire;
+    bool placeConstruct;
+    bool placeNetwork;
+    bool placeBeauty;
+    bool placeSecurity;
 
     //사용자 설비 권한 리스트 \ 기계,전기,승강,소방,건축,통신,미화,보안 순서
     List<int> facPerm = new List<int>();
@@ -68,6 +78,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await OnCheckPlacePerm();
         facPerm = await (_authStateProvider as CustomAuthProvider).GetFacilityUserPemrList();
         await ConvertType(facPerm);
         selectFacType = 0;
@@ -86,25 +97,42 @@
 
     private async Task ConvertType(List<int> facperm)
     {
-        filterFacType.Clear(); // 기존 리스트를 초기화
-
-        // 권한 값이 1 이상인 항목만 필터링해서 filterType에 추가
-        // for (int i = 0; i < facPerm.Count && (i + 1) < facType.Count; i++)
-        // {
-        //     if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
-        //     {
-        //         filterFacType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
-        //     }
-        // }
-
+        filterFacType.Clear(); 
         for (int i = 0; i < facPerm.Count; i++)
         {
             if (facPerm[i] >= 1) // 권한이 1 이상인 경우
             {
+                bool hasPermission = i switch
+                {
+                    0 => placeMachine,
+                    1 => placeElect,
+                    2 => placeLift,
+                    3 => placeFire,
+                    4 => placeConstruct,
+                    5 => placeNetwork,
+                    6 => placeBeauty,
+                    7 => placeSecurity,
+                    _ => false
+                };
                 // i+1을 하지 않고 직접 i와 매칭되는 facType 항목을 추가
-                filterFacType.Add(facType[i]);
+                if (hasPermission)
+                {
+                    filterFacType.Add(facType[i]);
+                }
             }
         }
+    }
+
+    private async Task OnCheckPlacePerm()
+    {
+        placeMachine = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
+        placeElect = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec");
+        placeLift = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift");
+        placeFire = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire");
+        placeConstruct = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct");
+        placeNetwork = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network");
+        placeBeauty = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
+        placeSecurity = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
     }
 
     private string convertFactype(int facType)

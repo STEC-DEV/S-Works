@@ -1,5 +1,7 @@
 ﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Voc.VocMain.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Location.Inventory
 
 
@@ -8,6 +10,12 @@
         <span class="title">
             품목별 재고현황
         </span>
+        <div class="options">
+            @if (ListData.Count > 0)
+            {
+                <ExportButton OnClick="Export" />
+            }
+        </div>
     </div>
     <div class="option-page">
                 
@@ -58,30 +66,24 @@
     private async Task Paging()
     {
 
-        Console.WriteLine("============페이징 실행============");
+        // Console.WriteLine("============페이징 실행============");
         if (CopyData == null || !CopyData.Any())
         {
             totalPage = 1;
             currentPage = 1;
             FilterData = new List<MaterialHistoryDTO>();
-            
+
             StateHasChanged();
             return;
-        }
-        Console.WriteLine("현현패" + currentPage);
-
+        };
         totalPage = (int)Math.Ceiling((double)CopyData.Count / viewNum);
-
-        Console.WriteLine("현페" + Math.Min(currentPage, totalPage));
-        Console.WriteLine("전체" + totalPage);
-
         currentPage = Math.Min(currentPage, totalPage);
 
         int skip = (currentPage - 1) * viewNum;
         FilterData = CopyData.Skip(skip).Take(viewNum).ToList();
 
-        Console.WriteLine($"[페이징] 전체 데이터 수: {CopyData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
-        Console.WriteLine("============페이징 끝============");
+        // Console.WriteLine($"[페이징] 전체 데이터 수: {CopyData?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
+        // Console.WriteLine("============페이징 끝============");
         StateHasChanged();
     }
 
@@ -108,4 +110,34 @@
         await Paging();
     }
 
+
+    private async Task Export()
+    {
+        if (ListData.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>
+        {
+            "품목코드",
+            "품목명",
+        };
+        // 반복해서 넣어야 하는 데이터를 준비
+        List<string> dynamicColNames = new List<string>();
+        foreach (var item in ListData[0].RoomHistory)
+        {
+            dynamicColNames.Add(item.Name); // 예시로 item.ColumnName을 추가
+        }
+        // 중간에 반복한 데이터를 추가
+        colName.AddRange(dynamicColNames);
+
+        // 나머지 컬럼명 추가
+        colName.Add("총재고수량");
+        string date = DateTime.Now.ToString("yyyyMMdd");
+
+        var excel = ExcelService.getInstance(JS);
+        string title = $"품목별재고현황_{date}";
+        await excel.ExportInventory(ListData, colName, title);
+    }
 }

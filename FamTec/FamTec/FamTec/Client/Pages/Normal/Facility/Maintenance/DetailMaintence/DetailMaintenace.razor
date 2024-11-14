@@ -2,6 +2,7 @@
 @inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
 @using FamTec.Client.Pages.Normal.Facility.Maintenance.DetailMaintence.Components
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.Class
 @using FamTec.Shared.Client.DTO.Normal.Facility
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
@@ -18,6 +19,7 @@
         EditMode=_useMaterialEditMode 
         FacType="@FacType"
         UpdateUseMaterial="@updateMaterial"
+        OnExport=@Export
         />
 
     @if(Maintenance == null)
@@ -260,5 +262,20 @@
         }
     }
 
-   
+    /// <summary>
+    /// 엑셀 내보내기
+    /// </summary>
+    /// <returns></returns>
+    private async Task Export()
+    {
+        if (Maintenance == null)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        var excel = ExcelService.getInstance(JS);
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        string title = $"{Maintenance.WorkName}_유지보수_{date}";
+        await excel.ExportFacMaintenance(Maintenance, originalMaterial.UpdateUsematerialDTO, title);
+    }
 }

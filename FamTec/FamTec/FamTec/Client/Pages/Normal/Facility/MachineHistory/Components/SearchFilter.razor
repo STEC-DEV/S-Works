@@ -43,23 +43,6 @@
                     </div>
                 </div>
             </div>
-            @* 조회기간 컴포넌트 끝 *@
-@*             <SelectField Key="SelectData="
-                         SelectData="@filterType"
-                         @bind-Value="@selectFacType"
-                         OnChange="OnChangeFactype"
-                         Label="설비유형"
-                         Padding="half"
-                         Row="true"
-                         EditMode="true" />
-            <SelectField Key="WorkType"
-                         SelectData="workType"
-                         @bind-Value="@selectWorkType"
-                         OnChange="OnChangeWorktype"
-                         Label="작업 구분"
-                         Padding="half"
-                         Row="true"
-                         EditMode="true" /> *@
 
             <MultiSelectDrop Row=true Label="설비유형" SelectItems="@FacType" OnSelectionChanged="HandleSelectionChange" />
             <MultiSelectDrop Row=true Label="작업구분" SelectItems="@WorkType" OnSelectionChanged="HandleSelectionChange" />
@@ -75,10 +58,7 @@
     [Parameter] public int DefaultOption { get; set; }
     [Parameter] public List<FilterItem> FacType { get; set; }
     [Parameter] public List<FilterItem> WorkType { get; set; }
-    // [Parameter] public DateTime StartDt{ get; set; }
-    // [Parameter] public DateTime EndDt{ get; set; }
 
-    // List<AllMaintanceHistoryDTO> MonthData = new List<AllMaintanceHistoryDTO>();
     List<MaintanceHistoryDTO> DurationData = new List<MaintanceHistoryDTO>();
 
     private int selectDefaultOption = 0;
@@ -89,25 +69,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // facPerm = await (_authStateProvider as CustomAuthProvider).GetFacilityUserPemrList();
-        // await ConvertType(facPerm);
-        // selectFacType = 0;
-        // selectWorkType = 2;
-
     }
 
     private async Task ConvertType(List<int> facperm)
     {
         selectDefaultOption = DefaultOption;
-        // filterType.Add(facType[0]);
-        // // 권한 값이 1 이상인 항목만 필터링해서 filterType에 추가
-        // for (int i = 0; i < facPerm.Count; i++)
-        // {
-        //     if (facPerm[i] >= 1) // 권한이 1 이상일 때만 추가
-        //     {
-        //         filterType.Add(facType[i + 1]); // facType의 첫 번째는 "전체"이므로 +1
-        //     }
-        // }
     }
 
     //조회 기간
@@ -120,32 +86,9 @@
         }
     }
 
-
-    // //설비유형 선택 이벤트
-    // private void OnChangeFactype(int select)
-    // {
-    //     selectFacType = select;
-    // }
-
-    // //작업구분 선택 이벤트
-    // private void OnChangeWorktype(int select)
-    // {
-    //     selectWorkType = select;
-    // }
-
-
-    /*===========================*/
     List<string> facType = new List<string>();
     List<int> workType = new List<int>();
-     /*
-    * url형식으로 변경
-    * [FromQuery] int searchType,
-    * [FromQuery] List<string> category,
-    * [FromQuery] List<int> type,
-    * [FromQuery] string? searchdate,
-    * [FromQuery] DateTime? StartDate,
-    *  [FromQuery] DateTime? EndDate
-    */
+
     private async void OnSearch()
     {
         var parameters = HttpUtility.ParseQueryString(string.Empty);
@@ -178,11 +121,10 @@
             2 => "전기",
             3 => "승강",
             4 => "소방",
-            5 => "건축" ,
+            5 => "건축",
             6 => "통신",
             7 => "미화",
             8 => "보안",
-
         };
     }
 

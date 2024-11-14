@@ -48,7 +48,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Material.Detail
         /// <summary>
         /// 총 재고 수량
         /// </summary>
-        public long TotalStockNum { get; set; }
+        public int TotalStockNum { get; set; }
 
         /// <summary>
         /// 이월재고 수량

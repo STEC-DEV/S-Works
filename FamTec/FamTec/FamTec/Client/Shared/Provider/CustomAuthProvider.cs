@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Serialization;
 
 namespace FamTec.Client.Shared.Provider
 {
@@ -193,16 +194,57 @@ namespace FamTec.Client.Shared.Provider
             return false; // 권한이 없거나 파싱할 수 없는 경우 0 반환
         }
 
+        //token UserPerms 내부 권한 확인
+        public async Task<bool> GetPlacePermission(string permName)
+        {
+            //Console.WriteLine(permName);
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userPerms = user.Claims.FirstOrDefault(c => c.Type == "PlacePerms")?.Value;
+            if (string.IsNullOrEmpty(userPerms)) return false;
+
+            try
+            {
+                var perms = JsonSerializer.Deserialize<Dictionary<string, string>>(userPerms);
+
+                if (perms != null && perms.TryGetValue(permName, out string permValueString))
+                {
+                    if (bool.TryParse(permValueString, out bool permValue))
+                    {
+                        return permValue;
+                    }
+                }
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing UserPerms: {ex.Message}");
+            }
+
+            return false; // 권한이 없거나 파싱할 수 없는 경우 0 반환
+        }
+
         //사업장 이름 조회
         public async Task<string> GetPlaceName()
         {
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
+            Console.WriteLine("==============================");
+            foreach (var c in user.Claims)
+            {
+                
+                Console.WriteLine(c.Type);
+                Console.WriteLine(c.Value);
+                
+            }
+            Console.WriteLine("==============================");
             var claim = user.FindFirst(c => c.Type == "PlaceName");
+            
+            Console.WriteLine("클레임"+claim);
             if (claim == null) return null;
-
+            
             string name = claim.Value;
             if (string.IsNullOrEmpty(name)) return null;
+            
             return name;
         }
 

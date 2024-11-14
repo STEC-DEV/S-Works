@@ -46,6 +46,7 @@
     gap : var(--half-pd);
     /*justify-content : space-between;*/
     align-items : center;
+    height:100%;
 }
 
 .inout .option-page{

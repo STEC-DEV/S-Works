@@ -1,6 +1,8 @@
 ﻿@inherits PermissionComponentBase
 @using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Pages.Normal.Facility.Machine.MachineDetail.Modal
+@using FamTec.Client.Pages.Normal.Voc.VocMain.utill
 @using FamTec.Shared.Client.DTO.Normal.Facility.Maintenance
 @using FamTec.Shared.Server.DTO
 
@@ -10,9 +12,10 @@
         <span class="title">
             유지보수 이력
         </span>
-        @if (HasEditPermission())
-        {
+        
             <div class="options">
+            @if (HasEditPermission())
+            {
                 @if (_editMode)
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
@@ -27,22 +30,30 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
                 }
+            }
+            <ExportButton OnClick="Export" Id="2"/>
+            @* @if (ListData.Count > 0)
+            {
+                
+            } *@
             </div>
-        }
-
-        
-
     </div>
     <div class="content">
+        @if (ListData != null)
+        {
+            <HistoryTable ListData="@ListData"
+                          FacType="@FacType"
+                          FacId="@Id"
+                          OnCheck="OnCheck"
+            EditMode=_editMode />
+        }
+        else
+        {
+            <Loading/>
+        }
 
     </div>
-    <HistoryTable 
-        ListData="@ListData" 
-        FacType="@FacType" 
-        FacId="@Id" 
-        OnCheck="OnCheck"
-        EditMode=_editMode
-        />
+    
     @if (_isDel && HasEditPermission())
     {
         <ModalBackground>
@@ -56,8 +67,10 @@
 @code {
     [Parameter] public int Id{ get; set; }
     [Parameter] public string FacType{ get; set; }
+    [Parameter] public string FacName { get; set; }
 
-    List<MaintenanceListDTO> ListData;
+
+    List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
     private bool _editMode = false;
     private bool _isDel = false;
     List<int?> checkedMaintenance = new List<int?>();
@@ -171,5 +184,30 @@
             "security" => SECURITY,
             _ => false
         };
+    }
+
+    /// <summary>
+    /// 엑셀 내보내기
+    /// </summary>
+    /// <returns></returns>
+    private async Task Export()
+    {
+        if (ListData == null)
+        {
+            await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
+            return;
+        }
+        List<string> colName = new List<string>()
+            {
+                "작업년월",
+                "수리 및 보수 이력",
+                "작업구분",
+                "작업자",
+                "소요비용",
+            };
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        var excel = ExcelService.getInstance(JS);
+        string title = $"{FacName}_유지보수이력_{date}";
+        await excel.ExportFacMaintenanace(ListData, colName, title);
     }
 }
