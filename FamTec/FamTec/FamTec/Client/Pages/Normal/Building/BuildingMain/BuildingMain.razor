@@ -15,19 +15,24 @@
             <span class="title">
                 건물 목록
             </span>
-            @if (BASIC)
-            {
+            
                 <div class="btns">
+                @if (BASIC)
+                {
                     <Button Name="등록" Width=true Type=0 OnClick="@OnMoveAdd" />
                     @if (DelList.Count > 0)
                     {
                         <Button Name="삭제" Width=true Type=1 OnClick="OnIsDel" />
                     }
-                    <div class="icon" @onclick=Export>
-                        <ExportIcon />
-                    </div>
+
+                }
+                @if (BuildingList !=null &&BuildingList.Count > 0)
+                {
+                    <ExportButton OnClick="Export" />
+                }
                 </div>
-            }
+            
+            
             
         </div>
         <div class="building-contents">
@@ -169,8 +174,9 @@
             "준공년월",
             "등록일자",
         };
+        string date = DateTime.Now.ToString("yyyyMMdd");
         var excel = ExcelService.getInstance(JS);
-        string title = $"건물목록";
+        string title = $"건물목록_{date}";
         await excel.ExportBuilding(BuildingList, colName, title);
     }
 }

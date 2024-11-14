@@ -1,0 +1,78 @@
+﻿.container {
+    position: relative;
+}
+
+.btn {
+    display: flex;
+    gap: var(--half-pd);
+    align-items: center;
+    height: 100%;
+    padding: var(--half-pd) var(--default-pd);
+    border: none;
+    border-radius: var(--default-rd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    white-space: nowrap;
+    transition: all .3s;
+    position: relative;
+    background-color: var(--main-color);
+    width: 100%; /* 부모 요소의 너비에 맞추기 */
+}
+
+.btn:hover{
+    transition: all ease-in-out 0.2s;
+}
+
+.title{
+    color :white;
+    font-size:var(--normal-size);
+}
+
+.icon {
+    font-size: var(--explain-size);
+    color: white;
+}
+
+
+.list{
+    padding:var(--half-pd);
+    border:var(--comp-bd);
+    border-radius:var(--default-rd);
+    position:absolute;
+    top:40px;
+    right:0;
+
+    background-color:white;
+    z-index:10;
+    transition : all .3s;
+     width: 100%; /* 버튼의 너비에 맞추기 */
+    /*box-shadow : 0 0 12px darkgray;*/
+}
+
+
+.li {
+    display: flex;
+    align-items : center;
+    padding: var(--half-pd);
+    gap: var(--half-pd);
+    transition : all .3s;
+    border-radius:var(--default-rd);
+}
+
+.li:hover{
+    cursor:pointer;
+    background-color  :var(--main-color);
+    
+}
+.li:hover .bi{
+    fill:white;
+}
+
+.li:hover .text{
+    color :white;
+}
+
+.text{
+    font-size:var(--normal-size);
+    color:var(--main-color);
+}

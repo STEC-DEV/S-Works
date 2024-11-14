@@ -10,9 +10,10 @@
         <span class="title">
             건물 정보
         </span>
-        @if (BASIC)
-        {
+        
             <div class="header-btns">
+            @if (BASIC)
+            {
                 @if (EditMode)
                 {
                     <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
@@ -23,11 +24,10 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEditMode" />
                 }
-                <div class="icon" @onclick=Export>
-                    <ExportIcon />
-                </div>
+            }
+                <ExportButton OnClick="Export" />
             </div>
-        }
+        
 
 
     </div>

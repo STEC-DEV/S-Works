@@ -19,10 +19,14 @@
                              Key="material"
                              SelectData="@ListData"
                              @bind-Value=@MaterialId
-                             EditMode="true" />
-                    <div class="icon" @onclick=Export>
-                        <ExportIcon />
-                    </div>
+                             EditMode="true" 
+                             Half="true"
+                             />
+                    
+                    @if (ListData.Count > 0)
+                    {
+                        <ExportButton OnClick="Export" />
+                    }
             </div>
         }
         
@@ -50,6 +54,8 @@
 
 @code {
     [Parameter] public List<DetailMaterialListDTO> ListData { get; set; }
+    [Parameter] public string StartDt{ get; set; }
+    [Parameter] public string EndDt{ get; set; }
 
     private int _materialId;
     int MaterialId
@@ -106,15 +112,15 @@
         // Console.WriteLine("현현패" + currentPage);
 
         totalPage = (int)Math.Ceiling((double)FilterList.Count / viewNum);
-       
+
         // Console.WriteLine("현페" + Math.Min(currentPage, totalPage));
         // Console.WriteLine("전체" + totalPage);
-        
+
         currentPage = Math.Min(currentPage, totalPage);
-        
+
         int skip = (currentPage - 1) * viewNum;
         pageList3 = FilterList.Skip(skip).Take(viewNum).ToList();
-        
+
         // Console.WriteLine($"[페이징] 전체 데이터 수: {FilterList?.Count}, 현재 페이지: {currentPage}, 총 페이지: {totalPage}");
         // Console.WriteLine("============페이징 끝============");
         StateHasChanged();
@@ -185,7 +191,8 @@
             "비고",
         };
         var excel = ExcelService.getInstance(JS);
-        string title = $"입출고 내역";
+        string dt = StartDt == EndDt ? StartDt : StartDt + "_" + EndDt;
+        string title = $"{FilterList2.Name}_입출고내역_{dt}";
         await excel.ExportInOutDetail(ListData, colName, title);
     }
 }

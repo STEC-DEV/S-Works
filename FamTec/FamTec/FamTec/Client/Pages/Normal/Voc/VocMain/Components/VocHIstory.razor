@@ -23,9 +23,14 @@
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAddVoc" />
                 }
-                <div class="icon" @onclick=Export>
+  @*               <div class="icon" @onclick=Export>
                     <ExportIcon />
-                </div>
+                </div> *@
+                @if (ListData.Count > 0)
+                {
+                    <ExportButton OnClick="Export" />
+                }
+                
             </div>
         </div>
         <div class="option @(DefaultOption !=0 ? "flex-end":null)">
@@ -218,13 +223,13 @@
             "상태",
         };
         var excel = ExcelService.getInstance(JS);
-        string title = $"{CurrentDate.ToString("yyyy-MM")} 민원";
+        string title = $"민원_{CurrentDate.ToString("yyyyMM")}";
         if(DefaultOption == 1)
         {
             await OnParseQueryStringv2();
-            title = $"{startDt}_{endDt} 민원";
+            title = $"민원_{startDt}_{endDt}";
         }
-        await excel.ExportVocData(ListData, colName, CurrentDate.ToString("yyyy-MM"), title);
+        await excel.ExportVocData(ListData, colName, CurrentDate.ToString("yyyyMM"), title);
     }
 
     string startDt;
@@ -233,8 +238,9 @@
     {
         
         var parameters = HttpUtility.ParseQueryString(SearchParam);
-        startDt = parameters["startDate"];
-        endDt = parameters["endDate"];
+        startDt = parameters["startDate"].Replace("-","");
+        
+        endDt = parameters["endDate"].Replace("-", "");
     }
 
 

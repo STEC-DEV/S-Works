@@ -62,10 +62,16 @@
 
 
 .valid{
-    background-color:var(--status-0)
+    background-color:var(--status-0)`
 }
 
 .valid:hover{
     cursor : not-allowed;
     background-color:var(--status-0);
+}
+
+.type4 {
+    background-color: #F0F0F0;
+    color :darkgray;
+    cursor: not-allowed;
 }

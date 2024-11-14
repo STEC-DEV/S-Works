@@ -11,10 +11,10 @@
 }
 
 
-.icon:hover > svg{
+/*.icon:hover > svg{
     fill: var(--main-color);
 }
-
+*/
 svg {
     transition: all .2s;
 }

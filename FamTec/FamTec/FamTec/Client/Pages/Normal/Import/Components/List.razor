@@ -1,0 +1,74 @@
+﻿@using FamTec.Client.Pages.CommonComponents
+@using FamTec.Client.Pages.CommonComponents.IconButton
+
+<div class="item">
+    <span class="title">
+        @Title
+    </span>
+    <div class="row">
+        <span class="text">
+            @fileName
+        </span>
+        <label class="custom" for="@($"fileinput-{Title}")"><UploadIcon Width="1rem" /></label>
+        <InputFile class="input" id="@($"fileinput-{Title}")" OnChange="OnInputFileChange" accept=".xlsx" />
+    </div>
+    <div class="btns">
+       
+
+        @if (File != null)
+        {
+            <Button OnClick="OnExcelImport" Name="업로드" />
+        }
+        else
+        {
+            <Button Name="업로드" Type="3"/>
+        }
+        
+        <Button OnClick="OnFormDownload" Name="양식 다운로드" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public EventCallback FormDownload { get; set; }
+    [Parameter] public EventCallback ExcelImport { get; set; }
+    [Parameter] public IBrowserFile File{ get; set; }
+    [Parameter] public EventCallback<IBrowserFile> FileChanged { get; set; }
+    [Parameter] public long MaxFileSize { get; set; } = 1024 * 1024 * 10; // 기본 10MB
+
+    private IBrowserFile selectedFile;
+    private string fileName;
+
+    private async void OnFormDownload()
+    {
+        await FormDownload.InvokeAsync();
+    }
+
+    private async void OnExcelImport()
+    {
+        await ExcelImport.InvokeAsync();
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+
+        if (selectedFile != null && Path.GetExtension(selectedFile.Name).ToLower() == ".xlsx")
+        {
+            fileName = selectedFile.Name;
+            await FileChanged.InvokeAsync(selectedFile);
+            // 예시: 파일을 서버로 보내거나 클라이언트에서 처리
+            using var stream = selectedFile.OpenReadStream(MaxFileSize);
+            // 필요한 파일 처리 로직 추가
+        }
+        else
+        {
+            fileName = string.Empty;
+            await FileChanged.InvokeAsync(null);
+            await JS.InvokeVoidAsync("alert", "허용되지 않은 파일 형식입니다. XLSX 파일만 업로드 가능합니다.");
+        }
+
+        StateHasChanged();
+    }
+
+}

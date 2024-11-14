@@ -13,27 +13,25 @@
         <span>
             설비 제원
         </span>
-        @if (HasEditPermission())
-        {
-            <div class="option">
-                @if (EditMode)
-                {
-                    <div class="btns">
-                        <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
-                        <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
-                    </div>
-                    
-                }
-                else
-                {
-                    <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
-                }
-                <div class="icon" @onclick=Export>
-                    <ExportIcon />
-                </div>
-            </div>
-        }
         
+            <div class="option">
+                @if (HasEditPermission())
+                {
+                    @if (EditMode)
+                    {
+                        <div class="btns">
+                            <Button Name="저장" Width=true Type="0" OnClick="OnUpdate" />
+                            <Button Name="취소" Width=true Type="1" OnClick="OnEdit" />
+                        </div>
+                    
+                    }
+                    else
+                    {
+                        <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
+                    }
+                }
+                <ExportButton OnClick="Export" Id="1"/>
+            </div>
     </div>
     <div class="infocard-content">
         @if (Facility == null)

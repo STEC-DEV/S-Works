@@ -49,12 +49,6 @@
 
     private bool _isProcessingLogout = false;  // 로그아웃 처리 중복 방지 플래그
 
-    // protected override async Task OnInitializedAsync()
-    // {
-
-    //     await OnUserCheck();
-    //     StateHasChanged();
-    // }
 
 
     protected override async Task OnInitializedAsync()
@@ -73,16 +67,11 @@
         Navigation.LocationChanged -= OnLocationChanged;
     }
 
-    // protected override async Task OnParametersSetAsync()
-    // {
-    //     await OnUserCheck();
-    //     StateHasChanged();
-    // }
-
 
     private string UserDisplayName(List<Claim> claims)
     {
         var Name = claims.Where(_ => _.Type == "Name").Select(_ => _.Value).FirstOrDefault();
+        Console.WriteLine("이름"+Name);
         return Name;
     }
 
@@ -90,6 +79,7 @@
     private string UserDisplayType(List<Claim> claims)
     {
         var Name = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
+        Console.WriteLine("롤" + Name);
         return Name;
     }
 
@@ -104,22 +94,8 @@
         var user = authState.User;
         var userId = await (_authStateProvider as CustomAuthProvider).GetUserId();
 
-        // if (userId == 0 && !(currentPath== "") && !currentPath.Contains("/login"))
-        // {
-        //     await JS.InvokeVoidAsync("alert", "로그아웃 되었습니다. 다시 로그인 해주세요.");
-        //     Navigation.NavigateTo("/login");
-        //     return;
-        // }
-
-
         var userPlace = user.Claims.FirstOrDefault(c => c.Type == "PlaceIdx")?.Value;
-
-        //관리자 여부
-        // var isAdmin = await (_authStateProvider as CustomAuthProvider).IsAdminAsync();
-
-        // Console.WriteLine($"Is user authenticated: {user.Identity.IsAuthenticated}");
-        // Console.WriteLine($"User identity name: {user.Identity.Name}");
-
+        
         // 로그인 페이지는 체크 제외
         if (currentPath.Contains("/login"))
         {

@@ -12,9 +12,10 @@
         <span class="title">
             유지보수 이력
         </span>
-        @if (HasEditPermission())
-        {
+        
             <div class="options">
+            @if (HasEditPermission())
+            {
                 @if (_editMode)
                 {
                     <Button Name="등록" Width=true Type="0" OnClick="OnAdd" />
@@ -29,25 +30,30 @@
                 {
                     <Button Name="수정" Width=true Type="0" OnClick="OnEdit" />
                 }
-                <div class="icon" @onclick=Export>
-                    <ExportIcon />
-                </div>
+            }
+            <ExportButton OnClick="Export" Id="2"/>
+            @* @if (ListData.Count > 0)
+            {
+                
+            } *@
             </div>
-        }
-
-        
-
     </div>
     <div class="content">
+        @if (ListData != null)
+        {
+            <HistoryTable ListData="@ListData"
+                          FacType="@FacType"
+                          FacId="@Id"
+                          OnCheck="OnCheck"
+            EditMode=_editMode />
+        }
+        else
+        {
+            <Loading/>
+        }
 
     </div>
-    <HistoryTable 
-        ListData="@ListData" 
-        FacType="@FacType" 
-        FacId="@Id" 
-        OnCheck="OnCheck"
-        EditMode=_editMode
-        />
+    
     @if (_isDel && HasEditPermission())
     {
         <ModalBackground>
@@ -61,10 +67,10 @@
 @code {
     [Parameter] public int Id{ get; set; }
     [Parameter] public string FacType{ get; set; }
-    [Parameter] public string FacName{ get; set; }
+    [Parameter] public string FacName { get; set; }
 
 
-    List<MaintenanceListDTO> ListData;
+    List<MaintenanceListDTO> ListData = new List<MaintenanceListDTO>();
     private bool _editMode = false;
     private bool _isDel = false;
     List<int?> checkedMaintenance = new List<int?>();
@@ -199,9 +205,9 @@
                 "작업자",
                 "소요비용",
             };
-
+        string date = DateTime.Now.ToString("yyyyMMdd");
         var excel = ExcelService.getInstance(JS);
-        string title = $"{FacName} 유지보수 이력";
+        string title = $"{FacName}_유지보수이력_{date}";
         await excel.ExportFacMaintenanace(ListData, colName, title);
     }
 }

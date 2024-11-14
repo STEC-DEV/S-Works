@@ -9,8 +9,10 @@ using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
 using Irony.Parsing;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.JSInterop;
 using System;
 using System.Net;
 
@@ -30,15 +32,15 @@ namespace FamTec.Client.Middleware
         private readonly HttpClient _httpClient;
         //private readonly CustomAuthenticationStateProvider _authStateProvider;
         private readonly AuthenticationStateProvider _authStateProvider;
-
+        private readonly IJSRuntime _JS;
         private readonly ILocalStorageService _localStorageService;
 
 
-        public ApiManager(AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService)
+        public ApiManager(AuthenticationStateProvider authStateProvider, IJSRuntime js, ILocalStorageService localStorageService)
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("http://123.2.156.148:5245/api/");
-
+            _JS = js;
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _authStateProvider = authStateProvider;
@@ -526,6 +528,79 @@ namespace FamTec.Client.Middleware
                 
         }
 
+
+        /*
+         * 엑셀파일 get요청
+         */
+        public async Task<byte[]> GetFileAsync(string endpoint)
+        {
+            // 헤더에 Authorization 추가
+            await AddAuthorizationHeader();
+
+            
+
+            // 파일 다운로드 요청
+            var response = await _httpClient.GetAsync(endpoint);
+
+            // 응답 상태 코드가 200 OK일 때 파일 바이트 반환
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+
+            throw new Exception("파일 다운로드 실패");
+        }
+
+        /*
+         * 엑셀 파일 업로드 post요청
+         */
+        public async Task<ResponseUnit<bool>> PostSendFileRequestAsync(string endpoint, IBrowserFile file, string fileFieldName = "files")
+        {
+            await AddAuthorizationHeader();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
+
+            var formData = new MultipartFormDataContent();
+
+            // 파일이 있으면 multipart/form-data 형식으로 파일 추가
+            if (file != null)
+            {
+                var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)); // 10MB
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                // 파일을 multipart/form-data로 추가
+                formData.Add(fileContent, fileFieldName, file.Name);
+            }
+
+            request.Content = formData;
+
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            // 토큰 만료 시 처리
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                bool tokenRefreshed = await RefreshTokenAsync();
+                if (tokenRefreshed)
+                {
+                    await AddAuthorizationHeader();
+                    response = await _httpClient.SendAsync(request);
+                }
+                else
+                {
+                    await _localStorageService.RemoveItemAsync("sworks-jwt-token");
+                    await _localStorageService.RemoveItemAsync("loginMode");
+                    (_authStateProvider as CustomAuthProvider).NotifyLogout();
+                }
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ResponseUnit<bool>>(jsonResponse);
+
+            // 응답 본문 반환
+            return result;
+        }
 
 
     }

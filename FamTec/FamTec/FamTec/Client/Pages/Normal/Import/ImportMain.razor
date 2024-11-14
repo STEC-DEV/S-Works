@@ -1,0 +1,315 @@
+﻿@page "/setting"
+@using FamTec.Client.Pages.Normal.Import.Components
+@using System.Net.Http.Headers
+@using FamTec.Client.Shared.Provider
+@using FamTec.Shared.Client.DTO.Normal.Location
+@using FamTec.Shared.Server.DTO
+
+
+<div class="container">
+    <div class="wrap">
+        <div class="header">
+            <span class="title">
+                사업장 정보 등록
+            </span>
+        </div>
+        <div class="content">
+            @if (building == 2)
+            {
+                <List Title="건물정보" FormDownload="btnDownloadBuildingForm" @bind-File="buildingFile" ExcelImport="@OnImportBuilding" />
+            }
+            @if (machine == 2 & placeMachine)
+            {
+                <List Title="기계설비" FormDownload="btnDownloadFaciliyForm" @bind-File="machineFile" ExcelImport="@OnImportMachine" />
+            }
+            @if (elect == 2 && placeElect)
+            {
+                <List Title="전기설비" FormDownload="btnDownloadFaciliyForm" @bind-File="electFile" ExcelImport="@OnImportElect" />
+            }
+            @if (lift == 2 && placeLift)
+            {
+                <List Title="승강설비" FormDownload="btnDownloadFaciliyForm" @bind-File="liftFile" ExcelImport="@OnImportLift" />
+            }
+            @if (fire == 2 && placeFire)
+            {
+                <List Title="소방설비" FormDownload="btnDownloadFaciliyForm" @bind-File="fireFile" ExcelImport="@OnImportFire" />
+            }
+            @if (contstruct == 2 && placeConstruct)
+            {
+                <List Title="건물설비" FormDownload="btnDownloadFaciliyForm" @bind-File="contstructFile" ExcelImport="@OnImportConstruct" />
+            }
+            @if (network == 2 && placeNetwork)
+            {
+                <List Title="통신설비" FormDownload="btnDownloadFaciliyForm" @bind-File="networkFile" ExcelImport="@OnImportNetwork" />
+            }
+            @if (beauty == 2 && placeBeauty)
+            {
+                <List Title="미화설비" FormDownload="btnDownloadFaciliyForm" @bind-File="beautyFile" ExcelImport="@OnImportBeauty" />
+            }
+            @if (security == 2 && placeSecurity)
+            {
+                <List Title="보안설비" FormDownload="btnDownloadFaciliyForm" @bind-File="securityFile" ExcelImport="@OnImportSecurity" />
+            }
+            @if (material == 2 && placeMaterial)
+            {
+                <List Title="자재정보" FormDownload="btnDownloadMaterialForm" @bind-File="materialFile" ExcelImport="@OnImportMaterial" />
+            }
+            @if (user == 2)
+            {
+                <List Title="사용자정보" FormDownload="btnDownloadForm" @bind-File="userFile" ExcelImport="@OnImportUser" />
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    int building = 0;
+    int machine = 0;
+    int elect = 0;
+    int lift = 0;
+    int fire = 0;
+    int contstruct = 0;
+    int network = 0;
+    int beauty = 0;
+    int security = 0;
+    int msecurity = 0;
+    int material = 0;
+    int user = 0;
+
+    // 사업장 권한
+    bool placeMachine;
+    bool placeElect;
+    bool placeLift;
+    bool placeFire;
+    bool placeConstruct;
+    bool placeNetwork;
+    bool placeBeauty;
+    bool placeSecurity;
+    bool placeMaterial;
+    
+
+
+    IBrowserFile buildingFile;
+    IBrowserFile machineFile;
+    IBrowserFile electFile;
+    IBrowserFile liftFile;
+    IBrowserFile fireFile;
+    IBrowserFile contstructFile;
+    IBrowserFile networkFile;
+    IBrowserFile beautyFile;
+    IBrowserFile securityFile;
+    IBrowserFile materialFile;
+    IBrowserFile userFile;
+
+    List<RoomListDTO> RoomList = new List<RoomListDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var a = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
+
+        building = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Basic");
+        machine = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Machine");
+        elect = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Elec");
+        lift = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Lift");
+        fire = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Fire");
+        contstruct = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Construct");
+        network = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Network");
+        beauty = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Beauty");
+        security = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Security");
+        material = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Material");
+        user = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_User");
+
+
+        // 사업장 권한 확인
+        placeMachine = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Machine");
+        placeElect = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Elec");
+        placeLift = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Lift");
+        placeFire = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Fire");
+        placeConstruct = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Construct");
+        placeNetwork = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Network");
+        placeBeauty = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Beauty");
+        placeSecurity = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Security");
+        placeMaterial = await (_authStateProvider as CustomAuthProvider).GetPlacePermission("PlacePerm_Material");
+        
+
+        bool hasAnyPermission = building == 2 ||
+            (machine == 2 && placeMachine) ||
+            (elect == 2 && placeElect) ||
+            (lift == 2 && placeLift) ||
+            (fire == 2 && placeFire) ||
+            (contstruct == 2 && placeConstruct) ||
+            (network == 2 && placeNetwork) ||
+            (beauty == 2 && placeBeauty) ||
+            (security == 2 && placeSecurity) ||
+            (material == 2 && placeMaterial) ||
+            (user == 2);
+        @if (!hasAnyPermission)
+        {
+            await JS.InvokeVoidAsync("alert", "권한없음");
+            Navigation.NavigateTo("/basic/buildings");
+            return;
+        }
+
+        await OnLoadLaction();
+    }
+
+    //전체 위치 조회
+    private async Task OnLoadLaction()
+    {
+        try
+        {
+            ResponseList<RoomListDTO> resGet = await apiManager.GetListAsync<RoomListDTO>("Room/sign/GetAllRoomList");
+            if (resGet.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resGet.message);
+                return;
+            }
+            RoomList = resGet.data;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", "조회 실패");
+        }
+    }
+
+     /*
+    * 건물양식 다운
+    * --
+    */
+    protected async Task btnDownloadBuildingForm()
+    {
+
+        var filebytes = await apiManager.GetFileAsync("building/downloadbuildingform");
+        var base64 = Convert.ToBase64String(filebytes);
+        var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileurl, "건물정보(양식).xlsx");
+    }
+
+    protected async Task btnDownloadFaciliyForm()
+    {
+
+        var filebytes = await apiManager.GetFileAsync("machinefacility/sign/downloadmachinefacilityform");
+        var base64 = Convert.ToBase64String(filebytes);
+        var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileurl, "설비내용.xlsx");
+    }
+
+    /*
+    * 자재 양식 다운
+    */
+    protected async Task btnDownloadMaterialForm()
+    {
+
+        var filebytes = await apiManager.GetFileAsync("material/sign/downloadmaterialform");
+        var base64 = Convert.ToBase64String(filebytes);
+        var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileurl, "품목정보.xlsx");
+    }
+
+
+    protected async Task btnDownloadForm()
+    {
+        var filebytes = await apiManager.GetFileAsync("user/downloaduserform");
+        var base64 = Convert.ToBase64String(filebytes);
+        var fileurl = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileurl, "사용자정보(양식).xlsx");
+    }
+
+
+    private async Task OnImportBuilding() => await UploadFile(buildingFile, "Building/sign/ImportBuilding","Building");
+    private async Task OnImportMachine() => await UploadFile(machineFile, "MachineFacility/sign/ImportMachineFacility", "Machine");
+    private async Task OnImportElect() => await UploadFile(electFile, "ElectronicFacility/sign/ImportElectronicFacility","Elect");
+    private async Task OnImportLift() => await UploadFile(liftFile, "LiftFacility/sign/ImportLiftFacility", "Lift");
+    private async Task OnImportFire() => await UploadFile(fireFile, "FireFacility/sign/ImportfireFacility", "Fire");
+    private async Task OnImportConstruct() => await UploadFile(contstructFile, "ConstructFacility/sign/ImportConstructFacility", "Construct");
+    private async Task OnImportNetwork() => await UploadFile(networkFile, "NetworkFacility/sign/ImportNetworkFacility", "Network");
+    private async Task OnImportBeauty() => await UploadFile(beautyFile, "BeautyFacility/sign/ImportBeautyFacility", "Beauty");
+    private async Task OnImportSecurity() => await UploadFile(securityFile, "SecurityFacility/sign/ImportSecurityFacility", "Security");
+    private async Task OnImportMaterial() => await UploadFile(materialFile, "Material/sign/ImportMaterial", "Material");
+    private async Task OnImportUser() => await UploadFile(userFile, "User/sign/ImportUser", "User");
+
+    private async Task UploadFile(IBrowserFile file, string endpoint, string fileType)
+    {
+        if (file == null)
+        {
+            await JS.InvokeVoidAsync("alert", "파일을 선택하세요.");
+            return;
+        }
+        if ((fileType != "Building" || fileType != "User") && RoomList.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "건물 및 위치를 생성해주세요.");
+            return;
+            
+        }
+
+
+        try
+        {
+            ResponseUnit<bool> resPost = await apiManager.PostSendFileRequestAsync(endpoint, file);
+
+            if (resPost.code != 200)
+            {
+                await JS.InvokeVoidAsync("alert", resPost.message);
+                return;
+            }
+            await JS.InvokeVoidAsync("alert", "업로드 성공");
+            ResetFile(fileType);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"파일 업로드 중 오류 발생: {ex.Message}");
+            await JS.InvokeVoidAsync("alert", "업로드 실패");
+        }
+    }
+
+    // 파일 초기화를 위한 메서드
+    private void ResetFile(string fileType)
+    {
+        
+            // 파일 타입에 맞춰서 파일 상태 초기화
+            switch (fileType)
+            {
+                case "Building":
+                    buildingFile = null;
+                    break;
+                case "Machine":
+                    machineFile = null;
+                    break;
+                case "Elect":
+                    electFile = null;
+                    break;
+                case "Lift":
+                    liftFile = null;
+                    break;
+                case "Fire":
+                    fireFile = null;
+                    break;
+                case "Construct":
+                    contstructFile = null;
+                    break;
+                case "Network":
+                    networkFile = null;
+                    break;
+                case "Beauty":
+                    beautyFile = null;
+                    break;
+                case "Security":
+                    securityFile = null;
+                    break;
+                case "Material":
+                    materialFile = null;
+                    break;
+                case "User":
+                    userFile = null;
+                    break;
+            }
+        StateHasChanged(); // UI 갱신
+    }
+
+}
+

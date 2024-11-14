@@ -10,7 +10,7 @@
     padding: var(--default-pd) var(--wide-pd);
     width: 100%;
     min-height: 100%;
-    /*height: 100%;*/
+    height: 100%;
     border: var(--comp-bd);
     border-radius: var(--default-rd);
     background-color: var(--default-color);
@@ -28,6 +28,7 @@
 .fac-container .header-options{
     display :flex;
     gap : var(--half-pd);
+    height:100%;
 }
 
 .fac-container .title{

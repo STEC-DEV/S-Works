@@ -1,4 +1,5 @@
 ﻿@using FamTec.Client.Middleware
+@using FamTec.Client.Pages.CommonComponents.IconButton
 @using FamTec.Client.Shared.Components
 @using FamTec.Client.Shared.Provider
 @using FamTec.Shared.Client.DTO.Normal.Alarm
@@ -67,6 +68,18 @@
                     <NavLink class="nav-tab-link" @onclick="OnSelectPlace">사업장 목록</NavLink>
                 </li>
             }
+            @if (building == 2 || machine == 2 || elect == 2 || lift == 2 || fire == 2 || contstruct == 2 || network == 2 || beauty == 2 || security == 2 || msecurity == 2 || material == 2 || user == 2)
+            {
+                @if (!LoginMode)
+                {
+                    <li class="nav-tab-item scale">
+                        <NavLink @onclick="MoveSetting">
+                            <Setting Color="white" />
+                        </NavLink>
+                    </li>
+                }
+            }
+            
             <li class="nav-tab-item scale">
                 <NavLink class="nav-tab-link" @onclick="OnLogOut">Logout</NavLink>
             </li>
@@ -98,12 +111,31 @@
 
     private string alarmCount = "";
     private string valid = "";
+
+    /// <summary>
+    /// 임포트시 권한확인
+    /// </summary>
+    int building = 0;
+    int machine = 0;
+    int elect = 0;
+    int lift = 0;
+    int fire = 0;
+    int contstruct = 0;
+    int network = 0;
+    int beauty = 0;
+    int security = 0;
+    int msecurity = 0;
+    int material = 0;
+    int user = 0;
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         await OnLoginMode();
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
+        Console.WriteLine("네비 사업장" + PalceName);
         valid = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
         if (!LoginMode & !string.IsNullOrEmpty(valid))
         {
@@ -111,6 +143,18 @@
         }
         await OnConnectionSocket();
         await Socket();
+
+        building = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Basic");
+        machine = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Machine");
+        elect = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Elec");
+        lift = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Lift");
+        fire = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Fire");
+        contstruct = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Construct");
+        network = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Network");
+        beauty = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Beauty");
+        security = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Security");
+        material = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_Material");
+        user = await (_authStateProvider as CustomAuthProvider).GetUserPermission("UserPerm_User");
 
         dotNetReference = DotNetObjectReference.Create(this);
         cleanupFunc = await JS.InvokeAsync<Func<Task>>("timelineHandler.initialize", dotNetReference);
@@ -153,7 +197,7 @@
         // 인증 상태 제공자에게 인증 상태가 변경되었음을 알림
         (_authStateProvider as CustomAuthProvider).NotifyLogout();
 
-        
+
     }
 
 
@@ -341,6 +385,12 @@
     {
         _timelineActive = false;
         StateHasChanged();
+    }
+
+    public void MoveSetting()
+    {
+       
+        Navigation.NavigateTo("/setting");
     }
 
 

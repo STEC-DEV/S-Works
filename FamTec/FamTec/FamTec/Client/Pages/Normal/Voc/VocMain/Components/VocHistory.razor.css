@@ -22,6 +22,7 @@
 .options{
     display:flex;
     gap : var(--half-pd);
+    height:100%;
 }
 
 .vochistory-container .vochistory-title{

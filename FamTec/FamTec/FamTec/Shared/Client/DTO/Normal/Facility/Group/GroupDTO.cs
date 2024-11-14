@@ -12,7 +12,7 @@ namespace FamTec.Shared.Client.DTO.Normal.Facility.Group
         public int id { get; set; }
         public string Name { get; set; }
         //public List<ItemDTO> Items { get; set; }
-        public List<ItemDTO> keyListDTO { get; set; }
+        public List<ItemDTO> keyListDTO { get; set; } = new List<ItemDTO>();
 
     }
 }

@@ -128,8 +128,9 @@
             await JS.InvokeVoidAsync("alert", "데이터가 존재하지 않습니다.");
             return;
         }
+        string date = DateTime.Now.ToString("yyyyMMdd");
         var excel = ExcelService.getInstance(JS);
-        string title = $"{Building.Name}";
+        string title = $"{Building.Name}_{date}";
         await excel.ExportDetailBuilding(Building, Group, title);
     }
 }

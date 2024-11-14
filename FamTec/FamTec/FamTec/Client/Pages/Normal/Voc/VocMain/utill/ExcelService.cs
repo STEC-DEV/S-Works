@@ -603,26 +603,33 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             {
                 foreach(var group in groups.Select((value, idx) => (value, idx)))
                 {
-                    Console.WriteLine("행시작"+ groupRowStartCount);
-                    Console.WriteLine("행끝"+ groupRowEndCount);
-                    foreach (var item in group.value.keyListDTO.Select((value, idx) => (value, idx)))
+                    if(group.value.keyListDTO.Count > 0)
                     {
-                        worksheet.Cell(item.idx + groupRowStartCount, 1).Value = group.value.Name;
-                        worksheet.Cell(item.idx + groupRowStartCount, 2).Value = item.value.ItemKey;
-                        worksheet.Cell(item.idx + groupRowStartCount, 3).Value = item.value.Unit;
-                        foreach (var itemValue in item.value.valueList.Select((value, idx) => (value, idx)))
+                        foreach (var item in group.value.keyListDTO.Select((value, idx) => (value, idx)))
                         {
-                            worksheet.Cell(item.idx + 8, itemValue.idx + 4).Value = itemValue.value.itemValue;
+                            worksheet.Cell(item.idx + groupRowStartCount, 1).Value = group.value.Name;
+                            worksheet.Cell(item.idx + groupRowStartCount, 2).Value = item.value.ItemKey;
+                            worksheet.Cell(item.idx + groupRowStartCount, 3).Value = item.value.Unit;
+                            foreach (var itemValue in item.value.valueList.Select((value, idx) => (value, idx)))
+                            {
+                                worksheet.Cell(item.idx + 8, itemValue.idx + 4).Value = itemValue.value.itemValue;
+                            }
+                            groupRowEndCount++;
                         }
-                        groupRowEndCount++;
+                        var groupRange = worksheet.Range($"A{groupRowStartCount}:A{groupRowEndCount - 1}");
+                        groupRange.Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        groupRowStartCount = groupRowEndCount;
                     }
-                    var groupRange = worksheet.Range($"A{groupRowStartCount}:A{groupRowEndCount-1}");
-                    groupRange.Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    groupRowStartCount = groupRowEndCount;
+                    
                 }
-                var groupBodyRange = worksheet.Range($"A8:F{groupRowEndCount-1}");
-                groupBodyRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                groupBodyRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                if(groupRowEndCount != 8)
+                {
+                    var groupBodyRange = worksheet.Range($"A8:F{groupRowEndCount - 1}");
+
+                    groupBodyRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    groupBodyRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                }
+                
             }
 
          

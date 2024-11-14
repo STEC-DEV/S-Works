@@ -11,9 +11,10 @@
             품목별 재고현황
         </span>
         <div class="options">
-            <div class="icon" @onclick=Export>
-                    <ExportIcon />
-                </div>
+            @if (ListData.Count > 0)
+            {
+                <ExportButton OnClick="Export" />
+            }
         </div>
     </div>
     <div class="option-page">
@@ -133,10 +134,10 @@
 
         // 나머지 컬럼명 추가
         colName.Add("총재고수량");
-
+        string date = DateTime.Now.ToString("yyyyMMdd");
 
         var excel = ExcelService.getInstance(JS);
-        string title = $"품목별 재고현황";
+        string title = $"품목별재고현황_{date}";
         await excel.ExportInventory(ListData, colName, title);
     }
 }

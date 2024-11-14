@@ -226,7 +226,7 @@
         totalOutPrice = ListData.Where(row => row.Type == 0).Sum(row => row.InOutUnitPrice);
         totalOutAmount = ListData.Where(row => row.Type == 0).Sum(row => row.InOutTotalPrice);
 
-        totalCurrentNum = ListData.Sum(row => row.CurrentNum);
+        totalCurrentNum = ListData2.TotalStockNum;
     }
 
     private async void OnMoveMaintenance(string url)

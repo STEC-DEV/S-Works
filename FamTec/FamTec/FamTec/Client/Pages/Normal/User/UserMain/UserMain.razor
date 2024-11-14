@@ -29,9 +29,10 @@
                     }
 
                 }
-                <div class="icon" @onclick=Export>
-                    <ExportIcon />
-                </div>
+                @if (usersData.Count > 0)
+                {
+                    <ExportButton OnClick="Export" />
+                }
             </div>
             
             
@@ -184,7 +185,8 @@
             "상태",
         };
         var excel = ExcelService.getInstance(JS);
-        string title = $"직원목록";
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        string title = $"사용자목록_{date}";
         await excel.ExportUser(usersData, colName, title);
     }
 }

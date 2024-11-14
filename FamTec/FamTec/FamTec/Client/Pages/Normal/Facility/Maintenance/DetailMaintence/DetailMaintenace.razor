@@ -274,7 +274,8 @@
             return;
         }
         var excel = ExcelService.getInstance(JS);
-        string title = $"{Maintenance.WorkName}유지보수 내역";
+        string date = DateTime.Now.ToString("yyyyMMdd");
+        string title = $"{Maintenance.WorkName}_유지보수_{date}";
         await excel.ExportFacMaintenance(Maintenance, originalMaterial.UpdateUsematerialDTO, title);
     }
 }
