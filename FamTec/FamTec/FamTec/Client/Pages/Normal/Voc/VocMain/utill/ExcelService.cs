@@ -3,6 +3,7 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FamTec.Shared.Client.DTO.Normal.Buildings;
 using FamTec.Shared.Client.DTO.Normal.Buildings.Group;
 using FamTec.Shared.Client.DTO.Normal.Facility;
@@ -58,6 +59,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach(var header in colName.Select((value,idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx+1).Value = header.value;
             }
 
@@ -111,7 +113,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             //헤더
             var range = worksheet.Range(1, 1, 1, colName.Count);
@@ -143,6 +145,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var header in colName.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx + 1).Value = header.value;
             }
 
@@ -168,7 +171,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             //헤더
             var range = worksheet.Range(1, 1, 1, colName.Count);
@@ -207,6 +210,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var header in colName.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx + 1).Value = header.value;
             }
 
@@ -221,7 +225,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                     2 => "재직",
                     _ => "",
                 };
-
+                
                 worksheet.Cell(row.idx + 2, 1).Value = row.value.Name;
                 worksheet.Cell(row.idx + 2, 2).Value = row.value.UserId;
                 worksheet.Cell(row.idx + 2, 3).Value = row.value.Type;
@@ -239,7 +243,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             //헤더
             var range = worksheet.Range(1, 1, 1, colName.Count);
@@ -278,6 +282,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var header in colName.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx + 1).Value = header.value;
             }
 
@@ -303,7 +308,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-            worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             //헤더
             var range = worksheet.Range(1, 1, 1, colName.Count);
@@ -343,6 +348,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
                 foreach (var header in colName.Select((value, idx) => (value, idx)))
                 {
+                    worksheet.Column(header.idx + 1).Width = 25;
                     worksheet.Cell(1, header.idx + 1).Value = header.value;
                 }
                 worksheet.Cell(2, 1).Value = "기준월 이전재고";
@@ -426,7 +432,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                 fullRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
-                worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+                //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             }
             using var ms = new MemoryStream();
@@ -459,6 +465,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var header in colName.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx + 1).Value = header.value;
             }
 
@@ -490,7 +497,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
             
             
-            worksheet.Columns().AdjustToContents(1, totalRows, 10,200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10,200); // 최소 10, 최대 50
 
             // 헤더 스타일 설정
             var headerRange = worksheet.Range(1, 1, 1, colName.Count);
@@ -529,6 +536,15 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
 
             var worksheet = workbook.Worksheets.Add($"{title} 제원");
+
+            worksheet.Column(1).Width = 25;
+            worksheet.Column(2).Width = 25;
+            worksheet.Column(3).Width = 25;
+            worksheet.Column(4).Width = 25;
+            worksheet.Column(5).Width = 25;
+            worksheet.Column(6).Width = 25;
+            worksheet.Column(7).Width = 25;
+            worksheet.Column(8).Width = 25;
 
             worksheet.Range("A1:H1").Value = "설비제원";
 
@@ -587,6 +603,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var item in subTitle.Select((value, idx) => (value, idx)))
             {
+                
                 worksheet.Cell(7, item.idx+1).Value = item.value;
             }
             var subItemRange = worksheet.Range("D7:F7");
@@ -663,6 +680,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var header in colName.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(header.idx + 1).Width = 25;
                 worksheet.Cell(1, header.idx + 1).Value = header.value;
             }
 
@@ -688,7 +706,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
             fullRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
 
-            worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
+            //worksheet.Columns().AdjustToContents(1, totalRows, 10, 200); // 최소 10, 최대 50
 
             // 헤더 스타일 설정
             var headerRange = worksheet.Range(1, 1, 1, colName.Count);
@@ -780,6 +798,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
             foreach (var item in subTitle.Select((value, idx) => (value, idx)))
             {
+                worksheet.Column(item.idx + 1).Width = 25;
                 worksheet.Cell(7, item.idx + 1).Value = item.value;
             }
 
@@ -836,6 +855,13 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
 
 
             var worksheet = workbook.Worksheets.Add($"{title} 제원");
+            worksheet.Column(1).Width = 25;
+            worksheet.Column(2).Width = 25;
+            worksheet.Column(3).Width = 25;
+            worksheet.Column(4).Width = 25;
+            worksheet.Column(5).Width = 25;
+            worksheet.Column(6).Width = 25;
+            worksheet.Column(7).Width = 25;
 
             worksheet.Range("A1:G1").Value = "건물정보";
 

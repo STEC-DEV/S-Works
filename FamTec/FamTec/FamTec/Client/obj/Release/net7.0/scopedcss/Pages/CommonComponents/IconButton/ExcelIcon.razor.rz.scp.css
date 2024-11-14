@@ -11,10 +11,10 @@
 }
 
 
-.icon:hover > svg[b-5tccqw2efa]{
+/*.icon:hover > svg{
     fill: var(--main-color);
 }
-
+*/
 svg[b-5tccqw2efa] {
     transition: all .2s;
 }

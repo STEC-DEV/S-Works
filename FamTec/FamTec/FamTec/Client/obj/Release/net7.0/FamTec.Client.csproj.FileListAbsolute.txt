@@ -1,10 +1,3 @@
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.AssemblyReference.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfoInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfo.cs
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.CoreCompileInputs.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Azure.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Azure.Identity.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\blazor.boot.json
@@ -847,6 +840,13 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ic
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\icudt_no_CJK.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\FamTec.Shared.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\FamTec.Shared.pdb
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.AssemblyReference.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfoInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.AssemblyInfo.cs
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.csproj.CoreCompileInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.sourcelink.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\blazor.build.boot-extension.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\blazor.boot.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.json
@@ -914,6 +914,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\sc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\EditButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\Empty.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\EmptyAlarm.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\ExportButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownLineButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownloadIcon.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\DownTriangleButton.razor.rz.scp.css
@@ -922,6 +923,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\sc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\LeftLineButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\LinkButton.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\RightLineButton.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\Setting.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\IconButton\UploadIcon.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\ImageSlider.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\Input.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\CommonComponents\InputCol.razor.rz.scp.css
@@ -1024,6 +1027,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\sc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Facility\MobileMaintenance\MaintenanceDetail\Components\Material.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Facility\MobileMaintenance\MaintenanceDetail\Components\Table.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Facility\MobileMaintenance\MaintenanceDetail\MaintenanceDetail.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Import\Components\List.razor.rz.scp.css
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Import\ImportMain.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\Floor.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\FloorList.razor.rz.scp.css
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\scopedcss\Pages\Normal\Location\LocationMain\Components\Location.razor.rz.scp.css

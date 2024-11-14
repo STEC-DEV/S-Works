@@ -52,6 +52,44 @@ window.timelineHandler = {
 };
 
 
+//window.dropdownInit = function (dotnetHelper) {
+//    function handleClickOutside(event) {
+//        const dropdowns = document.getElementsByClassName('container');
+//        for (let dropdown of dropdowns) {
+//            if (!dropdown.contains(event.target)) {
+//                dotnetHelper.invokeMethodAsync('HandleClickOutside');
+//            }
+//        }
+//    }
+
+//    document.addEventListener('click', handleClickOutside);
+
+//    // Store the event listener for cleanup
+//    window.dropdownCleanup = function () {
+//        document.removeEventListener('click', handleClickOutside);
+//    };
+//}
+
+window.dropdownInit = function (dotnetHelper, elementId = null) {
+    function handleClickOutside(event) {
+        const containers = elementId
+            ? [document.getElementById(elementId)]
+            : document.getElementsByClassName('container');
+
+        for (let container of containers) {
+            if (!container.contains(event.target)) {
+                dotnetHelper.invokeMethodAsync('HandleClickOutside');
+            }
+        }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+
+    // Store the event listener for cleanup
+    window.dropdownCleanup = function () {
+        document.removeEventListener('click', handleClickOutside);
+    };
+}
 
 
 

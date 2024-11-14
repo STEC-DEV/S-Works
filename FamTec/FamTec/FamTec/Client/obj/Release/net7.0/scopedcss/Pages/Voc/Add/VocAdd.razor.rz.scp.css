@@ -37,17 +37,18 @@
     gap: var(--default-pd);
 }
 
-.blockbtn[b-ctwc34a2zh]{
-    cursor : not-allowed;
-    width : 100%;
-    border : none;
-    outline : none;
-    border-radius : var(--default-rd);
-    padding : var(--half-pd);
-    font-size : var(--normal-size);
-    font-weight:var(--bold-wt);
-    color : darkgray;
-    height:100%;
+.blockbtn[b-ctwc34a2zh] {
+    cursor: not-allowed;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: var(--default-rd);
+    padding: var(--half-pd) var(--default-pd);
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: darkgray;
+    height: 100%;
+    white-space: nowrap;
 }
 
 .row[b-ctwc34a2zh] {

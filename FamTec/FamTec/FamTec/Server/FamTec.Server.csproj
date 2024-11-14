@@ -46,5 +46,14 @@
     <ProjectReference Include="..\Shared\FamTec.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ExcelForm\건물정보%28양식%29.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ExcelForm\사용자정보%28양식%29.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>
