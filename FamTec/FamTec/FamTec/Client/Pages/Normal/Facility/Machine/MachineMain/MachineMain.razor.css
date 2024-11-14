@@ -41,3 +41,7 @@
 .height{
     height:100%;
 }
+
+.content{
+    overflow:auto;
+}
