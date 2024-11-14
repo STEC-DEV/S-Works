@@ -27,14 +27,17 @@
             }
             
         </div>
-        @if (FilterData == null)
-        {
-            <Loading/>
-        }
-        else
-        {
-            <FacilityTable ListData="FilterData" FacType="@FacType" OnCheck="OnChecked" Checkitems="@DelList" />
-        }
+        <div class="content">
+            @if (FilterData == null)
+            {
+                <Loading />
+            }
+            else
+            {
+                <FacilityTable ListData="FilterData" FacType="@FacType" OnCheck="OnChecked" Checkitems="@DelList" />
+            }
+        </div>
+        
 
     </div>
     
