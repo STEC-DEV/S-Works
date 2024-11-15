@@ -71,7 +71,7 @@
     private string UserDisplayName(List<Claim> claims)
     {
         var Name = claims.Where(_ => _.Type == "Name").Select(_ => _.Value).FirstOrDefault();
-        Console.WriteLine("이름"+Name);
+        
         return Name;
     }
 
@@ -79,7 +79,7 @@
     private string UserDisplayType(List<Claim> claims)
     {
         var Name = claims.Where(_ => _.Type == "Role").Select(_ => _.Value).FirstOrDefault();
-        Console.WriteLine("롤" + Name);
+        
         return Name;
     }
 
@@ -121,7 +121,7 @@
         //관리자 모드 접근
         if (currentPath.StartsWith("/admin") && !isAdminMode)
         {
-            Console.WriteLine( "1");
+            
             await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.1");
             await ClearUserSessionAndLogout();
             return;
@@ -130,7 +130,7 @@
         //일반모드 접근
         if (!currentPath.StartsWith("/admin") && isAdminMode)
         {
-            Console.WriteLine("2");
+            
             await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.2");
             await ClearUserSessionAndLogout();
             return;
@@ -139,7 +139,7 @@
         //일반유저 관리자 메뉴 선택화면 접근
         if (currentPath.StartsWith("/select") && !isAdmin)
         {
-            Console.WriteLine("3");
+            
             await JS.InvokeVoidAsync("alert", "잘못된 접근입니다.3");
             await ClearUserSessionAndLogout();
             return;
@@ -172,7 +172,7 @@
             }
             if (isAdmin && string.IsNullOrEmpty(userPlace))
             {
-                Console.WriteLine("관리자 사업장 미선택");
+                
                 await ShowAlertAndNavigate("사업장을 선택해주세요", "/select");
                 return;
             }

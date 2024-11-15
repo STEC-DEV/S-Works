@@ -228,18 +228,10 @@ namespace FamTec.Client.Shared.Provider
         {
             var authState = await GetAuthenticationStateAsync();
             var user = authState.User;
-            Console.WriteLine("==============================");
-            foreach (var c in user.Claims)
-            {
-                
-                Console.WriteLine(c.Type);
-                Console.WriteLine(c.Value);
-                
-            }
-            Console.WriteLine("==============================");
+            
             var claim = user.FindFirst(c => c.Type == "PlaceName");
             
-            Console.WriteLine("클레임"+claim);
+            
             if (claim == null) return null;
             
             string name = claim.Value;

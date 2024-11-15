@@ -70,7 +70,6 @@
             }
             if (isAdmin && string.IsNullOrEmpty(userPlace))
             {
-                Console.WriteLine("관리자 사업장 미선택");
                 await ShowAlertAndNavigate("사업장을 선택해주세요", "/select");
                 return;
             }

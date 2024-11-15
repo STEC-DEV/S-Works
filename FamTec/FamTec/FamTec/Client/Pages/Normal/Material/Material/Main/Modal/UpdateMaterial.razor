@@ -188,7 +188,7 @@
     //단일
     private async void OnUploadImage(List<ImageFile> images)
     {
-        Console.WriteLine("이미지");
+        
         MaterialImages.Clear();
         List<byte[]> temp = new List<byte[]>();
         List<string> names = new List<string>();
@@ -201,12 +201,12 @@
 
         if(MaterialImages.Count == 1)
         {
-            Console.WriteLine("1");
+        
             MaterialImages[0] = temp[0];
         }
         else
         {
-            Console.WriteLine("0");
+        
             MaterialImages.Add(temp[0]);
         }
         EditMaterial.Image = temp[0];
@@ -245,10 +245,6 @@
             }
             PlaceLocation = resGet.data;
 
-            foreach (var i in PlaceLocation)
-            {
-                Console.WriteLine();
-            }
         }
         catch (Exception ex)
         {

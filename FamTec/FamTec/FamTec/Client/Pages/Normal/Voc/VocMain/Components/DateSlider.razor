@@ -65,7 +65,6 @@
     private void OnUpdateDisplayDate()
     {
         CurrentDate = new DateTime(DisplayYear, DisplayMonth, 1);
-        Console.WriteLine(CurrentDate);
         OnChanged.InvokeAsync(new DateOnly(DisplayYear,DisplayMonth, 1));
         StateHasChanged();
     }

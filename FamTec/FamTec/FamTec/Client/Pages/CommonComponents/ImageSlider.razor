@@ -60,6 +60,7 @@
         // if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
         if (Images != null && Images.Count != ImageDataUrl.Count)
         {
+<<<<<<< HEAD
              ImageDataUrl.Clear();
              foreach (var image in Images)
              {
@@ -72,6 +73,19 @@
                  ImageDataUrl.Add($"data:image/png;base64,{base64String}");
              }
              CurrentImageIndex = 0;
+=======
+            ImageDataUrl.Clear();
+            foreach (var image in Images)
+            {
+                if (image== null)
+                {
+                    continue; // null인 이미지는 건너뜁니다.
+                }
+                var base64String = Convert.ToBase64String(image);
+                ImageDataUrl.Add($"data:image/png;base64,{base64String}");
+            }
+            CurrentImageIndex = 0;
+>>>>>>> origin/Front
         }
         // return Task.CompletedTask;
     }
@@ -80,7 +94,7 @@
 
     private async void ShowPreviousImage()
     {
-        Console.WriteLine("이전 : " + CurrentImageIndex);
+        // Console.WriteLine("이전 : " + CurrentImageIndex);
         if (CurrentImageIndex > 0)
         {
             CurrentImageIndex--;
@@ -90,7 +104,7 @@
 
     private async void ShowNextImage()
     {
-        Console.WriteLine("다음 : " + CurrentImageIndex);
+        // Console.WriteLine("다음 : " + CurrentImageIndex);
         if (CurrentImageIndex < ImageDataUrl.Count - 1)
         {
             CurrentImageIndex++;

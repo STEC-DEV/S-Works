@@ -3405,11 +3405,11 @@
 
 
 .list[b-hr5m7sg4by]{
-    padding:var(--half-pd);
+    padding:var(--half-pd) 0;
     border:var(--comp-bd);
     border-radius:var(--default-rd);
     position:absolute;
-    top:40px;
+    top:35px;
     right:0;
 
     background-color:white;
@@ -3426,7 +3426,7 @@
     padding: var(--half-pd);
     gap: var(--half-pd);
     transition : all .3s;
-    border-radius:var(--default-rd);
+    
 }
 
 .li:hover[b-hr5m7sg4by]{
@@ -3434,7 +3434,7 @@
     background-color  :var(--main-color);
     
 }
-.li:hover .bi[b-hr5m7sg4by]{
+.li:hover .active[b-hr5m7sg4by]{
     fill:white;
 }
 
@@ -3445,6 +3445,27 @@
 .text[b-hr5m7sg4by]{
     font-size:var(--normal-size);
     color:var(--main-color);
+}
+
+.block[b-hr5m7sg4by] {
+    background-color: #f2f2f2;
+    color: #b7b7b7;
+}
+
+.block:hover[b-hr5m7sg4by]{
+    cursor: default;
+    background-color:#f2f2f2;
+    
+}
+
+
+.textblock[b-hr5m7sg4by] {
+    color: #b7b7b7;
+    font-size: var(--normal-size);
+}
+
+.block:hover .text[b-hr5m7sg4by]{
+    color: #b7b7b7;
 }
 /* /Pages/CommonComponents/IconButton/DownLineButton.razor.rz.scp.css */
 .ibtn :hover[b-qdn3lkfi8w] {

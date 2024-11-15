@@ -71,7 +71,6 @@
     {
         try
         {
-            Console.WriteLine(_editBuilding.CompletionDT);
             if (string.IsNullOrEmpty(_editBuilding.Name))
             {
                 await JS.InvokeVoidAsync("alert", "필수값 * 을 확인해 주세요");
@@ -90,7 +89,7 @@
             StateHasChanged();
         }catch(Exception ex)
         {
-            Console.WriteLine("[건물][수정] 기본정보 수정"+ ex);
+            Console.WriteLine( ex);
             await JS.InvokeVoidAsync("alert", "저장 실패");
         }
     }

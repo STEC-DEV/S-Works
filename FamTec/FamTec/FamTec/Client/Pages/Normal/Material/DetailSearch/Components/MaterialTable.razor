@@ -184,10 +184,16 @@
             <tr class="tfoot-tr">
                 <td class="tf-td" colspan="4">소계</td>
                 <td class="tf-td ">@totalInQty</td>
-                <td class="tf-td text-right">@((totalInPrice/ListData?.Count)?.ToString("N0"))</td>
+                @* <td class="tf-td text-right">@((ListData?.Count > 0 ? (decimal?)totalInPrice / ListData.Count : null)?.ToString("N0") ?? "0")</td> *@
+                <td class="tf-td text-right">
+                    @((ListData?.Count > 0 ? (decimal?)totalInPrice / ListData.Count : 0) == 0 ? "0" : ((decimal?)totalInPrice / ListData.Count)?.ToString("N2"))
+                </td>
                 <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
                 <td class="tf-td">@totalOutQty</td>
-                <td class="tf-td text-right">@((totalOutPrice / ListData?.Count)?.ToString("N0"))</td>
+                @* <td class="tf-td text-right">@((ListData?.Count > 0 ? (decimal?)totalOutPrice / ListData.Count : null)?.ToString("N0") ?? "0")</td> *@
+                <td class="tf-td text-right">
+                    @((ListData?.Count > 0 ? (decimal?)totalOutPrice / ListData.Count : 0) == 0 ? "0" : ((decimal?)totalOutPrice / ListData.Count)?.ToString("N2"))
+                </td>
                 <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
                 <td class="tf-td">@totalCurrentNum</td>
                 <td class="tf-td"></td>
@@ -199,7 +205,7 @@
 
 @code {
     [Parameter] public List<InventoryRecordDTO> ListData { get; set; }
-    [Parameter] public DetailMaterialListDTO ListData2 { get; set; }
+    [Parameter] public DetailMaterialListDTO? ListData2 { get; set; }
     [Parameter] public int TotalPage { get; set; }
     [Parameter] public int CurrentPage { get; set; }
 
@@ -226,7 +232,7 @@
         totalOutPrice = ListData.Where(row => row.Type == 0).Sum(row => row.InOutUnitPrice);
         totalOutAmount = ListData.Where(row => row.Type == 0).Sum(row => row.InOutTotalPrice);
 
-        totalCurrentNum = ListData2.TotalStockNum;
+        totalCurrentNum = ListData2?.TotalStockNum ?? 0;
     }
 
     private async void OnMoveMaintenance(string url)

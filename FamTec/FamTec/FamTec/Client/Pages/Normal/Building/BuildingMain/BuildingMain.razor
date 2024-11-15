@@ -89,17 +89,14 @@
 
             if (resGet.data == null)
             {
-                Console.WriteLine("1");
                 BuildingList = new List<BuildingListDTO>();
             }
             else
             {
-                Console.WriteLine("2");
                 BuildingList = new List<BuildingListDTO>(resGet.data);
             }
-            Console.WriteLine("3");
+            
             DelList.Clear();
-            Console.WriteLine("4");
             // buildingTable.ResetChecks();
         }catch(Exception ex)
         {

@@ -12,7 +12,7 @@
         <span class="title">
             입출고 내역
         </span>
-        @if(ListData.Count > 0)
+        @if (ListData !=null &&ListData.Count > 0)
         {
             <div class="options">
                 <SelectField T=DetailMaterialListDTO
@@ -41,7 +41,7 @@
     </div>
     <div class="content">
         
-        @if(FilterList == null)
+        @if (FilterList == null && FilterList2 == null)
         {
             <Loading/>
         }
@@ -87,7 +87,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine("현현패" + currentPage);
         if(ListData != null && ListData.Any())
         {
             MaterialId = ListData[0].Id;
@@ -109,7 +108,6 @@
             StateHasChanged();
             return;
         }
-        // Console.WriteLine("현현패" + currentPage);
 
         totalPage = (int)Math.Ceiling((double)FilterList.Count / viewNum);
 
@@ -145,7 +143,6 @@
         else
             currentPage = Math.Clamp(num, 1, totalPage);
 
-        Console.WriteLine($": {currentPage}");
         await Paging();
     }
 

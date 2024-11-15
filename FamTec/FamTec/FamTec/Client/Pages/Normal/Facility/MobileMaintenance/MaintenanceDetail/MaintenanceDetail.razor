@@ -42,7 +42,7 @@
         convertFactype();
         ReadPerm = await (_authStateProvider as CustomAuthProvider).HasFacilityReadPerm(TokenFacType);
         // await JS.InvokeVoidAsync("alert", ReadPerm);
-        Console.WriteLine($"{TokenFacType} 권한" + ReadPerm);
+        
         if (!ReadPerm)
         {
             await JS.InvokeVoidAsync("alert", "접근 권한이 없습니다.");

@@ -120,7 +120,6 @@
     {
         try
         {
-            Console.WriteLine(Item.ItemValues[0].Values);
             ResponseUnit<AddItemDTO> resAdd = await apiManager.PostAsync<AddItemDTO>("FacilityGroupKey/sign/AddKey", Item);
             if(resAdd.code != 200)
             {

@@ -112,18 +112,7 @@
     private List<byte[]> ImageUrl = new List<byte[]>();
 
     bool EditMode= true;
-    protected override void OnInitialized()
-    {
-        Console.WriteLine(Building.LandArea);
-        Console.WriteLine(Building.Address);
-        //base.OnInitialized();
-        Console.WriteLine(Building.ParkingNum);
-    }
 
-    private void changetest(ChangeEventArgs e)
-    {
-        Console.WriteLine(e.Value);
-    }
 
 
     private async void OnUploadImage(List<ImageFile> images)

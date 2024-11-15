@@ -72,7 +72,8 @@
 
         }catch(Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "[유지보수][등록] 공간 자재 단일 조회 실패");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 
@@ -100,8 +101,8 @@
 
         }catch(Exception ex)
         {
-            Console.WriteLine("[유지보수][사용자재] 수정 에러"+ ex);
-            await JS.InvokeVoidAsync("alert","[유지보수][사용자재] 수정 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert","저장 실패");
         }
     }
 

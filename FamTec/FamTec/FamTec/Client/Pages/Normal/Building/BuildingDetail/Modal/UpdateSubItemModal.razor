@@ -120,7 +120,7 @@
             ResponseUnit<ItemDTO> resUpdate = await apiManager.PutAsync<ItemDTO>("BuildingGroupKey/sign/Updatekey", _editData);
             if (resUpdate.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "항목 추가 실패");
+                await JS.InvokeVoidAsync("alert", resUpdate.message);
                 return;
             }
             await LoadGroup.InvokeAsync();
@@ -129,7 +129,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("오류");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "저장 실패");
         }
     }
 

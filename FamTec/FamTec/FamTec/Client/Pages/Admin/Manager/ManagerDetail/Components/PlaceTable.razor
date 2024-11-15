@@ -93,9 +93,9 @@
     {
         if (NewManagerPlace == null)
         {
-            Console.WriteLine("dd");
+            // Console.WriteLine("dd");
         }
-        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        // Console.WriteLine("부서 체크 여부" + selection.isCheck);
         if (!selection.isCheck)
         {
             NewManagerPlace.PlaceList.Remove(selection.id);
@@ -103,7 +103,7 @@
         }
         else
         {
-            Console.WriteLine("추가함");
+            // Console.WriteLine("추가함");
             NewManagerPlace.PlaceList.Add(selection.id);
             SelectCount++;
         }

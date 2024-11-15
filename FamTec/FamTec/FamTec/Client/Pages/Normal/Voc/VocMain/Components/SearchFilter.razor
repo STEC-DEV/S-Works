@@ -201,7 +201,6 @@
     private void HandleSelectionChange(List<FilterItem> selectedItems)
     {
         var selectedNames = string.Join(", ", selectedItems.Where(x => x.IsChecked).Select(x => x.Name));
-        Console.WriteLine($"Selected items: {selectedNames}");
     }
 }
       

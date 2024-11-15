@@ -12,10 +12,9 @@
                     {
                         var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
                         var headerText = displayAttribute?.Name;
-                        Console.WriteLine(headerText==null);
                         if (headerText == null)
                         {
-                            Console.WriteLine("id 필드 걸러짐");
+                            @* Console.WriteLine("id 필드 걸러짐"); *@
                         }
                         else
                         {
@@ -32,7 +31,6 @@
                     <tr class="tbody-tr tr">
                         @foreach (var property in typeof(ManagerDTO).GetProperties())
                         {
-                            Console.WriteLine(property.Name);
                             if (property.Name != "IsSelect" && property.Name !="Id")
                             {
                                 <td class="tbody-td">
@@ -41,7 +39,7 @@
                             }
                             else if (property.Name == "Id")
                             {
-                                Console.WriteLine("td 예외 데이터"+property.Name);
+                                @* Console.WriteLine("td 예외 데이터"+property.Name); *@
                             }
                             else
                             {
@@ -67,20 +65,6 @@
     [Parameter] public EventCallback<object> UnSelect { get; set; }
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        foreach(var i in DataList)
-        {
-            Console.WriteLine(i.Name);
-        }
-        return;
-    }
-
-    private void OnClicked(object row)
-    {
-        Console.WriteLine(row);
-    }
-
 
     private async Task InvokeCheckboxSelect(object row)
     {
@@ -94,13 +78,11 @@
 
                 if ((bool)row.GetType().GetProperty("IsSelect").GetValue(row))
                 {
-                    Console.WriteLine("선택됨");
                     //transfer Object to Paraent
                     await Select.InvokeAsync(row);
                 }
                 else
                 {
-                    Console.WriteLine("해제됨");
                     await UnSelect.InvokeAsync(row);
                 }
             }

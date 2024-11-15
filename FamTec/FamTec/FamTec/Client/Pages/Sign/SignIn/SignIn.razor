@@ -109,12 +109,9 @@
             //로그인 요청
             ResponseUnit<string> response = await apiManager.PostLoginAsync<string>(endpoint, user);
 
-            Console.WriteLine(response.data);
-            Console.WriteLine("");
             if (response.code != 200 && response.code != 201)
             {
                 await IJSRuntime.InvokeVoidAsync("alert", response.message);
-                // user = new LoginDTO();
                 user.UserPassword = "";
                 return;
             }            
@@ -169,7 +166,7 @@
         bool isAlarm = await (_authStateProvider as CustomAuthProvider).GetAlarmYN();
         if (!isAlarm)
         {
-            Console.WriteLine("알람 권한없음");
+            // Console.WriteLine("알람 권한없음");
             return;
         }
 
@@ -179,7 +176,7 @@
 
         if(vocPerm < 1)
         {
-            Console.WriteLine("voc권한 없음");
+            // Console.WriteLine("voc권한 없음");
             return;
         }
 
@@ -200,7 +197,7 @@
         {
             if (perm.value)
             {
-                Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
+                // Console.WriteLine($"가입할 방 {RoomName[perm.idx]}");
                 await HubObject.hubConnection!.InvokeAsync("JoinRoomAsync", $"{placeIdx}{RoomName[perm.idx]}");
             }
         }

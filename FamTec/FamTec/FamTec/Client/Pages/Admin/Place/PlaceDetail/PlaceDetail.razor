@@ -70,7 +70,6 @@
 
     private async Task LoadPlaceDetailInfo()
     {
-        Console.WriteLine("샐행됨");
         ResponseUnit<PlaceDetailDTO> res = await apiManager.GetUnitAsync<PlaceDetailDTO>($"AdminPlace/sign/DetailWorks?placeid={Id}");
 
 
@@ -110,12 +109,6 @@
     {
         UpdatePlaceDetailDTO();
 
-        Console.WriteLine(_editedPlaceInfo.PlaceCd);
-        Console.WriteLine(PlaceInfo.PlaceCd);
-        Console.WriteLine(_editedPlacePerm.PermFire);
-        Console.WriteLine(PlacePerm.PermFire);
-        //서버로 전송
-
     }
 
     private async void UpdatePlaceDetailDTO()
@@ -124,11 +117,8 @@
         UpdatePlace.PlaceInfo = _editedPlaceInfo;
         UpdatePlace.PlacePerm = _editedPlacePerm;
 
-        Console.WriteLine(_editedPlaceInfo.ContractDt);
-        Console.WriteLine(_editedPlaceInfo.CancelDt);
 
         ResponseUnit<UpdatePlaceDTO> resUpdate = await apiManager.PutAsync<UpdatePlaceDTO>("adminplace/sign/updateworks", UpdatePlace);
-        Console.WriteLine(resUpdate.code);
         if(resUpdate.code == 200)
         {
             await LoadPlaceDetailInfo();

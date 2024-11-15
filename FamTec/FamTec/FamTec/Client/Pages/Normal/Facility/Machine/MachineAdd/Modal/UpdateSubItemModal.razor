@@ -26,7 +26,6 @@
     <ul class="value-ul">
         @foreach (var item in _editData.ItemValues.Select((value, idx) => (value, idx)))
         {
-            Console.WriteLine("생성");
             <li class="value-li">
                 <input type="checkbox" @onchange="e=>OnCheck(e,item.idx)" />
                 <input class="value-input" type="text" @bind-value=item.value.Values />

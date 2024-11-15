@@ -36,11 +36,22 @@ namespace FamTec.Server.Middleware
                     "/api/AdminUser/sign/UserIdCheck"
                 };
 
+<<<<<<< HEAD
                 // 현재 요청 경로 확인
                 var currentPath = context.Request.Path.ToString();
 
                 // 만약 현재 경로가 제외 목록에 있다면, 다음 미들웨어로 전달하고 종료
                 if (excludedPaths.Contains(currentPath))
+=======
+            // 요청 키 생성 (요청 URL + 쿼리스트링 + HTTP 메서드를 조합하여 고유 키를 생성)
+            var requestKey = GenerateRequestKey(context);
+            
+            // 캐시에서 현재 요청 카운트를 확인하거나 없으면 0으로 설정
+            if (_cache.TryGetValue(requestKey, out int requestCount))
+            {
+                
+                if (requestCount >= RequestLimit)
+>>>>>>> origin/Front
                 {
                     await _next(context);
                     return;
@@ -74,8 +85,13 @@ namespace FamTec.Server.Middleware
             }
             catch(Exception ex)
             {
+<<<<<<< HEAD
                 LogService.LogMessage(ex.ToString());
                 throw;
+=======
+                // 첫 요청일 경우 캐시에 1로 저장
+                _cache.Set(requestKey, 1, TimeSpan.FromSeconds(CacheExpirationInSeconds));
+>>>>>>> origin/Front
             }
         }
 
@@ -97,7 +113,6 @@ namespace FamTec.Server.Middleware
             }
 
             var rawKey = $"{clientIdentifier}:{method}:{path}:{query}";
-            Console.WriteLine(rawKey);
 
             using var sha256 = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(rawKey);

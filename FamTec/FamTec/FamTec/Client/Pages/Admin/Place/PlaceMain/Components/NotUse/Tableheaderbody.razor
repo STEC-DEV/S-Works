@@ -68,10 +68,10 @@
         return;
     }
 
-    private void OnClicked(object row)
-    {
-        Console.WriteLine(row);
-    }
+    // private void OnClicked(object row)
+    // {
+    //     Console.WriteLine(row);
+    // }
 
 
     private async Task InvokeCheckboxSelect(object row)
@@ -86,13 +86,11 @@
 
                 if ((bool)row.GetType().GetProperty("IsSelect").GetValue(row))
                 {
-                    Console.WriteLine("선택됨");
                     //transfer Object to Paraent
                     await Select.InvokeAsync(row);
                 }
                 else
                 {
-                    Console.WriteLine("해제됨");
                     await UnSelect.InvokeAsync(row);
                 }
             }

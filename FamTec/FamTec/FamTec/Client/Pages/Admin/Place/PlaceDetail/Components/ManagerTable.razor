@@ -62,15 +62,7 @@
 
     private AddPlaceManagerDTO<ManagerDTO> selectedManagers = new AddPlaceManagerDTO<ManagerDTO>();
 
-    protected override void OnInitialized()
-    {
-    }
-
-    protected override void OnParametersSet()
-    {
-        Console.WriteLine("Parameters Set");
-
-    }
+    
 
     private async Task OnCheckboxChanged(ManagerDTO manager, object isChecked)
     {

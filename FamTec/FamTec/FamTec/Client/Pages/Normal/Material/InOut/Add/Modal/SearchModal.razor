@@ -58,8 +58,8 @@
             SearchList = resGet.data;
         }catch(Exception ex)
         {
-            Console.WriteLine("[자재][검색] 자재 검색 에러"+ex);
-            await JS.InvokeVoidAsync("alert", "[자재][검색] 자재 검색 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
     }
 

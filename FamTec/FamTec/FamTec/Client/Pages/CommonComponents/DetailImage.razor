@@ -52,7 +52,6 @@
 
     private async Task ShowPreviousImage()
     {
-        Console.WriteLine("이전 : " + CurrentImageIndex);
         if (CurrentImageIndex > 0)
         {
             CurrentImageIndex--;
@@ -62,7 +61,6 @@
 
     private async Task ShowNextImage()
     {
-        Console.WriteLine("다음 : " + CurrentImageIndex);
         if (CurrentImageIndex < ImageList.Count - 1)
         {
             CurrentImageIndex++;
@@ -77,7 +75,6 @@
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
-        Console.WriteLine("키");
         if(e.Key == "Escape")
         {
             await OnClosed();

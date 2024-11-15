@@ -55,7 +55,6 @@
 
         HubObject.hubConnection!.On<string>("ReceiveVocCount", async (message) =>
         {
-            Console.WriteLine(message);
             // 여기서 HTTP 호출 - Count 확인하는곳으로 ~
             await GetVocCount();
 

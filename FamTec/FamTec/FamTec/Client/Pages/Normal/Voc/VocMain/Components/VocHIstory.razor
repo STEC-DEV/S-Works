@@ -26,7 +26,7 @@
   @*               <div class="icon" @onclick=Export>
                     <ExportIcon />
                 </div> *@
-                @if (ListData.Count > 0)
+                @if (ListData!=null && ListData.Count > 0)
                 {
                     <ExportButton OnClick="Export" />
                 }
@@ -181,7 +181,6 @@
         else
             currentPage = Math.Clamp(num, 1, totalPage);
 
-        Console.WriteLine($": {currentPage}");
         await Paging();
     }
 

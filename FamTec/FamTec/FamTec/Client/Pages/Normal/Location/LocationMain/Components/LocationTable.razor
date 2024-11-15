@@ -124,7 +124,6 @@
 
     protected override Task OnInitializedAsync()
     {
-        Console.WriteLine(Floor == null);
         return base.OnInitializedAsync();
     }
 
@@ -161,7 +160,6 @@
 
     private void OnSetFloor(int id)
     {
-        Console.WriteLine();
         AddObject.FloorId = id;   
     }
 

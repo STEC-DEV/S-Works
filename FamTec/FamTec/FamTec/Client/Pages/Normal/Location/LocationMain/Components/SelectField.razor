@@ -36,17 +36,11 @@
             {
                 @foreach (var selectRow in SelectData)
                 {
-                    try
-                    {
-
-                        <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
-                            @selectRow.GetType().GetProperty("Name").GetValue(selectRow)
-                        </li>
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error processing row: {ex.Message}");
-                    }
+                    
+                    <li class="option-item" @onclick="() => OnSelectRow(selectRow)">
+                        @selectRow.GetType().GetProperty("Name").GetValue(selectRow)
+                    </li>
+                    
                 }
             }
         </ul>

@@ -135,7 +135,7 @@
         await OnLoginMode();
 
         PalceName = await (_authStateProvider as CustomAuthProvider).GetPlaceName();
-        Console.WriteLine("네비 사업장" + PalceName);
+        
         valid = await (_authStateProvider as CustomAuthProvider).GetJwtTokenAsync();
         if (!LoginMode & !string.IsNullOrEmpty(valid))
         {
@@ -235,7 +235,7 @@
         // HubConnection이 null이 아닌지 확인
         if (IsConnected)
         {
-            Console.WriteLine("정상 연결 상태");
+            
             // 메시지 수신 처리
             HubObject.hubConnection.On<string>("ReceiveVoc", async (message) =>
             {

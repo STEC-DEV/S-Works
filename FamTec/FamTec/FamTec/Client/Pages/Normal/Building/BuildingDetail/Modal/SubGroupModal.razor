@@ -29,7 +29,6 @@
 
     protected override Task OnInitializedAsync()
     {
-        Console.WriteLine(Id);
         Group.BuildingIdx = Id;
         return base.OnInitializedAsync();
     }
@@ -42,14 +41,15 @@
             ResponseUnit<AddGroupDTO> resAdd = await apiManager.PostAsync<AddGroupDTO>("BuildingGroup/sign/AddGroup",Group);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "그룹 추가 실패");
+                await JS.InvokeVoidAsync("alert", resAdd.message);
             }
             OnCloseModal();
             LoadGroup.InvokeAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[Building][AddGroup] 그룹 추가 에러!" + ex);
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "추가 실패");
         }
     }
 

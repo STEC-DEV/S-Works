@@ -27,7 +27,6 @@
                 <DepartmentList 
                     DataList="departmentList" 
                     Edit=true 
-                    Select="OnSelected"
                     OnListSync="@OnListSync"
                     OnLoadDepartments="@OnLoadDepartments" 
                     AddMode=@AddMode
@@ -77,7 +76,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Admin][Department] 그룹 조회 에러");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
 
     }
@@ -109,52 +109,14 @@
                 deleteDepartment.Clear();
                 newDepartment = new AddDepartmentDTO();
             }
-            else
-            {
-                Console.WriteLine("부서 추가 에러");
-            }
-
-            Console.WriteLine(resDelete);
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"[Admin][ModalDepartment] 그룹 삭제 에러 : {ex.Message}");
+            Console.WriteLine($"삭제 실패");
 
         }
     }
 
-    // /*
-    // * (POST)부서 추가
-    // */
-    // private async Task AddDepartment()
-    // {
-    //     try
-    //     {
-    //         Console.WriteLine(newDepartment.Name == null);
-    //         if (string.IsNullOrEmpty(newDepartment.Name))
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "부서명을 입력해 주세요.");
-    //             Console.WriteLine("입력된 값이 없습니다.");
-    //             return;
-    //         }
-    //         ResponseUnit<AddDepartmentDTO> resDepartment = await apiManager.PostAsync<AddDepartmentDTO>("Department/sign/AddDepartment", newDepartment);
-    //         // var resAdd = await HttpClient.PostAsJsonAsync("http://123.2.156.148:5245/api/Department/AddDepartment", newDepartment);
-    //         if (resDepartment.code != 200)
-    //         {
-    //             await JS.InvokeVoidAsync("alert", "부서 추가 실패.");
-    //             return;
-    //         }
-
-    //         await OnLoadDepartments();
-    //         await OnListSync.InvokeAsync();
-    //         newDepartment = new AddDepartmentDTO();
-    //     }
-    //     catch(Exception ex)
-    //     {
-    //         Console.WriteLine($"[Admin][ModalDepartment] 부서 추가 에러 : {ex.Message}");
-    //     }
-        
-    // }
 
     /*
     * 모달 닫기
@@ -169,7 +131,7 @@
     */
     public void OnSelected((bool isCheck, int id) selection)
     {
-        Console.WriteLine("부서 체크 여부"+ selection.isCheck);
+
         if (!selection.isCheck)
         {
             deleteDepartment.Remove(selection.id);

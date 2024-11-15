@@ -28,14 +28,11 @@
         {
             MaterialList = new List<DetailMaterialListDTO>(data);
         }
-        Console.WriteLine("데이터 : "+data.Count); ;
         StateHasChanged();
     }
 
     private void DateChange((string start, string end)date)
     {
-        Console.WriteLine("시작"+date.start);
-        Console.WriteLine("RMx"+date.end);
         startDt = date.start;
         endDt = date.end;
     }

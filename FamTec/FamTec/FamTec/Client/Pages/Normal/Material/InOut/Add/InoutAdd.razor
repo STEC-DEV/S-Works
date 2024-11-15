@@ -172,8 +172,7 @@
     private async Task OnInAdd()
     {
         try
-        {
-            Console.WriteLine(AddInventoryListData[0].AddStore.RoomID);
+        {            
             if(AddInventoryListData.Count == 0)
             {
                 await JS.InvokeVoidAsync("alert", "입고 항목이 존재하지 않습니다.");
@@ -221,7 +220,6 @@
 
     private void OnSumData()
     {
-        Console.WriteLine(AddInItem.AddStore.RoomName);
         AddInItem.AddStore.InOutDate = DateTime.Now;
         AddInItem.InOut = _tab;
         AddInItem.MaterialID = SelectMaterial.Id;
