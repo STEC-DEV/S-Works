@@ -10,6 +10,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\BlazorDebugProxy\Microsoft.CodeAnalysis.Scripting.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\BlazorDebugProxy\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Server.staticwebassets.runtime.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\건물정보(양식).xlsx
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\사용자정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Server
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Server.deps.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Server.runtimeconfig.json
@@ -117,5 +119,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\ref\FamTec.Server.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\건물정보(양식).xlsx
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelForm\사용자정보(양식).xlsx

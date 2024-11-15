@@ -10,6 +10,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\Bl
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\BlazorDebugProxy\Microsoft.CodeAnalysis.Scripting.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\BlazorDebugProxy\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\FamTec.Server.staticwebassets.runtime.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\ExcelForm\건물정보(양식).xlsx
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\ExcelForm\사용자정보(양식).xlsx
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\FamTec.Server.exe
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\FamTec.Server.deps.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\FamTec.Server.runtimeconfig.json
@@ -136,5 +138,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\re
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\ref\FamTec.Server.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\ExcelForm\건물정보(양식).xlsx
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\ExcelForm\사용자정보(양식).xlsx

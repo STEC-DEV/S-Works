@@ -60,20 +60,6 @@
         // if (Images != null && (ImageDataUrl.Count != Images.Count || !Images.SequenceEqual(ImageDataUrl.Select(url => Convert.FromBase64String(url.Split(',')[1])))))
         if (Images != null && Images.Count != ImageDataUrl.Count)
         {
-<<<<<<< HEAD
-             ImageDataUrl.Clear();
-             foreach (var image in Images)
-             {
-                 if (image== null)
-                 {
-                     Console.WriteLine($"Image at index {image} is null");
-                     continue; // null인 이미지는 건너뜁니다.
-                 }
-                 var base64String = Convert.ToBase64String(image);
-                 ImageDataUrl.Add($"data:image/png;base64,{base64String}");
-             }
-             CurrentImageIndex = 0;
-=======
             ImageDataUrl.Clear();
             foreach (var image in Images)
             {
@@ -85,7 +71,6 @@
                 ImageDataUrl.Add($"data:image/png;base64,{base64String}");
             }
             CurrentImageIndex = 0;
->>>>>>> origin/Front
         }
         // return Task.CompletedTask;
     }

@@ -52,65 +52,40 @@ window.timelineHandler = {
 };
 
 
-//window.dropdownInit = function (dotnetHelper) {
-//    function handleClickOutside(event) {
-//        const dropdowns = document.getElementsByClassName('container');
-//        for (let dropdown of dropdowns) {
-//            if (!dropdown.contains(event.target)) {
-//                dotnetHelper.invokeMethodAsync('HandleClickOutside');
-//            }
-//        }
-//    }
 
-//    document.addEventListener('click', handleClickOutside);
-
-//    // Store the event listener for cleanup
-//    window.dropdownCleanup = function () {
-//        document.removeEventListener('click', handleClickOutside);
-//    };
-//}
 
 window.dropdownInit = function (dotnetHelper, elementId = null) {
     function handleClickOutside(event) {
-        const containers = elementId
-            ? [document.getElementById(elementId)]
-            : document.getElementsByClassName('container');
+        try {
+            let containers = [];
 
-        for (let container of containers) {
-            if (!container.contains(event.target)) {
+            if (elementId) {
+                // ID가 지정된 경우
+                const container = document.getElementById(elementId);
+                if (container) {
+                    containers.push(container);
+                }
+            } else {
+                // ID가 지정되지 않은 경우
+                containers = Array.from(document.getElementsByClassName('container'));
+            }
+
+            // 클릭된 요소가 컨테이너 외부인 경우에만 처리
+            const isClickedOutside = containers.every(container =>
+                container && !container.contains(event.target)
+            );
+
+            if (isClickedOutside && containers.length > 0) {
                 dotnetHelper.invokeMethodAsync('HandleClickOutside');
             }
+        } catch (error) {
+            console.error('Error in handleClickOutside:', error);
         }
     }
 
     document.addEventListener('click', handleClickOutside);
 
-    // Store the event listener for cleanup
     window.dropdownCleanup = function () {
         document.removeEventListener('click', handleClickOutside);
     };
 }
-
-
-
-//window.addOutsideClickListener = {
-//    addClickListener: function (dotNetHelper) {
-//        // 이벤트 핸들러 함수를 별도로 저장
-//        this.clickHandler = function (event) {
-//            const viewerElement = document.querySelector('.viewer');
-//            if (viewerElement && !viewerElement.contains(event.target)) {
-//                dotNetHelper.invokeMethodAsync('HideDropdown');
-//            }
-//        };
-
-//        // 이벤트 리스너 등록
-//        document.addEventListener('click', this.clickHandler);
-//    },
-
-//    // 이벤트 리스너 제거를 위한 메서드 추가
-//    removeClickListener: function () {
-//        if (this.clickHandler) {
-//            document.removeEventListener('click', this.clickHandler);
-//        }
-//    }
-//};
