@@ -16,7 +16,7 @@
             <div class="option">
                 @if(Data?.Count != 0)
                 {
-                    <ExportButton OnClick="Export" />
+                    <ExportButton OnClick="Export" Id="maintanenceAllHistory"/>
                 }
             </div>
         </div>
@@ -86,12 +86,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine("옵션" + SearchOption);
 
         if (Data != null)
         {
             originalData = new List<MaintanceHistoryDTO>(Data);
-            Console.WriteLine(originalData.Count);
             await Paging();
         }
         StateHasChanged();

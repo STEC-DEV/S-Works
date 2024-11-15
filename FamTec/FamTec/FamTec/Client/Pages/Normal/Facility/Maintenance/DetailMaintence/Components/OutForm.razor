@@ -148,7 +148,6 @@
         }
         if (buildingId == 0)
         {
-            Console.WriteLine("건물 0");
             LocationMaterial = null;
             SelectedRoomId = 0;
             AddItem.RoomID = 0;
@@ -189,9 +188,6 @@
         AddItem.Note = null;
         AddItem.RoomID = 0;
         AddItem.RoomID = locationId;
-        Console.WriteLine("위치 " + locationId);
-        Console.WriteLine("위치임 " + AddItem.RoomID);
-        Console.WriteLine("수량 " + AddItem.Num);
         _usageMaterialNum = LocationMaterial.FirstOrDefault(r => r.RoomId == locationId)?.Num;
 
         StateHasChanged();

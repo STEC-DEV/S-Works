@@ -96,7 +96,6 @@
 
     private async void onCheckItem(PlaceTableDTO place)
     {
-        Console.WriteLine("체크");
         if (CheckedData.Any(c => c.Id == place.Id))
         {
             CheckedData.RemoveAll(p => p.Id == place.Id);

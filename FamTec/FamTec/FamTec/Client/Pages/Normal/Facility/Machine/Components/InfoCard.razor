@@ -148,14 +148,12 @@
             }
             PlaceLocation = resGet.data;
 
-            foreach (var i in PlaceLocation)
-            {
-                Console.WriteLine();
-            }
+            
         }
         catch (Exception ex)
         {
-
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조죄 실패");
         }
     }
 

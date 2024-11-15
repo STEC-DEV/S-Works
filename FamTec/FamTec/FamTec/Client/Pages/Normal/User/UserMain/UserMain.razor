@@ -29,7 +29,7 @@
                     }
 
                 }
-                @if (usersData.Count > 0)
+                @if (usersData !=null &&usersData.Count > 0)
                 {
                     <ExportButton OnClick="Export" />
                 }

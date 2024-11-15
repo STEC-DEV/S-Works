@@ -102,10 +102,6 @@
         try
         {
             ResponseList<FacilityListDTO> resGetData = await apiManager.GetListAsync<FacilityListDTO>($"{FacType}Facility/sign/GetAll{FacType}Facility");
-            foreach (var i in resGetData.data)
-            {
-                Console.WriteLine(i.Name);
-            }
             if (resGetData.code != 200)
             {
                 await JS.InvokeVoidAsync("alert", resGetData.message);

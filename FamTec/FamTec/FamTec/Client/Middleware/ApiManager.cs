@@ -168,7 +168,7 @@ namespace FamTec.Client.Middleware
                 }
                 else if (contentType == "multipart/form-data")
                 {
-                    await Console.Out.WriteLineAsync(contentType);
+                    //await Console.Out.WriteLineAsync(contentType);
                     var multipartContent = new MultipartFormDataContent();
 
                     foreach (var prop in data.GetType().GetProperties())
@@ -199,7 +199,7 @@ namespace FamTec.Client.Middleware
             {
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
             }
-            Console.WriteLine($"Final Content-Type: {request.Content.Headers.ContentType}"); // 최종 Content-Type 로깅
+            //Console.WriteLine($"Final Content-Type: {request.Content.Headers.ContentType}"); // 최종 Content-Type 로깅
             HttpResponseMessage response = await _httpClient.SendAsync(request);
 
             //토큰만료

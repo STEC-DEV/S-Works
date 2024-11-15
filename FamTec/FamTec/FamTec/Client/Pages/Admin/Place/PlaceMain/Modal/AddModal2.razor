@@ -123,7 +123,6 @@
 
     private void OnAddModal()
     {
-        Console.WriteLine("매니저 추가");
         isAddModal = true;
     }
 
@@ -149,22 +148,22 @@
         * 3. POST
         * 4. 모달 닫기
         */
-        Console.WriteLine("코드"+placeInfo.PlaceCd);
-        Console.WriteLine("이름" + placeInfo.Name);
-        Console.WriteLine("전화번호" + placeInfo.Tel);
-        Console.WriteLine("주소" + placeInfo.Address);
-        Console.WriteLine("계약번호" + placeInfo.ContractNum);
-        Console.WriteLine("계약일자" + placeInfo.ContractDt);
-        Console.WriteLine("기계"+placeInfo.PermMachine);
-        Console.WriteLine("승강"+placeInfo.PermLift);
-        Console.WriteLine("소방"+placeInfo.PermFire);
-        Console.WriteLine("건축" + placeInfo.PermConstruct);
-        Console.WriteLine("통신"+placeInfo.PermNetwork);
-        Console.WriteLine("미화"+placeInfo.PermBeauty);
-        Console.WriteLine("보안" + placeInfo.PermSecurity);
-        Console.WriteLine("자재" + placeInfo.PermMaterial);
-        Console.WriteLine("에너지" + placeInfo.PermEnergy);
-        Console.WriteLine("민원"+placeInfo.PermVoc);
+        // Console.WriteLine("코드"+placeInfo.PlaceCd);
+        // Console.WriteLine("이름" + placeInfo.Name);
+        // Console.WriteLine("전화번호" + placeInfo.Tel);
+        // Console.WriteLine("주소" + placeInfo.Address);
+        // Console.WriteLine("계약번호" + placeInfo.ContractNum);
+        // Console.WriteLine("계약일자" + placeInfo.ContractDt);
+        // Console.WriteLine("기계"+placeInfo.PermMachine);
+        // Console.WriteLine("승강"+placeInfo.PermLift);
+        // Console.WriteLine("소방"+placeInfo.PermFire);
+        // Console.WriteLine("건축" + placeInfo.PermConstruct);
+        // Console.WriteLine("통신"+placeInfo.PermNetwork);
+        // Console.WriteLine("미화"+placeInfo.PermBeauty);
+        // Console.WriteLine("보안" + placeInfo.PermSecurity);
+        // Console.WriteLine("자재" + placeInfo.PermMaterial);
+        // Console.WriteLine("에너지" + placeInfo.PermEnergy);
+        // Console.WriteLine("민원"+placeInfo.PermVoc);
     }
 
     /*
@@ -182,14 +181,14 @@
     public void OnSelected((bool isCheck, int id) selection)
     {
 
-        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        // Console.WriteLine("부서 체크 여부" + selection.isCheck);
         if (!selection.isCheck)
         {
             selectedManagerIds.Remove(selection.id);
         }
         else
         {
-            Console.WriteLine("추가함");
+            // Console.WriteLine("추가함");
             selectedManagerIds.Add(selection.id);
         }
 

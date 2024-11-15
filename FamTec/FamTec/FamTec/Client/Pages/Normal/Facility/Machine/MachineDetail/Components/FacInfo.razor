@@ -227,7 +227,7 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "장비 수정 에러");
+            await JS.InvokeVoidAsync("alert", "수정 실패");
         }
     }
 
@@ -256,7 +256,6 @@
     */
     private async Task ImgConvert()
     {
-        Console.WriteLine("여기");
         ImageUrl.Clear();
         if (Facility.Image != null &&
             !string.IsNullOrEmpty(Facility.ImageName)

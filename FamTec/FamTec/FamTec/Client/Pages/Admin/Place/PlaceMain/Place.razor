@@ -154,10 +154,7 @@
         {
             CheckedItems.Add(selection.id);
         }
-        foreach(var i in CheckedItems)
-        {
-            Console.WriteLine("check"+i);
-        }
+        
 
     }
 
@@ -178,15 +175,12 @@
                 ResponseUnit<bool> resDel = await apiManager.DeletePlaceAsync<bool>("AdminPlace/sign/DeleteWorks", CheckedItems);
                 if (resDel.code == 200)
                 {
-
-                    Console.WriteLine(resDel.message);
                     CheckedItems.Clear();
                     await LoadPlace();
                 }
                 else
                 {
                     await JS.InvokeVoidAsync("alert", $"{resDel.message}");
-                    Console.WriteLine(resDel.message);
                     CheckedItems.Clear();
                     await LoadPlace();
                 }

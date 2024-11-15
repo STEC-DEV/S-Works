@@ -91,11 +91,4 @@
     [Parameter] public List<MaterialHistoryDTO> ListData { get; set; }
 
 
-    protected override async Task OnParametersSetAsync()
-    {
-        foreach(var i in ListData)
-        {
-            Console.WriteLine("gdgd"+i.Name);
-        }
-    }
 }

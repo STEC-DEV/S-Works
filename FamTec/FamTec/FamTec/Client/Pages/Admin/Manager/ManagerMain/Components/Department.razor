@@ -85,7 +85,8 @@
             StateHasChanged();
         }catch(Exception ex)
         {
-            Console.WriteLine("조회 실패");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
 
     }
@@ -105,7 +106,6 @@
     */
     private void OnEdit()
     {
-        Console.WriteLine("모달");
         is_openModal = true;
     }
 

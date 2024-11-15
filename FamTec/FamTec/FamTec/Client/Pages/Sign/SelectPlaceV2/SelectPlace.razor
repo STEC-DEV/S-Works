@@ -58,9 +58,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("여기옴");
+        
         await base.OnInitializedAsync();
-        Console.WriteLine("사업장 선택"+ISADMIN);
+        
         if (!ISADMIN)
         {
             await OnExit();
@@ -98,7 +98,7 @@
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", "사업장 조회 실패");
+            await JS.InvokeVoidAsync("alert", "조회 실패");
         }
 
     }

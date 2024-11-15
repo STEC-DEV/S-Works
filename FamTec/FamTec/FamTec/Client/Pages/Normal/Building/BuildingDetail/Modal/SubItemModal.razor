@@ -29,7 +29,6 @@
     <ul class="value-ul">
         @foreach (var item in Item.ItemValues.Select((value, idx) => (value, idx)))
         {
-            Console.WriteLine("생성");
             <li class="value-li">
                 <input type="checkbox" @onchange="e=>OnCheck(e,item.idx)" />
                 <input class="value-input" type="text" @bind-value=item.value.Values />
@@ -124,11 +123,10 @@
     {
         try
         {
-            Console.WriteLine(Item.ItemValues[0].Values);
             ResponseUnit<AddItemDTO> resAdd = await apiManager.PostAsync<AddItemDTO>("BuildingGroupKey/sign/AddKey", Item);
             if(resAdd.code != 200)
             {
-                await JS.InvokeVoidAsync("alert", "항목 추가 실패");
+                await JS.InvokeVoidAsync("alert", resAdd.message);
                 return;
             }
             await LoadGroup.InvokeAsync();
@@ -137,7 +135,8 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine("오류");
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "추가 실패");
         }
     }
 

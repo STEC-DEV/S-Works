@@ -71,8 +71,6 @@
     private async Task InVokeCheckboxSelect(ChangeEventArgs e, int id, T item)
     {
         bool isChecked = (bool)(e.Value ?? false);
-        Console.WriteLine("체크 index값 : " + id);
-
 
         if (ReturnType == "object")
         {

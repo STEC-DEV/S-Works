@@ -52,7 +52,7 @@ namespace FamTec.Server.Hubs
                     }
                 }
 
-                Console.WriteLine("그룹추가 :" + _connectionGroups.Count + "/" + Context.ConnectionId + "/" + roomName + "Join");
+                //Console.WriteLine("그룹추가 :" + _connectionGroups.Count + "/" + Context.ConnectionId + "/" + roomName + "Join");
                 //await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Join Success");
             }
             catch(Exception ex)
@@ -75,7 +75,7 @@ namespace FamTec.Server.Hubs
                 // 그룹에서 사용자 제거
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
 
-                Console.WriteLine($"그룹삭제 : {_connectionGroups.Count} / {Context.ConnectionId} / {roomName} Remove");
+                //Console.WriteLine($"그룹삭제 : {_connectionGroups.Count} / {Context.ConnectionId} / {roomName} Remove");
 
                 // 해당 connectionId의 그룹 목록 업데이트
                 if (_connectionGroups.TryGetValue(Context.ConnectionId, out var groupList))
@@ -132,7 +132,7 @@ namespace FamTec.Server.Hubs
                     _connectionGroups.TryRemove(connectionId, out _);
                 }
 
-                Console.WriteLine("그룹삭제 :" + _connectionGroups.Count + "/" + connectionId);
+                
             }
             catch(Exception ex)
             {

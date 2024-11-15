@@ -38,7 +38,6 @@
 
     private async Task OnValueChanged(ChangeEventArgs e)
     {
-        Console.WriteLine( Title+ e.Value);
         if (bool.TryParse(e.Value?.ToString(), out bool newValue))
         {
             await ValueChanged.InvokeAsync(newValue);

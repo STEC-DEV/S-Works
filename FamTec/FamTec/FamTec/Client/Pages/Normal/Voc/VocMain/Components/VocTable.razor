@@ -74,11 +74,7 @@
         {
             @foreach(var row in ListData)
             {
-                @* var sid = typeof(T).GetProperty("Id")?.GetValue(row)?.ToString();
-                int id = int.Parse(sid);
- *@
                 TimeSpan timespan = new TimeSpan();
-                Console.WriteLine(timespan);
                 if (!string.IsNullOrEmpty(row.DurationDT))
                 {
                     timespan = TimeSpan.Parse(row.DurationDT);

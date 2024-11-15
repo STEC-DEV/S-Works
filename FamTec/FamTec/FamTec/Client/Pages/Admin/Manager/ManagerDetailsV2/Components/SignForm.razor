@@ -138,7 +138,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Console.WriteLine(ADMINJOB);
+        
         job = ADMINJOB switch
         {
             "SystemMaster" => "마스터",
@@ -188,12 +188,12 @@
         }
         if (ImageUrl.Count == 0)
         {
-            Console.WriteLine("신규");
+            
             ImageUrl.Add(temp[0]);
         }
         else
         {
-            Console.WriteLine("추가");
+            
             ImageUrl[0] = temp[0];
         }
 

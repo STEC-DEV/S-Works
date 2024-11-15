@@ -65,7 +65,6 @@
             {
                 if (image== null)
                 {
-                    Console.WriteLine($"Image at index {image} is null");
                     continue; // null인 이미지는 건너뜁니다.
                 }
                 var base64String = Convert.ToBase64String(image);
@@ -80,7 +79,7 @@
 
     private async void ShowPreviousImage()
     {
-        Console.WriteLine("이전 : " + CurrentImageIndex);
+        // Console.WriteLine("이전 : " + CurrentImageIndex);
         if (CurrentImageIndex > 0)
         {
             CurrentImageIndex--;
@@ -90,7 +89,7 @@
 
     private async void ShowNextImage()
     {
-        Console.WriteLine("다음 : " + CurrentImageIndex);
+        // Console.WriteLine("다음 : " + CurrentImageIndex);
         if (CurrentImageIndex < ImageDataUrl.Count - 1)
         {
             CurrentImageIndex++;

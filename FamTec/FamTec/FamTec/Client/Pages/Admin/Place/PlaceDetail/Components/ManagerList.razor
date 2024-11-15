@@ -44,7 +44,6 @@
 
     protected override Task OnInitializedAsync()
     {
-        Console.WriteLine("하위컴포넌트");
         return base.OnInitializedAsync();
     }
 
@@ -65,9 +64,9 @@
             if (!DelManager.PlaceManager.Any(m => m.Id == selectManager.Id))
             {
                 DelManager.PlaceManager.Add(selectManager);
-                foreach (var i in DelManager.PlaceManager){
-                    Console.WriteLine(i.Name);
-                }
+                // foreach (var i in DelManager.PlaceManager){
+                //     Console.WriteLine(i.Name);
+                // }
             }
 
 

@@ -152,7 +152,6 @@
 
     private void OnAddModal()
     {
-        Console.WriteLine("매니저 추가");
         isAddModal = true;
     }
 
@@ -188,7 +187,7 @@
         ResponseUnit<int?> resPlace = await apiManager.PostAsync<int?>("AdminPlace/sign/AddWorks", placeInfo);
         if(resPlace.code != 200 || resPlace.data == null)
         {
-            await JS.InvokeVoidAsync("alert", "사업장 등록 실패");
+            await JS.InvokeVoidAsync("alert", resPlace.message);
             /*
              * 롤백 요청 코드 추가 예정
              */
@@ -205,10 +204,10 @@
         ResponseUnit<bool> resManager = await apiManager.PostAsync<bool>("AdminPlace/sign/AddPlaceManager", placeManager);
         if(resManager.code != 200)
         {
-            await JS.InvokeVoidAsync("alert", "매니저 등록실패");
+            await JS.InvokeVoidAsync("alert", resManager.message);
             return;
         }
-        await JS.InvokeVoidAsync("alert", "매니저 등록 성공");
+        // await JS.InvokeVoidAsync("alert", "매니저 등록 성공");
         await LoadPlace.InvokeAsync();
         await ModalClose();
         return;
@@ -231,14 +230,14 @@
     public void OnSelected((bool isCheck, int id) selection)
     {
 
-        Console.WriteLine("부서 체크 여부" + selection.isCheck);
+        
         if (!selection.isCheck)
         {
             selectedManagerIds.Remove(selection.id);
         }
         else
         {
-            Console.WriteLine("추가함");
+        
             selectedManagerIds.Add(selection.id);
         }
 

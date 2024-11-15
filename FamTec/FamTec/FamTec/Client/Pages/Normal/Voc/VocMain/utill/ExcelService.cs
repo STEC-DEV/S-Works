@@ -803,7 +803,6 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                     worksheet.Cell(item.idx + 8, 7).Value = item.value.Note;
 
                 }
-                Console.WriteLine("zkdnsxm" + usematerial.Count);
                 var useBodyRange = worksheet.Range($"A8:G{7 + usematerial.Count}");
                 useBodyRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 useBodyRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;

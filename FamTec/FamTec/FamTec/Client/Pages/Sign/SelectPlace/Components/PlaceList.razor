@@ -31,7 +31,6 @@
     private async void OnSelect(ChangeEventArgs e)
     {
         selectedValue = e.Value?.ToString();
-        Console.WriteLine($"Selected value: {selectedValue}");
 
         if (int.TryParse(selectedValue, out int selectedId))
         {

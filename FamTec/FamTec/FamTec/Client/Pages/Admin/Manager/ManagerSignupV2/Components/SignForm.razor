@@ -117,7 +117,6 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        Console.WriteLine(ADMINJOB);
         job = ADMINJOB switch
         {
             "SystemManager" => "마스터",

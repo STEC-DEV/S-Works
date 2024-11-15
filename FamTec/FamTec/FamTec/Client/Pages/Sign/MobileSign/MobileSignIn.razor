@@ -74,7 +74,6 @@
                 return;
             }
             string? token = response.data;
-            Console.WriteLine(token);
             await _localStorageService.SetItemAsync<string>("sworks-jwt-token", token);
             await _localStorageService.SetItemAsync<bool>("loginMode", false);
             (_authStateProvider as CustomAuthProvider).NotifyAuthState();

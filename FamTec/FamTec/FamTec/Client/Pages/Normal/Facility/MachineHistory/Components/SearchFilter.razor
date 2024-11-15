@@ -94,7 +94,6 @@
         var parameters = HttpUtility.ParseQueryString(string.Empty);
         facType = FacTypeCheckData(FacType);
         workType = WorkCheckData(WorkType);
-        Console.WriteLine(facType.Count);
         if (facType.Count == 0 || workType.Count == 0)
         {
             await JS.InvokeVoidAsync("alert", "조건을 선택해 주세요");
@@ -133,7 +132,6 @@
     private void HandleSelectionChange(List<FilterItem> selectedItems)
     {
         var selectedNames = string.Join(", ", selectedItems.Where(x => x.IsChecked).Select(x => x.Name));
-        Console.WriteLine($"Selected items: {selectedNames}");
     }
 
     //체크된 요소 id 리스트 반환
