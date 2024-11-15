@@ -1,0 +1,15 @@
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\bin\Debug\net8.0\FamTec.Shared.deps.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\bin\Debug\net8.0\FamTec.Shared.runtimeconfig.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\bin\Debug\net8.0\FamTec.Shared.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\bin\Debug\net8.0\FamTec.Shared.pdb
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.csproj.AssemblyReference.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.AssemblyInfoInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.AssemblyInfo.cs
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.csproj.CoreCompileInputs.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.sourcelink.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\refint\FamTec.Shared.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.pdb
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\FamTec.Shared.genruntimeconfig.cache
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Shared\obj\Debug\net8.0\ref\FamTec.Shared.dll

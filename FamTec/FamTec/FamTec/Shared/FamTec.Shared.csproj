@@ -1,41 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Model\NewFolder\**" />
-    <EmbeddedResource Remove="Model\NewFolder\**" />
-    <None Remove="Model\NewFolder\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- 필요 없는 모델 폴더 제거 -->
+		<Compile Remove="Model\NewFolder\**" />
+		<EmbeddedResource Remove="Model\NewFolder\**" />
+		<None Remove="Model\NewFolder\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- 최신 버전으로 패키지 업데이트 -->
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<!-- 여전히 사용 가능 -->
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
+		<!-- 여전히 사용 가능 -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- 클라이언트/서버 공통에서 지원되는 플랫폼 지정 -->
+		<SupportedPlatform Include="browser" />
+		<SupportedPlatform Include="server" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Client\DTO\NewFolder\" />
-    <Folder Include="Client\DTO\Normal\Facility\NewFolder\" />
-    <Folder Include="Model\NewFolder\" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- 폴더 구조 유지 -->
+		<Folder Include="Client\DTO\NewFolder\" />
+		<Folder Include="Client\DTO\Normal\Facility\NewFolder\" />
+		<Folder Include="Model\NewFolder\" />
+	</ItemGroup>
 
 </Project>

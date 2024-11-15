@@ -77,6 +77,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http.Connections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,7 +95,7 @@ builder.WebHost.UseKestrel((context, options) =>
     {
         // 프로토콜 설정: HTTP/1.1과 HTTP/2를 모두 지원하는 것을 권장.
         // HTTP/2는 성능 향상과 효율적인 데이터 전송을 제공한다.
-        endpointOptions.Protocols = HttpProtocols.Http1AndHttp2;
+        endpointOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
     });
 });
 
@@ -180,7 +181,6 @@ builder.Services.AddSingleton<WorksSetting>();
 //메모리 캐시 사용
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<AuthCodeService>();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -253,7 +253,7 @@ builder.Services.AddAuthentication(options =>
 
 Console.WriteLine("DBConnect전");
 #region DB연결 정보
-#if DEBUG
+
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
@@ -269,30 +269,10 @@ if (!String.IsNullOrWhiteSpace(connectionString))
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
       //poolSize: 128;);
-
 }
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.
     throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty.");
-#else
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (!String.IsNullOrWhiteSpace(connectionString))
-{
-    builder.Services.AddDbContext<WorksContext>(options =>
-      options.UseMySql(connectionString, ServerVersion.Parse("10.11.7-mariadb"),
-      mySqlOptions =>
-      {
-          mySqlOptions.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null); // 자동 재시도 설정 (최대 3회, 5초 대기)
-          // CommandTimeout을 60초로 설정
-          mySqlOptions.CommandTimeout(60);
-          // 다른 성능 및 안정성 옵션 추가
-          mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
-      }));
-}
-else
-    // 예외를 던져 프로그램이 시작되지 않도록 함.
-    throw new InvalidOperationException("Connection string 'DefaultConnection' is null or empty."); 
-#endif
 
 #endregion
 
@@ -353,13 +333,11 @@ builder.Services.AddResponseCompression(opts =>
 builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
-    //options.Level = System.IO.Compression.CompressionLevel.SmallestSize;
 });
 
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
-    //options.Level = System.IO.Compression.CompressionLevel.SmallestSize;
 });
 #endregion
 
@@ -406,20 +384,34 @@ else
 app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정
 
 // MIME 타입 및 압축 헤더 설정
-FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
+//FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
 // 기본 제공되지 않는 MIME 타입 추가
-provider.Mappings[".wasm"] = "application/wasm";
-provider.Mappings[".gz"] = "application/octet-stream";
-provider.Mappings[".br"] = "application/octet-stream";
-provider.Mappings[".jpg"] = "image/jpeg";
-provider.Mappings[".png"] = "image/png";
-provider.Mappings[".gif"] = "image/gif";
-provider.Mappings[".webp"] = "image/webp";
-provider.Mappings[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+//provider.Mappings[".wasm"] = "application/wasm";
+//provider.Mappings[".gz"] = "application/octet-stream";
+//provider.Mappings[".br"] = "application/octet-stream";
+//provider.Mappings[".jpg"] = "image/jpeg";
+//provider.Mappings[".png"] = "image/png";
+//provider.Mappings[".gif"] = "image/gif";
+//provider.Mappings[".webp"] = "image/webp";
+//provider.Mappings[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    ContentTypeProvider = provider,
+    ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        Mappings =
+        {
+            [".wasm"] = "application/wasm",
+            [".gz"] = "application/octet-stream",
+            [".br"] = "application/octet-stream",
+            [".jpg"] = "image/jpg",
+            [".jpeg"] ="image/jpeg",
+            [".png"] = "image/png",
+            [".gif"] = "image/gif",
+            [".webp"] = "image/webp",
+            [".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    },
     OnPrepareResponse = ctx =>
     {
         // 압축된 파일에 대한 Content-Encoding 헤더 설정
@@ -512,8 +504,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
 app.MapControllers();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();
