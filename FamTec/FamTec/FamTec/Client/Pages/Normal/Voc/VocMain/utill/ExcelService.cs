@@ -404,10 +404,14 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                 range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 range.Style.Fill.BackgroundColor = XLColor.FromArgb(217, 217, 217);
                 worksheet.Cell(lastRow, 5).Value = totalInQty;
-                worksheet.Cell(lastRow, 6).Value = totalInPrice/(m.InventoryList.Count);
+                worksheet.Cell(lastRow, 6).Value = Math.Round(Convert.ToDecimal(totalInPrice / m.InventoryList.Count), 2);
+                //
+
+                //
                 worksheet.Cell(lastRow, 7).Value = totalInAmount;
                 worksheet.Cell(lastRow, 8).Value = totalOutQty;
-                worksheet.Cell(lastRow, 9).Value = totalOutPrice / (m.InventoryList.Count);
+                //worksheet.Cell(lastRow, 9).Value = totalOutPrice / (m.InventoryList.Count);
+                worksheet.Cell(lastRow, 9).Value = Math.Round(Convert.ToDecimal(totalOutPrice / m.InventoryList.Count), 2);
                 worksheet.Cell(lastRow, 10).Value = totalOutAmount;
                 worksheet.Cell(lastRow, 11).Value = m.InventoryList[m.InventoryList.Count - 1].CurrentNum;
 
@@ -618,6 +622,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                         }
                         var groupRange = worksheet.Range($"A{groupRowStartCount}:A{groupRowEndCount - 1}");
                         groupRange.Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        groupRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                         groupRowStartCount = groupRowEndCount;
                     }
                     

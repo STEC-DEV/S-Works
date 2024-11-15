@@ -3434,7 +3434,7 @@
     background-color  :var(--main-color);
     
 }
-.li:hover .bi[b-hr5m7sg4by]{
+.li:hover .active[b-hr5m7sg4by]{
     fill:white;
 }
 
@@ -3448,7 +3448,24 @@
 }
 
 .block[b-hr5m7sg4by] {
+    background-color: #f2f2f2;
+    color: #b7b7b7;
+}
+
+.block:hover[b-hr5m7sg4by]{
+    cursor: default;
     background-color:#f2f2f2;
+    
+}
+
+
+.textblock[b-hr5m7sg4by] {
+    color: #b7b7b7;
+    font-size: var(--normal-size);
+}
+
+.block:hover .text[b-hr5m7sg4by]{
+    color: #b7b7b7;
 }
 /* /Pages/CommonComponents/IconButton/DownLineButton.razor.rz.scp.css */
 .ibtn :hover[b-qdn3lkfi8w] {
