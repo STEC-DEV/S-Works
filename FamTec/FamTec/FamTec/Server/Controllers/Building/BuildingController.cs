@@ -133,8 +133,6 @@ namespace FamTec.Server.Controllers.Building
         {
             try
             {
-                //int placeid = 1;
-                //int materialid = 1;
                 if (HttpContext is null)
                     return BadRequest();
 

@@ -387,7 +387,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
             }
         }
 
-
         /// <summary>
         /// 기계설비 추가
         /// </summary>
@@ -423,7 +422,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                 }
 
                 // 기계설비 관련한 폴더 없으면 만들기
-                //MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeidx.ToString());
                 MachineFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Machine");
 
                 di = new DirectoryInfo(MachineFileFolderPath);
@@ -706,7 +704,6 @@ namespace FamTec.Server.Services.Facility.Type.Machine
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //MachineFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Machine", Common.FileServer, placeid);
                 MachineFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Machine");
 
                 di = new DirectoryInfo(MachineFileFolderPath);

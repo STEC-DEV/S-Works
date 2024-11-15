@@ -418,8 +418,7 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                     NewFileName = FileService.SetNewFileName(UserIdx, files);
                 }
 
-                // 전기설비 관련한 폴더 없으면 만들기 
-                //BeautyFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Beauty", Common.FileServer, placeidx);
+                // 전기설비 관련한 폴더 없으면 만들기
                 BeautyFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Beauty");
 
                 di = new DirectoryInfo(BeautyFileFolderPath);
@@ -697,7 +696,6 @@ namespace FamTec.Server.Services.Facility.Type.Beauty
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //BeautyFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Beauty", Common.FileServer, placeid);
                 BeautyFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Beauty");
 
                 di = new DirectoryInfo(BeautyFileFolderPath);

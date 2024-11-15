@@ -3,7 +3,6 @@ using FamTec.Server.Repository.Admin.AdminPlaces;
 using FamTec.Server.Repository.Admin.AdminUser;
 using FamTec.Server.Repository.Admin.Departmnet;
 using FamTec.Server.Repository.Place;
-using FamTec.Server.Repository.Room;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Client.DTO.Normal.Users;
 using FamTec.Shared.Model;
@@ -903,7 +902,6 @@ namespace FamTec.Server.Services.User
 
                 // JWT 인증 페이로드 사인 비밀키
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!));
-                //var authSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration["JWT:authSigningKey"]!))));
 
                 JwtSecurityToken token = new JwtSecurityToken(
                     issuer: Configuration["JWT:Issuer"],
@@ -1225,7 +1223,6 @@ namespace FamTec.Server.Services.User
                 }
 
                 // 사용자 관련한 폴더 없으면 만들기
-                //PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, PlaceIdx.ToString());
                 PlaceFileFolderPath = Path.Combine(Common.FileServer, PlaceIdx.ToString(), "Users");
 
                 di = new DirectoryInfo(PlaceFileFolderPath);
@@ -1367,7 +1364,6 @@ namespace FamTec.Server.Services.User
                     dto.VOC_SECURITY = model.VocSecurity;
                     //dto.VOC_ETC = model.VocEtc;
 
-                    //string PlaceFileName = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
                     string PlaceFileName = Path.Combine(Common.FileServer, placeid.ToString(), "Users");
 
                     di = new DirectoryInfo(PlaceFileName);
@@ -1556,7 +1552,6 @@ namespace FamTec.Server.Services.User
                 if (String.IsNullOrWhiteSpace(Name) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<UsersDTO>() { message = "잘못된 요청입니다.", data = new UsersDTO(), code = 404 };
 
-                //PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Users", Common.FileServer, placeid.ToString());
                 PlaceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Users");
 
                 di = new DirectoryInfo(PlaceFileFolderPath);

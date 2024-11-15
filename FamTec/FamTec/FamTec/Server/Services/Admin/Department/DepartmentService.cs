@@ -117,7 +117,6 @@ namespace FamTec.Server.Services.Admin.Department
             }
         }
 
-
         /// <summary>
         /// 관리부서 전체조회
         /// </summary>

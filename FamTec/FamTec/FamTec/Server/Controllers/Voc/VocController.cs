@@ -158,16 +158,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                //int searchType = 0;
-                //List<int> type = new List<int>() { 0,1, 7 };
-                //List<int> status = new List<int>() { 0,1, 2 };
-                //List<int> buildingid = new List<int>() { 1 };
-                //List<int> division = new List<int>() { 1 };
-                //string? searchdate = "2024-10";
-
-                //DateTime StartDate = new DateTime(2024,11,1);
-                //DateTime EndDate = new DateTime(2024,11,8);
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -287,12 +277,6 @@ namespace FamTec.Server.Controllers.Voc
         {
             try
             {
-                //DateTime StartDate = new DateTime(2024,8,1);
-                //DateTime EndDate = new DateTime(2024,8,8);
-                //List<int> type = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
-                //List<int> status = new List<int>() { 0, 1, 2 };
-                //List<int> buildingid = new List<int>() { 1 };
-
                 if (HttpContext is null)
                    return BadRequest();
 

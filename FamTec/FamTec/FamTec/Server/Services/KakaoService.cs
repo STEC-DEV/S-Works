@@ -162,9 +162,6 @@ namespace FamTec.Server.Services
                 LogDTO.MSGID = Convert.ToString(Jobj["info"]?["mid"]?.ToString()); // 메시지 ID
                 LogDTO.Phone = receiver; // 받는사람 전화번호
 
-                // MID - 두개 채워서 보내야함.
-                // PHONE
-
                 return LogDTO;
             }
             catch(Exception ex)
@@ -358,10 +355,6 @@ namespace FamTec.Server.Services
                 throw;
             }
         }
-
-
-
-
 
         private class RandomGenerator
         {

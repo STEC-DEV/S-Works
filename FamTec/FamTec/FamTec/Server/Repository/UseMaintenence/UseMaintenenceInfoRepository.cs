@@ -1333,15 +1333,6 @@ namespace FamTec.Server.Repository.UseMaintenence
                                             return -1;
                                         }
 
-
-                                        //int thisCurrentNum = await context.InventoryTbs
-                                        //                        .Where(m => m.DelYn != true &&
-                                        //                                    m.MaterialTbId == UseMaintenenceMaterialTB.MaterialTbId &&
-                                        //                                    m.RoomTbId == UseMaintenenceMaterialTB.RoomTbId &&
-                                        //                                    m.PlaceTbId == placeid)
-                                        //                        .SumAsync(m => m.Num)
-                                        //                        .ConfigureAwait(false);
-
                                         int thisCurrentNum = await context.InventoryTbs
                                                                 .Where(m => m.DelYn != true &&
                                                                             m.MaterialTbId == UseMaintenenceMaterialTB.MaterialTbId &&
@@ -1403,14 +1394,6 @@ namespace FamTec.Server.Repository.UseMaintenence
                                             await transaction.RollbackAsync().ConfigureAwait(false);
                                             return -1;
                                         }
-
-                                        //int thisCurrentNum = await context.InventoryTbs
-                                        //                        .Where(m => m.DelYn != true &&
-                                        //                                    m.MaterialTbId == UseMaintenenceMaterialTB.MaterialTbId &&
-                                        //                                    m.RoomTbId == UseMaintenenceMaterialTB.RoomTbId &&
-                                        //                                    m.PlaceTbId == placeid)
-                                        //                        .SumAsync(m => m.Num)
-                                        //                        .ConfigureAwait(false);
 
                                         int thisCurrentNum = await context.InventoryTbs
                                                                 .Where(m => m.DelYn != true &&
@@ -1667,14 +1650,6 @@ namespace FamTec.Server.Repository.UseMaintenence
                             await transaction.RollbackAsync().ConfigureAwait(false);
                             return -1;
                         }
-
-                        //int Available = await context.InventoryTbs
-                        //    .Where(m => m.DelYn != true &&
-                        //    m.PlaceTbId == placeid &&
-                        //                m.RoomTbId == UseMaintenenceMaterialTB.RoomTbId &&
-                        //                m.MaterialTbId == UseMaintenenceMaterialTB.MaterialTbId)
-                        //    .SumAsync(m => m.Num)
-                        //    .ConfigureAwait(false);
 
                         int Available = await context.InventoryTbs
                             .Where(m => m.DelYn != true &&

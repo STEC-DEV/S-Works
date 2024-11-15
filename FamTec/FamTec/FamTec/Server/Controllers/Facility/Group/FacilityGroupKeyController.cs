@@ -46,9 +46,6 @@ namespace FamTec.Server.Controllers.Facility.Group
                 if (String.IsNullOrWhiteSpace(dto.Name))
                     return NoContent();
 
-                //if(String.IsNullOrWhiteSpace(dto.Unit))
-                //    return NoContent();
-
                 if (dto.ItemValues is [_, ..])
                 {
                     foreach(AddGroupItemValueDTO ValueDTO in dto.ItemValues)
@@ -95,9 +92,6 @@ namespace FamTec.Server.Controllers.Facility.Group
 
                 if (String.IsNullOrWhiteSpace(dto.Itemkey))
                     return NoContent();
-
-                //if (String.IsNullOrWhiteSpace(dto.Unit))
-                //    return NoContent();
 
                 ResponseUnit<UpdateKeyDTO> model = await FacilityKeyService.UpdateKeyService(HttpContext, dto).ConfigureAwait(false);
 

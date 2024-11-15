@@ -37,10 +37,7 @@ namespace FamTec.Server.Repository.Building
             try
             {
                 bool FloorCheck = await context.FloorTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
-                // 민원에 해당 건물이 포함되어있는지.
-                //bool VocCheck = await context.VocTbs.AnyAsync(m => m.BuildingTbId == buildingid && m.DelYn != true).ConfigureAwait(false);
-
-                //return FloorCheck || VocCheck;
+                
                 return FloorCheck;
             }
             catch (MySqlException ex)
@@ -567,8 +564,6 @@ namespace FamTec.Server.Repository.Building
 
                             if (BuildingTB is not null)
                             {
-                                // 삭제시에는 해당명칭 다시사용을 위해 원래이름_ID 로 명칭을 변경하도록 함.
-                                //BuildingTB.BuildingCd = $"{BuildingTB.BuildingCd}_{BuildingTB.Id}"; // 코드안씀
                                 BuildingTB.DelYn = true;
                                 BuildingTB.DelDt = ThisDate;
                                 BuildingTB.DelUser = deleter;

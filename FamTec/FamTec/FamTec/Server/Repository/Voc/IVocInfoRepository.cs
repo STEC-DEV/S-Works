@@ -19,7 +19,6 @@ namespace FamTec.Server.Repository.Voc
         /// </summary>
         /// <param name="placeid"></param>
         /// <returns></returns>
-        //Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth);
         Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division);
 
         /// <summary>

@@ -420,7 +420,6 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                 }
 
                 // 전기설비 관련한 폴더 없으면 만들기 
-                //FireFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Fire", Common.FileServer, placeidx);
                 FireFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Fire");
 
                 di = new DirectoryInfo(FireFileFolderPath);
@@ -704,7 +703,6 @@ namespace FamTec.Server.Services.Facility.Type.Fire
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //FireFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Fire", Common.FileServer, placeid);
                 FireFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Fire");
 
                 di = new DirectoryInfo(FireFileFolderPath);

@@ -30,7 +30,6 @@ namespace FamTec.Server.Tokens
                     string? accessToken = token.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
                     var authSigningKey = Encoding.UTF8.GetBytes(_authSigningKey);
-                    //var authSigningKey = Encoding.UTF8.GetBytes("DhftOS5uphK3vmCJQrexST1RsyjZBjXWRgJMFPU4");
 
                     var tokenHandler = new JwtSecurityTokenHandler();
                     tokenHandler.ValidateToken(accessToken, new TokenValidationParameters

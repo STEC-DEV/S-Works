@@ -203,7 +203,6 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
-
         /// <summary>
         /// 관리자정보 전체조회
         /// </summary>
@@ -390,8 +389,6 @@ namespace FamTec.Server.Services.Admin.Place
                 return new ResponseUnit<PlaceDetailDTO> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
-       
 
         /// <summary>
         /// 사업장에 관리자 추가

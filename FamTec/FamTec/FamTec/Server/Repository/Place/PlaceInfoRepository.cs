@@ -69,7 +69,6 @@ namespace FamTec.Server.Repository.Place
                 throw;
             }
         }
-       
 
         /// <summary>
         /// 전체조회

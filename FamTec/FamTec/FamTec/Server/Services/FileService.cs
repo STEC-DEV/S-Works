@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using System.Runtime.CompilerServices;
 
 namespace FamTec.Server.Services
 {
@@ -20,10 +21,17 @@ namespace FamTec.Server.Services
         /// <param name="folderpath"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<bool?> AddImageFile(string newFileName, string folderpath, IFormFile files)
+        public async Task<bool?> AddImageFile(string newFileName,
+            string folderpath, IFormFile files,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 string filePath = Path.Combine(folderpath, newFileName);
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
@@ -34,9 +42,9 @@ namespace FamTec.Server.Services
             }
             catch(Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
@@ -49,10 +57,18 @@ namespace FamTec.Server.Services
         /// <param name="folderpath"></param>
         /// <param name="files"></param>
         /// <returns></returns>
-        public async Task<bool?> AddResizeImageFile(string newFileName, string folderpath, IFormFile files)
+        public async Task<bool?> AddResizeImageFile(string newFileName,
+            string folderpath,
+            IFormFile files,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 // 파일 확장자 결정
                 string getExtension = Path.GetExtension(newFileName);
                 string targetExtension = getExtension switch
@@ -105,19 +121,32 @@ namespace FamTec.Server.Services
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
         }
 
-        // TEMP - 테스트용
-        public async Task<byte[]?> AddResizeImageFile_2(IFormFile files)
+        /// <summary>
+        /// 모바일 RESIZE
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="membername"></param>
+        /// <param name="sourceFilePath"></param>
+        /// <param name="sourceLineNumber"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> AddResizeImageFile_2(IFormFile files,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 // 파일 확장자 결정 및 유효성 검사
                 string extension = Path.GetExtension(files.FileName).ToLower();
 
@@ -155,76 +184,39 @@ namespace FamTec.Server.Services
                 using var data = image.Encode(encodedFormat, 100);
                 return data?.ToArray();
 
-                #region 이전방식
-                /*
-                // 파일 확장자 결정
-                string getExtension = Path.GetExtension(files.FileName);
-                string targetExtension = getExtension switch
-                {
-                    ".png" => ".png",
-                    ".bmp" => ".bmp",
-                    ".jpeg" => ".jpeg",
-                    ".jpg" => ".jpg",
-                    ".gif" => ".gif",
-                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
-                };
-                
-                // 파일 경로 매핑
-                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
-
-                using (var memoryStream = new MemoryStream())
-                {
-                    await files.CopyToAsync(memoryStream).ConfigureAwait(false);
-                    memoryStream.Position = 0;
-
-                    using (var originalBitmap = SKBitmap.Decode(memoryStream))
-                    {
-                        if (originalBitmap == null)
-                        {
-                            return null;
-                        }
-
-                        // 원본 비율 유지하며 크기 조정
-                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 300, 300); // 비율유지
-                        if (resizedBitmap == null)
-                        {
-                            return null;
-                        }
-
-                        // 이미지 인코딩 형식 결정
-                        var encodedFormat = GetEncodedFormat(targetExtension);
-
-                        using (var image = SKImage.FromBitmap(resizedBitmap))
-                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
-                        using (var outputStream = new MemoryStream())
-                        {
-                            data.SaveTo(outputStream);
-                            return outputStream.ToArray(); // byte[]로 변환하여 반환
-                        }
-                    }
-                }
-                */
-                #endregion
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
         }
 
-        public async Task<byte[]?> AddResizeImageFile_3(IFormFile files)
+        /// <summary>
+        /// PC RESIZE
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="membername"></param>
+        /// <param name="sourceFilePath"></param>
+        /// <param name="sourceLineNumber"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> AddResizeImageFile_3(IFormFile files,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
-
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 // 파일 확장자 결정 및 유효성 검사
                 string extension = Path.GetExtension(files.FileName).ToLower();
 
-                if(!Common.ImageAllowedExtensions.Contains(extension))
+                if (!Common.ImageAllowedExtensions.Contains(extension))
                 {
                     extension = ".png"; // 지원되지 않는 확장자는 PNG로 설정
                 }
@@ -257,64 +249,12 @@ namespace FamTec.Server.Services
                 using var image = SKImage.FromBitmap(resizedBitmap);
                 using var data = image.Encode(encodedFormat, 100);
                 return data?.ToArray();
-
-                #region 이전방식
-                // 파일 확장자 결정
-                /*
-                string getExtension = Path.GetExtension(files.FileName);
-                string targetExtension = getExtension switch
-                {
-                    ".png" => ".png",
-                    ".bmp" => ".bmp",
-                    ".jpeg" => ".jpeg",
-                    ".jpg" => ".jpg",
-                    ".gif" => ".gif",
-                    _ => ".png" // 지원되지 않는 확장자는 PNG로 기본설정
-                };
-                
-                // 파일 경로 매핑
-                string All_newFileName = Path.ChangeExtension(files.FileName, targetExtension);
-
-                using (var memoryStream = new MemoryStream())
-                {
-                    await files.CopyToAsync(memoryStream).ConfigureAwait(false);
-                    memoryStream.Position = 0;
-
-                    using (var originalBitmap = SKBitmap.Decode(memoryStream))
-                    {
-                        if (originalBitmap == null)
-                        {
-                            return null;
-                        }
-
-                        // 원본 비율 유지하며 크기 조정
-                        var resizedBitmap = ResizeBitmapWithAspectRatio_2(originalBitmap, 1024, 768); // 비율유지
-
-                        if (resizedBitmap == null)
-                        {
-                            return null;
-                        }
-
-                        // 이미지 인코딩 형식 결정
-                        var encodedFormat = GetEncodedFormat(targetExtension);
-
-                        using (var image = SKImage.FromBitmap(resizedBitmap))
-                        using (var data = image.Encode(encodedFormat, 100)) // PNG 퀄리티 무시
-                        using (var outputStream = new MemoryStream())
-                        {
-                            data.SaveTo(outputStream);
-                            return outputStream.ToArray(); // byte[]로 변환하여 반환
-                        }
-                    }
-                }
-                */
-                #endregion
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
@@ -400,10 +340,17 @@ namespace FamTec.Server.Services
         /// 새로운 파일명 생성
         /// </summary>
         /// <returns></returns>
-        public string SetNewFileName(string useridx, IFormFile files)
+        public string SetNewFileName(string useridx,
+            IFormFile files,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 // 파일 확장자 가져오기 및 소문자로 변환
                 string? extension = Path.GetExtension(files.FileName)?.ToLowerInvariant();
 
@@ -424,9 +371,9 @@ namespace FamTec.Server.Services
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 throw;
             }
@@ -438,10 +385,18 @@ namespace FamTec.Server.Services
         /// <param name="folderpath"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public async Task<byte[]?> GetImageFile(string folderpath, string filename)
+        public async Task<byte[]?> GetImageFile(string folderpath,
+            string filename,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
+
                 // 파일 검색을 효율적으로 수행하기 위해 EnumerateFiles 사용
                 foreach (string file in Directory.EnumerateFiles(folderpath, filename))
                 {
@@ -450,28 +405,12 @@ namespace FamTec.Server.Services
                 }
 
                 return null; // 일치하는 파일이 없으면 null 반환
-                
-                #region 이전방식
-                //// 특정 파일 이름을 가진 파일 검색
-                //string[] files = Directory.GetFiles(folderpath, filename);
-
-                //foreach (string file in files)
-                //{
-                //    if (file.Contains(filename))
-                //    {
-                //        byte[] ImageBytes = await File.ReadAllBytesAsync(file);
-                //        return ImageBytes;
-                //    }
-                //}
-
-                //return null;
-                #endregion
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
@@ -483,10 +422,18 @@ namespace FamTec.Server.Services
         /// <param name="folderpath"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public async Task<Stream?> GetImageFileStreamAsync(string folderpath, string filename)
+        public async Task<Stream?> GetImageFileStreamAsync(string folderpath,
+            string filename,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
+
                 // 특정 파일 이름을 가진 파일 비동기로 검색
                 string[] files = await Task.Run(() => Directory.GetFiles(folderpath, filename));
 
@@ -503,9 +450,9 @@ namespace FamTec.Server.Services
             }
             catch(Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
@@ -518,10 +465,18 @@ namespace FamTec.Server.Services
         /// <param name="folderPath"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public bool DeleteImageFile(string folderPath, string filename)
+        public bool DeleteImageFile(string folderPath,
+            string filename,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
+
                 string filepath = String.Empty;
                 DirectoryInfo di = new DirectoryInfo(folderPath);
                 if (di.Exists)
@@ -551,9 +506,9 @@ namespace FamTec.Server.Services
                 }
             }catch(Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return false;
             }
@@ -564,17 +519,23 @@ namespace FamTec.Server.Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public string? GetExtension(IFormFile file)
+        public string? GetExtension(IFormFile file,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 return Path.GetExtension(file.FileName);
             }
             catch (Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
@@ -587,10 +548,17 @@ namespace FamTec.Server.Services
         /// </summary>
         /// <param name="Images"></param>
         /// <returns></returns>
-        public IFormFile? ConvertFormFiles(byte[] Images, string fileName)
+        public IFormFile? ConvertFormFiles(byte[] Images,
+            string fileName,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 MemoryStream stream = new MemoryStream(Images);
                 
                 IFormFile? formFile = new FormFile(stream, 0, Images.Length, "files", fileName)
@@ -604,26 +572,32 @@ namespace FamTec.Server.Services
             }
             catch(Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }
         }
 
       
-
         /// <summary>
         /// 파일존재 유무 확인 - 있으면 true 없으면 false
         /// </summary>
         /// <param name="Path"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public bool? IsFileExists(string _path, string _fileName)
+        public bool? IsFileExists(string _path,
+            string _fileName,
+            [CallerMemberName] string membername = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
         {
             try
             {
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"\n[INFO] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
+#endif
                 string filePath = Path.Combine(_path, _fileName);
 
                 FileInfo fileInfo = new FileInfo(filePath);
@@ -632,9 +606,9 @@ namespace FamTec.Server.Services
             }
             catch(Exception ex)
             {
-                LogService.LogMessage(ex.ToString());
+                LogService.LogMessage($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #if DEBUG
-                CreateBuilderLogger.ConsoleLog(ex);
+                CreateBuilderLogger.ConsoleText($"{ex.ToString()}\n[ERROR] 호출 메서드이름 : {membername}\n[INFO] 호출 메서드경로 : {sourceFilePath}\n[INFO] 호출 줄 번호 : {sourceLineNumber}");
 #endif
                 return null;
             }

@@ -292,7 +292,6 @@ namespace FamTec.Server.Services.Voc.Hub
                 if (result is not null)
                 {
                     // VOC관련한 폴더 없으면 만들기 - bin/fileserevice/3/Voc/1
-                    //VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, dto.Placeid, result.Id);
                     VocFileFolderPath = Path.Combine(Common.FileServer, dto.Placeid.ToString(), "Voc", result.Id.ToString());
 
                     di = new DirectoryInfo(VocFileFolderPath);
@@ -329,12 +328,7 @@ namespace FamTec.Server.Services.Voc.Hub
                         //byte[] bytes = Encoding.Unicode.GetBytes(result.Id.ToString());
                         //string base64 = Convert.ToBase64String(bytes);
 
-                        /* 테스트 */
-                        // 템플릿 http로 새로만들어야함.
-                        //string url = $"http://125.131.105.172:5245/m/voc/select/{result.Code}";
-
                         string url = $"https://sws.s-tec.co.kr/m/voc/select/{result.Code}";
-
 
                         // 카카오 API 전송
                         // 보낸 USER 휴대폰번호에 전송.
@@ -458,8 +452,6 @@ namespace FamTec.Server.Services.Voc.Hub
                 dto.CreateUser = VocModel.CreateUser; // 민원 신청자 이름
                 dto.Phone = VocModel.Phone; // 민원인 전화번호
 
-
-                //VocFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, BuildingModel.PlaceTbId, VocModel.Id);
                 VocFileFolderPath = Path.Combine(Common.FileServer, BuildingModel.PlaceTbId.ToString(), "Voc", VocModel.Id.ToString());
 
                 di = new DirectoryInfo(VocFileFolderPath);
@@ -604,7 +596,6 @@ namespace FamTec.Server.Services.Voc.Hub
               if(BuildingTB is null)
                   return new ResponseList<VocCommentListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-              //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, BuildingTB!.PlaceTbId, VocTB.Id);
               VocCommentFileFolderPath = Path.Combine(Common.FileServer, BuildingTB!.PlaceTbId.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
               di = new DirectoryInfo(VocCommentFileFolderPath);
@@ -784,7 +775,6 @@ namespace FamTec.Server.Services.Voc.Hub
                 dto.CreateDT = model.CreateDt; // VOC 댓글 작성시간
                 dto.CreateUser = model.CreateUser; // 댓글 작성자
 
-                //VocCommentFileFolderPath = String.Format(@"{0}\\{1}\\Voc\\{2}\\VocComment", Common.FileServer, PlaceTB.Id, VocTB.Id);
                 VocCommentFileFolderPath = Path.Combine(Common.FileServer, PlaceTB.Id.ToString(), "Voc", VocTB.Id.ToString(), "VocComment");
 
                 di = new DirectoryInfo(VocCommentFileFolderPath);

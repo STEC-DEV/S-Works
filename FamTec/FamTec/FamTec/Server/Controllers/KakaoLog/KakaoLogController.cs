@@ -43,16 +43,10 @@ namespace FamTec.Server.Controllers.KakaoLog
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/KakaoSenderResult")]
-        //public async Task<IActionResult> KakaoSenderResult()
         public async Task<IActionResult> KakaoSenderResult([FromQuery]int page, [FromQuery]int pagesize, [FromQuery] DateTime StartDate, [FromQuery] int limit_day)
         {
             try
             {
-                //int page = 1;
-                //int pagesize =50;
-                //DateTime StartDate = DateTime.Now.AddDays(-50);
-                //int limit_day = 100;
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -143,9 +137,6 @@ namespace FamTec.Server.Controllers.KakaoLog
         {
             try
             {
-                //DateTime StartDate = DateTime.Now.AddDays(-10);
-                //DateTime EndDate = DateTime.Now;
-
                 if (HttpContext is null)
                     return BadRequest();
 

@@ -205,12 +205,6 @@ namespace FamTec.Server.Controllers.Voc
             try
             {
 
-                //VocCommentDetailDTO dto = new VocCommentDetailDTO();
-                //dto.VocCommentId = 15;
-                //dto.Content = "수저된내용";
-                //dto.Status = 1;
-
-                //files = files.OrderBy(file => Path.GetFileName(file.FileName)).ToList();
                 if (HttpContext is null) // NULL CHECK
                     return BadRequest();
 

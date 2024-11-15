@@ -48,45 +48,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                //Logger.LogInformation(dto.ToString());
-                //Logger.LogWarning("테스트-------------------------");
-                //return Ok("asdgasdg");
-
-                //UpdateMaintancematerialDTO dto = new UpdateMaintancematerialDTO();
-                //dto.MaintanceID = 1;
-
-                ////추가 출고
-                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
-                //{
-                //    UseID = 20,
-                //    RoomID = 3,
-                //    Num = 400,
-                //    MaterialID = 1
-                //});
-
-                // 재입고
-                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
-                //{ 
-                //    UseID = 21,
-                //    RoomID = 3,
-                //    Num = 95,
-                //    MaterialID = 1,
-                //});
-
-                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
-                //{
-                //    UseID = 1,
-                //    Num = 100,
-                //});
-
-                // 쌩출고
-                //dto.UpdateUsematerialDTO.Add(new UpdateUseMaterialDTO
-                //{
-                //    Num = 100,
-                //    RoomID = 3,
-                //    MaterialID = 1,
-                //});
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -143,17 +104,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                // 같은품목 + 같은공간 에는 한번만
-                //AddMaintanceMaterialDTO dto = new AddMaintanceMaterialDTO();
-                //dto.MaintanceID = 142;
-                //dto.MaterialList = new List<MaterialDTO>();
-                //dto.MaterialList.Add(new MaterialDTO
-                //{
-                //    MaterialID = 22,
-                //    RoomID = 24,
-                //    Num = 5,
-                //});
-                
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -226,12 +176,7 @@ namespace FamTec.Server.Controllers.Maintenance
             {
                 if (dto.MaintanceID == 0)
                     return BadRequest();
-                    
-                //UpdateMaintenanceDTO dto = new UpdateMaintenanceDTO();
-                //dto.Id = 101;
-                //dto.Name = "작업수정";
-                //dto.Worker = "용용";
-
+              
                 if (files is not null)
                 {
                     if (files.Length > Common.MEGABYTE_10)
@@ -343,41 +288,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                // DTO의 Inventory에 역직렬화된 데이터를 할당
-                //AddMaintenanceDTO dto = new AddMaintenanceDTO();
-                //dto.Name = "유지보수이력_1";
-                //dto.Type = 0;
-                //dto.Worker = "테스트";
-                ////dto.TotalPrice = 30 * 500;
-                //dto.FacilityID = 1;
-                //dto.WorkDT = DateTime.Now;
-
-                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                //{
-                //    InOut = 0,
-                //    MaterialID = 10,
-                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now,
-                //        RoomID = 2,
-                //        Num = 2,
-                //        Note = "출고등록"
-                //    }
-                //});
-                //dto.Inventory.Add(new Shared.Server.DTO.Store.InOutInventoryDTO
-                //{
-                //    InOut = 0,
-                //    MaterialID = 10,
-                //    AddStore = new Shared.Server.DTO.Store.AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now,
-                //        RoomID = 3,
-                //        Num = 2,
-                //        Note = "출고등록"
-                //    }
-                //});
-
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -520,15 +430,10 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpPost]
         [Route("sign/DeleteMaintenanceList")]
-        //public async Task<IActionResult> DeleteMaintenanceList()
         public async Task<IActionResult> DeleteMaintenanceList([FromBody] DeleteMaintanceDTO2 dto)
         {
             try
             {
-                //DeleteMaintanceDTO2 dto = new DeleteMaintanceDTO2();
-                //dto.Note = "테스트 유지보수삭제_20240913";
-                //dto.MaintanceID.Add(100);
-                
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -572,13 +477,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                //DeleteMaintanceDTO delInfo = new DeleteMaintanceDTO();
-                //delInfo.MaintanceID = 113;
-                //delInfo.Note = "출고취소_테스트2";
-                //delInfo.UseMaintenenceIDs.Add(62);
-                //delInfo.UseMaintenenceIDs.Add(63);
-
-
                 if (HttpContext is null)
                     return BadRequest();
                 
@@ -628,11 +526,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                //DateTime StartDate = DateTime.Now.AddDays(-30);
-                //DateTime EndDate = DateTime.Now;
-                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화","보안","기타" };
-                //List<int> type = new List<int>() { 0,1}; // 전체
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -682,9 +575,6 @@ namespace FamTec.Server.Controllers.Maintenance
         {
             try
             {
-                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
-                //List<int> type = new List<int>() {  0,1 };
-                
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -725,21 +615,12 @@ namespace FamTec.Server.Controllers.Maintenance
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetHistorySearchList")]
-        //public async Task<IActionResult> GetHistorySearchList()
         public async Task<IActionResult> GetHistorySearchList([FromQuery] int searchType, [FromQuery] List<string> category, [FromQuery] List<int> type, [FromQuery] string? searchdate, [FromQuery] DateTime? StartDate, [FromQuery] DateTime? EndDate)
         {
             try
             {
                 if (HttpContext is null)
                     return BadRequest();
-
-                //int searchType = 1;
-                //List<string> category = new List<string>() { "기계", "전기", "승강", "소방", "건축", "통신", "미화", "보안", "기타" };
-                //List<int> type = new List<int>() {  0,1 };
-                
-                //string searchdate = "2024-10";
-                //DateTime? StartDate = DateTime.Now.AddDays(-50);
-                //DateTime? EndDate = DateTime.Now;
 
                 if (searchType == 0) // 월간
                 {

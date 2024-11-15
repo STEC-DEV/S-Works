@@ -93,14 +93,7 @@ namespace FamTec.Server.Repository.Inventory
                             Inventorytb.MaterialTbId = InventoryDTO.MaterialID!.Value;
                             await context.InventoryTbs.AddAsync(Inventorytb).ConfigureAwait(false);
 
-                            //int thisCurrentNum = await context.InventoryTbs
-                            //    .Where(m => m.DelYn != true &&
-                            //                m.MaterialTbId == InventoryDTO.MaterialID &&
-                            //                m.RoomTbId == InventoryDTO.AddStore.RoomID &&
-                            //                m.PlaceTbId == placeid)
-                            //    .SumAsync(m => m.Num)
-                            //    .ConfigureAwait(false);
-
+                            // 현재 개수를 가져와야함.
                             int thisCurrentNum = await context.InventoryTbs
                                 .Where(m => m.DelYn != true &&
                                             m.MaterialTbId == InventoryDTO.MaterialID &&
@@ -290,114 +283,7 @@ namespace FamTec.Server.Repository.Inventory
 #endif
                 throw;
             }
-
-            #region 개선전 코드
-            //try
-            //{
-            //    List<StoreTb>? StoreList = await context.StoreTbs
-            //        .Where(m => materialid.Contains(m.MaterialTbId) &&
-            //        m.PlaceTbId == placeid &&
-            //        m.CreateDt >= startDate &&
-            //        m.CreateDt <= endDate)
-            //        .OrderBy(m => m.CreateDt)
-            //        .ToListAsync()
-            //        .ConfigureAwait(false);
-
-            //    if (StoreList is null || !StoreList.Any())
-            //        return null;
-
-            //    List<PeriodicDTO>? dtoList = (from StoreTB in StoreList
-            //                                 join MaterialTB in context.MaterialTbs.Where(m => m.DelYn != true)
-            //                                 on StoreTB.MaterialTbId equals MaterialTB.Id
-            //                                 group new { StoreTB, MaterialTB } by new
-            //                                 {
-            //                                     StoreTB.MaterialTbId,
-            //                                     MaterialTB.Code,
-            //                                     MaterialTB.Name
-            //                                 } into g
-            //                                 select new PeriodicDTO
-            //                                 {
-            //                                     ID = g.Key.MaterialTbId,
-            //                                     Code = g.Key.Code,
-            //                                     Name = g.Key.Name,
-            //                                     InventoryList = g.Select(x => new InventoryRecord
-            //                                     {
-            //                                         INOUT_DATE = x.StoreTB.CreateDt,  // 거래일
-            //                                         Type = x.StoreTB.Inout,           // 입출고 구분
-            //                                         ID = x.StoreTB.MaterialTbId, // 품목코드
-            //                                         Code = x.MaterialTB.Code,
-            //                                         Name = x.MaterialTB.Name,    // 품목명
-            //                                         MaterialUnit = x.MaterialTB.Unit,    // 품목 단위
-            //                                         InOutNum = x.StoreTB.Num,            // 입출고 수량
-            //                                         InOutUnitPrice = x.StoreTB.UnitPrice, // 입출고 단가
-            //                                         InOutTotalPrice = x.StoreTB.TotalPrice, // 총 가격
-            //                                         CurrentNum = x.StoreTB.CurrentNum,   // 시점 재고 수량
-            //                                         Note = x.StoreTB.Note,                // 비고
-            //                                         MaintanceId = x.StoreTB.MaintenenceHistoryTbId // 유지보수 이력 ID
-            //                                     }).OrderBy(r => r.INOUT_DATE).ToList() // Sort by 거래일
-            //                                 })
-            //                 .OrderBy(dto => dto.ID)
-            //                 .ToList();
-
-            //    if (dtoList is not null && dtoList.Any())
-            //    {
-            //        foreach(PeriodicDTO Periodic in dtoList)
-            //        {
-            //            if (Periodic.InventoryList is [_, ..])
-            //            {
-            //                foreach (InventoryRecord Record in Periodic.InventoryList)
-            //                {
-            //                    if (Record.MaintanceId is not null) // 유지보수 이력 ID가 있는경우 얘는 유지보수용으로 입출고 것임.
-            //                    {
-            //                        MaintenenceHistoryTb? HistoryTB = await context.MaintenenceHistoryTbs.FirstOrDefaultAsync(m => m.Id == Record.MaintanceId);
-            //                        if (HistoryTB is not null)
-            //                        {
-            //                            FacilityTb? FacilityTB = await context.FacilityTbs.FirstOrDefaultAsync(m => m.Id == HistoryTB.FacilityTbId);
-            //                            if (FacilityTB is not null)
-            //                            {
-            //                                if (FacilityTB.Category == "기계")
-            //                                    Record.Url = $"facility/machine/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "전기")
-            //                                    Record.Url = $"facility/electronic/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "승강")
-            //                                    Record.Url = $"facility/lift/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "소방")
-            //                                    Record.Url = $"facility/fire/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "건축")
-            //                                    Record.Url = $"facility/construct/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "통신")
-            //                                    Record.Url = $"facility/network/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "미화")
-            //                                    Record.Url = $"facility/beauty/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else if (FacilityTB.Category == "보안")
-            //                                    Record.Url = $"facility/security/{FacilityTB.Id}/maintenance/{HistoryTB.Id}";
-            //                                else
-            //                                    Record.Url = String.Empty;
-            //                            }
-
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //        return dtoList;
-            //    }
-            //    else
-            //        return new List<PeriodicDTO>();
-            //}
-            //catch (MySqlException mysqlEx)
-            //{
-            //    LogService.LogMessage($"MariaDB 오류 발생: {mysqlEx}");
-            //    throw;
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogService.LogMessage(ex.ToString());
-            //    throw;
-            //}
-            #endregion
         }
-
 
 
         // 유지보수 URL 생성 함수
@@ -435,7 +321,6 @@ namespace FamTec.Server.Repository.Inventory
                 throw;
             }
         }
-
 
         /// <summary>
         /// 품목별 창고별 재고현황
@@ -983,14 +868,6 @@ namespace FamTec.Server.Repository.Inventory
                                                 return ReturnResult;
                                             }
 
-                                            //CurrentTotalNum = await context.InventoryTbs
-                                            //                    .Where(m => m.DelYn != true &&
-                                            //                                m.MaterialTbId == model.MaterialID &&
-                                            //                                m.RoomTbId == model.AddStore.RoomID &&
-                                            //                                m.PlaceTbId == placeid)
-                                            //                    .SumAsync(m => m.Num)
-                                            //                    .ConfigureAwait(false);
-
                                             CurrentTotalNum = await context.InventoryTbs
                                                                .Where(m => m.DelYn != true &&
                                                                            m.MaterialTbId == model.MaterialID &&
@@ -1053,13 +930,6 @@ namespace FamTec.Server.Repository.Inventory
                                            .SumAsync(m => m.Num)
                                            .ConfigureAwait(false);
 
-                                            //CurrentTotalNum = await context.InventoryTbs
-                                            //.Where(m => m.DelYn != true &&
-                                            //            m.MaterialTbId == model.MaterialID &&
-                                            //            m.RoomTbId == model.AddStore.RoomID &&
-                                            //            m.PlaceTbId == placeid)
-                                            //.SumAsync(m => m.Num)
-                                            //.ConfigureAwait(false);
 
                                             StoreTb StoreTB = new StoreTb();
                                             StoreTB.Inout = 0;
@@ -1475,15 +1345,6 @@ namespace FamTec.Server.Repository.Inventory
                     return 0;
 
                 return result.CurrentNum;
-
-                //var query = context.StoreTbs
-                //    .Where(s => s.PlaceTbId == placeid && s.MaterialTbId == materialid)
-                //    .Where(s => s.Id == context.StoreTbs
-                //        .Where(sub => sub.PlaceTbId == placeid && sub.MaterialTbId == materialid
-                //            && sub.Id < context.StoreTbs
-                //                .Where(inner => inner.PlaceTbId == placeid && inner.MaterialTbId == materialid && inner.CreateDt > StartDate)
-                //                .Min(inner => (int?)inner.Id) ?? int.MaxValue)
-                //        .Max(sub => (int?)sub.Id) ?? int.MinValue);
             }
             catch(Exception ex)
             {

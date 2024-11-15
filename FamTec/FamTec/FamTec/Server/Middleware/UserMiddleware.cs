@@ -12,14 +12,12 @@ namespace FamTec.Server.Middleware
         private ITokenComm TokenComm;
         private readonly string? _authSigningKey;
 
-
         public UserMiddleware(RequestDelegate _next, ITokenComm _tokencomm, IConfiguration configuration)
         {
             this.Next = _next;
             this.TokenComm = _tokencomm;
             this._authSigningKey = configuration["JWT:AuthSigningKey"];
         }
-
 
         public async Task InvokeAsync(HttpContext context)
         {
@@ -386,6 +384,5 @@ namespace FamTec.Server.Middleware
                 return;
             }
         }
-
     }
 }

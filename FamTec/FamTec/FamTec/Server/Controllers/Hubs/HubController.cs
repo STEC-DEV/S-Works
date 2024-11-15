@@ -19,14 +19,10 @@ namespace FamTec.Server.Controllers.Hubs
         private readonly ICommService CommService;
         private readonly ConsoleLogService<HubController> CreateBuilderLogger;
         
-        // 임시
-        //private readonly AuthCodeService AuthCodeService;
-
         public HubController(
             IHubService _hubservice,
             ILogService _logservice,
             ICommService _commservice,
-            //AuthCodeService _authcodeservice,
             ConsoleLogService<HubController> _createbuilderlogger)
         {
             this.HubService = _hubservice;
@@ -34,20 +30,7 @@ namespace FamTec.Server.Controllers.Hubs
             this.LogService = _logservice;
             this.CommService = _commservice;
             this.CreateBuilderLogger = _createbuilderlogger;
-
-            //this.AuthCodeService = _authcodeservice;
         }
-
-        /*
-        [HttpGet]
-        [Route("temp")]
-        public async Task<IActionResult> Temp()
-        {
-            var temp = await AuthCodeService.MemoryChacheCount();
-
-            return Ok(temp);
-        }
-        */
 
         /// <summary>
         /// 인증코드 발급
@@ -68,9 +51,6 @@ namespace FamTec.Server.Controllers.Hubs
 
                 if (String.IsNullOrWhiteSpace(PhoneNumber))
                     return NoContent();
-
-                //if(String.IsNullOrWhiteSpace(dto.UserName) || String.IsNullOrWhiteSpace(dto.PhoneNumber))
-                //    return NoContent();
 
                 ResponseUnit<bool> model = await HubService.AddAuthCodeService(PlaceId, BuildingId, PhoneNumber);
                 if (model is null)

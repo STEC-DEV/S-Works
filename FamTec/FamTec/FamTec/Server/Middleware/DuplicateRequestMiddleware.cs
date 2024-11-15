@@ -104,6 +104,5 @@ namespace FamTec.Server.Middleware
             var hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
-
     }
 }

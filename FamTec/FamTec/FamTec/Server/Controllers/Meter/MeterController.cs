@@ -35,18 +35,11 @@ namespace FamTec.Server.Controllers.Meter
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        //[HttpGet]
         [Route("sign/AddMeter")]
-        //public async Task<IActionResult> AddMeter()
         public async Task<IActionResult> AddMeter([FromBody]AddMeterDTO dto)
         {
             try
             {
-                //AddMeterDTO dto = new AddMeterDTO();
-                //dto.Name = "B검침기";
-                //dto.Category = "전기";
-                //dto.ContractTbId = 1;
-
                 if (HttpContext is null)
                     return BadRequest();
 

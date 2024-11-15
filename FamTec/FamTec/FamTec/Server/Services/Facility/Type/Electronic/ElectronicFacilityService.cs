@@ -427,8 +427,7 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     NewFileName = FileService.SetNewFileName(UserIdx, files);
                 }
 
-                // 전기설비 관련한 폴더 없으면 만들기 
-                //ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeidx);
+                // 전기설비 관련한 폴더 없으면 만들기
                 ElectronicFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Electronic");
 
                 di = new DirectoryInfo(ElectronicFileFolderPath);
@@ -715,7 +714,6 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //ElectronicFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Electronic", Common.FileServer, placeid);
                 ElectronicFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Electronic");
 
                 di = new DirectoryInfo(ElectronicFileFolderPath);
@@ -850,7 +848,6 @@ namespace FamTec.Server.Services.Facility.Type.Electronic
                 return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
 
         public async Task<ResponseUnit<bool?>> DeleteElectronicFacilityService(HttpContext context, List<int> delIdx)
         {

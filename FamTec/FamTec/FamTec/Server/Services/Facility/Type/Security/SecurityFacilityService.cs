@@ -7,7 +7,6 @@ using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.Floor;
 using ClosedXML.Excel;
 using FamTec.Shared.Server.DTO.Excel;
-using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 
 namespace FamTec.Server.Services.Facility.Type.Security
 {
@@ -419,7 +418,6 @@ namespace FamTec.Server.Services.Facility.Type.Security
                 }
 
                 // 전기설비 관련한 폴더 없으면 만들기 
-                //SecurityFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Security", Common.FileServer, placeidx);
                 SecurityFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Security");
 
                 di = new DirectoryInfo(SecurityFileFolderPath);
@@ -701,7 +699,6 @@ namespace FamTec.Server.Services.Facility.Type.Security
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //SecurityFileFolderPath = String.Format(@"{0}\\{1}\\Facility\\Security", Common.FileServer, placeid);
                 SecurityFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Security");
 
                 di = new DirectoryInfo(SecurityFileFolderPath);

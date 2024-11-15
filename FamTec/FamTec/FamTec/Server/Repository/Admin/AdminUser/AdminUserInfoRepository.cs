@@ -599,7 +599,6 @@ namespace FamTec.Server.Repository.Admin.AdminUser
 
                         // 이후 데이터베이스 업데이트
                         context.UsersTbs.Update(UserInfo);
-                        //bool UpdateImageResult = false;
 
                         bool UpdateImageResult = await context.SaveChangesAsync().ConfigureAwait(false) > 0 ? true : false;
                         if (UpdateImageResult)

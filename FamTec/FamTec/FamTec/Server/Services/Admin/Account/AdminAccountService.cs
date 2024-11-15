@@ -182,7 +182,6 @@ namespace FamTec.Server.Services.Admin.Account
                 var token = new JwtSecurityToken(
                     issuer: Configuration["JWT:Issuer"],
                     audience: Configuration["JWT:Audience"],
-                    //expires: DateTime.Now.AddSeconds(10),
                     expires: DateTime.Now.AddDays(1),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
@@ -270,7 +269,6 @@ namespace FamTec.Server.Services.Admin.Account
                 model.CreateDt = ThisTime;
                 model.CreateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.UpdateDt = ThisTime;
-                //model.UpdateUser = creater;
                 model.UpdateUser = !String.IsNullOrWhiteSpace(creater) ? creater.Trim() : creater;
                 model.Image = files is not null ? NewFileName : null;
                 
@@ -329,7 +327,6 @@ namespace FamTec.Server.Services.Admin.Account
                 return new ResponseUnit<int?> { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
-
 
         /// <summary>
         /// 관리자 삭제
@@ -424,7 +421,6 @@ namespace FamTec.Server.Services.Admin.Account
                 if(dto is null)
                     return new ResponseUnit<DManagerDTO>() { message = "잘못된 요청입니다.", data = new DManagerDTO(), code = 404 };
 
-                //string AdminFileName = String.Format(@"{0}\\Administrator", Common.FileServer);
                 string AdminFileName = Path.Combine(Common.FileServer, "Administrator");
 
                 di = new DirectoryInfo(AdminFileName);

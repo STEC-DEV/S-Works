@@ -86,12 +86,6 @@ namespace FamTec.Server.Controllers.UseMaintenence
         {
             try
             {
-                //UpdateMaintenanceMaterialDTO dto = new UpdateMaintenanceMaterialDTO();
-                //dto.MaintanceID = 142;// 유지보수 인덱스
-                //dto.UseMaintanceID = 80; // 사용자재 테이블 인덱스
-                //dto.Num = 10;
-                
-
                 if (HttpContext is null)
                     return BadRequest();
 

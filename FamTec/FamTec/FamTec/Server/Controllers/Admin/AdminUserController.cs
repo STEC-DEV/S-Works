@@ -313,27 +313,11 @@ namespace FamTec.Server.Controllers.Admin
         [Authorize(Roles = "SystemManager, Master, Manager")]
         [HttpPut]
         [Route("sign/UpdateManager")]
-        //public async Task<IActionResult> UpdateManager()
 
         public async Task<IActionResult> UpdateManager([FromBody] UpdateManagerDTO dto)
         {
             try
             {
-                //UpdateManagerDTO dto = new UpdateManagerDTO();
-                //dto.AdminIndex = 10;
-                //dto.Name = "용";
-                //dto.DepartmentId = 5;
-                //dto.UserId = "Master";
-                //dto.Password = "123";
-                //dto.PlaceList.Add(new AdminPlaceDTO
-                //{
-                //    Id = 3
-                //});
-                //dto.PlaceList.Add(new AdminPlaceDTO
-                //{
-                //    Id = 11
-                //});
-               
 
                 if (HttpContext is null)
                     return BadRequest();

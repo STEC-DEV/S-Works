@@ -57,7 +57,6 @@ namespace FamTec.Server.Hubs
 #if DEBUG
                 CreateBuilderLogger.ConsoleText("그룹추가 :" + _connectionGroups.Count + "/" + Context.ConnectionId + "/" + roomName + "Join");
 #endif
-                //await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Join Success");
             }
             catch(Exception ex)
             {
@@ -95,8 +94,6 @@ namespace FamTec.Server.Hubs
                         }
                     }
                 }
-
-                //await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} {roomName} Remove Success");
             }
             catch (Exception ex)
             {
@@ -106,7 +103,6 @@ namespace FamTec.Server.Hubs
 #endif
             }
         }
-
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
@@ -154,7 +150,5 @@ namespace FamTec.Server.Hubs
 #endif
             }
         }
-
-
     }
 }

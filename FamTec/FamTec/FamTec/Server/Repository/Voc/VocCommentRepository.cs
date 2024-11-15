@@ -167,7 +167,6 @@ namespace FamTec.Server.Repository.Voc
 #endif
                 // 파일업로드 실패를 대비해서 Throw하면 실행이 종료되니 return false로 흐름을 이어감.
                 return false;
-                //throw new ArgumentNullException();
             }
         }
     }

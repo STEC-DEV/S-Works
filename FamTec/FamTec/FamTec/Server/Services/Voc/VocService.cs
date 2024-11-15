@@ -71,7 +71,6 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        //public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division, string searchdate)
         public async Task<ResponseList<AllVocListDTO>> GetVocList(HttpContext context, List<int> type, List<int> status, List<int> buildingid, List<int> division)
         {
             try
@@ -83,16 +82,6 @@ namespace FamTec.Server.Services.Voc
                 if (String.IsNullOrWhiteSpace(placeid))
                     return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                /*
-                if (String.IsNullOrWhiteSpace(searchdate))
-                    return new ResponseList<AllVocListDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
-
-                string[] splitDate = searchdate.Split('-');
-                string year = splitDate[0];
-                string month = splitDate[1].PadLeft(2, '0'); // 한 자리 월을 두 자리로 맞추기 위해 앞에 0 추가
-                */
-
-                //List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid, division, Convert.ToInt32(year), Convert.ToInt32(month)).ConfigureAwait(false);
                 List<AllVocListDTO>? model = await VocInfoRepository.GetVocList(Convert.ToInt32(placeid), type, status, buildingid, division).ConfigureAwait(false);
                 if (model is [_, ..])
                     return new ResponseList<AllVocListDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
@@ -285,7 +274,6 @@ namespace FamTec.Server.Services.Voc
                 dto.CreateUser = model.CreateUser; // 민원인
                 dto.Phone = model.Phone; // 민원인 전화번호
 
-                //string VocFileName = String.Format(@"{0}\\{1}\\Voc\\{2}", Common.FileServer, PlaceIdx, model.Id);
                 string VocFileName = Path.Combine(Common.FileServer, PlaceIdx.ToString(), "Voc", model.Id.ToString());
                 di = new DirectoryInfo(VocFileName);
                 if (!di.Exists) di.Create();

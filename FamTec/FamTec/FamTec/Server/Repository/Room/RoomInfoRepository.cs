@@ -42,11 +42,9 @@ namespace FamTec.Server.Repository.Room
                 bool FacilityCheck = await context.FacilityTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool InventoryCheck = await context.InventoryTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool MaterialCheck = await context.MaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
-                //bool StoreCheck = await context.StoreTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
                 bool UseMaintenenceMartialCheck = await context.UseMaintenenceMaterialTbs.AnyAsync(m => m.RoomTbId == roomid && m.DelYn != true).ConfigureAwait(false);
 
                 return FacilityCheck || InventoryCheck || MaterialCheck || UseMaintenenceMartialCheck;
-                //return FacilityCheck || InventoryCheck || MaterialCheck || StoreCheck || UseMaintenenceMartialCheck;
             }
             catch (MySqlException ex)
             {
@@ -109,8 +107,6 @@ namespace FamTec.Server.Repository.Room
                 throw;
             }
         }
-
-
 
         /// <summary>
         /// 층에 해당하는 공간 List 반환
@@ -505,30 +501,6 @@ namespace FamTec.Server.Repository.Room
                             else
                                 return null;
                 #endregion
-                /*
-                List<PlaceRoomListDTO>? model = BuildingList.Select(building => new PlaceRoomListDTO
-                {
-                    Id = building.Id,
-                    Name = building.Name,
-                    FloorList = FloorList.Where(floor => floor.BuildingTbId == building.Id)
-                         .Select(floor => new BuildingFloor
-                         {
-                             Id = floor.Id,
-                             Name = floor.Name,
-                             RoomList = RoomList.Where(room => room.FloorTbId == floor.Id)
-                                                .Select(room => new FloorRoom
-                                                {
-                                                    Id = room.Id,
-                                                    Name = room.Name
-                                                }).ToList()
-                         }).ToList()
-                }).ToList();
-
-                if (model is [_, ..])
-                    return model;
-                else
-                    return null;
-                */
             }
             catch (MySqlException ex)
             {
@@ -547,7 +519,6 @@ namespace FamTec.Server.Repository.Room
                 throw;
             }
         }
-
 
         /// <summary>
         /// 사업장에 해당하는 전체 공간 List 반환

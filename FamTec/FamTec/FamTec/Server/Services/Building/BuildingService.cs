@@ -313,7 +313,6 @@ namespace FamTec.Server.Services.Building
                 string NewFileName = files is not null ? FileService.SetNewFileName(UserIdx, files) : String.Empty;
 
                 // 건물 관련한 폴더 없으면 만들기
-                //PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeidx.ToString()); // 사업장
                 PlaceFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Building");
 
                 di = new DirectoryInfo(PlaceFileFolderPath);
@@ -662,7 +661,6 @@ namespace FamTec.Server.Services.Building
                     SeptictankCapacity = model.SepticTankCapacity, // 정화조 용량
                 };
 
-                //string PlaceFileName = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
                 string PlaceFileName = Path.Combine(Common.FileServer, placeid.ToString(), "Building");
 
                 di = new DirectoryInfo(PlaceFileName);
@@ -788,7 +786,6 @@ namespace FamTec.Server.Services.Building
                 if (String.IsNullOrWhiteSpace(creater) || String.IsNullOrWhiteSpace(placeid) || String.IsNullOrWhiteSpace(UserIdx))
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
-                //string PlaceFileFolderPath = String.Format(@"{0}\\{1}\\Building", Common.FileServer, placeid.ToString());
                 string PlaceFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Building");
 
                 di = new DirectoryInfo(PlaceFileFolderPath);

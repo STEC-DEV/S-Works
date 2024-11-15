@@ -189,6 +189,7 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                     "설치년월",
                     "교체년월"
                 };
+
                 worksheet2 = CreateCell_2(worksheet2, title2);
 
                 using MemoryStream xlsStream = new();
@@ -381,7 +382,11 @@ namespace FamTec.Server.Services.Facility.Type.Lift
             }
             catch(Exception ex)
             {
-                return null;
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
             }
         }
 
@@ -422,7 +427,6 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                 }
 
                 // 기계설비 관련한 폴더 없으면 만들기
-                //LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeidx.ToString());
                 LiftFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Lift");
 
                 di = new DirectoryInfo(LiftFileFolderPath);
@@ -706,7 +710,6 @@ namespace FamTec.Server.Services.Facility.Type.Lift
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //LiftFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Lift", Common.FileServer, placeid.ToString());
                 LiftFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Lift");
 
                 di = new DirectoryInfo(LiftFileFolderPath);

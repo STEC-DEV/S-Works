@@ -430,8 +430,7 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
                     NewFileName = FileService.SetNewFileName(UserIdx, files);
                 }
 
-                // 전기설비 관련한 폴더 없으면 만들기 
-                //ConstructFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Construct", Common.FileServer, placeidx);
+                // 전기설비 관련한 폴더 없으면 만들기
                 ConstructFileFolderPath = Path.Combine(Common.FileServer, placeidx.ToString(), "Facility", "Construct");
 
                 di = new DirectoryInfo(ConstructFileFolderPath);
@@ -708,7 +707,6 @@ namespace FamTec.Server.Services.Facility.Type.Contstruct
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 // 이미지 변경 or 삭제
-                //ConstructFileFolderPath = string.Format(@"{0}\\{1}\\Facility\\Construct", Common.FileServer, placeid);
                 ConstructFileFolderPath = Path.Combine(Common.FileServer, placeid.ToString(), "Facility", "Construct");
 
                 di = new DirectoryInfo(ConstructFileFolderPath);

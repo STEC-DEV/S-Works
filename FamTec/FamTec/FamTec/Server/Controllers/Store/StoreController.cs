@@ -40,36 +40,6 @@ namespace FamTec.Server.Controllers.Store
         {
             try
             {
-                //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-                //dto.Add(new InOutInventoryDTO
-                //{
-                //    InOut = 1,
-                //    MaterialID = 10,
-                //    AddStore = new AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now.AddDays(-10),
-                //        Num = 100,
-                //        RoomID = 2,
-                //        UnitPrice = 3000,
-                //        TotalPrice = 100*3000,
-                //        Note = "입고데이터_1"
-                //    }
-                //});
-                //dto.Add(new InOutInventoryDTO
-                //{
-                //    InOut = 1,
-                //    MaterialID = 11,
-                //    AddStore = new AddStoreDTO()
-                //    {
-                //        InOutDate = DateTime.Now.AddDays(-20),
-                //        Num = 135,
-                //        RoomID = 3,
-                //        UnitPrice = 500,
-                //        TotalPrice = 300 * 500,
-                //        Note = "입고데이터_2"
-                //    }
-                //});
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -81,8 +51,6 @@ namespace FamTec.Server.Controllers.Store
                         return NoContent();
                     if(InOutDTO.AddStore!.RoomID is null)
                         return NoContent();
-                    //if (InOutDTO.AddStore!.UnitPrice is null)
-                        //return NoContent();
                     if(InOutDTO.AddStore!.Num is null)
                         return NoContent();
                 }
@@ -123,34 +91,6 @@ namespace FamTec.Server.Controllers.Store
         {
             try
             {
-               //List<InOutInventoryDTO> dto = new List<InOutInventoryDTO>();
-               //dto.Add(new InOutInventoryDTO()
-               //{
-               //InOut = 0,
-               //MaterialID = 22,
-               //AddStore = new AddStoreDTO()
-               //{
-               //InOutDate = DateTime.Now,
-               //Note = "출고데이터_1",
-               //Num = 15,
-               //RoomID = 24,
-               //}
-               //});
-
-
-               //dto.Add(new InOutInventoryDTO()
-               //{
-               //InOut = 0,
-               //MaterialID = 22,
-               //AddStore = new AddStoreDTO()
-               //{
-               //InOutDate = DateTime.Now,
-               //Note = "출고데이터_1",
-               //Num = 15,
-               //RoomID = 24,
-               //}
-               //});
-
                 if (HttpContext is null)
                     return BadRequest();
 
@@ -374,15 +314,10 @@ namespace FamTec.Server.Controllers.Store
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetPeriodicRecord")]
-        public async Task<IActionResult> PeriodicRecord()
-        //public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
+        public async Task<IActionResult> PeriodicRecord([FromQuery] List<int> materialid, [FromQuery]DateTime Startdate, [FromQuery]DateTime EndDate)
         {
             try
             {
-                List<int> materialid = new List<int>() { 1};
-                DateTime Startdate = DateTime.Now.AddDays(-13);
-                DateTime EndDate = DateTime.Now;
-
                 if (HttpContext is null)
                     return BadRequest();
 

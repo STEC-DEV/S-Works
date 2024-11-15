@@ -36,8 +36,7 @@
                 Console.ForegroundColor = ConsoleColor.Red;
 
                 // 로그 출력
-                Console.WriteLine($"[Error] {DateTime.Now}: {ex.Message}");
-
+                Console.WriteLine($"[ERROR] {DateTime.Now}: {ex.Message}");
                 Console.ResetColor();
 
             }
@@ -67,7 +66,6 @@
                 }
 
                 // 월
-                //path = string.Format(@"{0}/{1}", path, thisday.Month);
                 path = Path.Combine(path, thisday.Month.ToString());
                 di = new DirectoryInfo(path);
 

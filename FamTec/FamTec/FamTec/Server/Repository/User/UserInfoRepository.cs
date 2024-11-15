@@ -39,8 +39,6 @@ namespace FamTec.Server.Repository.User
             try
             {
                 bool AdminCheck = await context.AdminTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true).ConfigureAwait(false);
-                //bool AlarmCheck = await context.AlarmTbs.AnyAsync(m => m.UsersTbId == id && m.DelYn != true).ConfigureAwait(false);
-                //bool CommentCheck = await context.CommentTbs.AnyAsync(m => m.UserTbId == id && m.DelYn != true).ConfigureAwait(false);
 
                 return AdminCheck;
             }

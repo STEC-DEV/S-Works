@@ -1,4 +1,6 @@
-﻿namespace FamTec.Server.Services
+﻿using System.Runtime.CompilerServices;
+
+namespace FamTec.Server.Services
 {
     public interface ILogService
     {

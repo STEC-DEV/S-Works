@@ -151,7 +151,6 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="placeid"></param>
         /// <returns></returns>
         public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division)
-        //public async Task<List<AllVocListDTO>?> GetVocList(int placeid, List<int> type, List<int> status, List<int> buildingid, List<int> division, int searchyear, int searchmonth)
         {
             try
             {
@@ -159,9 +158,6 @@ namespace FamTec.Server.Repository.Voc
                     status.Contains(m.Status) && 
                     division.Contains(m.Division!.Value) &&
                     buildingid.Contains(m.BuildingTbId))
-                    //&&
-                     //m.CreateDt.Year == searchyear &&
-                     //m.CreateDt.Month == searchmonth)
                     .OrderBy(m => m.CreateDt)
                     .ToListAsync()
                     .ConfigureAwait(false);
