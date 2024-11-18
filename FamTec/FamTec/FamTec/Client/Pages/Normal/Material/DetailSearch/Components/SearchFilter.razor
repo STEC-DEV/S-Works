@@ -13,7 +13,8 @@
         <Button Name="조회" Width=true Type="0" OnClick="OnSelect" />
     </div>
     <div class="content">
-        <div class="inputmonth">
+        @* div class="inputmonth" *@
+        <div class="filter-item">
             <InputMonth Label="조회기간" Row=true StartDT="startDt" EndDT="endDt" ValueChanged="@OnValueChanged" />
         </div>
         <div class="filter-item">

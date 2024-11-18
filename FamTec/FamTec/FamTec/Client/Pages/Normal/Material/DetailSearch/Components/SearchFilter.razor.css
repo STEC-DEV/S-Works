@@ -40,10 +40,11 @@
     grid-column-gap : var(--wide-pd);
 }
 
-.filter-item{
-    height:100%;
-    display : flex;
-    gap : var(--half-pd);
+.filter-item {
+    height: 100%;
+    display: flex;
+    gap: var(--half-pd);
+    overflow: hidden;
 }
 
 .inputcheck{

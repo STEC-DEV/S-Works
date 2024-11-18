@@ -10749,6 +10749,7 @@ svg:hover[b-5q32ql2i5a] {
 
 .half .display-row[b-bjmstyaofj]{
     align-items:center;
+    height:100%;
 }
 /* /Pages/Normal/Location/LocationMain/LocationMain.razor.rz.scp.css */
 .location-container[b-v00ot3xtdx]{
@@ -11245,10 +11246,11 @@ svg:hover[b-5q32ql2i5a] {
     grid-column-gap : var(--wide-pd);
 }
 
-.filter-item[b-w2uu1y7z7h]{
-    height:100%;
-    display : flex;
-    gap : var(--half-pd);
+.filter-item[b-w2uu1y7z7h] {
+    height: 100%;
+    display: flex;
+    gap: var(--half-pd);
+    overflow: hidden;
 }
 
 .inputcheck[b-w2uu1y7z7h]{
