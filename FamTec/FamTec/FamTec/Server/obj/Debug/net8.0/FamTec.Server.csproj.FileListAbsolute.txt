@@ -213,3 +213,8 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\ref\FamTec.Server.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\PFX\sws.s-tec.co.kr_pfx.pfx
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\FamTec.Client.staticwebassets.endpoints.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\FamTec.Server.staticwebassets.endpoints.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\staticwebassets\msbuild.FamTec.Server.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
