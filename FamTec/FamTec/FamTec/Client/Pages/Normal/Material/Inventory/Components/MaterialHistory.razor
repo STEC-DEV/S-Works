@@ -11,7 +11,7 @@
             품목별 재고현황
         </span>
         <div class="options">
-            @if (ListData.Count > 0)
+            @if (FilterData.Count > 0)
             {
                 <ExportButton OnClick="Export" />
             }
@@ -25,14 +25,14 @@
         }
         <Viewer OnChanged="OnChangeViewNum" />
     </div>
-    <div class="content @(ListData.Count == 0 || ListData == null ? "height" : "")">
-        @if(ListData == null)
+    <div class="content @(FilterData.Count == 0 || FilterData == null ? "height" : "")">
+        @if (FilterData == null)
         {
             <Loading/>
         }
         else
         {
-            <MaterialTable ListData="@ListData" />
+            <MaterialTable ListData="@FilterData" />
         }
     </div>
 </div>
@@ -66,7 +66,7 @@
     private async Task Paging()
     {
 
-        // Console.WriteLine("============페이징 실행============");
+        Console.WriteLine("============페이징 실행============");
         if (CopyData == null || !CopyData.Any())
         {
             totalPage = 1;

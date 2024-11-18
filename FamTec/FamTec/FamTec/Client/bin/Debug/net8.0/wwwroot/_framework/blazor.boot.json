@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "FamTec.Client",
   "resources": {
-    "hash": "sha256-6igwq/++IwDH8I1M5WeYWIBjZknEnRsv5AvduwasNRI=",
+    "hash": "sha256-p8UtsFtJnVB56bWboXMFJMm/XrrPkVO6AlOUIBIHv0E=",
     "jsModuleNative": {
       "dotnet.native.8.0.11.hsfbwkho6v.js": "sha256-VdKq87/z5NIxZKmuM+fv38XF+RcEb/bg3jVBwQSfwP4="
     },
@@ -297,11 +297,11 @@
       "netstandard.wasm": "sha256-gnGZURPnoSmjXuYNCOJi5tt8qn2LRImWgue1Ru3/TDQ=",
       "System.Private.CoreLib.wasm": "sha256-6w3jYr0arcp8jnt4aeqh+AmqrLA6q7jl9rQYAwLzE0M=",
       "FamTec.Shared.wasm": "sha256-7yJr/vcEEizIfGYuALhwFXjsyyXDIT4Lfj0qJxETX4o=",
-      "FamTec.Client.wasm": "sha256-1AdeOo1mQr8diNS09PUbncF7ViIbsccgTUYtSn2NPHU="
+      "FamTec.Client.wasm": "sha256-4A0pMJJ9cCi7JyobNSnChlgx1uqZN5fhMitYgh3MM8M="
     },
     "pdb": {
       "FamTec.Shared.pdb": "sha256-iUmsLlZ7m3KcFqtbGQNGp5frG+rg9b3hs5RfYCYxqZc=",
-      "FamTec.Client.pdb": "sha256-az/UExzUa6nhiYWXVJwgGO0TAVMff4hmNujp9d4ISVo="
+      "FamTec.Client.pdb": "sha256-CndFzpPTxGxwrzZXruwvWzUJHTsUoJ+8suVhtqKEBFY="
     },
     "satelliteResources": {
       "cs": {
