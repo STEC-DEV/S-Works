@@ -2011,9 +2011,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\comp
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\94ux1qv49h-oyz0vx2fzb.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ntb3an3bfu-aqqhy0i2ds.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ao3m03jn2x-6wvg1fvhvm.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ao4bt7xxc3-zwk1e7xcbo.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\fdaugk9c5z-kokxz9whlq.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\58zld0z5vl-5fqwwsb6d1.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\staticwebassets.build.endpoints.json
@@ -2029,3 +2026,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\ref\FamTec.Client.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ao4bt7xxc3-lcdraedhkb.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\fdaugk9c5z-tiemrp0zv1.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\58zld0z5vl-xplbfsprlp.gz

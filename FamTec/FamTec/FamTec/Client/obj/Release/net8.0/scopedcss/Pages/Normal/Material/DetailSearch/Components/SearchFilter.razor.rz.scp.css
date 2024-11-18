@@ -40,10 +40,11 @@
     grid-column-gap : var(--wide-pd);
 }
 
-.filter-item[b-w2uu1y7z7h]{
-    height:100%;
-    display : flex;
-    gap : var(--half-pd);
+.filter-item[b-w2uu1y7z7h] {
+    height: 100%;
+    display: flex;
+    gap: var(--half-pd);
+    overflow: hidden;
 }
 
 .inputcheck[b-w2uu1y7z7h]{

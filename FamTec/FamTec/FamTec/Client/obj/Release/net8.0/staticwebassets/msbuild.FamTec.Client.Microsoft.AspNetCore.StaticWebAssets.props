@@ -282,8 +282,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>ju8yy4mgi9</Fingerprint>
-      <Integrity>tUwwRFi7T8aV8MU0l0jukvJzZpC6q3QsCn2fJmdL7vE=</Integrity>
+      <Fingerprint>xa0z132lrt</Fingerprint>
+      <Integrity>SdkKwwk15/cS1d4CW6l6W/qq2rOqT5kWdGwr97HTB9I=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\FamTec.Client.styles.css'))</OriginalItemSpec>

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "R23ZldSU+ac=",
+  "dgSpecHash": "91d90wzBmqc=",
   "success": true,
   "projectFilePath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
   "expectedPackageFiles": [
@@ -68,6 +68,10 @@
     "C:\\Users\\kyw\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\mysqlconnector\\2.3.5\\mysqlconnector.2.3.5.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\8.0.2\\pomelo.entityframeworkcore.mysql.8.0.2.nupkg.sha512",
+    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.runtime\\4.3.0\\runtime.any.system.runtime.4.3.0.nupkg.sha512",
+    "C:\\Users\\kyw\\.nuget\\packages\\runtime.any.system.text.encoding\\4.3.0\\runtime.any.system.text.encoding.4.3.0.nupkg.sha512",
+    "C:\\Users\\kyw\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
+    "C:\\Users\\kyw\\.nuget\\packages\\runtime.unix.system.private.uri\\4.3.0\\runtime.unix.system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.clientmodel\\1.0.0\\system.clientmodel.1.0.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
@@ -87,6 +91,7 @@
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\kyw\\.nuget\\packages\\system.private.uri\\4.3.0\\system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.reflection.metadata\\6.0.1\\system.reflection.metadata.6.0.1.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.runtime.caching\\6.0.0\\system.runtime.caching.6.0.0.nupkg.sha512",
@@ -104,5 +109,36 @@
     "C:\\Users\\kyw\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\kyw\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-5f2m-466j-3848이(가) 있습니다.",
+      "libraryId": "System.Private.Uri",
+      "targetGraphs": [
+        "net8.0/linux-x64"
+      ]
+    },
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 보통 심각도 취약성인 https://github.com/advisories/GHSA-x5qj-9vmx-7g6g이(가) 있습니다.",
+      "libraryId": "System.Private.Uri",
+      "targetGraphs": [
+        "net8.0/linux-x64"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "'System.Private.Uri' 4.3.0 패키지에 알려진 높음 심각도 취약성인 https://github.com/advisories/GHSA-xhfc-gr8f-ffwc이(가) 있습니다.",
+      "libraryId": "System.Private.Uri",
+      "targetGraphs": [
+        "net8.0/linux-x64"
+      ]
+    }
+  ]
 }

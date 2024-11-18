@@ -3,7 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
-<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -112,33 +111,17 @@
     {
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\commoncomponents\\imageslider.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\commoncomponents\\imageslider.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-=======
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\material\\inventory\\components\\materialhistory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\material\\inventory\\components\\materialhistory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\material\\inventory\\inventory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\material\\inventory\\inventory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
->>>>>>> origin/Front
     }
   ],
   "DocumentGroupContainers": [
     {
-      "Orientation": 1,
+      "Orientation": 0,
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-<<<<<<< HEAD
           "DockedWidth": 200,
-=======
-          "DockedHeight": 1119,
->>>>>>> origin/Front
           "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -154,30 +137,18 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-<<<<<<< HEAD
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
               "RelativeDocumentMoniker": "FamTec\\Server\\appsettings.json",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
               "RelativeToolTip": "FamTec\\Server\\appsettings.json",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAACkAAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACEAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-11-15T05:00:28.498Z",
-=======
-              "Title": "MaterialHistory.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Components\\MaterialHistory.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Components\\MaterialHistory.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Components\\MaterialHistory.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Components\\MaterialHistory.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACsAAAAcAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-18T03:38:52.34Z",
->>>>>>> origin/Front
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 3,
               "Title": "Microsoft.NET.Sdk.StaticWebAssets.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
@@ -486,18 +457,6 @@
               "ViewState": "AgIAADwAAAAAAAAAAABiwEsAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-11-15T00:55:24.471Z"
-=======
-              "DocumentIndex": 1,
-              "Title": "Inventory.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Inventory.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Inventory.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Inventory.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Material\\Inventory\\Inventory.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAADwvwAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-18T03:38:49.856Z",
-              "EditorCaption": ""
->>>>>>> origin/Front
             }
           ]
         }
