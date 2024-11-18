@@ -9,6 +9,7 @@
     font-weight: var(--bold-wt);
     color: var(--main-color);
     transition : all .3s;
+    height:31px;
     /*background-color:var(--main-light);*/
 }
 
