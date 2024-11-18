@@ -7,7 +7,6 @@ using DocumentFormat.OpenXml.Vml;
 using FamTec.Client.Shared.Provider;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Login;
-using Irony.Parsing;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

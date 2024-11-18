@@ -31,7 +31,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Clos
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\ExcelNumberFormat.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Humanizer.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authorization.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Microsoft.AspNetCore.Components.dll
@@ -114,7 +113,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Syst
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\System.Security.Permissions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\Tewr.Blazor.FileReader.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -218,3 +216,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\refi
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Debug\net8.0\ref\FamTec.Server.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\ClosedXML.Parser.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Debug\net8.0\RBush.dll

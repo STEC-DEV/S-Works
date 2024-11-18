@@ -23,9 +23,10 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Blazored.LocalStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Blazored.SessionStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\ClosedXML.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\ClosedXML.Parser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\DocumentFormat.OpenXml.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\DocumentFormat.OpenXml.Framework.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\ExcelNumberFormat.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Authorization.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Components.dll
@@ -80,6 +81,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Newtonsoft.Json.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\QRCoder.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\RBush.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\SixLabors.Fonts.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\SkiaSharp.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
@@ -96,7 +98,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Permissions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\Tewr.Blazor.FileReader.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\libSkiaSharp.so
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net8.0\linux-x64\PubTmp\Out\FamTec.Shared.dll

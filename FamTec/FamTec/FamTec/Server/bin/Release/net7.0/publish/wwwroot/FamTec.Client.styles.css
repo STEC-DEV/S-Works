@@ -11298,7 +11298,8 @@ svg:hover[b-5q32ql2i5a] {
     padding: var(--default-pd);
     border-radius: var(--default-rd);
     border: var(--default-bd);
-    width: 30%;
+    /*width: 30%;*/
+    max-width:50%;
     max-height: 530px;
 
     background-color: var(--default-color);
@@ -12511,6 +12512,18 @@ modal-table[b-0o0wpwo3cd]{
 .table[b-x5sdm5f9d6]  .table-td-link {
     color : var(--main-color);
 }
+.table .td[b-x5sdm5f9d6], .table .th[b-x5sdm5f9d6] {
+    text-overflow: ellipsis; /* 긴 내용 ... 처리 */
+    overflow: hidden; /* 내용 숨김 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+.table .td[b-x5sdm5f9d6]{
+    overflow: auto; /* 스크롤 활성화 */
+    white-space: normal; /* 줄바꿈 허용 */
+    max-height: 3rem; /* 스크롤 영역 높이 제한 */
+    max-width: 150px; /* 스크롤 영역 너비 제한 */
+}
 /* /Pages/Normal/Material/Inventory/Inventory.razor.rz.scp.css */
 
 
@@ -12532,7 +12545,8 @@ modal-table[b-0o0wpwo3cd]{
     padding: var(--default-pd);
     border-radius: var(--default-rd);
     border: var(--default-bd);
-    width: 30%;
+    /*width: 30%;*/
+    max-width:50%;
     max-height: 530px;
 
     background-color: var(--default-color);

@@ -38,7 +38,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\icudt_CJK.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\icudt_EFIGS.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\icudt_no_CJK.dat
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\Irony.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\it\Microsoft.CodeAnalysis.CSharp.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\it\Microsoft.CodeAnalysis.resources.wasm
@@ -336,7 +335,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\tr\Microsoft.CodeAnalysis.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\tr\Microsoft.CodeAnalysis.Workspaces.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\WindowsBase.wasm
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\XLParser.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\zh-Hans\Microsoft.CodeAnalysis.resources.wasm
@@ -429,7 +427,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\Microsoft.AspNetCore.Http.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\System.Private.DataContractSerialization.wasm.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\XLParser.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\System.Runtime.Handles.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\dotnet.runtime.js.map.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\emcc-props.json.gz
@@ -484,7 +481,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwr
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\Microsoft.Extensions.Primitives.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\Microsoft.AspNetCore.Components.WebAssembly.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\System.Net.WebSockets.wasm.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\Irony.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\FamTec.Client.pdb.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\System.Buffers.wasm.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\System.Globalization.Extensions.wasm.gz
@@ -704,7 +700,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Clos
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\ExcelNumberFormat.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Humanizer.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Microsoft.AspNetCore.Authorization.dll
@@ -806,7 +801,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Syst
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\System.Security.Permissions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\Tewr.Blazor.FileReader.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -1054,7 +1048,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\DocumentFormat.OpenXml.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\ExcelNumberFormat.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Humanizer.wasm
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Irony.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Authentication.Abstractions.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Authentication.Core.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Microsoft.AspNetCore.Authorization.wasm
@@ -1156,7 +1149,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webc
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\System.Security.Permissions.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\System.Windows.Extensions.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\Tewr.Blazor.FileReader.wasm
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\XLParser.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\cs\Microsoft.CodeAnalysis.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\de\Microsoft.CodeAnalysis.resources.wasm
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\es\Microsoft.CodeAnalysis.resources.wasm
@@ -1676,7 +1668,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\comp
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\jhstyb9tp8-8hjd4qs88u.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ysc91tewwj-zkc9yronjy.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ldt18t5of9-oqup3v7t3k.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\f0cmlt1htm-elonlbowrf.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\na3ylj6vr5-uq9vgwxb1b.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\u56lscx8kc-2oabi4ovsv.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\4m41spme0l-n5pslkucsz.gz
@@ -1778,7 +1769,6 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\comp
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\42mzeu04io-m9hbxwov85.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\tqftoh70tu-quwz1fxlaw.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\jxjydlfea1-kvki4xiyxd.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\8ki9tb3e9k-7h2d6rklcr.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\iqtfvgvkuy-dgrhi701tx.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\45gzmn6nhg-hiz6v0ybmz.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\7bp1pkvqeh-fst9bxr17o.gz
@@ -2026,6 +2016,21 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\FamT
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\ref\FamTec.Client.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ao4bt7xxc3-lcdraedhkb.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\fdaugk9c5z-tiemrp0zv1.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\58zld0z5vl-xplbfsprlp.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\ClosedXML.Parser.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\DocumentFormat.OpenXml.Framework.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\RBush.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\ClosedXML.Parser.wasm.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\DocumentFormat.OpenXml.Framework.wasm.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\wwwroot\_framework\RBush.wasm.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\ClosedXML.Parser.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Debug\net8.0\RBush.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\ClosedXML.Parser.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\DocumentFormat.OpenXml.Framework.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\webcil\RBush.wasm
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\16edpab2yg-f86errrmxj.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\68bt433t5n-l15iiryahx.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\dekmowf98o-7huv8hp6in.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\ao4bt7xxc3-l4mcacvr0w.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\fdaugk9c5z-xjp97mz3d5.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Debug\net8.0\compressed\58zld0z5vl-13jwex6dy0.gz
