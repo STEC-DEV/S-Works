@@ -301,8 +301,12 @@
       "FamTec.Client.wasm": "sha256-Vc7unU5oVsp6K7xmSntk4zAChtBer2BikX25nruCoG0="
     },
     "pdb": {
+<<<<<<< HEAD
       "FamTec.Shared.pdb": "sha256-io0OZ1zUxkaGiPf1wL7Mm6dRRTN0ouF1Kgo7pUj9O4s=",
       "FamTec.Client.pdb": "sha256-BbLjB3C9YWM8bTSIzr3aqaNbv7tGmcCGS2WDwCYb0OY="
+=======
+      "FamTec.Client.pdb": "sha256-CndFzpPTxGxwrzZXruwvWzUJHTsUoJ+8suVhtqKEBFY="
+>>>>>>> origin/Front
     },
     "satelliteResources": {
       "cs": {
