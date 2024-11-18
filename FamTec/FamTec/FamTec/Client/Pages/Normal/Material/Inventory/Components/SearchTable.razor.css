@@ -83,3 +83,15 @@
 .table ::deep .table-td-link {
     color : var(--main-color);
 }
+.table .td, .table .th {
+    text-overflow: ellipsis; /* 긴 내용 ... 처리 */
+    overflow: hidden; /* 내용 숨김 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+.table .td{
+    overflow: auto; /* 스크롤 활성화 */
+    white-space: normal; /* 줄바꿈 허용 */
+    max-height: 3rem; /* 스크롤 영역 높이 제한 */
+    max-width: 150px; /* 스크롤 영역 너비 제한 */
+}

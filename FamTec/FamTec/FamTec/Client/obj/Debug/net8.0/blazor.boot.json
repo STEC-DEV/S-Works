@@ -300,7 +300,6 @@
       "FamTec.Client.wasm": "sha256-4A0pMJJ9cCi7JyobNSnChlgx1uqZN5fhMitYgh3MM8M="
     },
     "pdb": {
-      "FamTec.Shared.pdb": "sha256-iUmsLlZ7m3KcFqtbGQNGp5frG+rg9b3hs5RfYCYxqZc=",
       "FamTec.Client.pdb": "sha256-CndFzpPTxGxwrzZXruwvWzUJHTsUoJ+8suVhtqKEBFY="
     },
     "satelliteResources": {
