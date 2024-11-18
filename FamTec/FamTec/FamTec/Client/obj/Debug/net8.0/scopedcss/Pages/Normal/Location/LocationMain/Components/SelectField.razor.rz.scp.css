@@ -104,6 +104,12 @@
     width:0.6rem;
 }
 
-.half[b-bjmstyaofj]{
-    padding :var(--half-pd);
+.half[b-bjmstyaofj] {
+    max-height: 31px;
+    height: 31px;
+    padding : var(--one-q-pd) var(--half-pd);
+}
+
+.half .display-row[b-bjmstyaofj]{
+    align-items:center;
 }

@@ -104,6 +104,12 @@
     width:0.6rem;
 }
 
-.half{
-    padding :var(--half-pd);
+.half {
+    max-height: 31px;
+    height: 31px;
+    padding : var(--one-q-pd) var(--half-pd);
+}
+
+.half .display-row{
+    align-items:center;
 }

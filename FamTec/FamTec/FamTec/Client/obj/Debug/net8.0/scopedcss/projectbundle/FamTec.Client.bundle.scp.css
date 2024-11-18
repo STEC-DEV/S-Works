@@ -3699,6 +3699,7 @@ svg[b-9g9liu9s5w] {
     font-weight: var(--bold-wt);
     color: var(--main-color);
     transition : all .3s;
+    height:31px;
     /*background-color:var(--main-light);*/
 }
 
@@ -10740,8 +10741,14 @@ svg:hover[b-5q32ql2i5a] {
     width:0.6rem;
 }
 
-.half[b-bjmstyaofj]{
-    padding :var(--half-pd);
+.half[b-bjmstyaofj] {
+    max-height: 31px;
+    height: 31px;
+    padding : var(--one-q-pd) var(--half-pd);
+}
+
+.half .display-row[b-bjmstyaofj]{
+    align-items:center;
 }
 /* /Pages/Normal/Location/LocationMain/LocationMain.razor.rz.scp.css */
 .location-container[b-v00ot3xtdx]{
