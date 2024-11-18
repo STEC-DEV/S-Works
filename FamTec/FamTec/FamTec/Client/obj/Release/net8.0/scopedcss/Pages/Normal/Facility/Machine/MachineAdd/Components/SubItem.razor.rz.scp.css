@@ -1,0 +1,57 @@
+
+.item-container[b-saobu1m39a] {
+    display: block;
+}
+
+.item-wrap[b-saobu1m39a] {
+    display: flex;
+    flex-wrap : wrap;
+    gap: var(--default-pd);
+    align-items : center;
+}
+
+.item-label[b-saobu1m39a] {
+    ;
+    /*flex :1;*/
+    /*padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);*/
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color : var(--main-color);
+    /*color: var(--default-color);
+    background-color: var(--main-color);*/
+}
+
+.item-values[b-saobu1m39a] {
+    /*flex:6;*/
+    display: flex;
+    gap : var(--half-pd);
+    flex-wrap : nowrap;
+    /*flex-direction: column;*/
+}
+
+.value[b-saobu1m39a] {
+    /*white-space :nowrap;*/
+    padding: var(--half-pd) var(--default-pd);
+    border: var(--comp-bd);
+    border-radius: var(--default-rd);
+
+
+    font-size: calc(var(--normal-size) + 0.1rem);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    background-color: var(--content-back-color);
+}
+
+.del-btn[b-saobu1m39a] {
+    width: 15px;
+    height: 15px;
+    border : none;
+    border-radius: 50px;
+    background-color :var(--del-color);
+}
+
+.del-btn:hover[b-saobu1m39a]{
+    background-color :var(--del-hover);
+}

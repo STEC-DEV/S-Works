@@ -1,0 +1,41 @@
+.admin-signup-container[b-in5hxw3jri]{
+    display : flex;
+    flex-direction : column;
+    width : 100%;
+    
+
+    /*gap : var(--default-pd);*/
+}
+
+
+.admin-signup-container .admin-signup-wrap[b-in5hxw3jri] {
+    display: flex;
+    flex-direction : column;
+    gap: var(--wide-pd);
+    height: 100%;
+    flex: 1;
+    /*overflow: hidden;*/
+    padding : var(--default-pd);
+}
+
+
+.admin-signup-container .btns[b-in5hxw3jri]{
+    display :flex;
+    justify-content:flex-end;
+    gap : 0.5rem;
+    padding : var(--default-pd);
+}
+
+.admin-signup-container .form[b-in5hxw3jri] {
+    height:100%;
+    /*flex:1;*/
+    
+    /*box-shadow : var(--default-bs);*/
+}
+
+.admin-signup-container .place[b-in5hxw3jri]{
+    /*flex:2;*/
+
+    /*box-shadow : var(--default-bs);*/
+}
+

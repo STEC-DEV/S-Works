@@ -1,0 +1,28 @@
+
+.ul[b-alnwf9dfth] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    
+    padding : 0 var(--half-pd);
+}
+
+.li[b-alnwf9dfth] {
+    display:flex;
+    gap : var(--half-pd);
+    align-items:center;
+    padding: var(--one-q-pd) 0;
+    animation: pulsate 6s linear infinite;
+    color: #ffffff;
+    font-size : 0.7rem;
+}
+
+
+.li:hover[b-alnwf9dfth]{
+    background-color: #434041;
+}
+
+.li:focus[b-alnwf9dfth]{
+    background-color: #434041;
+}
+

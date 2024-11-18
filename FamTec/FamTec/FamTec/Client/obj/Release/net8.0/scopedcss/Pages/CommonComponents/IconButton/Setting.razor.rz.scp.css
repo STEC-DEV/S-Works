@@ -1,0 +1,20 @@
+.icon[b-dfukvadbsa]{
+    display:flex;
+    align-items:center;
+
+    height:100%;
+}
+
+.icon:hover[b-dfukvadbsa]{
+    cursor : pointer;
+
+}
+
+
+/*.icon:hover > svg{
+    fill: var(--main-color);
+}*/
+
+svg[b-dfukvadbsa] {
+    transition: all .2s;
+}

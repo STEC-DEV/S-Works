@@ -48,8 +48,7 @@ builder.Services.AddAuthorizationCore();
 // 연결 -- 아래 코드 (게시용)
 
 #if DEBUG
-//string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
-string HubUrl = $"http://123.2.156.148/VocHub";
+string HubUrl = $"{builder.HostEnvironment.BaseAddress}VocHub";
 #else
 string HubUrl = "https://sws.s-tec.co.kr/VocHub";
 #endif
