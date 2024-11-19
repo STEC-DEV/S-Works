@@ -183,19 +183,17 @@
         <tfoot class="tfoot">
             <tr class="tfoot-tr">
                 <td class="tf-td" colspan="4">소계</td>
-                <td class="tf-td ">@totalInQty</td>
-                @* <td class="tf-td text-right">@((ListData?.Count > 0 ? (decimal?)totalInPrice / ListData.Count : null)?.ToString("N0") ?? "0")</td> *@
+                <td class="tf-td ">@ListData2.TotalInputNum</td>
                 <td class="tf-td text-right">
-                    @((ListData?.Count > 0 ? (decimal?)totalInPrice / ListData.Count : 0) == 0 ? "0" : ((decimal?)totalInPrice / ListData.Count)?.ToString("N2"))
+                    @ListData2.TotalInputUnitPrice
                 </td>
-                <td class="tf-td text-right">@totalInAmount?.ToString("N0")</td>
-                <td class="tf-td">@totalOutQty</td>
-                @* <td class="tf-td text-right">@((ListData?.Count > 0 ? (decimal?)totalOutPrice / ListData.Count : null)?.ToString("N0") ?? "0")</td> *@
+                <td class="tf-td text-right">@ListData2.TotalInputPrice</td>
+                <td class="tf-td">@ListData2.TotalOutputNum</td>
                 <td class="tf-td text-right">
-                    @((ListData?.Count > 0 ? (decimal?)totalOutPrice / ListData.Count : 0) == 0 ? "0" : ((decimal?)totalOutPrice / ListData.Count)?.ToString("N2"))
+                    @ListData2.TotalOutputUnitPrice
                 </td>
-                <td class="tf-td text-right">@totalOutAmount?.ToString("N0")</td>
-                <td class="tf-td">@totalCurrentNum</td>
+                <td class="tf-td text-right">@ListData2.TotalOutputPrice</td>
+                <td class="tf-td">@ListData2.TotalStockNum</td>
                 <td class="tf-td"></td>
             </tr>
         </tfoot>
