@@ -190,6 +190,6 @@
         var excel = ExcelService.getInstance(JS);
         string dt = StartDt == EndDt ? StartDt : StartDt + "_" + EndDt;
         string title = $"{FilterList2.Name}_입출고내역_{dt}";
-        await excel.ExportInOutDetail(ListData, colName, title);
+        await excel.ExportInOutDetail(ListData, FilterList2, colName, title);
     }
 }
