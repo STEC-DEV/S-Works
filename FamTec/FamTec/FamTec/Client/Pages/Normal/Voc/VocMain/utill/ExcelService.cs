@@ -334,7 +334,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
         /// <param name="colName"></param>
         /// <param name="title"></param>
         /// <returns></returns>
-        public async Task ExportInOutDetail(List<DetailMaterialListDTO> data, List<string> colName, string title)
+        public async Task ExportInOutDetail(List<DetailMaterialListDTO> data, DetailMaterialListDTO data2, List<string> colName, string title)
         {//option 0은 월간 조회, 1은 기간조회
 
 
@@ -352,8 +352,8 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                     worksheet.Cell(1, header.idx + 1).Value = header.value;
                 }
                 worksheet.Cell(2, 1).Value = "기준월 이전재고";
-                worksheet.Cell(2, 2).Value = m.Code;
-                worksheet.Cell(2, 3).Value = m.Name;
+                worksheet.Cell(2, 2).Value = data2.Code;
+                worksheet.Cell(2, 3).Value = data2.Name;
                 worksheet.Cell(2, 4).Value = 0;
                 worksheet.Cell(2, 5).Value = 0;
                 worksheet.Cell(2, 6).Value = 0;
@@ -361,7 +361,7 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                 worksheet.Cell(2, 8).Value = 0;
                 worksheet.Cell(2, 9).Value = 0;
                 worksheet.Cell(2, 10).Value = 0;                
-                worksheet.Cell(2, 11).Value = m.LastMonthStock;
+                worksheet.Cell(2, 11).Value = data2.LastMonthStock;
 
                 int lastRow = 0;
                 int totalInQty = 0;
@@ -409,17 +409,13 @@ namespace FamTec.Client.Pages.Normal.Voc.VocMain.utill
                 range.Style.Font.Bold = true;
                 range.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 range.Style.Fill.BackgroundColor = XLColor.FromArgb(217, 217, 217);
-                worksheet.Cell(lastRow, 5).Value = totalInQty;
-                worksheet.Cell(lastRow, 6).Value = Math.Round(Convert.ToDecimal(totalInPrice / m.InventoryList.Count), 2);
-                //
-
-                //
-                worksheet.Cell(lastRow, 7).Value = totalInAmount;
-                worksheet.Cell(lastRow, 8).Value = totalOutQty;
-                //worksheet.Cell(lastRow, 9).Value = totalOutPrice / (m.InventoryList.Count);
-                worksheet.Cell(lastRow, 9).Value = Math.Round(Convert.ToDecimal(totalOutPrice / m.InventoryList.Count), 2);
-                worksheet.Cell(lastRow, 10).Value = totalOutAmount;
-                worksheet.Cell(lastRow, 11).Value = m.InventoryList[m.InventoryList.Count - 1].CurrentNum;
+                worksheet.Cell(lastRow, 5).Value = data2.TotalInputNum;
+                worksheet.Cell(lastRow, 6).Value = data2.TotalInputUnitPrice.ToString("n2");
+                worksheet.Cell(lastRow, 7).Value = data2.TotalInputPrice;
+                worksheet.Cell(lastRow, 8).Value = data2.TotalOutputNum;
+                worksheet.Cell(lastRow, 9).Value = data2.TotalOutputUnitPrice.ToString("n2"); ;
+                worksheet.Cell(lastRow, 10).Value = data2.TotalOutputPrice;
+                worksheet.Cell(lastRow, 11).Value = data2.TotalStockNum;
 
                
 
