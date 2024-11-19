@@ -3,13 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\",
   "Documents": [
     {
-<<<<<<< HEAD
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{BBADC6E3-0917-440F-8529-00B8E6A0F522}|FamTec\\Server\\FamTec.Server.csproj|solutionrelative:famtec\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9708E2A1-9C51-45DD-903D-766C1AC47839}|FamTec\\Shared\\FamTec.Shared.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\shared\\famtec.shared.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -132,26 +131,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\kyw\\documents\\s-works\\famtec\\famtec\\famtec\\client\\pages\\commoncomponents\\imageslider.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\commoncomponents\\imageslider.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-=======
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\material\\detailsearch\\components\\materialtable.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\material\\detailsearch\\components\\materialtable.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\material\\detailsearch\\components\\materialhistory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\material\\detailsearch\\components\\materialhistory.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\shared\\nav.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\shared\\nav.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\voc\\vocmain\\utill\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\voc\\vocmain\\utill\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|c:\\users\\stec\\desktop\\duke\\dev\\2024\\s-works\\famtec\\famtec\\famtec\\client\\pages\\normal\\material\\detailsearch\\detailsearch.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{61A16A86-E9D3-43F0-9C42-ED222A9EDABC}|FamTec\\Client\\FamTec.Client.csproj|solutionrelative:famtec\\client\\pages\\normal\\material\\detailsearch\\detailsearch.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
->>>>>>> origin/Front
     }
   ],
   "DocumentGroupContainers": [
@@ -160,18 +139,12 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-<<<<<<< HEAD
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
-=======
-          "DockedHeight": 1119,
-          "SelectedChildIndex": 6,
->>>>>>> origin/Front
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-<<<<<<< HEAD
               "Title": "FamTec.Shared.csproj",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Shared\\FamTec.Shared.csproj",
               "RelativeDocumentMoniker": "FamTec\\Shared\\FamTec.Shared.csproj",
@@ -179,23 +152,11 @@
               "RelativeToolTip": "FamTec\\Shared\\FamTec.Shared.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:34:45.37Z",
-=======
-              "Title": "Nav.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Shared\\Nav.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Shared\\Nav.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Shared\\Nav.razor",
-              "RelativeToolTip": "FamTec\\Client\\Shared\\Nav.razor",
-              "ViewState": "AQIAAHcAAAAAAAAAAAAcwI8AAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-19T23:10:46.456Z",
->>>>>>> origin/Front
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:34:45.37Z"
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Program.cs",
               "RelativeDocumentMoniker": "FamTec\\Client\\Program.cs",
@@ -205,22 +166,6 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-15T01:10:12.602Z",
               "EditorCaption": ""
-=======
-              "DocumentIndex": 3,
-              "Title": "ExcelService.cs",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Voc\\VocMain\\utill\\ExcelService.cs",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Voc\\VocMain\\utill\\ExcelService.cs",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Voc\\VocMain\\utill\\ExcelService.cs",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Voc\\VocMain\\utill\\ExcelService.cs",
-              "ViewState": "AQIAAFsBAAAAAAAAAAD4v58BAABeAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-19T22:57:11.728Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
->>>>>>> origin/Front
             },
             {
               "$type": "Document",
@@ -232,19 +177,17 @@
               "RelativeToolTip": "FamTec\\Client\\FamTec.Client.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-19T10:30:24.317Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-19T10:30:24.317Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-<<<<<<< HEAD
+              "DocumentIndex": 0,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
               "RelativeDocumentMoniker": "FamTec\\Server\\appsettings.json",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
               "RelativeToolTip": "FamTec\\Server\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAADAAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-11-19T10:23:32.299Z",
               "EditorCaption": ""
@@ -270,8 +213,7 @@
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
               "RelativeToolTip": "FamTec\\Client\\FamTec.Client.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-18T08:21:53.403Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-18T08:21:53.403Z"
             },
             {
               "$type": "Document",
@@ -283,7 +225,8 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\ApiPollingService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-18T07:06:16.606Z"
+              "WhenOpened": "2024-11-18T07:06:16.606Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -295,22 +238,10 @@
               "RelativeToolTip": "FamTec\\Server\\FamTec.Server.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:22:45.679Z",
-=======
-              "Title": "MaterialHistory.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialHistory.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialHistory.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialHistory.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialHistory.razor",
-              "ViewState": "AQIAAHAAAAAAAAAAAAAYwEkAAAAZAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-19T22:56:53.265Z",
->>>>>>> origin/Front
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:22:45.679Z"
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 6,
               "Title": "StoreController.cs",
               "DocumentMoniker": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\Controllers\\Store\\StoreController.cs",
@@ -414,32 +345,7 @@
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\FamTec.Server.csproj",
               "RelativeToolTip": "FamTec\\Server\\FamTec.Server.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:23:47.157Z",
-=======
-              "DocumentIndex": 4,
-              "Title": "DetailSearch.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\DetailSearch.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\DetailSearch.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\DetailSearch.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\DetailSearch.razor",
-              "ViewState": "AQIAAAAAAAAAAAAAAADwvwAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-19T22:56:47.68Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MaterialTable.razor",
-              "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialTable.razor",
-              "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialTable.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialTable.razor",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Material\\DetailSearch\\Components\\MaterialTable.razor",
-              "ViewState": "AQIAAI0AAAAAAAAAAAAkwLQAAAA1AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-19T08:16:01.161Z",
->>>>>>> origin/Front
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:23:47.157Z"
             },
             {
               "$type": "Document",
