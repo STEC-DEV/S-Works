@@ -241,24 +241,36 @@ namespace FamTec.Server.Services.Store
                                     .Sum(m => m.InOutNum ?? 0);
 
                         // 총 입고 단가
-                        dto.TotalInputUnitPrice = dto.InventoryList.Where(m => m.Type == 1 && m.InOutUnitPrice.HasValue)
-                            .Sum(m => m.InOutUnitPrice ?? 0);
+                      
 
                         // 총 입고 금액
                         dto.TotalInputPrice = dto.InventoryList.Where(m => m.Type == 1 && m.InOutTotalPrice.HasValue)
                             .Sum(m => m.InOutTotalPrice ?? 0);
 
+                        /*
+                      float totalInputUnitPrice = dto.InventoryList.Where(m => m.Type == 1 && m.InOutUnitPrice.HasValue)
+                          .Sum(m => m.InOutUnitPrice ?? 0);
+                      */
+                        // 총 입고 단가 계산
+                        dto.TotalInputUnitPrice = dto.TotalInputNum > 0
+                        ? (float)Math.Round((decimal)dto.TotalInputPrice / dto.TotalInputNum, 2)
+                        : 0f; // 수량이 0일 경우 단가를 0으로 설정
+                        
+                        //dto.TotalInputUnitPrice = dto.TotalInputPrice / dto.TotalInputNum
+
                         // 총 출고 수량
                         dto.TotalOutputNum = dto.InventoryList.Where(m => m.Type == 0 && m.InOutNum.HasValue)
                             .Sum(m => m.InOutNum ?? 0);
 
-                        // 총 출고 단가
-                        dto.TotalOutputUnitPrice = dto.InventoryList.Where(m => m.Type == 0 && m.InOutUnitPrice.HasValue)
-                            .Sum(m => m.InOutUnitPrice ?? 0);
-
                         // 총 출고 금액
                         dto.TotalOutputPrice = dto.InventoryList.Where(m => m.Type == 0 && m.InOutTotalPrice.HasValue)
                             .Sum(m => m.InOutTotalPrice ?? 0);
+
+                        // 총 출고 단가
+                        //dto.TotalOutputUnitPrice = dto.InventoryList.Where(m => m.Type == 0 && m.InOutUnitPrice.HasValue)
+                        //    .Sum(m => m.InOutUnitPrice ?? 0);
+                        dto.TotalOutputUnitPrice = dto.TotalOutputNum > 0 ? (float)Math.Round((decimal)dto.TotalOutputPrice / dto.TotalOutputNum, 2) : 0f;
+
 
                         // 총 재고수량
                         //dto.TotalStockNum = dto.InventoryList.Sum(m => m.CurrentNum ?? 0);
