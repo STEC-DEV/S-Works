@@ -78,6 +78,9 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http.Connections;
+using System.Data;
+using MySqlConnector;
+using FamTec.Server.Repository.DapperTemp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -133,6 +136,9 @@ builder.Services.AddTransient<IContractInfoRepository, ContractInfoRepository>()
 builder.Services.AddTransient<IEnergyInfoRepository, EnergyInfoRepository>();
 builder.Services.AddTransient<IUseMaintenenceInfoRepository, UseMaintenenceInfoRepository>();
 
+// 테스트
+builder.Services.AddTransient<IDapperTempRepository, DapperTempRepository>();
+
 // Add services to the container. - Logic
 builder.Services.AddTransient<IAdminAccountService, AdminAccountService>();
 builder.Services.AddTransient<IAdminPlaceService, AdminPlaceService>();
@@ -174,6 +180,7 @@ builder.Services.AddTransient<IContractService, ContractService>();
 builder.Services.AddTransient<IEnergyService, EnergyService>();
 builder.Services.AddTransient<IUseMaintenenceService, UseMaintenenceService>();
 builder.Services.AddTransient<ICommService, CommService>();
+
 
 builder.Services.AddTransient(typeof(ConsoleLogService<>));
 builder.Services.AddSingleton<WorksSetting>();
@@ -257,6 +264,7 @@ Console.WriteLine("DBConnect전");
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
+    // EF CORE
     builder.Services.AddDbContext<WorksContext>(options =>
     //builder.Services.AddDbContextPool<WorksContext>(options =>
       options.UseMySql(connectionString, ServerVersion.Parse("10.11.7-mariadb"),
@@ -268,7 +276,10 @@ if (!String.IsNullOrWhiteSpace(connectionString))
           // 다른 성능 및 안정성 옵션 추가
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
-      //poolSize: 128;);
+    //poolSize: 128;);
+
+    builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(connectionString));
+
 }
 else
     // 예외를 던져 프로그램이 시작되지 않도록 함.

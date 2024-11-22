@@ -3624,6 +3624,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
+    "Method": "Temp",
+    "RelativePath": "api/Login/temp",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/MachineFacility/sign/AddMachineFacility",

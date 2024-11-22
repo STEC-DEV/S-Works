@@ -1,4 +1,5 @@
 ﻿using FamTec.Server.Middleware;
+using FamTec.Server.Repository.DapperTemp;
 using FamTec.Server.Services;
 using FamTec.Server.Services.Admin.Account;
 using FamTec.Server.Services.Admin.Place;
@@ -24,10 +25,13 @@ namespace FamTec.Server.Controllers.Login
         private readonly ILogService LogService;
         private readonly ConsoleLogService<LoginController> CreateBuilderLogger;
 
+        private readonly IDapperTempRepository DapperTemp;
+
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
             ILogService _logservice,
+            IDapperTempRepository _dappertemp,
             ConsoleLogService<LoginController> _createbuilderlogger)
         {
             this.AdminAccountService = _adminaccountservice;
@@ -36,8 +40,20 @@ namespace FamTec.Server.Controllers.Login
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+
+            this.DapperTemp = _dappertemp;
         }
-        
+
+        [HttpGet]
+        [Route("temp")]
+        public async Task<IActionResult> Temp()
+        {
+            await DapperTemp.SelectUser();
+
+            return Ok("Asdfasdf");
+        }
+
+
         /// <summary>
         /// 관리자 화면 로그인 [OK]
         /// </summary>
