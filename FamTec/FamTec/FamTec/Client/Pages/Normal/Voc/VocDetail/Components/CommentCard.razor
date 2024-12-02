@@ -12,7 +12,8 @@
     </div>
     <div class="content">
         <TextField2 Label="처리 일시" Value="@Data.CreateDT" Color=true />
-        <TextField2 Label="처리 내용" Value="@Data.Comment" Color=true />
+        @* <TextField2 Label="처리 내용" Value="@Data.Comment" Color=true /> *@
+        <TextField Label="처리 내용" Context="@Data.Comment" Type="textarea" />
         @if(images.Count > 0)
         {
             <ImageSlider Label="첨부 이미지" Images="@images" />
