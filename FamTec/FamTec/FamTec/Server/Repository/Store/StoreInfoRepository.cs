@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
@@ -63,6 +64,7 @@ namespace FamTec.Server.Repository.Store
             }
         }
 
+  
         /// <summary>
         /// 입출고 이력 조회
         /// </summary>
@@ -215,6 +217,81 @@ namespace FamTec.Server.Repository.Store
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 throw;
+            }
+            catch (Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 자재별 입출고 카운트 (대쉬보드)
+        /// </summary>
+        /// <param name="startOfWeek"></param>
+        /// <param name="EndOfWeek"></param>
+        /// <param name="MaterialId"></param>
+        /// <returns></returns>
+        public async Task<List<MaterialWeekCountDTO>?> GetDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, List<int> MaterialId)
+        {
+            try
+            {
+                // 조회 기간의 모든 날짜 생성
+                var allDates = Enumerable.Range(0, 1 + EndOfWeek.AddDays(-1).Subtract(startOfWeek).Days)
+                                .Select(offset => startOfWeek.AddDays(offset).Date)
+                                .ToList();
+
+                // StoreTb와 MaterialTb 조인 데이터 가져오기
+                var inOutList = await context.StoreTbs
+                    .Where(m => m.DelYn != true &&
+                                MaterialId.Contains(m.MaterialTbId) &&
+                                m.CreateDt >= startOfWeek &&
+                                m.CreateDt <= EndOfWeek)
+                    .Join(
+                        context.MaterialTbs,
+                        store => store.MaterialTbId,
+                        material => material.Id,
+                        (store, material) => new
+                        {
+                            store.MaterialTbId,
+                            MaterialName = material.Name,
+                            store.CreateDt,
+                            store.Inout, // 1: Input, 2: Output
+                            store.Num    // 수량
+                        }
+                    )
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // MaterialId 기준으로 데이터 그룹화 및 날짜 매핑
+                List<MaterialWeekCountDTO> model = MaterialId
+                     .Select(materialId => new MaterialWeekCountDTO
+                     {
+                         MaterialId = materialId,
+                         MaterialName = context.MaterialTbs.First(m => m.Id == materialId).Name, // MaterialTb에서 이름을 가져옴
+                         WeekCountList = allDates.Select(date => new WeekInOutCountDTO
+                         {
+                             Date = date,
+                             InputCount = inOutList
+                                 .Where(x => x.MaterialTbId == materialId && x.CreateDt.Date == date && x.Inout == 1)
+                                 .Sum(x => x.Num),
+                             OutputCount = inOutList
+                                 .Where(x => x.MaterialTbId == materialId && x.CreateDt.Date == date && x.Inout == 0)
+                                 .Sum(x => x.Num),
+                             TotalCount = inOutList
+                                 .Where(x => x.MaterialTbId == materialId && x.CreateDt.Date == date)
+                                 .Sum(x => x.Num)
+                         }).ToList()
+                     })
+                     .ToList();
+                if (model is [_, ..])
+                    return model;
+                else
+                    return null;
             }
             catch (Exception ex)
             {

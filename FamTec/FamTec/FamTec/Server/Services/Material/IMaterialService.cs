@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Services.Material
@@ -89,6 +90,8 @@ namespace FamTec.Server.Services.Material
         /// <param name="searchData"></param>
         /// <returns></returns>
         public Task<ResponseList<MaterialSearchListDTO>> GetMaterialSearchService(HttpContext context, string searchData);
+
+        
 
     }
 }

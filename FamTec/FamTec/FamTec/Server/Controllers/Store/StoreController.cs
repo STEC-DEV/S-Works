@@ -2,9 +2,11 @@
 using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace FamTec.Server.Controllers.Store
 {
@@ -26,6 +28,43 @@ namespace FamTec.Server.Controllers.Store
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 자재별 일주일치 입출고 카운트 -- 대쉬보드
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetInOutWeekCount")]
+        public async Task<IActionResult> GetInOutWeekCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaterialWeekCountDTO>? model = await InStoreService.GetInoutDashBoardDataService(HttpContext);
+                if (model is null)
+                    return BadRequest();
+
+#if DEBUG
+                CreateBuilderLogger.ConsoleText($"{model.code.ToString()} --> {HttpContext.Request.Path.Value}");
+#endif
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         /// <summary>

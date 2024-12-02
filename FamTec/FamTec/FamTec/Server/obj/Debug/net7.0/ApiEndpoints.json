@@ -3624,16 +3624,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "FamTec.Server.Controllers.Login.LoginController",
-    "Method": "Temp",
-    "RelativePath": "api/Login/temp",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "FamTec.Server.Controllers.Facility.MachineFacilityController",
     "Method": "AddFacility",
     "RelativePath": "api/MachineFacility/sign/AddMachineFacility",
@@ -5290,6 +5280,16 @@
     "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
     "Method": "GetInoutHistory",
     "RelativePath": "api/Store/sign/GetHistory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Store.StoreController",
+    "Method": "GetInOutWeekCount",
+    "RelativePath": "api/Store/sign/GetInOutWeekCount",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -1,5 +1,7 @@
 ﻿using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
+using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Services.Store
@@ -90,5 +92,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="outcount"></param>
         /// <returns></returns>
         public Task<ResponseUnit<InOutInventoryDTO>> AddOutStoreList(HttpContext context, int roomid, int materialid, int outcount);
+
+        /// <summary>
+        /// DashBoard용 일주일치 자재별 입출고 카운트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService(HttpContext context);
     }
 }
