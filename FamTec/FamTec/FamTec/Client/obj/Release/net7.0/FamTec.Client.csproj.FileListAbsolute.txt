@@ -19,6 +19,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ww
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\icudt_CJK.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\icudt_EFIGS.dat
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\icudt_no_CJK.dat
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.AspNetCore.Authorization.dll
@@ -278,6 +279,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ww
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Xml.XPath.XDocument.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Tewr.Blazor.FileReader.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\WindowsBase.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Security.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Reflection.TypeExtensions.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.AspNetCore.Http.dll.gz
@@ -331,6 +333,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ww
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.Extensions.Options.ConfigurationExtensions.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Security.Cryptography.Cng.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Numerics.Vectors.dll.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\XLParser.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.IdentityModel.Logging.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Web.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Numerics.dll.gz
@@ -441,6 +444,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ww
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Threading.Timer.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Net.ServicePoint.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Xml.XDocument.dll.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Irony.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Xml.Serialization.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Microsoft.AspNetCore.Connections.Abstractions.dll.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\System.Text.Encoding.dll.gz
@@ -570,6 +574,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Cl
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\DocumentFormat.OpenXml.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\ExcelNumberFormat.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Humanizer.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.AspNetCore.Authorization.dll
@@ -661,6 +666,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Sy
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\System.Security.Permissions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Tewr.Blazor.FileReader.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.CSharp.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.VisualBasic.Core.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Microsoft.VisualBasic.dll
@@ -1138,8 +1144,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\g8opses02o-k6xolybrxl.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\sg9x839yq8-5wwliy9qkt.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fi7i4l8pn3-kmej99ijdk.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\irzqdmk04k-xf5ya3yem4.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\s45dgbighj-0azrupkqdz.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ihz6sdm0tv-ngsvj0ftni.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fp3o8yvsru-umqku5jypw.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ku4cdx7v4v-cwfg1ekh2p.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hwz6aqkbb8-l19zvpa7h8.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\n7nmqq67q2-26ovcxh4pr.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\7yz4kj2t4r-aftyg0fnsj.gz
@@ -1172,6 +1181,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\5x78zfv8eg-zjwtw30pbr.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ghukcpfm0d-troleviv9v.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ghe0zjkirj-4cayi8fpjs.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\0yej7ha3iq-t4438mffu4.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\6qsmsj3e90-sc7ugom0se.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fibhr5uifo-n8c8hyl9ub.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\4q54togqxe-byrsfu24s2.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u4la73d8n7-vzu1eo7v26.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\7wqwvyzl2w-e22dlk1v44.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\dphjdnvdzx-wzv5lywwyq.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\s5mrzgp8x5-i0nd6gq4qm.gz
@@ -1218,6 +1232,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\zvucf0n3yp-63i5efm70x.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\rtdm6f8j32-g2hsawigh1.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\drav8srm0j-51c0qnvtc6.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ugrloublkj-0ivhqrkjbh.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ahwq5ud4f8-7u4f1vnlb7.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\1j8w5wr6tv-vyzbhy0jyx.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\424vifewvy-tzgurfvop2.gz
@@ -1225,6 +1240,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u1d6uv4guh-672p3nd75j.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ecyboc7iku-5zdbbae7gl.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\95u2pfc7s1-2jd0o3aks3.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\7c4aexe2b4-d17szr0fde.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\doz6hscmxu-3l6rz51seh.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\jcisa1nwdw-5vwfddg8g5.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\6ze76z0d7e-eehgvpbhsp.gz
@@ -1400,6 +1416,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u7rrvoavnc-tptq2av103.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\qol3osisp2-lfu7j35m59.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\94ux1qv49h-7cxe8oq9xu.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-jrbhpd08ta.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-h1qgjbexqt.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-chp95fpjo0.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-444petj1zq.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-5ojtccggwu.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.endpoints.json
@@ -1415,24 +1436,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\Fa
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\refint\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\FamTec.Client.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\ref\FamTec.Client.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Irony.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\XLParser.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\XLParser.dll.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\wwwroot\_framework\Irony.dll.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\Irony.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\bin\Release\net7.0\XLParser.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\irzqdmk04k-xf5ya3yem4.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\s45dgbighj-0azrupkqdz.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ku4cdx7v4v-cwfg1ekh2p.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\0yej7ha3iq-t4438mffu4.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\6qsmsj3e90-sc7ugom0se.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fibhr5uifo-n8c8hyl9ub.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\4q54togqxe-byrsfu24s2.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u4la73d8n7-vzu1eo7v26.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ugrloublkj-0ivhqrkjbh.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\7c4aexe2b4-d17szr0fde.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-uozc5idfct.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-7fws73sifj.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-ptfgq26xcf.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-3lof516nyl.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-cd4iepit5u.gz

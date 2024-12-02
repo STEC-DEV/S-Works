@@ -25,9 +25,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Blazored.LocalStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Blazored.SessionStorage.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ClosedXML.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Dapper.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\DocumentFormat.OpenXml.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\ExcelNumberFormat.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Humanizer.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Irony.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Microsoft.AspNetCore.Authorization.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Microsoft.AspNetCore.Components.dll
@@ -91,6 +93,7 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\System.Security.Permissions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\System.Windows.Extensions.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Tewr.Blazor.FileReader.dll
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\XLParser.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\libSkiaSharp.so
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Client.dll
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\FamTec.Shared.dll
@@ -123,5 +126,3 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\li
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.pdb
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\FamTec.Server.genruntimeconfig.cache
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\obj\Release\net7.0\linux-x64\ref\FamTec.Server.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\Irony.dll
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Server\bin\Release\net7.0\linux-x64\XLParser.dll

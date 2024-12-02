@@ -10,6 +10,7 @@
       "FamTec.Server/1.0.0": {
         "dependencies": {
           "Blazored.SessionStorage": "2.4.0",
+          "Dapper": "2.1.35",
           "FamTec.Client": "1.0.0",
           "FamTec.Shared": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.20",
@@ -100,6 +101,14 @@
           "lib/netstandard2.1/ClosedXML.dll": {
             "assemblyVersion": "0.102.2.0",
             "fileVersion": "0.102.2.0"
+          }
+        }
+      },
+      "Dapper/2.1.35": {
+        "runtime": {
+          "lib/net7.0/Dapper.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.35.13827"
           }
         }
       },
@@ -2030,6 +2039,13 @@
       "sha512": "sha512-nsHmfPNPtWpr6vair857sQiN11OaFn80oiN2GIbTB1vDqnw9jhNMtlxS0/iYP/E+YGG5zLX2N6xeznuBuvezSQ==",
       "path": "closedxml/0.102.2",
       "hashPath": "closedxml.0.102.2.nupkg.sha512"
+    },
+    "Dapper/2.1.35": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw==",
+      "path": "dapper/2.1.35",
+      "hashPath": "dapper.2.1.35.nupkg.sha512"
     },
     "DocumentFormat.OpenXml/2.16.0": {
       "type": "package",

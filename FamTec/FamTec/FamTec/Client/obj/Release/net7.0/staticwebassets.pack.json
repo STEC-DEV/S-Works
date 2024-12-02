@@ -113,6 +113,10 @@
       "PackagePath": "staticwebassets\\icon-192.png"
     },
     {
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\QrLogo.png",
+      "PackagePath": "staticwebassets\\img\\QrLogo.png"
+    },
+    {
       "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\img\\Stec_Logo.png",
       "PackagePath": "staticwebassets\\img\\Stec_Logo.png"
     },
@@ -131,6 +135,10 @@
     {
       "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\QrJs.js",
+      "PackagePath": "staticwebassets\\js\\QrJs.js"
     },
     {
       "Id": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\wwwroot\\js\\areaClick.js",
