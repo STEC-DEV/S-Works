@@ -25,6 +25,7 @@ wwwroot\font\Pretendard-SemiBold.otf
 wwwroot\font\Pretendard-Thin.otf
 wwwroot\icon-192.png
 wwwroot\img\empty-box.png
+wwwroot\img\QrLogo.png
 wwwroot\img\Stec_Logo.png
 wwwroot\img\steclogo.png
 wwwroot\img\SworkIcon(32px).png
@@ -37,6 +38,7 @@ wwwroot\js\mac.js
 wwwroot\js\multiSelect.js
 wwwroot\js\qr.js
 wwwroot\js\qrcode.js
+wwwroot\js\QrJs.js
 wwwroot\js\test.js
 wwwroot\js\viewerOutsideClickListener.js
 wwwroot\js\voc.js
