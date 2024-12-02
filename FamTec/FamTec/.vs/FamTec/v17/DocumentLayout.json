@@ -211,8 +211,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Store\\StoreInfoRepository.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-02T06:18:36.665Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-02T06:18:36.665Z"
             },
             {
               "$type": "Document",
@@ -222,10 +221,14 @@
               "RelativeDocumentMoniker": "FamTec\\Server\\appsettings.json",
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\appsettings.json",
               "RelativeToolTip": "FamTec\\Server\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA0AAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACcAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-11-28T23:41:40.162Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{99b8fa2f-ab90-4f57-9c32-949f146f1914}"
             },
             {
               "$type": "Document",
@@ -237,8 +240,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.100\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
               "ViewState": "AgIAAFICAAAAAAAAAAApwGcCAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2024-11-18T00:51:54.586Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-18T00:51:54.586Z"
             },
             {
               "$type": "Document",
@@ -285,8 +287,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\Store\\InVentoryService.cs",
               "ViewState": "AgIAALEBAAAAAAAAAAAcwMIBAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-19T08:15:29.022Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-19T08:15:29.022Z"
             },
             {
               "$type": "Document",
@@ -310,10 +311,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-12-02T02:08:31.146Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{99b8fa2f-ab90-4f57-9c32-949f146f1914}"
             },
             {
               "$type": "Document",
@@ -348,8 +345,7 @@
               "RelativeToolTip": "FamTec\\Client\\FamTec.Client.csproj",
               "ViewState": "AgIAAAsAAAAAAAAAAAApwB4AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-19T10:30:24.317Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-19T10:30:24.317Z"
             },
             {
               "$type": "Document",
@@ -361,8 +357,7 @@
               "RelativeToolTip": "FamTec\\Server\\Repository\\Material\\MaterialInfoRepository.cs",
               "ViewState": "AgIAAC0CAAAAAAAAAADwvw0CAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-27T23:49:38.845Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-27T23:49:38.845Z"
             },
             {
               "$type": "Document",
@@ -374,8 +369,7 @@
               "RelativeToolTip": "FamTec\\Server\\Services\\ApiPollingService.cs",
               "ViewState": "AgIAAGsAAAAAAAAAAAAhwIQAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-18T07:06:16.606Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-18T07:06:16.606Z"
             },
             {
               "$type": "Document",
@@ -471,8 +465,7 @@
               "RelativeToolTip": "FamTec\\Shared\\FamTec.Shared.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:34:45.37Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:34:45.37Z"
             },
             {
               "$type": "Document",
@@ -495,8 +488,7 @@
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\FamTec.Client.csproj",
               "RelativeToolTip": "FamTec\\Client\\FamTec.Client.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-18T08:21:53.403Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-18T08:21:53.403Z"
             },
             {
               "$type": "Document",
@@ -520,8 +512,7 @@
               "RelativeToolTip": "FamTec\\Server\\FamTec.Server.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:22:45.679Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:22:45.679Z"
             },
             {
               "$type": "Document",
@@ -592,8 +583,7 @@
               "ToolTip": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Server\\FamTec.Server.csproj",
               "RelativeToolTip": "FamTec\\Server\\FamTec.Server.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-15T03:23:47.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-15T03:23:47.157Z"
             },
             {
               "$type": "Document",
