@@ -28,6 +28,24 @@
             }
         }
 
+        public void ConsoleWarning(string message)
+        {
+            try
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                // 로그 출력
+                Console.WriteLine($"[WARNING] {DateTime.Now}: {message}");
+
+                Console.ResetColor();
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
+
         public void ConsoleLog(Exception ex)
         {
             try

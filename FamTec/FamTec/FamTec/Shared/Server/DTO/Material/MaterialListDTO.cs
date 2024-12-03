@@ -42,8 +42,9 @@
 
         /// <summary>
         /// 이미지
+        ///     (- 약간의 딜레이 때문에 일단주석)
         /// </summary>
-        public byte[]? Image { get; set; }
+        //public byte[]? Image { get; set; }
 
 
     }

@@ -505,6 +505,7 @@ namespace FamTec.Server.Services.Material
                         DTO.ManufacturingComp = MaterialTB.ManufacturingComp; // 제조사
                         DTO.SafeNum = MaterialTB.SafeNum; // 안전재고수량
 
+                        /*
                         if (!String.IsNullOrWhiteSpace(MaterialTB.Image))
                         {
                             byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false);
@@ -538,7 +539,7 @@ namespace FamTec.Server.Services.Material
                         {
                             DTO.Image = null;
                         }
-
+                        */
                         ListDTO.Add(DTO);
                     }
                     return new ResponseList<MaterialListDTO>() { message = "요청이 정상 처리되었습니다.", data = ListDTO, code = 200 };
@@ -561,39 +562,39 @@ namespace FamTec.Server.Services.Material
                         DTO.ManufacturingComp = MaterialTB.ManufacturingComp; // 제조사
                         DTO.SafeNum = MaterialTB.SafeNum; // 안전재고수량
 
-                        if (!String.IsNullOrWhiteSpace(MaterialTB.Image))
-                        {
-                            byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false);
-                            if(ImageBytes is not null)
-                            {
-                                IFormFile? files = FileService.ConvertFormFiles(ImageBytes, MaterialTB.Image);
-                                if(files is not null)
-                                {
-                                    byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
+                        //if (!String.IsNullOrWhiteSpace(MaterialTB.Image))
+                        //{
+                        //    byte[]? ImageBytes = await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false);
+                        //    if(ImageBytes is not null)
+                        //    {
+                        //        IFormFile? files = FileService.ConvertFormFiles(ImageBytes, MaterialTB.Image);
+                        //        if(files is not null)
+                        //        {
+                        //            byte[]? ConvertFile = await FileService.AddResizeImageFile_3(files);
 
-                                    if(ConvertFile is not null)
-                                    {
-                                        DTO.Image = ConvertFile;
-                                    }
-                                    else
-                                    {
-                                        DTO.Image = null;
-                                    }
-                                }
-                                else
-                                {
-                                    DTO.Image = null;
-                                }
-                            }
-                            else
-                            {
-                                DTO.Image = null;
-                            }
-                        }
-                        else
-                        {
-                            DTO.Image = null;
-                        }
+                        //            if(ConvertFile is not null)
+                        //            {
+                        //                DTO.Image = ConvertFile;
+                        //            }
+                        //            else
+                        //            {
+                        //                DTO.Image = null;
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            DTO.Image = null;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        DTO.Image = null;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    DTO.Image = null;
+                        //}
 
                         ListDTO.Add(DTO);
                     }
@@ -717,7 +718,7 @@ namespace FamTec.Server.Services.Material
                         Standard = MaterialTB.Standard, // 규격
                         ManufacturingComp = MaterialTB.ManufacturingComp, // 제조사
                         SafeNum = MaterialTB.SafeNum, // 안전재고수량
-                        Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false) : null
+                        //Image = !String.IsNullOrWhiteSpace(MaterialTB.Image) ? await FileService.GetImageFile(MaterialFileFolderPath, MaterialTB.Image).ConfigureAwait(false) : null
                     };
 
                     ListDTO.Add(DTO);

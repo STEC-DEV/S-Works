@@ -182,6 +182,31 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+                //var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                //if (!string.IsNullOrEmpty(forwardedFor))
+                //{
+                //    var ipAddress = forwardedFor.Split(',').FirstOrDefault();
+                //    Console.WriteLine(ipAddress);
+                //}
+                //else
+                //{
+                //    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                //    Console.WriteLine(ipAddress);
+                //}
+
+
+                /*
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                // X-Forwarded-For 헤더가 있을 경우 이를 우선적으로 사용
+                var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(forwardedFor))
+                {
+                    ipAddress = forwardedFor.Split(',').FirstOrDefault();
+                }
+                Console.WriteLine(ipAddress);
+                */
+
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
 
