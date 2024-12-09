@@ -8,23 +8,29 @@
     }
 
     <input 
-        class="input"
-        type="@ValueType"
-        step="@(ValueType=="number" ? 0.001:"")"
-        placeholder="@Placeholder"
-        min="@Min"
-        max="@Max"
-        maxlength="@MaxLength"
-        MinLength="@MinLength"
-        value="@Value"
-        @oninput="OnValueChanged"
-        readonly="@ReadOnly"
-        @onkeypress="(e)=>OnkeyPress(e)"
-        />
+    class="input"
+    type="@ValueType"
+    step="@(ValueType=="number" ? 0.001:"")"
+    placeholder="@Placeholder"
+    min="@Min"
+    max="@Max"
+    maxlength="@MaxLength"
+    MinLength="@MinLength"
+    value="@Value"
+    @oninput="OnValueChanged"
+    readonly="@ReadOnly"
+    @onkeypress="(e)=>OnkeyPress(e)"
+    />
     @if(Unit)
     {
         <div class="unit-btn">
             <Button Name="단위" OnClick="OnUnitModal" />
+        </div>
+    }
+    @if (UseCycle)
+    {
+        <div class="search-btn">
+            <Button Name="검색" OnClick="OnUseCycleModal" />
         </div>
     }
 </div>
@@ -36,7 +42,13 @@
         </ChildComponent>
     </ModalBackground>
 }
-
+@if (useCycleModal){
+    <ModalBackground>
+        <ChildComponent>
+            <UseCycleModal OnCancel="OnCycleModal" ReturnValue="OnCycleValue" />
+        </ChildComponent>
+    </ModalBackground>
+}
 
 @code {
     [Parameter] public string? Label { get; set; }
@@ -50,12 +62,14 @@
     [Parameter] public bool? Row { get; set; }
     [Parameter] public bool? Required { get; set; } = false;
     [Parameter] public bool Unit { get; set; }
+    [Parameter] public bool UseCycle { get; set; }
     [Parameter] public EventCallback<T> ValueChanged { get; set; }
     [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public EventCallback<KeyboardEventArgs> OnKeyPress { get; set; }
 
 
     private bool unitModal = false;
+    private bool useCycleModal = false;
 
     private async Task OnValueChanged(ChangeEventArgs e)
     {
@@ -135,6 +149,28 @@
         unitModal = !unitModal;
     }
 
+    private void OnCycleModal()
+    {
+        useCycleModal = !useCycleModal;
+    }
+
+    private void OnUseCycleModal()
+    {
+        useCycleModal = !useCycleModal;
+    }
+
+    private async void OnCycleValue(string cycle)
+    {
+        if (typeof(T) == typeof(string))
+        {
+            await ValueChanged.InvokeAsync((T)(object)cycle);
+        }
+        else
+        {
+            Console.WriteLine("OnCycleValue: 전달된 값이 string 타입이 아닙니다.");
+        }
+    }
+    
 
     private async void OnUnitValue(string unit)
     {

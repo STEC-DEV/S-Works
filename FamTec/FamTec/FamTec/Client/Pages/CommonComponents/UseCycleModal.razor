@@ -1,0 +1,151 @@
+﻿@using FamTec.Shared.Client.DTO
+@using System.Text.Json
+<div class="modal">
+    <div class="header">
+        <span class="title">
+            내용년수 검색
+        </span>
+    </div>
+    <div class="row">
+        <InputCol @bind-Value="@searchData"
+        Placeholder="품목코드, 품목명, 제조사"
+        OnKeyPress="HandleKeyDown" />
+        <Button Name="검색" Width=true Type="0" OnClick="OnSearch" Height="false"/>
+    </div>
+    <div class="contents">
+        @if (useCycleData != null){
+            <table class="table">
+                <thead class="thead">
+                    <tr class="thead-tr">
+                        <th class="th">
+                            <span>
+                                물품분류번호
+                            </span>
+                        </th>
+                        <th class="th">
+                            <span>
+                                품명
+                            </span>
+                        </th>
+                        <th class="th">
+                            <span>
+                                내용년수
+                            </span>
+                        </th>
+                        <th class="th">
+                            <span>
+
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+                    @foreach (Item item in useCycleData){
+                        <tr class="tr pointer" @onclick=@(()=>OnChecked(null,item))>
+                            <td class="td">
+                                @item.PrdctClsfcNo
+                            </td>
+                            <td class="td">
+                                @item.PrdctClsfcNoNm
+                            </td>
+                            <td class="td">
+                                @item.Uslfsvc
+                            </td>
+                            <td class="td">
+                                <input 
+                                class="pointer"
+                                type="radio"
+                                name="material"
+                                checked =@(item.PrdctClsfcNo == Select.PrdctClsfcNo)
+                                @onchange="(e)=>OnChecked(e, item)" />
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="btns">
+        <Button Name="추가" Type="0" OnClick="OnAdd" />
+        <Button Name="취소" Type="1" OnClick="OnCanceled" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<string> ReturnValue { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    string searchData = "";
+    Item Select = new Item();
+    string selectData = "";
+    List<Item> useCycleData;
+    private async Task OnSearch(){
+        try{
+            if (string.IsNullOrEmpty(searchData))
+            {
+                await JS.InvokeVoidAsync("alert", "검색 내용을 입력해주세요.");
+                return;
+            }
+
+            useCycleData = new List<Item>();
+            // var res= await HttpClient.GetFromJsonAsync<ApiResponse>($"http://apis.data.go.kr/1230000/PrdctMngInfoService/getPrdctClsfcNoUslfsvc?serviceKey=%2Fqeu4TLyL2lnX5YQ%2Bx7tAM7jLFNb2pIviG4saBOKLm4ZZY6MNG5YIOlarnfzSn%2B0Ow2I8YUlWB2KF%2BfYsslQ8Q%3D%3D&numOfRows=1000&pageNo=1&type=json&prdctClsfcNoNm={searchData}");
+            var jsonString = await HttpClient.GetStringAsync($"http://apis.data.go.kr/1230000/PrdctMngInfoService/getPrdctClsfcNoUslfsvc?serviceKey=%2Fqeu4TLyL2lnX5YQ%2Bx7tAM7jLFNb2pIviG4saBOKLm4ZZY6MNG5YIOlarnfzSn%2B0Ow2I8YUlWB2KF%2BfYsslQ8Q%3D%3D&numOfRows=1000&pageNo=1&type=json&prdctClsfcNoNm={searchData}");
+
+            var res = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(jsonString, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            // 안전한 널 체크
+            if (res?.Response.Body?.Items != null)
+            {
+
+                useCycleData = res.Response.Body.Items;
+            }
+            else
+            {
+
+                await JS.InvokeVoidAsync("alert", "조회 결과가 없습니다.");
+            }
+            StateHasChanged();
+
+        }catch(Exception ex){
+            Console.WriteLine(ex);
+            await JS.InvokeVoidAsync("alert", "조회 실패");
+        }
+    }
+
+    private async Task OnAdd()
+    {
+        selectData = Select.Uslfsvc;
+        await ReturnValue.InvokeAsync(selectData);
+        await OnCanceled();
+    }
+
+    private async Task OnCanceled()
+    {
+        await OnCancel.InvokeAsync();
+    }
+
+
+    //엔터
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") // Enter 키가 눌렸는지 확인
+        {
+            await OnSearch(); // 로그인 메서드 호출
+        }
+    }
+
+    private void OnChecked(ChangeEventArgs? e, Item data)
+    {
+        if (e == null || e.Value?.ToString() == "on")
+        {
+            Select = data;
+        }
+        else
+        {
+            Select = null;
+        }
+    }
+}

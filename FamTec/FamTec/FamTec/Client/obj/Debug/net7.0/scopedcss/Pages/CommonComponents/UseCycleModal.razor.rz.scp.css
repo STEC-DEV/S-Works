@@ -1,0 +1,128 @@
+.modal[b-1ms1p13ddh] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    max-height:70%;
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+.modal .header>.title[b-1ms1p13ddh]{
+    font-size : var(--title-size);
+    font-weight : var(--bold-wt);
+    color : var(--main-color);
+}
+
+
+.contents[b-1ms1p13ddh] {
+    height: 100%;
+    display : flex;
+    gap : var(--default-pd);
+    overflow: auto;
+}
+
+
+.btns[b-1ms1p13ddh] {
+    display: flex;
+    gap: var(--default-pd);
+}
+
+.row[b-1ms1p13ddh]{
+    display:flex;
+    gap : var(--half-pd);
+}
+
+
+
+
+.table[b-1ms1p13ddh] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    height: 100%;
+}
+
+.table .thead[b-1ms1p13ddh]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-1ms1p13ddh]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    테이블 헤더 둥글게
+*/
+.table .th:first-child[b-1ms1p13ddh] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-1ms1p13ddh] {
+    border-radius: 0 4px 4px 0;
+}
+/* 둥글게 끝*/
+
+.table .th[b-1ms1p13ddh]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-1ms1p13ddh]{
+    text-align : center;
+}
+
+.table th>span[b-1ms1p13ddh]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-1ms1p13ddh]{
+    /*min-height : 500px;
+    height : 300px;*/
+    /*overflow:auto;*/
+}
+
+.table .tr[b-1ms1p13ddh]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tr:hover td[b-1ms1p13ddh]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-1ms1p13ddh]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-1ms1p13ddh]  .table-td-link {
+    color : var(--main-color);
+}
+
+
+.tr .text-right[b-1ms1p13ddh]{
+    text-align:right;
+}
