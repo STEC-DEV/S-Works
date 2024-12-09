@@ -507,6 +507,15 @@ foreach (var path in userPaths)
     });
 }
 
+// 필요하면 살려둠
+//      ** IP 차단기능
+/*
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Login/Login"), appBuilder =>
+{
+    appBuilder.UseMiddleware<IPManageMiddleware>();
+});
+*/
+
 #endregion
 
 app.UseRouting();

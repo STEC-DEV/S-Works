@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 
 namespace FamTec.Server.Repository.Store
@@ -30,5 +31,14 @@ namespace FamTec.Server.Repository.Store
         /// <param name="pagesize"></param>
         /// <returns></returns>
         Task<List<InOutHistoryListDTO>?> GetInOutPageNationList(int placeid, int pagenumber, int pagesize);
+
+        /// <summary>
+        /// 대쉬보드 데이터 구하기
+        /// </summary>
+        /// <param name="startOfWeek"></param>
+        /// <param name="EndOfWeek"></param>
+        /// <param name="MaterialId"></param>
+        /// <returns></returns>
+        Task<List<MaterialWeekCountDTO>?> GetDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, List<int> MaterialId);
     }
 }

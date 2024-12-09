@@ -381,9 +381,13 @@ namespace FamTec.Server.Services.Voc.Hub
                         // VOCTYPE = 0 >> 미분류
                         await AlarmInfoRepository.AddAlarmList(UserList, dto.Name, 0, result.Id, 0).ConfigureAwait(false);
                     }
-                   
-                    // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                    await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.").ConfigureAwait(false);
+
+
+                    // 민원 카운터 조회
+                    // api/Voc/sign/GetVocWeekCount
+                    await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"민원 카운터 조회").ConfigureAwait(false);
+
+                    // 민원등록 알림
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                     
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO

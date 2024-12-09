@@ -1,7 +1,13 @@
-﻿using FamTec.Server.Repository.Inventory;
+﻿using FamTec.Server.Hubs;
+using FamTec.Server.Repository.Inventory;
+using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Store;
+using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
+using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.JSInterop.Infrastructure;
 using System.Reflection.Metadata.Ecma335;
 
@@ -11,18 +17,25 @@ namespace FamTec.Server.Services.Store
     {
         private readonly IInventoryInfoRepository InventoryInfoRepository;
         private readonly IStoreInfoRepository StoreInfoRepository;
+        private readonly IMaterialInfoRepository MaterialInfoRepository;
 
         private readonly ILogService LogService;
         private readonly ConsoleLogService<InVentoryService> CreateBuilderLogger;
 
+        IHubContext<BroadcastHub> HubContext;
+
         public InVentoryService(IInventoryInfoRepository _inventoryinforepository,
             IStoreInfoRepository _storeinforepository,
             ILogService _logservice,
+            IMaterialInfoRepository _materialinforepository,
+            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<InVentoryService> _createbuilderlogger)
         {
             this.InventoryInfoRepository = _inventoryinforepository;
             this.StoreInfoRepository = _storeinforepository;
+            this.MaterialInfoRepository = _materialinforepository;
             this.LogService = _logservice;
+            this.HubContext = _hubcontext;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -47,12 +60,22 @@ namespace FamTec.Server.Services.Store
 
                 // 인벤토리 테이블에 ADD
                 int? AddInStore = await InventoryInfoRepository.AddAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
-                return AddInStore switch
+
+                if (AddInStore == 1)
                 {
-                    1 => new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 },
-                    -1 => new ResponseUnit<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = -1, code = 200 },
-                    _ => new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
-                };
+                    // signalR 플래그
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+
+                    return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 };
+                }
+                else if(AddInStore == -1)
+                {
+                    return new ResponseUnit<int?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = -1, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<int?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
             }
             catch(Exception ex)
             {
@@ -92,16 +115,27 @@ namespace FamTec.Server.Services.Store
                     -1 : 트랜잭션 걸림
                     -2 : 이미 삭제된 정보에 접근하고자 함.
                  */
-
-                return OutResult!.ReturnResult switch
+                if(OutResult!.ReturnResult == 1)
                 {
-                    1 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = OutResult, code = 200 },
-                    0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = OutResult, code = 422 },
-                    -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = OutResult, code = 409 },
-                    -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = OutResult, code = 404 },
-                    _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = OutResult, code = 500 }
-                };
-                
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = OutResult, code = 200 };
+                }
+                else if(OutResult!.ReturnResult == 0)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = OutResult, code = 422 };
+                }
+                else if(OutResult!.ReturnResult == -1)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = OutResult, code = 409 };
+                }
+                else if(OutResult!.ReturnResult == -2)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = OutResult, code = 404 };
+                }
+                else
+                {
+                    return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = OutResult, code = 500 };
+                }
             }
             catch (Exception ex)
             {
@@ -433,6 +467,64 @@ namespace FamTec.Server.Services.Store
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
                 return new ResponseUnit<InOutInventoryDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// DashBoard용 일주일치 자재별 입출고 카운트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaterialWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<MaterialWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<MaterialTb>? MaterialList = await MaterialInfoRepository.GetPlaceAllMaterialList(Convert.ToInt32(placeidx));
+                if (MaterialList is null || !MaterialList.Any())
+                    return new ResponseList<MaterialWeekCountDTO>() { message = "자재가 존재하지 않습니다.", data = null, code = 200 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                // 현재 요일 (0: 일요일, 1: 월요일, ... 6: 토요일)
+                DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
+
+                // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 뺌
+                int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
+
+                // 일요일인 경우, 첫날을 월요일로 설정하기 위해 7을 더함.
+                if(daysToSubtract < 0)
+                {
+                    daysToSubtract += 7;
+                }
+
+                // 월요일
+                DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
+                DateTime EndOfWeek = startOfWeek.AddDays(7);
+
+                List<int> MaterialIds = MaterialList.Select(m => m.Id).ToList();
+                List<MaterialWeekCountDTO>? model = await StoreInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek, MaterialIds);
+
+                if (model is not null && model.Any())
+                {
+                    return new ResponseList<MaterialWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                    return new ResponseList<MaterialWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaterialWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
     }

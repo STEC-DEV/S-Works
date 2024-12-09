@@ -70,8 +70,7 @@
               "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Building\\BuildingDetail\\Components\\Form.razor",
               "ViewState": "AgIAACgAAAAAAAAAAAAuwGsAAABUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-03T07:45:16.016Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-03T07:45:16.016Z"
             },
             {
               "$type": "Document",
@@ -83,8 +82,7 @@
               "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Building\\BuildingDetail\\Components\\BuildingInfo.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-03T07:45:13.863Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-03T07:45:13.863Z"
             },
             {
               "$type": "Document",
@@ -92,9 +90,9 @@
               "Title": "BuildingInfo.razor",
               "DocumentMoniker": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor",
               "RelativeDocumentMoniker": "FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor",
-              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor*",
-              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor*",
-              "ViewState": "AgIAAAwAAAAAAAAAAADwv1YAAABQAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\stec\\Desktop\\duke\\Dev\\2024\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor",
+              "RelativeToolTip": "FamTec\\Client\\Pages\\Normal\\Building\\BulidingAdd\\Components\\BuildingInfo.razor",
+              "ViewState": "AgIAAA8AAAAAAAAAAADwvyYAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2024-12-03T07:45:07.677Z",
               "EditorCaption": ""
@@ -109,8 +107,7 @@
               "RelativeToolTip": "FamTec\\Shared\\Client\\DTO\\Normal\\Material\\MaterialListDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwC0AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-03T00:14:21.082Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-03T00:14:21.082Z"
             },
             {
               "$type": "Document",

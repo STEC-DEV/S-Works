@@ -25,13 +25,13 @@ namespace FamTec.Server.Controllers.Login
         private readonly ILogService LogService;
         private readonly ConsoleLogService<LoginController> CreateBuilderLogger;
 
-        private readonly IDapperTempRepository DapperTemp;
+        //private readonly IDapperTempRepository DapperTemp;
 
         public LoginController(IAdminAccountService _adminaccountservice,
             IAdminPlaceService _adminplaceservice,
             IUserService _userservice,
             ILogService _logservice,
-            IDapperTempRepository _dappertemp,
+            //IDapperTempRepository _dappertemp,
             ConsoleLogService<LoginController> _createbuilderlogger)
         {
             this.AdminAccountService = _adminaccountservice;
@@ -41,9 +41,11 @@ namespace FamTec.Server.Controllers.Login
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
 
-            this.DapperTemp = _dappertemp;
+            //this.DapperTemp = _dappertemp;
         }
 
+        // Dapper 사용 예제
+        /*
         [HttpGet]
         [Route("temp")]
         public async Task<IActionResult> Temp()
@@ -52,7 +54,7 @@ namespace FamTec.Server.Controllers.Login
 
             return Ok("Asdfasdf");
         }
-
+        */
 
         /// <summary>
         /// 관리자 화면 로그인 [OK]
@@ -180,6 +182,31 @@ namespace FamTec.Server.Controllers.Login
         {
             try
             {
+                //var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                //if (!string.IsNullOrEmpty(forwardedFor))
+                //{
+                //    var ipAddress = forwardedFor.Split(',').FirstOrDefault();
+                //    Console.WriteLine(ipAddress);
+                //}
+                //else
+                //{
+                //    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                //    Console.WriteLine(ipAddress);
+                //}
+
+
+                /*
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                // X-Forwarded-For 헤더가 있을 경우 이를 우선적으로 사용
+                var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(forwardedFor))
+                {
+                    ipAddress = forwardedFor.Split(',').FirstOrDefault();
+                }
+                Console.WriteLine(ipAddress);
+                */
+
                 if (String.IsNullOrWhiteSpace(dto.UserID))
                     return NoContent();
 
