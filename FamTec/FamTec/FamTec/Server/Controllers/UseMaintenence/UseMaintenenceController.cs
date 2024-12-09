@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Middleware;
+﻿using FamTec.Server.Hubs;
+using FamTec.Server.Middleware;
 using FamTec.Server.Services;
 using FamTec.Server.Services.UseMaintenence;
 using FamTec.Shared.Server.DTO;
@@ -6,6 +7,7 @@ using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Controllers.UseMaintenence
 {
@@ -19,13 +21,13 @@ namespace FamTec.Server.Controllers.UseMaintenence
         private readonly ILogService LogService;
         private readonly ConsoleLogService<UseMaintenenceController> CreateBuilderLogger;
 
+
         public UseMaintenenceController(IUseMaintenenceService _usemaintenenceservice,
             ILogService _logservice,
-            ConsoleLogService<UseMaintenenceController> _createbuilderlogger
-        )
+            IHubContext<BroadcastHub> _hubcontext,
+            ConsoleLogService<UseMaintenenceController> _createbuilderlogger)
         {
             this.UseMaintenenceService = _usemaintenenceservice;
-            
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }

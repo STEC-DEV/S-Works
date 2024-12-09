@@ -1,10 +1,12 @@
-﻿using FamTec.Server.Repository.Facility;
+﻿using FamTec.Server.Hubs;
+using FamTec.Server.Repository.Facility;
 using FamTec.Server.Repository.Maintenence;
 using FamTec.Server.Repository.User;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.Store;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Services.Maintenance
 {
@@ -21,11 +23,14 @@ namespace FamTec.Server.Services.Maintenance
         private string? MaintanceFileFolderPath;
         private DirectoryInfo? di;
 
+        IHubContext<BroadcastHub> HubContext;
+
         public MaintanceService(IMaintanceRepository _maintancerepository,
             IFacilityInfoRepository _facilityinforepository,
             IUserInfoRepository _userinforepository,
             IFileService _fileservice,
             ILogService _logservice,
+            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<MaintanceService> _createbuilderlogger)
         {
             this.MaintanceRepository = _maintancerepository;
@@ -34,6 +39,7 @@ namespace FamTec.Server.Services.Maintenance
 
             this.FileService = _fileservice;
             this.LogService = _logservice;
+            this.HubContext = _hubcontext;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -89,14 +95,30 @@ namespace FamTec.Server.Services.Maintenance
                 if (dto.Type is 0) // 자체작업
                 {
                     FailResult? MaintanceId = await MaintanceRepository.AddSelfMaintanceAsync(dto, creater, userid, Convert.ToInt32(placeid)).ConfigureAwait(false);
-                    return MaintanceId!.ReturnResult switch
+                    
+                    if(MaintanceId!.ReturnResult > 0)
                     {
-                        > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
-                        0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 },
-                        -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 },
-                        -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
-                        _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
-                    };
+                        // signalR 플래그
+                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+
+                        return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                    }
+                    else if(MaintanceId!.ReturnResult == 0)
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
+                    }
+                    else if(MaintanceId!.ReturnResult == -1)
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
+                    }
+                    else if(MaintanceId!.ReturnResult == - 2)
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                    }
+                    else
+                    {
+                        return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                    }
                 }
                 else if (dto.Type is 1) // 외주작업
                 {
@@ -148,14 +170,28 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 FailResult? MaintanceId = await MaintanceRepository.AddMaintanceMaterialAsync(dto, creater, Convert.ToInt32(placeid)).ConfigureAwait(false);
-                return MaintanceId!.ReturnResult switch
+                if(MaintanceId!.ReturnResult > 0)
                 {
-                    > 0 => new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 },
-                    0 => new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 },
-                    -1 => new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 },
-                    -2 => new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 },
-                    _ => new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 }
-                };
+                    // signalR 플래그
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
+                }
+                else if(MaintanceId!.ReturnResult == 0)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "출고시킬 수량이 실제수량보다 부족합니다.", data = MaintanceId, code = 422 };
+                }
+                else if(MaintanceId!.ReturnResult == -1)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = MaintanceId, code = 409 };
+                }
+                else if(MaintanceId!.ReturnResult == -2)
+                {
+                    return new ResponseUnit<FailResult?>() { message = "잘못된 요청입니다.", data = MaintanceId, code = 404 };
+                }
+                else
+                {
+                    return new ResponseUnit<FailResult?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = MaintanceId, code = 500 };
+                }
             }
             catch(Exception ex)
             {
@@ -186,12 +222,20 @@ namespace FamTec.Server.Services.Maintenance
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다", data = null, code = 404 };
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceStoreRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
-                return DeleteResult switch
+                if(DeleteResult == true)
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 },
-                    _ => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
-                };
+                    // signalR 플래그
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = false, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
             }
             catch(Exception ex)
             {
@@ -223,12 +267,20 @@ namespace FamTec.Server.Services.Maintenance
 
                 bool? DeleteResult = await MaintanceRepository.deleteMaintenanceRecord(dto, Int32.Parse(placeid), deleter).ConfigureAwait(false);
 
-                return DeleteResult switch
+                if(DeleteResult == true)
                 {
-                    true => new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 },
-                    false => new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 },
-                    _ => new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 }
-                };
+                    // signalR 플래그
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
+                }
+                else if(DeleteResult == false)
+                {
+                    return new ResponseUnit<bool?>() { message = "다른곳에서 해당 품목을 사용중입니다.", data = null, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<bool?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
             }
             catch(Exception ex)
             {

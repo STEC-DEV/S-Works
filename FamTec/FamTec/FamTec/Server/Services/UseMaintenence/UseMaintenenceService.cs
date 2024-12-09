@@ -1,8 +1,10 @@
-﻿using FamTec.Server.Repository.UseMaintenence;
+﻿using FamTec.Server.Hubs;
+using FamTec.Server.Repository.UseMaintenence;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.Maintenence;
 using FamTec.Shared.Server.DTO.UseMaintenenceMaterial;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Services.UseMaintenence
 {
@@ -12,12 +14,16 @@ namespace FamTec.Server.Services.UseMaintenence
         private readonly ILogService LogService;
         private readonly ConsoleLogService<UseMaintenenceService> CreateBuilderLogger;
 
+        IHubContext<BroadcastHub> HubContext;
+
         public UseMaintenenceService(IUseMaintenenceInfoRepository _usemaintenenceinforepository,
             ILogService _logservice,
+            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<UseMaintenenceService> _createbuilderlogger)
         {
             this.UseMaintenenceInfoRepository = _usemaintenenceinforepository;
             this.LogService = _logservice;
+            this.HubContext = _hubcontext;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
@@ -112,6 +118,9 @@ namespace FamTec.Server.Services.UseMaintenence
                         int? UpdateResult = await UseMaintenenceInfoRepository.UseMaintanceOutput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                         if (UpdateResult > 0)
                         {
+                            // signalR 플래그
+                            await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+
                             return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                         }
                         else if (UpdateResult == -1)
@@ -139,6 +148,9 @@ namespace FamTec.Server.Services.UseMaintenence
                     int? UpdateResult = await UseMaintenenceInfoRepository.UseMatintanceInput(Int32.Parse(placeid), updater, dto).ConfigureAwait(false);
                     if (UpdateResult > 0)
                     {
+                        // signalR 플래그
+                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else if (UpdateResult == -1)
@@ -184,7 +196,11 @@ namespace FamTec.Server.Services.UseMaintenence
 
                 int result = await UseMaintenenceInfoRepository.UpdateUseMaintance(dto, Convert.ToInt32(placeid), updater).ConfigureAwait(false);
                 if (result == 1)
+                {
+                    // signalR 플래그
+                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
                     return new ResponseUnit<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
+                }
                 else if (result == -1)
                     return new ResponseUnit<bool?>() { message = "잘못된 요청입니다.", data = false, code = 404 };
                 else if (result == -2)
