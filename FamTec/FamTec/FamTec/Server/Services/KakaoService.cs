@@ -11,9 +11,7 @@ namespace FamTec.Server.Services
     public class KakaoService : IKakaoService
     {
         private readonly IHttpClientFactory HttpClientFactory;
-
         private FormUrlEncodedContent? Content;
-        private HttpResponseMessage? HttpResponse;
         private string? HttpResponseResult = String.Empty;
 
         private readonly ILogService LogService;
@@ -27,8 +25,6 @@ namespace FamTec.Server.Services
             this.HttpClientFactory = _httpclientfactory;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
-
-
 
 
         // 카카오 메시지결과 테스트
@@ -333,7 +329,7 @@ namespace FamTec.Server.Services
                     { "fmessage_1",message}
                 });
 
-                HttpResponse = await client.PostAsync("akv10/alimtalk/send/", Content).ConfigureAwait(false);
+                using var HttpResponse = await client.PostAsync("akv10/alimtalk/send/", Content).ConfigureAwait(false);
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
                 {
                     CharSet = "euc-kr"
@@ -505,7 +501,7 @@ namespace FamTec.Server.Services
                     { "fmessage_1",message}
                 });
 
-                HttpResponse = await client.PostAsync("akv10/alimtalk/send/", Content).ConfigureAwait(false);
+                using var HttpResponse = await client.PostAsync("akv10/alimtalk/send/", Content).ConfigureAwait(false);
                 Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
                 {
                     CharSet = "euc-kr"
@@ -528,6 +524,7 @@ namespace FamTec.Server.Services
                 throw;
             }
 
+            #region 이전버전
             /*
             try
             {
@@ -594,6 +591,7 @@ namespace FamTec.Server.Services
                 throw;
             }
             */
+            #endregion
         }
 
         private class RandomGenerator

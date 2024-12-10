@@ -1417,11 +1417,11 @@ C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\co
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\u7rrvoavnc-tptq2av103.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\qol3osisp2-lfu7j35m59.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\94ux1qv49h-7cxe8oq9xu.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-oaa8htq60u.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-nc7gvis02d.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-b2whnqgah5.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-khy923cfp8.gz
-C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-tb8wsmsif6.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\hdcz3xcx9t-35hu2c5zgw.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\ao3m03jn2x-ir0g89aybl.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\gw3driixm1-fw6co5pj0v.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\fdaugk9c5z-236peghz73.gz
+C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\compressed\58zld0z5vl-9d6t3sdi4n.gz
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.development.json
 C:\Users\kyw\Documents\S-Works\FamTec\FamTec\FamTec\Client\obj\Release\net7.0\staticwebassets.build.endpoints.json
