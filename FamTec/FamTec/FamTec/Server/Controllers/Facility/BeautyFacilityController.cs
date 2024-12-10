@@ -34,6 +34,8 @@ namespace FamTec.Server.Controllers.Facility
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+      
+
         [HttpGet]
         [Route("sign/DownloadBeautyFacilityForm")]
         public async Task<IActionResult> DownloadBeautyFacilityForm()

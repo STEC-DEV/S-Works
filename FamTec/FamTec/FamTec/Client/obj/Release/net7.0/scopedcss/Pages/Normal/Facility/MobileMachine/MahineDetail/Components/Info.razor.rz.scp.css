@@ -1,0 +1,39 @@
+
+.info[b-ee5tdap154] {
+    display: flex;
+    flex-direction: column;
+
+    gap:var(--default-pd);
+
+    padding : var(--default-pd);
+
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    background-color : var(--default-color);
+}
+
+.header[b-ee5tdap154]{
+
+}
+
+.content[b-ee5tdap154]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}
+
+.img[b-ee5tdap154]{
+    
+}
+
+.title[b-ee5tdap154] {
+    font-size: 1rem;
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.grid[b-ee5tdap154]{
+    display : flex;
+    flex-direction : column;
+    gap : var(--half-pd);
+}

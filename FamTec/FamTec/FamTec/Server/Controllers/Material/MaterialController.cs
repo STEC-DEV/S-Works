@@ -33,6 +33,8 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        
+
         [HttpGet]
         [Route("sign/DownloadMaterialForm")]
         public async Task<IActionResult> DownloadMaterialForm()

@@ -1,0 +1,87 @@
+.table[b-gupr4owxf2] {
+    border-collapse: separate;
+    width: 100%;
+    /*table-layout: fixed;*/
+    height: 100%;
+}
+
+.table .thead[b-gupr4owxf2]{
+    background-color : var(--main-color);
+    position:sticky;
+    top:0;
+    box-shadow: 0 8px 12px -2px #a1a1a1;
+}
+
+.table .thead-tr[b-gupr4owxf2]{
+    background-color:var(--main-color);
+    border-radius: var(--default-rd);
+}
+
+/*
+    ���̺� ��� �ձ۰�
+*/
+.table .th:first-child[b-gupr4owxf2] {
+    border-radius: 4px 0 0 4px;
+}
+
+.table .th:last-child[b-gupr4owxf2] {
+    border-radius: 0 4px 4px 0;
+}
+/* �ձ۰� ��*/
+
+.table .th[b-gupr4owxf2]{
+    padding:var(--three-q-pd);
+    font-size:var(--normal-size);
+    font-weight:var(--bold-wt);
+   
+}
+
+.table .text-center[b-gupr4owxf2]{
+    text-align : center;
+}
+
+.table th>span[b-gupr4owxf2]{
+    color:var(--default-color);
+     white-space : nowrap;
+}
+
+.table .tbody[b-gupr4owxf2]{
+    /*min-height : 500px;
+    height : 300px;*/
+    /*overflow:auto;*/
+}
+
+.table .tr[b-gupr4owxf2]{
+    border-bottom : var(--layout-bd);
+}
+
+
+.table .tr:hover td[b-gupr4owxf2]{
+    background-color:var(--main-light);
+    
+}
+
+.table .td[b-gupr4owxf2]{
+    text-overflow: ellipsis;
+    /*overflow:hidden;*/
+    white-space: nowrap;
+    word-break:break-all;
+
+    padding:0.8rem;
+
+    
+    text-align: center;
+    font-size:0.8rem;
+    font-weight:var(--bold-wt);
+    color : var(--main-color);
+    border-bottom : var(--layout-bd);
+}
+
+.table[b-gupr4owxf2]  .table-td-link {
+    color : var(--main-color);
+}
+
+
+.tr .text-right[b-gupr4owxf2]{
+    text-align:right;
+}

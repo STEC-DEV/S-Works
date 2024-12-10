@@ -53,7 +53,7 @@
         /// <summary>
         /// 서버전용 HTTP 전송객체
         /// </summary>
-        public static HttpClient HttpClient = new HttpClient();
+        //public static HttpClient HttpClient = new HttpClient();
 
         /// <summary>
         /// 카카오 알림톡 API KEY

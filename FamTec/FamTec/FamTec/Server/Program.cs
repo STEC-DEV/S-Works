@@ -353,7 +353,27 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 #endregion
 
 // HttpClient 등록
-builder.Services.AddHttpClient<ApiPollingService>();
+//builder.Services.AddHttpClient<ApiPollingService>();
+builder.Services.AddHttpClient("ApiPolling", client =>
+{
+    client.BaseAddress = new Uri("https://kakaoapi.aligo.in/akv10/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient("KakaoSendAPI", client =>
+{
+    client.BaseAddress = new Uri("https://kakaoapi.aligo.in/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+builder.Services.AddHttpClient("RequestAPI", client =>
+{
+    client.BaseAddress = new Uri("http://apis.data.go.kr/1230000/PrdctMngInfoService/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+
+
 
 // 백그라운드 서비스 등록
 builder.Services.AddHostedService<ApiPollingService>();
@@ -486,7 +506,8 @@ string[]? userPaths = new string[]
     "/api/Contract/sign",
     "/api/Energy/sign",
     "/api/UseMaintenence/sign",
-    "/api/Place/sign" // 사업장 컨트롤러 미들웨어 추가
+    "/api/Place/sign", // 사업장 컨트롤러 미들웨어 추가
+    "/api/CommonFacility/sign"
 };
 
 foreach (var path in adminPaths)

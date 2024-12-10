@@ -1,0 +1,61 @@
+
+
+.inputcol[b-shu98f9syi] {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--half-pd);
+    position: relative;
+}
+
+.required[b-shu98f9syi]::after {
+    position: absolute;
+    margin-left: 4px;
+    content: '*';
+    color: red;
+}
+
+.row[b-shu98f9syi]{
+    flex-direction:row;
+    align-items:center;
+    gap : var(--default-pd);
+}
+
+.row > .input[b-shu98f9syi]{
+    /*background-color : var(--content-back-color);*/
+}
+
+.label[b-shu98f9syi] {
+    min-width :50px;
+    font-size: var(--normal-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+    white-space: normal;
+}
+
+.input[b-shu98f9syi] {
+    position:relative;
+    transition : all .3s;
+    border:var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    outline :none;
+    width:100%;
+}
+
+.input:focus[b-shu98f9syi] {
+    border:var(--default-bd);
+}
+
+.unit-btn[b-shu98f9syi] {
+    position: absolute;
+    top: 65%; /* 세로 중앙에 위치 */
+    right: 10px; /* 오른쪽 여백 */
+    transform: translateY(-50%); /* 세로 중앙 정렬 */
+    
+    
+}
+
+.search-btn[b-shu98f9syi]{
+    height:100%;
+}

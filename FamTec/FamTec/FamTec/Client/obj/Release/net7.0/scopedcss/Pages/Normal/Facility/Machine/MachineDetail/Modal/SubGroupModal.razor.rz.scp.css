@@ -1,0 +1,62 @@
+
+
+
+.modal[b-t5a5vxndhy] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-pd);
+    padding: var(--default-pd);
+    border-radius: var(--default-rd);
+    border: var(--default-bd);
+    width: 30%;
+    /*height: 20%;*/
+    background-color: var(--default-color);
+    box-shadow: var(--default-bs);
+}
+
+
+.modal .hedaer[b-t5a5vxndhy] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-bd);
+}
+
+.modal .header > .title[b-t5a5vxndhy] {
+    font-size: var(--title-size);
+    font-weight: var(--bold-wt);
+    color: var(--main-color);
+}
+
+.modal .input[b-t5a5vxndhy]{
+    display:flex;
+    flex-direction:column;
+    gap:var(--half-pd);
+}
+
+.modal .input>span[b-t5a5vxndhy]{
+    place-self: center;
+    padding: var(--half-pd) 0;
+    width: 100%;
+    font-weight: var(--bold-wt);
+    font-size: var(--normal-size);
+    white-space: nowrap;
+    color: var(--main-color);
+    
+}
+
+.modal .input>input[b-t5a5vxndhy]{
+    border : var(--comp-bd);
+    border-radius : var(--default-rd);
+    padding : var(--default-pd);
+    transition : all 0.3s;
+    outline: none;
+}
+
+.modal .input>input:focus[b-t5a5vxndhy]{
+    border : var(--default-bd);
+    background-color : var(--content-back-color);
+}
+
+.btns[b-t5a5vxndhy]{
+    display : flex;
+    gap : var(--default-pd)
+}
