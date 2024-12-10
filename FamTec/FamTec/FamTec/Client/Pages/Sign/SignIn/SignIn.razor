@@ -10,6 +10,7 @@
 @using System.Security.Claims
 @using System.Text
 @using System.IdentityModel.Tokens.Jwt
+@using System.Reflection
 @inject IJSRuntime IJSRuntime
 @inject HttpClient HttpClient
 @inject ILocalStorageService _localStorageService;
@@ -30,26 +31,27 @@
                 로그인
             </span>
             <Toggle Title="관리자모드"
-                    EditMode=true
-                    @bind-Value="@LoginMode" />
+            EditMode=true
+            @bind-Value="@LoginMode" />
         </div>
         <div class="signup-form">
             <InputField 
-                        EditMode=true
-                        Placeholder="아이디"
-                        @bind-Value="@user.UserID" 
-                        OnKeyPress="HandleKeyDown" />
+            EditMode=true
+            Placeholder="아이디"
+            @bind-Value="@user.UserID" 
+            OnKeyPress="HandleKeyDown" />
             <InputField 
-                        InputType="Password"
-                        EditMode=true
-                        Placeholder="비밀번호"
-                        @bind-Value="@user.UserPassword" 
-                        OnKeyPress="HandleKeyDown" />
+            InputType="Password"
+            EditMode=true
+            Placeholder="비밀번호"
+            @bind-Value="@user.UserPassword" 
+            OnKeyPress="HandleKeyDown" />
         </div>
         <Button Name="로그인" OnClick="OnSignUp" Type=0/>
     </div>
     <span class="version">
-        1.3
+        @* 1.3 *@
+        @Version
     </span>
 </div>
 
@@ -57,6 +59,8 @@
 @code {
     LoginDTO user = new LoginDTO();
     bool LoginMode=false;
+
+    string? Version{ get; set; }
 
     protected async override Task OnInitializedAsync()
     {
@@ -66,6 +70,20 @@
             await OnValidationUser();
         }
 
+        /* 버전관리 */
+        var full_version = typeof(Program) 
+                            .Assembly
+                            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                            .InformationalVersion;
+
+        string cleanVersion = string.Empty;
+        if (!string.IsNullOrEmpty(full_version))
+        {
+            // + 기호 이후의 문자열 제거
+            Version = full_version.Split('+')[0];
+        }
+
+        Console.WriteLine(Version);
     }
 
     //로그인 유저 로그아웃시키기
