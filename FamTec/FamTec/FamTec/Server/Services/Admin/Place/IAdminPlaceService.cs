@@ -8,6 +8,13 @@ namespace FamTec.Server.Services.Admin.Place
     public interface IAdminPlaceService
     {
         /// <summary>
+        /// 관리자설정화면 가이드 양식 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadAdminGuidForm(HttpContext context);
+
+        /// <summary>
         /// 사업장에 포함되어있지 않은 관리자 리스트 조회
         /// </summary>
         /// <param name="context">JWT 토큰</param>

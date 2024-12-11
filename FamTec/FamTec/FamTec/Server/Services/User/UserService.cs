@@ -64,6 +64,35 @@ namespace FamTec.Server.Services.User
         }
 
         /// <summary>
+        /// 일반화면 가이드 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> DownloadUserGuidForm(HttpContext context)
+        {
+            try
+            {
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "GuideForm", "S-Works_사용자설명서_1.3_KO_241211.pdf");
+                if (String.IsNullOrWhiteSpace(filePath))
+                    return null;
+
+                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath);
+                if (filesBytes is not null)
+                    return filesBytes;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
         /// 사용자 엑셀 양식다운로드
         /// </summary>
         /// <param name="context"></param>
@@ -297,7 +326,9 @@ namespace FamTec.Server.Services.User
                 if (PlaceTB.Status == false)
                     return new ResponseUnit<string?>() { message = "해약된 사업장은 접근이 불가능합니다.", data = null, code = 201 };
 
-                if (UserTB.Job is null)
+
+
+                if (!UserTB.AdminYn)
                 {
                     // 일반사용자
                     var authClaims = new List<Claim>

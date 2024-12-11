@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "k4f8YhSSvkgBOTRKnQtE8M/Olg9waVYDBwzt2IzER/c=",
+  "Hash": "x60A3i9tsDKKx1GN6qZ/9NfOssmeW+2lHwp5ydLAPTI=",
   "Source": "FamTec.Server",
   "BasePath": "_content/FamTec.Server",
   "Mode": "Default",
@@ -148,8 +148,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "manifest",
-      "Fingerprint": "xtfn8rna9c",
-      "Integrity": "5fNeFh2b44BVxb1e0Mo1HXBHQdmcL+75OgaesvTlZFQ=",
+      "Fingerprint": "onpxg5smuh",
+      "Integrity": "3HvXn60KTa+OdCRZDH5PxJWEWNH8cKwG+JX48JX3nyM=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\blazor.boot.json"
@@ -379,8 +379,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "3v6cjdx9wd",
-      "Integrity": "v0S/ZAgRqCdzZtNc9Bbrs/sI2z4/iNRW1V84KsZXzk8=",
+      "Fingerprint": "o7yecgbkdz",
+      "Integrity": "TN873fIdqzbbC0BCW8IguTZX4HNKShzdwGzL/i6I874=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Client.dll"
@@ -400,8 +400,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "k290zc6x0y",
-      "Integrity": "7IDZ1J//0d89yWqfRosDGYXt0PlI6MsRISE5fSNk0j4=",
+      "Fingerprint": "0g16htkk66",
+      "Integrity": "0NEk2mVgA3EPu5xfU8M5B55J1iJE4cGW5DwSXk3d9g8=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Client.pdb"
@@ -421,8 +421,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "8fddjcmug8",
-      "Integrity": "zPf4cebwTLzWzlH6sOl0K3N5ZIvKk05t60UcXVN4th0=",
+      "Fingerprint": "adl6onrnls",
+      "Integrity": "rvWjy4g9stdUNHkYq6RmQycx5FbjL2hjUtP2ltRQmqk=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Shared.dll"
@@ -442,8 +442,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "83rshbtr2z",
-      "Integrity": "JMVA6rU9i4xIQUQ2hUNmjeBUtwfdUgLfeS/COD+5eEg=",
+      "Fingerprint": "d9ty2ddl4l",
+      "Integrity": "X5FiUPKZRpS7HXOPIUAyc8mOGvq4KAd3l7h+mfpbnBg=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Shared.pdb"
@@ -6644,7 +6644,7 @@
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\51r4ax0oz7-gozdvr00x2.gz"
     },
     {
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-xtfn8rna9c.gz",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-onpxg5smuh.gz",
       "SourceId": "FamTec.Client",
       "SourceType": "Project",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\",
@@ -6658,11 +6658,11 @@
       "RelatedAsset": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\blazor.boot.json",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "6titvs58ln",
-      "Integrity": "esOHu6LcBWNIAVMwj0d46vPYBTm6EKTNCgPEn/gEb1g=",
+      "Fingerprint": "o6x2cc1jow",
+      "Integrity": "gCBb42mtA4JWTEqGKegG29KqpLibkRd8ZtGhKzC5KBA=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-xtfn8rna9c.gz"
+      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-onpxg5smuh.gz"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\5k6spcfx8e-t4m9s14zi7.gz",
@@ -7715,7 +7715,7 @@
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ahwq5ud4f8-7u4f1vnlb7.gz"
     },
     {
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-83rshbtr2z.gz",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-d9ty2ddl4l.gz",
       "SourceId": "FamTec.Client",
       "SourceType": "Project",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\",
@@ -7729,11 +7729,11 @@
       "RelatedAsset": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Shared.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "eascyp5p02",
-      "Integrity": "NhASeD8RVMtm1xNaFTE0hzNLkMbPDRRX3uofzD6zPSk=",
+      "Fingerprint": "qml9ha2yp3",
+      "Integrity": "PnEzkYjaTBzfngNckOU72uwjNg9iNTfskdCBIZDDkyE=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-83rshbtr2z.gz"
+      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-d9ty2ddl4l.gz"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\aol64o2g18-98y8l8tlqh.gz",
@@ -8366,7 +8366,7 @@
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\f8i69d0y7y-pm2x8yto7h.gz"
     },
     {
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-k290zc6x0y.gz",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-0g16htkk66.gz",
       "SourceId": "FamTec.Client",
       "SourceType": "Project",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\",
@@ -8380,11 +8380,11 @@
       "RelatedAsset": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Client.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "cr4c1c7o14",
-      "Integrity": "6JvNK9grphWx4LTHZSlLGPJTizX21c3Ufly7+d5Kvn4=",
+      "Fingerprint": "3eltfzm208",
+      "Integrity": "i8wRv8kBzeJqG0W1x8BTb0o2ec7TanObU3955lfA92k=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-k290zc6x0y.gz"
+      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-0g16htkk66.gz"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fft4l018zy-5bd4of5k0i.gz",
@@ -8702,7 +8702,7 @@
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ghukcpfm0d-troleviv9v.gz"
     },
     {
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-3v6cjdx9wd.gz",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-o7yecgbkdz.gz",
       "SourceId": "FamTec.Client",
       "SourceType": "Project",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\",
@@ -8716,11 +8716,11 @@
       "RelatedAsset": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Client.dll",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "msnpodjz5c",
-      "Integrity": "tqCZOsy1GbA1Wcek4m3HwMVlpEFs4vvzOSd4S6Pr+0A=",
+      "Fingerprint": "y5rtx97msp",
+      "Integrity": "xqMl2K1QsqwI9CINzDMASjCih+IXxoLv0cPl/fYzj5c=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-3v6cjdx9wd.gz"
+      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-o7yecgbkdz.gz"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gwu2un6c6b-9ypmip6sh4.gz",
@@ -8786,7 +8786,7 @@
       "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\h3axxztjkh-0pc4fu4u96.gz"
     },
     {
-      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-8fddjcmug8.gz",
+      "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-adl6onrnls.gz",
       "SourceId": "FamTec.Client",
       "SourceType": "Project",
       "ContentRoot": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\",
@@ -8800,11 +8800,11 @@
       "RelatedAsset": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\bin\\Debug\\net7.0\\wwwroot\\_framework\\FamTec.Shared.dll",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "z1fmnj8jbb",
-      "Integrity": "SSdqXyHRGL/8+6fRLmE1zjO+aUqX+Lkt87i638XyUy0=",
+      "Fingerprint": "jxsgxykg5x",
+      "Integrity": "iUBi/yOrUQ+2HuHQuDDHNBGntHoYgzg+mMLXAJw4N/0=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
-      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-8fddjcmug8.gz"
+      "OriginalItemSpec": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-adl6onrnls.gz"
     },
     {
       "Identity": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hej3autnqg-0gv9yrjrmy.gz",
@@ -13290,23 +13290,23 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"5fNeFh2b44BVxb1e0Mo1HXBHQdmcL+75OgaesvTlZFQ=\""
+          "Value": "\"3HvXn60KTa+OdCRZDH5PxJWEWNH8cKwG+JX48JX3nyM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:18:17 GMT"
+          "Value": "Wed, 11 Dec 2024 00:56:44 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-5fNeFh2b44BVxb1e0Mo1HXBHQdmcL+75OgaesvTlZFQ="
+          "Value": "sha256-3HvXn60KTa+OdCRZDH5PxJWEWNH8cKwG+JX48JX3nyM="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-xtfn8rna9c.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-onpxg5smuh.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
@@ -13333,11 +13333,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"esOHu6LcBWNIAVMwj0d46vPYBTm6EKTNCgPEn/gEb1g=\""
+          "Value": "\"gCBb42mtA4JWTEqGKegG29KqpLibkRd8ZtGhKzC5KBA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:07 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:15 GMT"
         },
         {
           "Name": "Vary",
@@ -13349,19 +13349,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"5fNeFh2b44BVxb1e0Mo1HXBHQdmcL+75OgaesvTlZFQ=\""
+          "Value": "W/\"3HvXn60KTa+OdCRZDH5PxJWEWNH8cKwG+JX48JX3nyM=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-5fNeFh2b44BVxb1e0Mo1HXBHQdmcL+75OgaesvTlZFQ="
+          "Value": "sha256-3HvXn60KTa+OdCRZDH5PxJWEWNH8cKwG+JX48JX3nyM="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json.gz",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-xtfn8rna9c.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\58zld0z5vl-onpxg5smuh.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -13386,11 +13386,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"esOHu6LcBWNIAVMwj0d46vPYBTm6EKTNCgPEn/gEb1g=\""
+          "Value": "\"gCBb42mtA4JWTEqGKegG29KqpLibkRd8ZtGhKzC5KBA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:07 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:15 GMT"
         },
         {
           "Name": "Vary",
@@ -13400,7 +13400,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-esOHu6LcBWNIAVMwj0d46vPYBTm6EKTNCgPEn/gEb1g="
+          "Value": "sha256-gCBb42mtA4JWTEqGKegG29KqpLibkRd8ZtGhKzC5KBA="
         }
       ]
     },
@@ -14789,7 +14789,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2275840"
+          "Value": "2276352"
         },
         {
           "Name": "Content-Type",
@@ -14797,28 +14797,28 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"v0S/ZAgRqCdzZtNc9Bbrs/sI2z4/iNRW1V84KsZXzk8=\""
+          "Value": "\"TN873fIdqzbbC0BCW8IguTZX4HNKShzdwGzL/i6I874=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:18:16 GMT"
+          "Value": "Wed, 11 Dec 2024 00:56:43 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-v0S/ZAgRqCdzZtNc9Bbrs/sI2z4/iNRW1V84KsZXzk8="
+          "Value": "sha256-TN873fIdqzbbC0BCW8IguTZX4HNKShzdwGzL/i6I874="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Client.dll",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-3v6cjdx9wd.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-o7yecgbkdz.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000001643372"
+          "Quality": "0.000001640764"
         }
       ],
       "ResponseHeaders": [
@@ -14836,15 +14836,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "608504"
+          "Value": "609471"
         },
         {
           "Name": "ETag",
-          "Value": "\"tqCZOsy1GbA1Wcek4m3HwMVlpEFs4vvzOSd4S6Pr+0A=\""
+          "Value": "\"xqMl2K1QsqwI9CINzDMASjCih+IXxoLv0cPl/fYzj5c=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:06 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:13 GMT"
         },
         {
           "Name": "Vary",
@@ -14856,19 +14856,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"v0S/ZAgRqCdzZtNc9Bbrs/sI2z4/iNRW1V84KsZXzk8=\""
+          "Value": "W/\"TN873fIdqzbbC0BCW8IguTZX4HNKShzdwGzL/i6I874=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-v0S/ZAgRqCdzZtNc9Bbrs/sI2z4/iNRW1V84KsZXzk8="
+          "Value": "sha256-TN873fIdqzbbC0BCW8IguTZX4HNKShzdwGzL/i6I874="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Client.dll.gz",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-3v6cjdx9wd.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\gw3driixm1-o7yecgbkdz.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -14885,7 +14885,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "608504"
+          "Value": "609471"
         },
         {
           "Name": "Content-Type",
@@ -14893,11 +14893,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"tqCZOsy1GbA1Wcek4m3HwMVlpEFs4vvzOSd4S6Pr+0A=\""
+          "Value": "\"xqMl2K1QsqwI9CINzDMASjCih+IXxoLv0cPl/fYzj5c=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:06 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:13 GMT"
         },
         {
           "Name": "Vary",
@@ -14907,7 +14907,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-tqCZOsy1GbA1Wcek4m3HwMVlpEFs4vvzOSd4S6Pr+0A="
+          "Value": "sha256-xqMl2K1QsqwI9CINzDMASjCih+IXxoLv0cPl/fYzj5c="
         }
       ]
     },
@@ -14926,7 +14926,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1365132"
+          "Value": "1365208"
         },
         {
           "Name": "Content-Type",
@@ -14934,28 +14934,28 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"7IDZ1J//0d89yWqfRosDGYXt0PlI6MsRISE5fSNk0j4=\""
+          "Value": "\"0NEk2mVgA3EPu5xfU8M5B55J1iJE4cGW5DwSXk3d9g8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:18:16 GMT"
+          "Value": "Wed, 11 Dec 2024 00:56:43 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-7IDZ1J//0d89yWqfRosDGYXt0PlI6MsRISE5fSNk0j4="
+          "Value": "sha256-0NEk2mVgA3EPu5xfU8M5B55J1iJE4cGW5DwSXk3d9g8="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Client.pdb",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-k290zc6x0y.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-0g16htkk66.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000000977912"
+          "Quality": "0.000000977473"
         }
       ],
       "ResponseHeaders": [
@@ -14973,15 +14973,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1022586"
+          "Value": "1023045"
         },
         {
           "Name": "ETag",
-          "Value": "\"6JvNK9grphWx4LTHZSlLGPJTizX21c3Ufly7+d5Kvn4=\""
+          "Value": "\"i8wRv8kBzeJqG0W1x8BTb0o2ec7TanObU3955lfA92k=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:05 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:13 GMT"
         },
         {
           "Name": "Vary",
@@ -14993,19 +14993,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"7IDZ1J//0d89yWqfRosDGYXt0PlI6MsRISE5fSNk0j4=\""
+          "Value": "W/\"0NEk2mVgA3EPu5xfU8M5B55J1iJE4cGW5DwSXk3d9g8=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-7IDZ1J//0d89yWqfRosDGYXt0PlI6MsRISE5fSNk0j4="
+          "Value": "sha256-0NEk2mVgA3EPu5xfU8M5B55J1iJE4cGW5DwSXk3d9g8="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Client.pdb.gz",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-k290zc6x0y.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\fdaugk9c5z-0g16htkk66.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15022,7 +15022,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1022586"
+          "Value": "1023045"
         },
         {
           "Name": "Content-Type",
@@ -15030,11 +15030,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"6JvNK9grphWx4LTHZSlLGPJTizX21c3Ufly7+d5Kvn4=\""
+          "Value": "\"i8wRv8kBzeJqG0W1x8BTb0o2ec7TanObU3955lfA92k=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:17:05 GMT"
+          "Value": "Wed, 11 Dec 2024 00:16:13 GMT"
         },
         {
           "Name": "Vary",
@@ -15044,7 +15044,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-6JvNK9grphWx4LTHZSlLGPJTizX21c3Ufly7+d5Kvn4="
+          "Value": "sha256-i8wRv8kBzeJqG0W1x8BTb0o2ec7TanObU3955lfA92k="
         }
       ]
     },
@@ -15071,28 +15071,28 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zPf4cebwTLzWzlH6sOl0K3N5ZIvKk05t60UcXVN4th0=\""
+          "Value": "\"rvWjy4g9stdUNHkYq6RmQycx5FbjL2hjUtP2ltRQmqk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zPf4cebwTLzWzlH6sOl0K3N5ZIvKk05t60UcXVN4th0="
+          "Value": "sha256-rvWjy4g9stdUNHkYq6RmQycx5FbjL2hjUtP2ltRQmqk="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Shared.dll",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-8fddjcmug8.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-adl6onrnls.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000008846504"
+          "Quality": "0.000008843219"
         }
       ],
       "ResponseHeaders": [
@@ -15110,15 +15110,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "113038"
+          "Value": "113080"
         },
         {
           "Name": "ETag",
-          "Value": "\"SSdqXyHRGL/8+6fRLmE1zjO+aUqX+Lkt87i638XyUy0=\""
+          "Value": "\"iUBi/yOrUQ+2HuHQuDDHNBGntHoYgzg+mMLXAJw4N/0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         },
         {
           "Name": "Vary",
@@ -15130,19 +15130,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zPf4cebwTLzWzlH6sOl0K3N5ZIvKk05t60UcXVN4th0=\""
+          "Value": "W/\"rvWjy4g9stdUNHkYq6RmQycx5FbjL2hjUtP2ltRQmqk=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zPf4cebwTLzWzlH6sOl0K3N5ZIvKk05t60UcXVN4th0="
+          "Value": "sha256-rvWjy4g9stdUNHkYq6RmQycx5FbjL2hjUtP2ltRQmqk="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Shared.dll.gz",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-8fddjcmug8.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\hdcz3xcx9t-adl6onrnls.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15159,7 +15159,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "113038"
+          "Value": "113080"
         },
         {
           "Name": "Content-Type",
@@ -15167,11 +15167,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"SSdqXyHRGL/8+6fRLmE1zjO+aUqX+Lkt87i638XyUy0=\""
+          "Value": "\"iUBi/yOrUQ+2HuHQuDDHNBGntHoYgzg+mMLXAJw4N/0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         },
         {
           "Name": "Vary",
@@ -15181,7 +15181,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-SSdqXyHRGL/8+6fRLmE1zjO+aUqX+Lkt87i638XyUy0="
+          "Value": "sha256-iUBi/yOrUQ+2HuHQuDDHNBGntHoYgzg+mMLXAJw4N/0="
         }
       ]
     },
@@ -15200,7 +15200,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "154560"
+          "Value": "154608"
         },
         {
           "Name": "Content-Type",
@@ -15208,28 +15208,28 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"JMVA6rU9i4xIQUQ2hUNmjeBUtwfdUgLfeS/COD+5eEg=\""
+          "Value": "\"X5FiUPKZRpS7HXOPIUAyc8mOGvq4KAd3l7h+mfpbnBg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-JMVA6rU9i4xIQUQ2hUNmjeBUtwfdUgLfeS/COD+5eEg="
+          "Value": "sha256-X5FiUPKZRpS7HXOPIUAyc8mOGvq4KAd3l7h+mfpbnBg="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Shared.pdb",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-83rshbtr2z.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-d9ty2ddl4l.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000018489415"
+          "Quality": "0.000018493860"
         }
       ],
       "ResponseHeaders": [
@@ -15247,15 +15247,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "54084"
+          "Value": "54071"
         },
         {
           "Name": "ETag",
-          "Value": "\"NhASeD8RVMtm1xNaFTE0hzNLkMbPDRRX3uofzD6zPSk=\""
+          "Value": "\"PnEzkYjaTBzfngNckOU72uwjNg9iNTfskdCBIZDDkyE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         },
         {
           "Name": "Vary",
@@ -15267,19 +15267,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"JMVA6rU9i4xIQUQ2hUNmjeBUtwfdUgLfeS/COD+5eEg=\""
+          "Value": "W/\"X5FiUPKZRpS7HXOPIUAyc8mOGvq4KAd3l7h+mfpbnBg=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-JMVA6rU9i4xIQUQ2hUNmjeBUtwfdUgLfeS/COD+5eEg="
+          "Value": "sha256-X5FiUPKZRpS7HXOPIUAyc8mOGvq4KAd3l7h+mfpbnBg="
         }
       ]
     },
     {
       "Route": "_framework/FamTec.Shared.pdb.gz",
-      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-83rshbtr2z.gz",
+      "AssetFile": "C:\\Users\\kyw\\Documents\\S-Works\\FamTec\\FamTec\\FamTec\\Client\\obj\\Debug\\net7.0\\compressed\\ao3m03jn2x-d9ty2ddl4l.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15296,7 +15296,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "54084"
+          "Value": "54071"
         },
         {
           "Name": "Content-Type",
@@ -15304,11 +15304,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"NhASeD8RVMtm1xNaFTE0hzNLkMbPDRRX3uofzD6zPSk=\""
+          "Value": "\"PnEzkYjaTBzfngNckOU72uwjNg9iNTfskdCBIZDDkyE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 10 Dec 2024 08:08:04 GMT"
+          "Value": "Wed, 11 Dec 2024 00:11:58 GMT"
         },
         {
           "Name": "Vary",
@@ -15318,7 +15318,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-NhASeD8RVMtm1xNaFTE0hzNLkMbPDRRX3uofzD6zPSk="
+          "Value": "sha256-PnEzkYjaTBzfngNckOU72uwjNg9iNTfskdCBIZDDkyE="
         }
       ]
     },

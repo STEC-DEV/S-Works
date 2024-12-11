@@ -39,6 +39,34 @@ namespace FamTec.Server.Controllers.User
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        /// <summary>
+        /// 일반 화면 가이드 PDF 다운로드
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/DownloadUserGuideForm")]
+        public async Task<IActionResult> DownloadUserGuideForm()
+        {
+            try
+            {
+                byte[]? fileBytes = await UserService.DownloadUserGuidForm(HttpContext);
+
+                if (fileBytes is not null)
+                    return File(fileBytes, "application/pdf", "S-Works_사용자설명서_1.3_KO_241211.pdf");
+                else
+                    return Ok();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         [HttpGet]
         [Route("DownloadUserForm")]
         public async Task<IActionResult> DownloadUserForm()

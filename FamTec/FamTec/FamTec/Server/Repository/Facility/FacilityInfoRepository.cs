@@ -461,6 +461,7 @@ namespace FamTec.Server.Repository.Facility
                                                                Type = facilitytb.Type, /* 설비타입 */
                                                                Num = facilitytb.Num, /* 수량 */
                                                                RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                               BuildingName = building.Name, /* 건물명칭 */
                                                                StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                                EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                                LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -524,6 +525,7 @@ namespace FamTec.Server.Repository.Facility
                                                                Type = facilitytb.Type, /* 설비타입 */
                                                                Num = facilitytb.Num, /* 수량 */
                                                                RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                               BuildingName = building.Name, /* 건물명칭 */
                                                                StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                                EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                                LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -586,6 +588,7 @@ namespace FamTec.Server.Repository.Facility
                                                              Type = facilitytb.Type, /* 설비타입 */
                                                              Num = facilitytb.Num, /* 수량 */
                                                              RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                             BuildingName = building.Name, /* 건물명칭 */
                                                              StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                              EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                              LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -648,6 +651,7 @@ namespace FamTec.Server.Repository.Facility
                                                             Type = facilitytb.Type, /* 설비타입 */
                                                             Num = facilitytb.Num, /* 수량 */
                                                             RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                            BuildingName = building.Name, /* 건물명칭 */
                                                             StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                             EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                             LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -710,6 +714,7 @@ namespace FamTec.Server.Repository.Facility
                                                             Type = facilitytb.Type, /* 설비타입 */
                                                             Num = facilitytb.Num, /* 수량 */
                                                             RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                            BuildingName = building.Name, /* 건물명칭 */
                                                             StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                             EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                             LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -772,6 +777,7 @@ namespace FamTec.Server.Repository.Facility
                                                                  Type = facilitytb.Type, /* 설비타입 */
                                                                  Num = facilitytb.Num, /* 수량 */
                                                                  RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                                 BuildingName = building.Name, /* 건물명칭 */
                                                                  StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                                  EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                                  LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -834,6 +840,7 @@ namespace FamTec.Server.Repository.Facility
                                                               Type = facilitytb.Type, /* 설비타입 */
                                                               Num = facilitytb.Num, /* 수량 */
                                                               RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                              BuildingName = building.Name, /* 건물명칭 */
                                                               StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                               EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                               LifeSpan = facilitytb.Lifespan, /* 내용연수 */
@@ -896,6 +903,7 @@ namespace FamTec.Server.Repository.Facility
                                                               Type = facilitytb.Type, /* 설비타입 */
                                                               Num = facilitytb.Num, /* 수량 */
                                                               RoomName = roomtb.Name, /* 공간위치 이름 */
+                                                              BuildingName = building.Name, /* 건물명칭 */
                                                               StandardCapacity = facilitytb.StandardCapacity, /* 규격용량 */
                                                               EquipDT = facilitytb.EquipDt, /* 설치년월 */
                                                               LifeSpan = facilitytb.Lifespan, /* 내용연수 */

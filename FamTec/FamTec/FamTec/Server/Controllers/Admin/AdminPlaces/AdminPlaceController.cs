@@ -32,7 +32,34 @@ namespace FamTec.Server.Controllers.Admin.AdminPlaces
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-       
+        /// <summary>
+        /// 관리자 화면 가이드 PDF 다운로드
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "SystemManager, Master, Manager")]
+        [HttpGet]
+        [Route("sign/DownloadAdminGuideForm")]
+        public async Task<IActionResult> DownloadAdminGuideForm()
+        {
+            try
+            {
+                byte[]? fileBytes = await AdminPlaceService.DownloadAdminGuidForm(HttpContext);
+
+                if (fileBytes is not null)
+                    return File(fileBytes, "application/pdf", "S-Works_관리자설명서_1.3_KO_241211.pdf");
+                else
+                    return Ok();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.Message);
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+
         /// <summary>
         /// 전체 사업장 리스트 조회 [OK]
         /// [매니저는 본인이 할당된 것 만 출력]

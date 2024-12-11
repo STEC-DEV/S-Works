@@ -29,6 +29,7 @@
 <input type="button" value="설비양식다운로드" @onclick="(() => btnDownloadFaciliyForm())"/>
 <input type="button" value="미화설비양식다운로드" @onclick="(() => btnDownloadbeautyFacilityForm())"/>
 <input type="button" value="품목다운로드" @onclick="(() => btnDownloadMaterialForm())"/>
+<input type="button" value="가이드 다운로드" @onclick="(() => btnDownloadGuideForm())"/>
 
 
 
@@ -36,7 +37,20 @@
     private IBrowserFile? selectedFile;
     private bool isFileSelected = false;
 
-    
+    protected async Task btnDownloadGuideForm()
+    {
+        HttpClient.DefaultRequestHeaders.Accept.Clear();
+        HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/pdf"));
+
+        string? jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWR4IjoiMyIsIk5hbWUiOiLquYDsmqnsmrAiLCJqdGkiOiIwMTA4MjU0MS0xNjI5LTRlZmItOWI1MC0zOGU3NDI5NWRkNWQiLCJVc2VyVHlwZSI6IkFETUlOIiwiQWRtaW5JZHgiOiIzIiwiRGVwYXJ0SWR4IjoiMSIsIkRlcGFydG1lbnROYW1lIjoi7Iuc7Iqk7YWc6rCc67Cc7Jew6rWs7IaMIiwiUm9sZSI6IuuniOyKpO2EsCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik1hc3RlciIsImV4cCI6MTczMzk2NDE3NiwiaXNzIjoiaHR0cHM6Ly9zd3Mucy10ZWMuY28ua3IvIiwiYXVkIjoiaHR0cHM6Ly9zd3Mucy10ZWMuY28ua3IvIn0.hy3Up1XIoMBpkEhYyBoMrzlOL1IQGyFbtOQoF-tONHE";
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+        var fileBytes = await HttpClient.GetByteArrayAsync("http://123.2.156.148:5245/api/AdminPlace/sign/DownloadAdminGuideForm");
+        var base64 = Convert.ToBase64String(fileBytes);
+        var fileUrl = $"data:application/pdf;base64,{base64}";
+
+        await JS.InvokeVoidAsync("downloadFile", fileUrl, "S-Works_관리자설명서_1.3_KO_241211.pdf");
+    }
 
     protected async Task btnDownloadBuildingForm()
     {

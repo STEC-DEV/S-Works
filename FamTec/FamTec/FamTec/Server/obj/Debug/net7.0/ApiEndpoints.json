@@ -81,6 +81,16 @@
   },
   {
     "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
+    "Method": "DownloadAdminGuideForm",
+    "RelativePath": "api/AdminPlace/sign/DownloadAdminGuideForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.Admin.AdminPlaces.AdminPlaceController",
     "Method": "GetAllManagerList",
     "RelativePath": "api/AdminPlace/sign/GetAllManagerList",
     "HttpMethod": "GET",
@@ -5800,6 +5810,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FamTec.Server.Controllers.User.UserController",
+    "Method": "DownloadUserGuideForm",
+    "RelativePath": "api/User/sign/DownloadUserGuideForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

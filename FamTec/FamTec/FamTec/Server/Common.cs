@@ -51,11 +51,6 @@
         public static readonly int MEGABYTE_10 = 10485760;
 
         /// <summary>
-        /// 서버전용 HTTP 전송객체
-        /// </summary>
-        //public static HttpClient HttpClient = new HttpClient();
-
-        /// <summary>
         /// 카카오 알림톡 API KEY
         /// </summary>
         public static readonly string KakaoAPIKey = "i60oeb079x8ivosskcwfrfku7liks4ke";
@@ -80,13 +75,11 @@
         /// 카카오톡 알림톡 템플릿 Code [민원접수]
         /// </summary>
         public static readonly string KakaoTemplateCode_1 = "TU_6120";
-        //public static readonly string KakaoTemplateCode_1 = "TV_1691";
 
         /// <summary>
         /// 카카오톡 알림톡 템플릿 Code [민원 진행상태 변경]
         /// </summary>
         public static readonly string KakaoTemplateCode_2 = "TU_6125";
-        //public static readonly string KakaoTemplateCode_2 = "TV_1693";
 
         /// <summary>
         /// 민원접수 관리자용 템플릿
@@ -96,7 +89,6 @@
         /// <summary>
         /// 인증코드 발급코드
         /// </summary>
-        //public static readonly string KakaoTemplateCode_4 = "TV_6990";
         public static readonly string KakaoTemplateCode_4 = "TV_7705";
     }
 }

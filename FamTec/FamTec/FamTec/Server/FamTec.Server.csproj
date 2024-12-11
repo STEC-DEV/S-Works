@@ -55,6 +55,12 @@
 		<None Update="ExcelForm\사용자정보%28양식%29.xlsx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="GuideForm\S-Works_관리자설명서_1.3_KO_241211.pdf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="GuideForm\S-Works_사용자설명서_1.3_KO_241211.pdf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="PFX\sws.s-tec.co.kr_pfx.pfx">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

@@ -134,7 +134,7 @@ namespace FamTec.Server.Services
                                 if (!string.IsNullOrWhiteSpace(logTB.Msgid))
                                 {
                                     // HttpClient 생성
-                                    var Client = HttpClientFactory.CreateClient("ApiPolling");
+                                    var Client = HttpClientFactory.CreateClient("KakaoSendAPI");
 
                                     var content = new FormUrlEncodedContent(new Dictionary<string, string>
                                      {
@@ -143,7 +143,7 @@ namespace FamTec.Server.Services
                                          { "mid", logTB.Msgid }
                                      });
 
-                                    using var response = await Client.PostAsync("history/detail", content).ConfigureAwait(false);
+                                    using var response = await Client.PostAsync("akv10/history/detail", content).ConfigureAwait(false);
                                     string responseContent = await response.Content
                                                             .ReadAsStringAsync()
                                                             .ConfigureAwait(false);

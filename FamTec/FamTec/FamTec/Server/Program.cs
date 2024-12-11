@@ -77,7 +77,6 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http.Connections;
 using System.Data;
 using MySqlConnector;
 using FamTec.Server.Repository.DapperTemp;
@@ -215,9 +214,9 @@ builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
 
     return PartitionedRateLimiter.Create<HttpContext, string>(context =>
     {
-        // HttpContext에서 partition key로 사용할 값 설정
+        /* HttpContext에서 partition key로 사용할 값 설정 */
         var partitionKey = context.Request.Path.ToString();
-        // Sliding Window Rate Limiter 생성 및 반환
+        /* Sliding Window Rate Limiter 생성 및 반환 */
         return RateLimitPartition.GetSlidingWindowLimiter(
             partitionKey,
             _ => new SlidingWindowRateLimiterOptions
@@ -232,9 +231,8 @@ builder.Services.AddSingleton<PartitionedRateLimiter<HttpContext>>(sp =>
 });
 
 builder.Services.AddScoped<SlidingWindowPolicyFilter>();
-
-
 #endregion
+
 #region JWT
 builder.Services.AddAuthentication(options =>
 {
@@ -258,9 +256,7 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
-Console.WriteLine("DBConnect전");
 #region DB연결 정보
-
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!String.IsNullOrWhiteSpace(connectionString))
 {
@@ -276,7 +272,6 @@ if (!String.IsNullOrWhiteSpace(connectionString))
           // 다른 성능 및 안정성 옵션 추가
           mySqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery); // 복잡한 쿼리의 성능 향상을 위한 쿼리 분할 사용
       }));
-    //poolSize: 128;);
 
     builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(connectionString));
 
@@ -321,7 +316,7 @@ else
     throw new InvalidOperationException("'Cors' is null or empty.");
 }
 
-// 응답압축 설정
+/* 응답압축 설정 */
 builder.Services.AddResponseCompression(opts =>
 {
     opts.EnableForHttps = true; // HTTPS 요청에서도 응답압축 활성화
@@ -340,7 +335,7 @@ builder.Services.AddResponseCompression(opts =>
 });
 
 
-// Brotli와 Gzip 압축 제공자 설정
+/* Brotli와 Gzip 압축 제공자 설정 */
 builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
 {
     options.Level = System.IO.Compression.CompressionLevel.Fastest;
@@ -352,14 +347,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 #endregion
 
-// HttpClient 등록
-//builder.Services.AddHttpClient<ApiPollingService>();
-builder.Services.AddHttpClient("ApiPolling", client =>
-{
-    client.BaseAddress = new Uri("https://kakaoapi.aligo.in/akv10/");
-    client.Timeout = TimeSpan.FromSeconds(30);
-});
-
+/* HttpClient 등록 */
 builder.Services.AddHttpClient("KakaoSendAPI", client =>
 {
     client.BaseAddress = new Uri("https://kakaoapi.aligo.in/");
@@ -373,9 +361,7 @@ builder.Services.AddHttpClient("RequestAPI", client =>
 });
 
 
-
-
-// 백그라운드 서비스 등록
+/* 백그라운드 서비스 등록 */
 builder.Services.AddHostedService<ApiPollingService>();
 builder.Services.AddHostedService<StartupTask>();
 
@@ -414,18 +400,10 @@ else
 
 app.UseBlazorFrameworkFiles(); // Blazor 정적 파일 제공 설정
 
-// MIME 타입 및 압축 헤더 설정
-//FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
-// 기본 제공되지 않는 MIME 타입 추가
-//provider.Mappings[".wasm"] = "application/wasm";
-//provider.Mappings[".gz"] = "application/octet-stream";
-//provider.Mappings[".br"] = "application/octet-stream";
-//provider.Mappings[".jpg"] = "image/jpeg";
-//provider.Mappings[".png"] = "image/png";
-//provider.Mappings[".gif"] = "image/gif";
-//provider.Mappings[".webp"] = "image/webp";
-//provider.Mappings[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
+/*
+ MIME 타입 및 압축 헤더 설정
+ 기본 제공되지 않는 MIME 타입 추가
+*/
 app.UseStaticFiles(new StaticFileOptions
 {
     ContentTypeProvider = new FileExtensionContentTypeProvider
@@ -445,7 +423,7 @@ app.UseStaticFiles(new StaticFileOptions
     },
     OnPrepareResponse = ctx =>
     {
-        // 압축된 파일에 대한 Content-Encoding 헤더 설정
+        /* 압축된 파일에 대한 Content-Encoding 헤더 설정 */
         if (ctx.File.Name.EndsWith(".gz"))
         {
             ctx.Context.Response.Headers["Content-Encoding"] = "gzip";
@@ -464,7 +442,6 @@ app.UseCors(MyAllowSpectificOrigins);
 
 
 #region MiddleWare
-
 string[]? adminPaths = new string[]
 {
     "/api/AdminUser/sign", // AdminUser [설정] 컨트롤러 미들웨어 추가
@@ -528,15 +505,13 @@ foreach (var path in userPaths)
     });
 }
 
-// 필요하면 살려둠
-//      ** IP 차단기능
+/* 필요하면 살려둠 - IP 차단기능 */
 /*
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/Login/Login"), appBuilder =>
 {
     appBuilder.UseMiddleware<IPManageMiddleware>();
 });
 */
-
 #endregion
 
 app.UseRouting();

@@ -50,5 +50,10 @@
         /// </summary>
         public string? RoomName { get; set; }
 
+        /// <summary>
+        /// 건물명칭
+        /// </summary>
+        public string? BuildingName { get; set; }
+
     }
 }

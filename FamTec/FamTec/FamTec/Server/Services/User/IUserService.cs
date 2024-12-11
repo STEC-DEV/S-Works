@@ -9,6 +9,13 @@ namespace FamTec.Server.Services.User
     public interface IUserService
     {
         /// <summary>
+        /// 일반화면 가이드 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<byte[]?> DownloadUserGuidForm(HttpContext context);
+
+        /// <summary>
         /// 사용자 엑셀양식 다운로드
         /// </summary>
         /// <param name="context"></param>

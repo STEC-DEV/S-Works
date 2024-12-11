@@ -18,6 +18,7 @@ namespace FamTec.Server.Services.Admin.Place
         private readonly IAdminUserInfoRepository AdminUserInfoRepository;
         private readonly IBuildingInfoRepository BuildingInfoRepository;
         private readonly IUserInfoRepository UserInfoRepository;
+        private readonly IWebHostEnvironment WebHostEnvironment;
         private readonly ILogService LogService;
         private readonly ConsoleLogService<AdminPlaceService> CreateBuilderLogger;
 
@@ -27,6 +28,7 @@ namespace FamTec.Server.Services.Admin.Place
             IBuildingInfoRepository _buildinginforepository,
             IUserInfoRepository _userinforepository,
             ILogService _logservice,
+            IWebHostEnvironment _webhostenvironment,
             ConsoleLogService<AdminPlaceService> _createbuilderlogger)
         {
             this.AdminPlaceInfoRepository = _adminplaceinforepository;
@@ -34,10 +36,40 @@ namespace FamTec.Server.Services.Admin.Place
             this.AdminUserInfoRepository = _adminuserinforepository;
             this.BuildingInfoRepository = _buildinginforepository;
             this.UserInfoRepository = _userinforepository;
-
+            this.WebHostEnvironment = _webhostenvironment;
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        /// <summary>
+        /// 관리자 설정화면 가이드 다운로드
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> DownloadAdminGuidForm(HttpContext context)
+        {
+            try
+            {
+                string? filePath = Path.Combine(WebHostEnvironment.ContentRootPath, "GuideForm", "S-Works_관리자설명서_1.3_KO_241211.pdf");
+                if (String.IsNullOrWhiteSpace(filePath))
+                    return null;
+
+                byte[]? filesBytes = await File.ReadAllBytesAsync(filePath);
+                if (filesBytes is not null)
+                    return filesBytes;
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 전체사업장 조회 
@@ -756,5 +788,6 @@ namespace FamTec.Server.Services.Admin.Place
             }
         }
 
+   
     }
 }
