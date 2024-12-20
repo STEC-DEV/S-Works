@@ -36,74 +36,74 @@ namespace FamTec.Server.Controllers.Voc
             this.FileService = _fileservice;
         }
 
-        /// <summary>
-        /// 이미지 Get시 사이즈 줄여서 반환하는 로직테스트
-        /// </summary>
-        /// <returns></returns>
-        //[AllowAnonymous]
-        /*
+
+        [AllowAnonymous]
         [HttpGet]
-        [Route("temp")]
-        public async Task<IActionResult> Temp()
+        [Route("sign/GetVocDaysStatusCount")]
+        public async Task<IActionResult> GetVocDaysStatusCount()
         {
             try
             {
-                var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
-                if(userAgent.Contains("Mobile") || userAgent.Contains("Android") || userAgent.Contains("iPhone"))
-                {
-                    Console.WriteLine("모바일");
-                }
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<VocDaysStatusCountDTO>? model = await VocService.GetVocDaysStatusDataService(HttpContext).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
                 else
-                {
-                    Console.WriteLine("PC");
-                }
-                
+                    return BadRequest();
 
-                // 이미지파일 랜더링시에 축소
-                //string ImagePath = @"C:\Users\kyw\Pictures\Screenshots";
-                //byte[]? ImageBytes = await FileService.GetImageFile(ImagePath, ).ConfigureAwait(false);
-                //IFormFile files = FileService.ConvertFormFiles(ImageBytes, "TempImage");// byte배열, 파일 명칭
-                //byte[] ConvertFile = await FileService.AddResizeImageFile_2(files);
-                //string str = Convert.ToBase64String(ConvertFile);
-
-                //Console.WriteLine(str);
-
-                //return Ok(str);
-
-                // 방법 [1] 확인
-
-                string imagePath = @"C:\Users\kyw\Pictures\Screenshots";
-                byte[]? imageBytes = await FileService.GetImageFile(imagePath, "TempImage.jpg").ConfigureAwait(false);
-                
-                if (imageBytes == null || imageBytes.Length == 0)
-                    return NotFound();
-
-                // Brotli로 이미지 압축
-                using (var outputStream = new MemoryStream())
-                {
-                    // Brotli로 이미지 압축
-                    using (var gzipStream = new GZipStream(outputStream, CompressionLevel.Fastest, leaveOpen: true))
-                    {
-                        await gzipStream.WriteAsync(imageBytes, 0, imageBytes.Length).ConfigureAwait(false);
-                    }
-
-                    outputStream.Position = 0;
-                    byte[] compressedImageBytes = outputStream.ToArray();
-                    Console.WriteLine(compressedImageBytes.Length);
-                    
-                    // Content-Encoding 헤더 추가
-                    Response.Headers.Add("Content-Encoding", "gzip");
-                    return File(compressedImageBytes, "image/png");
-                }
-                
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                throw;
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.");
             }
         }
-        */
 
+        /// <summary>
+        /// DashBoad 하루치 유형별 발생건수
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetVocDaysCount")]
+        public async Task<IActionResult> GetVocDaysCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDaysDataService(HttpContext).ConfigureAwait(false);
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.");
+            }
+        }
+
+        /// <summary>
+        /// DashBoad 일주일간의 유형별 발생건수
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         [Route("sign/GetVocWeekCount")]
@@ -114,7 +114,7 @@ namespace FamTec.Server.Controllers.Voc
                 if (HttpContext is null)
                     return BadRequest();
 
-                ResponseList<VocWeekCountDTO>? model = await VocService.GetVocDashBoardDataService(HttpContext).ConfigureAwait(false);
+                ResponseUnit<VocWeekCountDTO>? model = await VocService.GetVocDashBoardWeeksDataService(HttpContext).ConfigureAwait(false);
                 if (model is null)
                     return BadRequest();
 

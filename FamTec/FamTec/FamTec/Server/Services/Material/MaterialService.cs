@@ -6,6 +6,7 @@ using FamTec.Server.Repository.Material;
 using FamTec.Server.Repository.Room;
 using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Services.Material
@@ -44,6 +45,39 @@ namespace FamTec.Server.Services.Material
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        /// <summary>
+        /// 대쉬보드용 안전재고와 가까운 TOP10
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseList<MaterialCountDTO>?> GetMaterialCountService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaterialCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseList<MaterialCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                List<MaterialCountDTO>? model = await MaterialInfoRepository.GetDashBoardMaterialCount(Convert.ToInt32(placeidx));
+                if (model is [_, ..])
+                    return new ResponseList<MaterialCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                else
+                    return new ResponseList<MaterialCountDTO>() { message = "요청이 정상 처리되었습니다.", data = new List<MaterialCountDTO>(), code = 200 };
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaterialCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = new List<MaterialCountDTO>(), code = 500 };
+            }
+        }
+
 
         private IXLWorksheet CreateCell(IXLWorksheet sheet, List<string> title, List<RoomTb> RoomList)
         {
@@ -1141,5 +1175,7 @@ namespace FamTec.Server.Services.Material
                 return new ResponseList<MaterialSearchListDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+    
     }
 }

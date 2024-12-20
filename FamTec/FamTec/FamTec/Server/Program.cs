@@ -324,13 +324,15 @@ builder.Services.AddResponseCompression(opts =>
     opts.Providers.Add<GzipCompressionProvider>();
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
      {
+            "application/wasm", // WASM 파일 추가
             "application/octet-stream",
             "application/json",
             "application/xml",
             "text/plain",
             "text/css",
             "text/javascript",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/pdf",
         }).Except(new[] { "text/html" });
 });
 
@@ -418,7 +420,8 @@ app.UseStaticFiles(new StaticFileOptions
             [".png"] = "image/png",
             [".gif"] = "image/gif",
             [".webp"] = "image/webp",
-            [".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            [".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            [".pdf"] = "application/pdf"
         }
     },
     OnPrepareResponse = ctx =>

@@ -39,7 +39,37 @@ namespace FamTec.Server.Controllers.Maintenance
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-       
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetMaintanceCount")]
+        public async Task<IActionResult> GetMaintanceCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaintanceWeekCount>? model = await MaintanceService.GetMaintanceDashBoardDataService(HttpContext);
+                if (model == null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else if (model.code == 204)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
+            
 
         [AllowAnonymous]
         [HttpPost]

@@ -99,5 +99,12 @@ namespace FamTec.Server.Services.Store
         /// <param name="context"></param>
         /// <returns></returns>
         public Task<ResponseList<MaterialWeekCountDTO>?> GetInoutDashBoardDataService(HttpContext context);
+
+        /// <summary>
+        /// 대쉬보드용 금일 입출고 내역
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<InOutListDTO?>> GetDashBoardInOutListData(HttpContext context);
     }
 }

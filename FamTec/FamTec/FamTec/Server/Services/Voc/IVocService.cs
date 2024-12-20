@@ -66,11 +66,27 @@ namespace FamTec.Server.Services.Voc
         /// <returns></returns>
         public Task<ResponseUnit<bool?>> UpdateVocTypeService(HttpContext context, UpdateVocDTO dto);
 
+
+        /// <summary>
+        /// DashBoard용 금일 처리유형별 발생건수
+        /// </summary>
+        /// <param name="conteext"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService(HttpContext context);
+
+        /// <summary>
+        /// DashBoard용 하루치 각 타입별 카운트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context);
+        
+
         /// <summary>
         /// DashBoard용 일주일치 민원 각 타입별 카운트
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardDataService(HttpContext context);
+        public Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context);
     }
 }

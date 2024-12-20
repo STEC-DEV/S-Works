@@ -8,6 +8,14 @@ namespace FamTec.Server.Services.Maintenance
     public interface IMaintanceService
     {
         /// <summary>
+        /// DashBoard용 일주일치 유지보수 카운트
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="years"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService(HttpContext context);
+
+        /// <summary>
         /// 유지보수 출고등록
         /// </summary>
         /// <param name="context"></param>

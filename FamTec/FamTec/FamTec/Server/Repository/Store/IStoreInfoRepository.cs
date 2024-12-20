@@ -1,4 +1,5 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 
@@ -40,5 +41,14 @@ namespace FamTec.Server.Repository.Store
         /// <param name="MaterialId"></param>
         /// <returns></returns>
         Task<List<MaterialWeekCountDTO>?> GetDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, List<int> MaterialId);
+
+        /// <summary>
+        /// 대쉬보드용 금일 입출고 내역 조회
+        /// </summary>
+        /// <param name="ThisDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        Task<InOutListDTO?> GetDashBoardInOutData(DateTime ThisDate, int placeid);
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Repository.BlackList;
+﻿using FamTec.Server.Hubs;
+using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
 using FamTec.Server.Repository.KakaoLog;
 using FamTec.Server.Repository.Place;
@@ -8,6 +9,7 @@ using FamTec.Shared.Model;
 using FamTec.Shared.Server.DTO;
 using FamTec.Shared.Server.DTO.KakaoLog;
 using FamTec.Shared.Server.DTO.Voc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace FamTec.Server.Services.Voc
 {
@@ -27,6 +29,8 @@ namespace FamTec.Server.Services.Voc
         private readonly IFileService FileService;
         private readonly ConsoleLogService<VocCommentService> CreateBuilderLogger;
 
+        private readonly IHubContext<BroadcastHub> HubContext;
+
         // 파일디렉터리
         private DirectoryInfo? di;
         private string? VocCommentFileFolderPath;
@@ -41,6 +45,7 @@ namespace FamTec.Server.Services.Voc
             IKakaoService _kakaoservice,
             ILogService _logservice,
             IFileService _fileservice,
+            IHubContext<BroadcastHub> _hubcontext,
             ConsoleLogService<VocCommentService> _createbuilderlogger)
         {
             this.VocCommentRepository = _voccommentrepository;
@@ -52,6 +57,7 @@ namespace FamTec.Server.Services.Voc
             this.UserInfoRepository = _userinforepository;
 
             this.KakaoService = _kakaoservice;
+            this.HubContext = _hubcontext;
 
             this.LogService = _logservice;
             this.FileService = _fileservice;
@@ -234,6 +240,9 @@ namespace FamTec.Server.Services.Voc
                         }
                     }
 
+                    await HubContext.Clients.Group($"{placeId}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{placeId}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{placeId}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                     return new ResponseUnit<AddVocCommentDTO?>() { message = "요청이 정상 처리되었습니다.", data = dto , code = 200 };
                 }
                 else
@@ -772,6 +781,9 @@ namespace FamTec.Server.Services.Voc
                 bool? UpdateResult = await VocCommentRepository.UpdateCommentInfo(model).ConfigureAwait(false);
                 if (UpdateResult == true)
                 {
+                    await HubContext.Clients.Group($"{placeId}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{placeId}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{placeId}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                     return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                 }
                 else

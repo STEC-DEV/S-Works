@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -24,6 +25,94 @@ namespace FamTec.Server.Repository.Material
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 대쉬보드용 안전재고와 가까운순 TOP 10
+        /// </summary>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<List<MaterialCountDTO>?> GetDashBoardMaterialCount(int placeid)
+        {
+            try
+            {
+                #region 쿼리
+                /*
+                 // 없는거 제회 기본 쿼리
+                 SELECT inv.material_tb_id, 
+                       SUM(inv.num) AS total_num, 
+                       mat.safe_num,
+                       ABS(COALESCE(mat.safe_num, 0) - SUM(inv.num)) AS distance
+                FROM inventory_tb inv
+                INNER JOIN material_tb mat 
+                    ON inv.material_tb_id = mat.id
+                WHERE mat.del_yn != true 
+                  AND mat.place_tb_id = 1
+                GROUP BY inv.material_tb_id, mat.safe_num
+                ORDER BY distance ASC
+                LIMIT 10;
+
+                // 없는거 포함 기본 쿼리
+                SELECT mat.id AS material_tb_id,
+                       mat.name AS material_name,
+                       COALESCE(SUM(inv.num), 0) AS total_num, 
+                       COALESCE(mat.safe_num, 0) AS safe_num,
+                       ABS(COALESCE(mat.safe_num, 0) - COALESCE(SUM(inv.num), 0)) AS distance
+                FROM material_tb mat
+                LEFT JOIN inventory_tb inv 
+                    ON mat.id = inv.material_tb_id
+                WHERE mat.del_yn != true 
+                  AND mat.place_tb_id = 1
+                GROUP BY mat.id, mat.safe_num, mat.name
+                ORDER BY distance ASC
+                LIMIT 10;
+                 */
+                #endregion
+
+                List<MaterialTb> MaterialCheck = await context.MaterialTbs.Where(m => m.DelYn != true && m.PlaceTbId == placeid).ToListAsync();
+                
+                if (MaterialCheck is [_, ..])
+                {
+
+                    List<MaterialCountDTO> model = await (
+                     from mat in context.MaterialTbs
+                     join inv in context.InventoryTbs
+                         on mat.Id equals inv.MaterialTbId into invGroup // LEFT JOIN
+                     where mat.DelYn != true
+                           && mat.PlaceTbId == placeid // MaterialTbs의 조건
+                           && mat.SafeNum != null      // SafeNum이 null이 아닌 항목
+                           && mat.SafeNum > 0          // SafeNum이 0보다 큰 항목
+                     let filteredInvGroup = invGroup.Where(inv => inv.DelYn != true) // InventoryTbs의 조건
+                     let totalNum = filteredInvGroup.Sum(inv => (int?)inv.Num) ?? 0 // InventoryTb의 Num 합계, 없으면 0
+                     let safeNum = mat.SafeNum ?? 0 // SafeNum null이면 0
+                     let distance = Math.Abs(safeNum - totalNum) // SafeNum과 totalNum 차이 계산
+                     orderby distance // Distance 기준으로 정렬
+                     select new MaterialCountDTO
+                     {
+                         MaterialId = mat.Id,       // MaterialTb의 Id
+                         MaterialName = mat.Name,   // MaterialTb의 Name
+                         TotalNum = totalNum,       // InventoryTb의 Num 합계
+                         SafeNum = safeNum,         // MaterialTb의 SafeNum
+                         Distance = distance        // SafeNum과 합계 차이의 절대값
+                     })
+                     .Take(10) // 상위 10개 결과 가져오기
+                     .ToListAsync();
+
+                    return model;
+                }
+                else
+                {
+                    return new List<MaterialCountDTO>();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
         /// <summary>
@@ -598,5 +687,7 @@ namespace FamTec.Server.Repository.Material
 
             return false;
         }
+
+     
     }
 }

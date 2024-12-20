@@ -65,7 +65,21 @@ namespace FamTec.Server.Repository.Voc
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        Task<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate);
-      
+        Task<List<VocWeekCountDTO>?> GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate);
+
+        /// <summary>
+        /// DashBoard 용 오늘치 각 타입별 카운트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <returns></returns>
+        Task<VocWeekCountDTO?> GetDashBoardDaysData(DateTime NowDate);
+
+        /// <summary>
+        /// DashBoard 용 금일 처리현황별 카운트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <returns></returns>
+        Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate);
+
     }
 }

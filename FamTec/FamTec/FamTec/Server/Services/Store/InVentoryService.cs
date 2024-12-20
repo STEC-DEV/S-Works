@@ -8,8 +8,6 @@ using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.JSInterop.Infrastructure;
-using System.Reflection.Metadata.Ecma335;
 
 namespace FamTec.Server.Services.Store
 {
@@ -39,6 +37,46 @@ namespace FamTec.Server.Services.Store
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+
+        /// <summary>
+        /// 대쉬보드용 금일 입출고 내역
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<InOutListDTO?>> GetDashBoardInOutListData(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<InOutListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseUnit<InOutListDTO?>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                InOutListDTO? model = await StoreInfoRepository.GetDashBoardInOutData(NowDate, Convert.ToInt32(placeid));
+
+                if(model is not null)
+                {
+                    return new ResponseUnit<InOutListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<InOutListDTO?>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<InOutListDTO?>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         /// <summary>
         /// 입고 등록
         /// </summary>
@@ -64,7 +102,8 @@ namespace FamTec.Server.Services.Store
                 if (AddInStore == 1)
                 {
                     // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
 
                     return new ResponseUnit<int?>() { message = "요청이 정상 처리되었습니다.", data = 1, code = 200 };
                 }
@@ -117,7 +156,8 @@ namespace FamTec.Server.Services.Store
                  */
                 if(OutResult!.ReturnResult == 1)
                 {
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
                     return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = OutResult, code = 200 };
                 }
                 else if(OutResult!.ReturnResult == 0)
@@ -495,7 +535,7 @@ namespace FamTec.Server.Services.Store
                 // 현재 요일 (0: 일요일, 1: 월요일, ... 6: 토요일)
                 DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
 
-                // 현재 날짜가 있는 주의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 뺌
+                // 현재 날짜가 있는 주 의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Monday를 뺌
                 int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
 
                 // 일요일인 경우, 첫날을 월요일로 설정하기 위해 7을 더함.
@@ -527,5 +567,7 @@ namespace FamTec.Server.Services.Store
                 return new ResponseList<MaterialWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
+
+  
     }
 }

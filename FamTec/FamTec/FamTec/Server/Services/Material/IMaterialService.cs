@@ -7,6 +7,13 @@ namespace FamTec.Server.Services.Material
     public interface IMaterialService
     {
         /// <summary>
+        /// 대쉬보드용 안전재고와 가까운 TOP10
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<ResponseList<MaterialCountDTO>?> GetMaterialCountService(HttpContext context);
+
+        /// <summary>
         /// 품목 엑셀 양식 다운로드
         /// </summary>
         /// <param name="context"></param>

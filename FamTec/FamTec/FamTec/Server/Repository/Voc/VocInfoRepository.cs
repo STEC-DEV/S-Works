@@ -26,79 +26,204 @@ namespace FamTec.Server.Repository.Voc
         }
 
         /// <summary>
+        /// DashBoard 용 금일 처리현황별 카운트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <returns></returns>
+        public async Task<VocDaysStatusCountDTO?> GetDashBoardDaysStatusData(DateTime NowDate)
+        {
+            try
+            {
+                List<VocTb> VocList = await context.VocTbs
+                .Where(m => m.DelYn != true && m.UpdateDt.Date == NowDate)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+                // status 값에 따라 그룹화
+                var groupedVocList = VocList
+                    .GroupBy(m => m.Status) // Status 값으로 그룹화
+                    .ToDictionary(g => g.Key, g => g.ToList()); // Dictionary 형태로 변환 (Key: status 값, Value: 해당 그룹의 목록)
+
+
+                List<VocTb>? UnProcessList = groupedVocList.ContainsKey(0) ? groupedVocList[0] : new List<VocTb>();
+                List<VocTb>? ProcessingList = groupedVocList.ContainsKey(1) ? groupedVocList[1] : new List<VocTb>();
+                List<VocTb>? CompletedList = groupedVocList.ContainsKey(2) ? groupedVocList[2] : new List<VocTb>();
+
+                VocDaysStatusCountDTO model = new VocDaysStatusCountDTO();
+                model.UnProcessed = UnProcessList.Count();
+                model.Processing = ProcessingList.Count();
+                model.Completed = CompletedList.Count();
+
+                return model;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// DashBoard 용 오늘 각 타입별 카운트
+        /// </summary>
+        /// <param name="NowDate"></param>
+        /// <returns></returns>
+        public async Task<VocWeekCountDTO?> GetDashBoardDaysData(DateTime NowDate)
+        {
+            try
+            {
+                // Step 1: 데이터베이스에서 오늘 날짜에 해당하는 데이터만 가져오기
+                var groupedReceipts = await context.VocTbs
+                    .Where(m => m.DelYn != true &&
+                                (m.Type >= 0 && m.Type <= 8) &&  // 0부터 8까지의 Type
+                                m.CreateDt.Date == NowDate)       // 오늘 날짜만 필터링
+                    .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                // Step 3: 단일 객체 생성 (오늘 날짜에 대한 데이터)
+                var model = new VocWeekCountDTO
+                {
+                    Date = NowDate,
+                    DefaultType = groupedReceipts
+                        .Where(g => g.Key.Type == 0)
+                        .SelectMany(g => g)
+                        .Count(),
+                    MachineType = groupedReceipts
+                        .Where(g => g.Key.Type == 1)
+                        .SelectMany(g => g)
+                        .Count(),
+                    ElecType = groupedReceipts
+                        .Where(g => g.Key.Type == 2)
+                        .SelectMany(g => g)
+                        .Count(),
+                    liftType = groupedReceipts
+                        .Where(g => g.Key.Type == 3)
+                        .SelectMany(g => g)
+                        .Count(),
+                    ConstructType = groupedReceipts
+                        .Where(g => g.Key.Type == 4)
+                        .SelectMany(g => g)
+                        .Count(),
+                    FireType = groupedReceipts
+                        .Where(g => g.Key.Type == 5)
+                        .SelectMany(g => g)
+                        .Count(),
+                    NetWorkType = groupedReceipts
+                        .Where(g => g.Key.Type == 6)
+                        .SelectMany(g => g)
+                        .Count(),
+                    BeautyType = groupedReceipts
+                        .Where(g => g.Key.Type == 7)
+                        .SelectMany(g => g)
+                        .Count(),
+                    SecurityType = groupedReceipts
+                        .Where(g => g.Key.Type == 8)
+                        .SelectMany(g => g)
+                        .Count()
+                };
+
+                return model; // 단일 객체 반환
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
+        }
+
+        /// <summary>
         /// DashBoard 용 일주일치 각 타입별 카운트
         /// </summary>
         /// <param name="StartDate"></param>
         /// <param name="EndDate"></param>
         /// <returns></returns>
-        public async Task<List<VocWeekCountDTO>?> GetDashBoardData(DateTime StartDate, DateTime EndDate)
+        public async Task<List<VocWeekCountDTO>?> GetDashBoardWeeksData(DateTime StartDate, DateTime EndDate)
         {
-            // Step 1: 날짜 범위 생성
-            var allDates = Enumerable.Range(0, 1 + EndDate.AddDays(-1).Subtract(StartDate).Days)
-                                     .Select(offset => StartDate.AddDays(offset).Date)
-                                     .ToList();
+            try
+            {
+                // Step 1: 날짜 범위 생성
+                var allDates = Enumerable.Range(0, 1 + EndDate.AddDays(-1).Subtract(StartDate).Days)
+                                         .Select(offset => StartDate.AddDays(offset).Date)
+                                         .ToList();
 
-            // Step 2: 데이터베이스에서 두 가지 유형의 데이터를 동시에 가져오기
-            var groupedReceipts = await context.VocTbs
-                .Where(m => m.DelYn != true &&
-                            (m.Type == 0 || // 미분류
-                            m.Type == 1 ||  // 기계
-                            m.Type == 2 || // 전기
-                            m.Type == 3 || // 승강
-                            m.Type == 4 || // 소방
-                            m.Type == 5 || // 건축
-                            m.Type == 6 || // 통신
-                            m.Type == 7 || // 미화
-                            m.Type == 8 ) &&  // 보안
-                            m.CreateDt >= StartDate && m.CreateDt <= EndDate)
-                .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
-                .ToListAsync()
-                .ConfigureAwait(false);
+                // Step 2: 데이터베이스에서 두 가지 유형의 데이터를 동시에 가져오기
+                var groupedReceipts = await context.VocTbs
+                    .Where(m => m.DelYn != true &&
+                                (m.Type == 0 || // 미분류
+                                m.Type == 1 ||  // 기계
+                                m.Type == 2 || // 전기
+                                m.Type == 3 || // 승강
+                                m.Type == 4 || // 소방
+                                m.Type == 5 || // 건축
+                                m.Type == 6 || // 통신
+                                m.Type == 7 || // 미화
+                                m.Type == 8) &&  // 보안
+                                m.CreateDt >= StartDate && m.CreateDt <= EndDate)
+                    .GroupBy(m => new { m.CreateDt.Date, m.Type }) // CreateDt의 Date와 Type을 기준으로 그룹화
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
-            // Step 3: 날짜별 데이터와 모든 날짜를 조인하여 결과 구성
-            List<VocWeekCountDTO> model = allDates
-                .Select(date => new VocWeekCountDTO
-                {
-                    Date = date,
-                    DefaultType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 0)
-                        .SelectMany(g => g)
-                        .Count(),
-                    MachineType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 1)
-                        .SelectMany(g => g)
-                        .Count(),
-                    ElecType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 2)
-                        .SelectMany(g => g)
-                        .Count(),
-                    liftType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 3)
-                        .SelectMany(g => g)
-                        .Count(),
-                    ConstructType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 4)
-                        .SelectMany(g => g)
-                        .Count(),
-                    FireType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 5)
-                        .SelectMany(g => g)
-                        .Count(),
-                    NetWorkType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 6)
-                        .SelectMany(g => g)
-                        .Count(),
-                    BeautyType = groupedReceipts
-                        .Where(g => g.Key.Date == date && g.Key.Type == 7)
-                        .SelectMany(g => g)
-                        .Count(),
-                    SecurityType = groupedReceipts
-                        .Where(g=>g.Key.Date == date && g.Key.Type == 8)
-                        .SelectMany(g => g)
-                        .Count()
-                }).ToList();
+                // Step 3: 날짜별 데이터와 모든 날짜를 조인하여 결과 구성
+                List<VocWeekCountDTO> model = allDates
+                    .Select(date => new VocWeekCountDTO
+                    {
+                        Date = date,
+                        DefaultType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 0)
+                            .SelectMany(g => g)
+                            .Count(),
+                        MachineType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 1)
+                            .SelectMany(g => g)
+                            .Count(),
+                        ElecType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 2)
+                            .SelectMany(g => g)
+                            .Count(),
+                        liftType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 3)
+                            .SelectMany(g => g)
+                            .Count(),
+                        ConstructType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 4)
+                            .SelectMany(g => g)
+                            .Count(),
+                        FireType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 5)
+                            .SelectMany(g => g)
+                            .Count(),
+                        NetWorkType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 6)
+                            .SelectMany(g => g)
+                            .Count(),
+                        BeautyType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 7)
+                            .SelectMany(g => g)
+                            .Count(),
+                        SecurityType = groupedReceipts
+                            .Where(g => g.Key.Date == date && g.Key.Type == 8)
+                            .SelectMany(g => g)
+                            .Count()
+                    }).ToList();
 
-            return model;
+                return model;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
         /// <summary>
@@ -450,7 +575,6 @@ namespace FamTec.Server.Repository.Voc
                 throw;
             }
         }
-
-    
+     
     }
 }

@@ -446,8 +446,9 @@ namespace FamTec.Server.Services.Voc
 
                             // 소켓전송
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -472,9 +473,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 1).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_MCRoom").SendAsync("ReceiveVoc", "[기계] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
@@ -499,9 +502,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 2).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_ELECRoom").SendAsync("ReceiveVoc", "[전기] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -524,9 +529,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 3).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_LFRoom").SendAsync("ReceiveVoc", "[승강] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -550,9 +557,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 4).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_FRRoom").SendAsync("ReceiveVoc", "[소방] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -576,9 +585,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 5).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_CSTRoom").SendAsync("ReceiveVoc", "[건축] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
@@ -603,9 +614,11 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 6).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
+
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_NTRoom").SendAsync("ReceiveVoc", "[통신] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -630,9 +643,10 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 7).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_BEAUTYRoom").SendAsync("ReceiveVoc", "[미화] 민원 등록되었습니다").ConfigureAwait(false);
                         }
                                 
@@ -657,9 +671,10 @@ namespace FamTec.Server.Services.Voc
                             //await SetMessage(Users, VocTB.CreateUser!, dto.VocID.Value);
                             await AlarmInfoRepository.AddAlarmList(Users, creater, 1, dto.VocID.Value, 8).ConfigureAwait(false);
 
-                            // 이부분은 Voc Count를 변경할만한 곳에 넣어야함. -- 민원이 등록되는 HubController에 넣어야함.
-                            //await HubContext.Clients.Group($"{placeidx}_VocCount").SendAsync("ReceiveVocCount", $"이 요청을 받으면 프론트에서 api/Voc/sign/GetVocWeekCount 를 Get으로 요청하도록 만들어야함.");
                             // 소켓전송
+                            await HubContext.Clients.Group($"{placeidx}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                            await HubContext.Clients.Group($"{placeidx}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                             await HubContext.Clients.Group($"{placeidx}_SECURoom").SendAsync("ReceiveVoc", "[보안] 민원 등록되었습니다").ConfigureAwait(false);
                         }
 
@@ -731,16 +746,16 @@ namespace FamTec.Server.Services.Voc
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<ResponseList<VocWeekCountDTO>?> GetVocDashBoardDataService(HttpContext context)
+        public async Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardWeeksDataService(HttpContext context)
         {
             try
             {
                 if (context is null)
-                    return new ResponseList<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
                 if(String.IsNullOrWhiteSpace(placeidx))
-                    return new ResponseList<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
 
                 DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                 // 현재 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
@@ -759,13 +774,28 @@ namespace FamTec.Server.Services.Voc
                 DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
                 DateTime EndOfWeek = startOfWeek.AddDays(7);
 
-                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardData(startOfWeek, EndOfWeek).ConfigureAwait(false);
+                List<VocWeekCountDTO>? model = await VocInfoRepository.GetDashBoardWeeksData(startOfWeek, EndOfWeek).ConfigureAwait(false);
                 if (model is not null && model.Any())
                 {
-                    return new ResponseList<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                    VocWeekCountDTO dto = new VocWeekCountDTO();
+                    dto.Date = DateTime.Now;
+                    dto.DefaultType = model.Sum(m => m.DefaultType);
+                    dto.MachineType = model.Sum(m => m.MachineType);
+                    dto.ElecType = model.Sum(m => m.ElecType);
+                    dto.liftType = model.Sum(m => m.liftType);
+                    dto.ConstructType = model.Sum(m => m.ConstructType);
+                    dto.FireType = model.Sum(m => m.FireType);
+                    dto.NetWorkType = model.Sum(m => m.NetWorkType);
+                    dto.BeautyType = model.Sum(m => m.BeautyType);
+                    dto.SecurityType = model.Sum(m => m.SecurityType);
+
+
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = dto, code = 200 };
                 }
                 else
-                    return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                {
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
             }
             catch(Exception ex)
             {
@@ -773,10 +803,87 @@ namespace FamTec.Server.Services.Voc
 #if DEBUG
                 CreateBuilderLogger.ConsoleLog(ex);
 #endif
-                return new ResponseList<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
             }
         }
 
-      
+        /// <summary>
+        /// 대쉬보드용 금일 유형별 건수 (기타, 기계, 건설, 미화 ..)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<VocWeekCountDTO>?> GetVocDashBoardDaysDataService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                VocWeekCountDTO? model = await VocInfoRepository.GetDashBoardDaysData(NowDate).ConfigureAwait(false);
+                if(model is not null)
+                {
+                    
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<VocWeekCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
+        /// <summary>
+        /// DashBoard용 금일 처리유형별 발생건수 (미처리, 처리중, 처리완료)
+        /// </summary>
+        /// <param name="conteext"></param>
+        /// <returns></returns>
+        public async Task<ResponseUnit<VocDaysStatusCountDTO>?> GetVocDaysStatusDataService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseUnit<VocDaysStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeidx = Convert.ToString(context.Items["PlaceIdx"]);
+                if (String.IsNullOrWhiteSpace(placeidx))
+                    return new ResponseUnit<VocDaysStatusCountDTO>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                VocDaysStatusCountDTO? model = await VocInfoRepository.GetDashBoardDaysStatusData(NowDate).ConfigureAwait(false);
+
+                if(model is not null)
+                {
+                    
+                    return new ResponseUnit<VocDaysStatusCountDTO>() { message = "요청이 정상 처리되었습니다.", data = model, code = 200 };
+                }
+                else
+                {
+                    return new ResponseUnit<VocDaysStatusCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseUnit<VocDaysStatusCountDTO>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
     }
 }

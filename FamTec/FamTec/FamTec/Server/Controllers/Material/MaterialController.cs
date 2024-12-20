@@ -2,6 +2,7 @@
 using FamTec.Server.Services;
 using FamTec.Server.Services.Material;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,36 @@ namespace FamTec.Server.Controllers.Material
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
-        
+        /// <summary>
+        /// 대쉬보드용 안전재고 TOP 10
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetSafeNumCount")]
+        public async Task<IActionResult> GetSafeNumCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseList<MaterialCountDTO>? model = await MaterialService.GetMaterialCountService(HttpContext).ConfigureAwait(false);
+                
+                if (model is null)
+                    return BadRequest();
+                else
+                    return Ok(model);
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
+        }
 
         [HttpGet]
         [Route("sign/DownloadMaterialForm")]

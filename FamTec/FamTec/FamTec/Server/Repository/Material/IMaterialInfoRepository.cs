@@ -1,10 +1,17 @@
 ﻿using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 
 namespace FamTec.Server.Repository.Material
 {
     public interface IMaterialInfoRepository
     {
+        /// <summary>
+        /// 대쉬보드용 안전재고와 가까운순 TOP 10
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<MaterialCountDTO>?> GetDashBoardMaterialCount(int placeid);
+
         /// <summary>
         /// 삭제가능여부 체크
         ///     참조하는게 하나라도 있으면 true 반환

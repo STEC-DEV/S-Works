@@ -43,6 +43,69 @@ namespace FamTec.Server.Services.Maintenance
             this.CreateBuilderLogger = _createbuilderlogger;
         }
 
+        public async Task<ResponseList<MaintanceWeekCount>?> GetMaintanceDashBoardDataService(HttpContext context)
+        {
+            try
+            {
+                if (context is null)
+                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                string? placeid = Convert.ToString(context.Items["PlaceIdx"]);
+                if(String.IsNullOrWhiteSpace(placeid))
+                    return new ResponseList<MaintanceWeekCount>() { message = "잘못된 요청입니다.", data = null, code = 404 };
+
+                DateTime NowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+                // 현재 요일 (0: 일요일, 1: 월요일, 6: 토요일)
+                DayOfWeek currentDayOfWeek = NowDate.DayOfWeek;
+
+                // 현재 날짜가 있는 주 의 첫날(월요일)을 구하기 위해 현재 요일에서 DayOfWeek.Month를 뺌
+                int daysToSubtract = (int)currentDayOfWeek - (int)DayOfWeek.Monday;
+
+                // 일요일인 경우, 첫날을 월요일로 설정하기 위해 7을 더함.
+                if (daysToSubtract < 0)
+                {
+                    daysToSubtract += 7;
+                }
+
+                // 월요일
+                DateTime startOfWeek = NowDate.AddDays(-daysToSubtract);
+                DateTime EndOfWeek = startOfWeek.AddDays(7);
+
+                List<MaintanceWeekCount>? WeekListData = await MaintanceRepository.GetMaintanceDashBoardData(startOfWeek, EndOfWeek, Convert.ToInt32(placeid));
+                if (WeekListData is null)
+                {
+                    ResponseList<MaintanceWeekCount> model = new ResponseList<MaintanceWeekCount>()
+                    {
+                        message = "요청이 정상처리되었습니다.",
+                        data = new List<MaintanceWeekCount>(),
+                        code = 204
+                    };
+
+                    return model;
+                }
+                else
+                {
+                    ResponseList<MaintanceWeekCount> model = new ResponseList<MaintanceWeekCount>()
+                    {
+                        message = "요청이 정상처리되었습니다.",
+                        data = WeekListData,
+                        code = 200
+                    };
+
+                    return model;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return new ResponseList<MaintanceWeekCount>() { message = "서버에서 요청을 처리하지 못하였습니다.", data = null, code = 500 };
+            }
+        }
+
         public async Task<ResponseUnit<bool?>> AddMaintanceImageService(HttpContext context, int id, IFormFile? files)
         {
             try
@@ -99,7 +162,8 @@ namespace FamTec.Server.Services.Maintenance
                     if(MaintanceId!.ReturnResult > 0)
                     {
                         // signalR 플래그
-                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                        await HubContext.Clients.Group($"{placeid}_Maintenance").SendAsync("ReceiveMaintenanceCount", $"유지보수 내역조회").ConfigureAwait(false);
+                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("ReceiveInOutCount", $"입출고 내역조회").ConfigureAwait(false);
 
                         return new ResponseUnit<FailResult?>() { message = "요청이 정상 처리되었습니다.", data = MaintanceId, code = 200 };
                     }
@@ -747,6 +811,6 @@ namespace FamTec.Server.Services.Maintenance
             }
         }
 
-      
+
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FamTec.Server.Repository.Maintenence
 {
@@ -35,6 +36,221 @@ namespace FamTec.Server.Repository.Maintenence
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
         }
+
+        public async Task<List<MaintanceWeekCount>?> GetMaintanceDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, int placeid)
+        {
+            try
+            {
+                #region 카테고리별로만 분리
+                //    // 1. 건물 테이블 조회
+                //    List<BuildingTb>? BuildingTB = await context.BuildingTbs
+                //        .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                //        .ToListAsync()
+                //        .ConfigureAwait(false);
+
+                //    if (BuildingTB is not [_, ..])
+                //        return null;
+
+                //    // 2. 층 테이블 조회
+                //    List<FloorTb>? FloorTB = await context.FloorTbs
+                //        .Where(m => BuildingTB.Select(b => b.Id).Contains(m.BuildingTbId) && m.DelYn != true)
+                //        .ToListAsync()
+                //        .ConfigureAwait(false);
+
+                //    if (FloorTB is not [_, ..])
+                //        return null;
+
+                //    // 3. 공간 테이블 조회
+                //    List<RoomTb>? RoomTB = await context.RoomTbs
+                //        .Where(m => FloorTB.Select(f => f.Id).Contains(m.FloorTbId) && m.DelYn != true)
+                //        .ToListAsync()
+                //        .ConfigureAwait(false);
+
+                //    if (RoomTB is not [_, ..])
+                //        return null;
+
+                //    // 4. 설비 테이블 조회
+                //    List<FacilityTb>? FacilityList = await context.FacilityTbs
+                //        .Where(m => RoomTB.Select(r => r.Id).Contains(m.RoomTbId) && m.DelYn != true)
+                //        .ToListAsync()
+                //        .ConfigureAwait(false);
+
+                //    if (FacilityList is not [_, ..])
+                //        return null;
+
+                //    // 5. 설비 ID 리스트
+                //    List<int> FacilityIdx = FacilityList.Select(m => m.Id).ToList();
+
+                //    // 6. 주간 유지보수 데이터 조회
+                //    List<int> MaintanceDaysFacilityIds = await context.MaintenenceHistoryTbs
+                //        .Where(m => m.DelYn != true &&
+                //                    FacilityIdx.Contains(m.FacilityTbId) &&
+                //                    m.CreateDt >= startOfWeek &&
+                //                    m.CreateDt <= EndOfWeek)
+                //        .Select(m => m.FacilityTbId)
+                //        .ToListAsync()
+                //        .ConfigureAwait(false);
+
+                //    // 7. 설비와 연결된 건물, 층, 공간 정보 가져오기
+                //    var facilities = await (from building in context.BuildingTbs
+                //                            where building.PlaceTbId == placeid && building.DelYn != true
+                //                            join floortb in context.FloorTbs
+                //                            on building.Id equals floortb.BuildingTbId
+                //                            where floortb.DelYn != true
+                //                            join roomtb in context.RoomTbs
+                //                            on floortb.Id equals roomtb.FloorTbId
+                //                            where roomtb.DelYn != true
+                //                            join facilitytb in context.FacilityTbs
+                //                            on roomtb.Id equals facilitytb.RoomTbId
+                //                            where facilitytb.DelYn != true
+                //                            select new
+                //                            {
+                //                                facilitytb.Id,             // 설비 인덱스
+                //                                facilitytb.Name,           // 설비 명칭
+                //                                facilitytb.Type,           // 설비 타입
+                //                                facilitytb.Num,            // 수량
+                //                                facilitytb.StandardCapacity, // 규격용량
+                //                                facilitytb.EquipDt,        // 설치 년월
+                //                                facilitytb.Lifespan,       // 내용 연수
+                //                                facilitytb.ChangeDt,       // 교체 년월
+                //                                facilitytb.Category,       // 카테고리 (건축, 기계 등)
+                //                                RoomName = roomtb.Name,    // 공간위치 이름
+                //                                BuildingName = building.Name // 건물명칭
+                //                            }).ToListAsync()
+                //                            .ConfigureAwait(false);
+
+                //    // 8. 데이터를 카테고리별로 그룹화
+                //    var groupedFacilities = facilities
+                //        .GroupBy(f => f.Category.Trim())
+                //        .ToDictionary(g => g.Key, g => g.ToList());
+
+                //    ProcessCategory("기계");
+                //    ProcessCategory("전기");
+                //    ProcessCategory("승강");
+                //    ProcessCategory("소방");
+                //    ProcessCategory("건축");
+                //    ProcessCategory("통신");
+                //    ProcessCategory("미화");
+                //    ProcessCategory("보안");
+
+                //    // 9. 카테고리별 데이터 처리 함수
+                //    void ProcessCategory(string categoryName)
+                //    {
+                //        if (groupedFacilities.TryGetValue(categoryName, out var categoryFacilities))
+                //        {
+                //            // 해당 카테고리의 설비 ID 리스트
+                //            List<int> CategoryFacilityIds = categoryFacilities.Select(m => m.Id).ToList();
+
+                //            // 주간 유지보수 데이터 필터링
+                //            List<int> FilteredDaysData = MaintanceDaysFacilityIds
+                //                .Where(facilityId => CategoryFacilityIds.Contains(facilityId))
+                //                .ToList();
+
+                //            if (categoryName.Equals("기계"))
+
+                //            if (categoryName.Equals("전기"))
+
+                //                Console.WriteLine($"{categoryName} 카테고리 유지보수 데이터 개수: {FilteredDaysData.Count}");
+
+                //            // 추가적으로 DTO로 변환하거나 다른 로직 수행 가능
+                //        }
+                //        else
+                //        {
+                //            Console.WriteLine($"{categoryName} 카테고리 유지보수 데이터 개수: 0");
+                //        }
+                //    }
+
+                //    return null;
+
+                #endregion
+
+                // 1. 건물 테이블 조회
+                List<BuildingTb>? BuildingTB = await context.BuildingTbs
+                    .Where(m => m.PlaceTbId == placeid && m.DelYn != true)
+                    .ToListAsync();
+
+                if (BuildingTB is not [_, ..])
+                    return null;
+
+                // 2. 층 테이블 조회
+                List<FloorTb>? FloorTB = await context.FloorTbs
+                    .Where(m => BuildingTB.Select(b => b.Id).Contains(m.BuildingTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (FloorTB is not [_, ..])
+                    return null;
+
+                // 3. 공간 테이블 조회
+                List<RoomTb>? RoomTB = await context.RoomTbs
+                    .Where(m => FloorTB.Select(f => f.Id).Contains(m.FloorTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (RoomTB is not [_, ..])
+                    return null;
+
+                // 4. 설비 테이블 조회
+                List<FacilityTb>? FacilityList = await context.FacilityTbs
+                    .Where(m => RoomTB.Select(r => r.Id).Contains(m.RoomTbId) && m.DelYn != true)
+                    .ToListAsync();
+
+                if (FacilityList is not [_, ..])
+                    return null;
+
+                // 5. 설비 ID 리스트
+                List<int> FacilityIdx = FacilityList.Select(m => m.Id).ToList();
+
+                // 6. 주간 유지보수 이력 조회
+                var MaintanceDays = await context.MaintenenceHistoryTbs
+                    .Where(m => m.DelYn != true &&
+                                FacilityIdx.Contains(m.FacilityTbId) &&
+                                m.CreateDt >= startOfWeek &&
+                                m.CreateDt <= EndOfWeek)
+                    .Select(m => new
+                    {
+                        m.FacilityTbId,
+                        m.CreateDt.Date // 날짜만 추출
+                    })
+                    .ToListAsync();
+
+                // 7. 설비 정보 매핑
+                var facilities = FacilityList
+                    .Select(facility => new
+                    {
+                        facility.Id,
+                        facility.Category
+                    })
+                    .ToList();
+
+                // 8. 모든 날짜 리스트 생성
+                var allDates = Enumerable.Range(0, 1 + EndOfWeek.AddDays(-1).Subtract(startOfWeek).Days)
+                                 .Select(offset => startOfWeek.AddDays(offset).Date)
+                                 .ToList();
+
+                // 9. 날짜별 데이터 그룹화 및 0으로 채우기
+                var result = allDates
+                 .Select(date => new MaintanceWeekCount
+                 {
+                     Date = date,
+                     MachineType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "기계"),
+                     ElecType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "전기"),
+                     liftType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "승강"),
+                     FireType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "소방"),
+                     ConstructType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "건축"),
+                     NetWorkType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "통신"),
+                     SecurityType = facilities.Count(f => MaintanceDays.Any(m => m.FacilityTbId == f.Id && m.Date == date) && f.Category.Trim() == "보안")
+                 })
+                 .ToList();
+
+                // 10. 결과 반환
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// 유지보수 ID로 유지보수 조회
@@ -2605,6 +2821,6 @@ namespace FamTec.Server.Repository.Maintenence
             return false;
         }
 
-
+     
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FamTec.Server.Databases;
 using FamTec.Server.Services;
 using FamTec.Shared.Model;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,71 @@ namespace FamTec.Server.Repository.Store
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 대쉬보드용 금일 입출고 내역 조회
+        /// </summary>
+        /// <param name="ThisDate"></param>
+        /// <param name="placeid"></param>
+        /// <returns></returns>
+        public async Task<InOutListDTO?> GetDashBoardInOutData(DateTime ThisDate, int placeid)
+        {
+            try
+            {
+                // StoreTb를 가져오며 RoomTb와 MaterialTb를 포함 (Eager Loading)
+                List<StoreTb>? StoreList = await context.StoreTbs
+                    .Include(m => m.RoomTb)       // RoomTb를 포함
+                    .Include(m => m.MaterialTb)   // MaterialTb를 포함
+                    .Where(m => m.DelYn != true &&
+                                m.PlaceTbId == placeid &&
+                                m.CreateDt.Date == ThisDate)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                var model = new InOutListDTO
+                {
+                    InPutList = StoreList
+                        .Where(m => m.Inout == 1) // 입고 데이터 필터링
+                        .Select(m => new InOutDataDTO
+                        {
+                            Id = m.Id,
+                            Num = m.Num,
+                            UnitPrice = m.UnitPrice,
+                            TotalPrice = m.TotalPrice,
+                            RoomId = m.RoomTbId,
+                            RoomName = m.RoomTb?.Name,       // RoomTb의 Name 사용
+                            MaterialID = m.MaterialTbId,
+                            MaterialName = m.MaterialTb?.Name // MaterialTb의 Name 사용
+                        }).ToList(),
+
+                    OutPutList = StoreList
+                        .Where(m => m.Inout == 0) // 출고 데이터 필터링
+                        .Select(m => new InOutDataDTO
+                        {
+                            Id = m.Id,
+                            Num = m.Num,
+                            UnitPrice = m.UnitPrice,
+                            TotalPrice = m.TotalPrice,
+                            RoomId = m.RoomTbId,
+                            RoomName = m.RoomTb?.Name,
+                            MaterialID = m.MaterialTbId,
+                            MaterialName = m.MaterialTb?.Name
+                        }).ToList(),
+
+                    InOutCount = StoreList.Count // 입출고 총 카운트
+                };
+
+                return model;
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                throw;
+            }
         }
 
         public async Task<StoreTb?> AddAsync(StoreTb model)
@@ -373,5 +439,6 @@ namespace FamTec.Server.Repository.Store
             }
         }
 
+   
     }
 }

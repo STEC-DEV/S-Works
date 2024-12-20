@@ -5,7 +5,6 @@ namespace FamTec.Server.Repository.Facility
 {
     public interface IFacilityInfoRepository
     {
-
         /// <summary>
         /// 삭제가능여부 체크
         ///     참조하는게 하나라도 있으면 true 반환

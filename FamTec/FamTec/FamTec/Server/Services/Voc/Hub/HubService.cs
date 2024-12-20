@@ -1,4 +1,5 @@
-﻿using FamTec.Server.Hubs;
+﻿using FamTec.Client.Pages.Admin.Place.PlaceAdd;
+using FamTec.Server.Hubs;
 using FamTec.Server.Repository.Alarm;
 using FamTec.Server.Repository.BlackList;
 using FamTec.Server.Repository.Building;
@@ -383,11 +384,10 @@ namespace FamTec.Server.Services.Voc.Hub
                     }
 
 
-                    // 민원 카운터 조회
-                    // api/Voc/sign/GetVocWeekCount
-                    await HubContext.Clients.Group($"{dto.Placeid}_VocCount").SendAsync("ReceiveVocCount", $"민원 카운터 조회").ConfigureAwait(false);
-
                     // 민원등록 알림
+                    await HubContext.Clients.Group($"{dto.Placeid}_WeeksVocType").SendAsync("ReceiveWeeksVocType", $"Call - GetVocWeekCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{dto.Placeid}_ToDayVocType").SendAsync("ReceiveToDayVocType", $"Call - GetVocDaysCount").ConfigureAwait(false);
+                    await HubContext.Clients.Group($"{dto.Placeid}_ToDayVocStatus").SendAsync("ReceiveToDayVocStatus", $"Call - GetVocDaysStatusCount").ConfigureAwait(false);
                     await HubContext.Clients.Group($"{dto.Placeid}_ETCRoom").SendAsync("ReceiveVoc", "[기타] 민원 등록되었습니다").ConfigureAwait(false);
                     
                     return new ResponseUnit<AddVocReturnDTO?>() { message = "요청이 정상 처리되었습니다.", data = new AddVocReturnDTO

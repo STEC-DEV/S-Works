@@ -2,11 +2,11 @@
 using FamTec.Server.Services;
 using FamTec.Server.Services.Store;
 using FamTec.Shared.Server.DTO;
+using FamTec.Shared.Server.DTO.DashBoard;
 using FamTec.Shared.Server.DTO.Material;
 using FamTec.Shared.Server.DTO.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Abstractions;
 
 namespace FamTec.Server.Controllers.Store
 {
@@ -28,6 +28,40 @@ namespace FamTec.Server.Controllers.Store
             
             this.LogService = _logservice;
             this.CreateBuilderLogger = _createbuilderlogger;
+        }
+
+        /// <summary>
+        /// 대쉬보드용 금일 입출고내역 반환
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sign/GetToDayInOutCount")]
+        public async Task<IActionResult> GetToDayInOutCount()
+        {
+            try
+            {
+                if (HttpContext is null)
+                    return BadRequest();
+
+                ResponseUnit<InOutListDTO?> model = await InStoreService.GetDashBoardInOutListData(HttpContext);
+                
+                if (model is null)
+                    return BadRequest();
+
+                if (model.code == 200)
+                    return Ok(model);
+                else
+                    return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                LogService.LogMessage(ex.ToString());
+#if DEBUG
+                CreateBuilderLogger.ConsoleLog(ex);
+#endif
+                return Problem("서버에서 처리할 수 없는 요청입니다.", statusCode: 500);
+            }
         }
 
         /// <summary>

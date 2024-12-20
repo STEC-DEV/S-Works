@@ -6,6 +6,8 @@ namespace FamTec.Server.Repository.Maintenence
 {
     public interface IMaintanceRepository
     {
+        Task<List<MaintanceWeekCount>?> GetMaintanceDashBoardData(DateTime startOfWeek, DateTime EndOfWeek, int placeid);
+
         /// <summary>
         /// 유지보수 ID로 유지보수 검색
         /// </summary>

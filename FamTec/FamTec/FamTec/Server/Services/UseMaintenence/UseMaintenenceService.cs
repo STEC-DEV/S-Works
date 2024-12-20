@@ -119,7 +119,8 @@ namespace FamTec.Server.Services.UseMaintenence
                         if (UpdateResult > 0)
                         {
                             // signalR 플래그
-                            await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                            await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
+                            await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
 
                             return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                         }
@@ -149,8 +150,8 @@ namespace FamTec.Server.Services.UseMaintenence
                     if (UpdateResult > 0)
                     {
                         // signalR 플래그
-                        await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
-
+                        await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
+                        await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
                         return new ResponseUnit<bool?>() { message = "요청이 정상 처리되었습니다.", data = true, code = 200 };
                     }
                     else if (UpdateResult == -1)
@@ -198,7 +199,8 @@ namespace FamTec.Server.Services.UseMaintenence
                 if (result == 1)
                 {
                     // signalR 플래그
-                    await HubContext.Clients.Groups($"{placeid}_InOut").SendAsync("RecevieInOutCount", $"입출고 내역조회").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_SafeNum").SendAsync("ReceiveSafeNum", $"GetSafeNumCount").ConfigureAwait(false);
+                    await HubContext.Clients.Groups($"{placeid}_ToDayInOut").SendAsync("ReceiveToDayInOut", $"GetToDayInOutCount").ConfigureAwait(false);
                     return new ResponseUnit<bool?>() { message = "요청이 정상처리되었습니다.", data = true, code = 200 };
                 }
                 else if (result == -1)
